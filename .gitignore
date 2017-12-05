@@ -1,0 +1,9 @@
+.idea
+.js.map
+.log
+.Trashes
+.DS_Store
+.vscode
+
+node_modules
+lib

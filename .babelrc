@@ -1,0 +1,36 @@
+{
+    "presets": [
+        ["env", {
+            "targets": {
+                "node": 4
+            }
+        }],
+        ["es2015", {
+            "modules": false
+        }],
+        "react",
+        "stage-1"
+    ],
+    "plugins": [
+        ["import", {
+            "libraryName": "antd",
+            "style": false
+        }],
+        ["transform-runtime", {
+            "helpers": false,
+            "polyfill": false,
+            "regenerator": true
+        }],
+        "lodash",
+        "transform-decorators-legacy",
+        "transform-class-properties",
+        "transform-es2015-spread"
+    ],
+    "env": {
+        "development": {
+            "presets": [
+                "react-hmre"
+            ]
+        }
+    }
+}
