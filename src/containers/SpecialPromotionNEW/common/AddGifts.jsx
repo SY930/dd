@@ -11,7 +11,7 @@ import {
 import _ from 'lodash';
 
 if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
+    require('../../../components/common/components.less');
 }
 const FormItem = Form.Item;
 const Option = Select.Option;
