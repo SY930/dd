@@ -10,7 +10,10 @@
 
 import React from 'react';
 import NewActivity from './NewActivity';
+import registerPage from '../../index';
+import { NEW_SPECIAL } from '../../constants/entryCodes';
 
+@registerPage([NEW_SPECIAL], {})
 class SaleCenter extends React.Component {
     constructor(props) {
         super(props);

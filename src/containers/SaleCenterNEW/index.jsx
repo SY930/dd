@@ -10,6 +10,10 @@
 
 import React from 'react';
 import NewActivity from './NewActivity';
+import registerPage from '../../index';
+import { NEW_SALE_CENTER } from '../../constants/entryCodes';
+
+@registerPage([NEW_SALE_CENTER], {})
 
 class SaleCenterNEW extends React.Component {
     constructor(props) {

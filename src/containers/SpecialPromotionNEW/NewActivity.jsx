@@ -30,8 +30,6 @@ if (process.env.__CLIENT__ === true) {
     // require('../../../client/components.less');
 }
 
-import registerPage from '../../index';
-import { NEW_SPECIAL } from '../../constants/entryCodes';
 
 function mapStateToProps(state) {
     return {
@@ -58,7 +56,6 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-@registerPage([NEW_SPECIAL], {})
 @connect(mapStateToProps, mapDispatchToProps)
 class NewActivity extends React.Component {
     constructor(props) {

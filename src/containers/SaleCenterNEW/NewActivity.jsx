@@ -36,9 +36,6 @@ import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 
-import registerPage from '../../index';
-import { NEW_SALE_CENTER } from '../../constants/entryCodes';
-
 function mapStateToProps(state) {
     return {
         saleCenter: state.saleCenter_NEW,
@@ -71,7 +68,6 @@ function mapDispatchToProps(dispatch) {
         },
     };
 }
-@registerPage([NEW_SALE_CENTER], {})
 @connect(mapStateToProps, mapDispatchToProps)
 class NewActivity extends React.Component {
     constructor(props) {
