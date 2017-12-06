@@ -6,7 +6,7 @@
 // import progressBar from './modules/progressBar';
 
 // import { crmCardType } from './reducer/crm/crmCardType.reducer';
-import { crmCardTypeNew } from './reducer/crmNew/crmCardType.reducer';
+import { crmCardTypeNew } from './reducer/saleCenterNEW/crmCardType.reducer';
 
 // import { fullCut } from './reducer/saleCenter/fullCut.reducer';
 import { fullCut_NEW } from './reducer/saleCenterNEW/fullCut.reducer';

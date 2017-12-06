@@ -23,7 +23,8 @@ import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/pr
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
 // import _ from 'lodash';
-import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
+// import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
+import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 const FormItem = Form.Item;
 // const Option = Select.Option;
@@ -295,9 +296,9 @@ const mapDispatchToProps = (dispatch) => {
         FetchCrmCardTypeLst: (opts) => {
             dispatch(FetchCrmCardTypeLst(opts));
         },
-        FetchSelectedShopsAC: (opts) => {
-            return dispatch(FetchSelectedShops(opts));
-        },
+        // FetchSelectedShopsAC: (opts) => {
+        //     return dispatch(FetchSelectedShops(opts));
+        // },
     };
 };
 
