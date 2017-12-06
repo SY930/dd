@@ -8,7 +8,7 @@ import CrmOperationDetailModal from './CrmOperationDetailModal';
 import {
     UpdateSearchModalVisible,
     UpdateDetailModalVisible,
-} from '../../../redux/actions/crmNew/crmOperation.action';
+} from '../../../redux/actions/saleCenterNEW/crmOperation.action';
 
 class CrmOperation extends Component {
     constructor(props) {

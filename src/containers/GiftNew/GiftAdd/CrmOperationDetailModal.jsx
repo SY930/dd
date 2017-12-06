@@ -14,7 +14,7 @@ import {
     FetchCrmOperationUuid,
     UpdateDetailModalVisible,
     UpdateDetailModalLoading,
-} from '../../../redux/actions/crmNew/crmOperation.action';
+} from '../../../redux/actions/saleCenterNEW/crmOperation.action';
 
 class CrmOperationDetailModal extends React.Component {
     constructor(props) {

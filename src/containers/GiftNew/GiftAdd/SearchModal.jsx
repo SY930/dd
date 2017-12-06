@@ -13,7 +13,7 @@ import {
     UpdateSearchModalVisible,
     UpdateDetailModalVisible,
     FetchCrmOperationShop,
-} from '../../../redux/actions/crmNew/crmOperation.action';
+} from '../../../redux/actions/saleCenterNEW/crmOperation.action';
 
 class SearchModal extends React.Component {
     constructor(props) {

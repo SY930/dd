@@ -12,7 +12,7 @@ import {FORM_ITEMS} from './_formItemsConfig';
 import {
     UpdateDetailModalVisible,
     UpdateDetailModalLoading,
-} from '../../../redux/actions/crmNew/crmOperation.action';
+} from '../../../redux/actions/saleCenterNEW/crmOperation.action';
 
 const FormItem = Form.Item;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
