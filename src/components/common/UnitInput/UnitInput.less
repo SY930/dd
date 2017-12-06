@@ -1,0 +1,36 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+/*UnitInput.jsx*/
+.UnitInputAll {
+  -webkit-display: inline-block;
+  span{
+    background:none;
+    border: 0px;
+  }
+  :global{
+    .ant-input-wrapper>span:nth-child(1){
+    font-size: 14px;
+  	text-align: right;
+  	width:100px!important;
+  	overflow: hidden!important;
+    }
+    .ant-input-lg{
+      text-align:right;
+    	border-radius: 0px;
+    }
+    .ant-input-group>span:nth-child(1){
+    	width:100px!important;
+    	overflow: hidden!important;
+    	font-weight: bold!important;
+    }
+    .ant-input-group-addon{
+      color: @grey;
+      border-radius: @border-radius-no;
+    }
+    .ant-input-group-addon:last-child{
+      background:@bg-color;
+      border:1px solid @border-color;
+      border-left:0px;
+    }
+
+  }
+}

@@ -1,0 +1,53 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+// @import '../../../../../client/theme/mixins.less';
+
+.wrapper {
+    .filterKeyList {
+        .filterKey {
+            display: inline-block;
+            margin-right: 10px;
+            width: 90px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border: 1px solid @btn2-default-border-color;
+            border-radius: @border-radius;
+            cursor: pointer;
+            transition: all .15s cubic-bezier(.645,.045,.355,1);
+            &:hover {
+                color: @btn1-hover-background;
+                border-color: @btn1-hover-background;
+            }
+            &.active {
+                color: #ffffff;
+                background-color: @btn1-default-background;
+            }
+        }
+    }
+    .selectedFilters {
+        position: relative;
+        padding: 10px 16px 10px 0;
+        &>span {
+            .x-text-box-ellipsis();
+        }
+        .clearBtn {
+            position: absolute;
+            right: 0;
+            top: 12px;
+            color: rgba(0, 0, 0, 0.43);
+            transition: all .3s ease;
+            font-size: 14px;
+            &:hover {
+                cursor: pointer;
+                color: #444;
+            }
+        }
+    }
+    .resultList {
+        flex: 1;
+        margin-left: 10px;
+    }
+    .selectedList {
+        margin-top: 5px;
+    }
+}

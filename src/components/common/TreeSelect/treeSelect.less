@@ -1,0 +1,232 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+.treeSelect-main{
+    //padding:20px;
+    font-size: 12px!important;
+    width:100%;
+    :global{
+        .ant-table{
+            min-height: 170px;
+            .ant-table-row{
+
+                .ant-input{
+                    border: none;
+                    height: 24px;
+                    text-align: right;
+                    background: none;
+                    line-height:24px;
+                    width: 80%;
+                    &:focus{
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+.treeSelect-body{
+    margin-top: 10px;
+}
+
+.treeSelect-footer{
+    margin-top: 10px;
+    position:relative;
+    .Tclear{
+        position:absolute;
+        right:0px;
+        top:0px;
+        color: #53b0ef;
+        cursor:pointer;
+        &:hover{
+            color: #6eb7e8;
+        }
+    }
+    .SelectedLi{
+
+    }
+    .SelectedLiT{
+        span{
+            font-weight: bold;
+        }
+    }
+    .SelectedLiB{
+        border:1px solid #e9e9e9;
+        margin-top:5px;
+        overflow-y:auto;
+        height:175px;
+    }
+    .SelectedLiB li{
+        padding-left: 10px;
+        line-height: 24px;
+        border-bottom:1px solid #eeeeee;
+        cursor: help;
+    }
+    .SelectedLiB li:nth-child(odd){
+        background: #f9f9f9;
+    }
+}
+
+.SelectLevel1{
+    border:1px solid #e9e9e9;
+    height:170px;
+    overflow-y: auto;
+    :global{
+        .ant-tree{
+            padding:0px 10px 0px 10px;
+        }
+        .ant-tree li span.ant-tree-switcher.ant-tree-bottom_close:after, .ant-tree li span.ant-tree-switcher.ant-tree-center_close:after, .ant-tree li span.ant-tree-switcher.ant-tree-noline_close:after, .ant-tree li span.ant-tree-switcher.ant-tree-roots_close:after{
+            content:"\E61D";
+        }
+    }
+}
+
+.SelectLevel2{
+    border:1px solid #e9e9e9;
+    font-size: 12px;
+}
+.SelectLevel2Div{
+    .selectLevel2Table{
+        :global{
+            .ant-table-selection-column{
+                padding: 0;
+                width: 40px;
+            }
+            .ant-table-selection-select-all{
+                margin-right: 0!important;
+            }
+        }
+    }
+}
+.SelectLevelTop{
+    background:#f5f5f5;
+    border-bottom:1px solid #eeeeee;
+    line-height: 28px;
+    padding-left: 10px;
+}
+.Sche{
+    width: 30px;
+    float:left;
+}
+.Stit{
+    text-align: center;
+    padding-right: 50px;
+}
+.SelectLevelB{
+    font-size: 12px;
+    line-height: 24px;
+    overflow-y: auto;
+    height: 140px;
+    width:100%;
+    :global(.ant-checkbox-group-item){
+        display: block!important;
+        padding-left: 10px;
+        border-bottom:1px solid #eeeeee;
+        margin-bottom: 0;
+    }
+    :global(.ant-checkbox-wrapper+.ant-checkbox-wrapper){
+        margin-left: 0px;
+    }
+}
+.SelectLevelB label:nth-child(even){
+    background:#f9f9f9;
+}
+.SelectTit{
+    padding-left: 10px;
+    font-size: 12px;
+    margin-top:10px;
+    :hover{
+        color: #676a6c;
+    }
+}
+.SelectLi{
+    padding-left: 26px;
+    line-height: 24px;
+}
+.Selectlia{
+    display: block;
+    &:hover{
+        background:#62a7d7;
+        color: #FFFFFF;
+    }
+}
+:global(.ant-modal-footer){
+    text-align: center;
+}
+//采购模板批量新增表格样式
+.SelectedTable{
+    border:1px solid #e9e9e9;
+    //height:170px;
+    //overflow-y:auto;
+
+}
+.SelectedThead{
+    border-bottom:1px solid #e9e9e9;
+}
+.SelectedTbody{
+    border-bottom:1px solid #e9e9e9;
+    overflow-y:auto;
+    height:170px;
+    //border-top:none;
+    :hover{
+        background: #fffbe3;
+    }
+}
+.LiStyle{
+    height: 26px;
+    span{
+        padding: 0 5px;
+        text-align: left;
+        line-height: 26px;
+        height: 26px;
+        white-space: nowrap;
+        overflow: hidden;
+        -o-text-overflow: ellipsis; /* Opera */
+        text-overflow:    ellipsis; /* IE, Safari (WebKit) */
+        border-right: 1px solid #e9e9e9;
+        display: inline-block;
+        text-align: center;
+    }
+    .SpanIndex {
+        text-align: center;
+        width:40px;
+    }
+    .SpanCode{
+        width: 100px;
+    }
+    .SpanName{
+        width: 100px;
+    }
+    .SpanDesc{
+        width: 100px;
+    }
+    .SpanUnit{
+        width: 80px;
+    }
+    .SpanActive{
+        width: 40px;
+        border-right: none;
+    }
+    .SpanRemark{
+        width: 228px;
+        border-right: none;
+    }
+}
+.treeSelect-footer .SelectedTbody .LiStyle{
+    padding-left: 0;
+    border-bottom: 1px solid #e9e9e9;
+}
+.treeSelect-footer .SelectedTbody .LiStyle:nth-last-child{
+    border-bottom: none;
+}
+.SelectedTbody li span{
+    text-align: left
+}
+.selectLevel3Table{
+    :global{
+        .ant-table{
+            min-height: 255px;
+        }
+    }
+}

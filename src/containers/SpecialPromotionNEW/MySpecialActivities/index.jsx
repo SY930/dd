@@ -1,0 +1,966 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import {
+    Table, Input, Select, DatePicker,
+    Button, Modal, Row, Col, message,
+    Spin, Icon,
+} from 'antd';
+import moment from 'moment';
+import styles from '../../SaleCenterNEW/ActivityPage.less';
+import Cfg from '../../../constants/SpecialPromotionCfg';
+import Authority from '../../../components/common/Authority';
+import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+
+import {
+    toggleSelectedActivityStateAC,
+    fetchSpecialPromotionList,
+    // fetchPromotionListCancel,
+    deleteSelectedRecordAC,
+    fetchSpecialPromotionDetailAC,
+    fetchSpecialPromotionDetailCancel,
+    fetchSpecialDetailAC,
+    updateExpiredActiveState,
+} from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import {
+    toggleIsUpdateAC,
+} from '../../../redux/actions/saleCenterNEW/myActivities.action';
+import SpecialPromotionDetail from './specialPromotionDetail';
+
+import {
+    getSpecialPromotionIdx,
+    specialPromotionBasicDataAdapter,
+} from '../../../redux/actions/saleCenterNEW/types';
+
+import ActivityMain from '../activityMain';
+
+import registerPage from '../../../index';
+import { SPECIAL_PAGE } from '../../../constants/entryCodes';
+
+const confirm = Modal.confirm;
+const Option = Select.Option;
+const { RangePicker } = DatePicker;
+const mapStateToProps = (state) => {
+    return {
+        mySpecialActivities: state.mySpecialActivities_NEW,
+        promotionBasicInfo: state.promotionBasicInfo_NEW,
+        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        user: state.user.toJS(),
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        query: (opts) => {
+            dispatch(fetchSpecialPromotionList(opts));
+        },
+
+        toggleSelectedActivityState: (opts) => {
+            dispatch(toggleSelectedActivityStateAC(opts));
+        },
+        updateExpiredActiveState: (opts) => {
+            dispatch(updateExpiredActiveState(opts))
+        },
+        deleteSelectedRecord: (opts) => {
+            dispatch(deleteSelectedRecordAC(opts));
+        },
+
+        fetchSpecialPromotionList: (opts) => {
+            dispatch(fetchSpecialPromotionList(opts))
+        },
+
+        fetchSpecialPromotionDetail: (opts) => {
+            dispatch(fetchSpecialPromotionDetailAC(opts))
+        },
+
+        cancelFetchSpecialPromotionDetail: (opts) => {
+            dispatch(fetchSpecialPromotionDetailCancel(opts))
+        },
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts))
+        },
+        fetchSpecialDetail: (opts) => {
+            dispatch(fetchSpecialDetailAC(opts))
+        },
+        saleCenterResetDetailInfo: (opts) => {
+            dispatch(saleCenterResetDetailInfoAC(opts))
+        },
+        toggleIsUpdate: (opts) => {
+            dispatch(toggleIsUpdateAC(opts))
+        },
+    };
+};
+
+@registerPage([SPECIAL_PAGE], {})
+@connect(mapStateToProps, mapDispatchToProps)
+class MySpecialActivities extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: [],
+            advancedQuery: true,
+            visible: false,
+            selectedRecord: null, // current record
+            updateModalVisible: false,
+            expand: false, // 高级查询
+            index: 0,
+            recordToDisplay: null,
+            // qualifications:
+            valid: '0',
+            modalTitle: '更新活动信息',
+            isNew: false,
+
+            selectedShop: null,
+
+            loading: true,
+            eventWay: '',
+            promotionDateRange: '',
+            isActive: '',
+            eventName: '',
+            pageSizes: 30,
+            pageNo: 1,
+            record: {
+                eventInfo: {},
+                cardInfo: [],
+                userInfo: [],
+            },
+            queryDisabled: false,
+            currentItemID: '',
+        };
+
+        this.renderFilterBar = this.renderFilterBar.bind(this);
+        this.showNothing = this.showNothing.bind(this);
+        // disable selected activity
+
+
+        this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
+        this.handelStopEvent = this.handelStopEvent.bind(this);
+        this.onDateQualificationChange = this.onDateQualificationChange.bind(this);
+        this.handleQuery = this.handleQuery.bind(this);
+        this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
+        this.checkDeleteInfo = this.checkDeleteInfo.bind(this);
+        this.checkDetailInfo = this.checkDetailInfo.bind(this);
+        this.renderModals = this.renderModals.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.renderUpdateModals = this.renderUpdateModals.bind(this);
+        this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
+    }
+
+    /**
+     * @description toggle the advanced qualification selection.
+     * */
+    handleDisableClickEvent(text, record, index, nextActive, modalTip) {
+        // this.state.selectedRecord
+        this.props.toggleSelectedActivityState({
+            record,
+            nextActive,
+            modalTip,
+            success: this.toggleStateCallBack,
+            fail: this.toggleStateFailCallBack,
+            warning: this.toggleStateWarningCallBack,
+        });
+    }
+
+    toggleStateFailCallBack(val) {
+        message.error(val);
+    }
+
+    toggleStateWarningCallBack(val) {
+        message.warning(val);
+    }
+
+    toggleStateCallBack(val) {
+        message.success(val);
+    }
+    // 终止活动
+    handelStopEvent(text, record, index, nextActive, modalTip) {
+        confirm({
+            title: '终止特色营销活动',
+            content: (
+                <div>
+                    您将终止
+                    【<span>{record.eventName}</span>】
+                    <br />
+                    <span>终止是不可恢复操作，请慎重考虑~</span>
+                </div>
+            ),
+            footer: '终止是不可恢复操作,请慎重考虑',
+            onOk: () => {
+                this.handleDisableClickEvent(text, record, index, nextActive, modalTip)
+            },
+            onCancel: () => { },
+        });
+    }
+    // 关闭更新
+    handleDismissUpdateModal() {
+        this.setState({
+            updateModalVisible: false,
+        });
+        this.props.saleCenterResetDetailInfo();
+        this.showNothing = this.showNothing.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            fetchSpecialPromotionList,
+        } = this.props;
+        fetchSpecialPromotionList({
+            data: {
+                groupID: this.props.user.accountInfo.groupID,
+                // _role:this.props.user.accountInfo.roleType,
+                // _loginName:this.props.user.accountInfo.loginName,
+                // _groupLoginName:this.props.user.accountInfo.groupLoginName,
+                pageSize: this.state.pageSizes,
+                pageNo: 1,
+            },
+            fail: (msg) => { message.success(msg) },
+        });
+        // 把groupID传给后台，后台执行自动终止
+        this.props.updateExpiredActiveState({
+            groupID: this.props.user.accountInfo.groupID,
+        })
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
+    }
+
+    onWindowResize = () => {
+        const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
+        if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
+            const parentHeight = parentDoms.offsetHeight; // 获取到父级的高度存到变量 parentHeight
+            const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
+            if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
+                const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
+                const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
+                const headerHeight = headerDoms[0].offsetHeight;
+                layoutsContent.style.height = `${parentHeight - headerHeight - 15 - 20}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                this.setState({
+                    contentHeight: parentHeight - headerHeight - 15,
+                    tableHeight: layoutsContent.offsetHeight - 40 - 68,
+                })
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    // TODO: the following code may be not the best implementation of filter
+    // The filter condition should not be save to redux, just save it to state temporarily.
+    // Modify it in the future
+    componentWillReceiveProps(nextProps) {
+        if (this.props.mySpecialActivities.get('$specialPromotionList') !== nextProps.mySpecialActivities.get('$specialPromotionList')) {
+            const _promoitonList = nextProps.mySpecialActivities.get('$specialPromotionList').toJS();
+            switch (_promoitonList.status) {
+                case 'timeout':
+                    message.error('请求超时');
+                    this.setState({
+                        loading: false,
+                    });
+                    break;
+                case 'fail':
+                    message.error('请求失败');
+                    this.setState({
+                        loading: false,
+                    });
+                    break;
+                case 'success':
+                    if (_promoitonList.data) {
+                        const _envIsVip = HUALALA.ENVIRONMENT === 'production-release';
+                        const data = _envIsVip ? _promoitonList.data.filter((activity) => {
+                            // 隐藏1个卡片
+                            return activity.eventWay != '63' && activity.eventWay != '23'
+                        }) : _promoitonList.data;
+                        this.setState({
+                            loading: false,
+                            dataSource: data.map((activity, index) => {
+                                activity.index = index + 1;
+                                activity.key = `${index}`;
+                                activity.validDate = {
+                                    start: activity.eventStartDate,
+                                    end: activity.eventEndDate,
+                                };
+                                return activity;
+                            }),
+                            total: _promoitonList.total,
+                        });
+                    } else {
+                        message.warning('暂无数据');
+                        this.setState({
+                            loading: false,
+                            dataSource: [],
+                            total: _promoitonList.total,
+                        });
+                    }
+                    break;
+            }
+        }
+        if (this.props.mySpecialActivities.get('$specialDetailInfo') !== nextProps.mySpecialActivities.get('$specialDetailInfo')) {
+            this.setState({
+                record: nextProps.mySpecialActivities.get('$specialDetailInfo').toJS(),
+            })
+        }
+    }
+
+    render() {
+        return (
+            <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                <Col span={24} className="layoutsHeader">
+                    {this.renderHeader()}
+                    <div className="layoutsLine"></div>
+                    {this.renderFilterBar()}
+                </Col>
+                <Col span={24} className="layoutsLineBlock"> </Col>
+                {this.renderTables()}
+                {this.renderModals()}
+                {this.renderUpdateModals()}
+            </Row>
+        );
+    }
+    // 查询
+    handleQuery() {
+        this.setState({
+            loading: true,
+            queryDisabled: true,
+            pageNo: 1,
+        }, () => {
+            setTimeout(() => {
+                this.setState({ queryDisabled: false })
+            }, 500)
+        });
+
+        const {
+            eventWay,
+            promotionDateRange,
+            isActive,
+            eventName,
+        } = this.state;
+
+        const opt = {};
+        if (eventWay !== '' && eventWay !== undefined) {
+            opt.eventWay = eventWay;
+        }
+
+        if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
+            opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+
+        if (eventName !== '' && eventName !== undefined) {
+            opt.eventName = eventName;
+        }
+
+        if (isActive !== '') {
+            opt.isActive = isActive == '-1' ? '-1' : (isActive == '1' ? '1' : '0');
+        }
+
+        this.props.query({
+            data: {
+                groupID: this.props.user.accountInfo.groupID,
+                pageSize: this.state.pageSizes,
+                pageNo: 1,
+                ...opt,
+            },
+            fail: (msg) => { message.success(msg) },
+        });
+    }
+
+    showNothing(data) {
+        if (data === undefined) {
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+                message.error('没有查到相应数据');
+            });
+        }
+    }
+
+    renderHeader() {
+        return (
+            <div className="layoutsTool">
+                <div className="layoutsToolLeft">
+                    <h1>特色营销信息</h1>
+                </div>
+
+            </div>
+        );
+    }
+    // date qualification
+    onDateQualificationChange(value) {
+        this.setState({
+            promotionDateRange: value,
+        });
+    }
+
+    renderFilterBar() {
+        const opts = [];
+        let count;
+        if (HUALALA.ENVIRONMENT !== 'production-release') {
+            count = 13;
+        } else {
+            count = 11;
+        }
+        Cfg.eventWay.forEach((item, index) => {
+            if (index <= count) {
+                opts.push(
+                    <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+                );
+            }
+        });
+        return (
+            <div>
+                <div className="layoutsSearch">
+                    <ul>
+                        <li>
+                            <h5>活动时间</h5>
+                        </li>
+                        <li>
+                            <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
+                        </li>
+
+                        <li>
+                            <h5>活动类型</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 160 }}
+                                showSearch={true}
+                                placeholder="请选择活动类型"
+                                defaultValue="全部"
+                                onChange={(value) => {
+                                    this.setState({
+                                        eventWay: value === 'ALL' ? null : value,
+                                    });
+                                }}
+                            >
+                                {opts}
+                            </Select>
+                        </li>
+
+                        <li>
+                            <h5>使用状态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 160 }}
+                                defaultValue=""
+                                placeholder="请选择使用状态"
+                                onChange={(value) => {
+                                    this.setState({
+                                        isActive: value,
+                                    });
+                                }}
+                            >
+                                <Option value={''}>不限</Option>
+                                <Option value={'1'}>已启用</Option>
+                                <Option value={'0'}>已禁用</Option>
+                                <Option value={'-1'}>已终止</Option>
+                            </Select>
+                        </li>
+
+                        <li>
+                            <h5>活动名称</h5>
+                        </li>
+                        <li>
+                            <Input
+                                placeholder="请输入活动名称"
+                                onChange={(e) => {
+                                    this.setState({
+                                        eventName: e.target.value,
+                                    });
+                                }}
+                            />
+                        </li>
+
+                        <li>
+                            <Authority rightCode="marketing.teseyingxiaoxin.query">
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                            </Authority>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+        );
+    }
+    // 切换每页显示条数
+    onShowSizeChange = (current, pageSize) => {
+        this.setState({
+            pageSizes: pageSize,
+        })
+    };
+
+    renderTables() {
+        const SmsSendStatus = [
+            { value: '0', label: '定义中' },
+            { value: '1', label: '待开始' },
+            { value: '2', label: '数据准备' },
+            { value: '3', label: '发送完毕' },
+            { value: '4', label: '发送失败' },
+            { value: '5', label: '待审核' },
+            { value: '8', label: '发送中' },
+            { value: '9', label: '数据准备' },
+            { value: '20', label: '数据准备' },
+            { value: '21', label: '审核未通过' },
+            { value: '30', label: '发送中' },
+            { value: '6', label: '审核通过' },
+        ];
+        const SmsSettleStatus = [
+            { value: '0', label: '不需要结算' },
+            { value: '1', label: '待结算' },
+            { value: '2', label: '结算完成' },
+            { value: '3', label: '结算失败' },
+        ];
+        const columns = [
+            {
+                title: '序号',
+                dataIndex: 'index',
+                className: 'TableTxtCenter',
+                width: 60,
+                // fixed:'left',
+                key: 'key',
+                render: (text, record, index) => {
+                    return (this.state.pageNo - 1) * this.state.pageSizes + text;
+                },
+            },
+
+            {
+                title: '操作',
+                key: 'operation',
+                width: 250,
+                // fixed:'left',
+                render: (text, record, index) => {
+                    const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
+                    // let statusState = (record.eventWay =='50' || record.eventWay =='53') && (record.status !='1'&&record.status !='5') ? true : false;
+                    // console.log(index,`${statusState}`);
+                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    return (<span>
+                        <a
+                            href="#"
+                            className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
+                            onClick={() => {
+                                record.isActive == '-1' ? null :
+                                    this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
+                            }}
+                        >
+                            {buttonText}</a>
+                        <Authority rightCode="marketing.teseyingxiaoxin.update">
+                            <a
+                                href="#"
+                                className={record.isActive != '0' || statusState ? styles.textDisabled : null}
+                                onClick={(e) => {
+                                    if (record.isActive != '0') {
+                                        e.preventDefault()
+                                    } else {
+                                        this.props.toggleIsUpdate(true)
+                                        this.handleUpdateOpe(text, record, index);
+                                    }
+                                }}
+                            >
+                                编辑</a>
+                        </Authority>
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.props.toggleIsUpdate(false)
+                                this.handleUpdateOpe(text, record, index);
+                            }}
+                        >
+                            查看</a>
+                        <Authority rightCode="marketing.teseyingxiaoxin.delete">
+                            <a
+                                href="#"
+                                className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
+                                onClick={() => {
+                                    record.isActive != '0' || record.userCount != 0 ? null :
+                                        this.checkDeleteInfo(text, record, index);
+                                }}
+                            >
+                                删除</a>
+                        </Authority>
+                        <a
+                            href="#"
+                            className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
+                            onClick={() => {
+                                record.isActive == '-1' ? null :
+                                    this.handelStopEvent(text, record, index, '-1', '活动终止成功');
+                            }}
+                        >
+                            终止</a>
+                        <Authority rightCode="marketing.chakanteseyingxiaoxin.query">
+                            <a
+                                href="#"
+                                onClick={() => {
+                                    this.checkDetailInfo(text, record, index);
+                                }}
+                            >
+                                活动跟踪</a>
+                        </Authority>
+                    </span>
+                    );
+                },
+            },
+            {
+                title: '活动类型',
+                dataIndex: 'eventWay',
+                key: 'eventWay',
+                width: 120,
+                // fixed:'left',
+                render: (text, record) => {
+                    return <span>{mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
+                },
+            },
+
+            {
+                title: '活动名称',
+                dataIndex: 'eventName',
+                key: 'eventName',
+                // fixed:'left',
+                width: 200,
+            },
+            // {
+            //     title: '参与人数',
+            //     className: 'TableTxtRight',
+            //     dataIndex: 'userCount',
+            //     key: 'userCount',
+            //     width: 100,
+            // },
+            {
+                title: '短信发送/结算状态',
+                className: 'TableTxtCenter',
+                dataIndex: 'status',
+                key: 'msgStatus',
+                width: 150,
+                render: (text, record) => {
+                    if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
+                        || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63) {
+                        let _SmsSendStatus = '';
+                        SmsSendStatus.map((status) => {
+                            if (status.value == record.status) {
+                                _SmsSendStatus = status.label;
+                            }
+                        });
+                        let _SmsSettleStatus = '';
+                        SmsSettleStatus.map((status) => {
+                            if (status.value == record.settleStatus) {
+                                _SmsSettleStatus = status.label;
+                            }
+                        });
+                        return `${_SmsSendStatus}/${_SmsSettleStatus}`;
+                    }
+                },
+            },
+            {
+                title: '有效时间',
+                className: 'TableTxtCenter',
+                dataIndex: 'validDate',
+                key: '',
+                width: 200,
+                render: (validDate) => {
+                    if (validDate.start === '0' || validDate.end === '0' ||
+                        validDate.start === '20000101' || validDate.end === '29991231') {
+                        return '不限制';
+                    }
+                    return `${moment(validDate.start, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(validDate.end, 'YYYY/MM/DD').format('YYYY/MM/DD')}`;
+                },
+            },
+            {
+                title: '创建时间/修改时间',
+                className: 'TableTxtCenter',
+                dataIndex: 'operateTime',
+                key: 'operateTime',
+                width: 360,
+                render: (text, record, index) => {
+                    if (record.actionStamp === '' && record.createStamp === '') {
+                        return '--';
+                    }
+                    return `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`;
+                },
+            },
+            {
+                title: '创建人/修改人',
+                dataIndex: 'operator',
+                key: 'operator',
+                render: (text, record, index) => {
+                    if (record.operator === '') {
+                        return '--';
+                    }
+                    return `${JSON.parse(record.operator).userName} / ${JSON.parse(record.operator).u_userName || JSON.parse(record.operator).userName}`;
+                },
+            },
+            {
+                title: '使用状态',
+                dataIndex: 'isActive',
+                key: 'isActive',
+                width: 120,
+                render: (isActive) => {
+                    return isActive == '-1' ? '已终止' : isActive == '1' ? '已启用' : '已禁用';
+                },
+            },
+        ];
+
+        return (
+            <Col span={24} className="layoutsContent  tableClass">
+                <Table
+                    scroll={{ x: 1500, y: this.state.tableHeight }}
+                    bordered={true}
+                    columns={columns}
+                    dataSource={this.state.dataSource}
+                    loading={this.state.loading}
+                    pagination={{
+                        pageSize: this.state.pageSizes,
+                        current: this.state.pageNo,
+                        showQuickJumper: true,
+                        showSizeChanger: true,
+                        onShowSizeChange: this.onShowSizeChange,
+                        total: this.state.total || 0,
+                        showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                        onChange: (page, pageSize) => {
+                            this.setState({
+                                pageNo: page,
+                            });
+                            const opt = {
+                                pageSize,
+                                pageNo: page,
+                            };
+                            const {
+                                eventWay,
+                                promotionDateRange,
+                                isActive,
+                                eventName,
+                            } = this.state;
+
+                            if (eventWay !== '' && eventWay !== undefined) {
+                                opt.eventWay = eventWay;
+                            }
+
+                            if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
+                                opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
+                                opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+                            }
+
+                            if (eventName !== '' && eventName !== undefined) {
+                                opt.eventName = eventName;
+                            }
+
+                            if (isActive !== '') {
+                                opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
+                            }
+                            this.props.query({
+                                data: {
+                                    groupID: this.props.user.accountInfo.groupID,
+                                    ...opt,
+                                },
+                                fail: (msg) => { message.success(msg) },
+                            });
+                        },
+                    }}
+                />
+            </Col>
+        );
+    }
+    // 删除
+    checkDeleteInfo(text, record) {
+        confirm({
+            title: '删除特色营销活动',
+            content: (
+                <div>
+                    您将删除
+                    【<span>{record.eventName}</span>】
+                    <br />
+                    <span>删除是不可恢复操作，请慎重考虑~</span>
+                </div>
+            ),
+            footer: '删除数据时不可恢复操作,请慎重考虑',
+            onOk: () => {
+                this.props.deleteSelectedRecord({
+                    ...record,
+                    success: () => {
+                        message.success('删除成功');
+                    },
+                    fail: (msg) => {
+                        message.error(msg);
+                    },
+                });
+            },
+            onCancel: () => { },
+        });
+    }
+
+    // 编辑
+    handleUpdateOpe() {
+        this.setState({
+            updateModalVisible: true,
+            currentItemID: arguments[1].itemID ? arguments[1].itemID : this.state.currentItemID,
+        });
+        // Set promotion information to the PromotionBasic and promotionScope redux
+        const _record = arguments[1];
+
+        const user = this.props.user;
+
+
+        const successFn = (response) => {
+            const _promotionIdx = getSpecialPromotionIdx(`${_record.eventWay}`);
+            const _serverToRedux = false;
+            if (response === undefined || response.data === undefined) {
+                message.error('没有查询到相应数据');
+                return null;
+            }
+            this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
+            this.setState({
+                modalTitle: '更新活动信息',
+                isNew: false,
+                index: _promotionIdx,
+            });
+        };
+
+        const failFn = () => {
+            message.error('错误');
+        };
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID: _record.itemID || this.state.currentItemID, // 点击重试时record为undefiend
+                groupID: user.accountInfo.groupID,
+            },
+            success: successFn,
+            fail: failFn,
+        });
+    }
+    /**
+     * Render promotion update Modal
+     * wrapped normally.
+     * @param {Bool} isNew A bool value identify the current operation is update or create.
+     */
+
+    renderUpdateModals() {
+        return (
+            <Modal
+                wrapClassName={'progressBarModal'}
+                title={this.state.modalTitle}
+                visible={this.state.updateModalVisible}
+                footer={false}
+                width="924px"
+                height="569px"
+                maskClosable={false}
+                onCancel={() => {
+                    this.setState({
+                        updateModalVisible: false,
+                    });
+                    this.props.saleCenterResetDetailInfo();
+                }}
+            >
+                {
+                    this.state.updateModalVisible ?
+                        this.renderContentOfThisModal()
+                        : null
+                }
+            </Modal>
+        );
+    }
+
+    renderContentOfThisModal() {
+        const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
+        const handleUpdateOpe = this.handleUpdateOpe;
+        const _state = this.state;
+        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+            return (
+                <div className={styles.spinFather}>
+                    <Spin size="large" />
+                </div>
+            )
+        }
+        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+            return (
+                <div className={styles.spinFather}>
+                    查询详情出错!点击 <a onClick={handleUpdateOpe}>重试</a>
+                </div>
+            );
+        }
+
+        if (mySpecialActivities.status === 'success') {
+            return (<ActivityMain
+                isNew={_state.isNew}
+                index={_state.index}
+                callbackthree={(arg) => {
+                    if (arg == 3) {
+                        this.handleDismissUpdateModal();
+                    }
+                }}
+            />);
+        }
+    }
+
+    // Row Actions: 查看
+    checkDetailInfo() {
+        this.setState({
+            visible: true,
+            currentItemID: arguments[1].itemID ? arguments[1].itemID : this.state.currentItemID,
+        });
+        const _record = arguments[1];
+        const user = this.props.user;
+
+        const failFn = () => {
+            message.error('查询详情失败');
+        };
+
+        this.props.fetchSpecialPromotionDetail({
+            data: {
+                itemID: _record.itemID || this.state.currentItemID,
+                groupID: user.accountInfo.groupID,
+            },
+            fail: failFn,
+        });
+    }
+    // 关闭详情页
+    handleClose() {
+        this.setState({
+            visible: false,
+        })
+    }
+    // 活动详情页
+    renderModals() {
+        const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
+        const checkDetailInfo = this.checkDetailInfo;
+        function renderContentOfTheModal(cancelFetchSpecialPromotionDetail) {
+            if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+                return (
+                    <div className={styles.spinFather}>
+                        <Spin size="large" />
+                    </div>)
+            }
+            if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+                return (
+                    <div className={styles.spinFather}>
+                        查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
+                    </div>
+                );
+            }
+            if (mySpecialActivities.status === 'success') {
+                return (<SpecialPromotionDetail record={mySpecialActivities.data} />);
+            }
+        }
+        return (
+            <Modal
+                title="活动详情"
+                visible={this.state.visible}
+                footer={<Button onClick={this.handleClose}>关闭</Button>}
+                closable={false}
+                width="750px"
+            >
+                {
+                    this.state.visible ?
+                        renderContentOfTheModal(this.props.cancelFetchSpecialPromotionDetail)
+                        : null
+                }
+            </Modal>
+        );
+    }
+}
+
+
+function mapValueToLabel(cfg, val) {
+    return _.result(_.find(cfg, { value: val }), 'label');
+}
+export default MySpecialActivities;

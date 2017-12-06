@@ -1,0 +1,31 @@
+@width: 118px;
+@height: 118px;
+
+.uploader {
+  :global {
+    .ant-upload-list-item {
+      width: @width;
+      height: @height;
+    }
+    .ant-upload-select-picture-card {
+      width: @width;
+      height: @height;
+      .anticon {
+        font-size: 28px;
+        color: #999;
+      }
+      .upload-tips {
+        line-height: 1.5;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.previewModal {
+    :global {
+        .ant-modal-body {
+            max-height: none;
+        }
+    }
+}

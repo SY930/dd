@@ -1,0 +1,36 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+.wrapper {
+    .filterKeyList {
+        .filterKey {
+            display: inline-block;
+            margin-right: 10px;
+            width: 90px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border: 1px solid @btn2-default-border-color;
+            border-radius: @border-radius;
+            cursor: pointer;
+            transition: all .15s cubic-bezier(.645,.045,.355,1);
+            &:hover {
+                color: @btn1-hover-background;
+                border-color: @btn1-hover-background;
+            }
+            &.active {
+                color: #ffffff;
+                background-color: @btn1-default-background;
+            }
+        }
+    }
+    .selectedFilters {
+        padding: 10px 0;
+    }
+    .resultList {
+        flex: 1;
+        margin-left: 10px;
+    }
+    .selectedList {
+        margin-top: 5px;
+    }
+}

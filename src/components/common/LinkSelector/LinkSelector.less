@@ -1,0 +1,72 @@
+/*chengshuang css LinkSelector*/
+@import '~@hualala/platform-base/lib/styles/variables.less';
+.linkSelector-main{
+  position: relative;
+  display:table;
+  width:100%;
+	box-sizing: border-box;
+  :global(.ant-select-lg .ant-select-selection__rendered){
+    line-height:24px;
+  }
+}
+.linkSelector-left{
+  display: table-cell;
+  vertical-align: middle;
+  width:100px!important;
+  text-align: right;
+  padding:4px 10px;
+	word-wrap: break-word;
+	overflow: hidden;
+  color:@grey;
+}
+.linkSelector-left1{
+  display: table-cell;
+  vertical-align: middle;
+  width:100px!important;
+  text-align: center;
+  padding:4px 10px;
+  font-size: 14px;
+  font-weight: bold;
+	word-wrap: break-word;
+	overflow: hidden;
+  color:@grey;
+  background:@bg-color;
+}
+.linkSelector-right{
+  border-radius: @border-radius-no;
+  line-height: 32px;
+	.ant-select-selection{
+		margin-left: 0px;
+		padding-left: 0px;
+	}
+  .ant-select-selection{
+    border-radius: @border-radius-no;
+  }
+  :global(.ant-select-selection--single){
+      height: 32px!important;
+      padding-top: 3px;
+  }
+}
+
+.linkSelector-btn{
+  position: absolute;
+  right:-43px;
+  top: 7px;
+  width:30px;
+  display: inline-block;
+  color: @link-default;
+  line-height:13px;
+  &hover{
+    color: @link-hover;
+  }
+}
+
+.linkSelectorModal{
+    :global{
+        .ant-modal-body{
+            height: 55px;
+            margin-top:10px;
+            overflow: inherit;
+        }
+    }
+}

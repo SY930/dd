@@ -1,0 +1,68 @@
+/**
+ * @Author: Xiao Feng Wang  <xf>
+ * @Date:   2017-04-05T15:17:20+08:00
+ * @Email:  wangxiaofeng@hualala.com
+ * @Filename: hualalaEditorBox.less
+ * @Last modified by:   xf
+ * @Last modified time: 2017-04-05T15:17:55+08:00
+ * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
+ */
+
+
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+/*chengshuang css ProjectEditBox*/
+.pro-all{
+  background-color: #FFF;
+  .colors{
+    color:@btn1-after-color;
+    margin-top:5px;
+  }
+  .pro-left{
+    width:100px;
+    float:left;
+    text-align: right;
+    padding-right: 10px;
+  }
+  .pro-right{
+     min-height: 80px;
+     vertical-align: middle;
+     text-align: center;
+     // modify by YQZ
+     // margin-left: 100px;
+     border: 1px solid @border-color;
+      -moz-border-radius: @border-radius-sm;                                      /* Gecko browsers */
+      -webkit-border-radius:@border-radius-sm;                                    /* Webkit browsers */
+      border-radius:@border-radius-sm;
+      position:relative;
+  }
+  .proRmain{
+
+  }
+  .proRBtn1{
+    line-height: 25px;
+    margin-top:17px;
+                                               /* W3C syntax */
+  }
+  .proXz{
+    padding:5px 0px 5px 10px;
+    text-align: left;
+    max-height: 100px;
+    overflow-y: auto;
+  }
+  .projectIco{
+    position:absolute;
+    right:-28px;
+    top:0px;
+  }
+  .projectTag{
+    text-align: left;
+    display: inline-block;
+    :global{
+        .ant-tag{
+            margin-top: 7px!important;
+        }
+    }
+  }
+
+}

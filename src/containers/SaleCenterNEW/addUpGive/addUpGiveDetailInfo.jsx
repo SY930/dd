@@ -1,0 +1,355 @@
+/**
+* @Author: Xiao Feng Wang  <xf>
+* @Date:   2017-03-30T10:17:40+08:00
+* @Email:  wangxiaofeng@hualala.com
+* @Filename: fullGiveDetailInfo.jsx
+ * @Last modified by:   chenshuang
+ * @Last modified time: 2017-04-08T22:40:04+08:00
+* @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
+*/
+
+import React, { Component } from 'react';
+import { Row, Col, Form, Select, Radio, DatePicker, Input } from 'antd';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import moment from 'moment';
+
+if (process.env.__CLIENT__ === true) {
+    // require('../../../../client/componentsPage.less')
+}
+
+import styles from '../ActivityPage.less';
+import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
+import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
+import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
+
+const FormItem = Form.Item;
+const Option = Select.Option;
+const InputGroup = Input.Group;
+import {
+    saleCenterSetPromotionDetailAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+
+const Immutable = require('immutable');
+
+
+class AddUpGiveDetailInfo extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            display: false,
+            maxTimesStatus: 'success',
+            rule: {
+                stageType: '1',
+                minTimes: '',
+                maxTimes: '',
+                stageAmount: '',
+                giveFoodCount: '',
+            },
+            priceLst: [],
+        };
+
+        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
+        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onChangeClick = this.onChangeClick.bind(this);
+        this.handleStageTypeChange = this.handleStageTypeChange.bind(this);
+        this.handleStageChange = this.handleStageChange.bind(this);
+        this._handleStageChange = this._handleStageChange.bind(this);
+        this.handleFoodCountChange = this.handleFoodCountChange.bind(this);
+        this.onDishesChange = this.onDishesChange.bind(this);
+    }
+
+    componentDidMount() {
+        const opts = {
+            groupID: this.props.user.accountInfo.groupID,
+        };
+        this.props.getSubmitFn({
+            finish: this.handleSubmit,
+        });
+        let rule = this.props.promotionDetailInfo.toJS().$promotionDetail.rule;
+        let priceLst = this.props.promotionDetailInfo.toJS().$promotionDetail.priceLst;
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
+        if (rule === null || rule === undefined) {
+            return;
+        }
+        rule = {
+            stageType: rule.stageType ? rule.stageType : '1',
+            minTimes: rule.minTimes || '',
+            maxTimes: rule.maxTimes || '',
+            stageAmount: rule.stageAmount ? rule.stageAmount : '',
+            giveFoodCount: rule[`${count}`] ? rule[`${count}`] : '',
+        };
+        priceLst = priceLst || [];
+        const display = !this.props.isNew;
+        this.setState({ rule, priceLst, display })
+    }
+    componentWillReceiveProps(nextProps) {
+    }
+
+    handleSubmit = (cbFn) => {
+        let nextFlag = true;
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        this.props.form.validateFields((err, values) => {
+            const { rule, priceLst } = this.state;
+            const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
+            const _rule = {
+                stageType: rule.stageType,
+                [count]: rule.giveFoodCount,
+            };
+            if (rule.stageType == '1') { // 每累计
+                _rule.stageAmount = rule.stageAmount;
+                if (_rule.stageAmount < 2) {
+                    nextFlag = false;
+                    this.props.form.setFields({
+                        stageAmount: {
+                            value: _rule.stageAmount,
+                            errors: [new Error('必须是2~99998之间的整数')],
+                        },
+                    })
+                }
+            } else { // 累计
+                _rule.minTimes = rule.minTimes;
+                _rule.maxTimes = rule.maxTimes;
+                if (!rule.maxTimes || rule.maxTimes <= rule.minTimes) {
+                    nextFlag = false;
+                    this.setState({ maxTimesStatus: 'error' })
+                }
+                if (_rule.minTimes < 2) {
+                    nextFlag = false;
+                    this.props.form.setFields({
+                        stageAmount: {
+                            value: _rule.minTimes,
+                            errors: [new Error('必须是2~99998之间的整数')],
+                        },
+                    })
+                }
+            }
+            if (err) {
+                nextFlag = false;
+            }
+            this.props.setPromotionDetail({ rule: _rule, priceLst });
+        });
+        return nextFlag;
+    }
+    onChangeClick() {
+        this.setState(
+            { display: !this.state.display }
+        )
+    }
+    handleStageTypeChange(val) {
+        const { rule } = this.state;
+        rule.stageType = val;
+        rule.minTimes = '';
+        rule.maxTimes = '';
+        rule.stageAmount = '';
+        this.setState({ rule }, () => {
+            this.props.form.setFieldsValue({
+                stageAmount: '',
+                stageAmountTwo: '',
+            })
+        })
+    }
+    handleStageChange(e) {
+        const { rule } = this.state;
+        const _value = e.target.value ? Number(e.target.value) : '';
+        if (rule.stageType == '1') { // 每满
+            rule.stageAmount = _value;
+        } else { // 满
+            rule.minTimes = _value;
+        }
+        this.setState({ rule }, () => {
+            if (_value < 2) {
+                this.props.form.setFields({
+                    stageAmount: {
+                        value: _value,
+                        errors: [new Error('必须是2~99998之间的整数')],
+                    },
+                })
+            }
+            if ((parseInt(this.state.rule.maxTimes || 0) <= parseInt(this.state.rule.minTimes || 0) && this.state.rule.maxTimes && parseInt(this.state.rule.minTimes || 0) < 99999) || parseInt(this.state.rule.maxTimes) >= 100000) {
+                this.setState({ maxTimesStatus: 'error' })
+            } else {
+                this.setState({ maxTimesStatus: 'success' })
+            }
+        });
+    }
+    _handleStageChange(e) {
+        const { rule } = this.state;
+        rule.maxTimes = e.target.value && !isNaN(e.target.value) ? parseInt(e.target.value) : '';
+        this.setState({ rule }, () => {
+            if (parseInt(this.state.rule.maxTimes) > parseInt(this.state.rule.minTimes || 0) && parseInt(this.state.rule.maxTimes) < 100000) {
+                this.setState({ maxTimesStatus: 'success' })
+            } else {
+                this.setState({ maxTimesStatus: 'error' })
+            }
+        })
+    }
+    handleFoodCountChange(e) {
+        const { rule } = this.state;
+        rule.giveFoodCount = e.target.value;
+        this.setState({ rule })
+    }
+    onDishesChange(value) {
+        let { priceLst } = this.state;
+        priceLst = value.map((dish, index) => {
+            return {
+                foodUnitID: dish.itemID || index,
+                foodUnitCode: dish.foodKey,
+                foodName: dish.foodName,
+                foodUnitName: dish.unit,
+                price: dish.price,
+                stageNo: 0,
+            }
+        });
+        this.setState({ priceLst })
+    }
+    renderDishsSelectionBox() {
+        return (
+            <FormItem
+                label="赠送菜品"
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {
+                    this.props.form.getFieldDecorator('priceLst', {
+                        rules: [{
+                            required: true,
+                            message: '赠送菜品不得为空',
+                        }],
+                        initialValue: this.state.priceLst,
+                    })(
+                        <EditBoxForDishes onChange={this.onDishesChange} />
+                    )}
+            </FormItem>
+        )
+    }
+    renderAdvancedSettingButton() {
+        return (
+            <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
+                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gDate} onClick={this.onChangeClick}>
+                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
+                </span>
+            </FormItem>
+        )
+    }
+
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        return (
+            <Form>
+                <FormItem
+                    label="日期段内消费满足"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ marginLeft: '-32px' }}
+                >
+                    <Form layout="inline">
+                        <FormItem
+                            style={{ width: this.state.rule.stageType == '1' ? '62.5%' : '35%', marginRight: '2px' }}
+                            className={styles.inputAddonSelect}
+                        >
+                            {
+                                getFieldDecorator('stageAmount', {
+                                    rules: [{
+                                        required: true,
+                                        message: '必须是2~99998之间的整数',
+                                        pattern: /^[1-9][0-9]{0,3}[0-8]?$/,
+                                    }],
+                                    initialValue: this.state.rule.stageType == '1' ? this.state.rule.stageAmount : this.state.rule.minTimes,
+                                })(
+                                    <Input
+                                        // className={styles.inputAddonSelect}不生效
+                                        addonBefore={<Select value={this.state.rule.stageType} onChange={this.handleStageTypeChange}>
+                                            <Option key="1">每累计</Option>
+                                            <Option key="2">累计</Option>
+                                        </Select>}
+                                        addonAfter={'次'}
+                                        onChange={(val) => { this.handleStageChange(val) }}
+                                    />
+                                )}
+                        </FormItem>
+                        {this.state.rule.stageType == '1' ? null :
+                        <FormItem style={{ width: '3%', margin: '0 2px' }}>
+                                <p>到</p>
+                            </FormItem>
+                        }
+                        {this.state.rule.stageType == '1' ? null :
+                        <FormItem
+                                style={{ width: '24%', marginRight: 0 }}
+                                validateStatus={this.state.maxTimesStatus}
+                                help={this.state.maxTimesStatus == 'success' ? null : `请在${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes + 1 : 3}~99999之间`}
+                            >
+                                <Input
+                                value={this.state.rule.maxTimes}
+                                addonAfter="次"
+                                onChange={(val) => { this._handleStageChange(val) }}
+                            />
+                            </FormItem>
+                        }
+                        <FormItem style={{ width: '30%', marginLeft: '10px' }}>
+                            {
+                                getFieldDecorator('giveFoodCount', {
+                                    rules: [{
+                                        required: true,
+                                        message: `0~100000之间${promotionType == 'FOOD_CUMULATION_GIVE' ? '整数' : ',可两位小数'}`,
+                                        pattern: promotionType == 'FOOD_CUMULATION_GIVE' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
+                                    }],
+                                    initialValue: this.state.rule.giveFoodCount,
+                                })(
+                                    <Input
+                                        addonBefore={promotionType == 'FOOD_CUMULATION_GIVE' ? '赠送' : '减免'}
+                                        addonAfter={promotionType == 'FOOD_CUMULATION_GIVE' ? '份' : '元'}
+                                        onChange={(val) => { this.handleFoodCountChange(val) }}
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Form>
+                </FormItem>
+                <div >
+                    {promotionType == 'FOOD_CUMULATION_GIVE' ? this.renderDishsSelectionBox() : null}
+                    {this.renderAdvancedSettingButton()}
+                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                </div>
+            </Form>
+        )
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        stepInfo: state.steps.toJS(),
+        fullCut: state.fullCut_NEW,
+        promotionBasicInfo: state.promotionBasicInfo_NEW,
+        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        user: state.user.toJS(),
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setPromotionDetail: (opts) => {
+            dispatch(saleCenterSetPromotionDetailAC(opts))
+        },
+        fetchFoodCategoryInfo: (opts) => {
+            dispatch(fetchFoodCategoryInfoAC(opts))
+        },
+
+        fetchFoodMenuInfo: (opts) => {
+            dispatch(fetchFoodMenuInfoAC(opts))
+        },
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Form.create()(AddUpGiveDetailInfo));

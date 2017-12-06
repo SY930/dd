@@ -1,0 +1,84 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+.EditableInputMain{
+  margin-top:-10px;
+  :global{
+    .ant-form-item{
+      padding: 3px 0;
+      .ant-form-item-with-help{
+        margin-bottom: 0;
+      }
+      .ant-input-group-addon{
+        &:first-of-type{
+          width: 40%;
+          text-align: center;
+          background:@bg-color;
+          color: @grey;
+          border-radius: @border-radius-no;
+          border:1px solid @border-color;
+          border-right:0px;
+        }
+
+        &:last-child{
+          text-align: center;
+          background:@bg-color;
+          color: @grey;
+          border-radius: @border-radius-no;
+          border:1px solid @border-color;
+          border-left:0px;
+        }
+
+      }
+      &:first-child{
+        width: 60%;
+        margin-right: 0;
+      }
+      &:last-child{
+        width: 40%;
+        margin-right: 0;
+        .ant-input-group-addon {
+          &:first-of-type {
+            border:none;
+            background: none;
+
+          }
+
+        }
+      }
+
+
+    }
+  }
+
+}
+.iconsStyle{
+  .pulsIcon{
+    font-size: 22px;
+    color:#1ab495;
+    position: absolute;
+    right: -55px;
+    top:-2px;
+    :hover{
+      color:#18a786;
+    }
+  }
+  .pulsIconLeft{
+    font-size: 22px;
+    color:#1ab495;
+    position: absolute;
+    right: -25px;
+    top:-2px;
+    :hover{
+      color:#18a786;
+    }
+  }
+  .deleteIcon{
+    font-size: 22px;
+    color:#de2b2b;
+    position: absolute;
+    right: -25px;
+    top:-2px;
+    :hover{
+      color:#d21616;
+    }
+  }
+}

@@ -1,0 +1,316 @@
+/**
+ * @Author: Xiao Feng Wang  <xf>
+ * @Date:   2017-03-15T10:50:38+08:00
+ * @Email:  wangxiaofeng@hualala.com
+ * @Filename: promotionScopeInfo.jsx
+ * @Last modified by:   xf
+ * @Last modified time: 2017-04-08T16:46:12+08:00
+ * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
+ */
+
+import React from 'react';
+import { connect } from 'react-redux';
+import {
+    Form,
+    DatePicker,
+    Select,
+    Col,
+    Radio,
+    TreeSelect,
+} from 'antd';
+
+const FormItem = Form.Item;
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const SHOW_PARENT = TreeSelect.SHOW_PARENT;
+import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
+
+import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import styles from '../../SaleCenterNEW/ActivityPage.less';
+import SendMsgInfo from '../common/SendMsgInfo';
+import CardLevel from '../common/CardLevel';
+import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import _ from 'lodash';
+
+const moment = require('moment');
+
+if (process.env.__CLIENT__ === true) {
+    // require('../../../../client/componentsPage.less');
+}
+
+const Immutable = require('immutable');
+
+class StepTwo extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: '',
+            cardLevelIDList: [],
+            cardLevelRangeType: '0',
+            giveStatus: 'success',
+            consumeType: '0',
+            numberValue: {
+                number: '',
+                modal: 'float',
+            },
+            _opts: {},
+            settleUnitID: '',
+        };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleNumberChange = this.handleNumberChange.bind(this);
+        this.handleOptionChange = this.handleOptionChange.bind(this);
+        this.onCardLevelChange = this.onCardLevelChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.getSubmitFn({
+            prev: undefined,
+            next: this.handleSubmit,
+            finish: undefined,
+            cancel: undefined,
+        });
+
+        const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if (Object.keys(specialPromotion).length > 30) {
+            let addUpOpts = {};
+            if (this.props.type == '62') {
+                if (specialPromotion.consumeType == '0') {
+                    addUpOpts = {
+                        consumeType: '0',
+                        numberValue: {
+                            number: specialPromotion.consumeTotalAmount,
+                            modal: 'float',
+                        },
+                    }
+                } else {
+                    addUpOpts = {
+                        consumeType: '1',
+                        numberValue: {
+                            number: specialPromotion.consumeTotalTimes,
+                            modal: 'int',
+                        },
+                    }
+                }
+            }
+            this.setState({
+                message: specialPromotion.smsTemplate,
+                // cardLevelIDList: specialPromotion.cardLevelIDList,
+                ...addUpOpts,
+            })
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+        const _specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        const cardLevelIDListChange = specialPromotion.eventStartDate != _specialPromotion.eventStartDate || specialPromotion.eventEndDate != _specialPromotion.eventEndDate;
+        // 修改时,初始化state
+        if (cardLevelIDListChange &&
+             nextProps.specialPromotion.get('$eventInfo').size > 30) {
+            let addUpOpts = {};
+            if (this.props.type == '62') {
+                if (specialPromotion.consumeType == '0') {
+                    addUpOpts = {
+                        consumeType: '0',
+                        numberValue: {
+                            number: specialPromotion.consumeTotalAmount,
+                            modal: 'float',
+                        },
+                    }
+                } else {
+                    addUpOpts = {
+                        consumeType: '1',
+                        numberValue: {
+                            number: specialPromotion.consumeTotalTimes,
+                            modal: 'int',
+                        },
+                    }
+                }
+            }
+            this.setState({
+                message: specialPromotion.smsTemplate,
+                ...addUpOpts,
+            })
+        }
+    }
+    handleOptionChange(value) {
+        console.log(value);
+        this.setState({
+            consumeType: value,
+            numberValue: {
+                number: '',
+                modal: value == '0' ? 'float' : 'int',
+            },
+        }, () => {
+            this.props.form.setFieldsValue({ 'give': this.state.numberValue })
+        });
+    }
+    handleNumberChange(value) {
+        console.log(value);
+        const consumeType = this.state.consumeType;
+        if (consumeType == '0') { // 消费累计金额每满"
+            if (value.number < 500) {
+                this.setState({ giveStatus: 'error' })
+            } else {
+                this.setState({
+                    giveStatus: 'success',
+                    numberValue: {
+                        number: value.number,
+                        modal: 'float',
+                    },
+                });
+            }
+        } else { // 消费累计次数每满
+            if (value.number < 3) {
+                this.setState({ giveStatus: 'error' })
+            } else {
+                this.setState({
+                    giveStatus: 'success',
+                    numberValue: {
+                        number: value.number,
+                        modal: 'int',
+                    },
+                });
+            }
+        }
+    }
+    handleSubmit() {
+        let flag = true;
+        this.props.form.validateFieldsAndScroll((err1, basicValues) => {
+            if (err1) {
+                flag = false;
+            }
+        });
+        if (this.state.giveStatus == 'error') {
+            flag = false;
+        }
+        const opts = {
+            cardLevelIDList: this.state.cardLevelIDList || [],
+            cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
+            smsTemplate: this.state.message,
+        };
+        if (this.props.type == '62') {
+            const { consumeType, numberValue } = this.state;
+            opts.consumeType = consumeType;
+            consumeType == '0' ? opts.consumeTotalAmount = numberValue.number : opts.consumeTotalTimes = numberValue.number;
+            if ((consumeType == '0' && numberValue.number < 500) || (consumeType == '1' && numberValue.number < 3)) {
+                flag = false;
+                this.setState({ giveStatus: 'error' })
+            }
+        }
+        if (this.state.settleUnitID) {
+            opts.settleUnitID = this.state.settleUnitID;
+        }
+        if (flag) {
+            this.props.setSpecialBasicInfo(opts);
+        }
+        return flag;
+    }
+    onCardLevelChange(obj) {
+        this.setState(obj)
+    }
+    render() {
+        const sendFlag = true;
+        const tip = this.state.consumeType == '0' ? '累计金额不得少于500元' : '累计次数不得少于3次'
+        const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
+        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，giveSelect不可编辑
+        const giveSelect = (
+            <Select onChange={this.handleOptionChange} value={this.state.consumeType} disabled={userCount > 0}>
+                <Option key="0">累计金额每满</Option>
+                <Option key="1">累计次数每满</Option>
+            </Select>
+        );
+        return (
+            <Form>
+                {
+                    this.props.type == '62' ?
+                        <div>
+                            <FormItem
+                                label={'满赠条件'}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                validateStatus={this.state.giveStatus}
+                                help={this.state.giveStatus == 'success' ? null : `不可为空,且${tip}`}
+                            >
+                                {this.props.form.getFieldDecorator('give', {
+                                    rules: [{
+                                        required: true,
+                                        message: '不可为空',
+                                    }],
+                                    initialValue: this.state.numberValue,
+                                })(<PriceInput
+                                    onChange={this.handleNumberChange}
+                                    addonBefore={giveSelect}
+                                    addonAfter={this.state.consumeType == '0' ? '元' : '次'}
+                                />)
+                                }
+                            </FormItem>
+
+                            <CardLevel
+                                onChange={this.onCardLevelChange}
+                                catOrCard={'cat'}
+                                type={this.props.type}
+                                form={this.props.form}
+                            />
+                        </div> :
+                        <CardLevel
+                            onChange={this.onCardLevelChange}
+                            catOrCard={'card'}
+                            type={this.props.type}
+                            form={this.props.form}
+                        />
+                }
+                {
+                    smsGate == '1' || smsGate == '3' ?
+                        <SendMsgInfo
+                            sendFlag={sendFlag}
+                            form={this.props.form}
+                            value={sendFlag ? this.state.message.trim() : this.state.message}
+                            settleUnitID={this.state.settleUnitID}
+                            onChange={
+                                (val) => {
+                                    if (val instanceof Object) {
+                                        if (val.settleUnitID) {
+                                            this.setState({ settleUnitID: val.settleUnitID })
+                                        }
+                                    } else {
+                                        this.setState({ message: val });
+                                    }
+                                }
+                            }
+                        /> :
+                        null
+                }
+            </Form>
+        );
+    }
+}
+const mapStateToProps = (state) => {
+    return {
+        specialPromotion: state.specialPromotion_NEW,
+        user: state.user.toJS(),
+        mySpecialActivities: state.mySpecialActivities_NEW.toJS(),
+        promotionScopeInfo: state.promotionScopeInfo_NEW,
+
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
+        queryGroupMembersList: (opts) => {
+            dispatch(queryGroupMembersList(opts));
+        },
+        fetchPromotionScopeInfo: (opts) => {
+            dispatch(fetchPromotionScopeInfo(opts));
+        },
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepTwo));
