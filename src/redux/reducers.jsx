@@ -3,13 +3,13 @@
 // 系统公告
 // import notices from '../containers/Notices/_reducer';
 // 供应链判断强弱连锁
-import strongOrWeak from './reducer/supplychain/strongOrWeak/strongOrWeak.reducer'
-import { reducer as form } from 'redux-form'
+// import strongOrWeak from './reducer/supplychain/strongOrWeak/strongOrWeak.reducer'
+// import { reducer as form } from 'redux-form'
 
-export default {
-    messageCenter,
-    user,
-    notices,
-    strongOrWeak,
-    form,
-}
+// export default {
+//     messageCenter,
+//     user,
+//     notices,
+//     strongOrWeak,
+//     form,
+// }
