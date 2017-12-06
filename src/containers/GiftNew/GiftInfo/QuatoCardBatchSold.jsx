@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col, Button, TreeSelect, Form, message, Input } from 'antd';
 import _ from 'lodash';
 import BaseForm from '../../../components/common/BaseForm';
-import styles from '../../CrmNew/CrmCardInfo/less/CrmCardInfoAddCardDetail.less';
+import styles from './CrmCardInfoAddCardDetail.less';
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
 import {
     FetchQuotaCardShopByBatchNo,

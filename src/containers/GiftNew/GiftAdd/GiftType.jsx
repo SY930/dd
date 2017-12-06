@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import { Row, Col } from 'antd';
-import { CrmLogo } from '../../Crm/CrmOperation/CrmOperation';
+import { CrmLogo } from './CrmOperation';
 import GiftCfg from '../../../constants/Gift';
 import Moment from 'moment';
 import GiftAddModalStep from './GiftAddModalStep';

@@ -7,7 +7,7 @@ import BaseForm from '../../../components/common/BaseForm';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import CardOperate from './QuatoCardDetailModalTabsSendCard';
 import styles from './GiftInfo.less';
-import { mapValueToLabel } from '../../CrmNew/Common/CommonFn';
+import { mapValueToLabel } from './CommonFn';
 import { SENDCARD_COLUMNS, SENDCARD_QUERY_FORMITEMS, SENDCARD_FORMKEYS } from './_tableSendCardListConfig';
 import { MADECARD_COLUMNS, MADECARD_FORMKEYS, MADECARD_QUERY_FORMITEMS } from './_tableMadeCardConfig';
 import { PWDSafe } from './QuatoCardDetailModalTabs';
