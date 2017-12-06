@@ -1,7 +1,7 @@
 // import modal from './modules/modal';
 // import { steps } from './modules/steps';
 // import { test } from './modules/test';
-import { CrmCardInfoAll } from '../containers/Crm/CrmCardInfo/_reducer';
+// import { CrmCardInfoAll } from '../containers/Crm/CrmCardInfo/_reducer';
 // import crmCardInfoNew, { CrmCardInfoAllNew } from '../containers/CrmNew/CrmCardInfo/_reducer';
 // import progressBar from './modules/progressBar';
 
@@ -119,7 +119,7 @@ export default {
     // steps,
     // test,
     // crmCardInfo,
-    CrmCardInfoAll,
+    // CrmCardInfoAll,
     // crmCardInfoNew,
     // CrmCardInfoAllNew,
     // crmCardType,

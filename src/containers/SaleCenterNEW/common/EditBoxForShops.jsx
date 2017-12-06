@@ -339,22 +339,22 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditBoxForShops);
 
-// add by zhangyanan
-const mapStateToPropsForCrm = (state) => {
-    return {
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        promotionScopeInfo: state.CrmCardInfoAll.equalShopsData.queryInfo,
-        user: state.user.toJS() };
-};
+// // add by zhangyanan
+// const mapStateToPropsForCrm = (state) => {
+//     return {
+//         promotionBasicInfo: state.promotionBasicInfo_NEW,
+//         promotionScopeInfo: state.CrmCardInfoAll.equalShopsData.queryInfo,
+//         user: state.user.toJS() };
+// };
 
-const mapDispatchToPropsForCrm = (dispatch) => {
-    return {
-        fetchPromotionScopeInfo: (opts) => {
-            dispatch(fetchPromotionScopeInfo(opts));
-        },
-    };
-};
+// const mapDispatchToPropsForCrm = (dispatch) => {
+//     return {
+//         fetchPromotionScopeInfo: (opts) => {
+//             dispatch(fetchPromotionScopeInfo(opts));
+//         },
+//     };
+// };
 
 
-export const EditBoxForShopsForCrm = connect(mapStateToPropsForCrm, mapDispatchToPropsForCrm)(EditBoxForShops);
+// export const EditBoxForShopsForCrm = connect(mapStateToPropsForCrm, mapDispatchToPropsForCrm)(EditBoxForShops);
 
