@@ -1,12 +1,12 @@
 // import modal from './modules/modal';
 // import { steps } from './modules/steps';
 // import { test } from './modules/test';
-// import crmCardInfo, { CrmCardInfoAll } from '../containers/Crm/CrmCardInfo/_reducer';
+import { CrmCardInfoAll } from '../containers/Crm/CrmCardInfo/_reducer';
 // import crmCardInfoNew, { CrmCardInfoAllNew } from '../containers/CrmNew/CrmCardInfo/_reducer';
 // import progressBar from './modules/progressBar';
 
 // import { crmCardType } from './reducer/crm/crmCardType.reducer';
-// import { crmCardTypeNew } from './reducer/crmNew/crmCardType.reducer';
+import { crmCardTypeNew } from './reducer/crmNew/crmCardType.reducer';
 
 // import { fullCut } from './reducer/saleCenter/fullCut.reducer';
 import { fullCut_NEW } from './reducer/saleCenterNEW/fullCut.reducer';
@@ -40,7 +40,7 @@ import { specialPromotion_NEW } from './reducer/saleCenterNEW/specialPromotion.r
 // import { shopCredit_dkl } from '../containers/CrmNew/CrmShopCredit/_reducers';
 // import { giftInfo } from '../containers/Gift/_reducers';
 // import { giftInfoNew } from '../containers/GiftNew/_reducers';
-// import { crmOperation_dkl } from './reducer/crmNew/crmOperation.reducer';
+import { crmOperation_dkl } from './reducer/crmNew/crmOperation.reducer';
 
 // businForecast
 // import { businessForecast } from './reducer/businessForecast/businessForecast.reducer';
@@ -119,12 +119,12 @@ export default {
     // steps,
     // test,
     // crmCardInfo,
-    // CrmCardInfoAll,
+    CrmCardInfoAll,
     // crmCardInfoNew,
     // CrmCardInfoAllNew,
     // crmCardType,
-    // crmCardTypeNew,
-    // crmOperation_dkl,
+    crmCardTypeNew,
+    crmOperation_dkl,
     // progressBar,
     // fullCut,
     fullCut_NEW,
