@@ -29,7 +29,7 @@ import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; 
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 if (process.env.__CLIENT__ === true) {
-    // require('../../../client/components.less');
+    require('../../components/common/components.less');
 }
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
 class ActivityMain extends React.Component {
@@ -114,7 +114,7 @@ class ActivityMain extends React.Component {
     renderActivityTags() {
         return this.state.pages[this.props.index];
     }
-
+    // style={{ padding: '15px 15px 10px 15px' }}
     render() {
         const index = this.props.index;
         return (

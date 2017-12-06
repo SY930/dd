@@ -542,7 +542,8 @@ class PromotionDetailSettings extends React.Component {
         const allMatchItem = [];
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
-                if (category.foodCategoryMnemonicCode.indexOf(value) != -1 || category.foodCategoryName.indexOf(value) != -1) {
+                const allName = category.foodCategoryMnemonicCode.split(';').join('');
+                if (category.foodCategoryMnemonicCode.indexOf(value) !== -1 || category.foodCategoryName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                     allMatchItem.push(category);
                 }
             });
@@ -676,7 +677,8 @@ class PromotionDetailSettings extends React.Component {
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
                 category.foods.forEach((food) => {
-                    if (food.foodMnemonicCode.indexOf(value) != -1 || food.foodName.indexOf(value) != -1) {
+                    const allName = food.foodMnemonicCode.split(';').join('');
+                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                         allMatchItem.push(food);
                     }
                 })
@@ -812,7 +814,8 @@ class PromotionDetailSettings extends React.Component {
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
                 category.foods.forEach((food) => {
-                    if (food.foodMnemonicCode.indexOf(value) != -1 || food.foodName.indexOf(value) != -1) {
+                    const allName = food.foodMnemonicCode.split(';').join('');
+                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                         allMatchItem.push(food);
                     }
                 })

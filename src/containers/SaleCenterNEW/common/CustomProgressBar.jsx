@@ -11,7 +11,7 @@
 
 import React from 'react';
 // if (process.env.__CLIENT__ === true) {
-//     require('../../../../client/components.less')
+//     require('../../../components/common/components.less')
 // }
 import { connect } from 'react-redux';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';

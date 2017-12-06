@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { Modal, Row, Col } from 'antd';
 
 if (process.env.__CLIENT__ === true) {
-    // require('../../../client/components.less');
+    require('../../components/common/components.less');
 }
 
 import { ActivityLogo } from './ActivityLogo/ActivityLogo';

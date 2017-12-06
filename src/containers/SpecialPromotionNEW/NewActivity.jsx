@@ -27,7 +27,7 @@ import {
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 
 if (process.env.__CLIENT__ === true) {
-    // require('../../../client/components.less');
+    require('../../components/common/components.less');
 }
 
 

@@ -213,7 +213,8 @@ class EditBoxForDishes extends React.Component {
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
                 category.foods.forEach((food) => {
-                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1) {
+                    const allName = food.foodMnemonicCode.split(';').join('');
+                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                         allMatchItem.push(food);
                     }
                 })

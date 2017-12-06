@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col, Input, DatePicker, TimePicker, Form, Select, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-// import '../../../../client/ColorPicker.less';
+import '../../../components/common/ColorPicker.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterQueryFsmGroupSettleUnit,

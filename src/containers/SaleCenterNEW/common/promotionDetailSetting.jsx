@@ -578,7 +578,8 @@ class PromotionDetailSetting extends React.Component {
         const allMatchItem = [];
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
-                if (category.foodCategoryMnemonicCode.indexOf(value) != -1 || category.foodCategoryName.indexOf(value) != -1) {
+                const allName = category.foodCategoryMnemonicCode.split(';').join('');
+                if (category.foodCategoryMnemonicCode.indexOf(value) !== -1 || category.foodCategoryName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                     allMatchItem.push(category);
                 }
             });
@@ -720,12 +721,13 @@ class PromotionDetailSetting extends React.Component {
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
                 category.foods.forEach((food) => {
-                    if (food.foodMnemonicCode.indexOf(value) != -1 || food.foodName.indexOf(value) != -1) {
+                    const allName = food.foodMnemonicCode.split(';').join('');
+                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                         // allMatchItem.push(food);老版去所有菜品分类去匹配，新版如下，只匹配已选分类中的
                         if (selectedCatIds.length > 0 && selectedCatIds.includes(food.foodCategoryID)) {
                             allMatchItem.push(food);
                         }
-                        if (selectedCatIds.length == 0) {
+                        if (selectedCatIds.length === 0) {
                             allMatchItem.push(food);
                         }
                     }
@@ -858,7 +860,8 @@ class PromotionDetailSetting extends React.Component {
         foodCategoryCollection.forEach((city) => {
             city.foodCategoryName.forEach((category) => {
                 category.foods.forEach((food) => {
-                    if (food.foodMnemonicCode.indexOf(value) != -1 || food.foodName.indexOf(value) != -1) {
+                    const allName = food.foodMnemonicCode.split(';').join('');
+                    if (food.foodMnemonicCode.indexOf(value) !== -1 || food.foodName.indexOf(value) !== -1 || allName.indexOf(value) !== -1) {
                         allMatchItem.push(food);
                     }
                 })
