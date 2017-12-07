@@ -69,7 +69,7 @@ class GiftDetailModalTabs extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        sendorUsedKey: state.giftInfoNew.get('sendorUsedKey'),
+        sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
     }
 }
 

@@ -332,10 +332,10 @@ class GiftSendOrUsedCount extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        sendorUsedList: state.giftInfoNew.get('sendorUsedList'),
-        sendorUsedPage: state.giftInfoNew.get('sendorUsedPage'),
-        sendorUsedParams: state.giftInfoNew.get('sendorUsedParams'),
-        shopData: state.giftInfoNew.get('shopData'),
+        sendorUsedList: state.sale_giftInfoNew.get('sendorUsedList'),
+        sendorUsedPage: state.sale_giftInfoNew.get('sendorUsedPage'),
+        sendorUsedParams: state.sale_giftInfoNew.get('sendorUsedParams'),
+        shopData: state.sale_giftInfoNew.get('shopData'),
     }
 }
 function mapDispatchToProps(dispatch) {

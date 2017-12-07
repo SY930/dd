@@ -347,9 +347,9 @@ class GiftAddModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        params: state.giftInfoNew.get('listParams'),
+        params: state.sale_giftInfoNew.get('listParams'),
         accountInfo: state.user.get('accountInfo'),
-        myActivities: state.myActivities_NEW,
+        myActivities: state.sale_myActivities_NEW,
     }
 }
 

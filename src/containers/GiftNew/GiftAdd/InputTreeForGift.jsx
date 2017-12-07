@@ -349,7 +349,7 @@ class InputTreeForGift extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        giftData: state.giftInfoNew.get('giftSort'),
+        giftData: state.sale_giftInfoNew.get('giftSort'),
     }
 };
 

@@ -837,9 +837,9 @@ class ProfileSetting extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        cardInfo: state.crmOperation_dkl.get('cardInfo'),
-        shopStores: state.crmOperation_dkl.get('shopStores'),
-        uuid: state.crmOperation_dkl.get('uuid'),
+        cardInfo: state.sale_crmOperation_dkl.get('cardInfo'),
+        shopStores: state.sale_crmOperation_dkl.get('shopStores'),
+        uuid: state.sale_crmOperation_dkl.get('uuid'),
         $$accountInfo: state.user.get('accountInfo'),
     };
 }

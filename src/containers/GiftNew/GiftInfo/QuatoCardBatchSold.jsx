@@ -321,8 +321,8 @@ class QuotaCardBatchSold extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        $$shopData: state.giftInfoNew.get('shopsByBatchNo'),
-        $$batchNoInfo: state.giftInfoNew.get('batchNoInfo'),
+        $$shopData: state.sale_giftInfoNew.get('shopsByBatchNo'),
+        $$batchNoInfo: state.sale_giftInfoNew.get('batchNoInfo'),
         $$accountInfo: state.user.get('accountInfo'),
     }
 }

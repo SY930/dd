@@ -141,7 +141,7 @@ class SearchModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        searchVisible: state.crmOperation_dkl.get('searchVisible'),
+        searchVisible: state.sale_crmOperation_dkl.get('searchVisible'),
     };
 }
 

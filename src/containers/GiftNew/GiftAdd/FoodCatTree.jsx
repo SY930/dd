@@ -120,7 +120,7 @@ class FoodCatTree extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
     }
 }

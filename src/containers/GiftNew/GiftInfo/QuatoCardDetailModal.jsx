@@ -164,7 +164,7 @@ class InfoDisplay extends Component {
 }
 function mapStateToProps(state) {
     return {
-        quotaCardSumSource: state.giftInfoNew.get('quotaCardSumSource'),
+        quotaCardSumSource: state.sale_giftInfoNew.get('quotaCardSumSource'),
     }
 }
 

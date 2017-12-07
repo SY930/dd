@@ -289,7 +289,7 @@ class CardOperate extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        levelList: state.giftInfoNew.get('levelList'),
+        levelList: state.sale_giftInfoNew.get('levelList'),
     }
 }
 

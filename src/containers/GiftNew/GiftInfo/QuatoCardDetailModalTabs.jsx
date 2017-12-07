@@ -113,7 +113,7 @@ export class PWDSafe extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        tabKey: state.giftInfoNew.get('tabKey'),
+        tabKey: state.sale_giftInfoNew.get('tabKey'),
     }
 }
 

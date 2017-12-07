@@ -731,10 +731,10 @@ class GiftAddModalStep extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        params: state.giftInfoNew.get('listParams'),
-        giftData: state.giftInfoNew.get('giftSort'),
+        params: state.sale_giftInfoNew.get('listParams'),
+        giftData: state.sale_giftInfoNew.get('giftSort'),
         accountInfo: state.user.get('accountInfo'),
-        sharedGifts: state.giftInfoNew.get('sharedGifts'),
+        sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
     }
 }
 

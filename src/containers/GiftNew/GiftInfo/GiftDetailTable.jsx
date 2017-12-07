@@ -415,8 +415,8 @@ class GiftDetailTable extends Component {
 
 function mapStateToProps(state) {
     return {
-        dataSource: state.giftInfoNew.get('dataSource'),
-        loading: state.giftInfoNew.get('loading'),
+        dataSource: state.sale_giftInfoNew.get('dataSource'),
+        loading: state.sale_giftInfoNew.get('loading'),
     }
 }
 

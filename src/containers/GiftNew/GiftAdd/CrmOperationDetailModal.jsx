@@ -269,10 +269,10 @@ class CrmOperationDetailModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        cardInfo: state.crmOperation_dkl.get('cardInfo'),
-        detailVisible: state.crmOperation_dkl.get('detailVisible'),
-        shopStores: state.crmOperation_dkl.get('shopStores'),
-        detailLoading: state.crmOperation_dkl.get('detailLoading'),
+        cardInfo: state.sale_crmOperation_dkl.get('cardInfo'),
+        detailVisible: state.sale_crmOperation_dkl.get('detailVisible'),
+        shopStores: state.sale_crmOperation_dkl.get('shopStores'),
+        detailLoading: state.sale_crmOperation_dkl.get('detailLoading'),
     };
 }
 
