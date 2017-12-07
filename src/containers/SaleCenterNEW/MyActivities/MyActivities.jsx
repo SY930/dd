@@ -312,6 +312,12 @@ class MyActivities extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.user.activeTab !== nextProps.user.activeTab && nextProps.user.activeTab === '546') {
+            const tabArr = nextProps.user.tabList.map((tab) => tab.key);
+            if (tabArr.includes('546')) {
+                this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
         if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
             const _promoitonList = nextProps.myActivities.get('$promotionList').toJS();
             switch (_promoitonList.status) {
@@ -353,11 +359,12 @@ class MyActivities extends React.Component {
         }
     }
 
-    handleQuery() {
+    handleQuery(thisPageNo) {
+        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
             loading: true,
             queryDisabled: true,
-            pageNo: 1,
+            pageNo,
         }, () => {
             setTimeout(() => {
                 this.setState({ queryDisabled: false })
@@ -378,7 +385,7 @@ class MyActivities extends React.Component {
         const opt = {
             groupID: this.props.user.accountInfo.groupID,
             pageSize: this.state.pageSizes,
-            pageNo: 1,
+            pageNo,
         };
         if (promotionType != '' && promotionType != 'undefined') {
             opt.promotionType = promotionType;
