@@ -18,10 +18,13 @@
     },
     "author": "C. <chenhuangfang@hualala.com>",
     "dependencies": {
-        "@hualala/platform-base": "~1.7.0",
-        "@hualala/platform-components": "~1.2.3",
+        "@hualala/platform-base": "~1.8.0",
+        "@hualala/platform-components": "~1.4.10",
+        "@hualala/react-lazyload": "^2.3.0",
         "antd": "2.8.0",
+        "jquery": "^3.2.1",
         "prop-types": "^15.6.0",
+        "rc-color-picker": "^1.2.3",
         "react": "15.4.2",
         "react-dom": "15.4.2",
         "react-redux": "5.0.2"
