@@ -93,7 +93,7 @@ class ExcludeGroupTable extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        specialPromotion: state.specialPromotion_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
     };
 };

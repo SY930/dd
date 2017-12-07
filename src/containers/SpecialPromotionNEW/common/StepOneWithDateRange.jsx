@@ -604,10 +604,10 @@ class StepOneWithDateRange extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        saleCenter: state.saleCenter_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
-        specialPromotion: state.specialPromotion_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW,
     }
 };
 

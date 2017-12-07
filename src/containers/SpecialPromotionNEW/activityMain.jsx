@@ -138,7 +138,7 @@ class ActivityMain extends React.Component {
 }
 
 function mapStateToProps(state) {
-    return { saleCenter: state.saleCenter_NEW };
+    return { saleCenter: state.sale_saleCenter_NEW };
 }
 
 function mapDispatchToProps(dispatch) {

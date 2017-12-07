@@ -158,10 +158,10 @@ class ExcludeCardTable extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        specialPromotion: state.specialPromotion_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.mySpecialActivities_NEW.toJS(),
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
 
     };
 };

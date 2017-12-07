@@ -606,8 +606,8 @@ class AddGifts extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
-        specialPromotion: state.specialPromotion_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
     };
 };

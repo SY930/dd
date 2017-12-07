@@ -82,7 +82,7 @@ class NewPerfectReturnGift extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        specialPromotion: state.specialPromotion_NEW.toJS(),
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
     };
 };

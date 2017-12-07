@@ -472,7 +472,7 @@ class SpecialPromotionDetail extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        mySpecialActivities: state.mySpecialActivities_NEW.toJS(),
+        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         user: state.user.toJS(),
     };
 };
