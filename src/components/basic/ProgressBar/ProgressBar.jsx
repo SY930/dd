@@ -31,13 +31,13 @@ import styles from './ProgressBar.less';
 import { Steps, Button, message } from 'antd';
 import {
     saleCenterResetBasicInfoAC,
-} from '../../../redux/actions/saleCenter/promotionBasicInfo.action';
+} from '../../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
 import {
     saleCenterResetScopeInfoAC,
-} from '../../../redux/actions/saleCenter/promotionScopeInfo.action';
+} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import {
     saleCenterResetDetailInfoAC,
-} from '../../../redux/actions/saleCenter/promotionDetailInfo.action';
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Step = Steps.Step;
 
@@ -164,9 +164,9 @@ class ProgressBar extends React.Component {
 const mapStateToProps = (state) => {
     return {
         stepInfo: state.steps.toJS(),
-        fullCut: state.fullCut,
-        promotionDetailInfo: state.promotionDetailInfo,
-        promotionScopeInfo: state.promotionScopeInfo,
+        fullCut: state.sale_fullCut_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
     }
 };
 

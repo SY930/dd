@@ -26,7 +26,7 @@ import {
 
 const TreeNode = Tree.TreeNode;
 
-import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenter/promotionScopeInfo.action';
+import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 
 
 class ShopsSelector extends React.Component {
@@ -589,7 +589,7 @@ ShopsSelector.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        promotionScopeInfo: state.promotionScopeInfo,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user,
     }
 };

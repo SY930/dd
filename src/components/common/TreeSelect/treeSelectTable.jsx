@@ -18,7 +18,7 @@ import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
     saleCenterSetPromotionDetailAC,
-} from '../../../redux/actions/saleCenter/promotionDetailInfo.action';
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 /*
  搜索框组件
@@ -631,7 +631,7 @@ class TreeSelectTable extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
     }
 };
 
