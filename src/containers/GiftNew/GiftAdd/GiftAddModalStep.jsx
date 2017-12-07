@@ -491,7 +491,7 @@ class GiftAddModalStep extends React.Component {
                                 message: '抵扣菜品或分类不能为空',
                             },
                         ],
-                    })(<PromotionDetailSetting radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} />)
+                    })(<PromotionDetailSetting radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true}/>)
                 }
             </FormItem>
 
