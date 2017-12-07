@@ -272,6 +272,12 @@ class MySpecialActivities extends React.Component {
     // The filter condition should not be save to redux, just save it to state temporarily.
     // Modify it in the future
     componentWillReceiveProps(nextProps) {
+        if (this.props.user.activeTab !== nextProps.user.activeTab && nextProps.user.activeTab === '548') {
+            const tabArr = nextProps.user.tabList.map((tab) => tab.key);
+            if (tabArr.includes('548')) {
+                this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
         if (this.props.mySpecialActivities.get('$specialPromotionList') !== nextProps.mySpecialActivities.get('$specialPromotionList')) {
             const _promoitonList = nextProps.mySpecialActivities.get('$specialPromotionList').toJS();
             switch (_promoitonList.status) {
@@ -341,11 +347,12 @@ class MySpecialActivities extends React.Component {
         );
     }
     // 查询
-    handleQuery() {
+    handleQuery(thisPageNo) {
+        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
             loading: true,
             queryDisabled: true,
-            pageNo: 1,
+            pageNo,
         }, () => {
             setTimeout(() => {
                 this.setState({ queryDisabled: false })
@@ -381,7 +388,7 @@ class MySpecialActivities extends React.Component {
             data: {
                 groupID: this.props.user.accountInfo.groupID,
                 pageSize: this.state.pageSizes,
-                pageNo: 1,
+                pageNo,
                 ...opt,
             },
             fail: (msg) => { message.success(msg) },

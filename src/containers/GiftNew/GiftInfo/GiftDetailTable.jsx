@@ -63,6 +63,12 @@ class GiftDetailTable extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.user.activeTab !== nextProps.user.activeTab && nextProps.user.activeTab === '550') {
+            const tabArr = nextProps.user.tabList.map((tab) => tab.key);
+            if (tabArr.includes('550')) {
+                this.handleQuery(this.state.queryParams.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
         this.queryFrom && this.queryFrom.resetFields();
         const { dataSource } = nextProps;
         const data = dataSource.toJS();
@@ -124,18 +130,19 @@ class GiftDetailTable extends Component {
 
     }
 
-    handleQuery() {
+    handleQuery(thisPageNo) {
+        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
         this.queryFrom.validateFieldsAndScroll((err, Values) => {
             if (err) return;
             const params = this.formatFormData(Values);
             this.setState({
-                queryParams: { pageNo: 1, pageSize: 10, ...params },
+                queryParams: { pageNo, pageSize: queryParams.pageSize || 1, ...params },
             })
             FetchGiftList({
-                pageNo: 1,
-                pageSize: 10,
+                pageNo,
+                pageSize: queryParams.pageSize || 1,
                 ...params,
             }).then((data = []) => {
                 this.proGiftData(data);
@@ -417,6 +424,7 @@ function mapStateToProps(state) {
     return {
         dataSource: state.sale_giftInfoNew.get('dataSource'),
         loading: state.sale_giftInfoNew.get('loading'),
+        user: state.user.toJS(),
     }
 }
 

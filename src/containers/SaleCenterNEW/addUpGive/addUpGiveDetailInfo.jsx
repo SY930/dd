@@ -112,7 +112,7 @@ class AddUpGiveDetailInfo extends React.Component {
             } else { // 累计
                 _rule.minTimes = rule.minTimes;
                 _rule.maxTimes = rule.maxTimes;
-                if (!rule.maxTimes || rule.maxTimes <= rule.minTimes) {
+                if (!rule.maxTimes || rule.maxTimes < rule.minTimes) {
                     nextFlag = false;
                     this.setState({ maxTimesStatus: 'error' })
                 }
@@ -168,7 +168,7 @@ class AddUpGiveDetailInfo extends React.Component {
                     },
                 })
             }
-            if ((parseInt(this.state.rule.maxTimes || 0) <= parseInt(this.state.rule.minTimes || 0) && this.state.rule.maxTimes && parseInt(this.state.rule.minTimes || 0) < 99999) || parseInt(this.state.rule.maxTimes) >= 100000) {
+            if ((parseInt(this.state.rule.maxTimes || 0) < parseInt(this.state.rule.minTimes || 0) && this.state.rule.maxTimes && parseInt(this.state.rule.minTimes || 0) < 99999) || parseInt(this.state.rule.maxTimes) >= 100000) {
                 this.setState({ maxTimesStatus: 'error' })
             } else {
                 this.setState({ maxTimesStatus: 'success' })
@@ -179,7 +179,7 @@ class AddUpGiveDetailInfo extends React.Component {
         const { rule } = this.state;
         rule.maxTimes = e.target.value && !isNaN(e.target.value) ? parseInt(e.target.value) : '';
         this.setState({ rule }, () => {
-            if (parseInt(this.state.rule.maxTimes) > parseInt(this.state.rule.minTimes || 0) && parseInt(this.state.rule.maxTimes) < 100000) {
+            if (parseInt(this.state.rule.maxTimes) >= parseInt(this.state.rule.minTimes || 0) && parseInt(this.state.rule.maxTimes) < 100000) {
                 this.setState({ maxTimesStatus: 'success' })
             } else {
                 this.setState({ maxTimesStatus: 'error' })

@@ -178,6 +178,13 @@ class PromotionDetailSetting extends React.Component {
         return []
     }
     componentDidMount() {
+        var opts = {
+            _groupID: this.props.user.accountInfo.groupID
+        };
+        // autoFetch只有菜品优惠券才发请求
+        this.props.autoFetch && this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.autoFetch && this.props.fetchFoodMenuInfo({ ...opts });
+
         const promotionDetailInfo = this.props.promotionDetailInfo.get('$promotionDetail').toJS();
         const _scopeLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])) ?
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS() : [];
