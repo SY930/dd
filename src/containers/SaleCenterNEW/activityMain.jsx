@@ -224,7 +224,7 @@ class ActivityMain extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        saleCenter: state.saleCenter_NEW,
+        saleCenter: state.sale_saleCenter_NEW,
     };
 }
 

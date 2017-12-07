@@ -375,7 +375,7 @@ class PromotionDetail extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
     };
 };
 

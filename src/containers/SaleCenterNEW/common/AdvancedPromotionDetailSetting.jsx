@@ -342,9 +342,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
     }
 };

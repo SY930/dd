@@ -15,7 +15,7 @@
 import Immutable from 'immutable';
 import Moment from 'moment';
 
-import { ACTIVITY_CATEGORIES } from '../../actions/saleCenter/types';
+import { ACTIVITY_CATEGORIES } from '../../actions/saleCenterNEW/types';
 import {
     SALE_CENTER_INITIALIZATION_OF_MY_ACTIVITIES,
     SALE_CENTER_INITIALIZATION_OF_MY_ACTIVITIES_SUCCEED,

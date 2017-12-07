@@ -167,7 +167,7 @@ class CustomProgressBar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        myActivities: state.myActivities_NEW,
+        myActivities: state.sale_myActivities_NEW,
     }
 };
 

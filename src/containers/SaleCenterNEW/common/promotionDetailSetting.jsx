@@ -1010,9 +1010,9 @@ PromotionDetailSetting.defaultProps = {};
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 };
 

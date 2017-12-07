@@ -440,9 +440,9 @@ class FullGiveDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         stepInfo: state.steps.toJS(),
-        fullCut: state.fullCut_NEW,
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        fullCut: state.sale_fullCut_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
     }
 }

@@ -635,7 +635,7 @@ class ReturnGift extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
     };
 };

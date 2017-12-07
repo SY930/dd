@@ -321,8 +321,8 @@ class EditBoxForShops extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         user: state.user.toJS() };
 };
 
@@ -342,7 +342,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(EditBoxForShops);
 // // add by zhangyanan
 // const mapStateToPropsForCrm = (state) => {
 //     return {
-//         promotionBasicInfo: state.promotionBasicInfo_NEW,
+//         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
 //         promotionScopeInfo: state.CrmCardInfoAll.equalShopsData.queryInfo,
 //         user: state.user.toJS() };
 // };

@@ -1122,9 +1122,9 @@ class PromotionBasicInfo extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        fullCut: state.fullCut_NEW,
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        fullCut: state.sale_fullCut_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
     }
 };

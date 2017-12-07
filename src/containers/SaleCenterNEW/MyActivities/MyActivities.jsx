@@ -59,6 +59,15 @@ import Authority from '../../../components/common/Authority';
 import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
 
+import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
+import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
+import { promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer';
+import { fullCut_NEW as sale_fullCut_NEW } from '../../../redux/reducer/saleCenterNEW/fullCut.reducer';
+import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reducer/saleCenterNEW/myActivities.reducer';
+import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
+import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
+import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
+
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -66,9 +75,9 @@ const moment = require('moment');
 
 const mapStateToProps = (state) => {
     return {
-        myActivities: state.myActivities_NEW,
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
+        myActivities: state.sale_myActivities_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
     };
 };
@@ -134,7 +143,16 @@ const mapDispatchToProps = (dispatch) => {
         },
     };
 };
-@registerPage([SALE_CENTER_PAGE], {})
+@registerPage([SALE_CENTER_PAGE], {
+    sale_promotionBasicInfo_NEW,
+    sale_promotionDetailInfo_NEW,
+    sale_promotionScopeInfo_NEW,
+    sale_fullCut_NEW,
+    sale_myActivities_NEW,
+    sale_saleCenter_NEW,
+    sale_giftInfoNew,
+    sale_mySpecialActivities_NEW,
+})
 @connect(mapStateToProps, mapDispatchToProps)
 class MyActivities extends React.Component {
     constructor(props) {

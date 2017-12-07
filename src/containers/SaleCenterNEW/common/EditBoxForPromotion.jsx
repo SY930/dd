@@ -476,10 +476,10 @@ class EditBoxForPromotion extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
-        myActivities: state.myActivities_NEW,
-        giftInfoNew: state.giftInfoNew, // 所有哗啦啦券列表--共享用
-        mySpecialActivities: state.mySpecialActivities_NEW, // 所有会员等级列表--共享用
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        myActivities: state.sale_myActivities_NEW,
+        giftInfoNew: state.sale_giftInfoNew, // 所有哗啦啦券列表--共享用
+        mySpecialActivities: state.sale_mySpecialActivities_NEW, // 所有会员等级列表--共享用
         user: state.user.toJS() };
 };
 

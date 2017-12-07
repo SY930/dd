@@ -25,10 +25,10 @@ class NewAddUpFreeActivity extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        fullCut: state.fullCut_NEW,
-        promotionBasicInfo: state.promotionBasicInfo_NEW,
-        promotionScopeInfo: state.promotionScopeInfo_NEW,
-        promotionDetailInfo: state.promotionDetailInfo_NEW,
+        fullCut: state.sale_fullCut_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user,
     };
 };
