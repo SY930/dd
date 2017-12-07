@@ -404,7 +404,7 @@ class BuyAFreeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.steps.toJS(),
+        stepInfo: state.sale_steps.toJS(),
         fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,

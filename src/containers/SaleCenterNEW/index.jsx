@@ -21,6 +21,7 @@ import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/s
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
+import { steps as sale_steps } from '../../redux/modules/steps';
 
 @registerPage([NEW_SALE_CENTER], {
     sale_promotionBasicInfo_NEW,
@@ -31,6 +32,7 @@ import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../r
     sale_saleCenter_NEW,
     sale_giftInfoNew,
     sale_mySpecialActivities_NEW,
+    sale_steps,
 })
 class SaleCenterNEW extends React.Component {
     constructor(props) {

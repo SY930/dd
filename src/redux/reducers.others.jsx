@@ -1,5 +1,5 @@
 // import modal from './modules/modal';
-// import { steps } from './modules/steps';
+import { steps } from './modules/steps';
 // import { test } from './modules/test';
 // import { CrmCardInfoAll } from '../containers/Crm/CrmCardInfo/_reducer';
 // import crmCardInfoNew, { CrmCardInfoAllNew } from '../containers/CrmNew/CrmCardInfo/_reducer';
@@ -116,7 +116,7 @@ export default {
     // dutyScene,
     // businessIdx,
     // modal,
-    // steps,
+    steps,
     // test,
     // crmCardInfo,
     // CrmCardInfoAll,

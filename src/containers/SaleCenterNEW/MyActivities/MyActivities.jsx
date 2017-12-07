@@ -67,6 +67,7 @@ import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reduce
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
+import { steps as sale_steps } from '../../../redux/modules/steps';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -152,6 +153,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_saleCenter_NEW,
     sale_giftInfoNew,
     sale_mySpecialActivities_NEW,
+    sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MyActivities extends React.Component {

@@ -7,12 +7,14 @@ import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reduce
 import { giftInfoNew as sale_giftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import { crmOperation_dkl as sale_crmOperation_dkl } from '../../../redux/reducer/saleCenterNEW/crmOperation.reducer';
+import { steps as sale_steps } from '../../../redux/modules/steps';
 
 @registerPage([GIFT_PAGE], {
     sale_myActivities_NEW,
     sale_giftInfoNew,
     sale_promotionDetailInfo_NEW,
     sale_crmOperation_dkl,
+    sale_steps,
 })
 export default class GiftInfo extends React.Component {
     constructor(props) {
