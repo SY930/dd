@@ -38,8 +38,8 @@ import { specialPromotion_NEW } from './reducer/saleCenterNEW/specialPromotion.r
 // import { crmRechargePackageDetail } from './reducer/crm/crmRechargePackage.reducer';
 // import { shopCredit } from '../containers/Crm/CrmShopCredit/_reducers';
 // import { shopCredit_dkl } from '../containers/CrmNew/CrmShopCredit/_reducers';
-// import { giftInfo } from '../containers/Gift/_reducers';
-// import { giftInfoNew } from '../containers/GiftNew/_reducers';
+import { giftInfo } from '../containers/Gift/_reducers';
+import { giftInfoNew } from '../containers/GiftNew/_reducers';
 import { crmOperation_dkl } from './reducer/saleCenterNEW/crmOperation.reducer';
 
 // businForecast
