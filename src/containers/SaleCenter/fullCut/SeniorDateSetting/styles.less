@@ -1,0 +1,168 @@
+/**
+* @Author: Xiao Feng Wang  <xf>
+* @Date:   2017-02-09T13:20:03+08:00
+* @Email:  wangxiaofeng@hualala.com
+* @Filename: styles.less
+* @Last modified by:   xf
+* @Last modified time: 2017-02-09T14:14:29+08:00
+* @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
+*/
+
+
+@import '~@hualala/platform-base/lib/styles/variables.less';
+.SeniorDateMain{
+  width:100%;
+  padding:0px 81px 10px 8px;
+  .SeniorDelDate{
+    margin-top:15px;
+    .timeSettingTitle{
+        float:left;
+        width:100px;
+        text-align: right;
+        padding-right: 10px;
+        color: #787878;
+        padding-top:5px;
+    }
+    .timePcDate{
+        margin-left:100px;
+        :global{
+            .ant-tag{
+                margin-top:10px;
+            }
+        }
+    }
+
+  }
+  :global{
+    .EditableInput-Css .ant-form-item-label{
+      left:0px;
+    }
+    /*多选框*/
+    .ant-checkbox-inner{
+      border:1px solid @btn1-def-color;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner{
+      background: @btn2-def-color!important;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner:after{
+      border-color: @white!important;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner, .ant-checkbox-indeterminate .ant-checkbox-inner{
+      background: @btn2-def-color!important;
+      border-color: @btn2-def-color!important;
+    }
+    .ant-form-item-label{
+      left:-7px!important;
+      label{
+        color:@grey;
+      }
+    }
+  }
+  .SeniorDateWeek{
+     width:100%;
+     padding-left: 100px;
+     margin-top: 10px;
+
+     :global{
+       .ant-checkbox-inner{
+         width: 58px;
+         height: 33px;
+       }
+       .ant-checkbox-group> label:last-child{
+         margin-right: 0px!important;
+         padding-right: 0px!important;
+       }
+       .ant-checkbox-focused .ant-checkbox-inner, .ant-checkbox-wrapper:hover .ant-checkbox .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner{
+         width:58px;
+         height: 33px;
+       }
+       .ant-checkbox-wrapper{
+         position: relative;
+         margin-right:12px!important;
+       }
+       .ant-checkbox-checked .ant-checkbox-inner{
+         background:@btn2-after-color;
+         border-color: @btn2-after-color;
+       }
+       .ant-checkbox-checked-1+span{
+         color: @white!important;
+       }
+       .ant-checkbox+span, .ant-checkbox-wrapper+span{
+         position:absolute;
+         left:13px;
+         top: 7px;
+       }
+       .ant-checkbox-checked{
+         .ant-checkbox+span, .ant-checkbox-wrapper+span{
+           color:@white;
+         }
+       }
+       .ant-checkbox-inner:after{
+         margin-left:40px;
+         margin-top:16px;
+       }
+       .ant-checkbox-focused .ant-checkbox-inner, .ant-checkbox-wrapper:hover .ant-checkbox .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner{
+         border-color: @btn2-after-color;
+       }
+     }
+  }
+
+
+  .SeniorDateMonth{
+     width:100%;
+     padding-left: 100px;
+     margin-top: 10px;
+
+     :global{
+       .ant-checkbox-inner{
+         width: 35px;
+         height: 25px;
+       }
+       .ant-checkbox-group> label:last-child{
+         margin-right: 0px!important;
+         padding-right: 0px!important;
+       }
+       .ant-checkbox-focused .ant-checkbox-inner, .ant-checkbox-wrapper:hover .ant-checkbox .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner{
+         width:35px;
+         height: 25px;
+       }
+       .ant-checkbox-group> label{
+         width: 35px;  //这里的宽度需要等于最外围的宽度
+       }
+       .ant-checkbox-wrapper{
+         position: relative;
+         margin-right:12px!important;
+         margin-bottom: 9px!important;
+       }
+       .ant-checkbox-checked .ant-checkbox-inner{
+         background:@btn2-after-color;
+         border-color: @btn2-after-color;
+       }
+       .ant-checkbox-checked-1+span{
+         color: @white!important;
+       }
+       .ant-checkbox+span, .ant-checkbox-wrapper+span{
+         position:absolute;
+         left:0;
+         top:2px;
+         width: 100%;
+         text-align: center;
+
+       }
+       .ant-checkbox-checked{
+         .ant-checkbox+span, .ant-checkbox-wrapper+span{
+           color:@white;
+         }
+       }
+       .ant-checkbox-inner:after{
+         margin-left:20px;
+         margin-top:12px;
+         width:5px;
+       }
+       .ant-checkbox-focused .ant-checkbox-inner, .ant-checkbox-wrapper:hover .ant-checkbox .ant-checkbox-inner, .ant-checkbox:hover .ant-checkbox-inner{
+         border-color: @btn2-after-color;
+       }
+     }
+  }
+
+}
