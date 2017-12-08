@@ -1,0 +1,95 @@
+
+.gift-add-modal{
+    :global{
+        .food-name-list{
+            .ant-form-item-label{
+                padding: 0;
+            }
+        }
+        .ant-steps {
+            display: flex;
+            width: 70%;
+            .ant-steps-item{
+                border-radius: 5px;
+                flex:1;
+                margin-right: 15px!important;
+                .ant-steps-tail, .ant-steps-head{
+                    display: none;
+                }
+                .ant-steps-main{
+                    width: 100%;
+                    margin-top: 0;
+                    .ant-steps-title{
+                        color: #fff;
+                        font-weight: normal;
+                        display: block;
+                        height: 40px;
+                        line-height: 40px;
+                        padding-left: 15px;
+                        margin-bottom: 0;
+                        background-color: initial;
+                    }
+                }
+            }
+            .ant-steps-status-process{
+                background-color: #1ab394;
+            }
+            .ant-steps-status-wait{
+                background-color: #eee;
+                .ant-steps-title{
+                    color:#878787!important;
+                }
+            }
+            .ant-steps-status-finish{
+                background-color: #97e0d1;
+            }
+        }
+        .ant-upload.ant-upload-drag p.ant-upload-drag-icon .anticon{
+            font-size: 50px;
+            margin-top: 20px;
+            color: #ddd;
+        }
+        .ant-select-dropdown{
+            top: 32px !important;
+            left: 0 !important;
+            .ant-select-search__field{
+                padding: 0 7px;
+                line-height: 28px;
+            }
+            ul.ant-select-tree{
+                padding:0 8px;
+                li{
+                    margin:0;
+                }
+            }
+        }
+    }
+}
+
+.avatar-uploader,
+.avatar-uploader-trigger,
+.avatar {
+  width: 150px;
+  height: 150px;
+}
+.avatar-uploader {
+  display: block;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.avatar-uploader-trigger {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 28px;
+  color: #999;
+}
+
+
+.customProgressBar{
+    :global{
+        .stepsContent{
+			max-height: 370px!important;
+		}
+    }
+}
