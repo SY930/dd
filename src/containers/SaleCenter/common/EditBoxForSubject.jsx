@@ -260,7 +260,7 @@ class EditBoxForSubject extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo,
+        promotionDetailInfo: state.sale_old_promotionDetailInfo,
         user: state.user.toJS()};
 };
 

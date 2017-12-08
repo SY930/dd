@@ -85,7 +85,7 @@ class NewShackGift extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        specialPromotion:state.specialPromotion.toJS(),
+        specialPromotion:state.sale_old_specialPromotion.toJS(),
         user: state.user.toJS()
     };
 };

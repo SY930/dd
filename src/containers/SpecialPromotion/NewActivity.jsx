@@ -178,9 +178,9 @@ class NewActivity extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        saleCenter: state.saleCenter,
+        saleCenter: state.sale_old_saleCenter,
         user: state.user.toJS(),
-        specialPromotion :state.specialPromotion.toJS()
+        specialPromotion :state.sale_old_specialPromotion.toJS()
     };
 }
 

@@ -216,7 +216,7 @@ class AdvancedTimeSetting extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    fullCut: state.fullCut,
+    fullCut: state.sale_old_fullCut,
   }
 };
 

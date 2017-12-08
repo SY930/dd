@@ -87,9 +87,9 @@ import { steps } from '../../../redux/modules/steps';
 
 const mapStateToProps = (state)=>{
     return {
-        myActivities: state.myActivities,
-        promotionBasicInfo: state.promotionBasicInfo,
-        promotionScopeInfo: state.promotionScopeInfo,
+        myActivities: state.sale_old_myActivities,
+        promotionBasicInfo: state.sale_old_promotionBasicInfo,
+        promotionScopeInfo: state.sale_old_promotionScopeInfo,
         user:state.user.toJS()
     };
 };
@@ -148,15 +148,14 @@ const mapDispatchToProps = (dispatch)=>{
 };
 
 @registerPage([OLD_SALE_CENTER_PAGE], {
-    promotionBasicInfo,
-    promotionDetailInfo,
-    promotionScopeInfo,
-    fullCut,
-    myActivities,
-    saleCenter,
-    // giftInfoNew,
-    mySpecialActivities,
-    steps,
+    sale_old_promotionBasicInfo: promotionBasicInfo,
+    sale_old_promotionDetailInfo: promotionDetailInfo,
+    sale_old_promotionScopeInfo: promotionScopeInfo,
+    sale_old_fullCut: fullCut,
+    sale_old_myActivities: myActivities,
+    sale_old_saleCenter: saleCenter,
+    sale_old_mySpecialActivities: mySpecialActivities,
+    sale_old_steps: steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MyActivities extends React.Component {

@@ -156,7 +156,7 @@ class ActivitySidebar extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
-    return {fullCut: state.fullCut, promotionBasicInfo: state.promotionBasicInfo, promotionScopeInfo: state.promotionScopeInfo}
+    return {fullCut: state.sale_old_fullCut, promotionBasicInfo: state.sale_old_promotionBasicInfo, promotionScopeInfo: state.sale_old_promotionScopeInfo}
 };
 
 const mapDispatchToProps = (dispatch) => {

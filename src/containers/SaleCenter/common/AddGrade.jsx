@@ -283,7 +283,7 @@ class AddGrade extends React.Component {
 
 const mapStateToProps = (state)=> {
     return {
-        promotionDetailInfo: state.promotionDetailInfo
+        promotionDetailInfo: state.sale_old_promotionDetailInfo
     }
 };
 

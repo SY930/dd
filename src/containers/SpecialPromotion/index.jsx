@@ -26,17 +26,15 @@ import { specialPromotion } from '../../redux/reducer/saleCenter/specialPromotio
 import { steps } from '../../redux/modules/steps';
 
 @registerPage([OLD_NEW_SPECIAL], {
-    promotionBasicInfo,
-    promotionDetailInfo,
-    promotionScopeInfo,
-    fullCut,
-    myActivities,
-    saleCenter,
-    // sale_giftInfoNew,
-    mySpecialActivities,
-    specialPromotion,
-    // sale_crmCardTypeNew,
-    steps,
+    sale_old_promotionBasicInfo: promotionBasicInfo,
+    sale_old_promotionDetailInfo: promotionDetailInfo,
+    sale_old_promotionScopeInfo: promotionScopeInfo,
+    sale_old_fullCut: fullCut,
+    sale_old_myActivities: myActivities,
+    sale_old_saleCenter: saleCenter,
+    sale_old_mySpecialActivities: mySpecialActivities,
+    sale_old_specialPromotion: specialPromotion,
+    sale_old_steps: steps,
 })
 
 class SaleCenter extends React.Component {

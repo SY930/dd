@@ -24,10 +24,10 @@ class NewCompositeActivity extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        fullCut: state.fullCut,
-        promotionBasicInfo:state.promotionBasicInfo,
-        promotionScopeInfo:state.promotionScopeInfo,
-        promotionDetailInfo:state.promotionDetailInfo,
+        fullCut: state.sale_old_fullCut,
+        promotionBasicInfo:state.sale_old_promotionBasicInfo,
+        promotionScopeInfo:state.sale_old_promotionScopeInfo,
+        promotionDetailInfo:state.sale_old_promotionDetailInfo,
         user: state.user
     };
 };

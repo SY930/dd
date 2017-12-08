@@ -428,10 +428,10 @@ class RandomCutDetailInfo extends React.Component{
 
 function mapStateToProps(state) {
     return {
-        stepInfo : state.steps.toJS(),
-        fullCut: state.fullCut,
-        promotionDetailInfo: state.promotionDetailInfo,
-        promotionScopeInfo: state.promotionScopeInfo
+        stepInfo : state.sale_old_steps.toJS(),
+        fullCut: state.sale_old_fullCut,
+        promotionDetailInfo: state.sale_old_promotionDetailInfo,
+        promotionScopeInfo: state.sale_old_promotionScopeInfo
     }
 }
 

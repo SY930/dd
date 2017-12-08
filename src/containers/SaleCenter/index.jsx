@@ -25,15 +25,14 @@ import { steps } from '../../redux/modules/steps';
 
 
 @registerPage([OLD_NEW_SALE_CENTER], {
-    promotionBasicInfo,
-    promotionDetailInfo,
-    promotionScopeInfo,
-    fullCut,
-    myActivities,
-    saleCenter,
-    // giftInfoNew,
-    mySpecialActivities,
-    steps,
+    sale_old_promotionBasicInfo: promotionBasicInfo,
+    sale_old_promotionDetailInfo: promotionDetailInfo,
+    sale_old_promotionScopeInfo: promotionScopeInfo,
+    sale_old_fullCut: fullCut,
+    sale_old_myActivities: myActivities,
+    sale_old_saleCenter: saleCenter,
+    sale_old_mySpecialActivities: mySpecialActivities,
+    sale_old_steps: steps,
 })
 class SaleCenter extends React.Component {
     constructor(props) {

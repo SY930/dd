@@ -146,7 +146,7 @@ class NewActivity extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        saleCenter: state.saleCenter
+        saleCenter: state.sale_old_saleCenter
     };
 }
 

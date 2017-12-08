@@ -346,7 +346,7 @@ class PromotionScopeInfo extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
-    return {promotionScopeInfo: state.promotionScopeInfo, user: state.user.toJS()};
+    return {promotionScopeInfo: state.sale_old_promotionScopeInfo, user: state.user.toJS()};
 };
 
 const mapDispatchToProps = (dispatch) => {

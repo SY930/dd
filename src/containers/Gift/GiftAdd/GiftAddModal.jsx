@@ -304,7 +304,7 @@ export class GiftAddModal extends React.Component {
 function mapStateToProps(state) {
     return {
         user: state.user.toJS(),
-        params: state.giftInfo.get('listParams'),
+        params: state.sale_old_giftInfo.get('listParams'),
     }
 }
 

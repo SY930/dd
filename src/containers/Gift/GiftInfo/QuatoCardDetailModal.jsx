@@ -161,7 +161,7 @@ class InfoDisplay extends Component{
 function mapStateToProps(state) {
     return {
         user: state.user.toJS(),
-        dataSource: state.giftInfo.get('quotaCardSumSource'),
+        dataSource: state.sale_old_giftInfo.get('quotaCardSumSource'),
     }
 }
 function mapDispatchToProps(dispatch) {

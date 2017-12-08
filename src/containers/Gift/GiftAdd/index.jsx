@@ -11,11 +11,11 @@ import { crmOperation } from '../../../redux/reducer/saleCenter/crmOperation.red
 import { steps } from '../../../redux/modules/steps';
 
 @registerPage([OLD_NEW_GIFT], {
-    myActivities,
-    giftInfo,
-    promotionDetailInfo,
-    crmOperation,
-    steps,
+    sale_old_myActivities: myActivities,
+    sale_old_giftInfo: giftInfo,
+    sale_old_promotionDetailInfo: promotionDetailInfo,
+    sale_old_crmOperation: crmOperation,
+    sale_old_steps :steps,
 })
 export default class GiftAdd extends React.Component{
     constructor(props){

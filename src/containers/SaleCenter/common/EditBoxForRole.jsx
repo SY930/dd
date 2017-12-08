@@ -275,8 +275,8 @@ class EditBoxForSubject extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.promotionDetailInfo,
-        promotionScopeInfo: state.promotionScopeInfo,
+        promotionDetailInfo: state.sale_old_promotionDetailInfo,
+        promotionScopeInfo: state.sale_old_promotionScopeInfo,
         user: state.user.toJS()};
 };
 

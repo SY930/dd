@@ -388,10 +388,10 @@ class StepTwo extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        specialPromotion: state.specialPromotion,
+        specialPromotion: state.sale_old_specialPromotion,
         user: state.user.toJS(),
-        mySpecialActivities: state.mySpecialActivities.toJS(),
-        promotionScopeInfo: state.promotionScopeInfo
+        mySpecialActivities: state.sale_old_mySpecialActivities.toJS(),
+        promotionScopeInfo: state.sale_old_promotionScopeInfo
 
     };
 };

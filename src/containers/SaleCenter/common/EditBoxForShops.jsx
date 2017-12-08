@@ -269,7 +269,7 @@ class EditBoxForShops extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionScopeInfo: state.promotionScopeInfo,
+        promotionScopeInfo: state.sale_old_promotionScopeInfo,
         user: state.user.toJS()};
 };
 
@@ -284,20 +284,20 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(EditBoxForShops);
 
 //add by zhangyanan
-const mapStateToPropsForCrm = (state) => {
-    return {
-        promotionScopeInfo: state.CrmCardInfoAll.equalShopsData.queryInfo,
-        user: state.user.toJS()};
-};
+// const mapStateToPropsForCrm = (state) => {
+//     return {
+//         promotionScopeInfo: state.CrmCardInfoAll.equalShopsData.queryInfo,
+//         user: state.user.toJS()};
+// };
 
-const mapDispatchToPropsForCrm = (dispatch) => {
-    return {
-        fetchPromotionScopeInfo: (opts) => {
-            dispatch(fetchPromotionScopeInfo(opts));
-        }
-    };
-};
+// const mapDispatchToPropsForCrm = (dispatch) => {
+//     return {
+//         fetchPromotionScopeInfo: (opts) => {
+//             dispatch(fetchPromotionScopeInfo(opts));
+//         }
+//     };
+// };
 
 
-export const EditBoxForShopsForCrm=connect(mapStateToPropsForCrm, mapDispatchToPropsForCrm)(EditBoxForShops);
+// export const EditBoxForShopsForCrm=connect(mapStateToPropsForCrm, mapDispatchToPropsForCrm)(EditBoxForShops);
 

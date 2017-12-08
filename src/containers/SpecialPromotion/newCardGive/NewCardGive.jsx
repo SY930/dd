@@ -70,11 +70,11 @@ class NewCardGive extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        fullCut: state.fullCut,
-        promotionBasicInfo:state.promotionBasicInfo,
-        promotionScopeInfo:state.promotionScopeInfo,
-        promotionDetailInfo:state.promotionDetailInfo,
-        specialPromotion:state.specialPromotion.toJS(),
+        fullCut: state.sale_old_fullCut,
+        promotionBasicInfo:state.sale_old_promotionBasicInfo,
+        promotionScopeInfo:state.sale_old_promotionScopeInfo,
+        promotionDetailInfo:state.sale_old_promotionDetailInfo,
+        specialPromotion:state.sale_old_specialPromotion.toJS(),
         user: state.user.toJS()
     };
 };

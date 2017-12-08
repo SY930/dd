@@ -379,8 +379,8 @@ class GiftDetailTable extends Component {
 function mapStateToProps(state) {
     return {
         user: state.user.toJS(),
-        dataSource: state.giftInfo.get('dataSource'),
-        loading: state.giftInfo.get('loading'),
+        dataSource: state.sale_old_giftInfo.get('dataSource'),
+        loading: state.sale_old_giftInfo.get('loading'),
     }
 }
 

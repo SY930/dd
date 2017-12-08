@@ -541,10 +541,10 @@ class SendCard extends React.Component {
 }
 function mapStateToProps(state) {
     return {
-        dataSource: state.giftInfo.get('quotaCardSumSource'),
-        batchNO: state.giftInfo.get('batchNO'),
-        shopData: state.giftInfo.get('shopData'),
-        quotaList: state.giftInfo.get('quotaList'),
+        dataSource: state.sale_old_giftInfo.get('quotaCardSumSource'),
+        batchNO: state.sale_old_giftInfo.get('batchNO'),
+        shopData: state.sale_old_giftInfo.get('shopData'),
+        quotaList: state.sale_old_giftInfo.get('quotaList'),
     }
 }
 function mapDispatchToProps(dispatch) {
