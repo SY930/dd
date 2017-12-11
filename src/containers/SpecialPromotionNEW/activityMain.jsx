@@ -25,6 +25,7 @@ import NewUpGradeReturnGift from './upGradeReturnGift/NewUpGradeReturnGift'; // 
 import NewAddUpReturnGift from './addUpReturnGift/NewAddUpReturnGift'; // 累计消费送礼
 import NewWakeUpReturnGift from './wakeUpReturnGift/NewWakeUpReturnGift'; // 唤醒送礼
 import NewOnLineReturnGift from './onLineReturnGift/NewOnLineReturnGift'; // 线上送礼
+import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
@@ -87,6 +88,7 @@ class ActivityMain extends React.Component {
         const _vipStash = [
             NewWakeUpReturnGift, // 唤醒送礼
             NewOnLineReturnGift, // 线上送礼
+            NewColorsEggCat, // 彩蛋猫
         ];
         let pagesArr;
         if (HUALALA.ENVIRONMENT !== 'production-release') {

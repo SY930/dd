@@ -40,8 +40,8 @@ class EditBoxForShops extends React.Component {
             _cityAreasShops.forEach((city) => {
                 city.children.forEach((area) => {
                     area.children.forEach((shop) => {
-                        _data.shopsInfo.forEach((id) => {
-                            if (shop.itemID === id) {
+                        (_data.shopsInfo || []).forEach((id) => {
+                            if (shop.itemID == id) {
                                 _selections.add(shop)
                             }
                         })
@@ -68,8 +68,8 @@ class EditBoxForShops extends React.Component {
                     _cityAreasShops.forEach((city) => {
                         city.children.forEach((area) => {
                             area.children.forEach((shop) => {
-                                _data.shopsInfo.forEach((id) => {
-                                    if (shop.itemID === id) {
+                                (_data.shopsInfo || []).forEach((id) => {
+                                    if (shop.itemID == id) {
                                         _selections.add(shop);
                                     }
                                 })

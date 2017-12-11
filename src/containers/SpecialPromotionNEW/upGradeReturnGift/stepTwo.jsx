@@ -18,13 +18,7 @@ import {
     Radio,
     TreeSelect,
 } from 'antd';
-
-const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
-
+import _ from 'lodash';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
@@ -32,7 +26,14 @@ import CardLevel from '../common/CardLevel';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import _ from 'lodash';
+import EditBoxForShops from '../../SaleCenterNEW/common/EditBoxForShops';
+
+const FormItem = Form.Item;
+const Option = Select.Option;
+// const RadioGroup = Radio.Group;
+// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
+// import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
+
 
 const moment = require('moment');
 
@@ -57,12 +58,16 @@ class StepTwo extends React.Component {
             },
             _opts: {},
             settleUnitID: '',
+            selections: [],
+            selections_shopsInfo: { shopsInfo: [] },
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleNumberChange = this.handleNumberChange.bind(this);
         this.handleOptionChange = this.handleOptionChange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
+        this.renderShopsOptions = this.renderShopsOptions.bind(this);
+        this.editBoxForShopsChange = this.editBoxForShopsChange.bind(this);
     }
 
     componentDidMount() {
@@ -95,11 +100,19 @@ class StepTwo extends React.Component {
                     }
                 }
             }
-            this.setState({
+            const opts = {
                 message: specialPromotion.smsTemplate,
                 // cardLevelIDList: specialPromotion.cardLevelIDList,
                 ...addUpOpts,
-            })
+            }
+            if (this.props.type == '70') {
+                opts.selections = specialPromotion.shopIDList.filter(shopID => shopID != 0);
+                opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList.filter(shopID => shopID != 0) };
+            }
+            this.setState(opts)
+        }
+        if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) && this.props.type == '70') {
+            this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
     }
 
@@ -109,7 +122,7 @@ class StepTwo extends React.Component {
         const cardLevelIDListChange = specialPromotion.eventStartDate != _specialPromotion.eventStartDate || specialPromotion.eventEndDate != _specialPromotion.eventEndDate;
         // 修改时,初始化state
         if (cardLevelIDListChange &&
-             nextProps.specialPromotion.get('$eventInfo').size > 30) {
+            nextProps.specialPromotion.get('$eventInfo').size > 30) {
             let addUpOpts = {};
             if (this.props.type == '62') {
                 if (specialPromotion.consumeType == '0') {
@@ -187,11 +200,17 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
-        const opts = {
-            cardLevelIDList: this.state.cardLevelIDList || [],
-            cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
-            smsTemplate: this.state.message,
-        };
+        const opts = this.props.type == '70' ?
+            {
+                smsTemplate: this.state.message,
+                shopIDList: this.state.selections.map(shop => shop.shopID),
+                shopRange: this.state.selections.length > 0 ? 1 : 2,
+            } :
+            {
+                cardLevelIDList: this.state.cardLevelIDList || [],
+                cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
+                smsTemplate: this.state.message,
+            };
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
@@ -212,6 +231,28 @@ class StepTwo extends React.Component {
     onCardLevelChange(obj) {
         this.setState(obj)
     }
+    editBoxForShopsChange(val) {
+        this.setState({
+            selections: val,
+        })
+    }
+    renderShopsOptions() {
+        return (
+            <Form.Item
+                label="适用店铺"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <EditBoxForShops
+                    value={this.state.selections_shopsInfo}
+                    onChange={
+                        this.editBoxForShopsChange
+                    }
+                />
+            </Form.Item>
+        );
+    }
     render() {
         const sendFlag = true;
         const tip = this.state.consumeType == '0' ? '累计金额不得少于500元' : '累计次数不得少于3次'
@@ -225,6 +266,9 @@ class StepTwo extends React.Component {
         );
         return (
             <Form>
+                {
+                    this.props.type == '70' ? this.renderShopsOptions() : null
+                }
                 {
                     this.props.type == '62' ?
                         <div>
@@ -256,13 +300,13 @@ class StepTwo extends React.Component {
                                 type={this.props.type}
                                 form={this.props.form}
                             />
-                        </div> :
-                        <CardLevel
-                            onChange={this.onCardLevelChange}
-                            catOrCard={'card'}
-                            type={this.props.type}
-                            form={this.props.form}
-                        />
+                        </div> : (this.props.type == '70' ? null :
+                            <CardLevel
+                                onChange={this.onCardLevelChange}
+                                catOrCard={'card'}
+                                type={this.props.type}
+                                form={this.props.form}
+                            />)
                 }
                 {
                     smsGate == '1' || smsGate == '3' ?

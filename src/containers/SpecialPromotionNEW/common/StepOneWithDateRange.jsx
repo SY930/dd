@@ -78,7 +78,8 @@ class StepOneWithDateRange extends React.Component {
                 description: specialPromotion.eventRemark || this.state.description,
             })
         }
-        if (this.props.type == '50' || this.props.type == '53' || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63') {
+        if (this.props.type == '50' || this.props.type == '53' || this.props.type == '60'
+            || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '70') {
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID });
         }
     }
@@ -498,7 +499,7 @@ class StepOneWithDateRange extends React.Component {
                             </FormItem> : null
                     }
                     {
-                        this.props.type == '53' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' ?
+                        this.props.type == '53' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '70' ?
                             <FormItem
                                 label="是否发送消息"
                                 className={styles.FormItemStyle}
@@ -516,7 +517,7 @@ class StepOneWithDateRange extends React.Component {
                             </FormItem> : null
                     }
                     {
-                        this.props.type != '53' && this.props.type != '50' && this.props.type != '60' ?
+                        this.props.type != '53' && this.props.type != '50' && this.props.type != '60' || this.props.type == '70' ?
                             <div>
                                 <FormItem
                                     label="活动起止日期"
@@ -536,7 +537,7 @@ class StepOneWithDateRange extends React.Component {
                                                 <RangePicker
                                                     className={styles.ActivityDateDayleft}
                                                     style={{ width: '100%' }}
-                                                    disabledDate={this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23' ? disabledDate : null}
+                                                    disabledDate={this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23' || this.props.type == '70' ? disabledDate : null}
                                                 />
                                             )}
                                         </Col>

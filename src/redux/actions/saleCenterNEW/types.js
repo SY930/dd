@@ -471,6 +471,14 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '23',
         },
+        {
+            idx: 13,
+            title: '彩蛋猫送礼',
+            color: '#84aac6',
+            text: '玩游戏送礼，在娱乐中让用户增加对品牌的好感。',
+            example: '',
+            key: '70',
+        },
     ];
     if (HUALALA.ENVIRONMENT != 'production-release') {
         return basic.concat(extral);
