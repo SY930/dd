@@ -142,7 +142,8 @@ class CollocationTable extends React.Component {
                 categoryGroup.foodCategoryName.forEach((category) => {
                     category.foods.find((item) => {
                         if (item.itemID == price.foodUnitID) {
-                            data[price.stageNo].free.push(promotionType === 'FOOD_FIXED_SET_GIVE' && item.isSetFood === '1' ? {} : item); // 过滤套餐
+                            data[price.stageNo].free.push(promotionType === 'FOOD_FIXED_SET_GIVE' &&
+                            (item.isSetFood == '1'  || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
                             // data[price.stageNo].free.push(item.isSetFood !== '1' ? item : { ...item, 'foodName': '', 'foodCategoryName': '' });
                             data[price.stageNo].freeCountInfo[item.itemID] = price.num;
                         }
@@ -240,7 +241,7 @@ class CollocationTable extends React.Component {
                             return {
                                 ...category,
                                 foods: category.foods.filter((food) => {
-                                    return food.isSetFood !== '1'
+                                    return food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1'
                                 }),
                             }
                         }),
