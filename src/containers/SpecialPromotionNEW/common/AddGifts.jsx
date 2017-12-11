@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { DatePicker, Radio, Form, Select, TreeSelect, message, Tree, Input, Icon } from 'antd';
+import { DatePicker, Radio, Form, Select, Input, Icon } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import ExpandTree from './ExpandTree';
@@ -9,6 +9,12 @@ import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import _ from 'lodash';
+import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    SALE_CENTER_GIFT_TYPE,
+    SALE_CENTER_GIFT_EFFICT_TIME,
+} from '../../../redux/actions/saleCenterNEW/types';
+
 
 if (process.env.__CLIENT__ === true) {
     require('../../../components/common/components.less');
@@ -17,14 +23,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
-const TreeNode = Tree.TreeNode;
-const Search = Input.Search;
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-import {
-    SALE_CENTER_GIFT_TYPE,
-    SALE_CENTER_GIFT_EFFICT_TIME,
-} from '../../../redux/actions/saleCenterNEW/types';
-
+// const TreeNode = Tree.TreeNode;
+// const Search = Input.Search;
 const VALIDATE_TYPE = Object.freeze([{
     key: 0, value: '1', name: '相对有效期',
 },
@@ -70,6 +70,8 @@ const defaultData = {
         msg: null,
     },
 };
+const moment = require('moment');
+
 
 class AddGifts extends React.Component {
     constructor(props) {
@@ -452,6 +454,10 @@ class AddGifts extends React.Component {
         if (typeof info.giftEffectiveTime.value === 'object') {
             pickerProps.value = info.giftEffectiveTime.value;
         }
+        const disabledDate = (current) => {
+            // Can not select days before today
+            return current && current.format('YYYYMMDD') < this.props.specialPromotion.toJS().$eventInfo.eventStartDate;
+        }
         return (
             <FormItem
                 label="固定有效期"
@@ -462,7 +468,10 @@ class AddGifts extends React.Component {
                 validateStatus={info.giftEffectiveTime.validateStatus}
                 help={info.giftEffectiveTime.msg}
             >
-                <RangePicker {...pickerProps} />
+                <RangePicker
+                    {...pickerProps}
+                    disabledDate={this.props.type == '70' ? disabledDate : null}
+                />
             </FormItem>
         );
     }
