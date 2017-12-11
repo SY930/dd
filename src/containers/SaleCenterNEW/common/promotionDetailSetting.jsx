@@ -168,7 +168,7 @@ class PromotionDetailSetting extends React.Component {
                         return {
                             ...category,
                             foods: category.foods.filter((food) => {
-                                return food.isSetFood !== '1'
+                                return food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1'
                             }),
                         }
                     }),
@@ -179,7 +179,7 @@ class PromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         var opts = {
-            _groupID: this.props.user.accountInfo.groupID
+            _groupID: this.props.user.accountInfo.groupID,
         };
         // autoFetch只有菜品优惠券才发请求
         this.props.autoFetch && this.props.fetchFoodCategoryInfo({ ...opts });
