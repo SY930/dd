@@ -118,7 +118,7 @@ class SpecialDishesTable extends React.Component {
                         return {
                             ...category,
                             foods: category.foods.filter((food) => {
-                                return food.isSetFood !== '1'
+                                return food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1'
                             }),
                         }
                     }),
