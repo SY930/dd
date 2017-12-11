@@ -80,8 +80,8 @@ class NewPromotion extends React.Component {
             cat.foodCategoryName.forEach((catName) => {
                 categoryNames.push(catName.foodCategoryID);
                 catName.foods.forEach((food) => {
-                    if (food.isSetFood !== '1') {
-                        singleFoods.push(food.itemID)
+                    if (food.isSetFood != '1') {
+                        singleFoods.push(String(food.itemID))
                     }
                 })
             })
