@@ -427,7 +427,7 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         let count;
         if (HUALALA.ENVIRONMENT !== 'production-release') {
-            count = 13;
+            count = 14;
         } else {
             count = 11;
         }
@@ -665,7 +665,7 @@ class MySpecialActivities extends React.Component {
                 width: 150,
                 render: (text, record) => {
                     if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
-                        || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63) {
+                        || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63|| record.eventWay === 70) {
                         let _SmsSendStatus = '';
                         SmsSendStatus.map((status) => {
                             if (status.value == record.status) {

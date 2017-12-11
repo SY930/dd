@@ -588,7 +588,7 @@ class AddGifts extends React.Component {
         }
         // 不是最后一个
         if (index === 0 && _length === 1) {
-            return (<span className="Category-add" onClick={this.add}>{this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>);
+            return (<span className="Category-add" onClick={this.add}>{this.props.type == '70' ? null : this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>);
         } else if (index < _length - 1) {
             return null;
         } else if (index == _length - 1 && _length == this.state.maxCount) {

@@ -187,11 +187,15 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
-        const opts = {
-            cardLevelIDList: this.state.cardLevelIDList || [],
-            cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
-            smsTemplate: this.state.message,
-        };
+        const opts = this.props.type == '70' ?
+            {
+                smsTemplate: this.state.message,
+            } :
+            {
+                cardLevelIDList: this.state.cardLevelIDList || [],
+                cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
+                smsTemplate: this.state.message,
+            };
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
@@ -256,13 +260,13 @@ class StepTwo extends React.Component {
                                 type={this.props.type}
                                 form={this.props.form}
                             />
-                        </div> :
-                        <CardLevel
-                            onChange={this.onCardLevelChange}
-                            catOrCard={'card'}
-                            type={this.props.type}
-                            form={this.props.form}
-                        />
+                        </div> : (this.props.type == '70' ? null :
+                            <CardLevel
+                                onChange={this.onCardLevelChange}
+                                catOrCard={'card'}
+                                type={this.props.type}
+                                form={this.props.form}
+                            />)
                 }
                 {
                     smsGate == '1' || smsGate == '3' ?
