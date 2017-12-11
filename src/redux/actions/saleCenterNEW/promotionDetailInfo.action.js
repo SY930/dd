@@ -12,6 +12,7 @@
 import {
     getSpecifiedUrlConfig,
 } from '../../../helpers/apiConfig';
+import { fetchData } from '../../../helpers/util';
 import { message } from 'antd';
 
 export const SALE_CENTER_SET_PROMOTION_DETAIL = 'sale center:: set promotion detail new';
@@ -137,43 +138,49 @@ const fetchFoodMenuFailed = () => {
     }
 };
 
-export const fetchFoodMenuInfoAC = (opts) => {
+// export const fetchFoodMenuInfoAC = (opts) => {
+//     return (dispatch) => {
+//         dispatch({
+//             type: SALE_CENTER_FETCH_FOOD_MENU,
+//         });
+
+//         const config = getSpecifiedUrlConfig('getFoodMenu_NEW', { ...opts, bookID: 0 });
+
+//         fetch(config.url, {
+//             method: config.method,
+//             body: config.params,
+//             credentials: 'include',
+//             headers: {
+//                 'Accept': 'application/json; charset=UTF-8',
+//                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+//             },
+//         }).then((response) => {
+//             if (response.status >= 200 && response.status < 300) {
+//                 if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+//                     return response.json();
+//                 }
+//                 return response.text();
+//             }
+//             return Promise.reject(new Error(response.statusText))
+//         }).then((responseJSON) => {
+//             if (responseJSON.resultcode === '000') {
+//                 dispatch(fetchFoodMenuSuccess(responseJSON.data))
+//             } else {
+//                 message.error(`获取菜品信息失败!${responseJSON.resultmsg}`);
+//                 dispatch(fetchFoodMenuFailed(responseJSON.resultmsg));
+//             }
+//         }).catch((error) => {
+//             dispatch(fetchFoodMenuFailed(error))
+//         });
+//     }
+// };
+export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        dispatch({
-            type: SALE_CENTER_FETCH_FOOD_MENU,
-        });
-
-        const config = getSpecifiedUrlConfig('getFoodMenu_NEW', { ...opts, bookID: 0 });
-
-        fetch(config.url, {
-            method: config.method,
-            body: config.params,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            if (responseJSON.resultcode === '000') {
-                dispatch(fetchFoodMenuSuccess(responseJSON.data))
-            } else {
-                message.error(`获取菜品信息失败!${responseJSON.resultmsg}`);
-                dispatch(fetchFoodMenuFailed(responseJSON.resultmsg));
-            }
-        }).catch((error) => {
-            dispatch(fetchFoodMenuFailed(error))
+        return fetchData('getGroupFoodQuery', { ...params, bookID: 0 }, null, { path: 'data' }).then((res = {}) => {
+            dispatch(fetchFoodMenuSuccess(res))
         });
     }
-};
-
+}
 const fetchPromotionListSuccess = (opts) => {
     return {
         type: SALE_CENTER_FETCH_PROMOTION_LIST_SUCCESS,
