@@ -11,9 +11,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import styles from './treeSelect.less';
-import { Input, Icon, Table } from 'antd';
+import { Input, Icon, Table, Select } from 'antd';
 import PriceInputIcon from '../../../containers/SaleCenterNEW/common/PriceInputIcon'; // 编辑
 
+const Option = Select.Option;
 
 export default class HualalaSelectedTable extends React.Component {
     constructor(props) {
@@ -21,68 +22,8 @@ export default class HualalaSelectedTable extends React.Component {
 
         this.state = {
             data: [],
-            columns: [
-                {
-                    title: '菜品',
-                    dataIndex: 'foodName',
-                    key: 'foodName',
-                    fixed: 'left',
-                    width: 150,
-                    className: 'TableTxtLeft',
-                },
-                {
-                    title: '编码',
-                    dataIndex: 'foodCode',
-                    key: 'foodCode',
-                    fixed: 'left',
-                    width: 90,
-                    className: 'TableTxtCenter',
-                },
-                {
-                    title: '分类',
-                    dataIndex: 'foodCategoryName',
-                    key: 'foodCategoryName',
-                    width: 80,
-                    className: 'TableTxtLeft',
-                },
-                {
-                    title: '特价 (元)',
-                    width: 85,
-                    dataIndex: 'newPrice',
-                    key: 'newPrice',
-                    className: 'noPadding',
-                    render: (text, record, index) => {
-                        // TODO: fix the dispaly bug later
-                        return (
-                            <span className={styles.rightAlign}>
-                                <PriceInputIcon
-                                    key={`table${index}`}
-                                    type="text"
-                                    modal="float"
-                                    value={{ number: record.newPrice }}
-                                    index={index}
-                                    onChange={(val) => { this.onCellChange(val, record) }}
-                                />
-                            </span>
-                        );
-                    },
-                },
-                {
-                    title: '原价 (元)',
-                    dataIndex: 'price',
-                    key: 'price',
-                    width: 80,
-                    className: 'TableTxtRight',
-                },
-                {
-                    title: '折扣',
-                    dataIndex: 'salePercent',
-                    key: 'salePercent',
-                    className: 'TableTxtRight',
-                    render: (text, record, index) => {
-                        return `${(record.newPrice / record.price * 100).toFixed(2)}%`
-                    },
-                }],
+            filterPrice: 'price',
+            filterDropdownVisible: false,
         };
 
         this.onClear = this.onClear.bind(this);
@@ -123,7 +64,92 @@ export default class HualalaSelectedTable extends React.Component {
     }
 
     render() {
+        const columns = [
+            {
+                title: '菜品',
+                dataIndex: 'foodName',
+                key: 'foodName',
+                fixed: 'left',
+                width: 150,
+                className: 'TableTxtLeft',
+            },
+            {
+                title: '编码',
+                dataIndex: 'foodCode',
+                key: 'foodCode',
+                fixed: 'left',
+                width: 90,
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '分类',
+                dataIndex: 'foodCategoryName',
+                key: 'foodCategoryName',
+                width: 80,
+                className: 'TableTxtLeft',
+            },
+            {
+                title: '特价 (元)',
+                width: 85,
+                dataIndex: this.state.filterPrice,
+                key: 'filterPrice',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    // TODO: fix the dispaly bug later
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="float"
+                                value={{ number: record[this.state.filterPrice] }}
+                                index={index}
+                                onChange={(val) => { this.onCellChange(val, record) }}
+                            />
+                        </span>
+                    );
+                },
+                filterDropdown: (
+                    <div className="custom-filter-dropdown">
+                        <Select
+                            style={{ width: 86, left: -63 }}
+                            value={this.state.filterPrice}
+                            onChange={v => {
+                                const newData = Array.from(this.state.data).map(food => {
+                                    food.newPrice = food[v]; // 将newPrice变为对应option价
+                                })
+                                console.log(newData)
+                                this.setState({ filterPrice: v }, () => {
+                                })
+                            }}
+                        >
+                            <Option key='price'>原价</Option>
+                            <Option key='vipPrice'>会员价</Option>
+                        </Select>
+                    </div>
+                ),
+                filterDropdownVisible: this.state.filterDropdownVisible,
+                onFilterDropdownVisibleChange: visible => this.setState({ filterDropdownVisible: visible }),
+            },
+            {
+                title: '原价 (元)',
+                dataIndex: 'price',
+                key: 'price',
+                width: 80,
+                className: 'TableTxtRight',
+            },
+            {
+                title: '折扣',
+                dataIndex: 'salePercent',
+                key: 'salePercent',
+                className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                },
+            }];
         const data = Array.from(this.state.data);
+        console.log(data)
+        // debugger;
         return (
             <div className={styles.treeSelectFooter}>
                 <div className={styles.SelectedLi}>
@@ -131,7 +157,7 @@ export default class HualalaSelectedTable extends React.Component {
                         <span>{this.props.selectdTitle}</span>
                     </div>
 
-                    <Table bordered={true} dataSource={data} columns={this.state.columns} pagination={false} scroll={{ x: 570, y: 170 }} />
+                    <Table bordered={true} dataSource={data} columns={columns} pagination={false} scroll={{ x: 570, y: 170 }} />
                 </div>
                 <div onClick={this.onClear} className={styles.Tclear}>清空</div>
             </div>

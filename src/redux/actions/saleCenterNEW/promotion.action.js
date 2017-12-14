@@ -17,7 +17,7 @@ import { message } from 'antd';
 import 'rxjs';
 import Rx from 'rxjs/Rx';
 
-export const SALE_CENTER_ADD_PROMOTION_START = 'sale center:: add new promotion start new';
+export const SALE_CENTER_ADD_PROMOTION_START_NEWNEW = 'sale center:: add new promotion start new new';
 export const SALE_CENTER_ADD_PROMOTION_SUCCESS = 'sale center:: add new promotion success new';
 export const SALE_CENTER_ADD_PROMOTION_FAILED = 'sale center:: add new promotion failed new';
 export const SALE_CENTER_ADD_PROMOTION_TIMEOUT = 'sale center: add promotion time out new';
@@ -36,69 +36,74 @@ export const SALE_CENTER_FETCH_PROMOTION_DETAIL_TIME_OUT = 'sale center: fetch p
 
 export const SALE_CENTER_RESET_PROMOTION_DETAIL = 'sale center: reset promotion detail new';
 
-export const saleCenterAddNewActivityAC = opts => ({ type: SALE_CENTER_ADD_PROMOTION_START, payload: opts });
+export const saleCenterAddNewActivityAC = opts => ({ type: SALE_CENTER_ADD_PROMOTION_START_NEWNEW, payload: opts });
 const addPromotionSuccess = payload => ({ type: SALE_CENTER_ADD_PROMOTION_SUCCESS, payload });
 const addPromotionFail = payload => ({ type: SALE_CENTER_ADD_PROMOTION_FAILED, payload });
 export const addPromotionCancel = () => ({ type: SALE_CENTER_ADD_PROMOTION_CANCEL });
 export const addPromotionTimeout = () => ({ type: SALE_CENTER_ADD_PROMOTION_TIMEOUT });
 
-export const addPromotionEpic_NEW = action$ => action$.ofType(SALE_CENTER_ADD_PROMOTION_START)
-    .mergeMap((action) => {
-        // let params = generateXWWWFormUrlencodedParams(action.payload.data);
-        return Rx.Observable.from(
-            fetch('/api/promotion/add_NEW', {
-                method: 'POST',
-                body: JSON.stringify(action.payload.data),
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json; charset=UTF-8',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-            })
-                .then((response) => {
-                    if (response.status >= 200 && response.status < 300) {
-                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                            return response.json();
+export const addPromotionEpic_NEW = action$ => {
+    console.log('---------------11111-----------')
+    // debugger;
+    return action$.ofType(SALE_CENTER_ADD_PROMOTION_START_NEWNEW)
+        .mergeMap((action) => {
+            console.log('-------------222222222-------------')
+            // let params = generateXWWWFormUrlencodedParams(action.payload.data);
+            return Rx.Observable.from(
+                fetch('/api/promotion/add_NEW', {
+                    method: 'POST',
+                    body: JSON.stringify(action.payload.data),
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                })
+                    .then((response) => {
+                        if (response.status >= 200 && response.status < 300) {
+                            if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                                return response.json();
+                            }
+                            return response.text();
                         }
-                        return response.text();
+                        return Promise.reject(new Error(response.statusText));
+                    })
+                    .catch((error) => {
+                        throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
+                    })
+            )
+                .map((response) => {
+                    if (response.code === '000') {
+                        setTimeout(() => {
+                            action.payload.success && action.payload.success();
+                        }, 0);
+                        return addPromotionSuccess(response);
+                    } else if (response.code === '1211200003') {
+                        setTimeout(() => {
+                            action.payload.sameCode && action.payload.sameCode();
+                        }, 0);
+                        return addPromotionFail(response.code);
                     }
-                    return Promise.reject(new Error(response.statusText));
-                })
-                .catch((error) => {
-                    throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-                })
-        )
-            .map((response) => {
-                if (response.code === '000') {
-                    setTimeout(() => {
-                        action.payload.success && action.payload.success();
-                    }, 0);
-                    return addPromotionSuccess(response);
-                } else if (response.code === '1211200003') {
-                    setTimeout(() => {
-                        action.payload.sameCode && action.payload.sameCode();
-                    }, 0);
+                    setTimeout(
+                        () => {
+                            action.payload.fail && action.payload.fail(response.msg);
+                        }
+                    );
                     return addPromotionFail(response.code);
-                }
-                setTimeout(
-                    () => {
-                        action.payload.fail && action.payload.fail(response.msg);
+                })
+                .timeout(40000) // 设置超时时间为20s。
+                .catch((err) => {
+                    setTimeout(() => {
+                        action.payload.fail && action.payload.fail('网络超时，请稍后再试');
+                    }, 0);
+                    if (err.name === 'TimeoutError') {
+                        return Rx.Observable.of(addPromotionTimeout());
                     }
-                );
-                return addPromotionFail(response.code);
-            })
-            .timeout(40000) // 设置超时时间为20s。
-            .catch((err) => {
-                setTimeout(() => {
-                    action.payload.fail && action.payload.fail('网络超时，请稍后再试');
-                }, 0);
-                if (err.name === 'TimeoutError') {
-                    return Rx.Observable.of(addPromotionTimeout());
-                }
-                return Rx.Observable.empty();
-            })
-            .takeUntil(action$.ofType(SALE_CENTER_ADD_PROMOTION_CANCEL))
-    });
+                    return Rx.Observable.empty();
+                })
+                .takeUntil(action$.ofType(SALE_CENTER_ADD_PROMOTION_CANCEL))
+        });
+}
 
 
 export const saleCenterUpdateNewActivityAC = (opts) => {

@@ -27,7 +27,8 @@
         "rc-color-picker": "^1.2.3",
         "react": "15.4.2",
         "react-dom": "15.4.2",
-        "react-redux": "5.0.2"
+        "react-redux": "5.0.2",
+        "rxjs": "^5.5.0"
     },
     "devDependencies": {
         "babel-cli": "6.24.1",
