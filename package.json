@@ -1,6 +1,6 @@
 {
     "name": "@hualala/platform-sale",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "description": "商户平台会员业务包，基于@hualala/platform-base定义的规范实现。",
     "main": "index.js",
     "scripts": {
@@ -18,7 +18,7 @@
     },
     "author": "C. <chenhuangfang@hualala.com>",
     "dependencies": {
-        "@hualala/platform-base": "~1.8.0",
+        "@hualala/platform-base": "^1.8.5",
         "@hualala/platform-components": "~1.4.10",
         "@hualala/react-lazyload": "^2.3.0",
         "antd": "2.8.0",
