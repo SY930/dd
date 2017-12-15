@@ -14,20 +14,18 @@ import { promotionDetailEpic, addPromotionEpic } from '../actions/saleCenter/pro
 import { promotionListEpic } from '../actions/saleCenter/myActivities.action';
 import { promotionListEpic_NEW } from '../actions/saleCenterNEW/myActivities.action';
 import { addSpecialPromotionEpic, updateSpecialPromotionEpic, specialPromotionGroupMemberEpic } from '../actions/saleCenter/specialPromotion.action';
-// import { addSpecialPromotionEpic_NEW, updateSpecialPromotionEpic_NEW, specialPromotionGroupMemberEpic_NEW } from '../actions/saleCenterNEW/specialPromotion.action';
 import { specialPromotionListEpic, specialPromotionDetailEpic, specialPromotionUserInfoEpic, specialDetailEpic, specialPromotionCardLevelEpic } from '../actions/saleCenter/mySpecialActivities.action';
-import { specialPromotionListEpic_NEW, specialPromotionDetailEpic_NEW, specialPromotionUserInfoEpic_NEW, specialDetailEpic_NEW, specialPromotionCardLevelEpic_NEW } from '../actions/saleCenterNEW/mySpecialActivities.action';
 
 export const rootEpic = combineEpics(
     promotionDetailEpic,
     promotionListEpic, promotionListEpic_NEW,
-    specialPromotionListEpic, specialPromotionListEpic_NEW,
+    specialPromotionListEpic,
     addSpecialPromotionEpic,
     addPromotionEpic,
-    specialPromotionDetailEpic, specialPromotionDetailEpic_NEW,
-    specialPromotionUserInfoEpic, specialPromotionUserInfoEpic_NEW,
-    specialDetailEpic, specialDetailEpic_NEW,
+    specialPromotionDetailEpic,
+    specialPromotionUserInfoEpic,
+    specialDetailEpic,
     updateSpecialPromotionEpic,
-    specialPromotionCardLevelEpic, specialPromotionCardLevelEpic_NEW,
+    specialPromotionCardLevelEpic,
     specialPromotionGroupMemberEpic,
 );
