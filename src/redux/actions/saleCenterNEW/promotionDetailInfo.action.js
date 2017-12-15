@@ -176,7 +176,7 @@ const fetchFoodMenuFailed = () => {
 // };
 export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        return fetchData('getGroupFoodQuery', { ...params, bookID: 0 }, null, { path: 'data' }).then((res = {}) => {
+        return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
             dispatch(fetchFoodMenuSuccess(res))
         });
     }
