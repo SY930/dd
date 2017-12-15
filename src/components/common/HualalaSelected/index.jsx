@@ -54,7 +54,7 @@ export default class HualalaSelected extends React.Component {
                 <div className={styles.SelectedLi}>
                     <div className={styles.SelectedLiT}>
                         <span>{this.props.selectdTitle}</span>（单击移除）</div>
-                    <ul className={styles.SelectedLiB}>
+                    <ul className={styles.SelectedLiB} style={{height: 200}}>
                         {this.state.data.map((shopEntity, index) => {
                             return (
                                 <li

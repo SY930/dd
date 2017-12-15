@@ -56,7 +56,7 @@ class HualalaTreeSelect extends React.Component {
                 <div className={styles.treeSelectBody}>
                     <Row>
                         <Col span={8}>
-                            <div className={styles.SelectLevel1}>
+                            <div className={styles.SelectLevel1} style={{height: 330}}>
                                 <div className={styles.SelectTit}>
                                     {this.props.level1Title}
                                 </div>
