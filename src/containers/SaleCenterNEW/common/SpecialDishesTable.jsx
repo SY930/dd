@@ -493,7 +493,7 @@ class SpecialDishesTable extends React.Component {
                     visible={this.state.visible}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
-                    width="600px"
+                    width="922px"
                     title="选择特价菜品"
                 >
                     <div style={{ width: '100%' }}>

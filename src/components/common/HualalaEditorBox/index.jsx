@@ -116,7 +116,7 @@ class HualalaEditorBox extends React.Component {
                         {data && data.length != 0
                             ? (<Iconlist iconName={'plus'} className="plusBig" onClick={this.showModal} />)
                             : null}
-                        <Modal title={`选择${this.props.label}`} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="922px" height='700px'>
+                        <Modal title={`选择${this.props.label}`} visible={this.state.visible} onOk={this.handleOk} onCancel={this.handleCancel} width="922px">
                             <div style={{
                                 width: '100%',
                                 height: '100%',
