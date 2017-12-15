@@ -61,54 +61,51 @@ export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch 
 
 export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new'
 // 以下是活动列表
-export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
+// export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
 const fetchPromotionListFail = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_FAIL, payload });
 export const fetchPromotionListCancel = () => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_CANCEL });
 export const fetchPromotionListTimeout = () => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_TIME_OUT });
 
-export const specialPromotionListEpic_NEW = action$ => action$.ofType(SPECIAL_PROMOTION_FETCH_PROMOTION_LIST)
-    .mergeMap((action) => {
-        return Rx.Observable.from(
-
-            fetch('/api/specialPromotion/queryEvents_NEW', {
-                method: 'POST',
-                body: JSON.stringify(action.payload.data),
-                credentials: 'include',
-                headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-            })
-                .then((response) => {
-                    if (response.status >= 200 && response.status < 300) {
-                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                            return response.json();
-                        }
-                        return response.text();
+export const fetchSpecialPromotionList = (opts) => {
+    return dispatch => {
+        dispatch ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
+        fetch('/api/specialPromotion/queryEvents_NEW', {
+            method: 'POST',
+            body: JSON.stringify(opts.data),
+            credentials: 'include',
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                        return response.json();
                     }
-                    return Promise.reject(new Error(response.statusText));
-                })
-                .catch((error) => {
-                    throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-                })
-        )
-            .map((response) => {
+                    return response.text();
+                }
+                return Promise.reject(new Error(response.statusText));
+            })
+            .catch((error) => {
+                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
+            })
+            .then((response) => {
                 if (response.code === '000') {
-                    return fetchPromotionListFullfilled(response);
+                    return dispatch(fetchPromotionListFullfilled(response));
                 }
                 action.payload.fail && action.payload.fail(response.message);
-                return fetchPromotionListFail(response.code);
+                return dispatch(fetchPromotionListFail(response.code));
             })
-            .timeout(20000)
             .catch((err) => {
                 if (err.name === 'TimeoutError') {
-                    return Rx.Observable.of(fetchPromotionListTimeout());
+                    return dispatch(fetchPromotionListTimeout());
                 }
-                return Rx.Observable.empty();
             })
-            .takeUntil(action$.ofType(SPECIAL_PROMOTION_FETCH_PROMOTION_CANCEL))
-    });
+    }
+}
+
 
 export const toggleSelectedActivityStateSuccess = (opts) => {
     return {
@@ -265,62 +262,62 @@ export const specialPromotionDetailEpic_NEW = action$ => action$.ofType(SALE_CEN
                 }
             })
             .merge(
-                Rx.Observable.from(
-                    fetch('/api/specialPromotion/queryEventCustomer_NEW', {
-                        method: 'POST',
-                        body: JSON.stringify({ eventID: action.payload.data.itemID, groupID: action.payload.data.groupID }),
-                        credentials: 'include',
-                        headers: {
-                            'Accept': 'application/json; charset=UTF-8',
-                            'Content-Type': 'application/json; charset=UTF-8',
-                        },
-                    })
-                        .then((response) => {
-                            if (response.status >= 200 && response.status < 300) {
-                                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                                    return response.json();
-                                }
-                                return response.text();
+            Rx.Observable.from(
+                fetch('/api/specialPromotion/queryEventCustomer_NEW', {
+                    method: 'POST',
+                    body: JSON.stringify({ eventID: action.payload.data.itemID, groupID: action.payload.data.groupID }),
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                })
+                    .then((response) => {
+                        if (response.status >= 200 && response.status < 300) {
+                            if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                                return response.json();
                             }
-                            return Promise.reject(new Error(response.statusText));
-                        })
-                        .catch((error) => {
-                            throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
-                        }))
-                    .map((result) => {
-                        return {
-                            userInfo: result,
+                            return response.text();
                         }
+                        return Promise.reject(new Error(response.statusText));
                     })
+                    .catch((error) => {
+                        throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
+                    }))
+                .map((result) => {
+                    return {
+                        userInfo: result,
+                    }
+                })
             )
             .merge(
-                Rx.Observable.from(
-                    fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
-                        method: 'POST',
-                        body: generateXWWWFormUrlencodedParams({ _groupID: action.payload.data.groupID }),
-                        credentials: 'include',
-                        headers: {
-                            'Accept': 'application/json; charset=UTF-8',
-                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                        },
-                    })
-                        .then((response) => {
-                            if (response.status >= 200 && response.status < 300) {
-                                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                                    return response.json();
-                                }
-                                return response.text();
+            Rx.Observable.from(
+                fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
+                    method: 'POST',
+                    body: generateXWWWFormUrlencodedParams({ _groupID: action.payload.data.groupID }),
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    },
+                })
+                    .then((response) => {
+                        if (response.status >= 200 && response.status < 300) {
+                            if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                                return response.json();
                             }
-                            return Promise.reject(new Error(response.statusText));
-                        })
-                        .catch((error) => {
-                            throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
-                        }))
-                    .map((result) => {
-                        return {
-                            cardInfo: result,
+                            return response.text();
                         }
+                        return Promise.reject(new Error(response.statusText));
                     })
+                    .catch((error) => {
+                        throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
+                    }))
+                .map((result) => {
+                    return {
+                        cardInfo: result,
+                    }
+                })
             )
             .reduce((curr, val) => {
                 return { ...curr, ...val };
@@ -496,7 +493,7 @@ export const specialPromotionCardLevelEpic_NEW = action$ => action$.ofType(SALE_
             })
             .takeUntil(action$.ofType(SALE_CENTER_FETCH_CARD_LEVEL_CANCEL))
     });
-    // 查询会员群体列表
+// 查询会员群体列表
 export const queryGroupMembersListfilled = opts => ({ type: SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED, payload: opts });
 export const queryGroupMembersList = (opts) => {
     return (dispatch) => {

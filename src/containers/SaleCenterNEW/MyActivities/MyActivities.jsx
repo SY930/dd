@@ -214,15 +214,16 @@ class MyActivities extends React.Component {
             fetchPromotionScopeInfo,
             fetchPromotionList,
         } = this.props;
-        fetchPromotionList({
-            data: {
-                groupID: this.props.user.accountInfo.groupID,
-                pageSize: this.state.pageSizes,
-                pageNo: 1,
-            },
-            fail: (msg) => { message.error(msg) },
-            success: this.showNothing,
-        });
+        this.handleQuery();
+        // fetchPromotionList({
+        //     data: {
+        //         groupID: this.props.user.accountInfo.groupID,
+        //         pageSize: this.state.pageSizes,
+        //         pageNo: 1,
+        //     },
+        //     fail: (msg) => { message.error(msg) },
+        //     success: this.showNothing,
+        // });
         // Make sure the categoryList is fetched from the server.
         if (!promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
             fetchPromotionCategories({
