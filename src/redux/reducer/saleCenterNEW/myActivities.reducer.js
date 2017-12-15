@@ -32,7 +32,7 @@ import {
 import {
     SALE_CENTER_FETCH_PROMOTION_DETAIL,
     SALE_CENTER_FETCH_RROMOTION_DETAIL_PENDING,
-    SALE_CENTER_FETCH_PROMOTION_DETAIL_OK,
+    SALE_CENTER_FETCH_PROMOTION_DETAIL_OK_NEW,
     SALE_CENTER_FETCH_PROMOTION_DETAIL_FAIL,
     SALE_CENTER_FETCH_PROMOTION_DETAIL_TIME_OUT,
 
@@ -182,7 +182,7 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_FETCH_PROMOTION_DETAIL:
             return $$state.setIn(['$promotionDetailInfo', 'status'], 'pending');
 
-        case SALE_CENTER_FETCH_PROMOTION_DETAIL_OK:
+        case SALE_CENTER_FETCH_PROMOTION_DETAIL_OK_NEW:
             if ($$state.getIn(['$promotionDetailInfo', 'status']) === 'pending') {
                 return $$state.setIn(['$promotionDetailInfo', 'status'], 'success')
                     .setIn(['$promotionDetailInfo', 'data'], Immutable.fromJS(action.payload));
