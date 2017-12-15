@@ -69,7 +69,7 @@ export const fetchPromotionListTimeout = () => ({ type: SPECIAL_PROMOTION_FETCH_
 
 export const fetchSpecialPromotionList = (opts) => {
     return dispatch => {
-        dispatch ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
+        dispatch({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
         fetch('/api/specialPromotion/queryEvents_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),
@@ -225,18 +225,19 @@ export const deleteSelectedRecordAC = (opts) => {
 };
 
 // 以下是活动跟踪内容
-export const fetchSpecialPromotionDetailAC = opts => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_START, payload: opts });
+// export const fetchSpecialPromotionDetailAC = opts => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_START, payload: opts });
 const fetchSpecialPromotionDetailFullfilled = payload => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_OK, payload });
 const fetchSpecialPromotionDetailFail = payload => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_FAIL, payload });
 export const fetchSpecialPromotionDetailCancel = () => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_CANCEL });
 export const fetchSpecialPromotionDetailTimeout = () => ({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_TIMEOUT });
 
-export const specialPromotionDetailEpic_NEW = action$ => action$.ofType(SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_START)
-    .mergeMap((action) => {
-        return Rx.Observable.from(
-            fetch('/api/specialPromotion/queryEventDetail_NEW', {
+export const fetchSpecialPromotionDetailAC = opts => {
+    return dispatch => {
+        dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_START, payload: opts });
+        const queryEventDetail = param => {
+            return fetch('/api/specialPromotion/queryEventDetail_NEW', {
                 method: 'POST',
-                body: JSON.stringify(action.payload.data),
+                body: JSON.stringify(param.data),
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json; charset=UTF-8',
@@ -252,95 +253,80 @@ export const specialPromotionDetailEpic_NEW = action$ => action$.ofType(SALE_CEN
                     }
                     return Promise.reject(new Error(response.statusText));
                 })
-                .catch((error) => {
-                    throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
+                .then((response) => {
+                    return {
+                        eventInfo: response,
+                    }
                 })
-        )
-            .map((response) => {
-                return {
-                    eventInfo: response,
-                }
+        }
+        const queryEventCustomer = param => {
+            return fetch('/api/specialPromotion/queryEventCustomer_NEW', {
+                method: 'POST',
+                body: JSON.stringify({ eventID: param.data.itemID, groupID: param.data.groupID }),
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json; charset=UTF-8',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
             })
-            .merge(
-            Rx.Observable.from(
-                fetch('/api/specialPromotion/queryEventCustomer_NEW', {
-                    method: 'POST',
-                    body: JSON.stringify({ eventID: action.payload.data.itemID, groupID: action.payload.data.groupID }),
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json; charset=UTF-8',
-                        'Content-Type': 'application/json; charset=UTF-8',
-                    },
-                })
-                    .then((response) => {
-                        if (response.status >= 200 && response.status < 300) {
-                            if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                                return response.json();
-                            }
-                            return response.text();
+                .then((response) => {
+                    if (response.status >= 200 && response.status < 300) {
+                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                            return response.json();
                         }
-                        return Promise.reject(new Error(response.statusText));
-                    })
-                    .catch((error) => {
-                        throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
-                    }))
-                .map((result) => {
+                        return response.text();
+                    }
+                    return Promise.reject(new Error(response.statusText));
+                })
+                .then((response) => {
                     return {
-                        userInfo: result,
+                        userInfo: response,
                     }
                 })
-            )
-            .merge(
-            Rx.Observable.from(
-                fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
-                    method: 'POST',
-                    body: generateXWWWFormUrlencodedParams({ _groupID: action.payload.data.groupID }),
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json; charset=UTF-8',
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    },
-                })
-                    .then((response) => {
-                        if (response.status >= 200 && response.status < 300) {
-                            if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                                return response.json();
-                            }
-                            return response.text();
+        }
+        const getGroupCardTypeLevels = param => {
+            return fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
+                method: 'POST',
+                body: generateXWWWFormUrlencodedParams({ _groupID: param.data.groupID }),
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json; charset=UTF-8',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                },
+            })
+                .then((response) => {
+                    if (response.status >= 200 && response.status < 300) {
+                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                            return response.json();
                         }
-                        return Promise.reject(new Error(response.statusText));
-                    })
-                    .catch((error) => {
-                        throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
-                    }))
-                .map((result) => {
+                        return response.text();
+                    }
+                    return Promise.reject(new Error(response.statusText));
+                })
+                .then((response) => {
                     return {
-                        cardInfo: result,
+                        cardInfo: response,
                     }
                 })
-            )
-            .reduce((curr, val) => {
-                return { ...curr, ...val };
-            }, {})
-            .map((result) => {
+        }
+        Promise.all([queryEventDetail(opts), queryEventCustomer(opts), getGroupCardTypeLevels(opts)])
+            .then((res) => {
+                const result = res.reduce((curr, val) => {
+                    return { ...curr, ...val };
+                }, {});
                 if (result.eventInfo.code === '000' && result.userInfo.code === '000' && result.cardInfo.code === '000') {
-                    action.payload.success && action.payload.success(result.eventInfo);
-                    return fetchSpecialPromotionDetailFullfilled(result);
+                    opts.success && opts.success(result.eventInfo);
+                    return dispatch(fetchSpecialPromotionDetailFullfilled(result));
                 }
-                action.payload.fail && action.payload.fail();
-                return fetchSpecialPromotionDetailFail(result);
+                opts.fail && opts.fail();
+                return dispatch(fetchSpecialPromotionDetailFail(result));
             })
-            .timeout(20000)
             .catch((err) => {
-                if (err.name === 'TimeoutError') {
-                    return Rx.Observable.of(fetchSpecialPromotionDetailTimeout());
-                }
-                return Rx.Observable.empty();
+                opts.fail();
+                return dispatch(fetchSpecialPromotionDetailFail(result));
             })
-            .takeUntil(action$.ofType(SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_CANCEL))
-    });
-
-
+    }
+}
 // 以下是修改
 export const fetchSpecialDetailAC = opts => ({ type: SALE_CENTER_FETCH_SPECIAL_DETAIL_START, payload: opts });
 const fetchSpecialDetailFullfilled = payload => ({ type: SALE_CENTER_FETCH_SPECIAL_DETAIL_OK, payload });

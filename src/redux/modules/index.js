@@ -11,7 +11,7 @@
 
 import { combineEpics } from 'redux-observable';
 import { promotionDetailEpic, addPromotionEpic } from '../actions/saleCenter/promotion.action';
-import { promotionDetailEpic_NEW, addPromotionEpic_NEW } from '../actions/saleCenterNEW/promotion.action';
+// import { promotionDetailEpic_NEW, addPromotionEpic_NEW } from '../actions/saleCenterNEW/promotion.action';
 // import { estimateListEpic, saveAdjustEstimateEpic, fetchBusinessShopsEpic, fetchBusinessShopBrandsEpic, fetchBusinessShopCategorysEpic } from '../actions/businessForecast/businessForecast.action';
 // import { estimateListEpicAnalyse } from '../actions/businessForecast/businessForecastAnalyse.action';
 import { promotionListEpic } from '../actions/saleCenter/myActivities.action';
@@ -47,11 +47,11 @@ import { specialPromotionListEpic_NEW, specialPromotionDetailEpic_NEW, specialPr
 // } from '../actions/allianceContract/allianceContract.action';
 
 export const rootEpic = combineEpics(
-    promotionDetailEpic, promotionDetailEpic_NEW,
+    promotionDetailEpic,
     promotionListEpic, promotionListEpic_NEW,
     specialPromotionListEpic, specialPromotionListEpic_NEW,
     addSpecialPromotionEpic, addSpecialPromotionEpic_NEW,
-    addPromotionEpic, addPromotionEpic_NEW,
+    addPromotionEpic,
     specialPromotionDetailEpic, specialPromotionDetailEpic_NEW,
     specialPromotionUserInfoEpic, specialPromotionUserInfoEpic_NEW,
     specialDetailEpic, specialDetailEpic_NEW,
