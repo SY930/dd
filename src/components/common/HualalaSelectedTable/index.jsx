@@ -22,7 +22,7 @@ export default class HualalaSelectedTable extends React.Component {
 
         this.state = {
             data: [],
-            filterPrice: 'price',
+            filterPrice: 'newPrice',
             filterDropdownVisible: false,
         };
 
@@ -32,19 +32,33 @@ export default class HualalaSelectedTable extends React.Component {
 
 
     onCellChange = (val, record) => {
-        record.newPrice = val.number;
+        // record.newPrice = val.number;
+        const data = this.state.data;
+        data.forEach(food => {
+            if (food.foodID == record.foodID) {
+                food.newPrice = val.number;
+            }
+        })
+        this.setState({ data })
     }
 
     componentDidMount() {
         this.setState({
-            data: this.props.value || [],
+            data: [...this.props.value] || [],
         });
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
+            const selectedFood = this.state.data.map(food => food.foodID);
+            const value = nextProps.value;
+            value.forEach(food => {
+                if (!selectedFood.includes(food.foodID)) {
+                    food.newPrice = food[this.state.filterPrice]
+                }
+            })
             this.setState({
-                data: nextProps.value,
+                data: [...value],
             })
         }
     }
@@ -91,7 +105,7 @@ export default class HualalaSelectedTable extends React.Component {
             {
                 title: '特价 (元)',
                 width: 85,
-                dataIndex: this.state.filterPrice,
+                dataIndex: 'newPrice',
                 key: 'filterPrice',
                 className: 'noPadding',
                 render: (text, record, index) => {
@@ -102,7 +116,7 @@ export default class HualalaSelectedTable extends React.Component {
                                 key={`table${index}`}
                                 type="text"
                                 modal="float"
-                                value={{ number: record[this.state.filterPrice] }}
+                                value={{ number: record['newPrice'] == -1 ? '' : record['newPrice']}}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
                             />
@@ -115,14 +129,16 @@ export default class HualalaSelectedTable extends React.Component {
                             style={{ width: 86, left: -63 }}
                             value={this.state.filterPrice}
                             onChange={v => {
-                                const newData = Array.from(this.state.data).map(food => {
+                                const newData = this.state.data.map(food => {
                                     food.newPrice = food[v]; // 将newPrice变为对应option价
+                                    return food
                                 })
                                 console.log(newData)
-                                this.setState({ filterPrice: v }, () => {
+                                this.setState({ filterPrice: v, data: newData }, () => {
                                 })
                             }}
                         >
+                            <Option key='newPrice'>当前价格</Option>
                             <Option key='price'>原价</Option>
                             <Option key='vipPrice'>会员价</Option>
                         </Select>
@@ -144,10 +160,10 @@ export default class HualalaSelectedTable extends React.Component {
                 key: 'salePercent',
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                    return  record.newPrice == -1 ? '' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
                 },
             }];
-        const data = Array.from(this.state.data);
+        const data = this.state.data;
         console.log(data)
         // debugger;
         return (
