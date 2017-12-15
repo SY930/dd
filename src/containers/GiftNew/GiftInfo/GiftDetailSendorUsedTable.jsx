@@ -160,7 +160,7 @@ class GiftSendOrUsedCount extends React.Component {
                 const { giftUsageList = [] } = _quotaList;
                 giftUsageList.map((d, i) => {
                     d.key = i;
-                    d.num = i + 1;
+                    d.num = (_quotaList.pageNo - 1) * _quotaList.pageSize + i + 1;
                     d.customerName = d.customerName ? d.customerName : '';
                     d.customerMobile = d.customerMobile ? d.customerMobile : '';
                     d.sendShopName = d.sendShopName ? d.sendShopName : '';
