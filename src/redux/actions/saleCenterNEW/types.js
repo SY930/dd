@@ -452,19 +452,8 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '62',
             tip: '同一时间上一个卡类的累计消费送礼只能有一个，即不允许同一时间一个卡类存在两个累计消费送礼的活动',
         },
-    ]
-
-    const extral = [
         {
             idx: 11,
-            title: '唤醒送礼',
-            color: '#84aac6',
-            text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
-            example: '',
-            key: '63',
-        },
-        {
-            idx: 12,
             title: '线上餐厅送礼',
             color: '#84aac6',
             text: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。',
@@ -472,12 +461,23 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '23',
         },
         {
-            idx: 13,
+            idx: 12,
             title: '彩蛋猫送礼',
             color: '#84aac6',
             text: '玩游戏送礼，在娱乐中让用户增加对品牌的好感。',
             example: '',
             key: '70',
+        },
+    ]
+
+    const extral = [
+        {
+            idx: 13,
+            title: '唤醒送礼',
+            color: '#84aac6',
+            text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
+            example: '',
+            key: '63',
         },
     ];
     if (HUALALA.ENVIRONMENT != 'production-release') {

@@ -429,7 +429,7 @@ class MySpecialActivities extends React.Component {
         if (HUALALA.ENVIRONMENT !== 'production-release') {
             count = 14;
         } else {
-            count = 11;
+            count = 13;
         }
         Cfg.eventWay.forEach((item, index) => {
             if (index <= count) {

@@ -84,11 +84,11 @@ class ActivityMain extends React.Component {
             NewPerfectReturnGift, // 完善资料送礼
             NewUpGradeReturnGift, // 升级送礼
             NewAddUpReturnGift, // 累计消费送礼
+            NewOnLineReturnGift, // 线上送礼
+            NewColorsEggCat, // 彩蛋猫
         ];
         const _vipStash = [
             NewWakeUpReturnGift, // 唤醒送礼
-            NewOnLineReturnGift, // 线上送礼
-            NewColorsEggCat, // 彩蛋猫
         ];
         let pagesArr;
         if (HUALALA.ENVIRONMENT !== 'production-release') {
