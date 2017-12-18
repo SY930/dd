@@ -6,7 +6,7 @@
     "scripts": {
         "debug:server": "cd ../platform && npm run debug:server",
         "debug:client": "cd ../platform && npm link ../platform-sale && cross-env PACKAGE_NAME=sale npm run debug:client",
-        "prepublishOnly": "rimraf lib && BABEL_ENV=production babel -D src --out-dir lib",
+        "prepublishOnly": "rimraf lib && cross-env BABEL_ENV=production babel -D src --out-dir lib",
         "precommit": "lint-staged",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
