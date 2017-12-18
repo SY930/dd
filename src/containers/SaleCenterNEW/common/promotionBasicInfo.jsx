@@ -987,8 +987,8 @@ class PromotionBasicInfo extends React.Component {
                         rules: [{
                             whitespace: true,
                             required: true,
-                            message: '汉字、字母、数字组成，不多于50个字符',
-                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\s\.]{1,50}$/,
+                            message: '汉字、字母、数字、（）、- 组成，不多于50个字符',
+                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\s\.\（\）\(\)\-\-]{1,50}$/,
                         }],
                         initialValue: this.state.name,
                     })(

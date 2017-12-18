@@ -452,7 +452,7 @@ class SpecialDishesTable extends React.Component {
                 width: 90,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                    return record.newPrice == -1 ? '' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
                 },
             },
             {
@@ -461,6 +461,9 @@ class SpecialDishesTable extends React.Component {
                 dataIndex: 'newPrice',
                 key: 'newPrice',
                 className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return record.newPrice == -1 ? '' : record.newPrice
+                },
             },
         ];
 
@@ -490,7 +493,7 @@ class SpecialDishesTable extends React.Component {
                     visible={this.state.visible}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
-                    width="600px"
+                    width="922px"
                     title="选择特价菜品"
                 >
                     <div style={{ width: '100%' }}>

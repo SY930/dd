@@ -294,7 +294,7 @@ class GiftAddModal extends React.Component {
                 render: () => {
                     switch (value) {
                         case '30':
-                            return '顾客在获取实物礼品券后，礼品集体领取方式请联系商家，商家会在核对信息无误后进行赠送。';
+                            return '顾客在获取实物礼品券后，礼品具体领取方式请联系商家，商家会在核对信息无误后进行赠送。';
                         case '40':
                             return '顾客在获取会员充值类礼品后，将直接充入其会员储值余额账户中！';
                         case '42':

@@ -802,7 +802,7 @@ class CollocationTable extends React.Component {
                     visible={this.state.visible}
                     onOk={() => { this.handleOk() }}
                     onCancel={() => { this.handleCancel() }}
-                    width="600px"
+                    width="922px"
                     title={this.state.recordInfo && this.state.recordInfo[3] == '0' ? (this.props.type == 'RECOMMEND_FOOD' ? '选择主菜' : '选择搭售菜品') : (this.props.type == 'RECOMMEND_FOOD' ? '选择推荐菜' : '选择赠送菜品')}
                 >
                     <div>

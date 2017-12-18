@@ -316,6 +316,7 @@ export const getDetails = (opts) => {
 };
 
 export const fullCutAddNewActivityAC = (opts) => {
+    console.log("------------fullCut.................")
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_ADD_PROMOTION_START,

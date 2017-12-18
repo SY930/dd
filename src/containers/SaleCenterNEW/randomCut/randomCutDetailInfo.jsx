@@ -343,7 +343,8 @@ class RandomCutDetailInfo extends React.Component {
         const _end = ruleName == 'priceRule' ? this.fixed(value.end) : value.end;
         const _tmp = this.state[ruleName];
         const condition = ruleName == 'priceRule' ?
-            ((parseFloat(_start) <= parseFloat(_end)) && (!Number.isNaN(_start)) && (!Number.isNaN(_end))) :
+            ((parseFloat(_start) <= parseFloat(_end)) && (!Number.isNaN(_start)) && (!Number.isNaN(_end))
+            && parseFloat(_start) <= parseFloat(this.state.priceValue) && parseFloat(_end) <= parseFloat(this.state.priceValue)) :
             ((parseFloat(_start) <= parseFloat(_end) && parseFloat(_start) <= 100 && parseFloat(_end) <= 100) ||
             (parseFloat(_start <= 100) && Number.isNaN(_end)) || (Number.isNaN(_start) && parseFloat(_end) <= 100));
         let _validationStatus,

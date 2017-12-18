@@ -384,7 +384,7 @@ class BuyAFreeDetailInfo extends React.Component {
                         wrapperCol={{ span: 20 }}
                     >
                         <p>
-                            任意或指定消费满或每满一定份数菜品,即可在已选购菜品中对一定分数的最低价商品进行免单
+                            任意或指定消费满或每满一定份数菜品,即可在已选购菜品中对一定份数的最低价商品进行免单
                         </p>
                     </FormItem>
 

@@ -32,11 +32,11 @@ import {
 import {
     SALE_CENTER_FETCH_PROMOTION_DETAIL,
     SALE_CENTER_FETCH_RROMOTION_DETAIL_PENDING,
-    SALE_CENTER_FETCH_PROMOTION_DETAIL_OK,
+    SALE_CENTER_FETCH_PROMOTION_DETAIL_OK_NEW,
     SALE_CENTER_FETCH_PROMOTION_DETAIL_FAIL,
     SALE_CENTER_FETCH_PROMOTION_DETAIL_TIME_OUT,
 
-    SALE_CENTER_ADD_PROMOTION_START,
+    SALE_CENTER_ADD_PROMOTION_START_NEWNEW,
     SALE_CENTER_ADD_PROMOTION_SUCCESS,
     SALE_CENTER_ADD_PROMOTION_FAILED,
     SALE_CENTER_ADD_PROMOTION_TIMEOUT,
@@ -182,7 +182,7 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_FETCH_PROMOTION_DETAIL:
             return $$state.setIn(['$promotionDetailInfo', 'status'], 'pending');
 
-        case SALE_CENTER_FETCH_PROMOTION_DETAIL_OK:
+        case SALE_CENTER_FETCH_PROMOTION_DETAIL_OK_NEW:
             if ($$state.getIn(['$promotionDetailInfo', 'status']) === 'pending') {
                 return $$state.setIn(['$promotionDetailInfo', 'status'], 'success')
                     .setIn(['$promotionDetailInfo', 'data'], Immutable.fromJS(action.payload));
@@ -222,7 +222,7 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$promotionList', 'status'], 'fail');
 
         // 添加营销活动
-        case SALE_CENTER_ADD_PROMOTION_START:
+        case SALE_CENTER_ADD_PROMOTION_START_NEWNEW:
             return $$state.setIn(['addPromotion', 'status'], 'pending');
 
         case SALE_CENTER_ADD_PROMOTION_SUCCESS:

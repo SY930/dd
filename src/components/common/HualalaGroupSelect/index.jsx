@@ -127,7 +127,7 @@ class HualalaGroupSelect extends React.Component {
                             {this.state.title}
                         </div>
                     </div>
-                    <div className={styles.SelectLevelB}>
+                    <div className={styles.SelectLevelB} style={{ height:300 }}>
                         <CheckboxGroup options={this.state.options} value={selected} onChange={this.onChange} />
                     </div>
                 </div>
