@@ -203,7 +203,7 @@ class StepTwo extends React.Component {
         const opts = this.props.type == '70' ?
             {
                 smsTemplate: this.state.message,
-                shopIDList: this.state.selections.map(shop => shop.shopID),
+                shopIDList: this.state.selections,
                 shopRange: this.state.selections.length > 0 ? 1 : 2,
             } :
             {
@@ -233,7 +233,7 @@ class StepTwo extends React.Component {
     }
     editBoxForShopsChange(val) {
         this.setState({
-            selections: val,
+            selections: val.map(shop => shop.shopID),
         })
     }
     renderShopsOptions() {

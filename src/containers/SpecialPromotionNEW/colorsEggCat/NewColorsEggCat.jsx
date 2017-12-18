@@ -32,7 +32,7 @@ class NewColorsEggCat extends NewPromotion {
                 title: '基本信息',
                 content: (
                     <StepOneWithDateRange
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={`${this.props.specialPromotion.$eventInfo.eventWay || 70}`}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
