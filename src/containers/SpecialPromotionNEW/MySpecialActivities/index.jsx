@@ -298,7 +298,7 @@ class MySpecialActivities extends React.Component {
                         const _envIsVip = HUALALA.ENVIRONMENT === 'production-release';
                         const data = _envIsVip ? _promoitonList.data.filter((activity) => {
                             // 隐藏1个卡片
-                            return activity.eventWay != '63' && activity.eventWay != '23'
+                            return activity.eventWay != '63'
                         }) : _promoitonList.data;
                         this.setState({
                             loading: false,
