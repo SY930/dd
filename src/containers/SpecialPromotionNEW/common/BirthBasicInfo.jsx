@@ -156,12 +156,12 @@ class PromotionBasicInfo extends React.Component {
     renderPromotionType() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
-        const lab = categorys.find((cc) => {
+        const lab = type ? categorys.find((cc) => {
             return cc.key === type
-        }).title;
+        }).title : '';
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{categorys.find((v) => { return v.key === this.props.type }).tip}</p>
+                <p>{type ? categorys.find(v => v.key === type).tip : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -255,7 +255,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.name,
                     })(
                         <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
-                    )}
+                        )}
                 </FormItem>
                 {this.renderMoreInfo()}
 
@@ -289,7 +289,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.description,
                     })(
                         <Input type="textarea" placeholder="请输入活动说明" onChange={this.handleDescriptionChange} />
-                    )}
+                        )}
                 </FormItem>
 
             </Form>

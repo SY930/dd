@@ -150,7 +150,7 @@ class AddGifts extends React.Component {
         let treeData = [];
         _giftTypes.map((gt, idx) => {
             treeData.push({
-                label: _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }).label,
+                label: _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }) ? _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }).label : '',
                 key: gt.giftType,
                 children: [],
             });

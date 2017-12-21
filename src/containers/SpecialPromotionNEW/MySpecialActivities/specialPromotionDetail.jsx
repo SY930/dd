@@ -276,7 +276,7 @@ class SpecialPromotionDetail extends React.Component {
             if (!gift.giftValidUntilDayCount > 0) {
                 const start = Moment(gift.effectTime, 'YYYYMMDDHHmmss').unix();// gift.effectTime:'20171030120000'
                 const end = Moment(gift.validUntilDate, 'YYYYMMDDHHmmss').unix();
-                days = Math.floor((end - start) / (3600 * 24));
+                days = Math.floor((end - start) / (3600 * 24)) + 1;
             }
             return {
                 key: `${index}`,

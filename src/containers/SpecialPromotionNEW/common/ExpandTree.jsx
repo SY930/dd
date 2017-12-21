@@ -69,7 +69,7 @@ class ExpandTree extends React.Component {
             data.map((cat) => {
                 return (
                     <TreeNode
-                        title={_.find(SALE_CENTER_GIFT_TYPE, { value: String(cat.giftType) }).label}
+                        title={_.find(SALE_CENTER_GIFT_TYPE, { value: String(cat.giftType) }) ? _.find(SALE_CENTER_GIFT_TYPE, { value: String(cat.giftType) }).label : ''}
                         key={cat.giftType}
                         className={'ExpandTreeVisibel'}
                         style={{ maxHeight: 280 }}
