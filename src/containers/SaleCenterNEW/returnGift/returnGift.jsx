@@ -426,7 +426,7 @@ class ReturnGift extends React.Component {
             );
         }
         const pickerProps = {
-            showTime: true,
+            // showTime: true,
             format: 'YYYY-MM-DD',
             onChange: (date, dateString) => {
                 this.handleRangePickerChange(date, dateString, index);
