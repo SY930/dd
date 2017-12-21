@@ -445,7 +445,7 @@ class AddGifts extends React.Component {
             );
         }
         const pickerProps = {
-            showTime: true,
+            showTime: false,
             format: 'YYYY-MM-DD',
             onChange: (date, dateString) => {
                 this.handleRangePickerChange(date, dateString, index);
