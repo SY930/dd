@@ -284,7 +284,7 @@ class AddUpGiveDetailInfo extends React.Component {
                         <FormItem
                                 style={{ width: '24%', marginRight: 0 }}
                                 validateStatus={this.state.maxTimesStatus}
-                                help={this.state.maxTimesStatus == 'success' ? null : `请在${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes + 1 : 3}~99999之间`}
+                                help={this.state.maxTimesStatus == 'success' ? null : `请在${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999之间`}
                             >
                                 <Input
                                 value={this.state.rule.maxTimes}
