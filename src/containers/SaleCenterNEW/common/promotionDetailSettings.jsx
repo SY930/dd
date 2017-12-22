@@ -516,7 +516,7 @@ class PromotionDetailSettings extends React.Component {
                                 />
                                 <HualalaSelected
                                     itemName="foodName+unit"
-                                    selectdTitle={'已选菜品分类'}
+                                    selectdTitle={'已选菜品'}
                                     value={this.state.foodSelections}
                                     onChange={(value) => { this.handleFoodSelectedChange(value) }}
                                     onClear={() => this.clear('food')}
