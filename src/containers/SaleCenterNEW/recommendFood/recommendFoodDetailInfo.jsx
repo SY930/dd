@@ -34,6 +34,8 @@ class RecommendFoodDetailInfo extends React.Component {
             stageType: 1,
             recommendNum: '',
             recommendTopNum: '',
+            recommendNumStatus: 'success',
+            recommendTopNumStatus: 'success',
         };
 
         this.onHandSetChange = this.onHandSetChange.bind(this);
@@ -51,7 +53,7 @@ class RecommendFoodDetailInfo extends React.Component {
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         rule = rule ? rule.toJS() : {};
-        let { stageType='1', recommendNum = '', recommendTopNum = '' } = rule;
+        let { stageType = '1', recommendNum = '', recommendTopNum = '' } = rule;
         let { display } = this.state;
         display = !this.props.isNew;
         const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
@@ -86,7 +88,7 @@ class RecommendFoodDetailInfo extends React.Component {
     }
 
     handleSubmit() {
-        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum } = this.state;
+        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum, recommendNumStatus, recommendTopNumStatus } = this.state;
         let priceLst = [],
             scopeLst = [],
             nextFlag = true,
@@ -146,6 +148,9 @@ class RecommendFoodDetailInfo extends React.Component {
             message.warning('请至少选择一种推荐方式');
             return;
         }
+        if (!(recommendNumStatus === 'success' && recommendTopNumStatus === 'success')) {
+            return;
+        }
         const rule = { stageType };
         recommendNum ? rule.recommendNum = recommendNum : null;
         recommendTopNum ? rule.recommendTopNum = recommendTopNum : null;
@@ -175,6 +180,7 @@ class RecommendFoodDetailInfo extends React.Component {
         this.setState({ autoSetChecked: e.target.checked })
     }
     render() {
+        const { recommendNumStatus, recommendTopNumStatus } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -184,11 +190,19 @@ class RecommendFoodDetailInfo extends React.Component {
                     {
                         this.state.handSetChecked ?
                             <div>
-                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}>
+                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}
+                                    validateStatus={recommendNumStatus}
+                                    help={recommendNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
+                                >
                                     <Input
                                         addonAfter='个'
                                         value={this.state.recommendNum}
-                                        onChange={(e) => { this.setState({ recommendNum: e.target.value > 50 ? '50' : e.target.value }) }}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                recommendNum: e.target.value,
+                                                recommendNumStatus: e.target.value > 50 ? 'error' : 'success',
+                                            })
+                                        }}
                                     />
                                 </FormItem>
                                 <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
@@ -211,11 +225,19 @@ class RecommendFoodDetailInfo extends React.Component {
                     {
                         this.state.autoSetChecked ?
                             <div>
-                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}>
+                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}
+                                    validateStatus={recommendTopNumStatus}
+                                    help={recommendTopNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
+                                >
                                     <Input
                                         addonAfter='个'
                                         value={this.state.recommendTopNum}
-                                        onChange={(e) => { this.setState({ recommendTopNum: e.target.value > 50 ? '50' : e.target.value }) }}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                recommendTopNum: e.target.value,
+                                                recommendTopNumStatus: e.target.value > 50 ? 'error' : 'success',
+                                            })
+                                        }}
                                     />
                                 </FormItem>
                                 <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
