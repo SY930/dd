@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import { Form, Select, message, Checkbox, Input } from 'antd';
+import { Form, Select, message, Checkbox, Input, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
 
 
@@ -20,6 +20,49 @@ const Option = Select.Option;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+
+
+class Tip extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+    }
+    render() {
+        const tip = (
+            <div style={{ display: this.state.tipDisplay || 'none', height: 140, width: 500, marginLeft: this.props.marginLeft }} className={styles.tip}>
+                {
+                    this.props.words.map(word => <p>{word}</p>)
+                }
+                <div>
+                    <div className={styles.tipBtn}>
+                        <Button
+                            type="ghost"
+                            style={{ color: '#787878' }}
+                            onClick={() => {
+                                this.setState({ tipDisplay: 'none' });
+                            }}
+                        >我知道了
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+        return (
+            <div style={this.props.style}>
+                <Icon
+                    type="question-circle-o"
+                    className={styles.question}
+                    // style={{ marginLeft: 6 }} 
+                    onMouseOver={() => {
+                        this.setState({ tipDisplay: 'block' })
+                    }}
+                />
+                <p>{tip}</p>
+            </div>
+        )
+    }
+}
 
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
@@ -184,8 +227,13 @@ class RecommendFoodDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <FormItem style={{ marginLeft: 89 }}>
+                    <FormItem style={{ marginLeft: 89, position: 'relative' }}>
                         <Checkbox onChange={this.onHandSetChange} checked={this.state.handSetChecked}>手动设置推荐菜</Checkbox>
+                        <Tip
+                            style={{ position: 'absolute', top: 0, left: 120 }}
+                            marginLeft={-98}
+                            words={['推荐菜品的数量大于列表中推荐菜品数量，微信页面呈现会智能补齐剩余数量', '推荐菜品的数量小于列表中推荐菜品数量，以推荐菜品总数量为准']}
+                        />
                     </FormItem>
                     {
                         this.state.handSetChecked ?
@@ -215,12 +263,17 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </FormItem>
                             </div> : null
                     }
-                    <FormItem style={{ marginLeft: 89 }}>
+                    <FormItem style={{ marginLeft: 89, position: 'relative' }}>
                         <Checkbox
                             onChange={this.onAutoSetChange}
                             checked={this.state.autoSetChecked}
                             style={{ marginTop: 30 }}
                         >TOP-N智能推荐菜</Checkbox>
+                        <Tip
+                            style={{ position: 'absolute', top: 31, left: 134 }}
+                            marginLeft={-114}
+                            words={['智能推荐菜品数量大于所选菜品，微信页面呈现会智能补齐剩余数量', '智能推荐菜品的数量小于所选菜品，以填写的数量为准']}
+                        />
                     </FormItem>
                     {
                         this.state.autoSetChecked ?
