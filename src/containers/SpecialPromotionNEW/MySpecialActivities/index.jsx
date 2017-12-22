@@ -272,9 +272,9 @@ class MySpecialActivities extends React.Component {
     // The filter condition should not be save to redux, just save it to state temporarily.
     // Modify it in the future
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTab !== nextProps.user.activeTab && nextProps.user.activeTab === '548') {
-            const tabArr = nextProps.user.tabList.map((tab) => tab.key);
-            if (tabArr.includes('548')) {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076003") {
+            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
+            if (tabArr.includes("1000076003")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
