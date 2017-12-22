@@ -188,7 +188,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                     <Input
                                         addonAfter='个'
                                         value={this.state.recommendNum}
-                                        onChange={(e) => { this.setState({ recommendNum: e.target.value }) }}
+                                        onChange={(e) => { this.setState({ recommendNum: e.target.value > 50 ? '50' : e.target.value }) }}
                                     />
                                 </FormItem>
                                 <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
@@ -215,7 +215,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                     <Input
                                         addonAfter='个'
                                         value={this.state.recommendTopNum}
-                                        onChange={(e) => { this.setState({ recommendTopNum: e.target.value }) }}
+                                        onChange={(e) => { this.setState({ recommendTopNum: e.target.value > 50 ? '50' : e.target.value }) }}
                                     />
                                 </FormItem>
                                 <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
