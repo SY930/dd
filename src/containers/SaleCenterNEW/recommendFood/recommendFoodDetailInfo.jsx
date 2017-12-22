@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import { Form, Select, message, Checkbox } from 'antd';
+import { Form, Select, message, Checkbox, Input } from 'antd';
 import { connect } from 'react-redux'
 
 
@@ -32,6 +32,8 @@ class RecommendFoodDetailInfo extends React.Component {
             priceLstHand: [],
             priceLstAuto: [],
             stageType: 1,
+            recommendNum: '',
+            recommendTopNum: '',
         };
 
         this.onHandSetChange = this.onHandSetChange.bind(this);
@@ -47,8 +49,9 @@ class RecommendFoodDetailInfo extends React.Component {
         });
         const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-        const stageType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) ?
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']).toJS().stageType : '1';
+        let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        rule = rule ? rule.toJS() : {};
+        let { stageType='1', recommendNum = '', recommendTopNum = '' } = rule;
         let { display } = this.state;
         display = !this.props.isNew;
         const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
@@ -61,6 +64,8 @@ class RecommendFoodDetailInfo extends React.Component {
             scopeLst: _scopeLst,
             handSetChecked: !!(stageType == 0 || stageType == 1),
             autoSetChecked: !!(stageType == 0 || stageType == 2),
+            recommendNum,
+            recommendTopNum,
         }, () => {
             this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
         });
@@ -81,7 +86,7 @@ class RecommendFoodDetailInfo extends React.Component {
     }
 
     handleSubmit() {
-        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto } = this.state;
+        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum } = this.state;
         let priceLst = [],
             scopeLst = [],
             nextFlag = true,
@@ -138,19 +143,18 @@ class RecommendFoodDetailInfo extends React.Component {
         }
         if (!handSetChecked && !autoSetChecked) {
             nextFlag = false;
-            message.warning('请至少选择一种推荐方式')
+            message.warning('请至少选择一种推荐方式');
+            return;
         }
-        if (nextFlag) {
-            this.props.setPromotionDetail({
-                priceLst,
-                scopeLst,
-                rule: { stageType },
-            });
-            return true;
-        }
-        handSetChecked && (!data || !dataFalg || data.length == 0) && message.warning('主菜、推荐菜数据不完整');
-        autoSetChecked && priceLstAuto.length == 0 && message.warning('适用菜品不得为空');
-        return false;
+        const rule = { stageType };
+        recommendNum ? rule.recommendNum = recommendNum : null;
+        recommendTopNum ? rule.recommendTopNum = recommendTopNum : null;
+        this.props.setPromotionDetail({
+            priceLst,
+            scopeLst,
+            rule,
+        });
+        return true;
     }
 
     handDishesChange(val) {
@@ -179,14 +183,23 @@ class RecommendFoodDetailInfo extends React.Component {
                     </FormItem>
                     {
                         this.state.handSetChecked ?
-                            <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }} required={true}>
-                                <CollocationTable
-                                    onChange={this.handDishesChange}
-                                    priceLst={this.state.priceLstHand}
-                                    scopeLst={this.state.scopeLst}
-                                    type="RECOMMEND_FOOD"
-                                />
-                            </FormItem> : null
+                            <div>
+                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}>
+                                    <Input
+                                        addonAfter='个'
+                                        value={this.state.recommendNum}
+                                        onChange={(e) => { this.setState({ recommendNum: e.target.value }) }}
+                                    />
+                                </FormItem>
+                                <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                    <CollocationTable
+                                        onChange={this.handDishesChange}
+                                        priceLst={this.state.priceLstHand}
+                                        scopeLst={this.state.scopeLst}
+                                        type="RECOMMEND_FOOD"
+                                    />
+                                </FormItem>
+                            </div> : null
                     }
                     <FormItem style={{ marginLeft: 89 }}>
                         <Checkbox
@@ -197,18 +210,23 @@ class RecommendFoodDetailInfo extends React.Component {
                     </FormItem>
                     {
                         this.state.autoSetChecked ?
-                            <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
-                                {
-                                    this.props.form.getFieldDecorator('priceLst', {
-                                        rules: [{
-                                            required: true,
-                                            message: '适用菜品不得为空',
-                                        }],
-                                        initialValue: this.state.priceLstAuto,
-                                    })(
-                                        <EditBoxForDishes onChange={this.autoDishesChange} type="RECOMMEND_FOOD" />
-                                    )}
-                            </FormItem> : null
+                            <div>
+                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}>
+                                    <Input
+                                        addonAfter='个'
+                                        value={this.state.recommendTopNum}
+                                        onChange={(e) => { this.setState({ recommendTopNum: e.target.value }) }}
+                                    />
+                                </FormItem>
+                                <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                    {
+                                        this.props.form.getFieldDecorator('priceLst', {
+                                            initialValue: this.state.priceLstAuto,
+                                        })(
+                                            <EditBoxForDishes onChange={this.autoDishesChange} type="RECOMMEND_FOOD" />
+                                            )}
+                                </FormItem>
+                            </div> : null
                     }
                 </Form>
             </div>
