@@ -110,7 +110,7 @@ class GiftDetailTable extends Component {
         const newDataSource = gifts.map((g, i) => {
             g.key = i + 1;
             g.giftType = String(g.giftType);
-            g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label;
+            g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ?  _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
             g.createTime = g.createStamp == 0 ? '--' : g.createStamp.split('.')[0];
             g.actionTime = g.actionStamp == 0 ? '--' : g.actionStamp.split('.')[0];
             g.operateTime = <div>{g.createTime}<br />{g.actionTime}</div>;
