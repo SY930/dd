@@ -79,6 +79,7 @@ class GiftType extends React.Component {
                 case '40':
                 case '42':
                 case '90':
+                case '100':
                     return <GiftAddModal type="add" {...this.state} onCancel={() => this.handleCancel()} />;
             }
         };
