@@ -132,6 +132,7 @@ const FIRST_KEYS = {
         keys: ['giftType', 'giftValue', 'giftName', 'isFoodCatNameList', 'foodNameList', 'giftRemark'],
     }],
     '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
+    '券关联活动': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
 };
 const SECOND_KEYS = {
     '电子代金券': [{
@@ -145,6 +146,10 @@ const SECOND_KEYS = {
     '会员权益券': [{
         col: { span: 24, pull: 2 },
         keys: ['isCustomerPrice', 'hasPrivilegeOfWait', 'isDiscountRate', 'isPointRate', 'numberOfTimeType', 'moneyTopLimitType'],
+    }],
+    '券关联活动': [{
+        col: { span: 24, pull: 2 },
+        keys: ['isCustomerPrice', ],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

@@ -10,7 +10,6 @@ import GiftCfg from '../../../constants/Gift';
 import {
     FetchGiftList,
 } from '../_action';
-import SaleCenterNEW from '../../SaleCenterNEW';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -305,25 +304,12 @@ class GiftAddModal extends React.Component {
                     }
                 },
             },
-            addPromotion: {
-                type: 'custom',
-                render: () => {
-                    return <Button
-                        type="primary"
-                        style={{ marginLeft: 100 }}
-                        onClick={() => { this.setState({ addPromotionVisible: true }) }}
-                    >
-                        新建活动
-                    </Button>;
-                },
-            }
         };
         const formKeys = {
             '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule'] }],
             '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
             '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
             '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'price', 'giftRemark', 'giftRule'] }],
-            '券关联活动': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'price', 'giftRemark', 'giftRule', 'addPromotion'] }],
         };
         let formData = {};
         if (type == 'edit') {
@@ -354,18 +340,6 @@ class GiftAddModal extends React.Component {
                         key={`${describe}-${type}`}
                     />
                 </div>
-                <Modal
-                    //title={`创建`}
-                    //style={{ overflow: 'hidden' }}
-                    className={styles.addPromotionModal}
-                    visible={this.state.addPromotionVisible}
-                    onCancel={() => {
-                        this.setState({ addPromotionVisible: false })
-                    }}
-                    footer={[<Button key="0" type="ghost" onClick={() => this.setState({ addPromotionVisible: false })}>取消</Button>]}
-                >
-                    <SaleCenterNEW />
-                </Modal>
             </Modal>
         )
     }
