@@ -684,6 +684,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
                 return item.shopID;
             })
             .join(','),
+        usageMode: _source.usageMode,
     };
 };
 

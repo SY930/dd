@@ -72,6 +72,7 @@ class NewPromotion extends React.Component {
             roleIDLst: _roleIDLst,
             isActive,
             shareLst,
+            usageMode: scopeInfo.usageMode,
         };
         // 存储普通菜品分类和单品（非套餐），scopeLst过滤掉线上菜品，priceLst过滤套餐
         const categoryNames = [];
@@ -102,7 +103,7 @@ class NewPromotion extends React.Component {
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
-            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun, maintenanceLevel } = opts;
+            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun, maintenanceLevel, usageMode } = opts;
         const promotionInfo = {
             master: {
                 groupID,
@@ -134,6 +135,7 @@ class NewPromotion extends React.Component {
                 subjectType,
                 excludedSubjectLst,
                 maintenanceLevel,
+                usageMode,
             },
             timeLst: opts.timeLst,
             priceLst,
