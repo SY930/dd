@@ -229,11 +229,14 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                value ? newKeys.splice(1, 0, 'trdChannelID', 'trdTemplateID') :
+                value ? newKeys.splice(1, 0, 'trdChannelID', 'trdTemplateID', 'trdTemplateIDLabel') :
                     _.remove(newKeys, function (k) {
-                        return k === 'trdChannelID' || k === 'trdTemplateID';
+                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel';
                     });
                 this.setState({ secondKeys })
+                break;
+            case 'trdTemplateID':
+                this.setState({ trdTemplateIDLabel: value })
                 break;
             default:
                 break;
@@ -683,6 +686,14 @@ class GiftAddModalStep extends React.Component {
                     { label: '第三方测试模版1', value: '105295292929295' },
                     { label: '第三方测试模版2', value: '116528542852898' },
                 ],
+            },
+            trdTemplateIDLabel: {
+                label: '第三方券模板或活动ID',
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                type: 'custom',
+                defaultValue: '',
+                render: () => <p>{this.state.trdTemplateIDLabel || ''}</p>
             },
         };
         let formData = {};
