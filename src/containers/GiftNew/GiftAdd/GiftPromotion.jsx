@@ -1,7 +1,8 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
-import { connect } from 'react-redux'; import { Tree } from 'antd';
-import styles from '../ActivityPage.less';
+import { connect } from 'react-redux';
+import { Tree } from 'antd';
+import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const TreeNode = Tree.TreeNode;
@@ -114,14 +115,14 @@ class GiftPromotion extends React.Component {
         return (
             <div className={styles.treeSelectMain}>
                 <HualalaEditorBox
-                    label={'营销活动共享'}
+                    label={'对应基础营销券活动'}
                     itemName={'finalShowName'}
                     itemID={'promotionIDStr'}
                     data={this.state.promotionSelections}
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
-                    <HualalaTreeSelect level1Title={'全部营销活动'}>
+                    <HualalaTreeSelect level1Title={'营销券活动'}>
                         {/* //搜索框 */}
                         <HualalaSearchInput onChange={this.handleSearchInputChange} />
                         {/* //左侧树 */}
@@ -142,7 +143,7 @@ class GiftPromotion extends React.Component {
                         <HualalaSelected
                             itemName={'finalShowName'}
                             itemID={'promotionIDStr'}
-                            selectdTitle={'已选营销活动'}
+                            selectdTitle={'已选营销券活动'}
                             value={this.state.promotionSelections}
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}

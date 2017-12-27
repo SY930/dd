@@ -104,7 +104,7 @@ const FORMITEMS = {
         type: 'text',
         placeholder: '0.7(7折),0.77(77折)',
         rules: [{ required: true, message: '折扣率不能为空' },
-            { pattern: /^([0](\.\d{1,2})?|1(\.[0]{1,2})?)$/, message: '取值范围0~1,最多可取两位小数,未开启表示无折扣' }],
+        { pattern: /^([0](\.\d{1,2})?|1(\.[0]{1,2})?)$/, message: '取值范围0~1,最多可取两位小数,未开启表示无折扣' }],
     },
     isPointRate: {
         label: '享受积分',
@@ -118,10 +118,17 @@ const FORMITEMS = {
         type: 'text',
         placeholder: '0.12（现金12%积分）',
         rules: [{ required: true, message: '积分系数不能为空' },
-            {
-                pattern: /(?!^0\.0?0$)^[0-9][0-9]?(\.[0-9]{1,2})?$|^100$/,
-                message: '请输入0到100的数,可输入两位小数',
-            }],
+        {
+            pattern: /(?!^0\.0?0$)^[0-9][0-9]?(\.[0-9]{1,2})?$|^100$/,
+            message: '请输入0到100的数,可输入两位小数',
+        }],
+    },
+    isMapTotrd: {
+        label: '是否关联第三方券',
+        type: 'switcher',
+        defaultValue: false,
+        onLabel: '是',
+        offLabel: '否',
     },
 };
 
@@ -132,7 +139,7 @@ const FIRST_KEYS = {
         keys: ['giftType', 'giftValue', 'giftName', 'isFoodCatNameList', 'foodNameList', 'giftRemark'],
     }],
     '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
-    '券关联活动': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
+    '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
 };
 const SECOND_KEYS = {
     '电子代金券': [{
@@ -147,9 +154,9 @@ const SECOND_KEYS = {
         col: { span: 24, pull: 2 },
         keys: ['isCustomerPrice', 'hasPrivilegeOfWait', 'isDiscountRate', 'isPointRate', 'numberOfTimeType', 'moneyTopLimitType'],
     }],
-    '券关联活动': [{
+    '活动券': [{
         col: { span: 24, pull: 2 },
-        keys: ['isCustomerPrice', ],
+        keys: ['trdTemplate', 'promotionID'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

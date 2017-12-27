@@ -15,7 +15,8 @@ import {
     FetchGiftList,
     FetchGiftSort,
 } from '../_action';
-import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action'
+import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import GiftPromotion from './GiftPromotion';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -644,6 +645,13 @@ class GiftAddModalStep extends React.Component {
                         </Col>
                     </Row>
                 ),
+            },
+            promotionID: {
+                label: '对应基础营销活动',
+                type: 'custom',
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                render: (decorator, form) => <GiftPromotion></GiftPromotion>,
             },
         };
         let formData = {};
