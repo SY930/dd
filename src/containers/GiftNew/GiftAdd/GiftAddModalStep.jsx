@@ -550,7 +550,7 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
-        dates.promotionID = dates.promotionID ? [promotionID] : [];
+        dates.promotionID = dates.promotionID ? [dates.promotionID] : [];
         dates.isMapTotrd = dates.trdChannelID ? true : false;
         const formItems = {
             ...FORMITEMS,
