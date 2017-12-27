@@ -387,6 +387,7 @@ class MyActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
             pageSize: this.state.pageSizes,
             pageNo,
+            usageMode:-1,
         };
         if (promotionType != '' && promotionType != 'undefined') {
             opt.promotionType = promotionType;
@@ -1091,6 +1092,7 @@ class MyActivities extends React.Component {
                                 groupID: this.props.user.accountInfo.groupID,
                                 pageSize,
                                 pageNo: page,
+                                usageMode:-1,
                             };
                             const {
                                 promotionType,
