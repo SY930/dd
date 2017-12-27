@@ -305,6 +305,9 @@ class GiftAddModalStep extends React.Component {
                     return value == '' || value == undefined ? 0 : Number(value);
                 case 'usingTimeType':
                     return value && value.join();
+                case 'promotionID':
+                    return value[0].promotionIDStr;
+                    
                 default:
                     return value !== undefined ? value : '';
             }
@@ -505,6 +508,15 @@ class GiftAddModalStep extends React.Component {
 
         )
     }
+    renderGiftPromotion(decorator, form) {
+        return (
+            <FormItem>
+                {
+                    decorator({})(<GiftPromotion />)
+                }
+            </FormItem>
+        )
+    }
 
     // afterClose = () => {
     // 	this.setState({
@@ -658,7 +670,7 @@ class GiftAddModalStep extends React.Component {
                 type: 'custom',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                render: (decorator, form) => <GiftPromotion></GiftPromotion>,
+                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
             },
         };
         let formData = {};

@@ -672,6 +672,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             'voucherVerifyChannel': ruleJson.voucherVerifyChannel,
             'points': ruleJson.points,
             'evidence': ruleJson.evidence,
+            'usageMode': source.usageMode || 1,
         };
     }
     return {
@@ -684,7 +685,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
                 return item.shopID;
             })
             .join(','),
-        usageMode: _source.usageMode,
+        usageMode: _source.usageMode || 1,
     };
 };
 

@@ -58,6 +58,7 @@ class GiftPromotion extends React.Component {
         // 请求获取promotionList--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
+            usageMode: 2,
         })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
@@ -127,9 +128,9 @@ class GiftPromotion extends React.Component {
                         <HualalaSearchInput onChange={this.handleSearchInputChange} />
                         {/* //左侧树 */}
                         <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
-                            <TreeNode key={'salePromotion'} title={'基础营销'}>
+                            {/* <TreeNode key={'salePromotion'} title={'基础营销'}> */}
                                 {loop(_promotionCollection)}
-                            </TreeNode>
+                            {/* </TreeNode> */}
                         </Tree>
                         {/* //右侧复选框 */}
                         <HualalaGroupSelect

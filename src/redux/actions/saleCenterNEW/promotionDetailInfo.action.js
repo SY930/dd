@@ -248,29 +248,39 @@ export const fetchAllPromotionListAC = (opts) => {
             type: SALE_CENTER_FETCH_ALL_PROMOTION_LIST,
         });
 
-        const config = getSpecifiedUrlConfig('getAllPromotionList_NEW', opts);
-
+        // const config = getSpecifiedUrlConfig('getAllPromotionList_NEW', opts);
+        // fetch(config.url, {
+        //     method: config.method,
+        //     body: JSON.stringify(opts),
+        //     credentials: 'include',
+        //     headers: {
+        //         'Accept': 'application/json; charset=UTF-8',
+        //         'Content-Type': 'application/json; charset=UTF-8',
+        //     },
+        // })
+        const config = getSpecifiedUrlConfig('getPromotionList_NEW', opts);
         fetch(config.url, {
             method: config.method,
-            body: JSON.stringify(opts),
+            body: JSON.stringify({ ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 }),
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
                 'Content-Type': 'application/json; charset=UTF-8',
             },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
+        })
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                        return response.json();
+                    }
+                    return response.text();
                 }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            dispatch(fetchAllPromotionListSuccess(responseJSON))
-        }).catch((error) => {
-            dispatch(fetchAllPromotionListFailed(error))
-        });
+                return Promise.reject(new Error(response.statusText))
+            }).then((responseJSON) => {
+                dispatch(fetchAllPromotionListSuccess(responseJSON))
+            }).catch((error) => {
+                dispatch(fetchAllPromotionListFailed(error))
+            });
     }
 };
 
