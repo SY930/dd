@@ -547,6 +547,7 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
+        dates.promotionID = dates.promotionID ? [promotionID] : [];
         const formItems = {
             ...FORMITEMS,
             giftType: {
