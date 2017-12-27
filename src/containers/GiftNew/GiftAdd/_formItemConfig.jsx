@@ -156,7 +156,7 @@ const SECOND_KEYS = {
     }],
     '活动券': [{
         col: { span: 24, pull: 2 },
-        keys: ['trdTemplate', 'promotionID'],
+        keys: ['isMapTotrd', 'promotionID'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
