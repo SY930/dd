@@ -306,8 +306,8 @@ class GiftAddModalStep extends React.Component {
                 case 'usingTimeType':
                     return value && value.join();
                 case 'promotionID':
-                    return value[0].promotionIDStr;
-                    
+                    return value && value[0].promotionIDStr;
+
                 default:
                     return value !== undefined ? value : '';
             }
@@ -671,6 +671,17 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
+            },
+            trdTemplateID: {
+                label: '第三方券模板或活动',
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                type: 'combo',
+                defaultValue: '',
+                options: [
+                    { label: '第三方测试模版1', value: '105295292929295' },
+                    { label: '第三方测试模版2', value: '116528542852898' },
+                ],
             },
         };
         let formData = {};
