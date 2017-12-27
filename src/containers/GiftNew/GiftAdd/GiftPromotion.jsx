@@ -63,14 +63,11 @@ class GiftPromotion extends React.Component {
         })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
-
-        // 用户选择过的互斥活动
-        // const _mutexPromotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS() : [];
-
-        // this.setState({  })
+        // 用户选择过的活动
+        const _mutexPromotions = this.props.promotionID;
         this.setState({
             promotionCollection: _promotions,
-            // mutexPromotions: _mutexPromotions,
+            mutexPromotions: _mutexPromotions,
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
         });

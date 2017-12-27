@@ -512,10 +512,12 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderGiftPromotion(decorator, form) {
+        const { gift: { data } } = this.props,
+            promotionID = data.promotionID ? [{ sharedIDStr: data.promotionID }] : [];
         return (
             <FormItem>
                 {
-                    decorator({})(<GiftPromotion />)
+                    decorator({})(<GiftPromotion promotionID={promotionID} />)
                 }
             </FormItem>
         )
@@ -550,7 +552,6 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
-        dates.promotionID = dates.promotionID ? [dates.promotionID] : [];
         dates.isMapTotrd = dates.trdChannelID ? true : false;
         const formItems = {
             ...FORMITEMS,
