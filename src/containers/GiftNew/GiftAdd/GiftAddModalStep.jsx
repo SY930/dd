@@ -130,7 +130,7 @@ class GiftAddModalStep extends React.Component {
     handleFormChange(key, value, form) {
         const { gift: { name: describe } } = this.props;
         const { secondKeys, values } = this.state;
-        const newKeys = secondKeys[describe][0].keys;
+        let newKeys = secondKeys[describe][0].keys;
         const index = _.findIndex(newKeys, item => item == key);
         switch (key) {
             case 'moneyLimitType':
@@ -228,6 +228,13 @@ class GiftAddModalStep extends React.Component {
                         foodNameList: [],
                     })
                 }
+            case 'isMapTotrd':
+                value ? newKeys.splice(1, 0, 'trdChannelID', 'trdTemplateID') :
+                    _.remove(newKeys, function (k) {
+                        return k === 'trdChannelID' || k === 'trdTemplateID';
+                    });
+                this.setState({ secondKeys })
+                break;
             default:
                 break;
         }
@@ -410,7 +417,7 @@ class GiftAddModalStep extends React.Component {
                         {decorator({
                             key: 'giftName',
                             rules: [{ required: true, message: '礼品名称不能为空' },
-                                { max: 50, message: '请输入不超过50个字符的名称' }],
+                            { max: 50, message: '请输入不超过50个字符的名称' }],
                         })(<Input size="large" placeholder="请输入礼品名称" />)}
                     </FormItem>
                 </Col>
@@ -492,7 +499,7 @@ class GiftAddModalStep extends React.Component {
                                 message: '抵扣菜品或分类不能为空',
                             },
                         ],
-                    })(<PromotionDetailSetting radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true}/>)
+                    })(<PromotionDetailSetting radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
                 }
             </FormItem>
 
@@ -712,8 +719,8 @@ class GiftAddModalStep extends React.Component {
                 onCancel={() => this.handleCCCCancel()}
                 footer={false}
                 key={`${describe}-${type}`}
-                // afterClose={this.afterClose}
-                // wrapClassName="progressBarModal"
+            // afterClose={this.afterClose}
+            // wrapClassName="progressBarModal"
             >
                 {
                     visible ?

@@ -137,6 +137,15 @@ const GiftCfg = {
         { value: '0', label: '女' },
         { value: '2', label: '未知' },
     ],
+    trdChannelIDs: [
+        { label: '微信', value: '1' },
+        { label: '5i', value: '2' },
+        { label: '拉格代尔', value: '3' },
+    ],
+    trdTemplateIDs: [
+        { label: '测试模版1', value: '0' },
+        { label: '测试模版2', value: '1' },
+    ],
 }
 
 export default GiftCfg

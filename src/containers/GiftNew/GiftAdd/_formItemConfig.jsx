@@ -130,6 +130,22 @@ const FORMITEMS = {
         onLabel: '是',
         offLabel: '否',
     },
+    trdChannelID: {
+        label: '第三方渠道',
+        labelCol: { span: 8 },
+        wrapperCol: { span: 16 },
+        type: 'combo',
+        defaultValue: '1',
+        options: GiftCfg.trdChannelIDs,
+    },
+    trdTemplateID: {
+        label: '第三方券模板或活动',
+        labelCol: { span: 8 },
+        wrapperCol: { span: 16 },
+        type: 'combo',
+        defaultValue: '',
+        options: GiftCfg.trdTemplateIDs,
+    },
 };
 
 const FIRST_KEYS = {
