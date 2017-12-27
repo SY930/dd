@@ -1,9 +1,10 @@
-import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Tree } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { HualalaEditorBox, HualalaTreeSelect,  HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import HualalaGroupSelect from '../../SaleCenterNEW/common/HualalaGroupSelect';
 
 const TreeNode = Tree.TreeNode;
 class GiftPromotion extends React.Component {
@@ -139,6 +140,9 @@ class GiftPromotion extends React.Component {
                             valueKey={'promotionIDStr'}
                             value={this.state.promotionCurrentSelections}
                             onChange={this.handleGroupSelect}
+                            autoMax={true}
+                            isRecommendFood={true}
+                            foodSelections={Array.from(this.state.promotionSelections || [])}
                         />
                         {/* //下方已选的tag */}
                         <HualalaSelected
