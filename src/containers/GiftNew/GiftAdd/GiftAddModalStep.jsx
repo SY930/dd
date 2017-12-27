@@ -10,13 +10,14 @@ import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
 import FoodCatTree from './FoodCatTree';
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
+import PromotionDetailSetting from '../../SaleCenterNEW/common/promotionDetailSetting';
+import GiftPromotion from './GiftPromotion';
+import GiftCfg from '../../../constants/Gift';
 import {
     FetchGiftList,
     FetchGiftSort,
 } from '../_action';
 import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import GiftPromotion from './GiftPromotion';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -671,6 +672,21 @@ class GiftAddModalStep extends React.Component {
                     </Row>
                 ),
             },
+            isMapTotrd: {
+                label: '是否关联第三方券',
+                type: 'switcher',
+                defaultValue: false,
+                onLabel: '是',
+                offLabel: '否',
+            },
+            trdChannelID: {
+                label: '第三方渠道',
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                type: 'combo',
+                defaultValue: '1',
+                options: GiftCfg.trdChannelIDs,
+            },
             promotionID: {
                 label: '对应基础营销活动',
                 type: 'custom',
@@ -733,17 +749,20 @@ class GiftAddModalStep extends React.Component {
             />,
         }, {
             title: '使用规则',
-            content: <BaseForm
-                getForm={form => this.secondForm = form}
-                formItems={formItems}
-                formData={formData}
-                formKeys={secondKeys[describe]}
-                onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
-                getSubmitFn={(handles) => {
-                    this.handles[1] = handles;
-                }}
-                key={`${describe}-${type}2`}
-            />,
+            content: (<div className={styles.giftWrap}>
+                <BaseForm
+                    getForm={form => this.secondForm = form}
+                    formItems={formItems}
+                    formData={formData}
+                    formKeys={secondKeys[describe]}
+                    onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
+                    getSubmitFn={(handles) => {
+                        this.handles[1] = handles;
+                    }}
+                    key={`${describe}-${type}2`}
+                />
+                <div className={value === '100' && type === 'edit' ? styles.opacitySet : null}></div>
+            </div>),
         }];
         return (
             // Todo:点叉关闭功能

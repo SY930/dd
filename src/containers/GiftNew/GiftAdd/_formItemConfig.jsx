@@ -123,21 +123,6 @@ const FORMITEMS = {
             message: '请输入0到100的数,可输入两位小数',
         }],
     },
-    isMapTotrd: {
-        label: '是否关联第三方券',
-        type: 'switcher',
-        defaultValue: false,
-        onLabel: '是',
-        offLabel: '否',
-    },
-    trdChannelID: {
-        label: '第三方渠道',
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
-        type: 'combo',
-        defaultValue: '1',
-        options: GiftCfg.trdChannelIDs,
-    },
 };
 
 const FIRST_KEYS = {
