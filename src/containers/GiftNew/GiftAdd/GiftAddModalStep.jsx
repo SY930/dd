@@ -694,7 +694,7 @@ class GiftAddModalStep extends React.Component {
                 wrapperCol: { span: 16 },
                 type: 'custom',
                 defaultValue: '',
-                render: () => <Input value={this.state.trdTemplateIDLabel || ''} disabled/>
+                render: () => <Input value={this.state.trdTemplateIDLabel || dates.trdTemplateID || ''} disabled />
             },
         };
         let formData = {};
