@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Row, Col } from 'antd';
 import { CrmLogo } from './CrmOperation';
 import GiftCfg from '../../../constants/Gift';
@@ -29,7 +30,12 @@ class GiftType extends React.Component {
         this.getData();
     }
     componentDidMount() {
-        console.log(this.state)
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
+    }
+    onWindowResize = () => {
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        this.setState({ contentHeight });
     }
     getData(params = {}) {
         const { user } = this.props;
@@ -85,7 +91,7 @@ class GiftType extends React.Component {
         };
         return (
             <div>
-                <Row className="layoutsContainer">
+                <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                     <Col className="layoutsHeader">
                         <Row className="layoutsTool">
                             <div className="layoutsToolLeft">
@@ -94,7 +100,7 @@ class GiftType extends React.Component {
                         </Row>
                     </Col>
                     <Col className="layoutsLineBlock"></Col>
-                    <Col className="layoutsContent">
+                    <Col className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
                         <ul>
                             {GiftCfg.giftType.map((gift, index) => {
                                 return (
