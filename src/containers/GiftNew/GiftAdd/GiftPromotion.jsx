@@ -60,6 +60,7 @@ class GiftPromotion extends React.Component {
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
             usageMode: 2,
+            channelID: 0,
         })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
