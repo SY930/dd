@@ -183,9 +183,10 @@ class GiftDetailTable extends Component {
     }
 
     handleEdit(rec) {
-        const gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
+        let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
         const selectShops = [];
-        gift.data = { ...rec };
+        gift = _.cloneDeep(gift);
+        gift.data = { ...rec }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
         gift.data.shopNames = gift.data.shopNames === '不限' ? [] : gift.data.shopNames.split(',');
         gift.data.shopIDs = gift.data.shopIDs === undefined ? [] : gift.data.shopIDs.split(',');
         gift.data.shopNames.map((shop, idx) => {
