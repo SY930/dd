@@ -71,7 +71,8 @@ class RecommendFoodDetailInfo extends React.Component {
             priceLst: [],
             scopeLst: [],
             handSetChecked: true,
-            autoSetChecked: false,
+            autoSetChecked: true,
+            // autoSetChecked: false,
             priceLstHand: [],
             priceLstAuto: [],
             stageType: 1,
@@ -107,8 +108,10 @@ class RecommendFoodDetailInfo extends React.Component {
             priceLstHand,
             priceLstAuto,
             scopeLst: _scopeLst,
-            handSetChecked: !!(stageType == 0 || stageType == 1),
-            autoSetChecked: !!(stageType == 0 || stageType == 2),
+            // handSetChecked: !!(stageType == 0 || stageType == 1),
+            // autoSetChecked: !!(stageType == 0 || stageType == 2),
+            handSetChecked: true,
+            autoSetChecked: true,
             recommendNum,
             recommendTopNum,
         }, () => {
@@ -126,6 +129,8 @@ class RecommendFoodDetailInfo extends React.Component {
                 priceLstHand,
                 priceLstAuto,
                 scopeLst: _scopeLst,
+            }, () => {
+                this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
             });
         }
     }
@@ -217,10 +222,10 @@ class RecommendFoodDetailInfo extends React.Component {
         })
     }
     onHandSetChange(e) {
-        this.setState({ handSetChecked: e.target.checked })
+        // this.setState({ handSetChecked: e.target.checked })
     }
     onAutoSetChange(e) {
-        this.setState({ autoSetChecked: e.target.checked })
+        // this.setState({ autoSetChecked: e.target.checked })
     }
     render() {
         const { recommendNumStatus, recommendTopNumStatus } = this.state;
