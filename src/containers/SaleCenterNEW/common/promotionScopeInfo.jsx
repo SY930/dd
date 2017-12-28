@@ -219,7 +219,7 @@ class PromotionScopeInfo extends React.Component {
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 initialized: true,
-                usageMode: _stateFromRedux.usageMode || 1,
+                usageMode: _data.usageMode || 1,
             });
         }
     }
