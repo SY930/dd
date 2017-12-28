@@ -684,7 +684,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
-                defaultValue: '1',
+                defaultValue: '10',
                 options: GiftCfg.trdChannelIDs,
             },
             promotionID: {

@@ -138,7 +138,7 @@ const GiftCfg = {
         { value: '2', label: '未知' },
     ],
     trdChannelIDs: [
-        { label: '微信', value: '1' },
+        { label: '微信', value: '10' },
         { label: '5i', value: '2', disabled:true },
         { label: '拉格代尔', value: '3', disabled:true },
     ],
