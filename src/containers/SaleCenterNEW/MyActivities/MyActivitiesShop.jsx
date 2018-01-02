@@ -215,38 +215,20 @@ class MyActivitiesShop extends React.Component {
             fetchPromotionList,
         } = this.props;
         this.handleQuery();
-        // fetchPromotionList({
-        //     data: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         pageSize: this.state.pageSizes,
-        //         pageNo: 1,
-        //     },
-        //     fail: (msg) => { message.error(msg) },
-        //     success: this.showNothing,
-        // });
-        // Make sure the categoryList is fetched from the server.
-        if (!promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
-            fetchPromotionCategories({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'CATEGORY_NAME',
-            });
-        }
-
-        // Make sure the taglist is fetched from the server
-        if (!promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
-            fetchPromotionTags({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'TAG_NAME',
-            });
-        }
-
-        // Make sure that the promotion scope related data is fetched from the server
-        if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
-            fetchPromotionScopeInfo({
-                _groupID: this.props.user.accountInfo.groupID,
-            });
-        }
-
+        fetchPromotionCategories({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+            phraseType: 'CATEGORY_NAME',
+        });
+        fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+            phraseType: 'TAG_NAME',
+        });
+        fetchPromotionScopeInfo({
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -268,7 +250,7 @@ class MyActivitiesShop extends React.Component {
     handleDisableClickEvent(text, record) {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
-            record,
+            record: { ...record, shopID: this.props.user.shopID },
             cb: this.toggleStateCallBack,
         });
     }
@@ -313,9 +295,9 @@ class MyActivitiesShop extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "10000833") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("1000076001")) {
+            if (tabArr.includes("10000833")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
@@ -380,14 +362,15 @@ class MyActivitiesShop extends React.Component {
             promotionTags,
             promotionBrands,
             promotionOrder,
-            promotionShop,
+            // promotionShop,
         } = this.state;
 
         const opt = {
             groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
             pageSize: this.state.pageSizes,
             pageNo,
-            usageMode:-1,
+            usageMode: -1,
         };
         if (promotionType != '' && promotionType != 'undefined') {
             opt.promotionType = promotionType;
@@ -405,9 +388,9 @@ class MyActivitiesShop extends React.Component {
         if (promotionOrder != '' && promotionOrder != undefined) {
             opt.orderType = promotionOrder;
         }
-        if (promotionShop != '' && promotionShop != undefined) {
-            opt.shopID = promotionShop;
-        }
+        // if (promotionShop != '' && promotionShop != undefined) {
+        //     opt.shopID = promotionShop;
+        // }
         if (promotionState != '' && promotionState != '0') {
             opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
         }
@@ -480,6 +463,7 @@ class MyActivitiesShop extends React.Component {
     handleUpdateOpe() {
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
@@ -517,6 +501,7 @@ class MyActivitiesShop extends React.Component {
             data: {
                 promotionID: _record.promotionIDStr || this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID,
             },
             success: successFn,
             fail: failFn,
@@ -538,6 +523,7 @@ class MyActivitiesShop extends React.Component {
             data: {
                 promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID,
             },
             fail: failFn,
         });
@@ -744,12 +730,12 @@ class MyActivitiesShop extends React.Component {
                             </Select>
                         </li>
 
-                        <li>
+                        {/* <li>
                             <h5>适用店铺</h5>
                         </li>
                         <li>
                             {this.renderShopsInTreeSelectMode()}
-                        </li>
+                        </li> */}
 
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
@@ -864,7 +850,7 @@ class MyActivitiesShop extends React.Component {
                             </Select>
                         </li>
 
-                        <li>
+                        {/* <li>
                             <h5>品牌</h5>
                         </li>
                         <li>
@@ -886,7 +872,7 @@ class MyActivitiesShop extends React.Component {
                                     })
                                 }
                             </Select>
-                        </li>
+                        </li> */}
 
                         <li>
                             <h5>适用业务</h5>
@@ -1090,9 +1076,10 @@ class MyActivitiesShop extends React.Component {
                             })
                             const opt = {
                                 groupID: this.props.user.accountInfo.groupID,
+                                shopID: this.props.user.shopID,
                                 pageSize,
                                 pageNo: page,
-                                usageMode:-1,
+                                usageMode: -1,
                             };
                             const {
                                 promotionType,
