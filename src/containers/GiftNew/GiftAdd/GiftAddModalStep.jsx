@@ -89,6 +89,14 @@ class GiftAddModalStep extends React.Component {
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
         });
+        // 第三方券模版
+        fetchData('queryTrdTemplate', {
+            groupID: this.props.accountInfo.toJS().groupID,
+            channelID: 10,
+            forceRefresh: 1,
+        }, null, {}).then((data) => {
+            console.log(data)
+        });
         FetchGiftSort({});
     }
 
