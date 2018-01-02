@@ -11,3 +11,6 @@ export { default as old_MySpecialActivities } from './SpecialPromotion/MySpecial
 export { default as old_NewSpecialActivity } from './SpecialPromotion/index';
 export { default as old_GiftInfo } from './Gift/GiftInfo/index';
 export { default as old_GiftAdd } from './Gift/GiftAdd/index';
+
+export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
+export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
