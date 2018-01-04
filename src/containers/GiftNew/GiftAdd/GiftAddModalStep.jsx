@@ -92,16 +92,18 @@ class GiftAddModalStep extends React.Component {
         // 公众号
         fetchData('queryWechatMpInfo', {
             groupID: this.props.accountInfo.toJS().groupID,
-        }, null, { path: 'mpList'}).then((data) => {
-            console.log(data)
+        }, null, { path: 'mpList' }).then((mpList) => {
+            console.log(mpList)
+            this.setState({ mpList: mpList || [] })
             // 第三方券模版
             fetchData('queryTrdTemplate', {
                 groupID: this.props.accountInfo.toJS().groupID,
                 channelID: 10,
                 forceRefresh: 1,
-                mpID: data[0].mpID,
-            }, null, { path: 'trdTemplateInfoList'}).then((data) => {
-                console.log(data)
+                mpID: mpList[0].mpID,
+            }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
+                console.log(trdTemplateInfoList)
+                this.setState({ trdTemplateInfoList: trdTemplateInfoList || [] })
             });
         });
 
@@ -246,9 +248,16 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                value ? newKeys.splice(1, 0, 'trdChannelID', 'trdTemplateID', 'trdTemplateIDLabel') :
+                value ? newKeys.splice(1, 0, 'trdChannelID', 'mpID', 'trdTemplateID', 'trdTemplateIDLabel') :
                     _.remove(newKeys, function (k) {
-                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel';
+                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'mpID';
+                    });
+                this.setState({ secondKeys })
+                break;
+            case 'trdChannelID':
+                value === 10 ? newKeys.splice(2, 0, 'mpID') :
+                    _.remove(newKeys, function (k) {
+                        return k === 'mpID';
                     });
                 this.setState({ secondKeys })
                 break;
@@ -547,7 +556,7 @@ class GiftAddModalStep extends React.Component {
     // }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { current, firstKeys, secondKeys, values } = this.state;
+            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [] } = this.state;
         const dates = Object.assign({}, data);
         if (dates.discountRate && dates.discountRate != 1) {
             dates.isDiscountRate = true
@@ -703,31 +712,48 @@ class GiftAddModalStep extends React.Component {
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
             },
-            promotionID: {
-                label: '对应基础营销活动',
-                type: 'custom',
+            mpID: {
+                label: '微信公众号选择',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
+                type: 'combo',
+                defaultValue: mpList[0] ? mpList[0].mpName : '',
+                options: mpList.map(mp => {
+                    return {
+                        label: mp.mpName,
+                        value: mp.mpName,
+                    }
+                }),
             },
             trdTemplateID: {
                 label: '第三方券模板或活动',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
-                defaultValue: '',
-                options: [
-                    { label: '第三方测试模版1', value: '105295292929295' },
-                    { label: '第三方测试模版2', value: '116528542852898' },
-                ],
+                defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+                options: trdTemplateInfoList.map(template => {
+                    return {
+                        label: template.trdGiftName,
+                        value: template.trdGiftItemID,
+                    }
+                }),
             },
             trdTemplateIDLabel: {
                 label: '第三方券模板或活动ID',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
+                type: 'text',
+                defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+                value: this.state.trdTemplateIDLabel || dates.trdTemplateID || '',
+                props: { disabled: true }
+                // render: () => <Input value={this.state.trdTemplateIDLabel || dates.trdTemplateID || ''} disabled />
+            },
+            promotionID: {
+                label: '对应基础营销活动',
                 type: 'custom',
-                defaultValue: '',
-                render: () => <Input value={this.state.trdTemplateIDLabel || dates.trdTemplateID || ''} disabled />
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
             },
         };
         let formData = {};
