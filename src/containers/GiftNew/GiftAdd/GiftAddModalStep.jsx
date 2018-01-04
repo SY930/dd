@@ -103,7 +103,10 @@ class GiftAddModalStep extends React.Component {
                 mpID: mpList[0].mpID,
             }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
                 console.log(trdTemplateInfoList)
-                this.setState({ trdTemplateInfoList: trdTemplateInfoList || [] })
+                this.setState({ 
+                    trdTemplateInfoList: trdTemplateInfoList || [],
+                    trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+                 })
             });
         });
 
@@ -262,7 +265,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({ secondKeys })
                 break;
             case 'trdTemplateID':
-                this.setState({ trdTemplateIDLabel: value })
+                this.setState({ trdTemplateID: value })
                 break;
             default:
                 break;
@@ -556,7 +559,7 @@ class GiftAddModalStep extends React.Component {
     // }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [] } = this.state;
+            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [], trdTemplateID } = this.state;
         const dates = Object.assign({}, data);
         if (dates.discountRate && dates.discountRate != 1) {
             dates.isDiscountRate = true
@@ -730,7 +733,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
-                defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+                defaultValue: trdTemplateID,
                 options: trdTemplateInfoList.map(template => {
                     return {
                         label: template.trdGiftName,
@@ -742,11 +745,11 @@ class GiftAddModalStep extends React.Component {
                 label: '第三方券模板或活动ID',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                type: 'text',
-                defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
-                value: this.state.trdTemplateIDLabel || dates.trdTemplateID || '',
-                props: { disabled: true }
-                // render: () => <Input value={this.state.trdTemplateIDLabel || dates.trdTemplateID || ''} disabled />
+                type: 'custom',
+                // defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+                // value: this.state.trdTemplateIDLabel || dates.trdTemplateID || '',
+                // props: { disabled: true }
+                render: () => <Input value={trdTemplateID || dates.trdTemplateID || ''} disabled />
             },
             promotionID: {
                 label: '对应基础营销活动',
