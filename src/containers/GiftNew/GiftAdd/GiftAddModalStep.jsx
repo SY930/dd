@@ -93,22 +93,9 @@ class GiftAddModalStep extends React.Component {
         fetchData('queryWechatMpInfo', {
             groupID: this.props.accountInfo.toJS().groupID,
         }, null, { path: 'mpList' }).then((mpList) => {
-            console.log(mpList)
             this.setState({ mpList: mpList || [] })
-            // 第三方券模版
+            // 微信公众号券模版
             this.queryTrdTemplate(mpList[0].mpID)
-            // fetchData('queryTrdTemplate', {
-            //     groupID: this.props.accountInfo.toJS().groupID,
-            //     channelID: 10,
-            //     forceRefresh: 1,
-            //     mpID: mpList[0].mpID,
-            // }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
-            //     console.log(trdTemplateInfoList)
-            //     this.setState({
-            //         trdTemplateInfoList: trdTemplateInfoList || [],
-            //         trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
-            //     })
-            // });
         });
         FetchGiftSort({});
     }
@@ -116,9 +103,9 @@ class GiftAddModalStep extends React.Component {
         // 第三方券模版
         fetchData('queryTrdTemplate', {
             groupID: this.props.accountInfo.toJS().groupID,
-            channelID: 10,
+            channelID: this.state.trdChannelID || 10,
             forceRefresh: 1,
-            mpID,
+            mpID, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
             console.log(trdTemplateInfoList)
             this.setState({
@@ -276,7 +263,9 @@ class GiftAddModalStep extends React.Component {
                     _.remove(newKeys, function (k) {
                         return k === 'mpID';
                     });
-                this.setState({ secondKeys })
+                this.setState({ secondKeys, trdChannelID: value }, () => {
+                    this.queryTrdTemplate(value === 10 ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined); // 第三方券模版
+                })
                 break;
             case 'mpID':
                 this.queryTrdTemplate(value); // wx公众号券模版
