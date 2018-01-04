@@ -96,23 +96,37 @@ class GiftAddModalStep extends React.Component {
             console.log(mpList)
             this.setState({ mpList: mpList || [] })
             // 第三方券模版
-            fetchData('queryTrdTemplate', {
-                groupID: this.props.accountInfo.toJS().groupID,
-                channelID: 10,
-                forceRefresh: 1,
-                mpID: mpList[0].mpID,
-            }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
-                console.log(trdTemplateInfoList)
-                this.setState({ 
-                    trdTemplateInfoList: trdTemplateInfoList || [],
-                    trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
-                 })
-            });
+            this.queryTrdTemplate(mpList[0].mpID)
+            // fetchData('queryTrdTemplate', {
+            //     groupID: this.props.accountInfo.toJS().groupID,
+            //     channelID: 10,
+            //     forceRefresh: 1,
+            //     mpID: mpList[0].mpID,
+            // }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
+            //     console.log(trdTemplateInfoList)
+            //     this.setState({
+            //         trdTemplateInfoList: trdTemplateInfoList || [],
+            //         trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+            //     })
+            // });
         });
-
         FetchGiftSort({});
     }
-
+    queryTrdTemplate = (mpID) => {
+        // 第三方券模版
+        fetchData('queryTrdTemplate', {
+            groupID: this.props.accountInfo.toJS().groupID,
+            channelID: 10,
+            forceRefresh: 1,
+            mpID,
+        }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
+            console.log(trdTemplateInfoList)
+            this.setState({
+                trdTemplateInfoList: trdTemplateInfoList || [],
+                trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
+            })
+        });
+    }
     componentWillReceiveProps(nextProps) {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
@@ -263,6 +277,9 @@ class GiftAddModalStep extends React.Component {
                         return k === 'mpID';
                     });
                 this.setState({ secondKeys })
+                break;
+            case 'mpID':
+                this.queryTrdTemplate(value); // wx公众号券模版
                 break;
             case 'trdTemplateID':
                 this.setState({ trdTemplateID: value })
@@ -724,7 +741,7 @@ class GiftAddModalStep extends React.Component {
                 options: mpList.map(mp => {
                     return {
                         label: mp.mpName,
-                        value: mp.mpName,
+                        value: mp.mpID,
                     }
                 }),
             },
