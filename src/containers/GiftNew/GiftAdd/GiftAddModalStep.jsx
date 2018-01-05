@@ -110,7 +110,6 @@ class GiftAddModalStep extends React.Component {
             console.log(trdTemplateInfoList)
             this.setState({
                 trdTemplateInfoList: trdTemplateInfoList || [],
-                trdTemplateID: trdTemplateInfoList && trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
             })
         });
     }
@@ -129,7 +128,6 @@ class GiftAddModalStep extends React.Component {
         // let _foodNameList = data.foodNameList && this.props.type == 'edit' ? (data.foodNameList[data.foodNameList.length-1]==','||data.foodNameList[data.foodNameList.length-1]=='，'?data.foodNameList.slice(0,data.foodNameList.length-1) :data.foodNameList) :data.foodNameList;
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.giftShareList),
-            // foodNameList:data.foodNameList && this.props.type == 'edit' ? _foodNameList.replace(/，/g,',').split(',') : [],
         });
     }
     proSharedGifts = (sharedGifts = []) => {
@@ -263,20 +261,19 @@ class GiftAddModalStep extends React.Component {
                     _.remove(newKeys, function (k) {
                         return k === 'mpID';
                     });
-                values = { ...values, trdTemplateID: '', mpID: '' };
-                this.setState({ secondKeys, trdChannelID: value, mpID: '', trdTemplateID: '' }, () => {
+                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
+                    this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', mpID: '' });
                     this.queryTrdTemplate(value === 10 ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined); // 第三方券模版
                 })
                 break;
             case 'mpID':
-                values = { ...values, trdTemplateID: '' };
-                this.setState({ trdTemplateID: '' }, () => {
-                    // this.secondForm.setFieldsValue(values);
+                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
+                    this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
                     this.queryTrdTemplate(value); // wx公众号券模版
                 })
                 break;
             case 'trdTemplateID':
-                this.setState({ trdTemplateID: value })
+                this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                 break;
             default:
                 break;
@@ -570,7 +567,7 @@ class GiftAddModalStep extends React.Component {
     // }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [], trdTemplateID } = this.state;
+            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [], trdTemplateID, trdTemplateIDLabel } = this.state;
         const dates = Object.assign({}, data);
         if (dates.discountRate && dates.discountRate != 1) {
             dates.isDiscountRate = true
@@ -733,7 +730,7 @@ class GiftAddModalStep extends React.Component {
                 wrapperCol: { span: 16 },
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
-                defaultValue: mpList[0] ? mpList[0].mpName : '',
+                defaultValue: mpList[0] ? mpList[0].mpID : '',
                 options: mpList.map(mp => {
                     return {
                         label: mp.mpName,
@@ -747,7 +744,7 @@ class GiftAddModalStep extends React.Component {
                 wrapperCol: { span: 16 },
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
-                defaultValue: trdTemplateID,
+                defaultValue: '',
                 options: trdTemplateInfoList.map(template => {
                     return {
                         label: template.trdGiftName,
@@ -759,11 +756,11 @@ class GiftAddModalStep extends React.Component {
                 label: '第三方券模板或活动ID',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                type: 'custom',
-                // defaultValue: trdTemplateInfoList[0] ? trdTemplateInfoList[0].trdGiftItemID : '',
-                // value: this.state.trdTemplateIDLabel || dates.trdTemplateID || '',
-                // props: { disabled: true }
-                render: () => <Input value={trdTemplateID || dates.trdTemplateID || ''} disabled />
+                type: 'text',
+                defaultValue: '',
+                // value: trdTemplateID || dates.trdTemplateID || '',
+                props: { disabled: true }
+                // render: () => <Input value={trdTemplateID || dates.trdTemplateID || ''} disabled />
             },
             promotionID: {
                 label: '对应基础营销活动',
