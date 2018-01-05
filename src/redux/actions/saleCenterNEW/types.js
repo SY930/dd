@@ -742,7 +742,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         scope = source.scopeLst;
     } else {
         if (source.foodCategory !== null) {
-            source.foodCategory.map((item) => {
+            (source.foodCategory || []).map((item) => {
                 scope.push({
                     scopeType: 'CATEGORY_INCLUDED',
                     targetID: item.foodCategoryID,
@@ -753,7 +753,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         }
 
         if (source.excludeDishes !== null) {
-            source.excludeDishes.map((item) => {
+            (source.excludeDishes || []).map((item) => {
                 scope.push({
                     scopeType: 'FOOD_EXCLUDED',
                     targetID: item.itemID,
@@ -765,7 +765,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         }
 
         if (source.dishes !== null) {
-            source.dishes.map((item) => {
+            (source.dishes || []).map((item) => {
                 scope.push({
                     scopeType: 'FOOD_INCLUDED',
                     targetID: item.itemID,

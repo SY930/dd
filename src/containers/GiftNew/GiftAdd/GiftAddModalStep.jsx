@@ -553,12 +553,12 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderGiftPromotion(decorator, form) {
-        const { gift: { data } } = this.props,
+        const { gift: { data }, type } = this.props,
             promotionID = data.promotionID ? [{ sharedIDStr: data.promotionID }] : [];
         return (
             <FormItem>
                 {
-                    decorator({})(<GiftPromotion promotionID={promotionID} />)
+                    decorator({})(<GiftPromotion promotionID={promotionID} type={type}/>)
                 }
             </FormItem>
         )
