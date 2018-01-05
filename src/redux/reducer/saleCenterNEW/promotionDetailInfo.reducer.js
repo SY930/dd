@@ -209,8 +209,8 @@ function constructTreeDataContainsPromotion(data) {
                 content: ACTIVITY_CATEGORIES.find((item) => {
                     return item.key === key;
                 }) ? ACTIVITY_CATEGORIES.find((item) => {
-                        return item.key === key;
-                    }).title : '未找到匹配项',
+                    return item.key === key;
+                }).title : '未找到匹配项',
             };
             return {
                 promotionType,
@@ -342,7 +342,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_ALL_PROMOTION_LIST_SUCCESS:
-            const $allPromotionLst = Immutable.fromJS(action.payload.promotionLst);
+            const $allPromotionLst = Immutable.fromJS(action.payload.promotionLst || []);
             // let _envIsVip = process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-dohko';
             // let scope_promotionLst =  !_envIsVip ? action.payload.promotionLst.filter((activity) => {
             //     //隐藏基础营销组合减免，买三免一（这两个活动先实现活动共享后再实现）
