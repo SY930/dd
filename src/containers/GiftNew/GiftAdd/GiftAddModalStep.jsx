@@ -33,8 +33,8 @@ class GiftAddModalStep extends React.Component {
             numberOfTimeValueDisabled: true,
             moneyTopLimitValueDisabled: true,
             // modalKey:1,
-            firstKeys: FIRST_KEYS,
-            secondKeys: SECOND_KEYS,
+            firstKeys: { ...FIRST_KEYS },
+            secondKeys: { ...SECOND_KEYS },
             groupTypes: [],
             giftData: [],
             sharedGifts: [],
@@ -90,20 +90,20 @@ class GiftAddModalStep extends React.Component {
             this.setState({ groupTypes });
         });
         // 公众号
-        thisGift.value === '100' && fetchData('queryWechatMpInfo', {
+        fetchData('queryWechatMpInfo', {
             groupID: this.props.accountInfo.toJS().groupID,
         }, null, { path: 'mpList' }).then((mpList) => {
             this.setState({ mpList: mpList || [] })
             // 微信公众号券模版
-            this.queryTrdTemplate(mpList[0].mpID)
+            this.queryTrdTemplate(mpList[0].mpID, 10)
         });
         FetchGiftSort({});
     }
-    queryTrdTemplate = (mpID) => {
+    queryTrdTemplate = (mpID, trdChannelID) => {
         // 第三方券模版
         fetchData('queryTrdTemplate', {
             groupID: this.props.accountInfo.toJS().groupID,
-            channelID: this.state.trdChannelID || 10,
+            channelID: trdChannelID || 10,
             forceRefresh: 1,
             mpID, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
@@ -126,7 +126,11 @@ class GiftAddModalStep extends React.Component {
         }
         if (type === 'edit' && value === '100') {
             if (data.trdTemplateID) {
-                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID })
+                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
+                if (data.giftItemID !== this.props.gift.data.giftItemID) {
+                    // 三方券模版
+                    this.queryTrdTemplate(data.mpID, data.trdChannelID)
+                }
             }
         }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
@@ -153,9 +157,9 @@ class GiftAddModalStep extends React.Component {
     }
 
     handleFormChange(key, value, form) {
-        const { gift: { name: describe } } = this.props;
+        const { gift: { name: describe }, type } = this.props;
         let { secondKeys, values } = this.state;
-        let newKeys = secondKeys[describe][0].keys;
+        let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         switch (key) {
             case 'moneyLimitType':
@@ -254,26 +258,28 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                value ? newKeys.splice(1, 0, 'trdChannelID', 'mpID', 'trdTemplateID', 'trdTemplateIDLabel') :
+                describe === '活动券' && value ? (!newKeys.includes('trdChannelID') ? newKeys.splice(1, 0, 'trdChannelID', 'mpID', 'trdTemplateID', 'trdTemplateIDLabel') : null) :
                     _.remove(newKeys, function (k) {
                         return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'mpID';
                     });
+                secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys })
                 break;
             case 'trdChannelID':
-                value === 10 && newKeys.includes('trdChannelID') ? newKeys.splice(2, 0, 'mpID') :
+                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') && !newKeys.includes('mpID') ? newKeys.splice(2, 0, 'mpID') :
                     _.remove(newKeys, function (k) {
                         return k === 'mpID';
                     });
-                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
+                secondKeys[describe][0].keys = [...newKeys];
+                this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', mpID: '' });
-                    this.queryTrdTemplate(value === 10 ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined); // 第三方券模版
+                    type === 'add' ? this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value) : null; // 第三方券模版
                 })
                 break;
             case 'mpID':
-                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
+                this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
-                    this.queryTrdTemplate(value); // wx公众号券模版
+                    type === 'add' ? this.queryTrdTemplate(value, 10) : null; // wx公众号券模版
                 })
                 break;
             case 'trdTemplateID':
@@ -558,7 +564,7 @@ class GiftAddModalStep extends React.Component {
         return (
             <FormItem>
                 {
-                    decorator({})(<GiftPromotion promotionID={promotionID} type={type}/>)
+                    decorator({})(<GiftPromotion promotionID={promotionID} type={type} />)
                 }
             </FormItem>
         )
@@ -747,7 +753,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
-                // rules: [{ required: true, message: '不能为空' }],
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: '',
                 options: trdTemplateInfoList.map(template => {
                     return {
