@@ -90,7 +90,7 @@ class GiftAddModalStep extends React.Component {
             this.setState({ groupTypes });
         });
         // 公众号
-        fetchData('queryWechatMpInfo', {
+        thisGift.value === '100' && fetchData('queryWechatMpInfo', {
             groupID: this.props.accountInfo.toJS().groupID,
         }, null, { path: 'mpList' }).then((mpList) => {
             this.setState({ mpList: mpList || [] })
@@ -116,16 +116,20 @@ class GiftAddModalStep extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
-        const { gift: { name, data }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
+        const { gift: { name, data, value }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
         const { secondKeys } = this.state;
-        if (type === 'edit' && type === '10') {
+        if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
                 secondKeys[name][0].keys = ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
                 this.setState({ secondKeys })
             }
         }
+        if (type === 'edit' && value === '100') {
+            if (data.trdTemplateID) {
+                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID })
+            }
+        }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
-        // let _foodNameList = data.foodNameList && this.props.type == 'edit' ? (data.foodNameList[data.foodNameList.length-1]==','||data.foodNameList[data.foodNameList.length-1]=='，'?data.foodNameList.slice(0,data.foodNameList.length-1) :data.foodNameList) :data.foodNameList;
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.giftShareList),
         });
