@@ -271,6 +271,7 @@ class GiftAddModalStep extends React.Component {
             case 'mpID':
                 values = { ...values, trdTemplateID: '' };
                 this.setState({ trdTemplateID: '' }, () => {
+                    // this.secondForm.setFieldsValue(values);
                     this.queryTrdTemplate(value); // wx公众号券模版
                 })
                 break;
@@ -722,6 +723,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
             },
@@ -730,6 +732,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: mpList[0] ? mpList[0].mpName : '',
                 options: mpList.map(mp => {
                     return {
@@ -743,6 +746,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: trdTemplateID,
                 options: trdTemplateInfoList.map(template => {
                     return {
@@ -764,6 +768,7 @@ class GiftAddModalStep extends React.Component {
             promotionID: {
                 label: '对应基础营销活动',
                 type: 'custom',
+                rules: [{ required: true, message: '不能为空' }],
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
