@@ -259,7 +259,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({ secondKeys })
                 break;
             case 'trdChannelID':
-                value === 10 ? newKeys.splice(2, 0, 'mpID') :
+                value === 10 && newKeys.includes('trdChannelID') ? newKeys.splice(2, 0, 'mpID') :
                     _.remove(newKeys, function (k) {
                         return k === 'mpID';
                     });
@@ -268,7 +268,9 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'mpID':
-                this.queryTrdTemplate(value); // wx公众号券模版
+                this.setState({ values: { ...values, trdTemplateID: '' }, trdTemplateID: '' }, () => {
+                    this.queryTrdTemplate(value); // wx公众号券模版
+                })
                 break;
             case 'trdTemplateID':
                 this.setState({ trdTemplateID: value })
