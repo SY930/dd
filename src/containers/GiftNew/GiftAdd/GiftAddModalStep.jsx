@@ -152,7 +152,7 @@ class GiftAddModalStep extends React.Component {
 
     handleFormChange(key, value, form) {
         const { gift: { name: describe } } = this.props;
-        const { secondKeys, values } = this.state;
+        let { secondKeys, values } = this.state;
         let newKeys = secondKeys[describe][0].keys;
         const index = _.findIndex(newKeys, item => item == key);
         switch (key) {
@@ -263,12 +263,14 @@ class GiftAddModalStep extends React.Component {
                     _.remove(newKeys, function (k) {
                         return k === 'mpID';
                     });
-                this.setState({ secondKeys, trdChannelID: value }, () => {
+                values = { ...values, trdTemplateID: '', mpID: '' };
+                this.setState({ secondKeys, trdChannelID: value, mpID: '', trdTemplateID: '' }, () => {
                     this.queryTrdTemplate(value === 10 ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined); // 第三方券模版
                 })
                 break;
             case 'mpID':
-                this.setState({ values: { ...values, trdTemplateID: '' }, trdTemplateID: '' }, () => {
+                values = { ...values, trdTemplateID: '' };
+                this.setState({ trdTemplateID: '' }, () => {
                     this.queryTrdTemplate(value); // wx公众号券模版
                 })
                 break;
