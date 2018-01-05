@@ -743,7 +743,7 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
-                rules: [{ required: true, message: '不能为空' }],
+                // rules: [{ required: true, message: '不能为空' }],
                 defaultValue: '',
                 options: trdTemplateInfoList.map(template => {
                     return {
