@@ -287,6 +287,7 @@ const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        myActivities: state.sale_myActivities_NEW,
         user: state.user.toJS()
     };
 };
