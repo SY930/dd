@@ -129,7 +129,8 @@ class GiftAddModalStep extends React.Component {
                 this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
                 if (data.giftItemID !== this.props.gift.data.giftItemID) {
                     // 三方券模版
-                    const mpID = (this.state.mpList||[]).find(mp=>mp.mpName==data.wechatMpName).mpID;
+                    const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
+                    const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
                     this.queryTrdTemplate(mpID, data.trdChannelID)/////////////////////////////////////////////////
                 }
             }
@@ -280,7 +281,8 @@ class GiftAddModalStep extends React.Component {
             case 'wechatMpName':
                 this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
-                    const mpID = (this.state.mpList||[]).find(mp=>mp.mpName==value).mpID;
+                    const mp = (this.state.mpList || []).find(mp => mp.mpName == value);
+                    const mpID = mp ? mp.mpID : this.state.mpList ? this.state.mpList[0].mpID : undefined;
                     type === 'add' ? this.queryTrdTemplate(mpID, 10) : null; // wx公众号券模版/////////////////////////////////////
                 })
                 break;
