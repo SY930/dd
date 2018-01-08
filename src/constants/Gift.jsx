@@ -139,6 +139,12 @@ const GiftCfg = {
     ],
     trdChannelIDs: [
         { label: '微信', value: 10 },
+        // { label: '哗啦啦', value: 1,  },
+        // { label: '饮食通', value: 2,  },
+        // { label: '雅座', value: 3,  },
+        // { label: '眉州', value: 4,  },
+        // { label: '5i', value: 5,  },
+        // { label: '拉格代尔', value: 6, },
         { label: '哗啦啦', value: 1, disabled:true },
         { label: '饮食通', value: 2, disabled:true },
         { label: '雅座', value: 3, disabled:true },

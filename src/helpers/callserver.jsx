@@ -377,6 +377,10 @@ const apiCfg = [
     ['addPhrase_NEW', '/api/promotion/addPhrase_NEW', { type: 'JSON' }],
     ['deletePhrase', '/api/promotion/deletePhrase'],
     ['deletePhrase_NEW', '/api/promotion/deletePhrase_NEW', { type: 'JSON' }],
+    ['queryTrdTemplate', '/api/promotion/queryTrdTemplate', { type: 'JSON' }],
+    ['queryWechatMpInfo', '/api/promotion/queryWechatMpInfo', { type: 'JSON' }],
+    
+
 
     /* SupplyChain ben 加工单 ProcessingSheet */
     ['updateIreportTemplate', '/api/basic/printTemplate/updateTemplate', { type: 'FORM' }],

@@ -33,8 +33,8 @@ class GiftAddModalStep extends React.Component {
             numberOfTimeValueDisabled: true,
             moneyTopLimitValueDisabled: true,
             // modalKey:1,
-            firstKeys: FIRST_KEYS,
-            secondKeys: SECOND_KEYS,
+            firstKeys: { ...FIRST_KEYS },
+            secondKeys: { ...SECOND_KEYS },
             groupTypes: [],
             giftData: [],
             sharedGifts: [],
@@ -89,25 +89,53 @@ class GiftAddModalStep extends React.Component {
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
         });
+        // 公众号
+        fetchData('queryWechatMpInfo', {
+            groupID: this.props.accountInfo.toJS().groupID,
+        }, null, { path: 'mpList' }).then((mpList) => {
+            this.setState({ mpList: mpList || [] })
+            // 微信公众号券模版
+            this.queryTrdTemplate(mpList[0].mpID, 10)
+        });
         FetchGiftSort({});
     }
-
+    queryTrdTemplate = (mpID, trdChannelID) => {
+        // 第三方券模版
+        fetchData('queryTrdTemplate', {
+            groupID: this.props.accountInfo.toJS().groupID,
+            channelID: trdChannelID || 10,
+            forceRefresh: 1,
+            mpID, // 有值代表微信公众号id,没有代表其他渠道
+        }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
+            console.log(trdTemplateInfoList)
+            this.setState({
+                trdTemplateInfoList: trdTemplateInfoList || [],
+            })
+        });
+    }
     componentWillReceiveProps(nextProps) {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
-        const { gift: { name, data }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
+        const { gift: { name, data, value }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
         const { secondKeys } = this.state;
-        if (type === 'edit' && type === '10') {
+        if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
                 secondKeys[name][0].keys = ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
                 this.setState({ secondKeys })
             }
         }
+        if (type === 'edit' && value === '100') {
+            if (data.trdTemplateID) {
+                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
+                if (data.giftItemID !== this.props.gift.data.giftItemID) {
+                    // 三方券模版
+                    this.queryTrdTemplate(data.mpID, data.trdChannelID)
+                }
+            }
+        }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
-        // let _foodNameList = data.foodNameList && this.props.type == 'edit' ? (data.foodNameList[data.foodNameList.length-1]==','||data.foodNameList[data.foodNameList.length-1]=='，'?data.foodNameList.slice(0,data.foodNameList.length-1) :data.foodNameList) :data.foodNameList;
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.giftShareList),
-            // foodNameList:data.foodNameList && this.props.type == 'edit' ? _foodNameList.replace(/，/g,',').split(',') : [],
         });
     }
     proSharedGifts = (sharedGifts = []) => {
@@ -129,9 +157,9 @@ class GiftAddModalStep extends React.Component {
     }
 
     handleFormChange(key, value, form) {
-        const { gift: { name: describe } } = this.props;
-        const { secondKeys, values } = this.state;
-        let newKeys = secondKeys[describe][0].keys;
+        const { gift: { name: describe }, type } = this.props;
+        let { secondKeys, values } = this.state;
+        let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         switch (key) {
             case 'moneyLimitType':
@@ -230,14 +258,32 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                value ? newKeys.splice(1, 0, 'trdChannelID', 'trdTemplateID', 'trdTemplateIDLabel') :
+                describe === '活动券' && value ? (!newKeys.includes('trdChannelID') ? newKeys.splice(1, 0, 'trdChannelID', 'mpID', 'trdTemplateID', 'trdTemplateIDLabel') : null) :
                     _.remove(newKeys, function (k) {
-                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel';
+                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'mpID';
                     });
+                secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys })
                 break;
+            case 'trdChannelID':
+                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') && !newKeys.includes('mpID') ? newKeys.splice(2, 0, 'mpID') :
+                    _.remove(newKeys, function (k) {
+                        return k === 'mpID';
+                    });
+                secondKeys[describe][0].keys = [...newKeys];
+                this.setState({ secondKeys, }, () => {
+                    this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', mpID: '' });
+                    type === 'add' ? this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value) : null; // 第三方券模版
+                })
+                break;
+            case 'mpID':
+                this.setState({ secondKeys, }, () => {
+                    this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
+                    type === 'add' ? this.queryTrdTemplate(value, 10) : null; // wx公众号券模版
+                })
+                break;
             case 'trdTemplateID':
-                this.setState({ trdTemplateIDLabel: value })
+                this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                 break;
             default:
                 break;
@@ -513,12 +559,12 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderGiftPromotion(decorator, form) {
-        const { gift: { data } } = this.props,
+        const { gift: { data }, type } = this.props,
             promotionID = data.promotionID ? [{ sharedIDStr: data.promotionID }] : [];
         return (
             <FormItem>
                 {
-                    decorator({})(<GiftPromotion promotionID={promotionID} />)
+                    decorator({})(<GiftPromotion promotionID={promotionID} type={type} />)
                 }
             </FormItem>
         )
@@ -531,7 +577,7 @@ class GiftAddModalStep extends React.Component {
     // }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { current, firstKeys, secondKeys, values } = this.state;
+            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [], trdTemplateID, trdTemplateIDLabel } = this.state;
         const dates = Object.assign({}, data);
         if (dates.discountRate && dates.discountRate != 1) {
             dates.isDiscountRate = true
@@ -684,34 +730,55 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
             },
-            promotionID: {
-                label: '对应基础营销活动',
-                type: 'custom',
+            mpID: {
+                label: '微信公众号选择',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
+                type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
+                defaultValue: mpList[0] ? mpList[0].mpID : '',
+                options: mpList.map(mp => {
+                    return {
+                        label: mp.mpName,
+                        value: mp.mpID,
+                    }
+                }),
             },
             trdTemplateID: {
                 label: '第三方券模板或活动',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
+                rules: [{ required: true, message: '不能为空' }],
                 defaultValue: '',
-                options: [
-                    { label: '第三方测试模版1', value: '105295292929295' },
-                    { label: '第三方测试模版2', value: '116528542852898' },
-                ],
+                options: trdTemplateInfoList.map(template => {
+                    return {
+                        label: template.trdGiftName,
+                        value: template.trdGiftItemID,
+                    }
+                }),
             },
             trdTemplateIDLabel: {
                 label: '第三方券模板或活动ID',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                type: 'custom',
+                type: 'text',
                 defaultValue: '',
-                render: () => <Input value={this.state.trdTemplateIDLabel || dates.trdTemplateID || ''} disabled />
+                // value: trdTemplateID || dates.trdTemplateID || '',
+                props: { disabled: true }
+                // render: () => <Input value={trdTemplateID || dates.trdTemplateID || ''} disabled />
+            },
+            promotionID: {
+                label: '对应基础营销活动',
+                type: 'custom',
+                rules: [{ required: true, message: '不能为空' }],
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 },
+                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
             },
         };
         let formData = {};

@@ -59,8 +59,8 @@ class GiftPromotion extends React.Component {
         // 请求获取promotionList--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
-            usageMode: 2,
-            channelID: 0,
+            usageMode: this.props.type === 'edit' ? undefined : 2,
+            // channelID: 0, ??为何加他？
         })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
