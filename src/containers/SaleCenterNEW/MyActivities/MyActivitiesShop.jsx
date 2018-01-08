@@ -701,11 +701,12 @@ class MyActivitiesShop extends React.Component {
                                     [{
                                         value: 'ALL',
                                         title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].map((activity, index) => {
-                                        return (
-                                            <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
-                                        );
-                                    })
+                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== 'RECOMMEND_FOOD')
+                                        .map((activity, index) => {
+                                            return (
+                                                <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
+                                            );
+                                        })
                                 }
                             </Select>
                         </li>

@@ -236,6 +236,9 @@ class EditBoxForPromotion extends React.Component {
     render() {
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = this.state.promotionSelections;
+        const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
+        const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.shopID > 0);
 
         // 拼左侧树状结构
         const loop = (data) => {
@@ -243,17 +246,16 @@ class EditBoxForPromotion extends React.Component {
                 return null
             }
             let _data;
-            // 隐藏组合减免，买三免一
-            // if (HUALALA.ENVIRONMENT != 'production-release') {
-            _data = data
-            // } else {
-            //     _data = data.filter((item, index) => {
-            //         if (item.promotionType.content != '组合减免/折扣' && item.promotionType.content != '买三免一' &&
-            //             item.promotionType.content != '累计次数减免' && item.promotionType.content != '累计次数赠送') {
-            //             return item;
-            //         }
-            //     });
-            // }
+            // 门店隐藏推荐菜
+            if (!filterFlag) {
+                _data = data
+            } else {
+                _data = data.filter((item, index) => {
+                    if (item.promotionType.content != '菜品推荐') {
+                        return item;
+                    }
+                });
+            }
             return _data.map((item, index) => {
                 return <TreeNode key={index} title={item.promotionType.content} />;
             });
