@@ -129,7 +129,15 @@ class EditBoxForPromotion extends React.Component {
         });
         // this.setState({  })
         this.setState({
-            promotionCollection: _promotions,
+            promotionCollection: this.props.user.shopID > 0 ?
+                _promotions.map((promotionCategery) => {
+                    return {
+                        promotionType: promotionCategery.promotionType,
+                        promotionName: promotionCategery.promotionName.filter((promotion) => {
+                            return promotion.shopID != '0';
+                        }),
+                    }
+                }) : _promotions,
             mutexPromotions: _mutexPromotions,
             vouchersData,
             couponsData,
@@ -171,7 +179,15 @@ class EditBoxForPromotion extends React.Component {
         ) {
             const promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
             this.setState({
-                promotionCollection,
+                promotionCollection: nextProps.user.shopID > 0 ?
+                    promotionCollection.map((promotionCategery) => {
+                        return {
+                            promotionType: promotionCategery.promotionType,
+                            promotionName: promotionCategery.promotionName.filter((promotion) => {
+                                return promotion.shopID != '0';
+                            }),
+                        }
+                    }) : promotionCollection,
                 promotionSelections: new Set(),
             }, () => {
                 this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
@@ -180,20 +196,29 @@ class EditBoxForPromotion extends React.Component {
 
         // 去掉自己，自己不能共享自己
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
+        let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
-            let _promotionCollection = [];
-            const SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
-            _promotionCollection = promotionCollection.map((promotionCategery) => {
+            // let _promotionCollection = [];
+            SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
+            // _promotionCollection = promotionCollection.map((promotionCategery) => {
+            //     const promotionName = promotionCategery.promotionName.filter((promotion) => {
+            //         return this.props.user.shopID > 0 ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
+            //             : promotion.promotionIDStr != SelfPromotion;
+            //     })
+            //     const promotionType = promotionCategery.promotionType;
+            //     return { promotionName, promotionType }
+            // })
+            // promotionCollection = _promotionCollection;
+        }
+        this.setState({
+            promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
-                    return promotion.promotionIDStr != SelfPromotion;
+                    return this.props.user.shopID > 0 ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
+                        : promotion.promotionIDStr != SelfPromotion;
                 })
                 const promotionType = promotionCategery.promotionType;
                 return { promotionName, promotionType }
-            })
-            promotionCollection = _promotionCollection;
-        }
-        this.setState({
-            promotionCollection,
+            }),
             promotionSelections: new Set(),
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);

@@ -330,7 +330,7 @@ class PromotionBasicInfo extends React.Component {
 
     handleAutoAddTags() {
         const excludeTags = [];
-        const tagNameArr = this.state.tagList.map((tagObj) => {
+        const tagNameArr = (this.state.tagList || []).map((tagObj) => {
             return tagObj.name
         });
         this.state.tags.map((tag) => {
