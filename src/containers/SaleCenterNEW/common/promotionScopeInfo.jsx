@@ -118,7 +118,7 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         });
-        if (promotionType == 'RECOMMEND_FOOD' && this.state.selections.length == 0) {
+        if (promotionType == 'RECOMMEND_FOOD' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             this.setState({ shopStatus: false })
         } else {
