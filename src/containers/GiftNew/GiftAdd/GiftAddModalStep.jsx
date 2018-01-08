@@ -129,7 +129,8 @@ class GiftAddModalStep extends React.Component {
                 this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
                 if (data.giftItemID !== this.props.gift.data.giftItemID) {
                     // 三方券模版
-                    this.queryTrdTemplate(data.mpID, data.trdChannelID)
+                    const mpID = (this.state.mpList||[]).find(mp=>mp.mpName==data.wechatMpName).mpID;
+                    this.queryTrdTemplate(mpID, data.trdChannelID)/////////////////////////////////////////////////
                 }
             }
         }
@@ -258,28 +259,29 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                describe === '活动券' && value ? (!newKeys.includes('trdChannelID') ? newKeys.splice(1, 0, 'trdChannelID', 'mpID', 'trdTemplateID', 'trdTemplateIDLabel') : null) :
+                describe === '活动券' && value ? (!newKeys.includes('trdChannelID') ? newKeys.splice(1, 0, 'trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel') : null) :
                     _.remove(newKeys, function (k) {
-                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'mpID';
+                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'wechatMpName';
                     });
                 secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys })
                 break;
             case 'trdChannelID':
-                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') && !newKeys.includes('mpID') ? newKeys.splice(2, 0, 'mpID') :
+                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') && !newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') :
                     _.remove(newKeys, function (k) {
-                        return k === 'mpID';
+                        return k === 'wechatMpName';
                     });
                 secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys, }, () => {
-                    this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', mpID: '' });
+                    this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
                     type === 'add' ? this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value) : null; // 第三方券模版
                 })
                 break;
-            case 'mpID':
+            case 'wechatMpName':
                 this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
-                    type === 'add' ? this.queryTrdTemplate(value, 10) : null; // wx公众号券模版
+                    const mpID = (this.state.mpList||[]).find(mp=>mp.mpName==value).mpID;
+                    type === 'add' ? this.queryTrdTemplate(mpID, 10) : null; // wx公众号券模版/////////////////////////////////////
                 })
                 break;
             case 'trdTemplateID':
@@ -734,17 +736,17 @@ class GiftAddModalStep extends React.Component {
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
             },
-            mpID: {
+            wechatMpName: {
                 label: '微信公众号选择',
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
-                defaultValue: mpList[0] ? mpList[0].mpID : '',
+                defaultValue: mpList[0] ? mpList[0].mpName : '',
                 options: mpList.map(mp => {
                     return {
                         label: mp.mpName,
-                        value: mp.mpID,
+                        value: mp.mpName,
                     }
                 }),
             },
