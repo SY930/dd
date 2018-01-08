@@ -94,7 +94,7 @@ class EditBoxForPromotion extends React.Component {
         // 请求获取promotionList--共享用
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
         const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
-        const filterFlag = this.props.user.shopID > 0 && (ProDetail.promotionInfo.master.shopID > 0 || !ProDetail);
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.shopID > 0);
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
@@ -151,7 +151,7 @@ class EditBoxForPromotion extends React.Component {
     componentWillReceiveProps(nextProps) {
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
         const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
-        const filterFlag = nextProps.user.shopID > 0 && (ProDetail.promotionInfo.master.shopID > 0 || !ProDetail);
+        const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.shopID > 0);
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
