@@ -517,10 +517,10 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
         return (
             <Form className={styles.FormStyle}>
-                {this.renderBrandFormItem()}
+                {this.props.user.toJS().shopID > 0 ? null : this.renderBrandFormItem()}
                 {promotionType != 'RECOMMEND_FOOD' ? this.renderChannelList() : null}
                 {this.renderBusinessOptions()}
-                {this.renderShopsOptions()}
+                {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                 {promotionType == 'VOUCHER_GROUP' ? this.renderGroup() : null}
                 {promotionType != 'RETURN_GIFT' && promotionType != 'RETURN_POINT'
                     && promotionType != 'BILL_CUMULATION_FREE' && promotionType != 'FOOD_CUMULATION_GIVE' ? this.renderUsageMode() : null}

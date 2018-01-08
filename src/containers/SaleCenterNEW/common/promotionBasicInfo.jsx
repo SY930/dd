@@ -81,7 +81,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME',
                     // name:this.state.newCategory,
                     nameList: [this.state.newCategory],
@@ -90,13 +90,13 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                     if (this.props.catOrtag == 'cat') {
                         this.props.fetchPromotionCategories({
                             groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                             phraseType: 'CATEGORY_NAME',
                         });
                     } else {
                         this.props.fetchPromotionTags({
                             groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                             phraseType: 'TAG_NAME',
                         });
                     }
@@ -310,14 +310,14 @@ class PromotionBasicInfo extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: 'CATEGORY_NAME',
                     nameList: [this.state.category],
                 },
                 success: () => {
                     this.props.fetchPromotionCategories({
                         groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                         phraseType: 'CATEGORY_NAME',
                     });
                 },
@@ -342,14 +342,14 @@ class PromotionBasicInfo extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: 'TAG_NAME',
                     nameList: excludeTags,
                 },
                 success: () => {
                     this.props.fetchPromotionTags({
                         groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                         phraseType: 'TAG_NAME',
                     });
                 },
@@ -905,7 +905,7 @@ class PromotionBasicInfo extends React.Component {
                 const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
                 this.props[type]({
                     groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType,
                 });
                 message.success('删除成功');
