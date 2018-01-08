@@ -94,6 +94,7 @@ class EditBoxForPromotion extends React.Component {
         // 请求获取promotionList--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
         })
         // 请求获取所有哗啦啦券列表--共享用
         this.props.FetchGiftList({
@@ -480,7 +481,8 @@ const mapStateToProps = (state) => {
         myActivities: state.sale_myActivities_NEW,
         giftInfoNew: state.sale_giftInfoNew, // 所有哗啦啦券列表--共享用
         mySpecialActivities: state.sale_mySpecialActivities_NEW, // 所有会员等级列表--共享用
-        user: state.user.toJS() };
+        user: state.user.toJS()
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
