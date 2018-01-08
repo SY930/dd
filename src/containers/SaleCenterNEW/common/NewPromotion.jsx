@@ -63,6 +63,7 @@ class NewPromotion extends React.Component {
         }) : []
         const opts = {
             groupID: this.props.user.toJS().accountInfo.groupID,
+            shopID: this.props.user.toJS().shopID ? this.props.user.toJS().shopID : '0',
             ...basicInfo,
             ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
@@ -103,10 +104,12 @@ class NewPromotion extends React.Component {
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
-            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun, maintenanceLevel, usageMode } = opts;
+            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
+            maintenanceLevel, usageMode, shopID } = opts;
         const promotionInfo = {
             master: {
                 groupID,
+                shopID,
                 promotionName,
                 promotionShowName,
                 categoryName,
