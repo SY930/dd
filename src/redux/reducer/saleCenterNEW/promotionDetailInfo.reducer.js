@@ -365,10 +365,10 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_ROLE_LIST_SUCCESS:
-            const roleTree = constructTreeDataContainsRole(Immutable.fromJS(action.payload.records));
+            const roleTree = constructTreeDataContainsRole(Immutable.fromJS(action.payload.roleList));
             return $$state
                 .setIn(['$roleInfo', 'initialized'], true)
-                .setIn(['$roleInfo', 'data', 'roleInfo'], Immutable.fromJS(action.payload.records))
+                .setIn(['$roleInfo', 'data', 'roleInfo'], Immutable.fromJS(action.payload.roleList))
                 .setIn(['$roleInfo', 'data', 'roleTree'], Immutable.fromJS(roleTree));
 
 

@@ -309,11 +309,11 @@ export const fetchRoleListInfoAC = (opts) => {
             type: SALE_CENTER_FETCH_ROLE_LIST,
         });
 
-        const config = getSpecifiedUrlConfig('getRole_NEW', opts);
+        // const config = getSpecifiedUrlConfig('getRole_NEW', opts);
 
-        fetch(config.url, {
-            method: config.method,
-            body: config.params,
+        fetch('/api/shopcenter/empapi/queryRole', {
+            method: 'POST',
+            body: opts,
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
