@@ -8,6 +8,8 @@ import {
     fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
+const Immutable = require('immutable');
+// window.Immutable=Immutable;
 const TreeNode = Tree.TreeNode;
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
@@ -120,11 +122,12 @@ class EditBoxForDishes extends React.Component {
             })
         }
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ||
+            !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
         ) {
             const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
             this.setState({
-                priceLst: this.props.type === 'RECOMMEND_FOOD' ? this.props.value : _priceLst,
+                priceLst: nextProps.type === 'RECOMMEND_FOOD' ? nextProps.value : _priceLst,
             }, () => {
                 this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
             })

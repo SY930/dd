@@ -71,7 +71,8 @@ class RecommendFoodDetailInfo extends React.Component {
             priceLst: [],
             scopeLst: [],
             handSetChecked: true,
-            autoSetChecked: false,
+            autoSetChecked: true,
+            // autoSetChecked: false,
             priceLstHand: [],
             priceLstAuto: [],
             stageType: 1,
@@ -107,8 +108,10 @@ class RecommendFoodDetailInfo extends React.Component {
             priceLstHand,
             priceLstAuto,
             scopeLst: _scopeLst,
-            handSetChecked: !!(stageType == 0 || stageType == 1),
-            autoSetChecked: !!(stageType == 0 || stageType == 2),
+            // handSetChecked: !!(stageType == 0 || stageType == 1),
+            // autoSetChecked: !!(stageType == 0 || stageType == 2),
+            handSetChecked: true,
+            autoSetChecked: true,
             recommendNum,
             recommendTopNum,
         }, () => {
@@ -126,6 +129,8 @@ class RecommendFoodDetailInfo extends React.Component {
                 priceLstHand,
                 priceLstAuto,
                 scopeLst: _scopeLst,
+            }, () => {
+                this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
             });
         }
     }
@@ -217,17 +222,17 @@ class RecommendFoodDetailInfo extends React.Component {
         })
     }
     onHandSetChange(e) {
-        this.setState({ handSetChecked: e.target.checked })
+        // this.setState({ handSetChecked: e.target.checked })
     }
     onAutoSetChange(e) {
-        this.setState({ autoSetChecked: e.target.checked })
+        // this.setState({ autoSetChecked: e.target.checked })
     }
     render() {
         const { recommendNumStatus, recommendTopNumStatus } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <FormItem style={{ marginLeft: 89, position: 'relative' }}>
+                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
                         <Checkbox onChange={this.onHandSetChange} checked={this.state.handSetChecked}>手动设置推荐菜</Checkbox>
                         <Tip
                             style={{ position: 'absolute', top: 0, left: 120 }}
@@ -238,7 +243,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     {
                         this.state.handSetChecked ?
                             <div>
-                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}
+                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
                                     validateStatus={recommendNumStatus}
                                     help={recommendNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
                                 >
@@ -253,7 +258,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                <FormItem label="手动设置推荐菜" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                                     <CollocationTable
                                         onChange={this.handDishesChange}
                                         priceLst={this.state.priceLstHand}
@@ -263,7 +268,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </FormItem>
                             </div> : null
                     }
-                    <FormItem style={{ marginLeft: 89, position: 'relative' }}>
+                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
                         <Checkbox
                             onChange={this.onAutoSetChange}
                             checked={this.state.autoSetChecked}
@@ -278,7 +283,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     {
                         this.state.autoSetChecked ?
                             <div>
-                                <FormItem label="推荐菜品数量" colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 8 }}
+                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
                                     validateStatus={recommendTopNumStatus}
                                     help={recommendTopNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
                                 >
@@ -293,7 +298,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label=" " colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                <FormItem label="TOP-N智能推荐菜" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                                     {
                                         this.props.form.getFieldDecorator('priceLst', {
                                             initialValue: this.state.priceLstAuto,
