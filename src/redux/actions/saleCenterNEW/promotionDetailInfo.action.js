@@ -92,7 +92,8 @@ export const fetchFoodCategoryInfoAC = (opts) => {
         dispatch(fetchFoodCategoryStart());
 
         // let config = getSpecifiedUrlConfig('getFoodCategory_NEW', {...opts,bookID:0});
-        const config = getSpecifiedUrlConfig('getFoodCategory_NEW', { ...opts, bookID: 0, type: '0' });
+        const url = opts.shopID && opts.shopID > 0 ? 'queryShopFoodClass' : 'getFoodCategory_NEW';
+        const config = getSpecifiedUrlConfig(url, { ...opts, bookID: 0, type: '0' });
 
         fetch(config.url, {
             method: config.method,
@@ -176,7 +177,11 @@ const fetchFoodMenuFailed = () => {
 // };
 export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+        // return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+        //     dispatch(fetchFoodMenuSuccess(res))
+        // });
+        const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
+        return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
             dispatch(fetchFoodMenuSuccess(res))
         });
     }

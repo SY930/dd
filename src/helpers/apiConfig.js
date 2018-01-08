@@ -20,7 +20,11 @@ const ApiConfig = Object.freeze({
         method: 'POST',
         paramsValidation: null,
     },
-
+    'queryShopFoodClass': {
+        url: '/api/queryShopFoodClass',
+        method: 'POST',
+        paramsValidation: null,
+    },
     'getFoodMenu': {
         url: '/api/shopcenter/group/queryFoodInfo',
         method: 'POST',

@@ -195,6 +195,7 @@ class NewActivity extends React.Component {
     _onButtonClicked(index, activity) {
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
