@@ -92,6 +92,9 @@ class EditBoxForPromotion extends React.Component {
     componentDidMount() {
         const user = this.props.user;
         // 请求获取promotionList--共享用
+        const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
+        const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = this.props.user.shopID > 0 && (ProDetail.promotionInfo.master.shopID > 0 || !ProDetail);
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
@@ -129,7 +132,7 @@ class EditBoxForPromotion extends React.Component {
         });
         // this.setState({  })
         this.setState({
-            promotionCollection: this.props.user.shopID > 0 ?
+            promotionCollection: filterFlag ?
                 _promotions.map((promotionCategery) => {
                     return {
                         promotionType: promotionCategery.promotionType,
@@ -146,6 +149,9 @@ class EditBoxForPromotion extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
+        const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
+        const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = nextProps.user.shopID > 0 && (ProDetail.promotionInfo.master.shopID > 0 || !ProDetail);
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
@@ -179,7 +185,7 @@ class EditBoxForPromotion extends React.Component {
         ) {
             const promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
             this.setState({
-                promotionCollection: nextProps.user.shopID > 0 ?
+                promotionCollection: filterFlag ?
                     promotionCollection.map((promotionCategery) => {
                         return {
                             promotionType: promotionCategery.promotionType,
@@ -198,22 +204,12 @@ class EditBoxForPromotion extends React.Component {
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
         let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
-            // let _promotionCollection = [];
             SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
-            // _promotionCollection = promotionCollection.map((promotionCategery) => {
-            //     const promotionName = promotionCategery.promotionName.filter((promotion) => {
-            //         return this.props.user.shopID > 0 ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
-            //             : promotion.promotionIDStr != SelfPromotion;
-            //     })
-            //     const promotionType = promotionCategery.promotionType;
-            //     return { promotionName, promotionType }
-            // })
-            // promotionCollection = _promotionCollection;
         }
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
-                    return this.props.user.shopID > 0 ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
+                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
                         : promotion.promotionIDStr != SelfPromotion;
                 })
                 const promotionType = promotionCategery.promotionType;
