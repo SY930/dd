@@ -924,9 +924,11 @@ class MyActivitiesShop extends React.Component {
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
+                    const isGroupPro = record.shopID == '0' || record.shopID == undefined;
                     return (<span>
                         <a
                             href="#"
+                            disabled={isGroupPro}
                             onClick={() => {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
@@ -946,6 +948,7 @@ class MyActivitiesShop extends React.Component {
                         <Authority rightCode="marketing.jichuyingxiaoxin.update">
                             <a
                                 href="#"
+                                disabled={isGroupPro}
                                 onClick={() => {
                                     this.props.toggleIsUpdate(true)
                                     this.handleUpdateOpe(text, record, index);

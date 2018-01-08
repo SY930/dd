@@ -387,7 +387,7 @@ class MyActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
             pageSize: this.state.pageSizes,
             pageNo,
-            usageMode:-1,
+            usageMode: -1,
         };
         if (promotionType != '' && promotionType != 'undefined') {
             opt.promotionType = promotionType;
@@ -938,9 +938,11 @@ class MyActivities extends React.Component {
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
+                    const isGroupPro = record.shopID == '0' || record.shopID == undefined;
                     return (<span>
                         <a
                             href="#"
+                            disabled={!isGroupPro}
                             onClick={() => {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
@@ -960,6 +962,7 @@ class MyActivities extends React.Component {
                         <Authority rightCode="marketing.jichuyingxiaoxin.update">
                             <a
                                 href="#"
+                                disabled={!isGroupPro}
                                 onClick={() => {
                                     this.props.toggleIsUpdate(true)
                                     this.handleUpdateOpe(text, record, index);
@@ -1092,7 +1095,7 @@ class MyActivities extends React.Component {
                                 groupID: this.props.user.accountInfo.groupID,
                                 pageSize,
                                 pageNo: page,
-                                usageMode:-1,
+                                usageMode: -1,
                             };
                             const {
                                 promotionType,
