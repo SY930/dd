@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Tree } from 'antd';
 import { fetchData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import HualalaGroupSelect from '../../SaleCenterNEW/common/HualalaGroupSelect';
 
@@ -57,11 +56,6 @@ class GiftPromotion extends React.Component {
 
     componentDidMount() {
         const user = this.props.user;
-        // 请求获取promotionList--券活动
-        this.props.queryUnbindCouponPromotion({
-            groupID: this.props.user.accountInfo.groupID,
-            // channelID: 0,
-        })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
         // 用户选择过的活动
@@ -315,9 +309,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        queryUnbindCouponPromotion: (opts) => {
-            dispatch(queryUnbindCouponPromotion(opts))
-        },
     };
 };
 

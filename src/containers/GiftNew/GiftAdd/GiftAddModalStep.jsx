@@ -17,7 +17,7 @@ import {
     FetchGiftList,
     FetchGiftSort,
 } from '../_action';
-import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { saleCenterResetDetailInfoAC, queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -90,13 +90,13 @@ class GiftAddModalStep extends React.Component {
             this.setState({ groupTypes });
         });
         // 公众号
-        fetchData('queryWechatMpInfo', {
-            groupID: this.props.accountInfo.toJS().groupID,
-        }, null, { path: 'mpList' }).then((mpList) => {
+        fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
             this.setState({ mpList: mpList || [] })
             // 微信公众号券模版
             this.queryTrdTemplate(mpList[0].mpID, 10)
         });
+        // 请求获取promotionList--券活动
+        this.props.queryUnbindCouponPromotion({ channelID: this.props.gift.data.trdChannelID || 10 })
         FetchGiftSort({});
     }
     queryTrdTemplate = (mpID, trdChannelID) => {
@@ -114,6 +114,7 @@ class GiftAddModalStep extends React.Component {
             })
         });
     }
+
     componentWillReceiveProps(nextProps) {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
@@ -886,6 +887,7 @@ function mapDispatchToProps(dispatch) {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
         saleCenterResetDetailInfo: opts => dispatch(saleCenterResetDetailInfoAC(opts)),
+        queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
     };
 }
 
