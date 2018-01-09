@@ -100,6 +100,7 @@ class GiftAddModalStep extends React.Component {
         FetchGiftSort({});
     }
     queryTrdTemplate = (mpID, trdChannelID) => {
+        if (trdChannelID == 10 && !mpID) return
         // 第三方券模版
         fetchData('queryTrdTemplate', {
             groupID: this.props.accountInfo.toJS().groupID,
@@ -268,7 +269,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({ secondKeys })
                 break;
             case 'trdChannelID':
-                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') && !newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') :
+                describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') ? (!newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') : null) :
                     _.remove(newKeys, function (k) {
                         return k === 'wechatMpName';
                     });
