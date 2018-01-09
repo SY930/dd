@@ -17,7 +17,7 @@ import {
     FetchGiftList,
     FetchGiftSort,
 } from '../_action';
-import { saleCenterResetDetailInfoAC, queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { saleCenterResetDetailInfoAC, fetchAllPromotionListAC, queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -90,13 +90,15 @@ class GiftAddModalStep extends React.Component {
             this.setState({ groupTypes });
         });
         // 公众号
-        fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
+        thisGift.value == 100 ? fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
             this.setState({ mpList: mpList || [] })
             // 微信公众号券模版
             this.queryTrdTemplate(mpList[0].mpID, 10)
-        });
+        }) : null;
         // 请求获取promotionList--券活动
-        this.props.queryUnbindCouponPromotion({ channelID: this.props.gift.data.trdChannelID || 10 })
+        thisGift.value == 100 ? (type === 'edit' ? this.props.fetchAllPromotionList({
+            groupID: this.props.accountInfo.toJS().groupID,
+        }) : this.props.queryUnbindCouponPromotion({ channelID: 10 })) : null;
         FetchGiftSort({});
     }
     queryTrdTemplate = (mpID, trdChannelID) => {
@@ -106,7 +108,7 @@ class GiftAddModalStep extends React.Component {
             groupID: this.props.accountInfo.toJS().groupID,
             channelID: trdChannelID || 10,
             forceRefresh: 1,
-            mpID, // 有值代表微信公众号id,没有代表其他渠道
+            mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
             console.log(trdTemplateInfoList)
             this.setState({
@@ -134,6 +136,9 @@ class GiftAddModalStep extends React.Component {
                     const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
                     const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
                     this.queryTrdTemplate(mpID, data.trdChannelID)/////////////////////////////////////////////////
+                    this.props.fetchAllPromotionList({
+                        groupID: this.props.accountInfo.toJS().groupID,
+                    })
                 }
             }
         }
@@ -278,6 +283,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
                     type === 'add' ? this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value) : null; // 第三方券模版
+                    type === 'add' ? this.props.queryUnbindCouponPromotion({ channelID: value || 10 }) : null;
                 })
                 break;
             case 'wechatMpName':
@@ -888,6 +894,7 @@ function mapDispatchToProps(dispatch) {
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
         saleCenterResetDetailInfo: opts => dispatch(saleCenterResetDetailInfoAC(opts)),
         queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
+        fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
     };
 }
 
