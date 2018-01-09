@@ -63,7 +63,7 @@ class EditBoxForSubject extends React.Component {
         const _role = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']).toJS();
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
         const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
-        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.shopID > 0);
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceOrgID > 0);
 
         if (this.props.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
             this.clear();
@@ -98,7 +98,7 @@ class EditBoxForSubject extends React.Component {
             } else {
                 const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
                 const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
-                const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.shopID > 0);
+                const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceOrgID > 0);
                 this.setState({
                     roleCollection: filterFlag ? _roles.map((roles) => {
                         return {
