@@ -379,6 +379,7 @@ const apiCfg = [
     ['deletePhrase_NEW', '/api/promotion/deletePhrase_NEW', { type: 'JSON' }],
     ['queryTrdTemplate', '/api/promotion/queryTrdTemplate', { type: 'JSON' }],
     ['queryWechatMpInfo', '/api/promotion/queryWechatMpInfo', { type: 'JSON' }],
+    ['queryUnbindCouponPromotion', '/api/promotion/queryUnbindCouponPromotion', { type: 'JSON' }],
     
 
 

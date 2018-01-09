@@ -252,17 +252,6 @@ export const fetchAllPromotionListAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_ALL_PROMOTION_LIST,
         });
-
-        // const config = getSpecifiedUrlConfig('getAllPromotionList_NEW', opts);
-        // fetch(config.url, {
-        //     method: config.method,
-        //     body: JSON.stringify(opts),
-        //     credentials: 'include',
-        //     headers: {
-        //         'Accept': 'application/json; charset=UTF-8',
-        //         'Content-Type': 'application/json; charset=UTF-8',
-        //     },
-        // })
         const config = getSpecifiedUrlConfig('getPromotionList_NEW', opts);
         fetch(config.url, {
             method: config.method,
@@ -282,7 +271,7 @@ export const fetchAllPromotionListAC = (opts) => {
                 }
                 return Promise.reject(new Error(response.statusText))
             }).then((responseJSON) => {
-                dispatch(fetchAllPromotionListSuccess(responseJSON))
+                dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
             }).catch((error) => {
                 dispatch(fetchAllPromotionListFailed(error))
             });
@@ -418,4 +407,19 @@ export const fetchSubjectListInfoAC = (opts) => {
             dispatch(fetchSubjectListFailed(error));
         });
     };
+};
+
+export const queryUnbindCouponPromotion = (opts) => {
+    return (dispatch) => {
+        fetchData('queryUnbindCouponPromotion', {
+            ...opts
+        }, null, { path: 'infoList' }).then((infoList) => {
+            (infoList || []).forEach(pro => pro.promotionIDStr = pro.promotionID)
+            return infoList;
+        }).then((response) => {
+            dispatch(fetchAllPromotionListSuccess(response))
+        }).catch((error) => {
+            dispatch(fetchAllPromotionListFailed(error))
+        });
+    }
 };

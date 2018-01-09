@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Tree } from 'antd';
+import { fetchData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { HualalaEditorBox, HualalaTreeSelect,  HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import { queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { HualalaEditorBox, HualalaTreeSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import HualalaGroupSelect from '../../SaleCenterNEW/common/HualalaGroupSelect';
 
 const TreeNode = Tree.TreeNode;
@@ -56,11 +57,10 @@ class GiftPromotion extends React.Component {
 
     componentDidMount() {
         const user = this.props.user;
-        // 请求获取promotionList--共享用
-        this.props.fetchAllPromotionList({
+        // 请求获取promotionList--券活动
+        this.props.queryUnbindCouponPromotion({
             groupID: this.props.user.accountInfo.groupID,
-            usageMode: this.props.type === 'edit' ? undefined : 2,
-            // channelID: 0, ??为何加他？
+            // channelID: 0,
         })
         // 活动列表
         const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
@@ -85,18 +85,6 @@ class GiftPromotion extends React.Component {
                 this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
             })
         }
-
-
-        // if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) !==
-        //     nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions'])
-        // ) {
-        //     const _mutexPromotions = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS();
-        //     this.setState({
-        //         mutexPromotions: _mutexPromotions,
-        //     }, () => {
-        //         this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
-        //     })
-        // }
     }
 
     render() {
@@ -128,7 +116,7 @@ class GiftPromotion extends React.Component {
                         {/* //左侧树 */}
                         <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
                             {/* <TreeNode key={'salePromotion'} title={'基础营销'}> */}
-                                {loop(_promotionCollection)}
+                            {loop(_promotionCollection)}
                             {/* </TreeNode> */}
                         </Tree>
                         {/* //右侧复选框 */}
@@ -327,8 +315,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllPromotionList: (opts) => {
-            dispatch(fetchAllPromotionListAC(opts))
+        queryUnbindCouponPromotion: (opts) => {
+            dispatch(queryUnbindCouponPromotion(opts))
         },
     };
 };
