@@ -130,7 +130,7 @@ class PromotionScopeInfo extends React.Component {
                 auto: this.state.auto,
                 orderType: this.state.orderType,
                 brands: this.state.brands,
-                shopsInfo: this.state.selections,
+                shopsInfo: this.props.user.toJS().shopID > 0 ? [{ shopID: this.props.user.toJS().shopID }] : this.state.selections,
                 voucherVerify: this.state.voucherVerify,
                 voucherVerifyChannel: this.state.voucherVerifyChannel,
                 points: this.state.points,

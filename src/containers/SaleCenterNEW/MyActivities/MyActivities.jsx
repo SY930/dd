@@ -939,7 +939,7 @@ class MyActivities extends React.Component {
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
-                    const isGroupPro = record.maintenanceOrgID == '0' || record.shopID == undefined;
+                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL' || record.shopID == undefined;
                     return (<span>
                         <a
                             href="#"
