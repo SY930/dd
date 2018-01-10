@@ -295,9 +295,9 @@ class MyActivitiesShop extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "10000833") {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("10000833")) {
+            if (tabArr.includes("shop.dianpu.promotion")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
