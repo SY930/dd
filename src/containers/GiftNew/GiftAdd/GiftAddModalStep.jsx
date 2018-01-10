@@ -110,7 +110,7 @@ class GiftAddModalStep extends React.Component {
             forceRefresh: 1,
             mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
-            console.log(trdTemplateInfoList)
+            // console.log(trdTemplateInfoList)
             this.setState({
                 trdTemplateInfoList: trdTemplateInfoList || [],
             })
@@ -258,7 +258,7 @@ class GiftAddModalStep extends React.Component {
                         isFoodCatNameList: categoryOrDish,
                         foodNameList: categoryOrDish == '0' ? _foodCategory : _dishes,
                     }, () => {
-                        console.log(this.state.foodNameList)
+                        // console.log(this.state.foodNameList)
                     })
                 } else {
                     this.setState({

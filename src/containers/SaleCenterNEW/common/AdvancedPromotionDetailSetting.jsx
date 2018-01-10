@@ -109,7 +109,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 && this.state.userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' :
                                 this.state.userSetting}
                     onChange={(val) => {
-                        console.log(val)
+                        {/* console.log(val) */}
                         this.setState({
                             userSetting: val,
                         });

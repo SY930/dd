@@ -447,8 +447,8 @@ class EditBoxForPromotion extends React.Component {
                 })
             }
             this.setState({ promotionCurrentSelections: value, promotionSelections: selectionsSet }, () => {
-                console.log(this.state.promotionCurrentSelections);
-                console.log(Array.from(this.state.promotionSelections));
+                // console.log(this.state.promotionCurrentSelections);
+                // console.log(Array.from(this.state.promotionSelections));
             });
         }
     }

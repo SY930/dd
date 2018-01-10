@@ -89,7 +89,7 @@ class NewPromotion extends React.Component {
                 })
             })
         });
-        console.log(categoryNames, singleFoods);
+        // console.log(categoryNames, singleFoods);
         const scopeLst = opts.scopeLst.filter((cat) => {
             if (cat.scopeType === 'CATEGORY_INCLUDED') {
                 return categoryNames.includes(cat.targetID)

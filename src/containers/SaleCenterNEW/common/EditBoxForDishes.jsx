@@ -95,9 +95,9 @@ class EditBoxForDishes extends React.Component {
                         return {
                             ...category,
                             foods: category.foods.filter((food) => {
-                                if (food.isTempFood == '1' || food.isTempSetFood == '1') {
-                                    console.log('临时菜or临时套餐', food)
-                                }
+                                // if (food.isTempFood == '1' || food.isTempSetFood == '1') {
+                                //     console.log('临时菜or临时套餐', food)
+                                // }
                                 // return food.isSetFood !== '1'
                                 return food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1'
                             }),

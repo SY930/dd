@@ -150,7 +150,7 @@ class StepTwo extends React.Component {
         }
     }
     handleOptionChange(value) {
-        console.log(value);
+        // console.log(value);
         this.setState({
             consumeType: value,
             numberValue: {
@@ -162,7 +162,7 @@ class StepTwo extends React.Component {
         });
     }
     handleNumberChange(value) {
-        console.log(value);
+        // console.log(value);
         const consumeType = this.state.consumeType;
         if (consumeType == '0') { // 消费累计金额每满"
             if (value.number < 500) {

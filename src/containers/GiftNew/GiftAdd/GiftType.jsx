@@ -41,7 +41,7 @@ class GiftType extends React.Component {
         const { user } = this.props;
         params.groupID = user.accountInfo.groupID;
         fetchData('getGifts_dkl', params, null, { path: 'data.crmGiftList' }).then((gifts) => {
-            console.log('gifts,', gifts);
+            // console.log('gifts,', gifts);
             if (gifts === undefined) {
                 return;
             }
@@ -61,7 +61,7 @@ class GiftType extends React.Component {
                 return g;
             });
             this.setState({ dataSource: [...newDataSource] }, () => {
-                console.log('this.state', this.state);
+                // console.log('this.state', this.state);
             })
         });
     }

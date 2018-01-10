@@ -175,7 +175,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                                                         key={cat.itemID}
                                                         closable={true}
                                                         onClose={(e) => {
-                                                            console.log(cat.name);
+                                                            {/* console.log(cat.name); */}
                                                             const catOrtag = this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
