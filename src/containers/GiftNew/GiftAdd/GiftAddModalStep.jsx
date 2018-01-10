@@ -414,6 +414,15 @@ class GiftAddModalStep extends React.Component {
             if (!params.isPointRate) {
                 params.pointRate = 0
             }
+            if (value == 100) {
+                params.extraInfo = JSON.stringify({
+                    wechatMpName: formValues.wechatMpName,
+                    trdTemplateIDLabel: ((this.state.trdTemplateInfoList || []).find(template => {
+                        return template.trdGiftItemID == formValues.trdTemplateID
+                    }) || {}).trdGiftName ||
+                    (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
+                })
+            }
             if (type === 'add') {
                 callServer = 'addGift_dkl';
                 if (values.brandID == '-1') {
@@ -767,12 +776,15 @@ class GiftAddModalStep extends React.Component {
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
                 defaultValue: '',
-                options: trdTemplateInfoList.map(template => {
+                options: type == 'add' ? trdTemplateInfoList.map(template => {
                     return {
                         label: template.trdGiftName,
                         value: template.trdGiftItemID,
                     }
-                }),
+                }) : [{
+                    label: JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel,
+                    value: this.props.gift.data.trdTemplateID,
+                }],
             },
             trdTemplateIDLabel: {
                 label: '第三方券模板或活动ID',
