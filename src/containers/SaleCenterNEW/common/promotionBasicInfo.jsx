@@ -81,6 +81,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME',
                     // name:this.state.newCategory,
                     nameList: [this.state.newCategory],
@@ -89,11 +90,13 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                     if (this.props.catOrtag == 'cat') {
                         this.props.fetchPromotionCategories({
                             groupID: this.props.user.accountInfo.groupID,
+                            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                             phraseType: 'CATEGORY_NAME',
                         });
                     } else {
                         this.props.fetchPromotionTags({
                             groupID: this.props.user.accountInfo.groupID,
+                            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                             phraseType: 'TAG_NAME',
                         });
                     }
@@ -138,7 +141,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                     wrapClassName={styles.linkSelectorModalHasTag}
                     footer={
                         [<Button key="0" style={{ display: 'none' }}></Button>,
-                            <Button key="1" type="primary" onClick={this.handleCancel}>关闭</Button>]
+                        <Button key="1" type="primary" onClick={this.handleCancel}>关闭</Button>]
                     }
                 >
                     {
@@ -159,7 +162,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                                         },
                                     })(
                                         <Input style={{ width: '285px', marginRight: '10px' }} placeholder={`请输入${title}名称`} />
-                                    )}
+                                        )}
                                     <Button type="default" onClick={this.hideAddCategory}>{`添加${title}`}</Button>
                                 </FormItem>
                                 <FormItem style={{ marginLeft: '19px' }}>
@@ -307,12 +310,14 @@ class PromotionBasicInfo extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: 'CATEGORY_NAME',
                     nameList: [this.state.category],
                 },
                 success: () => {
                     this.props.fetchPromotionCategories({
                         groupID: this.props.user.accountInfo.groupID,
+                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                         phraseType: 'CATEGORY_NAME',
                     });
                 },
@@ -325,7 +330,7 @@ class PromotionBasicInfo extends React.Component {
 
     handleAutoAddTags() {
         const excludeTags = [];
-        const tagNameArr = this.state.tagList.map((tagObj) => {
+        const tagNameArr = (this.state.tagList || []).map((tagObj) => {
             return tagObj.name
         });
         this.state.tags.map((tag) => {
@@ -337,12 +342,14 @@ class PromotionBasicInfo extends React.Component {
             this.props.addPhrase({
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType: 'TAG_NAME',
                     nameList: excludeTags,
                 },
                 success: () => {
                     this.props.fetchPromotionTags({
                         groupID: this.props.user.accountInfo.groupID,
+                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                         phraseType: 'TAG_NAME',
                     });
                 },
@@ -365,16 +372,18 @@ class PromotionBasicInfo extends React.Component {
         const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags } = this.props;
 
         promotionBasicInfo.getIn(['$categoryList', 'initialized']) ||
-        fetchPromotionCategories({
-            groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'CATEGORY_NAME',
-        });
+            fetchPromotionCategories({
+                groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                phraseType: 'CATEGORY_NAME',
+            });
 
         promotionBasicInfo.getIn(['$tagList', 'initialized']) ||
-        fetchPromotionTags({
-            groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'TAG_NAME',
-        });
+            fetchPromotionTags({
+                groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                phraseType: 'TAG_NAME',
+            });
 
         if (promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
             this.setState({
@@ -887,6 +896,7 @@ class PromotionBasicInfo extends React.Component {
         this.props.deletePhrase({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                 phraseType,
                 name,
                 itemID,
@@ -895,6 +905,7 @@ class PromotionBasicInfo extends React.Component {
                 const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
                 this.props[type]({
                     groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType,
                 });
                 message.success('删除成功');
@@ -993,7 +1004,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.name,
                     })(
                         <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
-                    )}
+                        )}
                 </FormItem>
 
                 <FormItem label="活动展示名称" className={styles.FormItemStyle} {...formItemLayout}>
@@ -1006,7 +1017,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.showName,
                     })(
                         <Input placeholder="请输入展示名称" onChange={this.handleShowNameChange} />
-                    )}
+                        )}
                 </FormItem>
 
                 <FormItem label="活动编码" className={styles.FormItemStyle} {...formItemLayout}>
@@ -1021,7 +1032,7 @@ class PromotionBasicInfo extends React.Component {
 
                     })(
                         <Input placeholder="请输入活动编码" disabled={!this.props.isNew} onChange={this.handleCodeChange} />
-                    )}
+                        )}
                 </FormItem>
 
                 <FormItem label="活动标签" className={styles.FormItemStyle} {...formItemLayout}>
@@ -1100,7 +1111,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.description,
                     })(
                         <Input type="textarea" placeholder="请输入活动说明" onChange={this.handleDescriptionChange} />
-                    )}
+                        )}
                 </FormItem>
             </Form>
         )

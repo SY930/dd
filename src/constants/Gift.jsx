@@ -7,6 +7,7 @@ const GiftCfg = {
         { name: '会员积分券', describe: '会员获取后，可直接充值到卡积分余额中', value: '42', color: '#84aac6' },
         { name: '会员权益券', describe: '会员获取后，可享受折扣，会员价，插队等权益', value: '80', color: '#84aac6' },
         { name: '礼品定额卡', describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值', value: '90', color: '#c49b79' },
+        { name: '活动券', describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码', value: '100', color: '#c49b79' },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -17,6 +18,7 @@ const GiftCfg = {
         { label: '会员积分券', value: '42' },
         { label: '会员权益券', value: '80' },
         { label: '礼品定额卡', value: '90' },
+        { label: '活动券', value: '100' },
     ],
     transferType: [
         { label: '不可分享', value: 0 },
@@ -134,6 +136,21 @@ const GiftCfg = {
         { value: '1', label: '男' },
         { value: '0', label: '女' },
         { value: '2', label: '未知' },
+    ],
+    trdChannelIDs: [
+        { label: '微信', value: 10 },
+        { label: '哗啦啦', value: 1,  },
+        { label: '饮食通', value: 2,  },
+        { label: '雅座', value: 3,  },
+        { label: '眉州', value: 4,  },
+        { label: '5i', value: 5,  },
+        { label: '拉格代尔', value: 6, },
+        // { label: '哗啦啦', value: 1, disabled:true },
+        // { label: '饮食通', value: 2, disabled:true },
+        // { label: '雅座', value: 3, disabled:true },
+        // { label: '眉州', value: 4, disabled:true },
+        // { label: '5i', value: 5, disabled:true },
+        // { label: '拉格代尔', value: 6, disabled:true },
     ],
 }
 

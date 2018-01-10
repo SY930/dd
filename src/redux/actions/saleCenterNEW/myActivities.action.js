@@ -134,6 +134,7 @@ export const toggleSelectedActivityStateSuccess = (opts) => {
 export const toggleSelectedActivityStateAC = (opts) => {
     const params = {
         groupID: opts.record.groupID,
+        shopID: opts.record.shopID,
         promotionID: opts.record.promotionIDStr,
         isActive: opts.record.isActive == 'ACTIVE' ? 'NOT_ACTIVE' : 'ACTIVE',
     };

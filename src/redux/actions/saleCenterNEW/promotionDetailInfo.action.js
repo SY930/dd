@@ -92,7 +92,8 @@ export const fetchFoodCategoryInfoAC = (opts) => {
         dispatch(fetchFoodCategoryStart());
 
         // let config = getSpecifiedUrlConfig('getFoodCategory_NEW', {...opts,bookID:0});
-        const config = getSpecifiedUrlConfig('getFoodCategory_NEW', { ...opts, bookID: 0, type: '0' });
+        const url = opts.shopID && opts.shopID > 0 ? 'queryShopFoodClass' : 'getFoodCategory_NEW';
+        const config = getSpecifiedUrlConfig(url, { ...opts, bookID: 0, type: '0' });
 
         fetch(config.url, {
             method: config.method,
@@ -176,7 +177,11 @@ const fetchFoodMenuFailed = () => {
 // };
 export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+        // return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+        //     dispatch(fetchFoodMenuSuccess(res))
+        // });
+        const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
+        return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
             dispatch(fetchFoodMenuSuccess(res))
         });
     }
@@ -247,30 +252,29 @@ export const fetchAllPromotionListAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_ALL_PROMOTION_LIST,
         });
-
-        const config = getSpecifiedUrlConfig('getAllPromotionList_NEW', opts);
-
+        const config = getSpecifiedUrlConfig('getPromotionList_NEW', opts);
         fetch(config.url, {
             method: config.method,
-            body: JSON.stringify(opts),
+            body: JSON.stringify({ ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 }),
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
                 'Content-Type': 'application/json; charset=UTF-8',
             },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
+        })
+            .then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                        return response.json();
+                    }
+                    return response.text();
                 }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            dispatch(fetchAllPromotionListSuccess(responseJSON))
-        }).catch((error) => {
-            dispatch(fetchAllPromotionListFailed(error))
-        });
+                return Promise.reject(new Error(response.statusText))
+            }).then((responseJSON) => {
+                dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
+            }).catch((error) => {
+                dispatch(fetchAllPromotionListFailed(error))
+            });
     }
 };
 
@@ -294,11 +298,11 @@ export const fetchRoleListInfoAC = (opts) => {
             type: SALE_CENTER_FETCH_ROLE_LIST,
         });
 
-        const config = getSpecifiedUrlConfig('getRole_NEW', opts);
+        // const config = getSpecifiedUrlConfig('getRole_NEW', opts);
 
-        fetch(config.url, {
-            method: config.method,
-            body: config.params,
+        fetch('/api/shopcenter/empapi/queryRole', {
+            method: 'POST',
+            body: opts,
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
@@ -403,4 +407,19 @@ export const fetchSubjectListInfoAC = (opts) => {
             dispatch(fetchSubjectListFailed(error));
         });
     };
+};
+
+export const queryUnbindCouponPromotion = (opts) => {
+    return (dispatch) => {
+        fetchData('queryUnbindCouponPromotion', {
+            ...opts
+        }, null, { path: 'infoList' }).then((infoList) => {
+            (infoList || []).forEach(pro => pro.promotionIDStr = pro.promotionID)
+            return infoList;
+        }).then((response) => {
+            dispatch(fetchAllPromotionListSuccess(response))
+        }).catch((error) => {
+            dispatch(fetchAllPromotionListFailed(error))
+        });
+    }
 };

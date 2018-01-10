@@ -92,8 +92,12 @@ class EditBoxForPromotion extends React.Component {
     componentDidMount() {
         const user = this.props.user;
         // 请求获取promotionList--共享用
+        const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
+        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceOrgID > 0);
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
         })
         // 请求获取所有哗啦啦券列表--共享用
         this.props.FetchGiftList({
@@ -128,7 +132,15 @@ class EditBoxForPromotion extends React.Component {
         });
         // this.setState({  })
         this.setState({
-            promotionCollection: _promotions,
+            promotionCollection: filterFlag ?
+                _promotions.map((promotionCategery) => {
+                    return {
+                        promotionType: promotionCategery.promotionType,
+                        promotionName: promotionCategery.promotionName.filter((promotion) => {
+                            return promotion.shopID != '0';
+                        }),
+                    }
+                }) : _promotions,
             mutexPromotions: _mutexPromotions,
             vouchersData,
             couponsData,
@@ -137,6 +149,9 @@ class EditBoxForPromotion extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
+        const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
+        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceOrgID > 0);
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
@@ -170,7 +185,15 @@ class EditBoxForPromotion extends React.Component {
         ) {
             const promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
             this.setState({
-                promotionCollection,
+                promotionCollection: filterFlag ?
+                    promotionCollection.map((promotionCategery) => {
+                        return {
+                            promotionType: promotionCategery.promotionType,
+                            promotionName: promotionCategery.promotionName.filter((promotion) => {
+                                return promotion.shopID != '0';
+                            }),
+                        }
+                    }) : promotionCollection,
                 promotionSelections: new Set(),
             }, () => {
                 this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
@@ -179,20 +202,19 @@ class EditBoxForPromotion extends React.Component {
 
         // 去掉自己，自己不能共享自己
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
+        let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
-            let _promotionCollection = [];
-            const SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
-            _promotionCollection = promotionCollection.map((promotionCategery) => {
+            SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
+        }
+        this.setState({
+            promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
-                    return promotion.promotionIDStr != SelfPromotion;
+                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
+                        : promotion.promotionIDStr != SelfPromotion;
                 })
                 const promotionType = promotionCategery.promotionType;
                 return { promotionName, promotionType }
-            })
-            promotionCollection = _promotionCollection;
-        }
-        this.setState({
-            promotionCollection,
+            }),
             promotionSelections: new Set(),
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
@@ -214,6 +236,9 @@ class EditBoxForPromotion extends React.Component {
     render() {
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = this.state.promotionSelections;
+        const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
+        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceOrgID > 0);
 
         // 拼左侧树状结构
         const loop = (data) => {
@@ -221,17 +246,16 @@ class EditBoxForPromotion extends React.Component {
                 return null
             }
             let _data;
-            // 隐藏组合减免，买三免一
-            // if (HUALALA.ENVIRONMENT != 'production-release') {
-            _data = data
-            // } else {
-            //     _data = data.filter((item, index) => {
-            //         if (item.promotionType.content != '组合减免/折扣' && item.promotionType.content != '买三免一' &&
-            //             item.promotionType.content != '累计次数减免' && item.promotionType.content != '累计次数赠送') {
-            //             return item;
-            //         }
-            //     });
-            // }
+            // 门店隐藏推荐菜
+            if (!filterFlag) {
+                _data = data
+            } else {
+                _data = data.filter((item, index) => {
+                    if (item.promotionType.content != '菜品推荐') {
+                        return item;
+                    }
+                });
+            }
             return _data.map((item, index) => {
                 return <TreeNode key={index} title={item.promotionType.content} />;
             });
@@ -480,7 +504,8 @@ const mapStateToProps = (state) => {
         myActivities: state.sale_myActivities_NEW,
         giftInfoNew: state.sale_giftInfoNew, // 所有哗啦啦券列表--共享用
         mySpecialActivities: state.sale_mySpecialActivities_NEW, // 所有会员等级列表--共享用
-        user: state.user.toJS() };
+        user: state.user.toJS()
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

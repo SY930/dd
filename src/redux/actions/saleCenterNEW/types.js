@@ -672,6 +672,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             'voucherVerifyChannel': ruleJson.voucherVerifyChannel,
             'points': ruleJson.points,
             'evidence': ruleJson.evidence,
+            'usageMode': source.usageMode || 1,
         };
     }
     return {
@@ -684,6 +685,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
                 return item.shopID;
             })
             .join(','),
+        usageMode: _source.usageMode || 1,
     };
 };
 
@@ -735,12 +737,12 @@ export const promotionDetailInfoAdapter = function (source, dir) {
     }
     // compose scopeList
     let scope = [];
-    if (source.scopeLst.length > 0 && source.foodCategory.length == 0 &&
-            source.excludeDishes.length == 0 && source.dishes.length == 0) {
+    if (source.scopeLst && source.scopeLst.length > 0 && source.foodCategory.length == 0 &&
+        source.excludeDishes.length == 0 && source.dishes.length == 0) {
         scope = source.scopeLst;
     } else {
         if (source.foodCategory !== null) {
-            source.foodCategory.map((item) => {
+            (source.foodCategory || []).map((item) => {
                 scope.push({
                     scopeType: 'CATEGORY_INCLUDED',
                     targetID: item.foodCategoryID,
@@ -751,7 +753,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         }
 
         if (source.excludeDishes !== null) {
-            source.excludeDishes.map((item) => {
+            (source.excludeDishes || []).map((item) => {
                 scope.push({
                     scopeType: 'FOOD_EXCLUDED',
                     targetID: item.itemID,
@@ -763,7 +765,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         }
 
         if (source.dishes !== null) {
-            source.dishes.map((item) => {
+            (source.dishes || []).map((item) => {
                 scope.push({
                     scopeType: 'FOOD_INCLUDED',
                     targetID: item.itemID,

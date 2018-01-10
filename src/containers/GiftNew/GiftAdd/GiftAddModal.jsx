@@ -27,7 +27,7 @@ class GiftAddModal extends React.Component {
             transferType: 0,
             isUpdate: true,
         },
-        this.baseForm = null;
+            this.baseForm = null;
     }
     componentWillMount() {
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
@@ -250,7 +250,7 @@ class GiftAddModal extends React.Component {
                 rules: value == '30'
                     ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }]
                     : [{ required: true, message: `${valueLabel}不能为空` },
-                        { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }],
+                    { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }],
             },
             giftName: {
                 label: '礼品名称',
@@ -264,15 +264,15 @@ class GiftAddModal extends React.Component {
                 placeholder: '请输入建议售价金额',
                 surfix: '元',
                 rules: [{ required: true, message: '建议售价不能为空' },
-                    { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
-                    {
-                        validator: (rule, v, cb) => {
-                            const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('giftValue');
-                            parseFloat(v) <= parseFloat(giftValue) ? cb() : cb(rule.message);
-                        },
-                        message: '建议售价只能小于或等于礼品价值',
-                    }],
+                { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
+                {
+                    validator: (rule, v, cb) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftValue = getFieldValue('giftValue');
+                        parseFloat(v) <= parseFloat(giftValue) ? cb() : cb(rule.message);
+                    },
+                    message: '建议售价只能小于或等于礼品价值',
+                }],
             },
             giftRemark: {
                 label: '礼品描述',
@@ -327,7 +327,7 @@ class GiftAddModal extends React.Component {
                     this.handleCancel()
                 }}
                 footer={[<Button key="0" type="ghost" onClick={() => this.handleCancel()}>取消</Button>,
-                    <Button key="1" type="primary" style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }} onClick={() => this.handleOk()}>确定</Button>]}
+                <Button key="1" type="primary" style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }} onClick={() => this.handleOk()}>确定</Button>]}
                 key={`${describe}-${type}`}
             >
                 <div className={styles.giftAddModal}>

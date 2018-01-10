@@ -18,7 +18,7 @@ import {
     Spin,
 } from 'antd';
 import registerPage from '../../../index';
-import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
+import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -144,7 +144,7 @@ const mapDispatchToProps = (dispatch) => {
         },
     };
 };
-@registerPage([SALE_CENTER_PAGE], {
+@registerPage([SALE_CENTER_PAGE_SHOP], {
     sale_promotionBasicInfo_NEW,
     sale_promotionDetailInfo_NEW,
     sale_promotionScopeInfo_NEW,
@@ -156,7 +156,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
-class MyActivities extends React.Component {
+class MyActivitiesShop extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -215,38 +215,20 @@ class MyActivities extends React.Component {
             fetchPromotionList,
         } = this.props;
         this.handleQuery();
-        // fetchPromotionList({
-        //     data: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         pageSize: this.state.pageSizes,
-        //         pageNo: 1,
-        //     },
-        //     fail: (msg) => { message.error(msg) },
-        //     success: this.showNothing,
-        // });
-        // Make sure the categoryList is fetched from the server.
-        if (!promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
-            fetchPromotionCategories({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'CATEGORY_NAME',
-            });
-        }
-
-        // Make sure the taglist is fetched from the server
-        if (!promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
-            fetchPromotionTags({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'TAG_NAME',
-            });
-        }
-
-        // Make sure that the promotion scope related data is fetched from the server
-        if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
-            fetchPromotionScopeInfo({
-                _groupID: this.props.user.accountInfo.groupID,
-            });
-        }
-
+        fetchPromotionCategories({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+            phraseType: 'CATEGORY_NAME',
+        });
+        fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+            phraseType: 'TAG_NAME',
+        });
+        fetchPromotionScopeInfo({
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -268,7 +250,7 @@ class MyActivities extends React.Component {
     handleDisableClickEvent(text, record) {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
-            record,
+            record: { ...record, shopID: this.props.user.shopID },
             cb: this.toggleStateCallBack,
         });
     }
@@ -313,9 +295,9 @@ class MyActivities extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "10000833") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("1000076001")) {
+            if (tabArr.includes("10000833")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
@@ -380,11 +362,12 @@ class MyActivities extends React.Component {
             promotionTags,
             promotionBrands,
             promotionOrder,
-            promotionShop,
+            // promotionShop,
         } = this.state;
 
         const opt = {
             groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
             pageSize: this.state.pageSizes,
             pageNo,
             usageMode: -1,
@@ -405,9 +388,9 @@ class MyActivities extends React.Component {
         if (promotionOrder != '' && promotionOrder != undefined) {
             opt.orderType = promotionOrder;
         }
-        if (promotionShop != '' && promotionShop != undefined) {
-            opt.shopID = promotionShop;
-        }
+        // if (promotionShop != '' && promotionShop != undefined) {
+        //     opt.shopID = promotionShop;
+        // }
         if (promotionState != '' && promotionState != '0') {
             opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
         }
@@ -518,6 +501,7 @@ class MyActivities extends React.Component {
             data: {
                 promotionID: _record.promotionIDStr || this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID,
             },
             success: successFn,
             fail: failFn,
@@ -539,6 +523,7 @@ class MyActivities extends React.Component {
             data: {
                 promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID,
             },
             fail: failFn,
         });
@@ -716,11 +701,12 @@ class MyActivities extends React.Component {
                                     [{
                                         value: 'ALL',
                                         title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].map((activity, index) => {
-                                        return (
-                                            <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
-                                        );
-                                    })
+                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== 'RECOMMEND_FOOD')
+                                        .map((activity, index) => {
+                                            return (
+                                                <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
+                                            );
+                                        })
                                 }
                             </Select>
                         </li>
@@ -745,12 +731,12 @@ class MyActivities extends React.Component {
                             </Select>
                         </li>
 
-                        <li>
+                        {/* <li>
                             <h5>适用店铺</h5>
                         </li>
                         <li>
                             {this.renderShopsInTreeSelectMode()}
-                        </li>
+                        </li> */}
 
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
@@ -865,7 +851,7 @@ class MyActivities extends React.Component {
                             </Select>
                         </li>
 
-                        <li>
+                        {/* <li>
                             <h5>品牌</h5>
                         </li>
                         <li>
@@ -887,7 +873,7 @@ class MyActivities extends React.Component {
                                     })
                                 }
                             </Select>
-                        </li>
+                        </li> */}
 
                         <li>
                             <h5>适用业务</h5>
@@ -943,7 +929,7 @@ class MyActivities extends React.Component {
                     return (<span>
                         <a
                             href="#"
-                            disabled={!isGroupPro}
+                            disabled={isGroupPro}
                             onClick={() => {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
@@ -963,7 +949,7 @@ class MyActivities extends React.Component {
                         <Authority rightCode="marketing.jichuyingxiaoxin.update">
                             <a
                                 href="#"
-                                disabled={!isGroupPro}
+                                disabled={isGroupPro}
                                 onClick={() => {
                                     this.props.toggleIsUpdate(true)
                                     this.handleUpdateOpe(text, record, index);
@@ -1094,6 +1080,7 @@ class MyActivities extends React.Component {
                             })
                             const opt = {
                                 groupID: this.props.user.accountInfo.groupID,
+                                shopID: this.props.user.shopID,
                                 pageSize,
                                 pageNo: page,
                                 usageMode: -1,
@@ -1163,5 +1150,5 @@ class MyActivities extends React.Component {
         );
     }
 }
-export default MyActivities;
+export default MyActivitiesShop;
 

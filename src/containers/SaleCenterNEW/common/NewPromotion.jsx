@@ -63,6 +63,7 @@ class NewPromotion extends React.Component {
         }) : []
         const opts = {
             groupID: this.props.user.toJS().accountInfo.groupID,
+            shopID: this.props.user.toJS().shopID ? this.props.user.toJS().shopID : '0',
             ...basicInfo,
             ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
@@ -72,6 +73,7 @@ class NewPromotion extends React.Component {
             roleIDLst: _roleIDLst,
             isActive,
             shareLst,
+            usageMode: scopeInfo.usageMode,
         };
         // 存储普通菜品分类和单品（非套餐），scopeLst过滤掉线上菜品，priceLst过滤套餐
         const categoryNames = [];
@@ -95,17 +97,19 @@ class NewPromotion extends React.Component {
             return cat
         })
         const priceLst = basicInfo.promotionType === 'RECOMMEND_FOOD' ? opts.priceLst :
-            opts.priceLst.filter((price) => {
+            (opts.priceLst || []).filter((price) => {
                 return singleFoods.includes(String(price.foodUnitID))
             })
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
-            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun, maintenanceLevel } = opts;
+            orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
+            maintenanceLevel, usageMode, shopID } = opts;
         const promotionInfo = {
             master: {
                 groupID,
+                shopID,
                 promotionName,
                 promotionShowName,
                 categoryName,
@@ -134,6 +138,7 @@ class NewPromotion extends React.Component {
                 subjectType,
                 excludedSubjectLst,
                 maintenanceLevel,
+                usageMode,
             },
             timeLst: opts.timeLst,
             priceLst,

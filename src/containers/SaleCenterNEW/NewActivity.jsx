@@ -141,7 +141,10 @@ class NewActivity extends React.Component {
                                     this.onButtonClicked(index, activity);
                                 }}
                                 key={`NewActivity${index}`}
-                                style={{ listStyle: 'none' }}
+                                style={{
+                                    listStyle: 'none',
+                                    display: this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD' ? 'none' : 'block',
+                                }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
                                     <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
@@ -192,6 +195,7 @@ class NewActivity extends React.Component {
     _onButtonClicked(index, activity) {
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });

@@ -18,12 +18,14 @@ import {
     Select,
     Tree,
     Input,
+    Radio
 } from 'antd';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
+const RadioGroup = Radio.Group;
 
 import styles from '../ActivityPage.less';
 
@@ -88,7 +90,7 @@ class PromotionScopeInfo extends React.Component {
             points: '1',
             evidence: '0',
             shopStatus: 'success',
-
+            usageMode: 1,
         };
 
         // bind this.
@@ -103,6 +105,7 @@ class PromotionScopeInfo extends React.Component {
         this.handleVoucherVerifyChannelChange = this.handleVoucherVerifyChannelChange.bind(this);
         this.onPointsChange = this.onPointsChange.bind(this);
         this.onEvidenceChange = this.onEvidenceChange.bind(this);
+        this.renderUsageMode = this.renderUsageMode.bind(this);
     }
     handleSubmit(isPrev) {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
@@ -115,7 +118,7 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         });
-        if (promotionType == 'RECOMMEND_FOOD' && this.state.selections.length == 0) {
+        if (promotionType == 'RECOMMEND_FOOD' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             this.setState({ shopStatus: false })
         } else {
@@ -127,11 +130,12 @@ class PromotionScopeInfo extends React.Component {
                 auto: this.state.auto,
                 orderType: this.state.orderType,
                 brands: this.state.brands,
-                shopsInfo: this.state.selections,
+                shopsInfo: this.props.user.toJS().shopID > 0 ? [{ shopID: this.props.user.toJS().shopID }] : this.state.selections,
                 voucherVerify: this.state.voucherVerify,
                 voucherVerifyChannel: this.state.voucherVerifyChannel,
                 points: this.state.points,
                 evidence: this.state.evidence,
+                usageMode: this.state.usageMode,
             });
         }
         return flag || isPrev;
@@ -180,6 +184,7 @@ class PromotionScopeInfo extends React.Component {
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 initialized: true,
+                usageMode: _stateFromRedux.usageMode || 1,
             });
         }
     }
@@ -214,6 +219,7 @@ class PromotionScopeInfo extends React.Component {
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 initialized: true,
+                usageMode: _data.usageMode || 1,
             });
         }
     }
@@ -481,7 +487,21 @@ class PromotionScopeInfo extends React.Component {
             shopStatus: val.length > 0,
         })
     }
-
+    renderUsageMode() {
+        return (
+            <Form.Item
+                label="活动使用模式"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <RadioGroup value={this.state.usageMode || 1} onChange={(e) => this.setState({ usageMode: e.target.value })}>
+                    <Radio value={1}>普通活动</Radio>
+                    <Radio value={2}>活动券</Radio>
+                </RadioGroup>
+            </Form.Item>
+        )
+    }
 
     // only the promotionScopeInfo change cause the render operation of the component
     shouldComponentUpdate(nextProps, nextState) {
@@ -494,13 +514,16 @@ class PromotionScopeInfo extends React.Component {
     }
 
     render() {
+        const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
         return (
             <Form className={styles.FormStyle}>
-                {this.renderBrandFormItem()}
-                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) != 'RECOMMEND_FOOD' ? this.renderChannelList() : null}
+                {this.props.user.toJS().shopID > 0 ? null : this.renderBrandFormItem()}
+                {promotionType != 'RECOMMEND_FOOD' ? this.renderChannelList() : null}
                 {this.renderBusinessOptions()}
-                {this.renderShopsOptions()}
-                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == 'VOUCHER_GROUP' ? this.renderGroup() : null}
+                {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
+                {promotionType == 'VOUCHER_GROUP' ? this.renderGroup() : null}
+                {promotionType != 'RETURN_GIFT' && promotionType != 'RETURN_POINT'
+                    && promotionType != 'BILL_CUMULATION_FREE' && promotionType != 'FOOD_CUMULATION_GIVE' ? this.renderUsageMode() : null}
             </Form>
         );
     }

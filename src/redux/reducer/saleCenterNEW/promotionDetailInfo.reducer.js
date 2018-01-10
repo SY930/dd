@@ -209,8 +209,8 @@ function constructTreeDataContainsPromotion(data) {
                 content: ACTIVITY_CATEGORIES.find((item) => {
                     return item.key === key;
                 }) ? ACTIVITY_CATEGORIES.find((item) => {
-                        return item.key === key;
-                    }).title : '未找到匹配项',
+                    return item.key === key;
+                }).title : '未找到匹配项',
             };
             return {
                 promotionType,
@@ -342,13 +342,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_ALL_PROMOTION_LIST_SUCCESS:
-            const $allPromotionLst = Immutable.fromJS(action.payload.promotionLst);
-            // let _envIsVip = process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'production-dohko';
-            // let scope_promotionLst =  !_envIsVip ? action.payload.promotionLst.filter((activity) => {
-            //     //隐藏基础营销组合减免，买三免一（这两个活动先实现活动共享后再实现）
-            //     return activity.promotionType != 'BILL_COMBINE_FREE' && activity.promotionType != 'FOOD_BUY_THEN_FREE'
-            // }) : action.payload.promotionLst;
-            // let allPromotionTree = constructTreeDataContainsPromotion(Immutable.fromJS(scope_promotionLst));
+            const $allPromotionLst = Immutable.fromJS(action.payload || []);
             const allPromotionTree = constructTreeDataContainsPromotion($allPromotionLst);
             const $allPromotionTree = Immutable.fromJS(allPromotionTree);
             return $$state
@@ -365,10 +359,10 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_ROLE_LIST_SUCCESS:
-            const roleTree = constructTreeDataContainsRole(Immutable.fromJS(action.payload.records));
+            const roleTree = constructTreeDataContainsRole(Immutable.fromJS(action.payload.roleList));
             return $$state
                 .setIn(['$roleInfo', 'initialized'], true)
-                .setIn(['$roleInfo', 'data', 'roleInfo'], Immutable.fromJS(action.payload.records))
+                .setIn(['$roleInfo', 'data', 'roleInfo'], Immutable.fromJS(action.payload.roleList))
                 .setIn(['$roleInfo', 'data', 'roleTree'], Immutable.fromJS(roleTree));
 
 

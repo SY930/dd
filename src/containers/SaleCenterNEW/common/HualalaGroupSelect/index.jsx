@@ -88,7 +88,8 @@ class HualalaGroupSelectS extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             const arr = nextProps.foodSelections.map((food) => {
-                return food.itemID
+                // return food[nextProps.optionKey || 'itemID']
+                return food[nextProps.valueKey]
             })
             this.setState({
                 options: nextProps.options.map((item, index) => {
@@ -138,7 +139,7 @@ class HualalaGroupSelectS extends React.Component {
                             {this.state.title}
                         </div>
                     </div>
-                    <div className={styles.SelectLevelB} style={{ height:300 }}>
+                    <div className={styles.SelectLevelB} style={{ height: 300 }}>
                         <CheckboxGroup options={this.state.options} value={selected} onChange={this.onChange} />
                     </div>
                 </div>
@@ -155,7 +156,7 @@ HualalaGroupSelectS.propTypes = {
 }
 
 HualalaGroupSelectS.defaultProps = {
-    onChange: () => {},
+    onChange: () => { },
     options: [],
     labelKey: 'itemName',
     valueKey: 'itemID',
