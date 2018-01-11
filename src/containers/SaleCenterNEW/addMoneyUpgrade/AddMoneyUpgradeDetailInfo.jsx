@@ -94,23 +94,34 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
             this.setState({ foodMenuList })
         }
-        // let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        // const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        // if (_rule === null || _rule === undefined) {
-        //     return null;
-        // }
-        // _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        // _rule = Object.assign({}, _rule);
-        // let { display } = this.state;
-        // display = !this.props.isNew;
-        // // 根据ruleJson填充页面
-        // this.setState({
-        //     display,
-        //     stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
-        //     freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-        //     stageCondition: _scopeLst.size > 0 ? '1' : '0',
-
-        // });
+        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+        const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
+        if (_rule === null || _rule === undefined) {
+            return null;
+        }
+        _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        _rule = Object.assign({}, _rule);
+        let { display } = this.state;
+        display = !this.props.isNew;
+        // 根据ruleJson填充页面
+        const stage = _rule.stage ? _rule.stage[0] : {}
+        this.setState({
+            display,
+            countType: stage.countType || 0,
+            subjectType: subjectType == 'REAL_INCOME' ? 1 : 0,
+            stageCondition: stage.stageCondition || 0,
+            stageAmount: stage.stageAmount || '',
+            upGradeDishes: _scopeLst.filter(scope=>scope.scopeType==="FOOD_UPGRADE") || [],
+            isAddMoney: stage.freeAmount > 0 ? 1 : 0,
+            freeAmount: stage.freeAmount || '',
+            dishes: priceLst || [],
+            mostNewLimit: stage.giveFoodMax > 0 ? 1 : 0,
+            giveFoodMax: stage.giveFoodMax || '',
+            singleNewLimit: stage.giveFoodCount > 0 ? 1 : 0,
+            giveFoodCount: stage.giveFoodCount || '',
+        });
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
