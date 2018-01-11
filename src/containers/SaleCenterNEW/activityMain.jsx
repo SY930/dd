@@ -76,6 +76,9 @@ import RecommendFoodDetailInfo from './recommendFood/recommendFoodDetailInfo';
 import ActivitySidebar from './ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import ReturnGiftDetailInfo from './returnGift/returnGiftDetailInfo';
 
+import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActivity'; // 加价升级换新
+import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
+
 // 这里是内部内容的框架组件，分为 左边 和右边。
 class ActivityMain extends React.Component {
     constructor(props) {
@@ -140,9 +143,6 @@ class ActivityMain extends React.Component {
                 wrapper: NewGroupTicketActivity,
                 child: GroupTicketDetailInfo,
             }, {
-            //     wrapper: NewVoucherActivity,
-            //     child: VoucherDetailInfo
-            // }, {
                 wrapper: NewRandomCutActivity,
                 child: RandomCutDetailInfo,
             }, {
@@ -155,31 +155,35 @@ class ActivityMain extends React.Component {
                 wrapper: NewAddMoneyTradeActivity,
                 child: AddMoneyTradeDetailInfo,
             },
-        ];
-        const _vipStash = [
             {
                 wrapper: NewCompositeActivity,
-                child: CompositeDetailInfo, // 童虎不隐藏
+                child: CompositeDetailInfo,
             }, {
-                wrapper: NewBuyAFreeActivity, // 童虎不隐藏
+                wrapper: NewBuyAFreeActivity,
                 child: BuyAFreeDetailInfo,
-            }];
-        const _addUp = [
+            },
             {
                 wrapper: NewAddUpFreeActivity,
                 child: AddUpGiveDetailInfo,
             }, {
-                wrapper: NewAddUpGiveActivity, // 童虎不隐藏
+                wrapper: NewAddUpGiveActivity,
                 child: AddUpGiveDetailInfo,
             }, {
                 wrapper: NewRecommendFood,
                 child: RecommendFoodDetailInfo,
-            }];
-        // if (HUALALA.ENVIRONMENT != 'production-release') {
-        pagesArr = _pagesArr.concat(_vipStash).concat(_addUp);
-        // }else {
-        //     pagesArr = _pagesArr;
-        // }
+            }
+        ];
+        const releaseStash = [
+            {
+                wrapper: NewAddMoneyUpgradeActivity,
+                child: AddMoneyUpgradeDetailInfo,
+            }
+        ]
+        if (HUALALA.ENVIRONMENT != 'production-release') {
+            pagesArr = _pagesArr.concat(releaseStash);
+        } else {
+            pagesArr = _pagesArr;
+        }
         const _pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {

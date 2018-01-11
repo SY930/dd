@@ -135,7 +135,7 @@ class CardLevel extends React.Component {
         // }
     }
     handleSelectChange(value) {
-        console.log(value);
+        // console.log(value);
         const _value = value.filter((val) => {
             return val.indexOf('CAT_') == -1;
         })

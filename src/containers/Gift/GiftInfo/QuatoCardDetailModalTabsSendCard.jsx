@@ -91,7 +91,7 @@ class CardOperate extends React.Component{
     onOk(){
         this.form.validateFieldsAndScroll((err,values)=>{
             if(err)return;
-            console.log(values);
+            // console.log(values);
             let params = values;
             // params.useCardLevelID = 828136705;
             const { giftItemID, } = this.props;

@@ -614,7 +614,7 @@ class CompositeDetailInfo extends React.Component{
         for(let i = 2; i < this.state.data.length ;i++){
             count += this.getFlagArrs(this.state.data.length, i);
         };
-        console.log(count)
+        // console.log(count)
         if(idx == 0 && this.state.conditions.length == 1 && this.state.conditions.length < count ){
             return (
                 <span className={styles.iconsGroupStyle}>

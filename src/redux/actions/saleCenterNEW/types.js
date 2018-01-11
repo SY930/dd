@@ -174,7 +174,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:菜金满100减10元/酒水每满100减5元',
             key: 'BILL_FREE',
         },
-
         {
             idx: 1,
             title: '满赠/每满赠',
@@ -183,7 +182,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:菜金满100赠可乐一瓶',
             key: 'FOOD_AMOUNT_THEN_GIVE',
         },
-
         {
             idx: 2,
             title: '折扣',
@@ -192,7 +190,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:全部菜品9折,酒水不打折',
             key: 'BILL_DISCOUNT',
         },
-
         {
             idx: 3,
             title: '特价菜',
@@ -201,7 +198,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:周一凉菜类会员立减10元',
             key: 'FOOD_SPECIAL_PRICE',
         },
-
         {
             idx: 4,
             title: '买赠',
@@ -210,8 +206,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:点新菜品2份以上可免费送可乐一瓶',
             key: 'FOOD_BUY_THEN_GIVE',
         },
-
-
         {
             idx: 5,
             title: '第二份打折',
@@ -244,14 +238,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:全部菜品9折,酒水不打折',
             key: 'VOUCHER_GROUP',
         },
-        // {
-        //     idx: 9,
-        //     title: "礼品券",
-        //     color: '#9dc568',
-        //     text: '核销商家发售的代金券,菜品券',
-        //     example: '例如:账单满100元可用1张10元代金券',
-        //     key: 'VOUCHER_COUPON'
-        // },
         {
             idx: 9,
             title: '随机立减',
@@ -259,9 +245,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: '消费满X元随机立减一定金额,顾客可获得幸福感',
             example: '例如:消费满100元随机立减1-5元',
             key: 'BILL_RANDOM_FREE',
-        }];
-
-    const extral = [
+        },
         {
             idx: 10,
             title: '买减/买折',
@@ -278,14 +262,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:购买土豆与茄子组合即可赠送西红柿',
             key: 'FOOD_FIXED_SET_GIVE',
         },
-        // {
-        //     idx: 12,
-        //     title: "组合减免/折扣",
-        //     color: '#84aac6',
-        //     text: '购买X组菜品组合即可享受相应折扣或减价',
-        //     example: '例如:购买任意两组菜品组合即可打9折或减价3元',
-        //     key: 'BILL_COMBINE_FREE'
-        // },
         {
             idx: 12,
             title: '加价换购',
@@ -294,16 +270,6 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '例如:任意消费满100元加10元即可换购土豆丝一份',
             key: 'FOOD_PAY_MORE_THEN_GET',
         },
-        // {
-        //     idx: 14,
-        //     title: "买三免一",
-        //     color: '#84aac6',
-        //     text: '消费满X份菜品即可在X中免单Y份最低价菜品',
-        //     example: '例如:消费满4份热菜即可在4份中免单最低价的1份',
-        //     key: 'FOOD_BUY_THEN_FREE'
-        // }
-    ];
-    const _billCombineFree_foodBuyThenGet = [
         {
             idx: 13,
             title: '组合减免/折扣',
@@ -319,8 +285,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: '消费满X份菜品即可在X中免单Y份最低价菜品',
             example: '例如:消费满4份热菜即可在4份中免单最低价的1份',
             key: 'FOOD_BUY_THEN_FREE',
-        }];
-    const addUp = [
+        },
         {
             idx: 15,
             title: '累计次数减免',
@@ -346,16 +311,24 @@ export const ACTIVITY_CATEGORIES = (function () {
             key: 'RECOMMEND_FOOD',
         },
     ];
+    const releaseStash = [
+        {
+            idx: 18,
+            title: '加价升级换新',
+            color: '#84aac6',
+            text: '加价升级换新是区别加价换购的一个营销活动',
+            example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
+            key: 'FOOD_PAY_MORE_THEN_UPGRADE',
+        },
+    ];
 
-
-    // if (process.env.NODE_ENV !== 'production-release' && process.env.NODE_ENV !== 'production-pre'  ) {
-    // if (HUALALA.ENVIRONMENT != 'production-release') {
-    return basic.concat(extral).concat(_billCombineFree_foodBuyThenGet).concat(addUp);
-    // }
-    // else {
-    //     return basic.concat(extral);
-    // }
-    // return basic.concat(extral);
+    // if (process.env.NODE_ENV !== 'production-release' && process.env.NODE_ENV !== 'production-pre') {
+    if (HUALALA.ENVIRONMENT != 'production-release') {
+        return basic.concat(releaseStash);
+    }else {
+        return basic;
+    }
+    return basic;
 }());
 
 export const CHARACTERISTIC_CATEGORIES = (function () {

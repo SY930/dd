@@ -216,7 +216,7 @@ class RecommendFoodDetailInfo extends React.Component {
         })
     }
     autoDishesChange(val) {
-        console.log(val)
+        // console.log(val)
         this.setState({
             priceLstAuto: val,
         })

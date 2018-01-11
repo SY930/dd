@@ -255,7 +255,7 @@ class SpecialDishesTable extends React.Component {
     }
 
     handleFoodSelectedChange(value) {
-        console.log(value);
+        // console.log(value);
     }
 
     // GroupSelect 处理函数

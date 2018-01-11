@@ -282,14 +282,14 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
     onDishesChange(value) {
-        console.log(value)
+        // console.log(value)
         let { dishes } = this.state;
         dishes = value;
         this.setState({
             dishes,
             dishsSelectStatus: value.length > 0 ? 'success' : 'error',
         }, () => {
-            console.log(this.state.dishsSelectStatus)
+            // console.log(this.state.dishsSelectStatus)
         });
     }
     renderAdvancedSettingButton() {

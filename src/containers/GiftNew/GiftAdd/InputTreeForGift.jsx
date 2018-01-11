@@ -343,7 +343,7 @@ class InputTreeForGift extends React.Component {
             foodSelections: selection,
             foodCurrentSelections: [],
         }, () => {
-            console.log(this.state)
+            // console.log(this.state)
         });
     }
 }
