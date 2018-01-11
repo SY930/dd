@@ -49,7 +49,7 @@ class EditBoxForDishes extends React.Component {
             foodCategoryCollection = [];
         }
         this.setState({
-            priceLst: this.props.type === 'RECOMMEND_FOOD' ? this.props.value : _priceLst,
+            priceLst: this.props.type === 'RECOMMEND_FOOD' || this.props.type === 'FOOD_PAY_MORE_THEN_UPGRADE' ? this.props.value : _priceLst,
             foodCategoryCollection,
         }, () => {
             this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
@@ -127,7 +127,7 @@ class EditBoxForDishes extends React.Component {
         ) {
             const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
             this.setState({
-                priceLst: nextProps.type === 'RECOMMEND_FOOD' ? nextProps.value : _priceLst,
+                priceLst: nextProps.type === 'RECOMMEND_FOOD' || nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE' ? nextProps.value : _priceLst,
             }, () => {
                 this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
             })

@@ -48,36 +48,41 @@ const client = [
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultRun = '0';
         this.state = {
             display: false,
-            // foodMenuList: [],
-            // foodCategoryCollection: [],
-            // freeAmount: '',
-            // stageAmount: '',
-            // dishes: [],
-            // freeAmountFlag: true,
-            // stageAmountFlag: true,
-            // dishsSelectionFlag: true,
-            ruleType: '0',
-            subjectType: '0',
-            isAddMoney: '0',
-            mostNewLimit: '0',
-            singleNewLimit: '0',
+            foodMenuList: [],
+            foodCategoryCollection: [],
+            countType: 0,
+            subjectType: 0,
+            stageCondition: 0,
+            stageAmount: '',
+            beforedishes: [],
+            isAddMoney: 0,
+            freeAmount: '',
+            dishes: [],
+            mostNewLimit: 0,
+            giveFoodMax: '',
+            singleNewLimit: 0,
+            giveFoodCount: '',
         };
 
-        this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
+        this.renderFreeAmountInput = this.renderFreeAmountInput.bind(this);
         this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onStageAmountChange = this.onStageAmountChange.bind(this);
-        this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
-        this.ruleTypeChange = this.ruleTypeChange.bind(this);
+        this.countTypeChange = this.countTypeChange.bind(this);
         this.subjectTypeChange = this.subjectTypeChange.bind(this);
+        this.stageConditionChange = this.stageConditionChange.bind(this);
+        this.onStageAmountChange = this.onStageAmountChange.bind(this);
+        this.onBeforeDishesChange = this.onBeforeDishesChange.bind(this);
         this.isAddMoneyChange = this.isAddMoneyChange.bind(this);
+        this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
+        this.onAfterDishesChange = this.onAfterDishesChange.bind(this);
         this.renderNewLimit = this.renderNewLimit.bind(this);
         this.mostNewLimitChange = this.mostNewLimitChange.bind(this);
+        this.giveFoodMaxChange = this.giveFoodMaxChange.bind(this);
         this.singleNewLimitChange = this.singleNewLimitChange.bind(this);
+        this.giveFoodCountChange = this.giveFoodCountChange.bind(this);
     }
 
     componentDidMount() {
@@ -85,13 +90,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             finish: this.handleSubmit,
         });
 
-        // if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-        //     const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-
-        //     this.setState({
-        //         foodMenuList,
-        //     })
-        // }
+        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
+            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
+            this.setState({ foodMenuList })
+        }
         // let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         // const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         // if (_rule === null || _rule === undefined) {
@@ -106,18 +108,17 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         //     display,
         //     stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
         //     freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-        //     ruleType: _scopeLst.size > 0 ? '1' : '0',
+        //     stageCondition: _scopeLst.size > 0 ? '1' : '0',
 
         // });
     }
     componentWillReceiveProps(nextProps) {
-        // if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        // nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-        //     this.setState({
-        //         foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-        //         foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-        //     })
-        // }
+        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+            nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
+            this.setState({
+                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
+            })
+        }
 
         // if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
         //     nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
@@ -145,132 +146,127 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        // let { stageAmount, dishes, stageAmountFlag, foodMenuList, freeAmount, freeAmountFlag, dishsSelectionFlag, ruleType } = this.state;
-        // if (stageAmount == null || stageAmount == '') {
-        //     stageAmountFlag = false;
-        // }
-        // if (freeAmount == null || freeAmount == '') {
-        //     freeAmountFlag = false;
-        // }
-        // if (dishes.length == 0) {
-        //     dishsSelectionFlag = false;
-        // }
-        // this.setState({ freeAmountFlag, stageAmountFlag, dishsSelectionFlag });
+        let {
+            foodMenuList,
+            countType,
+            subjectType,
+            stageCondition,
+            stageAmount,
+            beforedishes,
+            isAddMoney,
+            freeAmount,
+            dishes,
+            mostNewLimit,
+            giveFoodMax,
+            singleNewLimit,
+            giveFoodCount,
+        } = this.state;
 
-        // if (stageAmountFlag && freeAmountFlag && dishsSelectionFlag) {
-        //     const rule = {
-        //         stageType: 2,
-        //         stage: [
-        //             {
-        //                 stageAmount,
-        //                 freeAmount,
-        //             },
-        //         ],
-        //     }
+        const rule = {
+            stageType: countType == 0 ? undefined : 2,
+            stage: [
+                {
+                    countType,
+                    stageCondition,
+                    stageAmount,
+                    freeAmount,
+                    giveFoodMax,
+                    giveFoodCount,
+                },
+            ],
+        }
 
-        //     const dish = dishes.map((dish) => {
-        //         return foodMenuList.find((menu) => {
-        //             // return dish.id === menu.foodID
-        //             return dish.itemID == menu.itemID
-        //         })
-        //     });
-        //     const priceLst = dish.map((price) => {
-        //         return {
-        //             foodUnitID: price.itemID,
-        //             foodUnitCode: price.foodKey,
-        //             foodName: price.foodName,
-        //             foodUnitName: price.unit,
-        //             price: price.price,
-        //         }
-        //     });
-        //     if (ruleType == '0') {
-        //         this.props.setPromotionDetail({
-        //             rule,
-        //             priceLst,
-        //             scopeLst: [],
-        //             dishes: [],
-        //             excludeDishes: [],
-        //             foodCategory: [],
-        //         });
-        //     } else {
-        //         this.props.setPromotionDetail({
-        //             rule, priceLst,
-        //         });
-        //     }
-
-        //     return true
-        // }
-        // return false
+        const dish = dishes.map((dish) => {
+            return foodMenuList.find((menu) => {
+                return dish.itemID == menu.itemID
+            })
+        });
+        const priceLst = dish.map((price) => {
+            return {
+                foodUnitID: price.itemID,
+                foodUnitCode: price.foodKey,
+                foodName: price.foodName,
+                foodUnitName: price.unit,
+                price: price.price,
+            }
+        });
+        this.props.setPromotionDetail({
+            rule,
+            priceLst,
+            subjectType: subjectType == 0 ? 'ALL_SUBJECT' : 'REAL_INCOME',
+        });
+        return false
     };
-
 
     onChangeClick = () => {
         this.setState(
             { display: !this.state.display }
         )
     };
-    // 减免金额
-    onStageAmountChange(value) {
-        // let { stageAmount, stageAmountFlag } = this.state;
-        // if (value.number == null || value.number == '') {
-        //     stageAmountFlag = false;
-        //     stageAmount = value.number;
-        // } else {
-        //     stageAmountFlag = true;
-        //     stageAmount = value.number;
-        // }
-        // this.setState({ stageAmount, stageAmountFlag });
+    // 不限，金额，数量方式下拉框
+    countTypeChange(val) {
+        this.setState({ countType: val, subjectType: 0, stageCondition: 0, })
     }
-    // 满金额
-    handleFreeAmountChange(value) {
-        // let { freeAmount, freeAmountFlag } = this.state;
-        // if (value.number == null || value.number == '') {
-        //     freeAmountFlag = false;
-        //     freeAmount = value.number;
-        // } else {
-        //     freeAmountFlag = true;
-        //     freeAmount = value.number;
-        // }
-        // this.setState({ freeAmount, freeAmountFlag });
-    }
-    // 换购菜品onchange
-    onDishesChange(value) {
-        let { dishes } = this.state;
-        dishes = value;
-        this.setState({
-            dishes,
-            dishsSelectionFlag: value.length != 0,
-        });
-    }
-    ruleTypeChange(val) {
-        this.setState({ ruleType: val })
-    }
+    // 按金额下拉框
     subjectTypeChange(val) {
-        this.setState({ subjectType: val })
+        this.setState({ subjectType: val, stageCondition: 0 });
     }
+    // 按数量下拉框
+    stageConditionChange(val) {
+        this.setState({ stageCondition: val, subjectType: 0 })
+    }
+    // 满金额||分数
+    onStageAmountChange(value) {
+        this.setState({ stageAmount: value.number });
+    }
+    // 换购前菜品onchange
+    onBeforeDishesChange(value) {
+        this.setState({ beforedishes: value });
+    }
+    // 是否加价
     isAddMoneyChange(val) {
-        this.setState({ isAddMoney: val })
+        this.setState({ isAddMoney: val, freeAmount: '' })
     }
-    mostNewLimitChange(val){
+    // 加价金额
+    handleFreeAmountChange(value) {
+        this.setState({ freeAmount: value.number });
+    }
+    // 换购后菜品onchange
+    onAfterDishesChange(value) {
+        this.setState({ dishes: value });
+    }
+    // 单笔订单最多升级换新数量限制
+    mostNewLimitChange(val) {
         this.setState({ mostNewLimit: val })
     }
-    singleNewLimitChange(val){
+    // 数量限制
+    giveFoodMaxChange(val) {
+        this.setState({ giveFoodMax: val.number })
+    }
+    // 单笔订单同一菜品最多升级换新数量限制
+    singleNewLimitChange(val) {
         this.setState({ singleNewLimit: val })
     }
+    // 数量限制
+    giveFoodCountChange(val) {
+        this.setState({ giveFoodCount: val.number })
+    }
+
+
     // 加价方式
-    renderBuyDishNumInput() {
-        const { isAddMoney } = this.state;
+    renderFreeAmountInput() {
+        const { isAddMoney, freeAmount } = this.state;
         return (
             <FormItem
-                className={[styles.FormItemStyle,].join(' ')}
+                className={styles.FormItemStyle}
                 label='加价方式'
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
                 <Col span={isAddMoney == 0 ? 24 : 4}>
                     <Select onChange={this.isAddMoneyChange} value={isAddMoney}>
-                        <Option key="0" value="0">不加价</Option>
-                        <Option key="1" value="1">加价</Option>
+                        <Option key="0" value={0}>不加价</Option>
+                        <Option key="1" value={1}>加价</Option>
                     </Select>
                 </Col>
                 {
@@ -278,32 +274,15 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         <Col span={isAddMoney == 0 ? 0 : 20}>
                             <PriceInput
                                 addonAfter={'元'}
-                                //value={{ number: this.state.stageAmount }}
-                                //defaultValue={{ number: this.state.stageAmount }}
-                                //onChange={this.onStageAmountChange}
+                                value={{ number: freeAmount }}
+                                defaultValue={{ number: freeAmount }}
+                                onChange={this.handleFreeAmountChange}
                                 modal="int"
                             />
                         </Col> : null
                 }
             </FormItem>
         )
-        //     <FormItem
-        //         className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-        //         wrapperCol={{ span: 17, offset: 4 }}
-        //         required={true}
-        //         validateStatus={this.state.freeAmountFlag ? 'success' : 'error'}
-        //         help={this.state.freeAmountFlag ? null : '请输入加价金额'}
-        //     >
-        //         <PriceInput
-        //             addonBefore={'加价'}
-        //             addonAfter={'元'}
-        //             value={{ number: this.state.freeAmount }}
-        //             defaultValue={{ number: this.state.freeAmount }}
-        //             onChange={this.handleFreeAmountChange}
-        //             modal="int"
-        //         />
-        //     </FormItem>
-        // )
     }
     // 换购菜品
     renderDishsSelectionBox(beforeOrAfter) {
@@ -313,21 +292,19 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-            // required={true}
-            //validateStatus={this.state.dishsSelectionFlag ? 'sucess' : 'error'}
-            //help={this.state.dishsSelectionFlag ? null : '请选择菜品'} 
             >
-                <EditBoxForDishes onChange={(value) => {
-                    {/* beforeOrAfter=='beforeUpgrade'?this.onBeforeDishesChange(value);:this.onAfterDishesChange(value); */ }
-                    this.onDishesChange(value);
-                }}
+                <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
+                    value={beforeOrAfter == 'beforeUpgrade' ? this.state.beforedishes : this.state.dishes}
+                    onChange={(value) => {
+                        beforeOrAfter == 'beforeUpgrade' ? this.onBeforeDishesChange(value) : this.onAfterDishesChange(value);
+                    }}
                 />
             </FormItem>
         )
     }
     // 单笔订单最多升级换新数量限制
     renderNewLimit() {
-        const {mostNewLimit, singleNewLimit}=this.state;
+        const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount } = this.state;
         return (
             <FormItem
                 label=' '
@@ -337,15 +314,15 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <FormItem
-                    className={[styles.FormItemStyle,].join(' ')}
+                    className={styles.FormItemStyle}
                     label='单笔订单最多升级换新数量限制'
                     labelCol={{ span: 13 }}
                     wrapperCol={{ span: 11 }}
                 >
                     <Col span={mostNewLimit == 0 ? 24 : 8}>
                         <Select onChange={this.mostNewLimitChange} value={mostNewLimit}>
-                            <Option key="0" value="0">不限制</Option>
-                            <Option key="1" value="1">限制</Option>
+                            <Option key="0" value={0}>不限制</Option>
+                            <Option key="1" value={1}>限制</Option>
                         </Select>
                     </Col>
                     {
@@ -353,24 +330,24 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                             <Col span={mostNewLimit == 0 ? 0 : 16}>
                                 <PriceInput
                                     addonAfter={'份'}
-                                    //value={{ number: this.state.stageAmount }}
-                                    //defaultValue={{ number: this.state.stageAmount }}
-                                    //onChange={this.onStageAmountChange}
+                                    value={{ number: giveFoodMax }}
+                                    defaultValue={{ number: giveFoodMax }}
+                                    onChange={this.giveFoodMaxChange}
                                     modal="int"
                                 />
                             </Col> : null
                     }
                 </FormItem>
                 <FormItem
-                    className={[styles.FormItemStyle,].join(' ')}
+                    className={styles.FormItemStyle}
                     label='单笔订单同一菜品最多升级换新数量限制'
                     labelCol={{ span: 13 }}
                     wrapperCol={{ span: 11 }}
                 >
                     <Col span={singleNewLimit == 0 ? 24 : 8}>
                         <Select onChange={this.singleNewLimitChange} value={singleNewLimit}>
-                            <Option key="0" value="0">不限制</Option>
-                            <Option key="1" value="1">限制</Option>
+                            <Option key="0" value={0}>不限制</Option>
+                            <Option key="1" value={1}>限制</Option>
                         </Select>
                     </Col>
                     {
@@ -378,9 +355,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                             <Col span={singleNewLimit == 0 ? 0 : 16}>
                                 <PriceInput
                                     addonAfter={'份'}
-                                    //value={{ number: this.state.stageAmount }}
-                                    //defaultValue={{ number: this.state.stageAmount }}
-                                    //onChange={this.onStageAmountChange}
+                                    value={{ number: giveFoodCount }}
+                                    defaultValue={{ number: giveFoodCount }}
+                                    onChange={this.giveFoodCountChange}
                                     modal="int"
                                 />
                             </Col> : null
@@ -403,73 +380,74 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         )
     }
     render() {
-        let { ruleType, subjectType } = this.state;
+        let { countType, subjectType, stageCondition, stageAmount, } = this.state;
         return (
             <div>
-                <Form className={[styles.FormStyle,].join(' ')}>
+                <Form className={styles.FormStyle}>
                     <FormItem
-                        className={[styles.FormItemStyle,].join(' ')}
+                        className={styles.FormItemStyle}
                         label='活动条件限制'
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        <Col span={subjectType == 0 ? 24 : 4}>
-                            <Select onChange={this.subjectTypeChange} value={subjectType}>
-                                <Option key="0" value="0">不限制</Option>
-                                <Option key="1" value="1">按金额</Option>
-                                <Option key="2" value="2">按数量</Option>
+                        <Col span={countType == 0 ? 24 : 4}>
+                            <Select onChange={this.countTypeChange} value={countType}>
+                                <Option key="0" value={0}>不限制</Option>
+                                <Option key="1" value={1}>按金额</Option>
+                                <Option key="2" value={2}>按数量</Option>
                             </Select>
                         </Col>
                         {
-                            subjectType == 1 ?
-                                <Col span={subjectType == 0 ? 0 : 20}>
+                            countType == 1 ?
+                                <Col span={countType == 0 ? 0 : 20}>
                                     <PriceInput
                                         addonBefore={
                                             <Select size="default"
-                                                defaultValue='0'
-                                            //onChange={this.ruleTypeChange}
-                                            //value={ruleType}
+                                                defaultValue={0}
+                                                onChange={this.subjectTypeChange}
+                                                value={subjectType}
                                             >
-                                                <Option key="0" value="0">任意菜品实收满</Option>
-                                                <Option key="1" value="1">任意菜品售价满</Option>
-                                                <Option key="3" value="3">活动菜品实收满</Option>
-                                                <Option key="4" value="4">活动菜品售价满</Option>
+                                                <Option key="0" value={0}>任意菜品售价满</Option>
+                                                <Option key="1" value={1}>任意菜品实收满</Option>
+                                                <Option key="3" value={2}>活动菜品售价满</Option>
+                                                <Option key="4" value={3}>活动菜品实收满</Option>
                                             </Select>
                                         }
                                         addonAfter={'元'}
-                                        //value={{ number: this.state.stageAmount }}
-                                        //defaultValue={{ number: this.state.stageAmount }}
-                                        //onChange={this.onStageAmountChange}
+                                        value={{ number: stageAmount }}
+                                        defaultValue={{ number: stageAmount }}
+                                        onChange={this.onStageAmountChange}
                                         modal="int"
                                     />
                                 </Col> : null
                         }
                         {
-                            subjectType == 2 ?
-                                <Col span={subjectType == 0 ? 0 : 20}>
+                            countType == 2 ?
+                                <Col span={countType == 0 ? 0 : 20}>
                                     <PriceInput
                                         addonBefore={
                                             <Select size="default"
-                                                defaultValue='0'
-                                            //onChange={this.ruleTypeChange}
-                                            //value={ruleType}
+                                                defaultValue={0}
+                                                onChange={this.stageConditionChange}
+                                                value={stageCondition}
                                             >
-                                                <Option key="0" value="0">任意菜品数量满</Option>
-                                                <Option key="1" value="1">同一菜品数量满</Option>
+                                                <Option key="0" value={0}>任意菜品数量满</Option>
+                                                <Option key="1" value={1}>同一菜品数量满</Option>
                                             </Select>
                                         }
                                         addonAfter={'份'}
-                                        //value={{ number: this.state.stageAmount }}
-                                        //defaultValue={{ number: this.state.stageAmount }}
-                                        //onChange={this.onStageAmountChange}
+                                        value={{ number: stageAmount }}
+                                        defaultValue={{ number: stageAmount }}
+                                        onChange={this.onStageAmountChange}
                                         modal="int"
                                     />
                                 </Col> : null
                         }
                     </FormItem>
-                    {<PromotionDetailSetting />/* 条件限制菜品 */}
+                    {countType == 0 ? null :
+                        subjectType == 2 || subjectType == 3 || stageCondition == 1 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
                     {this.renderDishsSelectionBox('beforeUpgrade')/*升级前菜品*/}
-                    {this.renderBuyDishNumInput()}
+                    {this.renderFreeAmountInput()}
                     {this.renderDishsSelectionBox('afterUpgrade')/*升级后菜品*/}
                     {this.renderNewLimit()/*换新菜品数量限制*/}
                     {this.renderAdvancedSettingButton()}
