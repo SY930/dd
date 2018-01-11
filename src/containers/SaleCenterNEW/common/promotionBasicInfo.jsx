@@ -175,7 +175,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                                                         key={cat.itemID}
                                                         closable={true}
                                                         onClose={(e) => {
-                                                            console.log(cat.name);
+                                                            {/* console.log(cat.name); */}
                                                             const catOrtag = this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
@@ -371,14 +371,12 @@ class PromotionBasicInfo extends React.Component {
         });
         const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags } = this.props;
 
-        promotionBasicInfo.getIn(['$categoryList', 'initialized']) ||
             fetchPromotionCategories({
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                 phraseType: 'CATEGORY_NAME',
             });
 
-        promotionBasicInfo.getIn(['$tagList', 'initialized']) ||
             fetchPromotionTags({
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,

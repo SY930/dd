@@ -480,7 +480,7 @@ class MyActivities extends React.Component {
     handleUpdateOpe() {
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
-            shopID: !arguments[1].shopID || arguments[1].shopID == 0 ? undefined : arguments[1].shopID,
+            shopID: arguments[1].maintenanceLevel == 'SHOP_LEVEL' ? arguments[1].shopIDLst : undefined,
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
