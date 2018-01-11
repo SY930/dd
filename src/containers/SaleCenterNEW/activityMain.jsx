@@ -179,11 +179,11 @@ class ActivityMain extends React.Component {
                 child: AddMoneyUpgradeDetailInfo,
             }
         ]
-        if (HUALALA.ENVIRONMENT != 'production-release') {
-            pagesArr = _pagesArr.concat(releaseStash);
-        } else {
-            pagesArr = _pagesArr;
-        }
+        // if (HUALALA.ENVIRONMENT != 'production-release') {
+        pagesArr = _pagesArr.concat(releaseStash);
+        // } else {
+        //     pagesArr = _pagesArr;
+        // }
         const _pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {

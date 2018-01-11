@@ -323,12 +323,12 @@ export const ACTIVITY_CATEGORIES = (function () {
     ];
 
     // if (process.env.NODE_ENV !== 'production-release' && process.env.NODE_ENV !== 'production-pre') {
-    if (HUALALA.ENVIRONMENT != 'production-release') {
-        return basic.concat(releaseStash);
-    }else {
-        return basic;
-    }
-    return basic;
+    // if (HUALALA.ENVIRONMENT != 'production-release') {
+    return basic.concat(releaseStash);
+    // }else {
+    //     return basic;
+    // }
+    // return basic;
 }());
 
 export const CHARACTERISTIC_CATEGORIES = (function () {
