@@ -67,6 +67,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         };
 
         this.renderFreeAmountInput = this.renderFreeAmountInput.bind(this);
+        this.renderupGradeDishesBox = this.renderupGradeDishesBox.bind(this);
         this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -95,7 +96,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             this.setState({ foodMenuList })
         }
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
         const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
         const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         if (_rule === null || _rule === undefined) {
@@ -113,7 +114,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: subjectType == 'REAL_INCOME' ? 1 : 0,
             stageCondition: stage.stageCondition || 0,
             stageAmount: stage.stageAmount || '',
-            upGradeDishes: _scopeLst.filter(scope=>scope.scopeType==="FOOD_UPGRADE") || [],
+            upGradeDishes,
             isAddMoney: stage.freeAmount > 0 ? 1 : 0,
             freeAmount: stage.freeAmount || '',
             dishes: priceLst || [],
@@ -131,29 +132,63 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             })
         }
 
-        // if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        //     nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-        //     const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-        //     const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-        //         nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-        //     const _dish = [];
-        //     _priceLst.map((price) => {
-        //         foodMenuList.map((food) => {
-        //             // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-        //             if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-        //                 _dish.push(food)
-        //             }
-        //         });
-        //     });
-        //     _dish.map(((item) => {
-        //         item.id = item.foodID;
-        //         item.content = item.foodName;
-        //     }));
-        //     this.setState({
-        //         foodMenuList,
-        //         dishes: _dish,
-        //     });
-        // }
+        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
+            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
+            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
+                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
+            const _upGradeDishes = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
+            const subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
+
+            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+            if (_rule === null || _rule === undefined) {
+                return null;
+            }
+            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+            _rule = Object.assign({}, _rule);
+            // 根据ruleJson填充页面
+            const stage = _rule.stage ? _rule.stage[0] : {}
+            const _dish = [];
+            _priceLst.map((price) => {
+                foodMenuList.map((food) => {
+                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
+                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
+                        _dish.push(food)
+                    }
+                });
+            });
+            _dish.map(((item) => {
+                item.id = item.foodID;
+                item.content = item.foodName;
+            }));
+            const upGradeDishes = [];
+            _upGradeDishes.map((price) => {
+                foodMenuList.map((food) => {
+                    if (food.itemID == price.targetID) { // foodUnitID就是由itemID转换
+                        upGradeDishes.push(food)
+                    }
+                });
+            });
+            upGradeDishes.map(((item) => {
+                item.id = item.foodID;
+                item.content = item.foodName;
+                item.foodUnitID = item.itemID;
+            }));
+            this.setState({
+                countType: stage.countType || 0,
+                subjectType: subjectType == 'REAL_INCOME' ? 1 : 0,
+                stageCondition: stage.stageCondition || 0,
+                stageAmount: stage.stageAmount || '',
+                upGradeDishes,
+                isAddMoney: stage.freeAmount > 0 ? 1 : 0,
+                freeAmount: stage.freeAmount || '',
+                dishes: _dish,
+                mostNewLimit: stage.giveFoodMax > 0 ? 1 : 0,
+                giveFoodMax: stage.giveFoodMax || '',
+                singleNewLimit: stage.giveFoodCount > 0 ? 1 : 0,
+                giveFoodCount: stage.giveFoodCount || '',
+            });
+        }
     }
 
     handleSubmit = () => {
@@ -265,7 +300,24 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.setState({ giveFoodCount: val.number })
     }
 
-
+    // 换购前菜品
+    renderupGradeDishesBox() {
+        return (
+            <FormItem
+                label={'升级前菜品'}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
+                    value={this.state.upGradeDishes}
+                    onChange={(value) => {
+                        this.onupGradeDishesChange(value);
+                    }}
+                />
+            </FormItem>
+        )
+    }
     // 加价方式
     renderFreeAmountInput() {
         const { isAddMoney, freeAmount } = this.state;
@@ -297,19 +349,19 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             </FormItem>
         )
     }
-    // 换购菜品
-    renderDishsSelectionBox(beforeOrAfter) {
+    // 换购后菜品
+    renderDishsSelectionBox() {
         return (
             <FormItem
-                label={beforeOrAfter == 'beforeUpgrade' ? '升级前菜品' : '升级后菜品'}
+                label={'升级后菜品'}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
                 <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
-                    value={beforeOrAfter == 'beforeUpgrade' ? this.state.upGradeDishes : this.state.dishes}
+                    value={this.state.dishes}
                     onChange={(value) => {
-                        beforeOrAfter == 'beforeUpgrade' ? this.onupGradeDishesChange(value) : this.onAfterDishesChange(value);
+                        this.onAfterDishesChange(value);
                     }}
                 />
             </FormItem>
@@ -459,9 +511,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     </FormItem>
                     {countType == 0 ? null :
                         subjectType == 2 || subjectType == 3 || stageCondition == 1 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
-                    {this.renderDishsSelectionBox('beforeUpgrade')/*升级前菜品*/}
+                    {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}
-                    {this.renderDishsSelectionBox('afterUpgrade')/*升级后菜品*/}
+                     {this.renderDishsSelectionBox()/*升级后菜品*/} 
                     {this.renderNewLimit()/*换新菜品数量限制*/}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
