@@ -748,6 +748,17 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 });
             });
         }
+        if (source.upGradeDishes !== null) {
+            (source.upGradeDishes || []).map((item) => {
+                scope.push({
+                    scopeType: 'FOOD_UPGRADE',
+                    targetID: item.itemID,
+                    targetCode: item.foodKey,
+                    targetName: item.foodName,
+                    targetUnitName: item.unit,
+                });
+            });
+        }
     }
     return {
         scopeLst: scope,

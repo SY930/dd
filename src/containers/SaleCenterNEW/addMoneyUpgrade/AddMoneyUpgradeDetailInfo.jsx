@@ -56,7 +56,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: 0,
             stageCondition: 0,
             stageAmount: '',
-            beforedishes: [],
+            upGradeDishes: [],
             isAddMoney: 0,
             freeAmount: '',
             dishes: [],
@@ -74,7 +74,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.subjectTypeChange = this.subjectTypeChange.bind(this);
         this.stageConditionChange = this.stageConditionChange.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
-        this.onBeforeDishesChange = this.onBeforeDishesChange.bind(this);
+        this.onupGradeDishesChange = this.onupGradeDishesChange.bind(this);
         this.isAddMoneyChange = this.isAddMoneyChange.bind(this);
         this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
         this.onAfterDishesChange = this.onAfterDishesChange.bind(this);
@@ -152,7 +152,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType,
             stageCondition,
             stageAmount,
-            beforedishes,
+            upGradeDishes,
             isAddMoney,
             freeAmount,
             dishes,
@@ -193,9 +193,11 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.props.setPromotionDetail({
             rule,
             priceLst,
-            subjectType: subjectType == 0 ? 'ALL_SUBJECT' : 'REAL_INCOME',
+            subjectType: subjectType != 1 && subjectType != 3 ? 0 : 1,
+            upGradeDishes,
         });
-        return false
+        return true
+        // return false
     };
 
     onChangeClick = () => {
@@ -220,8 +222,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.setState({ stageAmount: value.number });
     }
     // 换购前菜品onchange
-    onBeforeDishesChange(value) {
-        this.setState({ beforedishes: value });
+    onupGradeDishesChange(value) {
+        this.setState({ upGradeDishes: value });
     }
     // 是否加价
     isAddMoneyChange(val) {
@@ -294,9 +296,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
-                    value={beforeOrAfter == 'beforeUpgrade' ? this.state.beforedishes : this.state.dishes}
+                    value={beforeOrAfter == 'beforeUpgrade' ? this.state.upGradeDishes : this.state.dishes}
                     onChange={(value) => {
-                        beforeOrAfter == 'beforeUpgrade' ? this.onBeforeDishesChange(value) : this.onAfterDishesChange(value);
+                        beforeOrAfter == 'beforeUpgrade' ? this.onupGradeDishesChange(value) : this.onAfterDishesChange(value);
                     }}
                 />
             </FormItem>
