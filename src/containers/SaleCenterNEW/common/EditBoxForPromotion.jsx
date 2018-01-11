@@ -137,7 +137,7 @@ class EditBoxForPromotion extends React.Component {
                     return {
                         promotionType: promotionCategery.promotionType,
                         promotionName: promotionCategery.promotionName.filter((promotion) => {
-                            return promotion.shopID != '0';
+                            return promotion.maintenanceLevel == 'SHOP_LEVEL';
                         }),
                     }
                 }) : _promotions,
@@ -190,7 +190,7 @@ class EditBoxForPromotion extends React.Component {
                         return {
                             promotionType: promotionCategery.promotionType,
                             promotionName: promotionCategery.promotionName.filter((promotion) => {
-                                return promotion.shopID != '0';
+                                return promotion.maintenanceLevel == 'SHOP_LEVEL';
                             }),
                         }
                     }) : promotionCollection,
@@ -209,7 +209,7 @@ class EditBoxForPromotion extends React.Component {
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
-                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.shopID != '0'
+                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.maintenanceLevel == 'SHOP_LEVEL'
                         : promotion.promotionIDStr != SelfPromotion;
                 })
                 const promotionType = promotionCategery.promotionType;
