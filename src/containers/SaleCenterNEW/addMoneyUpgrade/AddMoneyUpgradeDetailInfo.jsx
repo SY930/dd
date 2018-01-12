@@ -246,12 +246,22 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 price: price.price,
             }
         });
-        this.props.setPromotionDetail({
+        let opts = {
             rule,
             priceLst,
             subjectType: subjectType != 1 && subjectType != 3 ? 0 : 1,
             upGradeDishes,
-        });
+        }
+        subjectType < 2 || stageCondition < 1 ?
+            opts = {// reset food
+                ...opts,
+                categoryOrDish: 0,
+                dishes: [],
+                foodCategory: [],
+                excludeDishes: [],
+            }
+            : null
+        this.props.setPromotionDetail(opts);
         return true
         // return false
     };
@@ -261,6 +271,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             { display: !this.state.display }
         )
     };
+
     // 不限，金额，数量方式下拉框
     countTypeChange(val) {
         this.setState({ countType: val, subjectType: 0, stageCondition: 0, })
@@ -273,44 +284,44 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     stageConditionChange(val) {
         this.setState({ stageCondition: val, subjectType: 0 })
     }
-    // 满金额||分数
+    // 满金额||份数input
     onStageAmountChange(value) {
         this.setState({ stageAmount: value.number });
     }
-    // 换购前菜品onchange
+    // 换购前菜品Box  onchange
     onupGradeDishesChange(value) {
         this.setState({ upGradeDishes: value });
     }
-    // 是否加价
+    // 是否加价下拉框
     isAddMoneyChange(val) {
         this.setState({ isAddMoney: val, freeAmount: '' })
     }
-    // 加价金额
+    // 加价金额input
     handleFreeAmountChange(value) {
         this.setState({ freeAmount: value.number });
     }
-    // 换购后菜品onchange
+    // 换购后菜品Box  onchange
     onAfterDishesChange(value) {
         this.setState({ dishes: value });
     }
-    // 单笔订单最多升级换新数量限制
+    // 单笔订单最多升级换新数量限制下拉框
     mostNewLimitChange(val) {
         this.setState({ mostNewLimit: val })
     }
-    // 数量限制
+    // 数量限制input
     giveFoodMaxChange(val) {
         this.setState({ giveFoodMax: val.number })
     }
-    // 单笔订单同一菜品最多升级换新数量限制
+    // 单笔订单同一菜品最多升级换新数量限制下拉框
     singleNewLimitChange(val) {
         this.setState({ singleNewLimit: val })
     }
-    // 数量限制
+    // 数量限制input
     giveFoodCountChange(val) {
         this.setState({ giveFoodCount: val.number })
     }
 
-    // 换购前菜品
+    // render换购前菜品
     renderupGradeDishesBox() {
         return (
             <FormItem
@@ -328,7 +339,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             </FormItem>
         )
     }
-    // 加价方式
+    // render加价方式
     renderFreeAmountInput() {
         const { isAddMoney, freeAmount } = this.state;
         return (
@@ -359,7 +370,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             </FormItem>
         )
     }
-    // 换购后菜品
+    // render换购后菜品
     renderDishsSelectionBox() {
         return (
             <FormItem
@@ -377,7 +388,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             </FormItem>
         )
     }
-    // 单笔订单最多升级换新数量限制
+    // render单笔订单最多升级换新数量限制
     renderNewLimit() {
         const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount } = this.state;
         return (
