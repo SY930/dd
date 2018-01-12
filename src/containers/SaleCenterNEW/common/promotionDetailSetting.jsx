@@ -113,7 +113,8 @@ class PromotionDetailSetting extends React.Component {
                                     }
                                 });
                         });
-                } else if (scope.scopeType == 'FOOD_EXCLUDED') {
+                }
+                if (scope.scopeType == 'FOOD_EXCLUDED') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -127,7 +128,8 @@ class PromotionDetailSetting extends React.Component {
                                         });
                                 })
                         });
-                } else {
+                }
+                if (scope.scopeType == 'FOOD_INCLUDED') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
