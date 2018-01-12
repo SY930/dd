@@ -12,6 +12,7 @@ if (process.env.__CLIENT__ === true) {
 
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { shopsAllSet } from '../../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
+import Immutable from 'immutable';
 
 class EditBoxForShops extends React.Component {
     constructor(props) {
@@ -59,9 +60,14 @@ class EditBoxForShops extends React.Component {
         const _data = nextProps.value || nextProps.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
         const _cityAreasShops = nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']);
         const _selections = this.state.selections;
+        const filterBrands = nextProps.filterBrands,
+            sameBrands = Immutable.is(Immutable.fromJS(this.props.filterBrands), Immutable.fromJS(filterBrands));
+        console.log(sameBrands);
+        let _cityAreasShops_filter = [],
+            _filterOption = [];
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']) !==
-        nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']) ||
-            nextProps.value !== this.props.value
+            nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']) ||
+            nextProps.value !== this.props.value || !sameBrands
         ) {
             if (_cityAreasShops) {
                 if (_data.shopsInfo !== undefined) {
@@ -77,18 +83,25 @@ class EditBoxForShops extends React.Component {
                         })
                     })
                 }
+                // 若选择了品牌，则筛掉不属于品牌的店铺
+                if (filterBrands.length > 0) {
+                    Array.from(_selections).forEach(selected => {
+                        !filterBrands.includes(selected.brandID) && console.log(filterBrands,selected);
+                        !filterBrands.includes(selected.brandID) && _selections.delete(selected);
+                    })
+                }
                 this.setState({
                     cityAreasShops: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']),
                     selections: _selections,
+                }, () => {
+                    this.props.onChange && this.props.onChange(Array.from(this.state.selections))
                 })
             }
         }
 
         if (this.props.promotionBasicInfo.get('$filterShops') != nextProps.promotionBasicInfo.get('$filterShops')) {
             const { allShopSet = false, shopList = [] } = nextProps.promotionBasicInfo.get('$filterShops').toJS();
-            let _cityAreasShops_filter = [],
-                _filterOption = [],
-                shopsCount = 0;
+            let shopsCount = 0;
             // 更新店铺源
             if (allShopSet) {
                 // 全部占用，清空店铺源
@@ -140,6 +153,33 @@ class EditBoxForShops extends React.Component {
                     this.props.onChange && this.props.onChange([])
                 })
             }
+        }
+        if (!sameBrands) {
+            // 若选择了品牌，则筛掉所有不属于品牌的店铺源
+            _cityAreasShops_filter = filterBrands.length === 0 ? _cityAreasShops
+                : _cityAreasShops.map((city) => {
+                    return {
+                        ...city,
+                        children: city.children.map((area) => {
+                            return {
+                                ...area,
+                                children: area.children.filter((shop) => {
+                                    return filterBrands.includes(shop.brandID)
+                                }),
+                            }
+                        }),
+                    }
+                })
+            // 若选择了品牌，则筛掉右侧checkBox不属于品牌的店铺选项
+            _filterOption = filterBrands.length === 0 ? this.state.storeOptions
+                : this.state.storeOptions.filter((option) => {
+                    return filterBrands.includes(option.brandID)
+                })
+            this.setState({
+                cityAreasShops: _cityAreasShops_filter,
+                options: _filterOption,
+            });
+
         }
     }
 
@@ -323,7 +363,8 @@ const mapStateToProps = (state) => {
     return {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
-        user: state.user.toJS() };
+        user: state.user.toJS()
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {

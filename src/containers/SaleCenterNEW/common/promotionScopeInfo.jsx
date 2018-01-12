@@ -393,6 +393,7 @@ class PromotionScopeInfo extends React.Component {
                 help={promotionType != 'RECOMMEND_FOOD' ? null : this.state.shopStatus ? null : '必须选择店铺'}
             >
                 <EditBoxForShops
+                    filterBrands={this.state.brands}
                     onChange={
                         this.editBoxForShopsChange
                     }
