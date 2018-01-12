@@ -133,14 +133,17 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
+            nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized']) &&
+            !this.state.hadFoodMenuList) {
             this.setState({
                 foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
+                hadFoodMenuList: true,
             })
         }
 
         if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0 &&
+            !this.state.hadSetWhenEdit) {
             const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
             const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
                 nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
@@ -197,6 +200,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 giveFoodMax: stage.giveFoodMax || '',
                 singleNewLimit: stage.giveFoodCount > 0 ? 1 : 0,
                 giveFoodCount: stage.giveFoodCount || '',
+                hadSetWhenEdit: true,
             });
         }
     }
@@ -252,7 +256,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: subjectType != 1 && subjectType != 3 ? 0 : 1,
             upGradeDishes,
         }
-        subjectType < 2 || stageCondition < 1 ?
+        subjectType < 2 && stageCondition < 1 ?
             opts = {// reset food
                 ...opts,
                 categoryOrDish: 0,
