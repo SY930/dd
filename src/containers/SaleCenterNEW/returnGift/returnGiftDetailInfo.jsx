@@ -51,6 +51,7 @@ class ReturnGiftDetailInfo extends React.Component {
             rule: {
                 type: '2',
                 gainCodeMode: '1',
+                printCode: 0,
                 data: [{
                     stageAmount: {
                         value: null,
@@ -99,6 +100,7 @@ class ReturnGiftDetailInfo extends React.Component {
         this.handleFinish = this.handleFinish.bind(this);
         this.handlePre = this.handlePre.bind(this);
         this.getRule = this.getRule.bind(this);
+        this.renderPrintCode = this.renderPrintCode.bind(this);
     }
 
 
@@ -122,6 +124,7 @@ class ReturnGiftDetailInfo extends React.Component {
         if (Object.keys(_rule).length > 0) {
             rule.type = _rule.stageType;
             rule.gainCodeMode = _rule.gainCodeMode || '1';
+            rule.printCode = _rule.printCode || 0;
             if (_rule.stageType == '2') {
                 _rule.stage.map((stage, index) => {
                     if (rule.data[index] == undefined) {
@@ -204,6 +207,7 @@ class ReturnGiftDetailInfo extends React.Component {
             if (Object.keys(_rule).length > 0) {
                 rule.type = _rule.stageType;
                 rule.gainCodeMode = _rule.gainCodeMode || '1';
+                rule.printCode = _rule.printCode || 0;
                 if (_rule.stageType == '2') {
                     _rule.stage.map((stage, index) => {
                         if (rule.data[index] == undefined) {
@@ -272,27 +276,12 @@ class ReturnGiftDetailInfo extends React.Component {
         }
     }
 
-    /**
-     * @param {Object} rule : rule stored in state
-     * @return {Object} rule will be stored in redux, compatiable with server.
-     * {
-     *     stageType: 1,
-     *     stage : [{
-     *         stageAmount: 100,
-     *         giftItemID: 129399,
-     *         giftName: "10元代金券",
-     *         giftNum: 2,
-     *         giftEffectiveTime: 10,
-     *         giftValidDays: 60,
-     *         giftMaxNum: 6
-     *     }]
-     * }
-     */
     getRule() {
         if (this.state.rule.type == '2') {
             return {
                 stageType: this.state.rule.type,
                 gainCodeMode: this.state.rule.gainCodeMode,
+                printCode: this.state.rule.printCode,
                 stage: this.state.rule.data.map((item, index) => {
                     if (item.giftValidType == '0') {
                         return {
@@ -330,6 +319,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 giftName: this.state.rule.data[0].giftInfo.giftName,
                 giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
                 gainCodeMode: this.state.rule.gainCodeMode,
+                printCode: this.state.rule.printCode,
             }
         }
         const range = this.state.rule.data[0].giftEffectiveTime;
@@ -344,6 +334,7 @@ class ReturnGiftDetailInfo extends React.Component {
             giftName: this.state.rule.data[0].giftInfo.giftName,
             giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
             gainCodeMode: this.state.rule.gainCodeMode,
+            printCode: this.state.rule.printCode,
         }
     }
 
@@ -493,7 +484,32 @@ class ReturnGiftDetailInfo extends React.Component {
             </div>
         )
     }
-
+    renderPrintCode() {
+        return (
+            <div>
+                <FormItem
+                    label="打印券码类型"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        value={this.state.rule.printCode}
+                        onChange={(e) => {
+                            const { rule } = this.state;
+                            rule.printCode = e.target.value;
+                            this.setState({ rule }, () => {
+                                this.props.onChange && this.props.onChange(this.state.rule);
+                            });
+                        }}
+                    >
+                        <Radio key={0} value={0}>条形码</Radio >
+                        <Radio key={1} value={1}>二维码</Radio >
+                    </RadioGroup >
+                </FormItem>
+            </div>
+        )
+    }
     renderRuleDetail() {
         return (
             <ReturnGift
@@ -530,6 +546,7 @@ class ReturnGiftDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
+                    {this.renderPrintCode()}
                     {this.renderPromotionRule()}
                     <PromotionDetailSetting />
                     {this.renderAdvancedSettingButton()}

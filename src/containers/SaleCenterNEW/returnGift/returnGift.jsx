@@ -43,7 +43,8 @@ const type = [
 ];
 
 const VALIDATE_TYPE = Object.freeze([{
-    key: 0, value: '0', name: '相对有效期' },
+    key: 0, value: '0', name: '相对有效期'
+},
 { key: 1, value: '1', name: '固定有效期' }]);
 
 
@@ -194,7 +195,7 @@ class ReturnGift extends React.Component {
         let treeData = [];
         _giftTypes.map((gt, idx) => {
             treeData.push({
-                label: _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }).label,
+                label: (_.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }) || {}).label,
                 key: gt.giftType,
                 children: [],
             });
