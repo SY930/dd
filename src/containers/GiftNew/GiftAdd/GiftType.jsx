@@ -16,6 +16,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
+import { queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftType extends React.Component {
@@ -67,6 +68,8 @@ class GiftType extends React.Component {
     }
     handleAdd(g) {
         this.setState({ visible: true, gift: { ...this.state.gift, ...g } });
+        // 请求获取promotionList--券活动
+        g.value == 100 ? this.props.queryUnbindCouponPromotion({ channelID: 10 }) : null;
     }
     handleCancel() {
         this.setState({ visible: false });
@@ -137,6 +140,7 @@ function mapDispatchToProps(dispatch) {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
+        queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
     };
 }
 export default connect(

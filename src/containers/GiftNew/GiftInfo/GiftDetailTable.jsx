@@ -24,6 +24,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
+import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -46,7 +47,7 @@ class GiftDetailTable extends Component {
             contentHeight: '100%',
             usedTotalSize: 0,
         },
-        this.queryFrom = null;
+            this.queryFrom = null;
         this.columns = COLUMNS;
     }
 
@@ -110,7 +111,7 @@ class GiftDetailTable extends Component {
         const newDataSource = gifts.map((g, i) => {
             g.key = i + 1;
             g.giftType = String(g.giftType);
-            g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ?  _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
+            g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
             g.createTime = g.createStamp == 0 ? '--' : g.createStamp.split('.')[0];
             g.actionTime = g.actionStamp == 0 ? '--' : g.actionStamp.split('.')[0];
             g.operateTime = <div>{g.createTime}<br />{g.actionTime}</div>;
@@ -205,6 +206,10 @@ class GiftDetailTable extends Component {
         this.setState({ visibleEdit: true, editGift: gift });
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
+        // 请求获取promotionList--券活动
+        gift.value == 100 ? this.props.fetchAllPromotionList({
+            groupID: this.props.user.accountInfo.groupID,
+        }) : null;
     }
 
     handleDelete(rec) {
@@ -442,6 +447,7 @@ function mapDispatchToProps(dispatch) {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
+        fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
     };
 }
 

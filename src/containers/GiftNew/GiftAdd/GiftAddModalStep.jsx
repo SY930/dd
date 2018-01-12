@@ -96,9 +96,9 @@ class GiftAddModalStep extends React.Component {
             this.queryTrdTemplate(mpList[0].mpID, 10)
         }) : null;
         // 请求获取promotionList--券活动
-        thisGift.value == 100 ? (type === 'edit' ? this.props.fetchAllPromotionList({
-            groupID: this.props.accountInfo.toJS().groupID,
-        }) : this.props.queryUnbindCouponPromotion({ channelID: 10 })) : null;
+        // thisGift.value == 100 ? (type === 'edit' ? this.props.fetchAllPromotionList({
+        //     groupID: this.props.accountInfo.toJS().groupID,
+        // }) : this.props.queryUnbindCouponPromotion({ channelID: 10 })) : null;
         FetchGiftSort({});
     }
     queryTrdTemplate = (mpID, trdChannelID) => {
