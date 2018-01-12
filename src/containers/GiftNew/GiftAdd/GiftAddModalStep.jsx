@@ -95,10 +95,6 @@ class GiftAddModalStep extends React.Component {
             // 微信公众号券模版
             this.queryTrdTemplate(mpList[0].mpID, 10)
         }) : null;
-        // 请求获取promotionList--券活动
-        // thisGift.value == 100 ? (type === 'edit' ? this.props.fetchAllPromotionList({
-        //     groupID: this.props.accountInfo.toJS().groupID,
-        // }) : this.props.queryUnbindCouponPromotion({ channelID: 10 })) : null;
         FetchGiftSort({});
     }
     queryTrdTemplate = (mpID, trdChannelID) => {
@@ -620,7 +616,7 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
-        dates.isMapTotrd = dates.trdChannelID ? true : false;
+        dates.isMapTotrd = dates.trdChannelID && dates.trdChannelID != 1 ? true : false;
         const formItems = {
             ...FORMITEMS,
             giftType: {
