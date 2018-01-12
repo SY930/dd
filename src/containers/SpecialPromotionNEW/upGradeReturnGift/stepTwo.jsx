@@ -165,7 +165,7 @@ class StepTwo extends React.Component {
         // console.log(value);
         const consumeType = this.state.consumeType;
         if (consumeType == '0') { // 消费累计金额每满"
-            if (value.number < 500) {
+            if (value.number < 0) {
                 this.setState({ giveStatus: 'error' })
             } else {
                 this.setState({
@@ -214,8 +214,8 @@ class StepTwo extends React.Component {
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
-            consumeType == '0' ? opts.consumeTotalAmount = numberValue.number : opts.consumeTotalTimes = numberValue.number;
-            if ((consumeType == '0' && numberValue.number < 500) || (consumeType == '1' && numberValue.number < 3)) {
+            consumeType == '0' ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
+            if ((consumeType == '0' && numberValue.number < 0) || (consumeType == '1' && numberValue.number < 3)) {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
@@ -255,7 +255,7 @@ class StepTwo extends React.Component {
     }
     render() {
         const sendFlag = true;
-        const tip = this.state.consumeType == '0' ? '累计金额不得少于500元' : '累计次数不得少于3次'
+        const tip = this.state.consumeType == '0' ? '累计金额不得少于0元' : '累计次数不得少于3次'
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
