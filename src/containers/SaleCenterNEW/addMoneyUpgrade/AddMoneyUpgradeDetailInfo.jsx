@@ -264,6 +264,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 dishes: [],
                 foodCategory: [],
                 excludeDishes: [],
+                scopeLst: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "FOOD_UPGRADE") || [],
+
             }
             : null
         this.props.setPromotionDetail(opts);
@@ -279,7 +281,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
     // 不限，金额，数量方式下拉框
     countTypeChange(val) {
-        this.setState({ countType: val, subjectType: 0, stageCondition: 0, })
+        this.setState({ countType: val, subjectType: 0, stageCondition: 0, stageAmount: val == 0 ? '' : this.state.stageAmount })
     }
     // 按金额下拉框
     subjectTypeChange(val) {
@@ -311,7 +313,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     }
     // 单笔订单最多升级换新数量限制下拉框
     mostNewLimitChange(val) {
-        this.setState({ mostNewLimit: val })
+        this.setState({ mostNewLimit: val, giveFoodMax: '' })
     }
     // 数量限制input
     giveFoodMaxChange(val) {
@@ -319,7 +321,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     }
     // 单笔订单同一菜品最多升级换新数量限制下拉框
     singleNewLimitChange(val) {
-        this.setState({ singleNewLimit: val })
+        this.setState({ singleNewLimit: val, giveFoodCount: '' })
     }
     // 数量限制input
     giveFoodCountChange(val) {
