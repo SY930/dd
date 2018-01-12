@@ -120,7 +120,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             countType: stage.countType || 0,
             subjectType,
             stageCondition: stage.stageCondition || 0,
-            stageAmount: stage.stageAmount || '',
+            stageAmount: stage.stageAmount > 0 ? 1 : 0,
             upGradeDishes,
             isAddMoney: stage.freeAmount > 0 ? 1 : 0,
             freeAmount: stage.freeAmount || '',
@@ -192,7 +192,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 countType: stage.countType || 0,
                 subjectType,
                 stageCondition: stage.stageCondition || 0,
-                stageAmount: stage.stageAmount || '',
+                stageAmount: stage.stageAmount > 0 ? 1 : 0,
                 upGradeDishes,
                 isAddMoney: stage.freeAmount > 0 ? 1 : 0,
                 freeAmount: stage.freeAmount || '',
@@ -229,8 +229,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 {
                     countType,
                     stageCondition,
-                    stageAmount,
-                    freeAmount,
+                    stageAmount: countType != 0 && stageAmount < 1 ? 0 : stageAmount,
+                    freeAmount: countType != 0 && freeAmount < 1 ? 0 : freeAmount,
                     giveFoodMax,
                     giveFoodCount,
                 },
@@ -268,15 +268,18 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
             }
             : null
-        let flag = true;
-        if (upGradeDishes.length === 0 || dish.length === 0) {
-            flag = false;
-        }
-        if (flag) {
+        let text = '';
+        upGradeDishes.length === 0 ? text += '升级前菜品不可为空;' : null;
+        dish.length === 0 ? text += '升级后菜品不可为空;' : null;
+        mostNewLimit == 1 && giveFoodMax < 1 ? text += '单笔订单最多升级换新数量限制不可为空;' : null;
+        singleNewLimit == 1 && giveFoodCount < 1 ? text += '单笔订单同一菜品最多升级换新数量限制不可为空;' : null;
+
+        if (!text) {
             this.props.setPromotionDetail(opts);
             return true
         } else {
-            message.warning(`升级前菜品和升级后菜品不可为空`, 3)
+            const content = text.split(';').map(word => <p>{word}</p>)
+            message.warning(content, 3)
             return false
         }
     };
