@@ -88,7 +88,7 @@ class CollocationDetailInfo extends React.Component {
                         foodUnitName: free.unit,
                         price: parseFloat(free.price),
                         stageNo: groupIdx,
-                        num: group.freeCountInfo[free.itemID],
+                        num: group.freeCountInfo[free.itemID] >= 1 ? group.freeCountInfo[free.itemID] : 1,
                     })
                 });
                 group.foods.forEach((food) => {
@@ -99,7 +99,7 @@ class CollocationDetailInfo extends React.Component {
                         targetName: food.foodName,
                         targetUnitName: food.unit,
                         stageNo: groupIdx,
-                        num: group.foodsCountInfo[food.itemID],
+                        num: group.foodsCountInfo[food.itemID] >= 1 ? group.foodsCountInfo[food.itemID] : 1,
                     })
                 });
             } else {

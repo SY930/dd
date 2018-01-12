@@ -143,7 +143,7 @@ class CollocationTable extends React.Component {
                     category.foods.find((item) => {
                         if (item.itemID == price.foodUnitID) {
                             data[price.stageNo].free.push(promotionType === 'FOOD_FIXED_SET_GIVE' &&
-                            (item.isSetFood == '1'  || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
+                                (item.isSetFood == '1' || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
                             // data[price.stageNo].free.push(item.isSetFood !== '1' ? item : { ...item, 'foodName': '', 'foodCategoryName': '' });
                             data[price.stageNo].freeCountInfo[item.itemID] = price.num;
                         }
@@ -353,12 +353,12 @@ class CollocationTable extends React.Component {
         // food
         if (parseInt(indexInfo[3]) < parseInt(indexInfo[1])) {
             const itemID = record.itemID;
-            data[indexInfo[0]].foodsCountInfo[itemID] = count.number;
+            data[indexInfo[0]].foodsCountInfo[itemID] = count.number>=1 ? count.number : 1;
         }
         // free
         if (parseInt(indexInfo[3]) >= parseInt(indexInfo[1])) {
             const itemID = record.itemID;
-            data[indexInfo[0]].freeCountInfo[itemID] = count.number;
+            data[indexInfo[0]].freeCountInfo[itemID] = count.number>=1 ? count.number : 1;
         }
         this.setState({
             data,
