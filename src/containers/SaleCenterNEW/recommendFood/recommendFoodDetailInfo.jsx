@@ -258,7 +258,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label="手动设置推荐菜" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                                     <CollocationTable
                                         onChange={this.handDishesChange}
                                         priceLst={this.state.priceLstHand}
@@ -273,11 +273,11 @@ class RecommendFoodDetailInfo extends React.Component {
                             onChange={this.onAutoSetChange}
                             checked={this.state.autoSetChecked}
                             style={{ marginTop: 30 }}
-                        >TOP-N智能推荐菜</Checkbox>
+                        >热销推荐</Checkbox>
                         <Tip
                             style={{ position: 'absolute', top: 31, left: 134 }}
                             marginLeft={-114}
-                            words={['智能推荐菜品数量大于所选菜品，微信页面呈现会智能补齐剩余数量', '智能推荐菜品的数量小于所选菜品，以填写的数量为准']}
+                            words={['热销推荐菜品数量大于所选菜品，微信页面呈现会智能补齐剩余数量', '热销推荐菜品的数量小于所选菜品，以填写的数量为准']}
                         />
                     </FormItem>
                     {
@@ -298,7 +298,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label="TOP-N智能推荐菜" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                                     {
                                         this.props.form.getFieldDecorator('priceLst', {
                                             initialValue: this.state.priceLstAuto,
