@@ -9,7 +9,7 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
+import { Row, Col, Form, Select, Radio, Input, InputNumber, message } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 
@@ -268,9 +268,17 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
             }
             : null
-        this.props.setPromotionDetail(opts);
-        return true
-        // return false
+        let flag = true;
+        if (upGradeDishes.length === 0 || dish.length === 0) {
+            flag = false;
+        }
+        if (flag) {
+            this.props.setPromotionDetail(opts);
+            return true
+        } else {
+            message.warning(`升级前菜品和升级后菜品不可为空`, 3)
+            return false
+        }
     };
 
     onChangeClick = () => {
