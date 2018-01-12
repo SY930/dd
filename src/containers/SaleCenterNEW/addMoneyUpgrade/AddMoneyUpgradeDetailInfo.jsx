@@ -95,23 +95,30 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
             this.setState({ foodMenuList })
         }
+        let { display } = this.state;
+        display = !this.props.isNew;
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
-        const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-        const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         if (_rule === null || _rule === undefined) {
             return null;
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
-        let { display } = this.state;
-        display = !this.props.isNew;
         // 根据ruleJson填充页面
         const stage = _rule.stage ? _rule.stage[0] : {}
+        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
+        const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
+        const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        let subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
+        if (subjectType == 1) {
+            subjectType = scope.length > 0 ? 3 : 1
+        }
+        if (subjectType == 0) {
+            subjectType = scope.length > 0 ? 2 : 0
+        }
         this.setState({
             display,
             countType: stage.countType || 0,
-            subjectType: subjectType == 'REAL_INCOME' ? 1 : 0,
+            subjectType,
             stageCondition: stage.stageCondition || 0,
             stageAmount: stage.stageAmount || '',
             upGradeDishes,
@@ -138,15 +145,18 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
                 nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
             const _upGradeDishes = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
-            const subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
+            const scope = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
+            let subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
 
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
+            if (subjectType == 1) {
+                subjectType = scope.length > 0 ? 3 : 1
             }
+            if (subjectType == 0) {
+                subjectType = scope.length > 0 ? 2 : 0
+            }
+            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
             _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
             _rule = Object.assign({}, _rule);
-            // 根据ruleJson填充页面
             const stage = _rule.stage ? _rule.stage[0] : {}
             const _dish = [];
             _priceLst.map((price) => {
@@ -176,7 +186,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             }));
             this.setState({
                 countType: stage.countType || 0,
-                subjectType: subjectType == 'REAL_INCOME' ? 1 : 0,
+                subjectType,
                 stageCondition: stage.stageCondition || 0,
                 stageAmount: stage.stageAmount || '',
                 upGradeDishes,
@@ -513,7 +523,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         subjectType == 2 || subjectType == 3 || stageCondition == 1 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
                     {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}
-                     {this.renderDishsSelectionBox()/*升级后菜品*/} 
+                    {this.renderDishsSelectionBox()/*升级后菜品*/}
                     {this.renderNewLimit()/*换新菜品数量限制*/}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
