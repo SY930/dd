@@ -215,37 +215,19 @@ class MyActivities extends React.Component {
             fetchPromotionList,
         } = this.props;
         this.handleQuery();
-        // fetchPromotionList({
-        //     data: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         pageSize: this.state.pageSizes,
-        //         pageNo: 1,
-        //     },
-        //     fail: (msg) => { message.error(msg) },
-        //     success: this.showNothing,
-        // });
-        // Make sure the categoryList is fetched from the server.
-        if (!promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
-            fetchPromotionCategories({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'CATEGORY_NAME',
-            });
-        }
+        fetchPromotionCategories({
+            groupID: this.props.user.accountInfo.groupID,
+            phraseType: 'CATEGORY_NAME',
+        });
 
-        // Make sure the taglist is fetched from the server
-        if (!promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
-            fetchPromotionTags({
-                groupID: this.props.user.accountInfo.groupID,
-                phraseType: 'TAG_NAME',
-            });
-        }
+        fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            phraseType: 'TAG_NAME',
+        });
 
-        // Make sure that the promotion scope related data is fetched from the server
-        if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
-            fetchPromotionScopeInfo({
-                _groupID: this.props.user.accountInfo.groupID,
-            });
-        }
+        fetchPromotionScopeInfo({
+            _groupID: this.props.user.accountInfo.groupID,
+        });
 
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
