@@ -173,6 +173,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             _dish.map(((item) => {
                 item.id = item.foodID;
                 item.content = item.foodName;
+                item.foodUnitID = item.itemID;
             }));
             const upGradeDishes = [];
             _upGradeDishes.map((price) => {
