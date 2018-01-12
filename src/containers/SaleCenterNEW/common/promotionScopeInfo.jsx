@@ -496,7 +496,7 @@ class PromotionScopeInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.usageMode || 1} onChange={(e) => this.setState({ usageMode: e.target.value })}>
-                    <Radio value={1}>普通活动</Radio>
+                    <Radio value={1} disabled={this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionID}>普通活动</Radio>
                     <Radio value={2}>活动券</Radio>
                 </RadioGroup>
             </Form.Item>
@@ -522,8 +522,7 @@ class PromotionScopeInfo extends React.Component {
                 {this.renderBusinessOptions()}
                 {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                 {promotionType == 'VOUCHER_GROUP' ? this.renderGroup() : null}
-                {promotionType != 'RETURN_GIFT' && promotionType != 'RETURN_POINT'
-                    && promotionType != 'BILL_CUMULATION_FREE' && promotionType != 'FOOD_CUMULATION_GIVE' ? this.renderUsageMode() : null}
+                {promotionType == 'BILL_DISCOUNT' ? this.renderUsageMode() : null}
             </Form>
         );
     }
