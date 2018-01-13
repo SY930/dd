@@ -162,7 +162,7 @@ class GiftAddModalStep extends React.Component {
     }
 
     handleFormChange(key, value, form) {
-        const { gift: { name: describe }, type } = this.props;
+        const { gift: { name: describe, data }, type } = this.props;
         let { secondKeys, values } = this.state;
         let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
@@ -268,7 +268,9 @@ class GiftAddModalStep extends React.Component {
                         return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'wechatMpName';
                     });
                 secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys })
+                this.setState({ secondKeys });
+                describe === '活动券' ? value ? this.props.queryUnbindCouponPromotion({ channelID: data.trdChannelID || 10 }) :
+                    this.props.queryUnbindCouponPromotion({ channelID: 1 }) : null
                 break;
             case 'trdChannelID':
                 describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') ? (!newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') : null) :
