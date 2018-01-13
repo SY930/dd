@@ -93,7 +93,6 @@ class EditBoxForPromotion extends React.Component {
         const user = this.props.user;
         // 请求获取promotionList--共享用
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
         const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -150,7 +149,6 @@ class EditBoxForPromotion extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
-        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
         const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
@@ -204,7 +202,7 @@ class EditBoxForPromotion extends React.Component {
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
         let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
-            SelfPromotion = this.props.myActivities.toJS().$promotionDetailInfo.data.promotionInfo.master.promotionIDStr;
+            SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo','data','promotionInfo','master','promotionIDStr']);
         }
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
@@ -237,7 +235,6 @@ class EditBoxForPromotion extends React.Component {
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = this.state.promotionSelections;
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        // const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
         const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
 
         // 拼左侧树状结构

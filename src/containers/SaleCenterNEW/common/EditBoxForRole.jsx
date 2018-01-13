@@ -53,16 +53,15 @@ class EditBoxForSubject extends React.Component {
     }
 
     componentDidMount() {
-        if (!this.props.promotionDetailInfo.getIn(['$roleInfo', 'initialized'])) {
-            this.props.fetchRoleList({
-                _groupID: this.props.user.accountInfo.groupID,
-            })
-        }
+        this.props.fetchRoleList({
+            _groupID: this.props.user.accountInfo.groupID,
+        })
 
-        const _roles = this.props.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']).toJS();
-        const _role = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']).toJS();
+        let _roles = this.props.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']);
+        _roles = _roles ? _roles.toJS() : [];
+        let _role = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']);
+        _role = _role ? _role.toJS() : [];
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
         const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
 
         if (this.props.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
@@ -88,34 +87,35 @@ class EditBoxForSubject extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']) !=
             nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree'])) {
-            const _roles = nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']).toJS();
+            let _roles = nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']);
+            _roles = _roles ? _roles.toJS() : [];
             if (nextProps.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
                 this.clear();
 
                 this.props.setPromotionDetail({
                     role: '',
                 });
-            } else {
-                const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
-                const thisProID = ProDetail ? ProDetail.promotionInfo.master.shopID : undefined; // detail是否编辑or查看
-                const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
-                this.setState({
-                    roleCollection: filterFlag ? _roles.map((roles) => {
-                        return {
-                            ...roles,
-                            roleName: roles.roleName.filter((roleMan => roleMan.shopIDs.indexOf(nextProps.user.shopID) > -1))
-                        }
-                    }) : _roles,
-                    roleSelections: new Set(),
-                }, () => {
-                    this.initialState(this.state.role, this.state.roleCollection);
-                });
             }
+            const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
+            const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+            this.setState({
+                roleCollection: filterFlag ? _roles.map((roles) => {
+                    return {
+                        ...roles,
+                        roleName: roles.roleName.filter((roleMan => roleMan.shopIDs.indexOf(nextProps.user.shopID) > -1))
+                    }
+                }) : _roles,
+                roleSelections: new Set(),
+            }, () => {
+                this.initialState(this.state.role, this.state.roleCollection);
+            });
+
         }
 
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']) !=
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role'])) {
-            const _role = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role']).toJS();
+            let _role = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role']);
+            _role = _role ? _role.toJS() : [];
             this.setState({
                 role: _role,
             }, () => {
