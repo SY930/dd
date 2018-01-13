@@ -420,6 +420,7 @@ class GiftAddModalStep extends React.Component {
                     }) || {}).trdGiftName ||
                     (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
+                params=params.isMapTotrd?params:{...params,trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined}
             }
             if (type === 'add') {
                 callServer = 'addGift_dkl';
