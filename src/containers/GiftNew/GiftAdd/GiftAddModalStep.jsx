@@ -271,6 +271,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({ secondKeys });
                 describe === '活动券' ? value ? this.props.queryUnbindCouponPromotion({ channelID: data.trdChannelID || 10 }) :
                     this.props.queryUnbindCouponPromotion({ channelID: 1 }) : null
+                if (describe === '活动券' && type === 'add') { values.promotionID = [] }
                 break;
             case 'trdChannelID':
                 describe === '活动券' && value === 10 && newKeys.includes('trdChannelID') ? (!newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') : null) :
@@ -420,7 +421,7 @@ class GiftAddModalStep extends React.Component {
                     }) || {}).trdGiftName ||
                     (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
-                params=params.isMapTotrd?params:{...params,trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined}
+                params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
             }
             if (type === 'add') {
                 callServer = 'addGift_dkl';
@@ -579,8 +580,9 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderGiftPromotion(decorator, form) {
-        const { gift: { data }, type } = this.props,
-            promotionID = data.promotionID ? [{ sharedIDStr: data.promotionID }] : [];
+        const { gift: { data }, type } = this.props;
+        let promotionID = type === 'edit' ? (data.promotionID ? [{ sharedIDStr: data.promotionID }] : [])
+            : this.state.values.promotionID
         return (
             <FormItem>
                 {

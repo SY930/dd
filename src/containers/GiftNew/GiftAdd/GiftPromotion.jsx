@@ -63,6 +63,7 @@ class GiftPromotion extends React.Component {
         this.setState({
             promotionCollection: _promotions,
             mutexPromotions: _mutexPromotions,
+            promotionCurrentSelections: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionCurrentSelections
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
         });
@@ -71,12 +72,15 @@ class GiftPromotion extends React.Component {
         if (this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']) !=
             nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree'])
         ) {
+            const _mutexPromotions = nextProps.promotionID;
             const promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
             this.setState({
                 promotionCollection,
-                promotionSelections: new Set(),
+                // promotionSelections: new Set(),
+                mutexPromotions: _mutexPromotions,
+                promotionCurrentSelections: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionCurrentSelections
             }, () => {
-                this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
+                this.initialState(_mutexPromotions, this.state.promotionCollection);
             })
         }
     }
