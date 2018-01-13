@@ -145,11 +145,13 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0 &&
             !this.state.hadSetWhenEdit) {
             const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-            const _upGradeDishes = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
-            const scope = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
-            let subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
+            const $promotionDetail = nextProps.promotionDetailInfo.getIn(['$promotionDetail']);
+            const _priceLst = $promotionDetail.getIn(['priceLst']) ?
+                $promotionDetail.getIn(['priceLst']).toJS() : [];
+            let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE");
+            _upGradeDishes = _upGradeDishes.length > 0 ? _upGradeDishes : $promotionDetail.getIn(['upGradeDishes']).toJS();
+            const scope = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
+            let subjectType = $promotionDetail.getIn(['subjectType']);
 
             if (subjectType == 1) {
                 subjectType = scope.length > 0 ? 3 : 1
@@ -157,7 +159,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             if (subjectType == 0) {
                 subjectType = scope.length > 0 ? 2 : 0
             }
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+            let _rule = $promotionDetail.getIn(['rule']);
             _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
             _rule = Object.assign({}, _rule);
             const stage = _rule.stage ? _rule.stage[0] : {}
@@ -178,7 +180,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             const upGradeDishes = [];
             _upGradeDishes.map((price) => {
                 foodMenuList.map((food) => {
-                    if (food.itemID == price.targetID) { // foodUnitID就是由itemID转换
+                    if (food.itemID == price.targetID || food.itemID == price.itemID) { // foodUnitID就是由itemID转换
                         upGradeDishes.push(food)
                     }
                 });
