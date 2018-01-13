@@ -63,6 +63,7 @@ class GiftPromotion extends React.Component {
         this.setState({
             promotionCollection: _promotions,
             mutexPromotions: _mutexPromotions,
+            promotionOptions: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionOptions,
             promotionCurrentSelections: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionCurrentSelections
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
@@ -78,6 +79,7 @@ class GiftPromotion extends React.Component {
                 promotionCollection,
                 // promotionSelections: new Set(),
                 mutexPromotions: _mutexPromotions,
+                promotionOptions: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionOptions,
                 promotionCurrentSelections: !_mutexPromotions || _mutexPromotions.length === 0 ? [] : this.state.promotionCurrentSelections
             }, () => {
                 this.initialState(_mutexPromotions, this.state.promotionCollection);
