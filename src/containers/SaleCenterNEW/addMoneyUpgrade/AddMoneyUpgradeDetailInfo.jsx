@@ -275,6 +275,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         dish.length === 0 ? text += '升级后菜品不可为空;' : null;
         mostNewLimit == 1 && giveFoodMax < 1 ? text += '单笔订单最多升级换新数量限制不可为空;' : null;
         singleNewLimit == 1 && giveFoodCount < 1 ? text += '单笔订单同一菜品最多升级换新数量限制不可为空;' : null;
+        mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += '同一菜品数量不能大于单笔订单最多数量;' : null;
 
         if (!text) {
             this.props.setPromotionDetail(opts);
