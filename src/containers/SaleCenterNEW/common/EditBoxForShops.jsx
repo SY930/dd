@@ -62,12 +62,11 @@ class EditBoxForShops extends React.Component {
         const _selections = this.state.selections;
         const filterBrands = nextProps.filterBrands,
             sameBrands = Immutable.is(Immutable.fromJS(this.props.filterBrands), Immutable.fromJS(filterBrands));
-        console.log(sameBrands);
         let _cityAreasShops_filter = [],
             _filterOption = [];
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']) !==
             nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']) ||
-            nextProps.value !== this.props.value || !sameBrands
+            nextProps.value !== this.props.value
         ) {
             if (_cityAreasShops) {
                 if (_data.shopsInfo !== undefined) {
@@ -81,13 +80,6 @@ class EditBoxForShops extends React.Component {
                                 })
                             })
                         })
-                    })
-                }
-                // 若选择了品牌，则筛掉不属于品牌的店铺
-                if (filterBrands.length > 0) {
-                    Array.from(_selections).forEach(selected => {
-                        !filterBrands.includes(selected.brandID) && console.log(filterBrands,selected);
-                        !filterBrands.includes(selected.brandID) && _selections.delete(selected);
                     })
                 }
                 this.setState({
@@ -170,6 +162,18 @@ class EditBoxForShops extends React.Component {
                         }),
                     }
                 })
+            // 若选择了品牌，则筛掉不属于品牌的店铺
+            if (filterBrands.length > 0) {
+                Array.from(_selections).forEach(selected => {
+                    !filterBrands.includes(selected.brandID) && console.log(filterBrands, selected);
+                    !filterBrands.includes(selected.brandID) && _selections.delete(selected);
+                })
+            }
+            this.setState({
+                selections: _selections,
+            }, () => {
+                this.props.onChange && this.props.onChange(Array.from(this.state.selections))
+            })
             // 若选择了品牌，则筛掉右侧checkBox不属于品牌的店铺选项
             _filterOption = filterBrands.length === 0 ? this.state.storeOptions
                 : this.state.storeOptions.filter((option) => {
