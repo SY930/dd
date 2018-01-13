@@ -104,7 +104,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
         // 根据ruleJson填充页面
-        const stage = _rule.stage ? _rule.stage[0] : {}
+        // const stage = _rule.stage ? _rule.stage[0] : {}
         const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
         const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
         const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
@@ -117,18 +117,18 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         }
         this.setState({
             display,
-            countType: stage.countType || 0,
+            countType: _rule.countType || 0,
             subjectType,
-            stageCondition: stage.stageCondition || 0,
-            stageAmount: stage.stageAmount > 0 ? stage.stageAmount : 0,
+            stageCondition: _rule.stageCondition || 0,
+            stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
             upGradeDishes,
-            isAddMoney: stage.freeAmount > 0 ? 1 : 0,
-            freeAmount: stage.freeAmount || '',
+            isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
+            freeAmount: _rule.freeAmount || '',
             dishes: priceLst || [],
-            mostNewLimit: stage.giveFoodMax > 0 ? 1 : 0,
-            giveFoodMax: stage.giveFoodMax || '',
-            singleNewLimit: stage.giveFoodCount > 0 ? 1 : 0,
-            giveFoodCount: stage.giveFoodCount || '',
+            mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
+            giveFoodMax: _rule.giveFoodMax || '',
+            singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
+            giveFoodCount: _rule.giveFoodCount || '',
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -162,7 +162,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             let _rule = $promotionDetail.getIn(['rule']);
             _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
             _rule = Object.assign({}, _rule);
-            const stage = _rule.stage ? _rule.stage[0] : {}
+            // const stage = _rule.stage ? _rule.stage[0] : {}
             const _dish = [];
             _priceLst.map((price) => {
                 foodMenuList.map((food) => {
@@ -191,18 +191,18 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 item.foodUnitID = item.itemID;
             }));
             this.setState({
-                countType: stage.countType || 0,
+                countType: _rule.countType || 0,
                 subjectType,
-                stageCondition: stage.stageCondition || 0,
-                stageAmount: stage.stageAmount > 0 ? stage.stageAmount : 0,
+                stageCondition: _rule.stageCondition || 0,
+                stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
                 upGradeDishes,
-                isAddMoney: stage.freeAmount > 0 ? 1 : 0,
-                freeAmount: stage.freeAmount || '',
+                isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
+                freeAmount: _rule.freeAmount || '',
                 dishes: _dish,
-                mostNewLimit: stage.giveFoodMax > 0 ? 1 : 0,
-                giveFoodMax: stage.giveFoodMax || '',
-                singleNewLimit: stage.giveFoodCount > 0 ? 1 : 0,
-                giveFoodCount: stage.giveFoodCount || '',
+                mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
+                giveFoodMax: _rule.giveFoodMax || '',
+                singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
+                giveFoodCount: _rule.giveFoodCount || '',
                 hadSetWhenEdit: true,
             });
         }
@@ -227,16 +227,16 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
         const rule = {
             stageType: countType == 0 ? undefined : 2,
-            stage: [
-                {
-                    countType,
-                    stageCondition,
-                    stageAmount: countType != 0 && stageAmount < 1 ? 0 : stageAmount,
-                    freeAmount: countType != 0 && freeAmount < 1 ? 0 : freeAmount,
-                    giveFoodMax,
-                    giveFoodCount,
-                },
-            ],
+            // stage: [
+            //     {
+            countType,
+            stageCondition,
+            stageAmount: countType != 0 && stageAmount < 1 ? 0 : stageAmount,
+            freeAmount: countType != 0 && freeAmount < 1 ? 0 : freeAmount,
+            giveFoodMax,
+            giveFoodCount,
+            //     },
+            // ],
         }
 
         const dish = dishes.map((dish) => {
