@@ -207,7 +207,7 @@ class GiftDetailTable extends Component {
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         // 请求获取promotionList--券活动
-        gift.value == 100 ? this.props.fetchAllPromotionList({
+        gift.value != 80 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
         }) : null;
     }

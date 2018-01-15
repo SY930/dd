@@ -137,11 +137,11 @@ const FIRST_KEYS = {
 const SECOND_KEYS = {
     '电子代金券': [{
         col: { span: 24, pull: 2 },
-        keys: ['transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
+        keys: ['isMapTotrd', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],
     '菜品优惠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
+        keys: ['isMapTotrd', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],
     '会员权益券': [{
         col: { span: 24, pull: 2 },
