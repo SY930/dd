@@ -523,7 +523,7 @@ class PromotionScopeInfo extends React.Component {
                 {this.renderBusinessOptions()}
                 {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                 {promotionType == 'VOUCHER_GROUP' ? this.renderGroup() : null}
-                {promotionType == 'BILL_DISCOUNT' ? this.renderUsageMode() : null}
+                {promotionType == 'BILL_DISCOUNT' && HUALALA.ENVIRONMENT != 'production-release' ? this.renderUsageMode() : null}
             </Form>
         );
     }
