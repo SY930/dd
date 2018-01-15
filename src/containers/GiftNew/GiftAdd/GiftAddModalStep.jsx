@@ -791,7 +791,7 @@ class GiftAddModalStep extends React.Component {
                         value: template.trdGiftItemID,
                     }
                 }) : [{
-                    label: JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel,
+                    label: this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : '',
                     value: this.props.gift.data.trdTemplateID,
                 }],
             },
