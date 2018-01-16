@@ -11,7 +11,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col } from 'antd';
+import { Modal, Row, Col, message } from 'antd';
+import { checkPermission } from '../../helpers/util';
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -149,9 +150,7 @@ class NewActivity extends React.Component {
                                 }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <a>
                                         <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
-                                    </a>
                                 </Authority>
                             </li>
                         );
@@ -197,6 +196,10 @@ class NewActivity extends React.Component {
     }
 
     _onButtonClicked(index, activity) {
+        if (!checkPermission("marketing.jichuyingxiaoxin.create")) {
+            message.warn('您没有新建活动的权限，请联系管理员');
+            return;
+        }
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
