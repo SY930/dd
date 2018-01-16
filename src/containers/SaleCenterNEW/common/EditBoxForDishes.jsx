@@ -122,16 +122,17 @@ class EditBoxForDishes extends React.Component {
             })
         }
         // if (
-            // this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            // nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ||
-            // !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
+        // this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
+        // nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ||
+        // !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
         // ) {
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-            this.setState({
-                priceLst: nextProps.type === 'RECOMMEND_FOOD' || nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE' ? nextProps.value : _priceLst,
-            }, () => {
-                this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
-            })
+        let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        _priceLst = _priceLst ? _priceLst.toJS() : [];
+        this.setState({
+            priceLst: nextProps.type === 'RECOMMEND_FOOD' || nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE' ? nextProps.value : _priceLst,
+        }, () => {
+            this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
+        })
         // }
     }
 
