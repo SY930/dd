@@ -12,6 +12,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, Row, Col, message } from 'antd';
+import { checkPermission } from '../../helpers/util';
 
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo';
 import ActivityMain from './activityMain';
@@ -180,6 +181,10 @@ class NewActivity extends React.Component {
      * @param  {array} activity 所有活动的列表
      */
     _onButtonClicked(index, activity) {
+        if (!checkPermission("marketing.teseyingxiaoxin.create")) {
+            message.warn('您没有新建活动的权限，请联系管理员');
+            return;
+        }
         const { user } = this.props;
         this.setState({
             index,

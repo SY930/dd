@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Row, Col } from 'antd';
+import { Row, Col, message } from 'antd';
+import { checkPermission } from '../../../helpers/util';
 import { CrmLogo } from './CrmOperation';
 import GiftCfg from '../../../constants/Gift';
 import Moment from 'moment';
@@ -109,17 +110,23 @@ class GiftType extends React.Component {
                         <ul>
                             {giftTypes.map((gift, index) => {
                                 return (
-                                    <Authority rightCode="marketing.lipinxin.create" key={gift.value}>
+                                    //{/* <Authority rightCode="marketing.lipinxin.create" key={gift.value}> */ }
+                                    <div>
                                         <a
                                             key={gift.value}
                                             onClick={() => {
+                                                if (!checkPermission("marketing.lipinxin.create")) {
+                                                    message.warn('您没有新建活动的权限，请联系管理员');
+                                                    return;
+                                                }
                                                 this.props.toggleIsUpdate(true)
                                                 this.handleAdd(gift)
                                             }}
                                         >
                                             <CrmLogo background={gift.color} describe={gift.describe} index={index}>{gift.name}</CrmLogo>
                                         </a>
-                                    </Authority>
+                                    </div>
+                                    //{/* </Authority> */}
                                 )
                             })}
                         </ul>
