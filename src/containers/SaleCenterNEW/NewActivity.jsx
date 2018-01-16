@@ -149,7 +149,9 @@ class NewActivity extends React.Component {
                                 }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                                    <a>
+                                        <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                                    </a>
                                 </Authority>
                             </li>
                         );
