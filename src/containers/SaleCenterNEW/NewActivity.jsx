@@ -143,7 +143,9 @@ class NewActivity extends React.Component {
                                 key={`NewActivity${index}`}
                                 style={{
                                     listStyle: 'none',
-                                    display: this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD' ? 'none' : 'block',
+                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ||
+                                        (HUALALA.ENVIRONMENT == 'production-release' && activity.get('key') === 'FOOD_PAY_MORE_THEN_UPGRADE') ?
+                                        'none' : 'block',
                                 }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
