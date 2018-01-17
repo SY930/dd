@@ -229,8 +229,11 @@ class RandomCutDetailInfo extends React.Component {
     }
 
     onPriceInputChange(value) {
+        const priceRule = this.state['priceRule'][0];
         this.setState({
             priceValue: value.number,
+        }, () => {
+            this.checkStatus(priceRule.start, priceRule.end, 0, 'priceRule');
         });
     }
     onBillInputChange(value) {
@@ -341,12 +344,17 @@ class RandomCutDetailInfo extends React.Component {
     onCustomRangeInputChange(value, index, ruleName) {
         const _start = ruleName == 'priceRule' ? this.fixed(value.start) : value.start;
         const _end = ruleName == 'priceRule' ? this.fixed(value.end) : value.end;
+        this.checkStatus(_start, _end, index, ruleName);
+    }
+    checkStatus = (start, end, index, ruleName) => {
+        const priceValue = this.state.priceValue;
         const _tmp = this.state[ruleName];
         const condition = ruleName == 'priceRule' ?
-            ((parseFloat(_start) <= parseFloat(_end)) && (!Number.isNaN(_start)) && (!Number.isNaN(_end))
-            && parseFloat(_start) <= parseFloat(this.state.priceValue) && parseFloat(_end) <= parseFloat(this.state.priceValue)) :
-            ((parseFloat(_start) <= parseFloat(_end) && parseFloat(_start) <= 100 && parseFloat(_end) <= 100) ||
-            (parseFloat(_start <= 100) && Number.isNaN(_end)) || (Number.isNaN(_start) && parseFloat(_end) <= 100));
+            ((parseFloat(start) <= parseFloat(end)) && (!Number.isNaN(start)) && (!Number.isNaN(end))
+                && (!priceValue || (priceValue && parseFloat(start) <= parseFloat(priceValue) && parseFloat(end) <= parseFloat(priceValue)))) :
+            ((parseFloat(start) <= parseFloat(end) && parseFloat(start) <= 100 && parseFloat(end) <= 100) ||
+                (parseFloat(start <= 100) && Number.isNaN(end)) || (Number.isNaN(start) && parseFloat(end) <= 100));
+
         let _validationStatus,
             _helpMsg;
         // TODO:刚输入的时候就报错
@@ -359,14 +367,13 @@ class RandomCutDetailInfo extends React.Component {
         }
 
         _tmp[index] = {
-            start: _start,
-            end: _end,
+            start: start,
+            end: end,
             validationStatus: _validationStatus,
             helpMsg: _helpMsg,
         };
         this.setState({ [ruleName]: _tmp });
     }
-
     renderRulesComponent(ruleName, relation, addonBefore, addonAfter, addonAfterunitType) {
         return (this.state[ruleName].map((rule, index) => {
             const _value = {
