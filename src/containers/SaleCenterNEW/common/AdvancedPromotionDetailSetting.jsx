@@ -60,7 +60,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     componentDidMount() {
         let userSetting = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
         const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
-        const blackList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule', 'blackList']);
+        const blackList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'blackList']);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         userSetting = (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
             && userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' : userSetting;
@@ -68,10 +68,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
             userSetting,
             subjectType,
             blackListRadio: blackList ? '1' : '0',
-        }, () => {
-            this.props.setPromotionDetail({
-                blackList: this.state.blackListRadio == '1',
-            });
         });
     }
     componentWillReceiveProps(nextProps) {
