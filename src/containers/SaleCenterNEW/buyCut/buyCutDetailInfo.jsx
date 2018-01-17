@@ -73,14 +73,14 @@ class BuyCutDetailInfo extends React.Component {
             display,
             stageAmount: _rule.stageAmount,
             freeAmount: _rule.freeAmount || '',
-            discountRate: (_rule.discountRate * 10).toFixed(2) || '',
+            discountRate: _rule.discountRate ? (_rule.discountRate * 10).toFixed(2) : '',
             cutWay: _rule.freeAmount ? '0' : '1',
         });
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
-        nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
     }

@@ -413,13 +413,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     renderNewLimit() {
         const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount } = this.state;
         return (
-            <FormItem
-                label=' '
-                colon={false}
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-            >
+            <div style={{ width: '80%', marginLeft: 49 }}>
                 <FormItem
                     className={styles.FormItemStyle}
                     label='单笔订单最多升级换新数量限制'
@@ -427,7 +421,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     wrapperCol={{ span: 11 }}
                 >
                     <Col span={mostNewLimit == 0 ? 24 : 8}>
-                        <Select onChange={this.mostNewLimitChange} value={mostNewLimit}>
+                        <Select onChange={this.mostNewLimitChange} value={mostNewLimit} onClick={console.log(99)}>
                             <Option key="0" value={0}>不限制</Option>
                             <Option key="1" value={1}>限制</Option>
                         </Select>
@@ -470,7 +464,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                             </Col> : null
                     }
                 </FormItem>
-            </FormItem>
+            </div>
         )
     }
 

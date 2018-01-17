@@ -175,7 +175,7 @@ const AddCategorys = Form.create()(class AddCategory extends React.Component {
                                                         key={cat.itemID}
                                                         closable={true}
                                                         onClose={(e) => {
-                                                            {/* console.log(cat.name); */}
+                                                            {/* console.log(cat.name); */ }
                                                             const catOrtag = this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
@@ -371,17 +371,17 @@ class PromotionBasicInfo extends React.Component {
         });
         const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags } = this.props;
 
-            fetchPromotionCategories({
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                phraseType: 'CATEGORY_NAME',
-            });
+        fetchPromotionCategories({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+            phraseType: 'CATEGORY_NAME',
+        });
 
-            fetchPromotionTags({
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                phraseType: 'TAG_NAME',
-            });
+        fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+            phraseType: 'TAG_NAME',
+        });
 
         if (promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
             this.setState({
@@ -407,7 +407,9 @@ class PromotionBasicInfo extends React.Component {
                     .toJS() : [],
             })
         }
-        const expand = promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo']).toJS()[0].start != undefined;
+        // const expand = promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo']).toJS()[0].start != undefined;
+        const basicInfo = promotionBasicInfo.getIn(['$basicInfo']).toJS();
+        const expand = basicInfo.timeRangeInfo[0].start != undefined || basicInfo.validCycleType != 0 || basicInfo.excludeDateArray.length > 0;
         // restore date from redux to component state
         this.setState({
             name: promotionBasicInfo.getIn(['$basicInfo', 'name']),
@@ -436,7 +438,8 @@ class PromotionBasicInfo extends React.Component {
         // 是否更新
         if (this.props.promotionBasicInfo.getIn(['$basicInfo']) !== nextProps.promotionBasicInfo.getIn(['$basicInfo'])) {
             const _promotionBasicInfo = nextProps.promotionBasicInfo;
-            const expand = _promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo']).toJS()[0].start != undefined;
+            const basicInfo = _promotionBasicInfo.getIn(['$basicInfo']).toJS();
+            const expand = basicInfo.timeRangeInfo[0].start != undefined || basicInfo.validCycleType != 0 || basicInfo.excludeDateArray.length > 0;
             this.setState({
                 name: _promotionBasicInfo.getIn(['$basicInfo', 'name']),
                 category: _promotionBasicInfo.getIn(['$basicInfo', 'category']),

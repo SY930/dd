@@ -489,6 +489,8 @@ class PromotionScopeInfo extends React.Component {
         })
     }
     renderUsageMode() {
+        let detail = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master']);
+        detail = detail ? detail.toJS() : {};
         return (
             <Form.Item
                 label="活动使用模式"
@@ -497,7 +499,9 @@ class PromotionScopeInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.usageMode || 1} onChange={(e) => this.setState({ usageMode: e.target.value })}>
-                    <Radio value={1} disabled={this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionID}>普通活动</Radio>
+                    <Radio value={1}
+                        disabled={detail.promotionIDStr && detail.usageMode == 2}
+                    >普通活动</Radio>
                     <Radio value={2}>活动券</Radio>
                 </RadioGroup>
             </Form.Item>
@@ -533,6 +537,7 @@ const mapStateToProps = (state) => {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        myActivities: state.sale_myActivities_NEW,
     };
 };
 

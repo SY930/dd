@@ -34,8 +34,7 @@ export const PAYMENTS_OPTIONS = Object.freeze([
     { key: 'ALL_SUBJECT', value: '0', name: '不限制' },
     { key: 'REAL_INCOME', value: '1', name: '仅实收' },
 ]);
-export const CYCLE_TYPE = Object.freeze([
-    {
+export const CYCLE_TYPE = Object.freeze([{
         value: '0',
         name: '每日',
     },
@@ -49,8 +48,7 @@ export const CYCLE_TYPE = Object.freeze([
     },
 ]);
 
-export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([
-    {
+export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
         idx: 0,
         name: '全部',
         key: '',
@@ -71,8 +69,7 @@ export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([
 ]);
 
 // TODO: remove the bottom definition,
-export const SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST = Object.freeze([
-    {
+export const SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST = Object.freeze([{
         label: '预定',
         value: '10',
     },
@@ -102,8 +99,7 @@ export const SALE_CENTER_ACTIVITY_ORDER_TYPE = Object.freeze({
     '21': '自提',
 });
 
-export const SALE_CENTER_GIFT_TYPE = Object.freeze([
-    {
+export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
         label: '电子代金券',
         value: '10',
     },
@@ -130,8 +126,7 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([
 
 ]);
 
-export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([
-    {
+export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
         label: '立即生效',
         value: '0',
     },
@@ -164,9 +159,8 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([
 
 export const ACTIVITY_CATEGORIESs = process.env.NODE_ENV !== 'production';
 
-export const ACTIVITY_CATEGORIES = (function () {
-    const basic = [
-        {
+export const ACTIVITY_CATEGORIES = (function() {
+    const basic = [{
             idx: 0,
             title: '满减/每满减',
             color: '#84aac6',
@@ -311,16 +305,14 @@ export const ACTIVITY_CATEGORIES = (function () {
             key: 'RECOMMEND_FOOD',
         },
     ];
-    const releaseStash = [
-        {
-            idx: 18,
-            title: '加价升级换新',
-            color: '#84aac6',
-            text: '加价升级换新是区别加价换购的一个营销活动',
-            example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
-            key: 'FOOD_PAY_MORE_THEN_UPGRADE',
-        },
-    ];
+    const releaseStash = [{
+        idx: 18,
+        title: '加价升级换新',
+        color: '#84aac6',
+        text: '加价升级换新是区别加价换购的一个营销活动',
+        example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
+        key: 'FOOD_PAY_MORE_THEN_UPGRADE',
+    }, ];
 
     // if (process.env.NODE_ENV !== 'production-release' && process.env.NODE_ENV !== 'production-pre') {
     // if (HUALALA.ENVIRONMENT != 'production-release') {
@@ -331,9 +323,8 @@ export const ACTIVITY_CATEGORIES = (function () {
     // return basic;
 }());
 
-export const CHARACTERISTIC_CATEGORIES = (function () {
-    const basic = [
-        {
+export const CHARACTERISTIC_CATEGORIES = (function() {
+    const basic = [{
             idx: 0,
             title: '生日赠送',
             color: '#84aac6',
@@ -443,16 +434,14 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         },
     ]
 
-    const extral = [
-        {
-            idx: 13,
-            title: '唤醒送礼',
-            color: '#84aac6',
-            text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
-            example: '',
-            key: '63',
-        },
-    ];
+    const extral = [{
+        idx: 13,
+        title: '唤醒送礼',
+        color: '#84aac6',
+        text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
+        example: '',
+        key: '63',
+    }, ];
     if (HUALALA.ENVIRONMENT != 'production-release') {
         return basic.concat(extral);
     }
@@ -460,7 +449,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     return basic;
 }());
 
-export const arrayTransformAdapter = function (source) {
+export const arrayTransformAdapter = function(source) {
     if (!(source instanceof String || typeof source === 'string')) {
         throw new Error(`The source string should be string, which is ${source}`);
     }
@@ -484,7 +473,7 @@ export const arrayTransformAdapter = function (source) {
  * @param {Bool} direction flag 'false' indicate it is transform to redux format or to the server end format
  * @return {Object}  transformed data
  */
-export const promotionBasicDataAdapter = function (source, dir) {
+export const promotionBasicDataAdapter = function(source, dir) {
     if (!(source instanceof Object)) {
         throw new Error(`source should be an Object, which is ${source}`);
     }
@@ -613,7 +602,7 @@ export const promotionBasicDataAdapter = function (source, dir) {
     };
 };
 
-export const promotionScopeInfoAdapter = function (source, dir) {
+export const promotionScopeInfoAdapter = function(source, dir) {
     if (!(source instanceof Object)) {
         throw new Error(`source should be an Object, which is ${source}`);
     }
@@ -662,7 +651,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
     };
 };
 
-export const promotionDetailInfoAdapter = function (source, dir) {
+export const promotionDetailInfoAdapter = function(source, dir) {
     if (!(source instanceof Object || typeof source === 'object')) {
         throw new Error(`The source should be object, which is ${source}`);
     }
@@ -689,16 +678,15 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         let isActive;
         return {
             rule: ruleJson,
+            blackList: ruleJson.blackList || false,
             foodCategory: [],
             excludeDishes: [], // excluded dish
             dishes: [], // selected dish
             userSetting: source.master.userType,
             // userSetting: source.master.userType =='ALL_USER'?'0':source.master.userType =='CUSTOMER_ONLY'?'1':'2', // user setting
             subjectType: source.master.subjectType == 'ALL_SUBJECT' ? '0' : '1', // 支付限制
-
             // mutexPromotions: arrayTransformAdapter(source.master.sharedPromotionIDLst), // 不能同时进行的活动ID
             mutexPromotions: source.shareLst, // 不能同时进行的活动ID
-
             mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
             role: arrayTransformAdapter(source.master.roleIDLst),
             priceLst,
@@ -768,7 +756,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
 };
 
 
-export const specialPromotionBasicDataAdapter = function (source, dir) {
+export const specialPromotionBasicDataAdapter = function(source, dir) {
     if (!(source instanceof Object)) {
         throw new Error(`source should be an Object, which is ${source}`);
     }
@@ -780,7 +768,7 @@ export const specialPromotionBasicDataAdapter = function (source, dir) {
 };
 
 // find the idx according the promotinKey, user can use the idx to get the related Component.
-export const getPromotionIdx = function (promotionKey) {
+export const getPromotionIdx = function(promotionKey) {
     if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }
@@ -795,7 +783,7 @@ export const getPromotionIdx = function (promotionKey) {
     throw new Error(`There is not promotion with the specified promotionKey ${promotionKey}`);
 };
 
-export const getSpecialPromotionIdx = function (promotionKey) {
+export const getSpecialPromotionIdx = function(promotionKey) {
     if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }
@@ -818,18 +806,16 @@ export const TRIPLE_STATE = Object.freeze({
 });
 
 // 是否发信息
-export const SEND_MSG = Object.freeze([
-    {
-        label: '不发送',
-        value: '0',
-    }, {
-        label: '仅发送短信',
-        value: '1',
-    }, {
-        label: '仅推送微信',
-        value: '2',
-    }, {
-        label: '微信推送不成功则发送短信',
-        value: '3',
-    },
-]);
+export const SEND_MSG = Object.freeze([{
+    label: '不发送',
+    value: '0',
+}, {
+    label: '仅发送短信',
+    value: '1',
+}, {
+    label: '仅推送微信',
+    value: '2',
+}, {
+    label: '微信推送不成功则发送短信',
+    value: '3',
+}, ]);
