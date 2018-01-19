@@ -259,6 +259,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: subjectType != 1 && subjectType != 3 ? 0 : 1,
             upGradeDishes,
         }
+        let scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+        scopeLst = scopeLst ? scopeLst.toJS() : []
         subjectType < 2 && stageCondition < 1 ?
             opts = {// reset food
                 ...opts,
@@ -266,8 +268,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 dishes: [],
                 foodCategory: [],
                 excludeDishes: [],
-                scopeLst: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "FOOD_UPGRADE") || [],
-
+                scopeLst: scopeLst.filter(scope => scope.scopeType == "FOOD_UPGRADE") || [],
             }
             : null
         let text = '';

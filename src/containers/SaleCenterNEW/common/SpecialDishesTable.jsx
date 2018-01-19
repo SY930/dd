@@ -62,7 +62,7 @@ class SpecialDishesTable extends React.Component {
         const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
         // 获取菜品信息
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
-        foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+        // foodCategoryCollection = this.filterGroup(foodCategoryCollection);
         this.setState({
             foodCategoryCollection,
             priceLst: _priceLst,
@@ -135,7 +135,7 @@ class SpecialDishesTable extends React.Component {
             this.props.promotionDetailInfo.get('foodCategoryCollection')
         ) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
-            foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+            // foodCategoryCollection = this.filterGroup(foodCategoryCollection);
             this.setState({
                 foodCategoryCollection,
                 foodSelections: new Set(),

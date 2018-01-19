@@ -97,7 +97,8 @@ class NewPromotion extends React.Component {
             }
             return cat
         })
-        const priceLst = basicInfo.promotionType === 'RECOMMEND_FOOD' ? opts.priceLst :
+        const priceLst = basicInfo.promotionType === 'RECOMMEND_FOOD' || basicInfo.promotionType === 'FOOD_SPECIAL_PRICE' ?
+            opts.priceLst :
             (opts.priceLst || []).filter((price) => {
                 return singleFoods.includes(String(price.foodUnitID))
             })
