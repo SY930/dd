@@ -17,7 +17,7 @@ import PriceInput from '../common/PriceInput';
 import ExpandTree from '../../SpecialPromotionNEW/common/ExpandTree';
 import _ from 'lodash';
 
-const Moment = require('moment');
+const moment = require('moment');
 
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
@@ -446,7 +446,9 @@ class ReturnGift extends React.Component {
                 validateStatus={info.giftEffectiveTime.validateStatus}
                 help={info.giftEffectiveTime.msg}
             >
-                <RangePicker {...pickerProps} />
+                <RangePicker {...pickerProps} disabledDate={
+                    (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                }/>
             </FormItem>
         );
     }

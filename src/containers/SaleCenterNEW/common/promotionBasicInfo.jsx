@@ -261,12 +261,14 @@ class PromotionBasicInfo extends React.Component {
         this.rendertags = this.rendertags.bind(this);
         this.handleDeletePhrase = this.handleDeletePhrase.bind(this);
         this.handleAutoAddTags = this.handleAutoAddTags.bind(this);
+        this.handleAutoAddCat = this.handleAutoAddCat.bind(this);
     }
 
     handleSubmit() {
         let nextFlag = true;
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
-        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
+        const promotionType = basicInfo.promotionType;
         if (promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
@@ -302,7 +304,17 @@ class PromotionBasicInfo extends React.Component {
                 excludeDateArray: this.state.excludeDateArray,
             });
         }
-        // 判断分类列表是否包含已选统计分类,不包含则手动添加分类
+
+        const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
+        if ((this.props.user.shopID > 0 && maintenanceLevel == 'SHOP_LEVEL') || (!this.props.user.shopID && maintenanceLevel == 'GROUP_LEVEL')) {
+            // 判断分类列表是否包含已选统计分类,不包含则手动添加分类 
+            this.handleAutoAddCat();
+            // 判断标签列表是否包含已选,不包含则手动添加
+            this.handleAutoAddTags();
+        }
+        return nextFlag;
+    }
+    handleAutoAddCat() {
         const include = (this.state.categoryList || []).map((cat) => {
             return cat.name
         }).includes(this.state.category);
@@ -323,11 +335,7 @@ class PromotionBasicInfo extends React.Component {
                 },
             })
         }
-        // 判断标签列表是否包含已选,不包含则手动添加
-        this.handleAutoAddTags();
-        return nextFlag;
     }
-
     handleAutoAddTags() {
         const excludeTags = [];
         const tagNameArr = (this.state.tagList || []).map((tagObj) => {
@@ -1137,6 +1145,7 @@ const mapStateToProps = (state) => {
         fullCut: state.sale_fullCut_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        myActivities: state.sale_myActivities_NEW,
         user: state.user.toJS(),
     }
 };
