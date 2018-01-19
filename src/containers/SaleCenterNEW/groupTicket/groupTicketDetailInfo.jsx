@@ -36,7 +36,7 @@ class GroupTicketDetailInfo extends React.Component {
             giftValue: '',
             transFee: '',
             stageAmount: '',
-            giftMaxUseNum: '',
+            giftMaxUseNum: 1,
             stageType: '2',
             targetScope: '0',
             giftPriceFlag: true,
@@ -84,7 +84,7 @@ class GroupTicketDetailInfo extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
-        nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
     }
@@ -106,7 +106,7 @@ class GroupTicketDetailInfo extends React.Component {
 
         let nextFlag = true;
 
-        if (_state.giftPriceFlag && _state.giftValueFlag) {
+        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0) {
             let rule;
             if (_state.stageType == '2') {
                 rule = {
@@ -307,7 +307,12 @@ class GroupTicketDetailInfo extends React.Component {
                         />
                     </span>
                     <span className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}>最多使用团购券</span>
-                    <span className={styles.priceInLine}>
+                    <FormItem
+                        className={styles.priceInLine}
+                        style={{ marginTop: -20 }}
+                        validateStatus={this.state.giftMaxUseNum ? 'success' : 'error'}
+                        help={this.state.giftMaxUseNum ? null : '请输入券面金额'}
+                    >
                         <PriceInput
                             addonBefore={''}
                             addonAfter={'张'}
@@ -316,9 +321,9 @@ class GroupTicketDetailInfo extends React.Component {
                             defaultValue={{ number: this.state.giftMaxUseNum }}
                             modal="int"
                         />
-                    </span>
+                    </FormItem>
                 </FormItem>
-            </div>
+            </div >
         )
     }
 
