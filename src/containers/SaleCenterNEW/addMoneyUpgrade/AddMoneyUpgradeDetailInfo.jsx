@@ -142,6 +142,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         }
 
         if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0 &&
             !this.state.hadSetWhenEdit) {
             const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
@@ -296,7 +297,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
     // 不限，金额，数量方式下拉框
     countTypeChange(val) {
-        this.setState({ countType: val, subjectType: 0, stageCondition: 0, stageAmount: val == 0 ? '' : this.state.stageAmount })
+        this.setState({ countType: val, subjectType: 0, stageCondition: 0, stageAmount: '' })
     }
     // 按金额下拉框
     subjectTypeChange(val) {
@@ -385,7 +386,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 value={{ number: freeAmount }}
                                 defaultValue={{ number: freeAmount }}
                                 onChange={this.handleFreeAmountChange}
-                                modal="int"
+                                modal="float"
                             />
                         </Col> : null
                 }
@@ -519,7 +520,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                         value={{ number: stageAmount }}
                                         defaultValue={{ number: stageAmount }}
                                         onChange={this.onStageAmountChange}
-                                        modal="int"
+                                        modal='float'
                                     />
                                 </Col> : null
                         }
@@ -547,7 +548,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         }
                     </FormItem>
                     {countType == 0 ? null :
-                        subjectType == 2 || subjectType == 3 || stageCondition == 1 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
+                        countType == 2 || subjectType == 2 || subjectType == 3 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
                     {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}
                     {this.renderDishsSelectionBox()/*升级后菜品*/}
