@@ -350,7 +350,7 @@ class GiftAddModalStep extends React.Component {
         });
         this.props.saleCenterResetDetailInfo({});
         this.props.onCancel();
-        cb();
+        cb && cb();
     }
     handleCCCCancel = () => {
         this.props.saleCenterResetDetailInfo({});
@@ -393,7 +393,7 @@ class GiftAddModalStep extends React.Component {
                 case 'usingTimeType':
                     return value && value.join();
                 case 'promotionID':
-                    return value && value[0].promotionIDStr;
+                    return value && value instanceof Array && value[0] && value[0].promotionIDStr;
 
                 default:
                     return value !== undefined ? value : '';
@@ -477,6 +477,7 @@ class GiftAddModalStep extends React.Component {
                     this.handleCancel(cb);
                 } else {
                     message.success('失败', 3);
+                    this.handleCancel();
                 }
                 if (type == 'edit') {
                     const { params, FetchGiftList } = this.props;

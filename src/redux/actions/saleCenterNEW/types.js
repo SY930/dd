@@ -123,6 +123,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
         label: '会员权益券',
         value: '80',
     },
+    {
+        label: '活动券',
+        value: '100',
+    },
 
 ]);
 

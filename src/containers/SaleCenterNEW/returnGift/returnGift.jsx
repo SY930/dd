@@ -448,7 +448,7 @@ class ReturnGift extends React.Component {
             >
                 <RangePicker {...pickerProps} disabledDate={
                     (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                }/>
+                } />
             </FormItem>
         );
     }
