@@ -79,8 +79,9 @@ class GiftType extends React.Component {
     render() {
         // console.log(this.props)
         const value = this.state.gift.value;
-        const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-        const giftTypes = releaseENV ? GiftCfg.giftType.filter(type => type.value != 100) : GiftCfg.giftType
+        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
+        // const giftTypes = releaseENV ? GiftCfg.giftType.filter(type => type.value != 100) : GiftCfg.giftType
+        const giftTypes = GiftCfg.giftType
         const GiftAdd = (v) => {
             switch (v) {
                 case '10':

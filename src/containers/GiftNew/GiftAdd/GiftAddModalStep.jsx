@@ -166,11 +166,11 @@ class GiftAddModalStep extends React.Component {
         let { secondKeys, values } = this.state;
         let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-        releaseENV ?
-            _.remove(newKeys, function (k) {
-                return k === 'isMapTotrd';
-            }) : null
+        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
+        // releaseENV ?
+        //     _.remove(newKeys, function (k) {
+        //         return k === 'isMapTotrd';
+        //     }) : null
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -268,8 +268,7 @@ class GiftAddModalStep extends React.Component {
                     })
                 }
             case 'isMapTotrd':
-                // releaseENV ?break:
-                if (releaseENV) break
+                // if (releaseENV) break
                 describe !== '会员权益券' && typeof value === "boolean" && value ?
                     !newKeys.includes('trdChannelID') ?
                         newKeys.splice(1, 0, 'trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel') :
@@ -289,7 +288,7 @@ class GiftAddModalStep extends React.Component {
                 if (describe === '活动券' && type === 'add') { values.promotionID = [] }
                 break;
             case 'trdChannelID':
-                if (releaseENV) break
+                // if (releaseENV) break
                 describe !== '会员权益券' && value === 10 && newKeys.includes('trdChannelID') ? (!newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') : null) :
                     _.remove(newKeys, function (k) {
                         return k === 'wechatMpName';
@@ -302,7 +301,7 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'wechatMpName':
-                if (releaseENV) break
+                // if (releaseENV) break
                 this.setState({ secondKeys, }, () => {
                     this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
                     const mp = (this.state.mpList || []).find(mp => mp.mpName == value);
@@ -311,7 +310,7 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'trdTemplateID':
-                if (releaseENV) break
+                // if (releaseENV) break
                 this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                 break;
             default:
@@ -842,7 +841,7 @@ class GiftAddModalStep extends React.Component {
         // }];
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
-        const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
+        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
         const steps = [{
             title: '基本信息',
             content: <BaseForm
@@ -872,7 +871,7 @@ class GiftAddModalStep extends React.Component {
                     }}
                     key={`${describe}-${type}2`}
                 />
-                <div className={value != '80' && type === 'edit' && !releaseENV ? styles.opacitySet : null}></div>
+                <div className={value != '80' && type === 'edit' ? styles.opacitySet : null}></div>
             </div>),
         }];
         return (
