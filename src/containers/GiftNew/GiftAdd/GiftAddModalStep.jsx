@@ -285,7 +285,13 @@ class GiftAddModalStep extends React.Component {
                             this.props.queryUnbindCouponPromotion({ channelID: 1 })
                         : null
                     : null
-                if (type === 'add') { values.promotionID = []; values.trdTemplateID = '' }
+                if (type === 'add') {
+                    values.promotionID = [];
+                    values.trdTemplateID = '';
+                    values.trdChannelID = 10;
+                    values.wechatMpName = '';
+                    value && this.queryTrdTemplate(this.state.mpList ? this.state.mpList[0] ? this.state.mpList[0].mpID : undefined : undefined, 10)
+                }
                 break;
             case 'trdChannelID':
                 // if (releaseENV) break
