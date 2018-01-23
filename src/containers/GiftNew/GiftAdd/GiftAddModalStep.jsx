@@ -163,7 +163,7 @@ class GiftAddModalStep extends React.Component {
 
     handleFormChange(key, value, form) {
         const { gift: { name: describe, data }, type } = this.props;
-        let { secondKeys, values } = this.state;
+        let { secondKeys, values, trdTemplateInfoList = [] } = this.state;
         let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
@@ -285,7 +285,7 @@ class GiftAddModalStep extends React.Component {
                             this.props.queryUnbindCouponPromotion({ channelID: 1 })
                         : null
                     : null
-                if (describe === '活动券' && type === 'add') { values.promotionID = [] }
+                if (type === 'add') { values.promotionID = []; values.trdTemplateID = '' }
                 break;
             case 'trdChannelID':
                 // if (releaseENV) break
@@ -294,10 +294,13 @@ class GiftAddModalStep extends React.Component {
                         return k === 'wechatMpName';
                     });
                 secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys, }, () => {
+                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
                     this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
-                    type === 'add' ? this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value) : null; // 第三方券模版
-                    type === 'add' ? this.props.queryUnbindCouponPromotion({ channelID: value || 10 }) : null;
+                    if (type === 'add') {
+                        this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value)
+                        this.props.queryUnbindCouponPromotion({ channelID: value || 10 })
+                        values.promotionID = []; values.trdTemplateID = '';
+                    }
                 })
                 break;
             case 'wechatMpName':
@@ -877,7 +880,6 @@ class GiftAddModalStep extends React.Component {
                 />),
         }];
         return (
-            // Todo:点叉关闭功能
             <Modal
                 // key={modalKey}
                 title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
