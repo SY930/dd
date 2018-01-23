@@ -96,7 +96,7 @@ class GiftPromotion extends React.Component {
             if (undefined === data) {
                 return null
             }
-            return data.map((item, index) => {
+            return data.filter(pro => pro.promotionType.content === '折扣').map((item, index) => {
                 return <TreeNode key={index} title={item.promotionType.content} />;
             });
         }
@@ -271,25 +271,13 @@ class GiftPromotion extends React.Component {
     // 左侧选择
     handleTreeNodeChange(value, info) {
         let { promotionOptions, promotionSelections, promotionCurrentSelections, labelKeyType, valueKeyType } = this.state;
-
         if (value === undefined || value[0] === undefined) {
             return null;
         }
+        // 存储右侧 checkBox 选项,当前已选类别所有活动
+        let storeOptions = [];
+        storeOptions = storeOptions.concat(this.state.promotionCollection.find(pro => pro.promotionType.content === '折扣').promotionName);
 
-        if (value[0] !== 'salePromotion' && value[0] !== 'hualala' && value[0] !== 'userRight') {
-            // 普通基础营销
-            const indexArray = value[0].split('-').map((val) => {
-                return parseInt(val)
-            });
-            // 存储右侧 checkBox 选项,当前已选类别所有活动
-            let storeOptions = [];
-            if (indexArray.length === 1) {
-                storeOptions = storeOptions.concat(this.state.promotionCollection[indexArray[0]].promotionName);
-            } else if (indexArray.length === 2) {
-                storeOptions = storeOptions.concat(this.state.promotionCollection[indexArray[0]].children[indexArray[1]].children);
-            }
-            promotionOptions = storeOptions;
-        }
         const _promotionCurrentSelections = [];
         promotionOptions.forEach((storeEntity) => {
             Array.from(promotionSelections).map((promotion) => {
@@ -299,7 +287,7 @@ class GiftPromotion extends React.Component {
             })
         });
         this.setState({
-            promotionOptions,
+            promotionOptions: storeOptions,
             promotionCurrentSelections: _promotionCurrentSelections,
         })
     }
