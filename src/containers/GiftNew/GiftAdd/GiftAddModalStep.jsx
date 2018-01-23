@@ -893,7 +893,7 @@ class GiftAddModalStep extends React.Component {
                 className={styles.foodModal}
                 visible={visible}
                 maskClosable={false}
-                onCancel={() => this.handleCCCCancel()}
+                onCancel={() => this.handleCancel()}
                 footer={false}
                 key={`${describe}-${type}`}
             // afterClose={this.afterClose}
