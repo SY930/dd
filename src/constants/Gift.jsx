@@ -1,3 +1,5 @@
+
+const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
 const GiftCfg = {
     giftType: [
         { name: '电子代金券', describe: '抵扣一定面值的券，可通过特色营销发放', value: '10', color: '#84aac6' },
@@ -139,16 +141,11 @@ const GiftCfg = {
     ],
     trdChannelIDs: [
         { label: '微信', value: 10 },
-        // { label: '饮食通', value: 2,  },
-        // { label: '雅座', value: 3,  },
-        // { label: '眉州', value: 4,  },
-        // { label: '5i', value: 5,  },
-        // { label: '拉格代尔', value: 6, },
-        { label: '饮食通', value: 2, disabled:true },
-        { label: '雅座', value: 3, disabled:true },
-        { label: '眉州', value: 4, disabled:true },
-        { label: '5i', value: 5, disabled:true },
-        { label: '拉格代尔', value: 6, disabled:true },
+        { label: '饮食通', value: 2, disabled: releaseENV },
+        { label: '雅座', value: 3, disabled: releaseENV },
+        { label: '眉州', value: 4, disabled: releaseENV },
+        { label: '5i', value: 5, disabled: releaseENV },
+        { label: '拉格代尔', value: 6, disabled: releaseENV },
     ],
 }
 
