@@ -763,6 +763,7 @@ class GiftAddModalStep extends React.Component {
                 defaultValue: false,
                 onLabel: '是',
                 offLabel: '否',
+                props: { disabled: type === 'edit' }
             },
             trdChannelID: {
                 label: '第三方渠道',
@@ -772,6 +773,7 @@ class GiftAddModalStep extends React.Component {
                 rules: [{ required: true, message: '不能为空' }],
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
+                props: { disabled: type === 'edit' }
             },
             wechatMpName: {
                 label: '微信公众号选择',
@@ -786,6 +788,7 @@ class GiftAddModalStep extends React.Component {
                         value: mp.mpName,
                     }
                 }),
+                props: { disabled: type === 'edit' }
             },
             trdTemplateID: {
                 label: '第三方券模板或活动',
@@ -803,6 +806,7 @@ class GiftAddModalStep extends React.Component {
                     label: this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : '',
                     value: this.props.gift.data.trdTemplateID,
                 }],
+                props: { disabled: type === 'edit' }
             },
             trdTemplateIDLabel: {
                 label: '第三方券模板或活动ID',
@@ -859,7 +863,7 @@ class GiftAddModalStep extends React.Component {
             />,
         }, {
             title: '使用规则',
-            content: (<div className={styles.giftWrap}>
+            content: (
                 <BaseForm
                     getForm={form => this.secondForm = form}
                     formItems={formItems}
@@ -870,9 +874,7 @@ class GiftAddModalStep extends React.Component {
                         this.handles[1] = handles;
                     }}
                     key={`${describe}-${type}2`}
-                />
-                <div className={value != '80' && type === 'edit' ? styles.opacitySet : null}></div>
-            </div>),
+                />),
         }];
         return (
             // Todo:点叉关闭功能
