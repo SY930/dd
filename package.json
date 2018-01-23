@@ -1,6 +1,6 @@
 {
     "name": "@hualala/platform-sale",
-    "version": "0.3.12",
+    "version": "0.3.13",
     "description": "商户平台会员业务包，基于@hualala/platform-base定义的规范实现。",
     "main": "index.js",
     "scripts": {

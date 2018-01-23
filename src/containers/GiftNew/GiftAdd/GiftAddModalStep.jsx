@@ -286,10 +286,10 @@ class GiftAddModalStep extends React.Component {
                         : null
                     : null
                 if (type === 'add') {
-                    values.promotionID = [];
-                    values.trdTemplateID = '';
-                    values.trdChannelID = 10;
+                    values.trdChannelID = value ? 10 : 1;
                     values.wechatMpName = '';
+                    values.trdTemplateID = '';
+                    values.promotionID = [];
                     value && this.queryTrdTemplate(this.state.mpList ? this.state.mpList[0] ? this.state.mpList[0].mpID : undefined : undefined, 10)
                 }
                 break;
@@ -304,7 +304,7 @@ class GiftAddModalStep extends React.Component {
                     this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
                     if (type === 'add') {
                         this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value)
-                        this.props.queryUnbindCouponPromotion({ channelID: value || 10 })
+                        values.isMapTotrd ? this.props.queryUnbindCouponPromotion({ channelID: value || 10 }) : null;
                         values.promotionID = []; values.trdTemplateID = '';
                     }
                 })
