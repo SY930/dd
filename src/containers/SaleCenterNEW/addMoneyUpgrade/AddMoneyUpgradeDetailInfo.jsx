@@ -413,7 +413,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     }
     // render单笔订单最多升级换新数量限制
     renderNewLimit() {
-        const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount } = this.state;
+        const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount, } = this.state;
         return (
             <div style={{ width: '80%', marginLeft: 49 }}>
                 <FormItem
@@ -431,13 +431,19 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     {
                         mostNewLimit == 1 ?
                             <Col span={mostNewLimit == 0 ? 0 : 16}>
-                                <PriceInput
-                                    addonAfter={'份'}
-                                    value={{ number: giveFoodMax }}
-                                    defaultValue={{ number: giveFoodMax }}
-                                    onChange={this.giveFoodMaxChange}
-                                    modal="int"
-                                />
+                                <FormItem
+                                    style={{ marginTop: -6 }}
+                                    validateStatus={giveFoodMax > 0 ? 'success' : 'error'}
+                                    help={giveFoodMax > 0 ? null : '必须大于0'}
+                                >
+                                    <PriceInput
+                                        addonAfter={'份'}
+                                        value={{ number: giveFoodMax }}
+                                        defaultValue={{ number: giveFoodMax }}
+                                        onChange={this.giveFoodMaxChange}
+                                        modal="int"
+                                    />
+                                </FormItem>
                             </Col> : null
                     }
                 </FormItem>
@@ -456,13 +462,19 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     {
                         singleNewLimit == 1 ?
                             <Col span={singleNewLimit == 0 ? 0 : 16}>
-                                <PriceInput
-                                    addonAfter={'份'}
-                                    value={{ number: giveFoodCount }}
-                                    defaultValue={{ number: giveFoodCount }}
-                                    onChange={this.giveFoodCountChange}
-                                    modal="int"
-                                />
+                                <FormItem
+                                    style={{ marginTop: -6 }}
+                                    validateStatus={giveFoodCount > 0 ? (giveFoodCount > giveFoodMax && mostNewLimit == 1) ? 'error' : 'success' : 'error'}
+                                    help={giveFoodCount > 0 ? (giveFoodCount > giveFoodMax && mostNewLimit == 1) ? '必须小于上面的数字' : null : '必须大于0'}
+                                >
+                                    <PriceInput
+                                        addonAfter={'份'}
+                                        value={{ number: giveFoodCount }}
+                                        defaultValue={{ number: giveFoodCount }}
+                                        onChange={this.giveFoodCountChange}
+                                        modal="int"
+                                    />
+                                </FormItem>
                             </Col> : null
                     }
                 </FormItem>
