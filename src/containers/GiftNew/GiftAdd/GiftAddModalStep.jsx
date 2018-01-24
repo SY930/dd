@@ -267,9 +267,9 @@ class GiftAddModalStep extends React.Component {
                         foodNameList: [],
                     })
                 }
+                break;
             case 'isMapTotrd':
-                // if (releaseENV) break
-                describe !== '会员权益券' && typeof value === "boolean" && value ?
+                describe !== '会员权益券' && value ?
                     !newKeys.includes('trdChannelID') ?
                         newKeys.splice(1, 0, 'trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel') :
                         null :
@@ -279,11 +279,9 @@ class GiftAddModalStep extends React.Component {
                 secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys });
                 describe !== '会员权益券' ?
-                    typeof value === "boolean" ?
-                        value ?
-                            this.props.queryUnbindCouponPromotion({ channelID: data.trdChannelID || 10 }) :
-                            this.props.queryUnbindCouponPromotion({ channelID: 1 })
-                        : null
+                    value ?
+                        this.props.queryUnbindCouponPromotion({ channelID: data.trdChannelID || 10 }) :
+                        this.props.queryUnbindCouponPromotion({ channelID: 1 })
                     : null
                 if (type === 'add') {
                     values.trdChannelID = value ? 10 : 1;
