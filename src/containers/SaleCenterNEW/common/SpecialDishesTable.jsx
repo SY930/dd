@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import Immutable, { List } from 'immutable';
+import _ from 'lodash';
 
 import { Row, Col, Tree, Table, Input, Popconfirm, message, Modal, Form, Spin } from 'antd';
 
@@ -35,6 +36,7 @@ class SpecialDishesTable extends React.Component {
     constructor(props) {
         super(props);
         this.uuid = 0;
+        this._state = null;
         this.state = {
             visible: false,
             selectedDishes: [],
@@ -45,6 +47,7 @@ class SpecialDishesTable extends React.Component {
             foodSelections: new Set(), // 已选特色菜
             foodCurrentSelections: [], // 当前备选列表内,已选的特色菜
             priceLst: [],
+            filterPrice: 'newPrice',
         };
 
         this.handleFoodTreeNodeChange = this.handleFoodTreeNodeChange.bind(this);
@@ -210,6 +213,8 @@ class SpecialDishesTable extends React.Component {
                                     value={this.state.foodSelections}
                                     onChange={(value) => { this.handleFoodSelectedChange(value) }}
                                     onClear={() => this.clear('food')}
+                                    filterPriceChange={(v) => this.setState({ filterPrice: v })}
+                                    filterPrice={this.state.filterPrice}
                                 />
                             </HualalaTreeSelect>
                         </div>
@@ -263,16 +268,15 @@ class SpecialDishesTable extends React.Component {
         if (value instanceof Array) {
             // get the selections
             const { foodSelections, foodOptions, priceLst } = this.state;
-
+            const selectIds = Array.from(foodSelections).map(select => select.itemID)
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
                 if (value.includes(shopEntity.itemID)) {
-                    // TODO: 添加
                     shopEntity.newPrice = shopEntity.newPrice || shopEntity.price
-                    foodSelections.add(shopEntity);
+                    !selectIds.includes(shopEntity.itemID) && foodSelections.add(shopEntity);
                 } else {
-                    shopEntity.newPrice = null; // 重置
-                    foodSelections.delete(shopEntity)
+                    shopEntity.newPrice = null;
+                    foodSelections.delete(Array.from(foodSelections).find(select => select.itemID == shopEntity.itemID))
                 }
             });
 
@@ -331,21 +335,22 @@ class SpecialDishesTable extends React.Component {
     }
 
     selectDishes = () => {
+        this._state = _.cloneDeep(this.state);
         this.setState({
             visible: true,
         });
     };
 
     handleOk = () => {
-        this.handleCancel();
+        this.setState({
+            visible: false,
+        });
         const data = Array.from(this.state.foodSelections);
         this.props.onChange && this.props.onChange(data);
     };
 
-    handleCancel=() => {
-        this.setState({
-            visible: false,
-        });
+    handleCancel = () => {
+        this.setState(this._state);
     };
 
     // 删除一行数据
@@ -376,7 +381,7 @@ class SpecialDishesTable extends React.Component {
                 // TODO: useful data foodCurrentSelections
                 this.props.onChange && this.props.onChange(Array.from(foodSelections));
             },
-            onCancel: () => {},
+            onCancel: () => { },
         });
     };
 
@@ -480,7 +485,7 @@ class SpecialDishesTable extends React.Component {
                     </Col>
                     <Col span={4} offset={18}>
                         <a className={styles.gTitleLink} onClick={this.selectDishes}>
-                      批量添加菜品
+                            批量添加菜品
                         </a>
                     </Col>
                 </Row>

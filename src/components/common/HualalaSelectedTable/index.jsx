@@ -135,6 +135,7 @@ export default class HualalaSelectedTable extends React.Component {
                                 })
                                 console.log(newData)
                                 this.setState({ filterPrice: v, data: newData }, () => {
+                                    this.props.filterPriceChange(v);
                                 })
                             }}
                         >
