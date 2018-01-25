@@ -86,6 +86,7 @@ class SpecialDishesTable extends React.Component {
         }
         // 已选菜品 {foodSelections}，当前复选框中选择的菜品 {foodCurrentSelections}
         const { foodSelections } = this.state;
+        const selectIds = Array.from(foodSelections).map(select => select.itemID)
 
         // 根据特价菜列表中的foodUnitID，对所有菜品进行匹配过滤，将选中的菜品添加到foodSelections
         // 但是，添加的菜品信息并不包含特价菜的特价信息
@@ -99,7 +100,7 @@ class SpecialDishesTable extends React.Component {
                                     .find((item) => {
                                         if (item.itemID == food.foodUnitID) {
                                             item.newPrice = food.price;
-                                            foodSelections.add(item);
+                                            !selectIds.includes(item.itemID) && foodSelections.add(item);
                                         }
                                     });
                             })
