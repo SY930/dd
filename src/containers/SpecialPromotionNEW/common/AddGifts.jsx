@@ -134,7 +134,7 @@ class AddGifts extends React.Component {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS();
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes=>giftTypes.giftType != '100');;
             } catch (err) {
                 giftInfo = [];
             }
