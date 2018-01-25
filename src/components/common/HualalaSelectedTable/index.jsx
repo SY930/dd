@@ -54,7 +54,8 @@ export default class HualalaSelectedTable extends React.Component {
             const value = nextProps.value;
             value.forEach(food => {
                 if (!selectedFood.includes(food.foodID)) {
-                    food.newPrice = food[this.state.filterPrice]
+                    food.newPrice = food[nextProps.filterPrice]
+                    // food.newPrice = food[this.state.filterPrice]
                 }
             })
             this.setState({
@@ -127,7 +128,8 @@ export default class HualalaSelectedTable extends React.Component {
                     <div className="custom-filter-dropdown">
                         <Select
                             style={{ width: 86, left: -63 }}
-                            value={this.state.filterPrice}
+                            value={this.props.filterPrice}
+                            //value={this.state.filterPrice}
                             onChange={v => {
                                 const newData = this.state.data.map(food => {
                                     food.newPrice = food[v]; // 将newPrice变为对应option价
