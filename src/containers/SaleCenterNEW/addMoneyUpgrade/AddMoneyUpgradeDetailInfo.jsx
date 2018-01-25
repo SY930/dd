@@ -240,9 +240,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             // ],
         }
 
-        const dish = dishes.map((dish) => {
+        const dish = dishes.map((food) => {
             return foodMenuList.find((menu) => {
-                return dish.itemID == menu.itemID
+                return food.itemID == menu.itemID
             })
         });
         const priceLst = dish.map((price) => {
