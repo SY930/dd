@@ -207,6 +207,11 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 hadSetWhenEdit: true,
             });
         }
+        if (this.props.promotionDetailInfo.get('$foodMenuListInfo') !== nextProps.promotionDetailInfo.get('$foodCategoryListInfo')) {
+            this.setState({
+                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
+            })
+        }
     }
 
     handleSubmit = () => {
