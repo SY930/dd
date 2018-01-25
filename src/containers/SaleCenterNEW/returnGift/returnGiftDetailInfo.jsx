@@ -444,6 +444,7 @@ class ReturnGiftDetailInfo extends React.Component {
                             })}
                     </RadioGroup >
                 </FormItem>
+                {this.state.rule.gainCodeMode == 1 ? this.renderPrintCode() : null}
                 <FormItem
                     label="活动方式"
                     className={styles.FormItemStyle}
@@ -546,7 +547,6 @@ class ReturnGiftDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    {this.renderPrintCode()}
                     {this.renderPromotionRule()}
                     <PromotionDetailSetting />
                     {this.renderAdvancedSettingButton()}
