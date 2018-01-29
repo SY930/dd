@@ -343,7 +343,7 @@ class ReturnGift extends React.Component {
                                     help={info.giftMaxNum.msg}
                                 >
                                     <PriceInput
-                                        addonBefore="最多使用"
+                                        addonBefore="最多返券"
                                         addonAfter="张"
                                         modal="int"
                                         value={{ number: info.giftMaxNum.value }}
