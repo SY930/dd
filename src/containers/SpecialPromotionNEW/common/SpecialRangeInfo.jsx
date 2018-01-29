@@ -547,8 +547,6 @@ class SpecialRangeInfo extends React.Component {
     handleFreeGetJoinRangeChange(val) {
         this.setState({
             freeGetJoinRange: val,
-        }, () => {
-            console.log(this.state.freeGetJoinRange)
         })
     }
     handleJoinCountChange(e) {

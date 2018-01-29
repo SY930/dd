@@ -64,14 +64,12 @@ const $initialState = Immutable.fromJS({
         },
         timeSlot: null,
         validCycleType: '0',
-        timeRangeInfo: [
-            {
-                validationStatus: 'success',
-                helpMsg: null,
-                start: undefined,
-                end: undefined,
-            },
-        ],
+        timeRangeInfo: [{
+            validationStatus: 'success',
+            helpMsg: null,
+            start: undefined,
+            end: undefined,
+        }, ],
         selectMonthValue: [],
         selectWeekValue: [],
         excludeDateArray: [],
@@ -95,7 +93,6 @@ export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_PROMOTION_CATEGORIES_SUCCESS:
-            console.log(action.payload.phraseLst.length)
             if (undefined === action.payload) { return $$state; }
             return $$state
                 .setIn(['$categoryList', 'data'], Immutable.fromJS(action.payload.phraseLst))
