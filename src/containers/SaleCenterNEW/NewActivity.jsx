@@ -176,7 +176,12 @@ class NewActivity extends React.Component {
                 width="924px"
                 visible={this.state.modal1Visible}
                 onOk={() => this.setModal1Visible(false)}
-                onCancel={() => this.setModal1Visible(false)}
+                onCancel={() => {
+                    this.setModal1Visible(false)
+                    this.props.saleCenterResetBasicInfo();
+                    this.props.saleCenterResetScopeInfo();
+                    this.props.saleCenterResetDetailInfo();
+                }}
             >
                 {this.state.modal1Visible ? (
                     <ActivityMain
