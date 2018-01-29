@@ -199,10 +199,8 @@ function constructTreeDataContainsPromotion(data) {
         return accumulator;
     }, treeDataForPromotionSelectionBoxs);
     let promotionTypes;
-    promotionTypes = Object.keys(treeDataForPromotionSelectionBoxs)
-        .filter((item) => {
-            return item !== 'FOOD_CUSTOMERIZED'
-        })
+    // promotionTypes = Object.keys(treeDataForPromotionSelectionBoxs) 排序杂乱，换下面的方式
+    promotionTypes = ACTIVITY_CATEGORIES.map(pro => pro.key)
         .map((key, index) => {
             const promotionType = {
                 id: index,
@@ -222,6 +220,7 @@ function constructTreeDataContainsPromotion(data) {
         });
     return promotionTypes;
 }
+
 function constructTreeDataContainsRole(data) {
     const treeDataForRolesOptionsBoxs = {};
     data
@@ -248,6 +247,7 @@ function constructTreeDataContainsRole(data) {
         });
     return treeData;
 }
+
 function constructTreeDataContainsSubject(data) {
     const subjectTreeData = {};
     data.reduce((accumulator, subject, currentIndex, array) => {
