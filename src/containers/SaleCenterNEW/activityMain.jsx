@@ -113,8 +113,7 @@ class ActivityMain extends React.Component {
     }
 
     componentDidMount() {
-        let pagesArr;
-        const _pagesArr = [
+        const pagesArr = [
             {
                 wrapper: NewFullCutActivity,
                 child: FullCutDetailInfo,
@@ -171,20 +170,13 @@ class ActivityMain extends React.Component {
             }, {
                 wrapper: NewRecommendFood,
                 child: RecommendFoodDetailInfo,
-            }
-        ];
-        const releaseStash = [
+            },
             {
                 wrapper: NewAddMoneyUpgradeActivity,
                 child: AddMoneyUpgradeDetailInfo,
             }
         ]
-        // if (HUALALA.ENVIRONMENT != 'production-release') {// 去Newactivity判断
-        pagesArr = _pagesArr.concat(releaseStash);
-        // } else {
-        //     pagesArr = _pagesArr;
-        // }
-        const _pages = pagesArr.map((promotion, index) => {
+        const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {
                     this.props.callbackthree(arg);
@@ -198,7 +190,7 @@ class ActivityMain extends React.Component {
             });
         });
         this.setState({
-            pages: _pages,
+            pages: pages,
         });
     }
     renderActivityTags() {

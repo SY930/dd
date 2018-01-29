@@ -308,23 +308,16 @@ export const ACTIVITY_CATEGORIES = (function() {
             example: '例如:客户点A菜推荐B菜，点C菜推荐D菜和F菜',
             key: 'RECOMMEND_FOOD',
         },
+        {
+            idx: 18,
+            title: '加价升级换新',
+            color: '#84aac6',
+            text: '加价升级换新是区别加价换购的一个营销活动',
+            example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
+            key: 'FOOD_PAY_MORE_THEN_UPGRADE',
+        },
     ];
-    const releaseStash = [{
-        idx: 18,
-        title: '加价升级换新',
-        color: '#84aac6',
-        text: '加价升级换新是区别加价换购的一个营销活动',
-        example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
-        key: 'FOOD_PAY_MORE_THEN_UPGRADE',
-    }, ];
-
-    // if (process.env.NODE_ENV !== 'production-release' && process.env.NODE_ENV !== 'production-pre') {
-    // if (HUALALA.ENVIRONMENT != 'production-release') {
-    return basic.concat(releaseStash);
-    // }else {
-    //     return basic;
-    // }
-    // return basic;
+    return basic;
 }());
 
 export const CHARACTERISTIC_CATEGORIES = (function() {

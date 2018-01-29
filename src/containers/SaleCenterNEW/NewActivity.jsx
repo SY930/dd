@@ -144,13 +144,12 @@ class NewActivity extends React.Component {
                                 key={`NewActivity${index}`}
                                 style={{
                                     listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ||
-                                        (HUALALA.ENVIRONMENT == 'production-release' && activity.get('key') === 'FOOD_PAY_MORE_THEN_UPGRADE') ?
+                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ?
                                         'none' : 'block',
                                 }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                        <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                                    <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
                                 </Authority>
                             </li>
                         );
