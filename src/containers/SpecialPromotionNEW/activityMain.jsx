@@ -122,7 +122,7 @@ class ActivityMain extends React.Component {
         return (
             <div className={['ActivityMain', styles.activityModal].join(' ')} style={{ padding: '0' }}>
                 <Row>
-                    <Col span={6} className="ActivityMain-Left">
+                    <Col span={6} className="ActivityMain-Left" style={{ padding: '15px 15px 10px 15px' }}>
                         <ActivityLogo index={index} titletext={this.state.promotionType[index].title} activityMain={true} />
                         <br />
                         {
@@ -130,7 +130,7 @@ class ActivityMain extends React.Component {
                         }
                         <br />
                     </Col>
-                    <Col span={18} className="ActivityMain-Right">
+                    <Col span={18} className="ActivityMain-Right" style={{ padding: '15px 15px 10px 15px' }}>
                         {this.renderActivityTags()}
                     </Col>
                 </Row>
