@@ -271,9 +271,9 @@ class MyActivitiesShop extends React.Component {
         this.setState({
             updateModalVisible: false,
         });
-        this.props.saleCenterResetBasicInfo();
-        this.props.saleCenterResetScopeInfo();
-        this.props.saleCenterResetDetailInfo();
+        // this.props.saleCenterResetBasicInfo();
+        // this.props.saleCenterResetScopeInfo();
+        // this.props.saleCenterResetDetailInfo();
     }
 
     onWindowResize = () => {

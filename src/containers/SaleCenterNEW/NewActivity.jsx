@@ -98,11 +98,11 @@ class NewActivity extends React.Component {
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
         // TODO: uncomment the bottom
-        if (!modal1Visible) {
-            this.props.saleCenterResetBasicInfo();
-            this.props.saleCenterResetScopeInfo();
-            this.props.saleCenterResetDetailInfo();
-        }
+        // if (!modal1Visible) {
+        //     this.props.saleCenterResetBasicInfo();
+        //     this.props.saleCenterResetScopeInfo();
+        //     this.props.saleCenterResetDetailInfo();
+        // }函数作用重复===this.props.clear()
     }
 
     render() {
