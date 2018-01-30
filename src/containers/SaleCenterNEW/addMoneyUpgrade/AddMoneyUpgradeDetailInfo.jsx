@@ -267,8 +267,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         }
         let scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         scopeLst = scopeLst ? scopeLst.toJS() : []
-        subjectType < 2 && stageCondition < 1 ?
-            opts = {// reset food
+        countType == 0 || countType == 1 && subjectType < 2 ?
+            opts = {// 切换为不选菜品时reset food
                 ...opts,
                 categoryOrDish: 0,
                 dishes: [],
@@ -428,7 +428,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     wrapperCol={{ span: 11 }}
                 >
                     <Col span={mostNewLimit == 0 ? 24 : 8}>
-                        <Select onChange={this.mostNewLimitChange} value={mostNewLimit} onClick={console.log(99)}>
+                        <Select onChange={this.mostNewLimitChange} value={mostNewLimit}>
                             <Option key="0" value={0}>不限制</Option>
                             <Option key="1" value={1}>限制</Option>
                         </Select>

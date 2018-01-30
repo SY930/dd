@@ -696,7 +696,7 @@ export const promotionDetailInfoAdapter = function(source, dir) {
     // compose scopeList
     let scope = [];
     if (source.scopeLst && source.scopeLst.length > 0 && source.foodCategory.length == 0 &&
-        source.excludeDishes.length == 0 && source.dishes.length == 0) {
+        source.excludeDishes.length == 0 && source.dishes.length == 0 && !source.upGradeDishes) {
         scope = source.scopeLst;
     } else {
         if (source.foodCategory !== null) {
