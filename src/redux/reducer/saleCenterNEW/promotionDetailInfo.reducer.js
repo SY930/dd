@@ -212,10 +212,11 @@ function constructTreeDataContainsPromotion(data) {
             };
             return {
                 promotionType,
-                promotionName: treeDataForPromotionSelectionBoxs[key].map((promotion) => {
-                    promotion.finalShowName = `${promotion.promotionCode} - ${promotion.promotionName}`;
-                    return promotion;
-                }),
+                promotionName: treeDataForPromotionSelectionBoxs[key] ?
+                    treeDataForPromotionSelectionBoxs[key].map((promotion) => {
+                        promotion.finalShowName = `${promotion.promotionCode} - ${promotion.promotionName}`;
+                        return promotion;
+                    }) : [],
             }
         });
     return promotionTypes;
