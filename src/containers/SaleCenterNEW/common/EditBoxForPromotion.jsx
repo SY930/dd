@@ -13,6 +13,9 @@ if (process.env.__CLIENT__ === true) {
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { FetchGiftList, FetchGiftSort } from '../../GiftNew/_action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
+import {
+    ACTIVITY_CATEGORIES,
+} from '../../../redux/actions/saleCenterNEW/types';
 
 class EditBoxForPromotion extends React.Component {
     constructor(props) {
@@ -202,7 +205,7 @@ class EditBoxForPromotion extends React.Component {
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
         let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
-            SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo','data','promotionInfo','master','promotionIDStr']);
+            SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'promotionIDStr']);
         }
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
@@ -253,8 +256,11 @@ class EditBoxForPromotion extends React.Component {
                     }
                 });
             }
-            return _data.map((item, index) => {
-                return <TreeNode key={index} title={item.promotionType.content} />;
+            // return _data.map((item, index) => {
+            //     return <TreeNode key={index} title={item.promotionType.content} disabled={filterFlag && item.promotionType.content == '菜品推荐'} />;
+            // });
+            return ACTIVITY_CATEGORIES.map((item, index) => {
+                return <TreeNode key={index} title={item.title} disabled={filterFlag && item.title == '菜品推荐'} />
             });
         }
         return (
