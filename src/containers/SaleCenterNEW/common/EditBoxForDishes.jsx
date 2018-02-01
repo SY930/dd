@@ -123,7 +123,8 @@ class EditBoxForDishes extends React.Component {
         }
         if (
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
+            nextProps.type !== 'FOOD_PAY_MORE_THEN_UPGRADE'
         ) {
             let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
             _priceLst = _priceLst ? _priceLst.toJS() : [];
