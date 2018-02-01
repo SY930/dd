@@ -144,7 +144,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0 &&
-            !this.state.hadSetWhenEdit) {
+            (!this.state.hadSetWhenEdit ||
+                this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']) !== nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']))) {
             const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
             const $promotionDetail = nextProps.promotionDetailInfo.getIn(['$promotionDetail']);
             const _priceLst = $promotionDetail.getIn(['priceLst']) ?
@@ -207,7 +208,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 hadSetWhenEdit: true,
             });
         }
-        if (this.props.promotionDetailInfo.get('$foodMenuListInfo') !== nextProps.promotionDetailInfo.get('$foodCategoryListInfo')) {
+        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']) !== nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data'])) {
             this.setState({
                 foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
             })
