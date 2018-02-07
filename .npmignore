@@ -7,3 +7,4 @@ src
 .npmrc
 yarn.lock
 package-lock.json
+gitignore-analyze.html
