@@ -341,7 +341,19 @@ class MyActivities extends React.Component {
             }
         }
     }
-
+    shouldComponentUpdate(nextProps, nextState) {
+        const thisStatus = this.props.myActivities.getIn(['$promotionDetailInfo', 'status']);
+        const nextStatus = nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
+        console.log('props渲染:-----', (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
+            (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')))
+        console.log('state渲染:-----', !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)))
+        console.log('详情detail渲染:-----', thisStatus !== nextStatus && nextStatus === 'success')
+        return (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
+            (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList') ||
+                !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)) ||
+                (thisStatus !== nextStatus && nextStatus === 'success'))
+        // return true
+    }
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
