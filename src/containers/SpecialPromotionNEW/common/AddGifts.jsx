@@ -212,8 +212,7 @@ class AddGifts extends React.Component {
                 help,
                 valueNuber,
                 onChangeFunc;
-            if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+            if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = '礼品个数:';
                 help = info.giftCount.msg;
@@ -570,8 +569,7 @@ class AddGifts extends React.Component {
         _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            if (_value > 10 && (this.props.type == '51' || this.props.type == '52' || this.props.type == '53' || this.props.type == '60'
-                || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23')) {
+            if (_value > 10 && (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70')) {
                 _infos[index].giftCount.validateStatus = 'error';
                 _infos[index].giftCount.msg = '礼品个数必须在1到10之间';
             } else {

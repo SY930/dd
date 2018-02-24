@@ -111,7 +111,8 @@ class StepTwo extends React.Component {
             }
             this.setState(opts)
         }
-        if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) && this.props.type == '70') {
+        if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
+            (this.props.type == '70' || this.props.type == '64')) {
             this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
     }

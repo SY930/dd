@@ -239,7 +239,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'EGiftName',
             },
             {
-                title: way === 51 || way === 52 || way === 53 || way === 60 || way === 61 || way === 62 || way === 63 || way === 23 ?
+                title: way != '20' && way != '21' && way != '30' && way != '70' ?
                     '礼品个数' : '礼品总数',
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
@@ -282,7 +282,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
-                EGiftSingleCount: way === 51 || way === 52 || way === 53 || way === 60 || way === 61 || way === 62 || way === 63 || way === 23 ?
+                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
                     gift.giftCount : gift.giftTotalCount,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
