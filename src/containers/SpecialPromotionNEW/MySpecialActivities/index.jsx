@@ -427,7 +427,7 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         let count;
         if (HUALALA.ENVIRONMENT !== 'production-release') {
-            count = 14;
+            count = 15;
         } else {
             count = 13;
         }
