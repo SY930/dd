@@ -431,14 +431,24 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     },
     ]
 
-    const extral = [{
-        idx: 13,
-        title: '唤醒送礼',
-        color: '#84aac6',
-        text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
-        example: '',
-        key: '63',
-    },];
+    const extral = [
+        {
+            idx: 13,
+            title: '唤醒送礼',
+            color: '#84aac6',
+            text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
+            example: '',
+            key: '63',
+        },
+        {
+            idx: 14,
+            title: '评价送礼',
+            color: '#84aac6',
+            text: '评价送礼',
+            example: '',
+            key: '64',
+        },
+    ];
     if (HUALALA.ENVIRONMENT != 'production-release') {
         return basic.concat(extral);
     }

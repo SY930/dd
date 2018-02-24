@@ -89,6 +89,7 @@ class ActivityMain extends React.Component {
         ];
         const _vipStash = [
             NewWakeUpReturnGift, // 唤醒送礼
+            NewColorsEggCat, // 评价送礼，复用彩蛋猫
         ];
         let pagesArr;
         if (HUALALA.ENVIRONMENT !== 'production-release') {
