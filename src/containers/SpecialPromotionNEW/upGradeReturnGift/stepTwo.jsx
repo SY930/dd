@@ -200,7 +200,7 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
-        const opts = this.props.type == '70' ?
+        const opts = this.props.type == '70' || this.props.type == '64' ?
             {
                 smsTemplate: this.state.message,
                 shopIDList: this.state.selections,
@@ -267,7 +267,7 @@ class StepTwo extends React.Component {
         return (
             <Form>
                 {
-                    this.props.type == '70' ? this.renderShopsOptions() : null
+                    this.props.type == '70' || this.props.type == '64' ? this.renderShopsOptions() : null
                 }
                 {
                     this.props.type == '62' ?
@@ -300,7 +300,7 @@ class StepTwo extends React.Component {
                                 type={this.props.type}
                                 form={this.props.form}
                             />
-                        </div> : (this.props.type == '70' ? null :
+                        </div> : (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
                                 catOrCard={'card'}

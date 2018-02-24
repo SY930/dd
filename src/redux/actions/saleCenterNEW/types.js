@@ -444,7 +444,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             idx: 14,
             title: '评价送礼',
             color: '#84aac6',
-            text: '评价送礼',
+            text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
             example: '',
             key: '64',
         },
