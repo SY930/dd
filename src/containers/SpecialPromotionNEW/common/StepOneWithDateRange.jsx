@@ -8,6 +8,7 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     saleCenterGetExcludeEventList,
+    saleCenterGetShopOfEventByDate,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { SEND_MSG } from '../../../redux//actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -205,6 +206,11 @@ class StepOneWithDateRange extends React.Component {
             if (this.props.type === '63') {
                 this.props.saleCenterGetExcludeEventList(opts);
             }
+            if (this.props.type === '64') {
+                saleCenterGetShopOfEventByDate(opts);
+                // this.props.saleCenterGetShopOfEventByDate(opts);
+            }
+            
         }
         this.setState({
             dateRange: date,
@@ -626,6 +632,10 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetExcludeEventList: (opts) => {
             dispatch(saleCenterGetExcludeEventList(opts));
         },
+        // saleCenterGetShopOfEventByDate: (opts) => {
+        //     saleCenterGetShopOfEventByDate(opts);
+        //     // dispatch(saleCenterGetShopOfEventByDate(opts));
+        // },
     }
 };
 
