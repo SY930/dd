@@ -250,6 +250,7 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
+                    type={this.props.type}
                 />
             </Form.Item>
         );

@@ -12,6 +12,9 @@ if (process.env.__CLIENT__ === true) {
 
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { shopsAllSet } from '../../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
+import {
+    saleCenterGetShopOfEventByDate,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import Immutable from 'immutable';
 
 class EditBoxForShops extends React.Component {
@@ -54,6 +57,18 @@ class EditBoxForShops extends React.Component {
                 cityAreasShops: this.props.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']),
                 selections: _selections,
             })
+        }
+        // 特色营销，评价送礼,点击编辑，查询排除店铺
+        if (this.props.type === '64') {
+            const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+            if (specialPromotion.itemID) {
+                this.props.saleCenterGetShopOfEventByDate({
+                    groupID: this.props.user.accountInfo.groupID,
+                    eventStartDate: specialPromotion.eventStartDate||'',
+                    eventEndDate: specialPromotion.eventEndDate||'',
+                    itemID: this.props.specialPromotion.get('$eventInfo').toJS().itemID
+                });
+            }
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -367,7 +382,8 @@ const mapStateToProps = (state) => {
     return {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
-        user: state.user.toJS()
+        user: state.user.toJS(),
+        specialPromotion: state.sale_specialPromotion_NEW,
     };
 };
 
@@ -378,6 +394,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         shopsAllSet: (opts) => {
             dispatch(shopsAllSet(opts));
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            dispatch(saleCenterGetShopOfEventByDate(opts));
         },
     };
 };
