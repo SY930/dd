@@ -9,6 +9,7 @@ import { message } from 'antd';
 import 'rxjs';
 import Rx from 'rxjs/Rx';
 import axios from 'axios'
+import { fetchFilterShopsSuccess } from './promotionBasicInfo.action'
 
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO = 'sale center: set special promotion event info new';
@@ -365,16 +366,19 @@ export const fetchSpecialGroupMember = opts => {
 
 // 查询已占用店铺for评价返礼64
 export const saleCenterGetShopOfEventByDate = opts => {
-    axios.post('/api/v1/universal', {
-        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-        method: '/specialPromotion/getShopOfEventByDate.ajax',
-        type: 'post',
-        data: opts,
-    })
-        .then((responseJSON) => {
-            console.log(responseJSON)
-        }).catch((error) => {
-            console.log(error)
+    return dispatch => {
+        axios.post('/api/v1/universal', {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            method: '/specialPromotion/getShopOfEventByDate.ajax',
+            type: 'post',
+            data: opts,
         })
-    
+            .then((responseJSON) => {
+                console.log(responseJSON)
+                // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
+                return dispatch(fetchFilterShopsSuccess({ allShopSet: responseJSON.allShopCheck, shopList: responseJSON.shopIDList }));
+            }).catch((error) => {
+                console.log(error)
+            })
+    }
 };

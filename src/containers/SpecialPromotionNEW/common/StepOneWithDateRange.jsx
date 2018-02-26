@@ -207,8 +207,8 @@ class StepOneWithDateRange extends React.Component {
                 this.props.saleCenterGetExcludeEventList(opts);
             }
             if (this.props.type === '64') {
-                saleCenterGetShopOfEventByDate(opts);
-                // this.props.saleCenterGetShopOfEventByDate(opts);
+                // saleCenterGetShopOfEventByDate(opts);
+                this.props.saleCenterGetShopOfEventByDate(opts);
             }
             
         }
@@ -632,10 +632,10 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetExcludeEventList: (opts) => {
             dispatch(saleCenterGetExcludeEventList(opts));
         },
-        // saleCenterGetShopOfEventByDate: (opts) => {
-        //     saleCenterGetShopOfEventByDate(opts);
-        //     // dispatch(saleCenterGetShopOfEventByDate(opts));
-        // },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            // saleCenterGetShopOfEventByDate(opts);
+            dispatch(saleCenterGetShopOfEventByDate(opts));
+        },
     }
 };
 
