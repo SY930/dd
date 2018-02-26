@@ -201,6 +201,7 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
+
         const opts = this.props.type == '70' || this.props.type == '64' ?
             {
                 smsTemplate: this.state.message,
@@ -223,11 +224,16 @@ class StepTwo extends React.Component {
         }
         if (this.state.settleUnitID) {
             opts.settleUnitID = this.state.settleUnitID;
-        }
-        if (flag) {
+        }        
+        //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
+        const noSelected64 = this.props.type == 64 &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
+            this.state.selections.length === 0
+        if (flag && !noSelected64) {
             this.props.setSpecialBasicInfo(opts);
         }
-        return flag;
+        return flag && !noSelected64;
     }
     onCardLevelChange(obj) {
         this.setState(obj)
@@ -238,12 +244,19 @@ class StepTwo extends React.Component {
         })
     }
     renderShopsOptions() {
+        //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
+        const noSelected64 = this.props.type == 64 &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
+            this.state.selections.length === 0
         return (
             <Form.Item
                 label="适用店铺"
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
+                validateStatus={noSelected64 ? 'error' : 'success'}
+                help={noSelected64 ? '已有别的活动选了个别店铺，不能略过而全选' : null}
             >
                 <EditBoxForShops
                     value={this.state.selections_shopsInfo}
@@ -341,6 +354,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
 
     };
 };
