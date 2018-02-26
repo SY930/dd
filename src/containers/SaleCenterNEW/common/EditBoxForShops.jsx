@@ -64,8 +64,8 @@ class EditBoxForShops extends React.Component {
             if (specialPromotion.itemID) {
                 this.props.saleCenterGetShopOfEventByDate({
                     groupID: this.props.user.accountInfo.groupID,
-                    eventStartDate: specialPromotion.eventStartDate||'',
-                    eventEndDate: specialPromotion.eventEndDate||'',
+                    eventStartDate: specialPromotion.eventStartDate || '',
+                    eventEndDate: specialPromotion.eventEndDate || '',
                     itemID: this.props.specialPromotion.get('$eventInfo').toJS().itemID
                 });
             }
@@ -150,15 +150,28 @@ class EditBoxForShops extends React.Component {
                 }
                 return moment.format('YYYYMMDD')
             }
-            const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
-            const _basicInfo = nextProps.promotionBasicInfo.get('$basicInfo').toJS();
-            if (formAt(basicInfo.startDate) != formAt(_basicInfo.startDate) ||
-                formAt(basicInfo.endDate) != formAt(_basicInfo.endDate)) {
-                this.setState({
-                    selections: new Set(),
-                }, () => {
-                    this.props.onChange && this.props.onChange([])
-                })
+            if (this.props.type == 64) { // 特色营销,评价返礼品
+                const basicInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+                const _basicInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
+                if (basicInfo.eventStartDate != _basicInfo.eventStartDate ||
+                    basicInfo.eventEndDate != _basicInfo.eventEndDate) {
+                    this.setState({
+                        selections: new Set(),
+                    }, () => {
+                        this.props.onChange && this.props.onChange([])
+                    })
+                }
+            } else { // 基础营销
+                const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
+                const _basicInfo = nextProps.promotionBasicInfo.get('$basicInfo').toJS();
+                if (formAt(basicInfo.startDate) != formAt(_basicInfo.startDate) ||
+                    formAt(basicInfo.endDate) != formAt(_basicInfo.endDate)) {
+                    this.setState({
+                        selections: new Set(),
+                    }, () => {
+                        this.props.onChange && this.props.onChange([])
+                    })
+                }
             }
         }
         if (!sameBrands) {
