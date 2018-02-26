@@ -105,7 +105,7 @@ class StepTwo extends React.Component {
                 // cardLevelIDList: specialPromotion.cardLevelIDList,
                 ...addUpOpts,
             }
-            if (this.props.type == '70') {
+            if (this.props.type == '70' || this.props.type == '64') {
                 opts.selections = specialPromotion.shopIDList.filter(shopID => shopID != 0);
                 opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList.filter(shopID => shopID != 0) };
             }

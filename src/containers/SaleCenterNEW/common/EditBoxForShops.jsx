@@ -33,34 +33,6 @@ class EditBoxForShops extends React.Component {
         this.clear = this.clear.bind(this);
     }
     componentDidMount() {
-        // fetch('/api/v1/universal',{
-        //     method: 'POST',
-        //     credentials: 'include',
-        //     headers: {
-        //         'Accept': '*/*',
-        //         'Content-Type': 'application/json; charset=UTF-8',
-        //     },
-        //     body:{
-        //         service:'HTTP_SERVICE_URL_PROMOTION_NEW',
-        //         method: '/specialPromotion/queryEvents.ajax',
-        //         type: 'post',
-        //         data: JSON.stringify({groupID: this.props.user.accountInfo.groupID}),
-        //     }
-        // }).then((response) => {
-        //     if (response.status >= 200 && response.status < 300) {
-        //         if (response.headers.get('content-type').includes('application/json')) {
-        //             return response.json();
-        //         }
-        //         return response.text();
-        //     }
-        //     return Promise.reject(new Error(response.statusText))
-        // }).then((responseJSON) => {
-        //     if (responseJSON.code === '000') {
-        //         console.log(responseJSON)
-        //     }
-        // }).catch((error) => {
-        // })
-
         const _data = this.props.value || this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
         const _cityAreasShops = this.props.promotionScopeInfo.getIn(['refs', 'data', 'cityAreasShops']);
         const _selections = this.state.selections;
