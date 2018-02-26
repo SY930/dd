@@ -367,7 +367,7 @@ export const fetchSpecialGroupMember = opts => {
 // 查询已占用店铺for评价返礼64
 export const saleCenterGetShopOfEventByDate = opts => {
     return dispatch => {
-        axios.post('/api/v1/universal', {
+        return axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             method: '/specialPromotion/getShopOfEventByDate.ajax',
             type: 'post',
@@ -376,8 +376,10 @@ export const saleCenterGetShopOfEventByDate = opts => {
             .then((responseJSON) => {
                 console.log(responseJSON)
                 // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
-                return dispatch(fetchFilterShopsSuccess({ allShopSet: responseJSON.allShopCheck, shopList: responseJSON.shopIDList }));
-            }).catch((error) => {
+                dispatch(fetchFilterShopsSuccess({ allShopSet: responseJSON.allShopCheck, shopList: responseJSON.shopIDList }));
+                return Promise.resolve(responseJSON.allShopCheck)
+            })
+            .catch((error) => {
                 console.log(error)
             })
     }

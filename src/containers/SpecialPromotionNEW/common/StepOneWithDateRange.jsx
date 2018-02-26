@@ -93,7 +93,7 @@ class StepOneWithDateRange extends React.Component {
             },
         })
     }
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps, nextState) {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
@@ -208,12 +208,15 @@ class StepOneWithDateRange extends React.Component {
             }
             if (this.props.type === '64') {
                 // EditBoxForShops组件-编辑时-componentDidMount再发一次;
-                this.props.saleCenterGetShopOfEventByDate(opts);
+                this.props.saleCenterGetShopOfEventByDate(opts).then(allShopCheck => {
+                    allShopCheck && this.setErrors('rangePicker', '当前时段内，可选店铺被其他同类活动全部占用，请重选时段')
+                })
             }
-            
+
         }
         this.setState({
             dateRange: date,
+            dateString,
         })
     }
 
@@ -561,7 +564,7 @@ class StepOneWithDateRange extends React.Component {
                                     </Row>
                                     {
                                         (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.state.iconDisplay) ||
-                                        this.state.getExcludeEventList.length > 0 ?
+                                            this.state.getExcludeEventList.length > 0 ?
                                             <Icon
                                                 type="exclamation-circle"
                                                 className={styles.cardLevelTreeIcon}
@@ -633,8 +636,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterGetExcludeEventList(opts));
         },
         saleCenterGetShopOfEventByDate: (opts) => {
-            // saleCenterGetShopOfEventByDate(opts);
-            dispatch(saleCenterGetShopOfEventByDate(opts));
+            return dispatch(saleCenterGetShopOfEventByDate(opts));
         },
     }
 };
