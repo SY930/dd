@@ -66,7 +66,7 @@ class EditBoxForShops extends React.Component {
                     groupID: this.props.user.accountInfo.groupID,
                     eventStartDate: specialPromotion.eventStartDate || '',
                     eventEndDate: specialPromotion.eventEndDate || '',
-                    itemID: this.props.specialPromotion.get('$eventInfo').toJS().itemID
+                    eventID: this.props.specialPromotion.get('$eventInfo').toJS().eventID
                 });
             }
         }
