@@ -41,10 +41,10 @@ import NDiscountDetailInfo from './nDiscount/nDiscountDetailInfo';
 import NewReturnPointActivity from './returnPoint/NewReturnPointActivity'; // 返积分
 import ReturnPointDetailInfo from './returnPoint/returnPointDetailInfo';
 
-import NewGroupTicketActivity from './groupTicket/NewGroupTicketActivity'; // 代金券
+import NewGroupTicketActivity from './groupTicket/NewGroupTicketActivity'; // 团购券
 import GroupTicketDetailInfo from './groupTicket/groupTicketDetailInfo';
 
-import NewVoucherActivity from './voucher/NewVoucherActivity'; // 团购券
+import NewVoucherActivity from './voucher/NewVoucherActivity'; // 代金券？
 import VoucherDetailInfo from './voucher/voucherDetailInfo';
 
 import NewRandomCutActivity from './randomCut/NewRandomCutActivity'; // 随机立减

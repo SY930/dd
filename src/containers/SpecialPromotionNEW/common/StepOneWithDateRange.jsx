@@ -212,7 +212,7 @@ class StepOneWithDateRange extends React.Component {
             }
             if (this.props.type === '64') {
                 // EditBoxForShops组件-编辑时-componentDidMount再发一次;
-                this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID }).then(allShopCheck => {
+                this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined }).then(allShopCheck => {
                     this.setState({
                         allShopCheck
                     }, () => {

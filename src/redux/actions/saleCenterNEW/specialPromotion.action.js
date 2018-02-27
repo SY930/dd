@@ -375,12 +375,16 @@ export const saleCenterGetShopOfEventByDate = opts => {
         })
             .then((responseJSON) => {
                 console.log(responseJSON)
-                // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
-                dispatch(fetchFilterShopsSuccess({
-                    allShopSet: responseJSON.allShopCheck,
-                    shopList: responseJSON.shopIDList ? responseJSON.shopIDList.map(shopId => String(shopId)) : []
-                }));
-                return Promise.resolve(responseJSON.allShopCheck)
+                if (responseJSON.code === '000') {
+                    // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
+                    dispatch(fetchFilterShopsSuccess({
+                        allShopSet: responseJSON.allShopCheck,
+                        shopList: responseJSON.shopIDList ? responseJSON.shopIDList.map(shopId => String(shopId)) : []
+                    }));
+                    return Promise.resolve(responseJSON.allShopCheck)
+                } else {
+                    return Promise.reject(responseJSON.message)
+                }
             })
             .catch((error) => {
                 console.log(error)

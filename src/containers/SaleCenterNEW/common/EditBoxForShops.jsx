@@ -66,7 +66,7 @@ class EditBoxForShops extends React.Component {
                     groupID: this.props.user.accountInfo.groupID,
                     eventStartDate: specialPromotion.eventStartDate || '',
                     eventEndDate: specialPromotion.eventEndDate || '',
-                    eventID: this.props.specialPromotion.get('$eventInfo').toJS().eventID
+                    eventID: specialPromotion.itemID
                 });
             }
         }
@@ -115,7 +115,7 @@ class EditBoxForShops extends React.Component {
                 _cityAreasShops_filter = []
             } else {
                 // 局部占用，删除店铺
-                _cityAreasShops_filter = _cityAreasShops.map((city) => {
+                _cityAreasShops_filter =( _cityAreasShops || []).map((city) => {
                     return {
                         ...city,
                         children: city.children.map((area) => {
