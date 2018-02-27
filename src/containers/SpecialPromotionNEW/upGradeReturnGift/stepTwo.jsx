@@ -224,7 +224,7 @@ class StepTwo extends React.Component {
         }
         if (this.state.settleUnitID) {
             opts.settleUnitID = this.state.settleUnitID;
-        }        
+        }
         //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
         const noSelected64 = this.props.type == 64 &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
@@ -244,28 +244,33 @@ class StepTwo extends React.Component {
         })
     }
     renderShopsOptions() {
+        // 当有人领取礼物后，礼物不可编辑，加蒙层
+        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;
         //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
         const noSelected64 = this.props.type == 64 &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0
         return (
-            <Form.Item
-                label="适用店铺"
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-                validateStatus={noSelected64 ? 'error' : 'success'}
-                help={noSelected64 ? '已有别的活动选了个别店铺，不能略过而全选' : null}
-            >
-                <EditBoxForShops
-                    value={this.state.selections_shopsInfo}
-                    onChange={
-                        this.editBoxForShopsChange
-                    }
-                    type={this.props.type}
-                />
-            </Form.Item>
+            <div className={styles.giftWrap}>
+                <Form.Item
+                    label="适用店铺"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    validateStatus={noSelected64 ? 'error' : 'success'}
+                    help={noSelected64 ? '已有别的活动选了个别店铺，不能略过而全选' : null}
+                >
+                    <EditBoxForShops
+                        value={this.state.selections_shopsInfo}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        type={this.props.type}
+                    />
+                </Form.Item>
+                <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
+            </div>
         );
     }
     render() {
