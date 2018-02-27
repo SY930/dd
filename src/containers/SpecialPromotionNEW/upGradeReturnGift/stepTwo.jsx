@@ -259,7 +259,7 @@ class StepTwo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     validateStatus={noSelected64 ? 'error' : 'success'}
-                    help={noSelected64 ? '已有别的活动选了个别店铺，不能略过而全选' : null}
+                    help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
                 >
                     <EditBoxForShops
                         value={this.state.selections_shopsInfo}
