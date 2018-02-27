@@ -124,18 +124,18 @@ class EditBoxForDishes extends React.Component {
         if (
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
-            nextProps.type !== 'FOOD_PAY_MORE_THEN_UPGRADE'
+            nextProps.type !== 'FOOD_PAY_MORE_THEN_UPGRADE' && nextProps.type !== 'RECOMMEND_FOOD'
         ) {
             let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
             _priceLst = _priceLst ? _priceLst.toJS() : [];
             this.setState({
-                priceLst: nextProps.type === 'RECOMMEND_FOOD' ? nextProps.value : _priceLst,
+                priceLst:  _priceLst,
             }, () => {
                 this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
             })
         }
         if (
-            nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE' &&
+            (nextProps.type === 'RECOMMEND_FOOD' || nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE') &&
             !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
         ) {
             this.setState({
