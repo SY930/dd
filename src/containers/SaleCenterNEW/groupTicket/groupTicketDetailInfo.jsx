@@ -41,6 +41,7 @@ class GroupTicketDetailInfo extends React.Component {
             targetScope: '0',
             giftPriceFlag: true,
             giftValueFlag: true,
+            transFeeFlag: true,
             costIncome: '1',
         };
 
@@ -102,11 +103,12 @@ class GroupTicketDetailInfo extends React.Component {
         if (_state.giftValue == null || _state.giftValue == '') {
             _state.giftValueFlag = false;
         }
+        _state.transFeeFlag = voucherVerify != 1 || _state.transFee > 0;
         this.setState(_state);
 
         let nextFlag = true;
 
-        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0) {
+        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.transFeeFlag) {
             let rule;
             if (_state.stageType == '2') {
                 rule = {
@@ -198,9 +200,10 @@ class GroupTicketDetailInfo extends React.Component {
         this.setState({ giftValue, giftValueFlag });
     }
     onTransFeeChange(value) {
+        const voucherVerify = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerify']);
         let { transFee } = this.state;
         transFee = value.number;
-        this.setState({ transFee });
+        this.setState({ transFee, transFeeFlag: voucherVerify != 1 || value.number > 0 });
     }
     onStageAmountChange(value) {
         let { stageAmount } = this.state;
@@ -216,6 +219,7 @@ class GroupTicketDetailInfo extends React.Component {
         this.setState({ costIncome: val })
     }
     renderGroupTicket() {
+        const voucherVerify = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerify']);
         return (
             <div>
                 <FormItem
@@ -261,6 +265,9 @@ class GroupTicketDetailInfo extends React.Component {
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
+                    required={voucherVerify == 1}
+                    validateStatus={this.state.transFeeFlag || voucherVerify != 1 ? 'success' : 'error'}
+                    help={this.state.transFeeFlag || voucherVerify != 1 ? null : '选择核销后必须输入券交易手续费'}
                 >
                     <PriceInput
                         addonBefore={''}
