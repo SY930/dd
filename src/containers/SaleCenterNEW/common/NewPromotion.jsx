@@ -176,7 +176,7 @@ class NewPromotion extends React.Component {
                 data: { promotionInfo },
                 success: () => {
                     cb();
-                    message.success('活动创建成功');
+                    message.success('活动创建完毕，5分钟后saas才能获取到最新创建的基础营销活动',5);
                     this.setState({
                         loading: false,
                     });
