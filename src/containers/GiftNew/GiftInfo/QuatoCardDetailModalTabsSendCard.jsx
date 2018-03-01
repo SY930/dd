@@ -280,14 +280,24 @@ class CardOperate extends React.Component {
             >
                 <Row className={styles.quatoCardDetailModalTabsSendCard}>
                     <Col span={24} pull={3}>
-                        {/* <div style={{border:'1px solid gray',margin:'0 10px 10px 60px', width:420,padding:10}}>
-                        <div style={{textAlign:'center',width:100}}>
-                            <div style={{textAlign:'center',border:'5px solid #d8d9de',borderRadius:20,height:40,width:95,lineHeight:'30px',fontSize:20}}>666</div>
-                            <div>三位标识符</div>
-                            <div>系统固定</div>
+                        <div style={{ border: '3px dashed #e9e9e9', margin: '0 10px 10px 60px', width: 420, padding: 10 }}>
+                            {[{ tip1: '666', tip2: '3位标识符', tip3: '（系统固定）' }, { tip1: 'XXXXXX', tip2: '6位批次号', tip3: '（手动输入）' },
+                            { tip1: 'YYYYYY', tip2: '6位顺序号', tip3: '（手动输入）' }, { tip1: 'ZZZ', tip2: '3位随机号', tip3: '（系统随机）' }].map((node, index) => {
+                                return (
+                                    <div key={node.tip1} style={{ textAlign: 'center', width: 98, display: 'inline-block' }}>
+                                        <div style={{ textAlign: 'center', width: index != 3 ? 88 : 93, display: 'inline-block' }}>
+                                            <div style={{ textAlign: 'center', border: '5px solid #e9e9e9', color: '#999', borderRadius: 20, height: 40, width: 95, lineHeight: '30px', fontSize: 14 }}>{node.tip1}</div>
+                                            <div style={{ margin: '2px 0', color: '#787878', fontSize: 16 }}>{node.tip2}</div>
+                                            <div style={{ margin: '2px 0', color: '#999' }}>{node.tip3}</div>
+                                        </div>
+                                        {index != 3 ?
+                                            <div style={{ height: 10, width: 9, display: 'inline-block', background: '#e9e9e9', marginBottom: 55, paddingLeft: 10, position: 'relative', left: 3 }}></div>
+                                            : null}
+                                    </div>
+                                )
+                            })}
+                            <div style={{ textAlign: 'center', marginTop: 10, fontSize: 16, color: '#999', letterSpacing: 5 }}>卡号组成图示</div>
                         </div>
-                            <div style={{textAlign: 'center'}}>卡号组成图示</div>
-                        </div> */}
                         <BaseForm
                             getForm={form => this.form = form}
                             formItems={formItems}
