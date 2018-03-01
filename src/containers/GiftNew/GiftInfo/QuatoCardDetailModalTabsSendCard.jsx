@@ -175,12 +175,14 @@ class CardOperate extends React.Component {
                             decorator({
                                 key: 'startEnd_min',
                                 rules: [{ required: true, message: '起始号不能为空' },
-                                    { type: 'integer', message: '起始号必须为整数', transform: value => Number(value) },
-                                    { validator: (rule, v, cb) => {
-                                        if (v === '')cb();
+                                { type: 'integer', message: '起始号必须为整数', transform: value => Number(value) },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (v === '') cb();
                                         v > 0 && v < 999999 ? cb() : cb(rule.message);
                                     },
-                                    message: '起始号必须是1-999999之间的值' }],
+                                    message: '起始号必须是1-999999之间的值'
+                                }],
                             })(<Input placeholder="起始号" />)
                         }
                     </FormItem>
@@ -192,12 +194,14 @@ class CardOperate extends React.Component {
                             decorator({
                                 key: 'startEnd_max',
                                 rules: [{ required: true, message: '终止号不能为空' },
-                                    { type: 'integer', message: '终止号必须为整数', transform: value => Number(value) },
-                                    { validator: (rule, v, cb) => {
-                                        if (v === '')cb();
+                                { type: 'integer', message: '终止号必须为整数', transform: value => Number(value) },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (v === '') cb();
                                         v >= min && v < 999999 ? cb() : cb(rule.message);
                                     },
-                                    message: '终止号必须是起始号到999999之间的值' }],
+                                    message: '终止号必须是起始号到999999之间的值'
+                                }],
                             })(<Input placeholder="终止号" />)
                         }
                     </FormItem>
@@ -224,12 +228,14 @@ class CardOperate extends React.Component {
                 type: 'text',
                 placeholder: '请输入批次号',
                 rules: [{ required: true, message: '批次号不能为空' },
-                    { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
-                    { validator: (rule, v, cb) => {
-                        if (v === '')cb();
+                { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
+                {
+                    validator: (rule, v, cb) => {
+                        if (v === '') cb();
                         v > 0 && v < 999999 ? cb() : cb(rule.message);
                     },
-                    message: '批次号必须是1-999999之间的值' }],
+                    message: '批次号必须是1-999999之间的值'
+                }],
             },
             startEnd: {
                 label: '起止号',
@@ -259,7 +265,7 @@ class CardOperate extends React.Component {
                 type: 'textarea',
                 placeholder: `请输入${operateRemarkLabel}`,
                 rules: [{ required: true, message: `${operateRemarkLabel}不能为空` },
-                    { max: 250, message: '字符不能超过250个' }],
+                { max: 250, message: '字符不能超过250个' }],
             },
         };
         return (
@@ -274,6 +280,14 @@ class CardOperate extends React.Component {
             >
                 <Row className={styles.quatoCardDetailModalTabsSendCard}>
                     <Col span={24} pull={3}>
+                        {/* <div style={{border:'1px solid gray',margin:'0 10px 10px 60px', width:420,padding:10}}>
+                        <div style={{textAlign:'center',width:100}}>
+                            <div style={{textAlign:'center',border:'5px solid #d8d9de',borderRadius:20,height:40,width:95,lineHeight:'30px',fontSize:20}}>666</div>
+                            <div>三位标识符</div>
+                            <div>系统固定</div>
+                        </div>
+                            <div style={{textAlign: 'center'}}>卡号组成图示</div>
+                        </div> */}
                         <BaseForm
                             getForm={form => this.form = form}
                             formItems={formItems}
