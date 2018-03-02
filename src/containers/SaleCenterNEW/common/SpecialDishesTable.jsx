@@ -393,8 +393,6 @@ class SpecialDishesTable extends React.Component {
         });
     };
     onOnlyVipChange(e) {
-        console.log(this.state.foodOptions)
-        console.log(this.state.foodOptions.filter(v => v.vipPrice > -1))
         let foodOptions = this.state.foodOptions.filter(v => v.vipPrice > -1)
         this.setState({
             onlyVip: e.target.checked,

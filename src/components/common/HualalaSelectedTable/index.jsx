@@ -167,8 +167,6 @@ export default class HualalaSelectedTable extends React.Component {
                 },
             }];
         const data = this.state.data;
-        console.log(data)
-        // debugger;
         return (
             <div className={styles.treeSelectFooter}>
                 <div className={styles.SelectedLi}>
