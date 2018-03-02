@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import Immutable, { List } from 'immutable';
 import _ from 'lodash';
 
-import { Row, Col, Tree, Table, Input, Popconfirm, message, Modal, Form, Spin } from 'antd';
+import { Row, Col, Tree, Table, Input, Popconfirm, message, Modal, Form, Spin, Checkbox } from 'antd';
 
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less')
@@ -48,6 +48,7 @@ class SpecialDishesTable extends React.Component {
             foodCurrentSelections: [], // 当前备选列表内,已选的特色菜
             priceLst: [],
             filterPrice: 'newPrice',
+            onlyVip: false,
         };
 
         this.handleFoodTreeNodeChange = this.handleFoodTreeNodeChange.bind(this);
@@ -55,9 +56,9 @@ class SpecialDishesTable extends React.Component {
         this.handleFoodSelectedChange = this.handleFoodSelectedChange.bind(this);
         this.handleFoodSearchInputChange = this.handleFoodSearchInputChange.bind(this);
         this.clear = this.clear.bind(this);
-
         this.sortData = this.sortData.bind(this);
         this.filterGroup = this.filterGroup.bind(this);
+        this.onOnlyVipChange = this.onOnlyVipChange.bind(this)
     }
 
     componentDidMount() {
@@ -385,6 +386,10 @@ class SpecialDishesTable extends React.Component {
             onCancel: () => { },
         });
     };
+    onOnlyVipChange(e) {
+        console.log(e.target.checked)
+        this.setState({ onlyVip: e.target.checked })
+    }
 
     render() {
         const columns = [
@@ -500,7 +505,10 @@ class SpecialDishesTable extends React.Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     width="922px"
-                    title="选择特价菜品"
+                    title={[
+                        <span key="t1" style={{ marginRight: 20 }}>选择特价菜品</span>,
+                        <Checkbox key="t2" style={{ fontSize: 14 }} onChange={this.onOnlyVipChange}>只显示有会员价的菜品</Checkbox>
+                    ]}
                 >
                     <div style={{ width: '100%' }}>
                         {this.renderDishesSelectionBox()}
