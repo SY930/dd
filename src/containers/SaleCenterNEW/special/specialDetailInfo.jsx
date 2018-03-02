@@ -73,7 +73,7 @@ class SpecialDetailInfo extends React.Component {
                 foodUnitCode: data.foodKey,
                 foodName: data.foodName,
                 foodUnitName: data.unit,
-                price: parseFloat(data.newPrice) < 0 ? 0 : parseFloat(data.newPrice),
+                price: parseFloat(data.newPrice) < 0 ?  data.price : parseFloat(data.newPrice),
             }
         });
         this.props.setPromotionDetail({
