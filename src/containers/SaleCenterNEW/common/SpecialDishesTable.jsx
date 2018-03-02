@@ -43,7 +43,8 @@ class SpecialDishesTable extends React.Component {
             foodCategoryCollection: [], // 存储所有相关数据
             dataSource: [],
             data: [],
-            foodOptions: [], // 右上侧列表待选数据
+            foodOptions: [], // 右侧列表待选数据,有可能筛掉非会员价菜品
+            foodOptionsNoFilter: [], //右侧列表待选数据,全部，没筛掉非会员价菜品
             foodSelections: new Set(), // 已选特色菜
             foodCurrentSelections: [], // 当前备选列表内,已选的特色菜
             priceLst: [],
@@ -319,7 +320,11 @@ class SpecialDishesTable extends React.Component {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
-        this.setState({ foodOptions: storeOptions, foodCurrentSelections });
+        this.setState({
+            foodOptions: this.state.onlyVip ? storeOptions.filter(v => v.vipPrice > -1) : storeOptions,
+            foodOptionsNoFilter: storeOptions,
+            foodCurrentSelections
+        });
     }
 
     clear() {
@@ -387,8 +392,13 @@ class SpecialDishesTable extends React.Component {
         });
     };
     onOnlyVipChange(e) {
-        console.log(e.target.checked)
-        this.setState({ onlyVip: e.target.checked })
+        console.log(this.state.foodOptions)
+        console.log(this.state.foodOptions.filter(v => v.vipPrice > -1))
+        let foodOptions = this.state.foodOptions.filter(v => v.vipPrice > -1)
+        this.setState({
+            onlyVip: e.target.checked,
+            foodOptions: e.target.checked ? this.state.foodOptions.filter(v => v.vipPrice > -1) : this.state.foodOptionsNoFilter
+        })
     }
 
     render() {
