@@ -189,6 +189,7 @@ class SpecialDishesTable extends React.Component {
                 <div className={styles.proAll}>
                     <div className={styles.proRight}>
                         <div className={styles.projectIco}>
+                            <Checkbox style={{ marginLeft:2,position:'relative',top:-5 }} onChange={this.onOnlyVipChange}>{`    只显示有会员价的菜品`}</Checkbox>
                             <HualalaTreeSelect level1Title={'全部菜品'}>
                                 <HualalaSearchInput onChange={(value) => {
                                     this.handleFoodSearchInputChange(value)
@@ -515,10 +516,11 @@ class SpecialDishesTable extends React.Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     width="922px"
-                    title={[
-                        <span key="t1" style={{ marginRight: 20 }}>选择特价菜品</span>,
-                        <Checkbox key="t2" style={{ fontSize: 14 }} onChange={this.onOnlyVipChange}>只显示有会员价的菜品</Checkbox>
-                    ]}
+                    title={`        选择特价菜品`}
+                    // title={[
+                    //     <span key="t1" style={{ marginRight: 20 }}>选择特价菜品</span>,
+                    //     <Checkbox key="t2" style={{ fontSize: 14 }} onChange={this.onOnlyVipChange}>只显示有会员价的菜品</Checkbox>
+                    // ]}
                 >
                     <div style={{ width: '100%' }}>
                         {this.renderDishesSelectionBox()}
