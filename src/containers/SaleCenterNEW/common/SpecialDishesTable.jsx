@@ -473,7 +473,7 @@ class SpecialDishesTable extends React.Component {
                 width: 90,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return record.newPrice == -1 ? '' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                    return record.newPrice == -1 ? '100.00%' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
                 },
             },
             {
@@ -483,7 +483,7 @@ class SpecialDishesTable extends React.Component {
                 key: 'newPrice',
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return record.newPrice == -1 ? '' : record.newPrice
+                    return record.newPrice == -1 ? record.price : record.newPrice
                 },
             },
         ];
