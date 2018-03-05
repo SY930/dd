@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import { Row, Col, Modal, Form, Select, Input, message, TreeSelect } from 'antd';
 import styles from './GiftAdd.less';
 import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
@@ -448,7 +448,7 @@ class GiftAddModalStep extends React.Component {
                 params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
             }
             if (type === 'add') {
-                callServer = 'addGift_dkl';
+                callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID == '-1') {
                     params = _.omit(params, 'brandID');
                 } else {
@@ -456,7 +456,7 @@ class GiftAddModalStep extends React.Component {
                     params.giftName = `${brandJSON.label || ''}${values.giftName}`;
                 }
             } else if (type == 'edit') {
-                callServer = 'updateGift_dkl';
+                callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
             params.foodNameList = foodNameList instanceof Array ? foodNameList.join(',') : foodNameList;
@@ -466,7 +466,7 @@ class GiftAddModalStep extends React.Component {
             });
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
-            fetchData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
+            axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
                 this.setState({
                     finishLoading: false,
                 });
