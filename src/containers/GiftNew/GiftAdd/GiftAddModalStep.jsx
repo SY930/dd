@@ -473,9 +473,6 @@ class GiftAddModalStep extends React.Component {
                 if (data) {
                     message.success('成功', 3);
                     this.handleCancel(cb);
-                } else {
-                    message.success('失败', 3);
-                    this.handleCancel();
                 }
                 if (type == 'edit') {
                     const { params, FetchGiftList } = this.props;
