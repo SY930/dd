@@ -192,8 +192,8 @@ export const getSendorUsedListSuccessAC = (opt) => {
 
 export const FetchSendorUsedList = (opts) => {
     return (dispatch) => {
-        return fetchData('getGiftUsageInfo_dkl', { ...opts.params }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getSendorUsedListSuccessAC({

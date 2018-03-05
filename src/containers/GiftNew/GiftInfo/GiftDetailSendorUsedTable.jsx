@@ -138,8 +138,8 @@ class GiftSendOrUsedCount extends React.Component {
         if (quotaList) {
             const _quotaList = quotaList.toJS();
             if (giftType === '80') {
-                const { giftUsageList = [] } = _quotaList;
-                giftUsageList.map((d, i) => {
+                const { couponUsageList = [] } = _quotaList;
+                couponUsageList.map((d, i) => {
                     d.key = i;
                     d.num = i + 1;
                     d.customerName = d.customerName ? d.customerName : '';
@@ -150,15 +150,15 @@ class GiftSendOrUsedCount extends React.Component {
                     return d;
                 });
                 this.setState({
-                    dataSource: giftUsageList,
+                    dataSource: couponUsageList,
                     loading: false,
                     pageNo: _quotaList.pageNo,
                     pageSize: _quotaList.pageSize,
                     total: _quotaList.totalSize,
                 });
             } else {
-                const { giftUsageList = [] } = _quotaList;
-                giftUsageList.map((d, i) => {
+                const { couponUsageList = [] } = _quotaList;
+                couponUsageList.map((d, i) => {
                     d.key = i;
                     d.num = (_quotaList.pageNo - 1) * _quotaList.pageSize + i + 1;
                     d.customerName = d.customerName ? d.customerName : '';
@@ -169,7 +169,7 @@ class GiftSendOrUsedCount extends React.Component {
                     return d;
                 });
                 this.setState({
-                    dataSource: giftUsageList,
+                    dataSource: couponUsageList,
                     loading: false,
                     pageNo: _quotaList.pageNo,
                     pageSize: _quotaList.pageSize,
