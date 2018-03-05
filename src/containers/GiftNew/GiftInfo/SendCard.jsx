@@ -24,7 +24,7 @@ class SendCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            loading: false,
             dataSource: [],
             cardProps: {},
             total: 2,
@@ -241,6 +241,10 @@ class SendCard extends React.Component {
         }
         this.setState({
             loading: true,
+        },()=>{
+            setTimeout(()=>{
+                this.setState({loading: false,})
+            },0)
         });
         return FetchQuotaListAC({
             params,
