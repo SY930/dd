@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
@@ -225,7 +225,7 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                fetchData('removeGift_dkl', { giftItemID }).then((data) => {
+                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }).then((data) => {
                     message.success('此礼品删除成功');
                     const { queryParams } = this.state;
                     const { FetchGiftList } = this.props;
