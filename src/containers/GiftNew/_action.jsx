@@ -242,8 +242,8 @@ const getGiftSortSuccessAC = (opt) => {
 };
 export const FetchGiftSort = (opts) => {
     return (dispatch) => {
-        return fetchData('getSortedGifts_dkl', { ...opts }, null, {
-            path: 'crmGiftTypes',
+        return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
+            path: 'data.crmGiftTypes',
         })
             .then((records) => {
                 dispatch(getGiftSortSuccessAC({

@@ -8,7 +8,7 @@ import GiftCfg from '../../../constants/Gift';
 import Moment from 'moment';
 import GiftAddModalStep from './GiftAddModalStep';
 import GiftAddModal from './GiftAddModal';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
 import Authority from '../../../components/common/Authority';
 import {
@@ -42,7 +42,7 @@ class GiftType extends React.Component {
     getData(params = {}) {
         const { user } = this.props;
         params.groupID = user.accountInfo.groupID;
-        fetchData('getGifts_dkl', params, null, { path: 'data.crmGiftList' }).then((gifts) => {
+        axiosData('/coupon/couponService_getBoards.ajax', params, null, { path: 'data' }).then((gifts) => {
             // console.log('gifts,', gifts);
             if (gifts === undefined) {
                 return;
