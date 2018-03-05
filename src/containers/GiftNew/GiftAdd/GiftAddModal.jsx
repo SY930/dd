@@ -105,7 +105,6 @@ class GiftAddModal extends React.Component {
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
-                debugger
                 this.setState({
                     finishLoading: false,
                 });

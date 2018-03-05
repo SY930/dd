@@ -673,7 +673,6 @@ export function axiosData(api, params, cache, {
         ...(groupID ? { groupID, _groupID: groupID } : {}),
         ...params,
     };
-    debugger
     return axios.post('/api/v1/universal', {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         method: api,
@@ -681,7 +680,6 @@ export function axiosData(api, params, cache, {
         data: reqParams
     })
         .then(json => {
-            debugger
             const { code, message } = json;
             if (code !== '000') {
                 Modal.error({
@@ -700,7 +698,6 @@ export function axiosData(api, params, cache, {
                     if (!ret) return ret;
                     return ret[path];
                 }, json);
-                debugger
                 return Promise.resolve(data);
             }
         })

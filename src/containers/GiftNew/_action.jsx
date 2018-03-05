@@ -1,4 +1,4 @@
-import { fetchData } from '../../helpers/util';
+import { fetchData, axiosData } from '../../helpers/util';
 
 export const GIFT_NEW_FETCH_LIST_BEGIN = 'gift new:: fetch list';
 export const GIFT_NEW_FETCH_LIST_OK = 'gift new :: fetch list ok';
@@ -42,8 +42,8 @@ const updateGiftListParams = (opt) => {
 export const FetchGiftList = (opts) => {
     return (dispatch) => {
         dispatch(getGiftListBegin(true));
-        return fetchData('getGifts_dkl', { ...opts }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getGiftListSuccessAC({
