@@ -337,3 +337,18 @@ export const FetchQuotaCardBatchNo = (opts) => {
             });
     }
 };
+ // 券适用店铺查询 ,暂时无用{groupID:10890,giftItemID: '6526002596388280970' }-->data:{couponShopList:[]}
+ 
+ export const queryCouponShopList = (opts) => {
+    return (dispatch) => {
+        return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
+            path: 'data',
+        })
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+};

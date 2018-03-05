@@ -20,6 +20,7 @@ import {
     UpdateDetailModalVisible,
     FetchSharedGifts,
     emptyGetSharedGifts,
+    queryCouponShopList,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -204,8 +205,9 @@ class GiftDetailTable extends Component {
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         this.setState({ visibleEdit: true, editGift: gift });
-        const { FetchSharedGifts } = this.props;
+        const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
+        // queryCouponShopList({ groupID: this.props.user.accountInfo.groupID, giftItemID: rec.giftItemID }); //券适用店铺查询 ,暂时无用
         // 请求获取promotionList--券活动
         gift.value != 80 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -448,6 +450,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(toggleIsUpdateAC(opts))
         },
         fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
+        queryCouponShopList: (opts) => dispatch(queryCouponShopList(opts)),
     };
 }
 
