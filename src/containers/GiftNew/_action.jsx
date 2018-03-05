@@ -264,8 +264,8 @@ const getSharedGiftsSuccessAC = (opt) => {
 };
 export const FetchSharedGifts = (opts) => {
     return (dispatch) => {
-        return fetchData('getSharedGifts', { ...opts }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getSharedGiftsSuccessAC({

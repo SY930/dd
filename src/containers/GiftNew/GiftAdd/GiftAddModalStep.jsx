@@ -140,7 +140,7 @@ class GiftAddModalStep extends React.Component {
         }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
-            sharedGifts: this.proSharedGifts(_sharedGifts.giftShareList),
+            sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
     }
     proSharedGifts = (sharedGifts = []) => {
