@@ -133,6 +133,7 @@ const FIRST_KEYS = {
     }],
     '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
     '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
+    '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark'] }],
 };
 const SECOND_KEYS = {
     '电子代金券': [{
@@ -150,6 +151,10 @@ const SECOND_KEYS = {
     '活动券': [{
         col: { span: 24, pull: 2 },
         keys: ['isMapTotrd', 'promotionID'],
+    }],
+    '线上礼品卡': [{
+        col: { span: 24, pull: 2 },
+        keys: ['isMapTotrd', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
