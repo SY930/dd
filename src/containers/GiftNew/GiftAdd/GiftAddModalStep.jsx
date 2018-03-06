@@ -652,7 +652,7 @@ class GiftAddModalStep extends React.Component {
                 render: () => describe,
             },
             giftValue: {
-                label: value == '10' ? '礼品价值' : '可抵扣金额',
+                label: value == '10' || value == '91' ? '礼品价值' : '可抵扣金额',
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
@@ -830,6 +830,37 @@ class GiftAddModalStep extends React.Component {
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
+            },
+            price: {
+                label: '礼品售价',
+                type: 'text',
+                placeholder: '请输入金额',
+                disabled: type !== 'add',
+                surfix: '元',
+                rules: [{ required: true, message: `礼品售价不能为空` }, {
+                    validator: (rule, v, cb) => {
+                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '整数不超过8位，小数不超过2位',
+                }],
+            },
+            'validityDays':{
+                label: '有效期',
+                type: 'text',
+                placeholder: '不填为不限制有效期',
+                surfix: '天',
+                rules: [{ required: false, message: `请输入数字` }, {
+                    validator: (rule, v, cb) => {
+                        if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请输入数字，不超过8位',
+                }],
             },
         };
         let formData = {};
