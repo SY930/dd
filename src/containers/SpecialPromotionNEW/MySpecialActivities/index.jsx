@@ -296,10 +296,11 @@ class MySpecialActivities extends React.Component {
                 case 'success':
                     if (_promoitonList.data) {
                         const _envIsVip = HUALALA.ENVIRONMENT === 'production-release';
-                        const data = _envIsVip ? _promoitonList.data.filter((activity) => {
-                            // 隐藏1个卡片
-                            return activity.eventWay != '63'
-                        }) : _promoitonList.data;
+                        // const data = _envIsVip ? _promoitonList.data.filter((activity) => {
+                        //     // 隐藏1个卡片
+                        //     return activity.eventWay != '63'
+                        // }) : _promoitonList.data;
+                        const data = _promoitonList.data;
                         this.setState({
                             loading: false,
                             dataSource: data.map((activity, index) => {
@@ -429,7 +430,7 @@ class MySpecialActivities extends React.Component {
         if (HUALALA.ENVIRONMENT !== 'production-release') {
             count = 15;
         } else {
-            count = 13;
+            count = 15;
         }
         Cfg.eventWay.forEach((item, index) => {
             if (index <= count) {

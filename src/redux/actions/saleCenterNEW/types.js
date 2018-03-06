@@ -449,11 +449,11 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '64',
         },
     ];
-    if (HUALALA.ENVIRONMENT != 'production-release') {
+    // if (HUALALA.ENVIRONMENT != 'production-release') {
         return basic.concat(extral);
-    }
+    // }
 
-    return basic;
+    // return basic;
 }());
 
 export const arrayTransformAdapter = function (source) {
