@@ -38,7 +38,7 @@ class CouponTrdChannelStockNums extends React.Component {
         if(this.props.value){
             couponTrdChannelStockNums = JSON.parse(this.props.value);
             couponTrdChannelStockNums.forEach((channel, index)=>{
-                checkedArr[index] = channel.trdStockNum > 0
+                // checkedArr[index] = channel.trdStockNum > 0
             })
             this.setState({couponTrdChannelStockNums, checkedArr})
         }
@@ -49,7 +49,7 @@ class CouponTrdChannelStockNums extends React.Component {
         if(nextProps.value){
             couponTrdChannelStockNums = JSON.parse(nextProps.value);
             couponTrdChannelStockNums.forEach((channel, index)=>{
-                checkedArr[index] = channel.trdStockNum > 0
+                // checkedArr[index] = channel.trdStockNum > 0
             })
             this.setState({couponTrdChannelStockNums, checkedArr})
         }
