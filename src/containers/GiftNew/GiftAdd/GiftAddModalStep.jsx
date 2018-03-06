@@ -120,7 +120,7 @@ class GiftAddModalStep extends React.Component {
         const { secondKeys } = this.state;
         if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
-                secondKeys[name][0].keys = ['isMapTotrd','isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
+                secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
                 this.setState({ secondKeys })
             }
         }
@@ -443,7 +443,7 @@ class GiftAddModalStep extends React.Component {
                     trdTemplateIDLabel: ((this.state.trdTemplateInfoList || []).find(template => {
                         return template.trdGiftItemID == formValues.trdTemplateID
                     }) || {}).trdGiftName ||
-                    (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
+                        (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
                 params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
             }
@@ -613,6 +613,43 @@ class GiftAddModalStep extends React.Component {
             </FormItem>
         )
     }
+    // renderTransferLimitType(decorator) {
+    //     const { groupTypes } = this.state;
+    //     return (
+    //         <Row>
+    //             <Col span={11}>
+    //                 <FormItem>
+    //                     {decorator({
+    //                         key: 'transferLimitType',
+    //                         // rule: [{ required: true, message: '请选择品牌' }],
+    //                         initialValue: '-1',
+    //                     })(<Select
+    //                         className="giftNameStep"
+    //                         // placeholder={'请选择品牌名称'}
+    //                         getPopupContainer={() => document.querySelector('.giftNameStep')}
+    //                     >
+    //                         {
+    //                             [{label:'可转赠',value:'-1'},{label:'不可转赠',value:'0'}].map((t, i) => {
+    //                                 return <Option key={t.label} value={t.value}>{t.label}</Option>
+    //                             })
+    //                         }
+    //                     </Select>)}
+    //                 </FormItem>
+    //             </Col>
+    //             <Col span={1} offset={1}>-</Col>
+    //             <Col span={11}>
+    //                 <FormItem style={{ marginBottom: 0 }}>
+    //                     {decorator({
+    //                         key: 'giftName',
+    //                         rules: [{ required: true, message: '礼品名称不能为空' },
+    //                         { max: 50, message: '请输入不超过50个字符的名称' }],
+    //                     })(<Input size="large" placeholder="请输入礼品名称" />)}
+    //                 </FormItem>
+    //             </Col>
+    //         </Row>
+    //     )
+
+    // }
 
     // afterClose = () => {
     // 	this.setState({
@@ -847,20 +884,67 @@ class GiftAddModalStep extends React.Component {
                     message: '整数不超过8位，小数不超过2位',
                 }],
             },
-            'validityDays':{
+            validityDays: {
                 label: '有效期',
                 type: 'text',
                 placeholder: '不填为不限制有效期',
                 surfix: '天',
-                rules: [{ required: false, message: `请输入数字` }, {
-                    validator: (rule, v, cb) => {
-                        if (!/^\+?\d{0,8}$/.test(Number(v))) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请输入数字，不超过8位',
-                }],
+                // rules: [{ required: false, message: `请输入数字` }, {
+                //     validator: (rule, v, cb) => {
+                //         if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '请输入数字，不超过8位',
+                // }],
+            },
+            transferLimitType: {
+                label: '转赠设置',
+                type: 'custom',
+                render: (decorator, form, formData) => {
+                    return (
+                        <Row>
+                            <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -2 }}>
+                                <FormItem>
+                                    {decorator({
+                                        key: 'transferLimitType',
+                                        initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
+                                    })(<Select>
+                                        <Option value="-1">可转增</Option>
+                                        <Option value="0">不可转增</Option>
+                                    </Select>)}
+                                </FormItem>
+                            </Col>
+                            {
+                                console.log(this.state.values)
+                            }
+                            {
+                                this.state.values.transferLimitType == 0 ? null :
+                                <div>
+                                <Col span={1}></Col>
+                                <Col span={12}>
+                                    <FormItem>
+                                        {decorator({
+                                            key: 'transferLimitTypeValue',
+                                            initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType }` : '',
+                                            rules: [{
+                                                required: true,
+                                                pattern: /^[1-9]\d{0,9}$/,
+                                                message: '请输入1-99999999间的整数',
+                                            }],
+                                        })(<Input
+                                            placeholder={'请输入限定次数'}
+                                            addonAfter='次'
+                                        />)}
+                                    </FormItem>
+                                </Col>
+
+                                </div>
+                            }
+                        </Row>
+                    )
+                },
             },
         };
         let formData = {};
