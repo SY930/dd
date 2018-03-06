@@ -402,6 +402,7 @@ class GiftAddModalStep extends React.Component {
         const { values, groupTypes, foodNameList, isFoodCatNameList } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
+            debugger
             if (err) return;
             let params = _.assign({}, values, formValues, { giftType: value });
             params = this.formatFormData(params);
@@ -458,6 +459,9 @@ class GiftAddModalStep extends React.Component {
             } else if (type == 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
+            }
+            if (formValues.transferLimitType == -1) {
+                params.transferLimitType = formValues.transferLimitTypeValue
             }
             params.foodNameList = foodNameList instanceof Array ? foodNameList.join(',') : foodNameList;
             params.isFoodCatNameList = isFoodCatNameList == '0' ? '1' : '0';
@@ -613,43 +617,6 @@ class GiftAddModalStep extends React.Component {
             </FormItem>
         )
     }
-    // renderTransferLimitType(decorator) {
-    //     const { groupTypes } = this.state;
-    //     return (
-    //         <Row>
-    //             <Col span={11}>
-    //                 <FormItem>
-    //                     {decorator({
-    //                         key: 'transferLimitType',
-    //                         // rule: [{ required: true, message: '请选择品牌' }],
-    //                         initialValue: '-1',
-    //                     })(<Select
-    //                         className="giftNameStep"
-    //                         // placeholder={'请选择品牌名称'}
-    //                         getPopupContainer={() => document.querySelector('.giftNameStep')}
-    //                     >
-    //                         {
-    //                             [{label:'可转赠',value:'-1'},{label:'不可转赠',value:'0'}].map((t, i) => {
-    //                                 return <Option key={t.label} value={t.value}>{t.label}</Option>
-    //                             })
-    //                         }
-    //                     </Select>)}
-    //                 </FormItem>
-    //             </Col>
-    //             <Col span={1} offset={1}>-</Col>
-    //             <Col span={11}>
-    //                 <FormItem style={{ marginBottom: 0 }}>
-    //                     {decorator({
-    //                         key: 'giftName',
-    //                         rules: [{ required: true, message: '礼品名称不能为空' },
-    //                         { max: 50, message: '请输入不超过50个字符的名称' }],
-    //                     })(<Input size="large" placeholder="请输入礼品名称" />)}
-    //                 </FormItem>
-    //             </Col>
-    //         </Row>
-    //     )
-
-    // }
 
     // afterClose = () => {
     // 	this.setState({
@@ -921,26 +888,26 @@ class GiftAddModalStep extends React.Component {
                             }
                             {
                                 this.state.values.transferLimitType == 0 ? null :
-                                <div>
-                                <Col span={1}></Col>
-                                <Col span={12}>
-                                    <FormItem>
-                                        {decorator({
-                                            key: 'transferLimitTypeValue',
-                                            initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType }` : '',
-                                            rules: [{
-                                                required: true,
-                                                pattern: /^[1-9]\d{0,9}$/,
-                                                message: '请输入1-99999999间的整数',
-                                            }],
-                                        })(<Input
-                                            placeholder={'请输入限定次数'}
-                                            addonAfter='次'
-                                        />)}
-                                    </FormItem>
-                                </Col>
+                                    <div>
+                                        <Col span={1}></Col>
+                                        <Col span={12}>
+                                            <FormItem>
+                                                {decorator({
+                                                    key: 'transferLimitTypeValue',
+                                                    initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
+                                                    rules: [{
+                                                        required: true,
+                                                        pattern: /^[1-9]\d{0,9}$/,
+                                                        message: '请输入1-99999999间的整数',
+                                                    }],
+                                                })(<Input
+                                                    placeholder={'请输入限定次数'}
+                                                    addonAfter='次'
+                                                />)}
+                                            </FormItem>
+                                        </Col>
 
-                                </div>
+                                    </div>
                             }
                         </Row>
                     )
