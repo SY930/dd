@@ -154,7 +154,7 @@ const SECOND_KEYS = {
     }],
     '线上礼品卡': [{
         col: { span: 24, pull: 2 },
-        keys: ['shopNames','transferLimitType',],
+        keys: ['shopNames', 'transferLimitType', 'couponTrdChannelStockNums'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

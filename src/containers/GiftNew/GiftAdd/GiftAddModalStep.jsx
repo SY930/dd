@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { fetchData, axiosData } from '../../../helpers/util';
-import { Row, Col, Modal, Form, Select, Input, message, TreeSelect } from 'antd';
+import { Row, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox } from 'antd';
 import styles from './GiftAdd.less';
 import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
@@ -22,6 +22,50 @@ import { saleCenterResetDetailInfoAC, fetchAllPromotionListAC, queryUnbindCoupon
 const FormItem = Form.Item;
 const Option = Select.Option;
 const TreeNode = TreeSelect.TreeNode;
+
+
+class CouponTrdChannelStockNums extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    render() {
+        const channelArr = [
+            {
+                issueChannel: 1,
+                label: '微信小程序',
+                trdStockNum: ''
+            },
+            {
+                issueChannel: 1,
+                label: '支付宝',
+                trdStockNum: ''
+            },
+        ]
+        return (
+            <div style={{ marginTop: -2 }}>
+                {
+                    channelArr.map((channel, index) => {
+                        return (
+                            <FormItem style={{ marginBottom: -9 }}>
+                                <Col span={6}>
+                                    <Checkbox onChange={(e) => {
+                                        console.log(e.target.checked)
+                                    }}>{channel.label}</Checkbox>
+                                </Col>
+                                <Col span={4} offset={2}>总库存量</Col>
+                                <Col span={12}>
+                                    <Input onChange={(e) => {
+                                        console.log(e.target.value)
+                                    }} />
+                                </Col>
+                            </FormItem>
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+}
 class GiftAddModalStep extends React.Component {
     constructor(props) {
         super(props);
@@ -402,7 +446,7 @@ class GiftAddModalStep extends React.Component {
         const { values, groupTypes, foodNameList, isFoodCatNameList } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
-            debugger
+            // debugger
             if (err) return;
             let params = _.assign({}, values, formValues, { giftType: value });
             params = this.formatFormData(params);
@@ -615,6 +659,50 @@ class GiftAddModalStep extends React.Component {
                     decorator({})(<GiftPromotion promotionID={promotionID} type={type} />)
                 }
             </FormItem>
+        )
+    }
+    renderCouponTrdChannelStockNums(decorator, form, formData) {
+        return (
+            <CouponTrdChannelStockNums />
+            // <Row>
+            //     <Col span={11} style={{ marginTop: -2 }}>
+            //         <FormItem>
+            //             {decorator({
+            //                 key: 'couponTrdChannelStockNums',
+            //                 initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
+            //             })(<Select>
+            //                 <Option value="-1">可转增</Option>
+            //                 <Option value="0">不可转增</Option>
+            //             </Select>)}
+            //         </FormItem>
+            //     </Col>
+            //     {
+            //         console.log(this.state.values)
+            //     }
+            //     {
+            //         this.state.values.transferLimitType == 0 ? null :
+            //             <div>
+            //                 <Col span={1}></Col>
+            //                 <Col span={12}>
+            //                     <FormItem>
+            //                         {decorator({
+            //                             key: 'transferLimitTypeValue',
+            //                             initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
+            //                             rules: [{
+            //                                 required: true,
+            //                                 pattern: /^[1-9]\d{0,9}$/,
+            //                                 message: '请输入1-99999999间的整数',
+            //                             }],
+            //                         })(<Input
+            //                             placeholder={'请输入限定次数'}
+            //                             addonAfter='次'
+            //                         />)}
+            //                     </FormItem>
+            //                 </Col>
+
+            //             </div>
+            //     }
+            // </Row>
         )
     }
 
@@ -912,6 +1000,11 @@ class GiftAddModalStep extends React.Component {
                         </Row>
                     )
                 },
+            },
+            couponTrdChannelStockNums: {
+                label: '投放渠道',
+                type: 'custom',
+                render: (decorator, form, formData) => this.renderCouponTrdChannelStockNums(decorator, form, formData)
             },
         };
         let formData = {};
