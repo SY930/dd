@@ -1003,8 +1003,8 @@ class GiftAddModalStep extends React.Component {
                                         key: 'transferLimitType',
                                         initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
                                     })(<Select>
-                                        <Option value="-1">可转增</Option>
-                                        <Option value="0">不可转增</Option>
+                                        <Option value="-1">可转赠</Option>
+                                        <Option value="0">不可转赠</Option>
                                     </Select>)}
                                 </FormItem>
                             </Col>
