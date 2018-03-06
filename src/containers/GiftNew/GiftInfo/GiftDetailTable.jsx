@@ -320,6 +320,7 @@ class GiftDetailTable extends Component {
                 case '20':
                 case '80':
                 case '100':
+                case '91':
                     return <GiftAddModalStep {...editProps} />;
                 case '30':
                 case '40':
