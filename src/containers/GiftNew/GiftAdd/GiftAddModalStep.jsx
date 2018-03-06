@@ -27,36 +27,57 @@ const TreeNode = TreeSelect.TreeNode;
 class CouponTrdChannelStockNums extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            couponTrdChannelStockNums: [{ issueChannel: 1, trdStockNum: '' }, { issueChannel: 2, trdStockNum: '' }],
+            checkedArr: [true, true]
+        }
+    }
+    componentDidMount() {
+        console.log('did', this.props.value)
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('will', this.props.value, nextProps.value)
+    }
+    handleCheckboxChange(index, checked) {
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        checkedArr[index] = checked;
+        if (!checked) couponTrdChannelStockNums[index].trdStockNum = '';
+        this.setState({ couponTrdChannelStockNums, checkedArr });
+        console.log(couponTrdChannelStockNums)
+        this.props.onChange(couponTrdChannelStockNums)
+    }
+    handleInputChange(index, value) {
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        couponTrdChannelStockNums[index].trdStockNum = checkedArr[index] ? value : '';
+        this.setState({ couponTrdChannelStockNums });
+        console.log(couponTrdChannelStockNums)
+        this.props.onChange(couponTrdChannelStockNums)
     }
     render() {
-        const channelArr = [
-            {
-                issueChannel: 1,
-                label: '微信小程序',
-                trdStockNum: ''
-            },
-            {
-                issueChannel: 1,
-                label: '支付宝',
-                trdStockNum: ''
-            },
-        ]
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
         return (
             <div style={{ marginTop: -2 }}>
                 {
-                    channelArr.map((channel, index) => {
+                    couponTrdChannelStockNums.map((channel) => {
                         return (
-                            <FormItem style={{ marginBottom: -9 }}>
+                            <FormItem style={{ marginBottom: -9 }} key={channel.issueChannel}>
                                 <Col span={6}>
-                                    <Checkbox onChange={(e) => {
-                                        console.log(e.target.checked)
-                                    }}>{channel.label}</Checkbox>
+                                    <Checkbox
+                                        checked={checkedArr[channel.issueChannel - 1]}
+                                        onChange={(e) => {
+                                            this.handleCheckboxChange(channel.issueChannel - 1, e.target.checked)
+                                        }}>
+                                        {channel.issueChannel == 1 ? '微信小程序' : '支付宝'}
+                                    </Checkbox>
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
                                 <Col span={12}>
-                                    <Input onChange={(e) => {
-                                        console.log(e.target.value)
-                                    }} />
+                                    <Input
+                                        disabled={!checkedArr[channel.issueChannel - 1]}
+                                        value={channel.trdStockNum}
+                                        onChange={(e) => {
+                                            this.handleInputChange(channel.issueChannel - 1, e.target.value)
+                                        }} />
                                 </Col>
                             </FormItem>
                         )
@@ -663,7 +684,7 @@ class GiftAddModalStep extends React.Component {
     }
     renderCouponTrdChannelStockNums(decorator, form, formData) {
         return (
-            <CouponTrdChannelStockNums />
+            decorator({})(<CouponTrdChannelStockNums />)
             // <Row>
             //     <Col span={11} style={{ marginTop: -2 }}>
             //         <FormItem>
@@ -972,7 +993,7 @@ class GiftAddModalStep extends React.Component {
                                 </FormItem>
                             </Col>
                             {
-                                console.log(this.state.values)
+                                // console.log(this.state.values)
                             }
                             {
                                 this.state.values.transferLimitType == 0 ? null :
