@@ -43,15 +43,15 @@ class CouponTrdChannelStockNums extends React.Component {
         checkedArr[index] = checked;
         if (!checked) couponTrdChannelStockNums[index].trdStockNum = '';
         this.setState({ couponTrdChannelStockNums, checkedArr });
-        console.log(couponTrdChannelStockNums)
-        this.props.onChange(couponTrdChannelStockNums)
+        console.log(JSON.stringify(couponTrdChannelStockNums))
+        this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
     }
     handleInputChange(index, value) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         couponTrdChannelStockNums[index].trdStockNum = checkedArr[index] ? value : '';
         this.setState({ couponTrdChannelStockNums });
-        console.log(couponTrdChannelStockNums)
-        this.props.onChange(couponTrdChannelStockNums)
+        console.log(JSON.stringify(couponTrdChannelStockNums))
+        this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
     }
     render() {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
