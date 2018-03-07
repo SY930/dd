@@ -667,14 +667,14 @@ export const generateUniqID = uuid
 
 export function axiosData(api, params, cache, {
     path = 'data.records',  // path for response
-} = {}) {
+} = {}, domain='HTTP_SERVICE_URL_CRM') {
     const { groupID } = getAccountInfo();
     const reqParams = {
         ...(groupID ? { groupID, _groupID: groupID } : {}),
         ...params,
     };
     return axios.post('/api/v1/universal', {
-        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        service: domain, //? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
         method: api,
         type: 'post',
         data: reqParams

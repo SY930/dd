@@ -723,48 +723,8 @@ class GiftAddModalStep extends React.Component {
     renderCouponTrdChannelStockNums(decorator, form, formData) {
         return (
             decorator({})(<CouponTrdChannelStockNums form={form} />)
-            // <Row>
-            //     <Col span={11} style={{ marginTop: -2 }}>
-            //         <FormItem>
-            //             {decorator({
-            //                 key: 'couponTrdChannelStockNums',
-            //                 initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
-            //             })(<Select>
-            //                 <Option value="-1">可转增</Option>
-            //                 <Option value="0">不可转增</Option>
-            //             </Select>)}
-            //         </FormItem>
-            //     </Col>
-            //     {
-            //         console.log(this.state.values)
-            //     }
-            //     {
-            //         this.state.values.transferLimitType == 0 ? null :
-            //             <div>
-            //                 <Col span={1}></Col>
-            //                 <Col span={12}>
-            //                     <FormItem>
-            //                         {decorator({
-            //                             key: 'transferLimitTypeValue',
-            //                             initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
-            //                             rules: [{
-            //                                 required: true,
-            //                                 pattern: /^[1-9]\d{0,9}$/,
-            //                                 message: '请输入1-99999999间的整数',
-            //                             }],
-            //                         })(<Input
-            //                             placeholder={'请输入限定次数'}
-            //                             addonAfter='次'
-            //                         />)}
-            //                     </FormItem>
-            //                 </Col>
-
-            //             </div>
-            //     }
-            // </Row>
         )
     }
-
     // afterClose = () => {
     // 	this.setState({
     // 		modalKey: Math.random()
