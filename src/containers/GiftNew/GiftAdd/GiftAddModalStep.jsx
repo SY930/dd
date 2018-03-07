@@ -83,7 +83,7 @@ class CouponTrdChannelStockNums extends React.Component {
                 {
                     couponTrdChannelStockNums.map((channel, index) => {
                         return (
-                            <FormItem style={{ marginBottom: -2, display: index == 0 ? 'block' : 'none' }} key={channel.issueChannel}>
+                            <FormItem style={{ marginBottom: -2, display: index == 0 ? 'block' : 'none' }} key={index}>
                                 <Col span={6}>
                                     <Checkbox
                                         disabled={true} // 暂时就微信一个渠道，不许取消
@@ -91,7 +91,7 @@ class CouponTrdChannelStockNums extends React.Component {
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
                                         }}>
-                                        {channel.issueChannel == 1 ? '微信小程序' : '支付宝'}
+                                        {index == 0 ? '微信小程序' : '支付宝'}
                                     </Checkbox>
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
