@@ -30,35 +30,33 @@ class CouponTrdChannelStockNums extends React.Component {
         this.state = {
             couponTrdChannelStockNums: [
                 { trdPartyPlatformID: 1, trdStockNum: '' },
-                { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
+                // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
             ],
             checkedArr: [true, false]
         }
     }
     componentDidMount() {
-        let { couponTrdChannelStockNums } = this.state;
-        // console.log('did', this.props.value)
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
         if (this.props.value) {
-            // couponTrdChannelStockNums = this.props.value;
+            checkedArr = [false, false]
             couponTrdChannelStockNums.forEach(channel => {
                 let hadSet = this.props.value.find(_chan => {
-                    _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
+                    return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
                 });
                 if (hadSet) {
+                    checkedArr[channel.trdPartyPlatformID - 1] = true;
                     channel.trdStockNum = hadSet.trdStockNum
                 }
             })
-            this.setState({ couponTrdChannelStockNums })
+            this.setState({ couponTrdChannelStockNums, checkedArr })
         }
     }
     componentWillReceiveProps(nextProps) {
         let { couponTrdChannelStockNums } = this.state;
-        // console.log('will', this.props.value, nextProps.value)
         if (nextProps.value) {
-            // couponTrdChannelStockNums = nextProps.value;
             couponTrdChannelStockNums.forEach(channel => {
                 let hadSet = nextProps.value.find(_chan => {
-                    _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
+                    return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
                 });
                 if (hadSet) {
                     channel.trdStockNum = hadSet.trdStockNum
@@ -94,13 +92,11 @@ class CouponTrdChannelStockNums extends React.Component {
                             <FormItem
                                 style={{
                                     marginBottom: -2,
-                                    display: index == 0 ? 'block' : 'none'
                                 }}
                                 key={index}
                             >
                                 <Col span={6}>
                                     <Checkbox
-                                        disabled={true} // 暂时就微信一个渠道，不许取消
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
@@ -117,14 +113,11 @@ class CouponTrdChannelStockNums extends React.Component {
                                                     required: checkedArr[index],
                                                     message: '库存总量必须在1-9999999999之间',
                                                     pattern: /^[1-9]\d{0,9}$/,
-                                                    // },{
-                                                    //     validator: this.validatorInput
                                                 }],
                                                 initialValue: channel.trdStockNum,
                                             })(
                                                 <Input
                                                     disabled={!checkedArr[index]}
-                                                    // value={channel.trdStockNum}
                                                     onChange={(e) => {
                                                         this.handleInputChange(index, e.target.value)
                                                     }} />
