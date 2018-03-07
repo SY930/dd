@@ -542,13 +542,15 @@ class GiftAddModalStep extends React.Component {
             }
             if (formValues.couponTrdChannelStockNums) {
                 // 线上礼品卡
-                let issueChannel = []
+                let issueChannel = [], couponTrdChannelStockNums=[];
                 formValues.couponTrdChannelStockNums.map((channel, index) => {
                     if (channel.trdStockNum > 0) {
-                        issueChannel.push(channel.trdPartyPlatformID)
+                        issueChannel.push(channel.trdPartyPlatformID);
+                        couponTrdChannelStockNums.push(channel);
                     }
                 })
-                params.issueChannel = issueChannel.join(',')
+                params.issueChannel = issueChannel.join(',');
+                params.couponTrdChannelStockNums = couponTrdChannelStockNums;
             }
             if (value != 80) {
                 params.extraInfo = JSON.stringify({
