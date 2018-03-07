@@ -35,29 +35,33 @@ class CouponTrdChannelStockNums extends React.Component {
     componentDidMount() {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         console.log('did', this.props.value)
-        if(this.props.value){
+        if (this.props.value) {
             couponTrdChannelStockNums = JSON.parse(this.props.value);
-            couponTrdChannelStockNums.forEach((channel, index)=>{
+            couponTrdChannelStockNums.forEach((channel, index) => {
                 // checkedArr[index] = channel.trdStockNum > 0
             })
-            this.setState({couponTrdChannelStockNums, checkedArr})
+            this.setState({ couponTrdChannelStockNums, checkedArr })
         }
     }
     componentWillReceiveProps(nextProps) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         console.log('will', this.props.value, nextProps.value)
-        if(nextProps.value){
+        if (nextProps.value) {
             couponTrdChannelStockNums = JSON.parse(nextProps.value);
-            couponTrdChannelStockNums.forEach((channel, index)=>{
+            couponTrdChannelStockNums.forEach((channel, index) => {
                 // checkedArr[index] = channel.trdStockNum > 0
             })
-            this.setState({couponTrdChannelStockNums, checkedArr})
+            this.setState({ couponTrdChannelStockNums, checkedArr })
         }
     }
     handleCheckboxChange(index, checked) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         checkedArr[index] = checked;
-        if (!checked) couponTrdChannelStockNums[index].trdStockNum = '';
+        if (!checked) {
+            couponTrdChannelStockNums[index].trdStockNum = '';
+            let input = 'input' + index;
+            this.props.form.setFieldsValue({[input]:''})
+        }
         this.setState({ couponTrdChannelStockNums, checkedArr });
         console.log(JSON.stringify(couponTrdChannelStockNums))
         this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
@@ -70,13 +74,14 @@ class CouponTrdChannelStockNums extends React.Component {
         this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
     }
     render() {
+        debugger
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         return (
             <div style={{ marginTop: -2 }}>
                 {
-                    couponTrdChannelStockNums.map((channel) => {
+                    couponTrdChannelStockNums.map((channel, index) => {
                         return (
-                            <FormItem style={{ marginBottom: -9 }} key={channel.issueChannel}>
+                            <FormItem style={{ marginBottom: -2 }} key={channel.issueChannel}>
                                 <Col span={6}>
                                     <Checkbox
                                         checked={checkedArr[channel.issueChannel - 1]}
@@ -88,12 +93,28 @@ class CouponTrdChannelStockNums extends React.Component {
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
                                 <Col span={12}>
-                                    <Input
-                                        disabled={!checkedArr[channel.issueChannel - 1]}
-                                        value={channel.trdStockNum}
-                                        onChange={(e) => {
-                                            this.handleInputChange(channel.issueChannel - 1, e.target.value)
-                                        }} />
+                                <FormItem>
+                                    {
+                                        this.props.form.getFieldDecorator('input' + index, {
+                                            rules: [{
+                                                required: checkedArr[channel.issueChannel - 1],
+                                                message: '库存总量必须在1-9999999999之间',
+                                                pattern: /^[1-9]\d{0,9}$/,
+                                            // },{
+                                            //     validator: this.validatorInput
+                                            }],
+                                            initialValue: channel.trdStockNum,
+                                        })(
+                                            <Input
+                                                disabled={!checkedArr[channel.issueChannel - 1]}
+                                                // value={channel.trdStockNum}
+                                                onChange={(e) => {
+                                                    this.handleInputChange(channel.issueChannel - 1, e.target.value)
+                                                }} />
+
+                                        )
+                                    }
+                                    </FormItem>
                                 </Col>
                             </FormItem>
                         )
@@ -700,7 +721,7 @@ class GiftAddModalStep extends React.Component {
     }
     renderCouponTrdChannelStockNums(decorator, form, formData) {
         return (
-            decorator({})(<CouponTrdChannelStockNums />)
+            decorator({})(<CouponTrdChannelStockNums form={form} />)
             // <Row>
             //     <Col span={11} style={{ marginTop: -2 }}>
             //         <FormItem>
@@ -1023,7 +1044,7 @@ class GiftAddModalStep extends React.Component {
                                                     rules: [{
                                                         required: true,
                                                         pattern: /^[1-9]\d{0,9}$/,
-                                                        message: '请输入1-99999999间的整数',
+                                                        message: '转赠次数不可大于9999999999',
                                                     }],
                                                 })(<Input
                                                     placeholder={'请输入限定次数'}
