@@ -29,28 +29,28 @@ class CouponTrdChannelStockNums extends React.Component {
         super(props)
         this.state = {
             couponTrdChannelStockNums: [
-                { issueChannel: 1, trdStockNum: '' },
-                { issueChannel: 2, trdStockNum: '' }//暂时隐藏支付宝
+                { trdPartyPlatformID: 1, trdStockNum: '' },
+                { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
             ],
             checkedArr: [true, false]
         }
     }
-    componentDidMount() {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
-        console.log('did', this.props.value)
-        if (this.props.value) {
-            couponTrdChannelStockNums = this.props.value;
-            this.setState({ couponTrdChannelStockNums, checkedArr })
-        }
-    }
-    componentWillReceiveProps(nextProps) {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
-        console.log('will', this.props.value, nextProps.value)
-        if (nextProps.value) {
-            couponTrdChannelStockNums = nextProps.value;
-            this.setState({ couponTrdChannelStockNums, checkedArr })
-        }
-    }
+    // componentDidMount() {
+    //     let { couponTrdChannelStockNums, checkedArr } = this.state;
+    //     console.log('did', this.props.value)
+    //     if (this.props.value) {
+    //         couponTrdChannelStockNums = this.props.value;
+    //         this.setState({ couponTrdChannelStockNums, checkedArr })
+    //     }
+    // }
+    // componentWillReceiveProps(nextProps) {
+    //     let { couponTrdChannelStockNums, checkedArr } = this.state;
+    //     console.log('will', this.props.value, nextProps.value)
+    //     if (nextProps.value) {
+    //         couponTrdChannelStockNums = nextProps.value;
+    //         this.setState({ couponTrdChannelStockNums, checkedArr })
+    //     }
+    // }
     handleCheckboxChange(index, checked) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         checkedArr[index] = checked;
@@ -75,7 +75,13 @@ class CouponTrdChannelStockNums extends React.Component {
                 {
                     couponTrdChannelStockNums.map((channel, index) => {
                         return (
-                            <FormItem style={{ marginBottom: -2, display: index == 0 ? 'block' : 'none' }} key={index}>
+                            <FormItem
+                                style={{
+                                    marginBottom: -2,
+                                    // display: index == 0 ? 'block' : 'none'
+                                }}
+                                key={index}
+                            >
                                 <Col span={6}>
                                     <Checkbox
                                         disabled={true} // 暂时就微信一个渠道，不许取消
@@ -499,7 +505,7 @@ class GiftAddModalStep extends React.Component {
         const { values, groupTypes, foodNameList, isFoodCatNameList } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
-            // debugger
+            debugger
             if (err) return;
             let params = _.assign({}, values, formValues, { giftType: value });
             params = this.formatFormData(params);
@@ -534,6 +540,16 @@ class GiftAddModalStep extends React.Component {
             }
             if (!params.isPointRate) {
                 params.pointRate = 0
+            }
+            if (formValues.couponTrdChannelStockNums) {
+                // 线上礼品卡
+                let issueChannel = []
+                formValues.couponTrdChannelStockNums.map((channel, index) => {
+                    if (channel.trdStockNum > 0) {
+                        issueChannel.push(channel.trdPartyPlatformID)
+                    }
+                })
+                params.issueChannel = issueChannel.join(',')
             }
             if (value != 80) {
                 params.extraInfo = JSON.stringify({
@@ -588,7 +604,7 @@ class GiftAddModalStep extends React.Component {
     handleGiftName(decorator) {
         const { groupTypes } = this.state;
         return (
-            <Row style={{marginTop: -6}}>
+            <Row style={{ marginTop: -6 }}>
                 <Col span={11}>
                     <FormItem>
                         {decorator({
@@ -649,7 +665,7 @@ class GiftAddModalStep extends React.Component {
             showItems: shopNames,
         };
         return (
-            <Row style={{marginBottom: shopNames.length == 0 ? -15 : 0 }}>
+            <Row style={{ marginBottom: shopNames.length == 0 ? -15 : 0 }}>
                 <Col>
                     {decorator({})(<MyProjectEditBox
                         treeProps={shopCfg}
@@ -992,7 +1008,7 @@ class GiftAddModalStep extends React.Component {
                                 this.state.values.transferLimitType == 0 ? null :
                                     <div>
                                         <Col span={1}></Col>
-                                        <Col span={12} style={{marginTop:-4}}>
+                                        <Col span={12} style={{ marginTop: -4 }}>
                                             <FormItem>
                                                 {decorator({
                                                     key: 'transferLimitTypeValue',
