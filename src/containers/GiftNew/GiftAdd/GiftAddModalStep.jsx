@@ -77,7 +77,6 @@ class CouponTrdChannelStockNums extends React.Component {
         this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
     }
     render() {
-        debugger
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         return (
             <div style={{ marginTop: -6 }}>
