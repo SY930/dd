@@ -596,7 +596,7 @@ class GiftAddModalStep extends React.Component {
     handleGiftName(decorator) {
         const { groupTypes } = this.state;
         return (
-            <Row>
+            <Row style={{marginTop: -6}}>
                 <Col span={11}>
                     <FormItem>
                         {decorator({
