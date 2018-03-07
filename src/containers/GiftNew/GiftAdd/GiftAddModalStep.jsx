@@ -30,7 +30,7 @@ class CouponTrdChannelStockNums extends React.Component {
         this.state = {
             couponTrdChannelStockNums: [
                 { issueChannel: 1, trdStockNum: '' },
-                //  { issueChannel: 2, trdStockNum: '' }//暂时隐藏支付宝
+                { issueChannel: 2, trdStockNum: '' }//暂时隐藏支付宝
             ],
             checkedArr: [true, false]
         }
@@ -84,7 +84,7 @@ class CouponTrdChannelStockNums extends React.Component {
                 {
                     couponTrdChannelStockNums.map((channel, index) => {
                         return (
-                            <FormItem style={{ marginBottom: -2 }} key={channel.issueChannel}>
+                            <FormItem style={{ marginBottom: -2 ,display: index == 0? 'block' : 'none'}} key={channel.issueChannel}>
                                 <Col span={6}>
                                     <Checkbox
                                         disabled={true} // 暂时就微信一个渠道，不许取消
