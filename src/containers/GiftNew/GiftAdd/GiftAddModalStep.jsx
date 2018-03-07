@@ -83,7 +83,7 @@ class CouponTrdChannelStockNums extends React.Component {
                 {
                     couponTrdChannelStockNums.map((channel, index) => {
                         return (
-                            <FormItem style={{ marginBottom: -2 ,display: index == 0? 'block' : 'none'}} key={channel.issueChannel}>
+                            <FormItem style={{ marginBottom: -2, display: index == 0 ? 'block' : 'none' }} key={channel.issueChannel}>
                                 <Col span={6}>
                                     <Checkbox
                                         disabled={true} // 暂时就微信一个渠道，不许取消
@@ -646,7 +646,7 @@ class GiftAddModalStep extends React.Component {
     }
 
     renderShopNames(decorator) {
-        const { shopNames } = this.state.values;
+        const { shopNames = [] } = this.state.values;
         const shopCfg = {
             treeData: this.state.shopsData,
             level1Title: '全部店铺',
@@ -657,13 +657,14 @@ class GiftAddModalStep extends React.Component {
             showItems: shopNames,
         };
         return (
-            <Row>
+            <Row style={{marginBottom: shopNames.length == 0 ? -18 : 0 }} className='wwwwwwwwwww'>
                 <Col>
                     {decorator({})(<MyProjectEditBox
                         treeProps={shopCfg}
                         title="店铺"
                     />)}
                 </Col>
+                <p style={{ color: 'orange', display: shopNames.length > 0 ? 'none' : 'block' }}>未选择门店时默认所有门店通用</p>
             </Row>
         )
     }
