@@ -77,7 +77,7 @@ class CouponTrdChannelStockNums extends React.Component {
         debugger
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         return (
-            <div style={{ marginTop: -2 }}>
+            <div style={{ marginTop: -6 }}>
                 {
                     couponTrdChannelStockNums.map((channel, index) => {
                         return (
