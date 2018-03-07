@@ -95,7 +95,7 @@ class CouponTrdChannelStockNums extends React.Component {
                                     </Checkbox>
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
-                                <Col span={12}>
+                                <Col span={12} style={{ marginTop: -5 }}>
                                     <FormItem>
                                         {
                                             this.props.form.getFieldDecorator('input' + index, {
@@ -657,7 +657,7 @@ class GiftAddModalStep extends React.Component {
             showItems: shopNames,
         };
         return (
-            <Row style={{marginBottom: shopNames.length == 0 ? -18 : 0 }}>
+            <Row style={{marginBottom: shopNames.length == 0 ? -15 : 0 }}>
                 <Col>
                     {decorator({})(<MyProjectEditBox
                         treeProps={shopCfg}
@@ -982,7 +982,7 @@ class GiftAddModalStep extends React.Component {
                 render: (decorator, form, formData) => {
                     return (
                         <Row>
-                            <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -2 }}>
+                            <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -6 }}>
                                 <FormItem>
                                     {decorator({
                                         key: 'transferLimitType',
@@ -1000,7 +1000,7 @@ class GiftAddModalStep extends React.Component {
                                 this.state.values.transferLimitType == 0 ? null :
                                     <div>
                                         <Col span={1}></Col>
-                                        <Col span={12}>
+                                        <Col span={12} style={{marginTop:-4}}>
                                             <FormItem>
                                                 {decorator({
                                                     key: 'transferLimitTypeValue',
