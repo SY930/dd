@@ -84,6 +84,7 @@ class CouponTrdChannelStockNums extends React.Component {
                             <FormItem style={{ marginBottom: -2 }} key={channel.issueChannel}>
                                 <Col span={6}>
                                     <Checkbox
+                                        // disabled={true} // 暂时就微信一个渠道，不许取消
                                         checked={checkedArr[channel.issueChannel - 1]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(channel.issueChannel - 1, e.target.checked)
