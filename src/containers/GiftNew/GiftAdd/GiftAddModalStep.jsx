@@ -30,7 +30,7 @@ class CouponTrdChannelStockNums extends React.Component {
         this.state = {
             couponTrdChannelStockNums: [
                 { trdPartyPlatformID: 1, trdStockNum: '' },
-                // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
+                // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝,
             ],
             checkedArr: [true, false]
         }
