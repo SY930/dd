@@ -81,7 +81,7 @@ class GiftType extends React.Component{
                 <Col className="layoutsLineBlock"></Col>
                 <Col className="layoutsContent">
                     <ul>
-                        {GiftCfg.giftType.map((gift,index)=>{
+                        {GiftCfg.giftType.slice(0,7).map((gift,index)=>{
                             return (
                                 <Authority rightCode="marketing.lipin.create" key={gift.value}>
                                     <a key={gift.value} onClick={()=>this.handleAdd(gift)}>
