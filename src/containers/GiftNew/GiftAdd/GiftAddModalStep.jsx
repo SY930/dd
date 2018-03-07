@@ -39,10 +39,7 @@ class CouponTrdChannelStockNums extends React.Component {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         console.log('did', this.props.value)
         if (this.props.value) {
-            couponTrdChannelStockNums = JSON.parse(this.props.value);
-            couponTrdChannelStockNums.forEach((channel, index) => {
-                // checkedArr[index] = channel.trdStockNum > 0
-            })
+            couponTrdChannelStockNums = this.props.value;
             this.setState({ couponTrdChannelStockNums, checkedArr })
         }
     }
@@ -50,10 +47,7 @@ class CouponTrdChannelStockNums extends React.Component {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         console.log('will', this.props.value, nextProps.value)
         if (nextProps.value) {
-            couponTrdChannelStockNums = JSON.parse(nextProps.value);
-            couponTrdChannelStockNums.forEach((channel, index) => {
-                // checkedArr[index] = channel.trdStockNum > 0
-            })
+            couponTrdChannelStockNums = nextProps.value;
             this.setState({ couponTrdChannelStockNums, checkedArr })
         }
     }
@@ -66,15 +60,13 @@ class CouponTrdChannelStockNums extends React.Component {
             this.props.form.setFieldsValue({ [input]: '' })
         }
         this.setState({ couponTrdChannelStockNums, checkedArr });
-        console.log(JSON.stringify(couponTrdChannelStockNums))
-        this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
+        this.props.onChange(couponTrdChannelStockNums)
     }
     handleInputChange(index, value) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         couponTrdChannelStockNums[index].trdStockNum = checkedArr[index] ? value : '';
         this.setState({ couponTrdChannelStockNums });
-        console.log(JSON.stringify(couponTrdChannelStockNums))
-        this.props.onChange(JSON.stringify(couponTrdChannelStockNums))
+        this.props.onChange(couponTrdChannelStockNums)
     }
     render() {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
