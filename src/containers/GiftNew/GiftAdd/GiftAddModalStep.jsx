@@ -87,9 +87,9 @@ class CouponTrdChannelStockNums extends React.Component {
                                 <Col span={6}>
                                     <Checkbox
                                         disabled={true} // 暂时就微信一个渠道，不许取消
-                                        checked={checkedArr[channel.issueChannel - 1]}
+                                        checked={checkedArr[index]}
                                         onChange={(e) => {
-                                            this.handleCheckboxChange(channel.issueChannel - 1, e.target.checked)
+                                            this.handleCheckboxChange(index, e.target.checked)
                                         }}>
                                         {channel.issueChannel == 1 ? '微信小程序' : '支付宝'}
                                     </Checkbox>
@@ -100,7 +100,7 @@ class CouponTrdChannelStockNums extends React.Component {
                                         {
                                             this.props.form.getFieldDecorator('input' + index, {
                                                 rules: [{
-                                                    required: checkedArr[channel.issueChannel - 1],
+                                                    required: checkedArr[index],
                                                     message: '库存总量必须在1-9999999999之间',
                                                     pattern: /^[1-9]\d{0,9}$/,
                                                     // },{
@@ -109,10 +109,10 @@ class CouponTrdChannelStockNums extends React.Component {
                                                 initialValue: channel.trdStockNum,
                                             })(
                                                 <Input
-                                                    disabled={!checkedArr[channel.issueChannel - 1]}
+                                                    disabled={!checkedArr[index]}
                                                     // value={channel.trdStockNum}
                                                     onChange={(e) => {
-                                                        this.handleInputChange(channel.issueChannel - 1, e.target.value)
+                                                        this.handleInputChange(index, e.target.value)
                                                     }} />
 
                                             )
