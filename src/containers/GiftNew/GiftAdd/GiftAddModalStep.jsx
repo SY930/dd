@@ -28,7 +28,10 @@ class CouponTrdChannelStockNums extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            couponTrdChannelStockNums: [{ issueChannel: 1, trdStockNum: '' }, { issueChannel: 2, trdStockNum: '' }],
+            couponTrdChannelStockNums: [
+                { issueChannel: 1, trdStockNum: '' },
+                //  { issueChannel: 2, trdStockNum: '' }//暂时隐藏支付宝
+            ],
             checkedArr: [true, false]
         }
     }
@@ -60,7 +63,7 @@ class CouponTrdChannelStockNums extends React.Component {
         if (!checked) {
             couponTrdChannelStockNums[index].trdStockNum = '';
             let input = 'input' + index;
-            this.props.form.setFieldsValue({[input]:''})
+            this.props.form.setFieldsValue({ [input]: '' })
         }
         this.setState({ couponTrdChannelStockNums, checkedArr });
         console.log(JSON.stringify(couponTrdChannelStockNums))
@@ -94,27 +97,27 @@ class CouponTrdChannelStockNums extends React.Component {
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
                                 <Col span={12}>
-                                <FormItem>
-                                    {
-                                        this.props.form.getFieldDecorator('input' + index, {
-                                            rules: [{
-                                                required: checkedArr[channel.issueChannel - 1],
-                                                message: '库存总量必须在1-9999999999之间',
-                                                pattern: /^[1-9]\d{0,9}$/,
-                                            // },{
-                                            //     validator: this.validatorInput
-                                            }],
-                                            initialValue: channel.trdStockNum,
-                                        })(
-                                            <Input
-                                                disabled={!checkedArr[channel.issueChannel - 1]}
-                                                // value={channel.trdStockNum}
-                                                onChange={(e) => {
-                                                    this.handleInputChange(channel.issueChannel - 1, e.target.value)
-                                                }} />
+                                    <FormItem>
+                                        {
+                                            this.props.form.getFieldDecorator('input' + index, {
+                                                rules: [{
+                                                    required: checkedArr[channel.issueChannel - 1],
+                                                    message: '库存总量必须在1-9999999999之间',
+                                                    pattern: /^[1-9]\d{0,9}$/,
+                                                    // },{
+                                                    //     validator: this.validatorInput
+                                                }],
+                                                initialValue: channel.trdStockNum,
+                                            })(
+                                                <Input
+                                                    disabled={!checkedArr[channel.issueChannel - 1]}
+                                                    // value={channel.trdStockNum}
+                                                    onChange={(e) => {
+                                                        this.handleInputChange(channel.issueChannel - 1, e.target.value)
+                                                    }} />
 
-                                        )
-                                    }
+                                            )
+                                        }
                                     </FormItem>
                                 </Col>
                             </FormItem>
