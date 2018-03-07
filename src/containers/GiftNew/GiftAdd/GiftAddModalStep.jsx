@@ -35,22 +35,22 @@ class CouponTrdChannelStockNums extends React.Component {
             checkedArr: [true, false]
         }
     }
-    // componentDidMount() {
-    //     let { couponTrdChannelStockNums, checkedArr } = this.state;
-    //     console.log('did', this.props.value)
-    //     if (this.props.value) {
-    //         couponTrdChannelStockNums = this.props.value;
-    //         this.setState({ couponTrdChannelStockNums, checkedArr })
-    //     }
-    // }
-    // componentWillReceiveProps(nextProps) {
-    //     let { couponTrdChannelStockNums, checkedArr } = this.state;
-    //     console.log('will', this.props.value, nextProps.value)
-    //     if (nextProps.value) {
-    //         couponTrdChannelStockNums = nextProps.value;
-    //         this.setState({ couponTrdChannelStockNums, checkedArr })
-    //     }
-    // }
+    componentDidMount() {
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        // console.log('did', this.props.value)
+        if (this.props.value) {
+            couponTrdChannelStockNums = this.props.value;
+            this.setState({ couponTrdChannelStockNums, checkedArr })
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        // console.log('will', this.props.value, nextProps.value)
+        if (nextProps.value) {
+            couponTrdChannelStockNums = nextProps.value;
+            this.setState({ couponTrdChannelStockNums, checkedArr })
+        }
+    }
     handleCheckboxChange(index, checked) {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         checkedArr[index] = checked;
@@ -78,7 +78,7 @@ class CouponTrdChannelStockNums extends React.Component {
                             <FormItem
                                 style={{
                                     marginBottom: -2,
-                                    // display: index == 0 ? 'block' : 'none'
+                                    display: index == 0 ? 'block' : 'none'
                                 }}
                                 key={index}
                             >
@@ -107,7 +107,7 @@ class CouponTrdChannelStockNums extends React.Component {
                                                 initialValue: channel.trdStockNum,
                                             })(
                                                 <Input
-                                                    // disabled={!checkedArr[index]}
+                                                    disabled={!checkedArr[index]}
                                                     // value={channel.trdStockNum}
                                                     onChange={(e) => {
                                                         this.handleInputChange(index, e.target.value)
@@ -505,7 +505,6 @@ class GiftAddModalStep extends React.Component {
         const { values, groupTypes, foodNameList, isFoodCatNameList } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
-            debugger
             if (err) return;
             let params = _.assign({}, values, formValues, { giftType: value });
             params = this.formatFormData(params);
