@@ -657,7 +657,7 @@ class GiftAddModalStep extends React.Component {
             showItems: shopNames,
         };
         return (
-            <Row style={{marginBottom: shopNames.length == 0 ? -18 : 0 }} className='wwwwwwwwwww'>
+            <Row style={{marginBottom: shopNames.length == 0 ? -18 : 0 }}>
                 <Col>
                     {decorator({})(<MyProjectEditBox
                         treeProps={shopCfg}
