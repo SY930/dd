@@ -107,7 +107,7 @@ class CouponTrdChannelStockNums extends React.Component {
                                                 initialValue: channel.trdStockNum,
                                             })(
                                                 <Input
-                                                    disabled={!checkedArr[index]}
+                                                    // disabled={!checkedArr[index]}
                                                     // value={channel.trdStockNum}
                                                     onChange={(e) => {
                                                         this.handleInputChange(index, e.target.value)
