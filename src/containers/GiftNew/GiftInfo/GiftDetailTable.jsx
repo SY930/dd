@@ -339,6 +339,7 @@ class GiftDetailTable extends Component {
                 case '30':
                 case '40':
                 case '42':
+                case '91':
                 case '100':
                     return (<GiftDetailModal
                         {...detailProps}
