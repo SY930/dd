@@ -36,19 +36,35 @@ class CouponTrdChannelStockNums extends React.Component {
         }
     }
     componentDidMount() {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        let { couponTrdChannelStockNums } = this.state;
         // console.log('did', this.props.value)
         if (this.props.value) {
-            couponTrdChannelStockNums = this.props.value;
-            this.setState({ couponTrdChannelStockNums, checkedArr })
+            // couponTrdChannelStockNums = this.props.value;
+            couponTrdChannelStockNums.forEach(channel => {
+                let hadSet = this.props.value.find(_chan => {
+                    _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
+                });
+                if (hadSet) {
+                    channel.trdStockNum = hadSet.trdStockNum
+                }
+            })
+            this.setState({ couponTrdChannelStockNums })
         }
     }
     componentWillReceiveProps(nextProps) {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        let { couponTrdChannelStockNums } = this.state;
         // console.log('will', this.props.value, nextProps.value)
         if (nextProps.value) {
-            couponTrdChannelStockNums = nextProps.value;
-            this.setState({ couponTrdChannelStockNums, checkedArr })
+            // couponTrdChannelStockNums = nextProps.value;
+            couponTrdChannelStockNums.forEach(channel => {
+                let hadSet = nextProps.value.find(_chan => {
+                    _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
+                });
+                if (hadSet) {
+                    channel.trdStockNum = hadSet.trdStockNum
+                }
+            })
+            this.setState({ couponTrdChannelStockNums })
         }
     }
     handleCheckboxChange(index, checked) {
@@ -542,7 +558,7 @@ class GiftAddModalStep extends React.Component {
             }
             if (formValues.couponTrdChannelStockNums) {
                 // 线上礼品卡
-                let issueChannel = [], couponTrdChannelStockNums=[];
+                let issueChannel = [], couponTrdChannelStockNums = [];
                 formValues.couponTrdChannelStockNums.map((channel, index) => {
                     if (channel.trdStockNum > 0) {
                         issueChannel.push(channel.trdPartyPlatformID);
