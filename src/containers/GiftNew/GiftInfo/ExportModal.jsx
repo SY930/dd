@@ -85,23 +85,7 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
-        this.setState({ giftItemID: this.props.giftItemID, _key: this.props._key })
         this.exportRecords(this.props.giftItemID, this.props._key)
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // const { exportVisible, key} = nextProps;
-        // const records = $$exportRecords || [];
-        // const _records = records.map(item => ({ ...item, key: item.itemID }));
-        // this.setState({
-        //     visible: exportVisible,
-        //     pageSizes: 10,
-        //     // dataSource: _records,
-        // });
-        // if (this.props.key !== nextProps.key||this.props.giftItemID !== nextProps.giftItemID) {
-        //     console.log('axios')
-        //     this.exportRecords(nextProps.giftItemID,nextProps.key);
-        // }
     }
     exportRecords = (giftItemID, key) => {
         axiosData('/crm/quotaCardExport/export.ajax', {
@@ -109,13 +93,15 @@ export default class ExportModal extends Component {
             exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
         }, null, { path: 'data' })
             .then(_records => {
-                this.getExportRecords()
+                this.getExportRecords(key)
             })
 
     }
-    getExportRecords = () => {
+    getExportRecords = (key) => {
         this.setState({ loading: true }, () => {
-            axiosData('/crm/quotaCardExport/getRecords.ajax', {}, null, { path: 'data' })
+            axiosData('/crm/quotaCardExport/getRecords.ajax', {
+                exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
+            }, null, { path: 'data' })
                 .then(data => {
                     console.log(data)
                     const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
@@ -128,7 +114,7 @@ export default class ExportModal extends Component {
     }
 
     handleRefresh = () => {
-        this.getExportRecords();
+        this.getExportRecords(this.props._key);
     }
     handleClose = () => {
         this.setState({
@@ -144,14 +130,14 @@ export default class ExportModal extends Component {
         axiosData('/crm/quotaCardExport/delete.ajax', { itemID: record.itemID }, null, { path: 'data' })
             .then(() => {
                 message.success('删除成功');
-                this.getExportRecords();
+                this.getExportRecords(this.props._key);
             });
     }
     handleClearAll = () => {
         axiosData('/crm/quotaCardExport/delete.ajax', {}, null, { path: 'data' })
             .then(() => {
                 message.success('删除成功');
-                this.getExportRecords();
+                this.getExportRecords(this.props._key);
             });
     }
     render() {
