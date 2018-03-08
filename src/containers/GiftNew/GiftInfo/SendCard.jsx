@@ -481,15 +481,15 @@ class SendCard extends React.Component {
                         {
                             _key === 'made' ?
                                 <Row>
-                                    <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
+                                    <Col span={6}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                         type="search"
                                     />查询</Button></Col>
                                     <Col span={6}><Button type="ghost"><Icon type="export" />导出</Button></Col>
-                                    <Col span={8}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
+                                    <Col span={6}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                         className="send-gray"
                                         iconName={'作废'}
                                     />作废</Button></Col>
-                                    <Col span={8}><Button
+                                    <Col span={6}><Button
                                         type="ghost"
                                         onClick={() => this.handleCancelDelete()}
                                     >取消作废</Button></Col>
@@ -497,7 +497,7 @@ class SendCard extends React.Component {
                                 : (
                                     _key === 'send' ?
                                         <Row>
-                                            <Col span={10}><Button type="primary" onClick={() => this.handleQuery()}><Icon
+                                            <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                                 type="search"
                                             />查询</Button></Col>
                                             <Col span={8} ><Button type="ghost"><Icon type="export" />导出</Button></Col>
@@ -519,7 +519,7 @@ class SendCard extends React.Component {
                                             <Row>
                                                 <Col span={24} style={{ textAlign: 'right' }}>
                                                     <Button
-                                                        type="primary"
+                                                        type="ghost"
                                                         // onClick={() => this.handleExport()}
                                                     ><Icon type="export" />导出</Button>
                                                 </Col>
