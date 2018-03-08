@@ -491,6 +491,7 @@ class SendCard extends React.Component {
                                     />作废</Button></Col>
                                     <Col span={6}><Button
                                         type="ghost"
+                                        style={{padding:'4px 10px'}}
                                         onClick={() => this.handleCancelDelete()}
                                     >取消作废</Button></Col>
                                 </Row>
