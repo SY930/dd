@@ -35,18 +35,18 @@ class CouponTrdChannelStockNums extends React.Component {
             couponTrdChannelStockNums: [
                 // { trdPartyPlatformID: 1, trdStockNum: '' },
                 // // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
-                { trdPartyPlatformID: 2001, trdStockNum: '' , name:'微信小程序'},
-                { trdPartyPlatformID: 1001, trdStockNum: '' , name:'彩蛋猫'},
-                { trdPartyPlatformID: 3001, trdStockNum: '' , name:'悸动小程序'},
-                { trdPartyPlatformID: 3002, trdStockNum: '' , name:'悸动小程序'},
+                { trdPartyPlatformID: 2001, trdStockNum: '', name: '微信小程序' },
+                { trdPartyPlatformID: 1001, trdStockNum: '', name: '彩蛋猫' },
+                { trdPartyPlatformID: 3001, trdStockNum: '', name: '悸动小程序' },
+                { trdPartyPlatformID: 3002, trdStockNum: '', name: '悸动小程序' },
             ],
-            checkedArr: [true, false,false,false]
+            checkedArr: [true, false, false, false]
         }
     }
     componentDidMount() {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         if (this.props.value) {
-            checkedArr = [false, false,false,false]
+            checkedArr = [false, false, false, false]
             couponTrdChannelStockNums.forEach((channel, index) => {
                 let hadSet = this.props.value.find(_chan => {
                     return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
@@ -105,7 +105,7 @@ class CouponTrdChannelStockNums extends React.Component {
                             >
                                 <Col span={6}>
                                     <Checkbox
-                                        // disabled={true}
+                                        disabled={this.props.giftItemID && channel.trdStockNum > 0}
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
@@ -567,10 +567,10 @@ class GiftAddModalStep extends React.Component {
                         couponTrdChannelStockNums.push(channel);
                     }
                 })
-                if(couponTrdChannelStockNums.length==0){
+                if (couponTrdChannelStockNums.length == 0) {
                     message.error('必须至少选择一种投放渠道');
                     return;
-                }else{
+                } else {
                     params.issueChannel = issueChannel.join(',');
                     params.couponTrdChannelStockNums = couponTrdChannelStockNums;
                 }
@@ -757,7 +757,7 @@ class GiftAddModalStep extends React.Component {
     }
     renderCouponTrdChannelStockNums(decorator, form, formData) {
         return (
-            decorator({})(<CouponTrdChannelStockNums form={form} />)
+            decorator({})(<CouponTrdChannelStockNums form={form} giftItemID={this.props.gift.data.giftItemID} />)
         )
     }
     // afterClose = () => {
