@@ -81,8 +81,8 @@ export default class ExportModal extends Component {
         super(props);
         this.data = {};
         this.state = {
-            visible: true,
-            // visible: false,
+            // visible: true,
+            visible: false,
             dataSource: [],
             shopName: '',
             pageSizes: 10,
@@ -98,14 +98,14 @@ export default class ExportModal extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // const { $$exportVisible, $$exportRecords } = nextProps;
+        const { exportVisible, } = nextProps;
         // const records = $$exportRecords || [];
         // const _records = records.map(item => ({ ...item, key: item.itemID }));
-        // this.setState({
-        //     visible: $$exportVisible,
-        //     pageSizes: 10,
-        //     dataSource: _records,
-        // });
+        this.setState({
+            visible: exportVisible,
+            pageSizes: 10,
+            // dataSource: _records,
+        });
         // if ($$exportVisible === true) {
         //     this.getExportRecords();
         // }
