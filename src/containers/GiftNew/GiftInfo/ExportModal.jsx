@@ -7,7 +7,7 @@ import _ from 'lodash';
 //     ExportRecordModalVisible,
 //     FetchExportRecordList,
 // } from './_action.js';
-import { fetchData } from '../../../helpers/util';
+import { axiosData } from '../../../helpers/util';
 // import Authority from '../../components/Authority';
 // import styles from '../CrmCardInfo/CrmCustomerContainer/export.less';
 import styles from './GiftInfo.less';
@@ -60,15 +60,15 @@ const COLUMNS = [{
         return (
             <span>
                 {
-                    record.exportStatus  == '1' ? 
+                    record.exportStatus == '1' ?
                         // <Authority rightCode="crm.huiyuandengjixin.query">
-                            <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>下载文件</a>
+                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>下载文件</a>
                         // </Authority>
                         :
                         null
                 }
                 {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                    <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>删除</a>
+                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>删除</a>
                 {/* </Authority> */}
             </span>
         )
@@ -81,8 +81,7 @@ export default class ExportModal extends Component {
         super(props);
         this.data = {};
         this.state = {
-            // visible: true,
-            visible: false,
+            visible: true,
             dataSource: [],
             shopName: '',
             pageSizes: 10,
@@ -91,31 +90,32 @@ export default class ExportModal extends Component {
         this.columns = COLUMNS;
     }
 
-    componentWillMount() {
-        // this.setState({
-        //     visible: this.props.$$exportVisible||false,
-        // });
+    componentDidMount() {
+        this.getExportRecords(this.props.giftItemID, this.props._key)
     }
 
     componentWillReceiveProps(nextProps) {
-        const { exportVisible, } = nextProps;
+        // const { exportVisible, key} = nextProps;
         // const records = $$exportRecords || [];
         // const _records = records.map(item => ({ ...item, key: item.itemID }));
-        this.setState({
-            visible: exportVisible,
-            pageSizes: 10,
-            // dataSource: _records,
-        });
-        // if ($$exportVisible === true) {
-        //     this.getExportRecords();
+        // this.setState({
+        //     visible: exportVisible,
+        //     pageSizes: 10,
+        //     // dataSource: _records,
+        // });
+        // if (this.props.key !== nextProps.key||this.props.giftItemID !== nextProps.giftItemID) {
+        //     console.log('axios')
+        //     this.getExportRecords(nextProps.giftItemID,nextProps.key);
         // }
     }
-    componentWillUnmount() {
-
-    }
-    getExportRecords = () => {
-        // const { FetchExportRecordListAC } = this.props;
-
+    getExportRecords = (giftItemID, key) => {
+        axiosData('/crm/quotaCardExport/export.ajax', {
+            giftItemID,
+            exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
+        }, null, { path: 'data' })
+            .then(_records => {
+                console.log(_records)
+            })
         // FetchExportRecordListAC({ pageNo: 1, pageSize: 10 }).then((_records) => {
         //     this.setState({
         //         loading: true,
@@ -141,6 +141,8 @@ export default class ExportModal extends Component {
         // const { ExportRecordModalVisibleAC } = this.props;
         this.setState({
             visible: false,
+        }, () => {
+            this.props.handleClose()
         })
         // ExportRecordModalVisibleAC({ visible: false });
     }
@@ -176,13 +178,13 @@ export default class ExportModal extends Component {
                     onCancel={() => this.handleClose()}
                     footer={
                         [<Button key={'close'} type="ghost" onClick={() => this.handleClose()}>关闭</Button>,
-                            <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>刷新</Button>,
+                        <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>刷新</Button>,
                         ]}
                 >
                     <Row>
                         <Col span={24} className={styles.shopWrap} style={{ textAlign: 'right' }}>
                             {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                                <Button type="ghost" onClick={this.handleClearAll}>清空列表</Button>
+                            <Button type="ghost" onClick={this.handleClearAll}>清空列表</Button>
                             {/* </Authority> */}
                         </Col>
                         <Col span={24}>

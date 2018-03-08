@@ -461,10 +461,10 @@ class SendCard extends React.Component {
     handleSelected(selectedRowKeys, selectedRows) {
         this.setState({ selectedRowKeys, selectedRows });
     }
-    handleExport(){
+    handleExport() {
         const { _key } = this.props;
         console.log(_key)
-        this.setState({exportVisible: true})
+        this.setState({ exportVisible: true })
     }
 
     render() {
@@ -492,7 +492,7 @@ class SendCard extends React.Component {
                                         type="search"
                                     />查询</Button></Col>
                                     <Col span={6}>
-                                        <Button type="ghost" onClick={() => this.handleExport()}> 
+                                        <Button type="ghost" onClick={() => this.handleExport()}>
                                             <Icon
                                                 type="export" />导出</Button>
                                     </Col>
@@ -516,7 +516,7 @@ class SendCard extends React.Component {
                                                 <Button type="ghost" onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
-                                                         />导出</Button>
+                                                    />导出</Button>
                                             </Col>
                                             <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
                                                 className="send-gray"
@@ -586,7 +586,14 @@ class SendCard extends React.Component {
                     }
                 </Row>
                 <CardOperate {...cardProps} />
-                <ExportModal exportVisible={this.state.exportVisible} key={_key}/>
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            _key={_key}
+                            giftItemID={this.props.data.giftItemID}
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </div>
         )
     }
