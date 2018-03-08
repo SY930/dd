@@ -97,6 +97,7 @@ class CouponTrdChannelStockNums extends React.Component {
                             >
                                 <Col span={6}>
                                     <Checkbox
+                                        disabled={true}
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
