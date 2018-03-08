@@ -85,7 +85,11 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
-        this.exportRecords(this.props.giftItemID, this.props._key)
+        if(this.props._key){
+            this.exportRecords(this.props.giftItemID, this.props._key)
+        }else{
+            this.getExportRecords()
+        }
     }
     exportRecords = (giftItemID, key) => {
         axiosData('/crm/quotaCardExport/export.ajax', {
@@ -95,12 +99,11 @@ export default class ExportModal extends Component {
             .then(_records => {
                 this.getExportRecords(key)
             })
-
     }
     getExportRecords = (key) => {
         this.setState({ loading: true }, () => {
             axiosData('/crm/quotaCardExport/getRecords.ajax', {
-                exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
+                exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : key == 'sum' ? '4' : null
             }, null, { path: 'data' })
                 .then(data => {
                     console.log(data)
