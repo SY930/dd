@@ -374,6 +374,12 @@ class GiftDetailTable extends Component {
                         <div className="layoutsToolLeft">
                             <h1>礼品信息</h1>
                         </div>
+                        <Col span={22} style={{ textAlign: 'right' }}>
+                            <Button
+                                type="ghost"
+                                onClick={() => this.setState({ exportVisible: true })}
+                            ><Icon type="export" />导出历史</Button>
+                        </Col>
                     </Row>
                     <Row className="layoutsLine"></Row>
                     <Row className="layoutsSearch">
@@ -428,7 +434,12 @@ class GiftDetailTable extends Component {
                 <Col>
                     {GiftEdit(editGift.value)}
                 </Col>
-                {/* <ExportModal/> */}
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </Row>
         )
     }
