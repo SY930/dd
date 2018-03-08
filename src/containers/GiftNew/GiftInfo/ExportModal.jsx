@@ -91,6 +91,7 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
+        this.setState({ giftItemID: this.props.giftItemID, _key: this.props._key })
         this.getExportRecords(this.props.giftItemID, this.props._key)
     }
 
@@ -109,13 +110,23 @@ export default class ExportModal extends Component {
         // }
     }
     getExportRecords = (giftItemID, key) => {
-        axiosData('/crm/quotaCardExport/export.ajax', {
-            giftItemID,
-            exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
-        }, null, { path: 'data' })
-            .then(_records => {
-                console.log(_records)
-            })
+        this.setState({loading: true},()=>{
+            axiosData('/crm/quotaCardExport/export.ajax', {
+                giftItemID,
+                exportQuotaType: key == 'made' ? '3' : key == 'send' ? '2' : '4'
+            }, null, { path: 'data' })
+                .then(_records => {
+                    axiosData('/crm/quotaCardExport/getRecords.ajax', {}, null, {})
+                        .then(_records => {
+                            console.log(_records)
+                            const _Records = _records.map(item => ({ ...item, key: item.itemID }));
+                            this.setState({
+                                dataSource: _Records || [],
+                                loading: false,
+                            })
+                        })
+                })
+        })
         // FetchExportRecordListAC({ pageNo: 1, pageSize: 10 }).then((_records) => {
         //     this.setState({
         //         loading: true,
@@ -135,16 +146,14 @@ export default class ExportModal extends Component {
         // })
     }
     handleRefresh = () => {
-        // this.getExportRecords();
+        this.getExportRecords(this.state.giftItemID, this.state._key);
     }
     handleClose = () => {
-        // const { ExportRecordModalVisibleAC } = this.props;
         this.setState({
             visible: false,
         }, () => {
             this.props.handleClose()
         })
-        // ExportRecordModalVisibleAC({ visible: false });
     }
     handleDownLoad = (record) => {
         window.open(record.filePath);
