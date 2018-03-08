@@ -241,10 +241,10 @@ class SendCard extends React.Component {
         }
         this.setState({
             loading: true,
-        },()=>{
-            setTimeout(()=>{
-                this.setState({loading: false,})
-            },0)
+        }, () => {
+            setTimeout(() => {
+                this.setState({ loading: false, })
+            }, 0)
         });
         return FetchQuotaListAC({
             params,
@@ -293,35 +293,35 @@ class SendCard extends React.Component {
         let params = _params;
         switch (_key) {
             case 'send':
-            {
-                params.batchNO = params.batchNO_sendCard;
-                const sendTime = params.timeRangeSend_sendCard;
-                if (sendTime && sendTime.length > 0) {
-                    params.beginCreateStamp = sendTime[0].format('YYYYMMDDHHmmss');
-                    params.endCreateStamp = sendTime[1].format('YYYYMMDDHHmmss');
+                {
+                    params.batchNO = params.batchNO_sendCard;
+                    const sendTime = params.timeRangeSend_sendCard;
+                    if (sendTime && sendTime.length > 0) {
+                        params.beginCreateStamp = sendTime[0].format('YYYYMMDDHHmmss');
+                        params.endCreateStamp = sendTime[1].format('YYYYMMDDHHmmss');
+                    }
+                    params = _.omit(params, 'batchNO_sendCard', 'timeRangeSend_sendCard');
+                    return params;
                 }
-                params = _.omit(params, 'batchNO_sendCard', 'timeRangeSend_sendCard');
-                return params;
-            }
             case 'made':
-            {
-                params.cardNO = params.cardNO_madeCard;
-                params.batchNO = params.batchNO_madeCard;
-                params = _.omit(params, 'cardNO_madeCard', 'batchNO_madeCard');
-                return params;
-            }
-            case 'sum':
-            {
-                params.cardNO = params.cardNO_sum;
-                params.batchNO = params.batchNO_sum;
-                const sumTime = params.timeRangeSend_sum;
-                if (sumTime && sumTime.length > 0) {
-                    params.beginSellTime = sumTime[0].format('YYYYMMDDHHmmss');
-                    params.endSellTime = sumTime[1].format('YYYYMMDDHHmmss');
+                {
+                    params.cardNO = params.cardNO_madeCard;
+                    params.batchNO = params.batchNO_madeCard;
+                    params = _.omit(params, 'cardNO_madeCard', 'batchNO_madeCard');
+                    return params;
                 }
-                params = _.omit(params, 'batchNO_sum', 'cardNO_sum', 'timeRangeSend_sum');
-                return params;
-            }
+            case 'sum':
+                {
+                    params.cardNO = params.cardNO_sum;
+                    params.batchNO = params.batchNO_sum;
+                    const sumTime = params.timeRangeSend_sum;
+                    if (sumTime && sumTime.length > 0) {
+                        params.beginSellTime = sumTime[0].format('YYYYMMDDHHmmss');
+                        params.endSellTime = sumTime[1].format('YYYYMMDDHHmmss');
+                    }
+                    params = _.omit(params, 'batchNO_sum', 'cardNO_sum', 'timeRangeSend_sum');
+                    return params;
+                }
             default:
                 return null;
         }
@@ -484,7 +484,7 @@ class SendCard extends React.Component {
                                     <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                         type="search"
                                     />查询</Button></Col>
-                                    {/* <Col span={6}><Button type="ghost"><Icon type="export" />导出</Button></Col> */}
+                                    <Col span={6}><Button type="ghost"><Icon type="export" />导出</Button></Col>
                                     <Col span={8}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                         className="send-gray"
                                         iconName={'作废'}
@@ -500,86 +500,97 @@ class SendCard extends React.Component {
                                             <Col span={10}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                                 type="search"
                                             />查询</Button></Col>
-                                            {/* <Col span={8} ><Button type="ghost"><Icon type="export" />导出</Button></Col> */}
+                                            <Col span={8} ><Button type="ghost"><Icon type="export" />导出</Button></Col>
                                             <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
                                                 className="send-gray"
                                                 iconName={'发布'}
                                             />发卡</Button></Col>
                                         </Row>
                                         :
-                                        <Row>
-                                            <Col span={24} style={{ textAlign: 'right' }}>
-                                                <Button
-                                                    type="primary"
-                                                    onClick={() => this.handleQuery()}
-                                                ><Icon type="search" />查询</Button></Col>
-                                        </Row>
-                                )
-
-                        }
-
+                                        <div>
+                                            <Row>
+                                                <Col span={24} style={{ textAlign: 'right' }}>
+                                                    <Button
+                                                        type="primary"
+                                                        onClick={() => this.handleQuery()}
+                                                    ><Icon type="search" />查询</Button>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col span={24} style={{ textAlign: 'right' }}>
+                                                    <Button
+                                                        type="primary"
+                                                        // onClick={() => this.handleExport()}
+                                                    ><Icon type="export" />导出</Button>
+                                                </Col>
+                                            </Row>
+                                            </div>
+                                            )
+            
+                                    }
+            
                     </Col>
                 </Row>
                 <Row>
-                    <Table
-                        className="tableStyles"
-                        bordered={true}
-                        columns={this.state.columns.map(c => (c.render ? ({
-                            ...c,
-                            render: c.render.bind(this),
-                        }) : c))}
-                        dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : { x: 980 })}
-                        rowSelection={this.props._key === 'made' ? {
-                            onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
-                            selectedRowKeys: this.state.selectedRowKeys,
-                        } : null}
-                        loading={loading}
-                        pagination={{
-                            showSizeChanger: true,
-                            pageSize,
-                            current: pageNo,
-                            total,
-                            showQuickJumper: true,
-                            onChange: this.handlePageChange,
-                            onShowSizeChange: this.handlePageChange,
-                            showTotal: (totalSize, range) => `本页${range[0]}-${range[1]}/ 共 ${totalSize}条`,
-                        }}
-                    />
-                    {
-                        _key === 'sum' ?
-                            !_.isEmpty(sumData)
-                        && (<div className="sumData">
-                            <div>{`共计：${sumData.total}条记录`}</div>
-                            <div>{`实收合计：${sumData.moneyTotal}`}</div>
-                        </div>)
-                            :
-                            null
-                    }
-                </Row>
-                <CardOperate {...cardProps} />
+                            <Table
+                                className="tableStyles"
+                                bordered={true}
+                                columns={this.state.columns.map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                                dataSource={dataSource}
+                                scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : { x: 980 })}
+                                rowSelection={this.props._key === 'made' ? {
+                                    onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
+                                    selectedRowKeys: this.state.selectedRowKeys,
+                                } : null}
+                                loading={loading}
+                                pagination={{
+                                    showSizeChanger: true,
+                                    pageSize,
+                                    current: pageNo,
+                                    total,
+                                    showQuickJumper: true,
+                                    onChange: this.handlePageChange,
+                                    onShowSizeChange: this.handlePageChange,
+                                    showTotal: (totalSize, range) => `本页${range[0]}-${range[1]}/ 共 ${totalSize}条`,
+                                }}
+                            />
+                            {
+                                _key === 'sum' ?
+                                    !_.isEmpty(sumData)
+                                    && (<div className="sumData">
+                                        <div>{`共计：${sumData.total}条记录`}</div>
+                                        <div>{`实收合计：${sumData.moneyTotal}`}</div>
+                                    </div>)
+                                    :
+                                    null
+                            }
+                        </Row>
+                        <CardOperate {...cardProps} />
             </div>
-        )
-    }
-}
+                    )
+                }
+            }
 function mapStateToProps(state) {
     return {
-        batchNO: state.sale_giftInfoNew.get('batchNO'),
-        shopData: state.sale_giftInfoNew.get('shopData'),
-        quotaList: state.sale_giftInfoNew.get('quotaList'),
-        detailVisible: state.sale_giftInfoNew.get('detailVisible'),
-    }
-}
+                        batchNO: state.sale_giftInfoNew.get('batchNO'),
+                    shopData: state.sale_giftInfoNew.get('shopData'),
+                    quotaList: state.sale_giftInfoNew.get('quotaList'),
+                    detailVisible: state.sale_giftInfoNew.get('detailVisible'),
+                }
+            }
 function mapDispatchToProps(dispatch) {
     return {
-        FetchQuotaCardSumAC: opts => dispatch(FetchQuotaCardSum(opts)),
-        UpdateTabKeyAC: opts => dispatch(UpdateTabKey(opts)),
-        UpdateBatchNOAC: opts => dispatch(UpdateBatchNO(opts)),
-        FetchGiftSchemaAC: opts => dispatch(FetchGiftSchema(opts)),
-        FetchQuotaListAC: opts => dispatch(FetchQuotaList(opts)),
-    };
-}
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(SendCard);
+                        FetchQuotaCardSumAC: opts => dispatch(FetchQuotaCardSum(opts)),
+                    UpdateTabKeyAC: opts => dispatch(UpdateTabKey(opts)),
+                    UpdateBatchNOAC: opts => dispatch(UpdateBatchNO(opts)),
+                    FetchGiftSchemaAC: opts => dispatch(FetchGiftSchema(opts)),
+                    FetchQuotaListAC: opts => dispatch(FetchQuotaList(opts)),
+                };
+            }
+            export default connect(
+                mapStateToProps,
+                mapDispatchToProps
+            )(SendCard);
