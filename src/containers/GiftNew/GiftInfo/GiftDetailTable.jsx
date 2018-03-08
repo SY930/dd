@@ -12,6 +12,7 @@ import GiftDetailModal from './GiftDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
 import GiftAddModalStep from '../GiftAdd/GiftAddModalStep';
+import ExportModal from './ExportModal';
 import { COLUMNS } from './_tableListConfig';
 import {
     FetchGiftList,
@@ -427,6 +428,7 @@ class GiftDetailTable extends Component {
                 <Col>
                     {GiftEdit(editGift.value)}
                 </Col>
+                {/* <ExportModal/> */}
             </Row>
         )
     }
