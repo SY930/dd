@@ -7,6 +7,7 @@ import BaseForm from '../../../components/common/BaseForm';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import CardOperate from './QuatoCardDetailModalTabsSendCard';
 import ExportModal from './ExportModal';
+import Authority from '../../../components/common/Authority';
 
 import styles from './GiftInfo.less';
 import { mapValueToLabel } from './CommonFn';
@@ -492,9 +493,11 @@ class SendCard extends React.Component {
                                         type="search"
                                     />查询</Button></Col>
                                     <Col span={6}>
+                                        {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                         <Button type="ghost" onClick={() => this.handleExport()}>
                                             <Icon
                                                 type="export" />导出</Button>
+                                        {/* </Authority> */}
                                     </Col>
                                     <Col span={6}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                         className="send-gray"
@@ -513,10 +516,12 @@ class SendCard extends React.Component {
                                                 type="search"
                                             />查询</Button></Col>
                                             <Col span={8} >
+                                                {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                                 <Button type="ghost" onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
                                                     />导出</Button>
+                                                {/* </Authority> */}
                                             </Col>
                                             <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
                                                 className="send-gray"
@@ -535,10 +540,12 @@ class SendCard extends React.Component {
                                             </Row>
                                             <Row>
                                                 <Col span={24} style={{ textAlign: 'right' }}>
+                                                    {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                                     <Button
                                                         type="ghost"
                                                         onClick={() => this.handleExport()}
                                                     ><Icon type="export" />导出</Button>
+                                                    {/* </Authority> */}
                                                 </Col>
                                             </Row>
                                         </div>

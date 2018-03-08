@@ -375,10 +375,12 @@ class GiftDetailTable extends Component {
                             <h1>礼品信息</h1>
                         </div>
                         <Col span={22} style={{ textAlign: 'right' }}>
-                            <Button
-                                type="ghost"
-                                onClick={() => this.setState({ exportVisible: true })}
-                            ><Icon type="export" />导出历史</Button>
+                            {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+                                <Button
+                                    type="ghost"
+                                    onClick={() => this.setState({ exportVisible: true })}
+                                ><Icon type="export" />导出历史</Button>
+                            {/* </Authority> */}
                         </Col>
                     </Row>
                     <Row className="layoutsLine"></Row>

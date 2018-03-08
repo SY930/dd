@@ -3,7 +3,7 @@ import { Row, Col, Modal, Button, Table, message } from 'antd';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { axiosData } from '../../../helpers/util';
-// import Authority from '../../components/Authority';
+import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
 
 function mapValueToLabel(cfg, val) {
