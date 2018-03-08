@@ -567,8 +567,13 @@ class GiftAddModalStep extends React.Component {
                         couponTrdChannelStockNums.push(channel);
                     }
                 })
-                params.issueChannel = issueChannel.join(',');
-                params.couponTrdChannelStockNums = couponTrdChannelStockNums;
+                if(couponTrdChannelStockNums.length==0){
+                    message.error('必须至少选择一种投放渠道');
+                    return;
+                }else{
+                    params.issueChannel = issueChannel.join(',');
+                    params.couponTrdChannelStockNums = couponTrdChannelStockNums;
+                }
             }
             if (value != 80) {
                 params.extraInfo = JSON.stringify({
