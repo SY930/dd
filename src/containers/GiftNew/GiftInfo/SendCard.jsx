@@ -464,8 +464,16 @@ class SendCard extends React.Component {
     }
     handleExport() {
         const { _key } = this.props;
-        console.log(_key)
-        this.setState({ exportVisible: true })
+        this.queryForm.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            const params = this.formatFormData(values);
+            const _params = this.proParamsByType(params);
+            this.setState({
+                params: _params,
+                exportVisible: true
+            });
+        });
+        // this.setState({ exportVisible: true })
     }
 
     render() {
@@ -596,6 +604,7 @@ class SendCard extends React.Component {
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal
+                            params={this.state.params}
                             _key={_key}
                             giftItemID={this.props.data.giftItemID}
                             handleClose={() => this.setState({ exportVisible: false })}

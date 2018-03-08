@@ -102,13 +102,13 @@ export default class ExportModal extends Component {
     }
     getExportRecords = (key) => {
         this.setState({ loading: true }, () => {
-            const data = {}
+            let data = {}
             if (key) {
-                data.exportQuotaType = key == 'made' ? '3' : key == 'send' ? '2' : '4'
+                data.exportQuotaType = key == 'made' ? '3' : key == 'send' ? '2' : '4';
+                data = { ...data, ...this.props.params }
             }
             axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
                 .then(data => {
-                    console.log(data)
                     const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
                     this.setState({
                         dataSource: _Records,
