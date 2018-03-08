@@ -28,23 +28,31 @@ class CouponTrdChannelStockNums extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            // 1001 彩蛋猫
+            // 2001 微信小程序
+            // 3001 悸动小程序
+            // 3002 悸动小程序
             couponTrdChannelStockNums: [
-                { trdPartyPlatformID: 1, trdStockNum: '' },
-                // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
+                // { trdPartyPlatformID: 1, trdStockNum: '' },
+                // // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
+                { trdPartyPlatformID: 2001, trdStockNum: '' , name:'微信小程序'},
+                { trdPartyPlatformID: 1001, trdStockNum: '' , name:'彩蛋猫'},
+                { trdPartyPlatformID: 3001, trdStockNum: '' , name:'悸动小程序'},
+                { trdPartyPlatformID: 3002, trdStockNum: '' , name:'悸动小程序'},
             ],
-            checkedArr: [true, false]
+            checkedArr: [true, false,false,false]
         }
     }
     componentDidMount() {
         let { couponTrdChannelStockNums, checkedArr } = this.state;
         if (this.props.value) {
-            checkedArr = [false, false]
-            couponTrdChannelStockNums.forEach(channel => {
+            checkedArr = [false, false,false,false]
+            couponTrdChannelStockNums.forEach((channel, index) => {
                 let hadSet = this.props.value.find(_chan => {
                     return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
                 });
                 if (hadSet) {
-                    checkedArr[channel.trdPartyPlatformID - 1] = true;
+                    checkedArr[index] = true;
                     channel.trdStockNum = hadSet.trdStockNum
                 }
             })
@@ -97,12 +105,12 @@ class CouponTrdChannelStockNums extends React.Component {
                             >
                                 <Col span={6}>
                                     <Checkbox
-                                        disabled={true}
+                                        // disabled={true}
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
                                         }}>
-                                        {index == 0 ? '微信小程序' : '支付宝'}
+                                        {channel.name}
                                     </Checkbox>
                                 </Col>
                                 <Col span={4} offset={2}>总库存量</Col>
