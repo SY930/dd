@@ -28,17 +28,11 @@ class CouponTrdChannelStockNums extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            // 1001 彩蛋猫
-            // 2001 微信小程序
-            // 3001 悸动小程序
-            // 3002 悸动小程序
             couponTrdChannelStockNums: [
-                // { trdPartyPlatformID: 1, trdStockNum: '' },
-                // // { trdPartyPlatformID: 2, trdStockNum: '' }//暂时隐藏支付宝
                 { trdPartyPlatformID: 2001, trdStockNum: '', name: '微信小程序' },
-                { trdPartyPlatformID: 1001, trdStockNum: '', name: '彩蛋猫' },
-                { trdPartyPlatformID: 3001, trdStockNum: '', name: '悸动小程序' },
-                { trdPartyPlatformID: 3002, trdStockNum: '', name: '悸动小程序' },
+                // { trdPartyPlatformID: 1001, trdStockNum: '', name: '彩蛋猫' },//}//四个选择项时，放开下面一个disable注释
+                // { trdPartyPlatformID: 3001, trdStockNum: '', name: '悸动小程序' },
+                // { trdPartyPlatformID: 3002, trdStockNum: '', name: '悸动小程序' },
             ],
             checkedArr: [true, false, false, false]
         }
@@ -105,7 +99,8 @@ class CouponTrdChannelStockNums extends React.Component {
                             >
                                 <Col span={6}>
                                     <Checkbox
-                                        disabled={this.props.giftItemID && channel.trdStockNum > 0}
+                                        // disabled={this.props.giftItemID && channel.trdStockNum > 0}//四个选择项时，放开此注释
+                                        disabled={true}
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
