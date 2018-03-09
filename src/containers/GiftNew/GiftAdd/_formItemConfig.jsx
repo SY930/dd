@@ -129,7 +129,7 @@ const FIRST_KEYS = {
     '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark']}],
     '菜品优惠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['giftType', 'giftValue', 'giftName', 'isFoodCatNameList', 'foodNameList', 'giftRemark'],
+        keys: ['giftType', 'giftValue', 'giftName', 'foodNameList', 'giftRemark'],
     }],
     '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
     '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],

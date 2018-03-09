@@ -10,7 +10,7 @@ import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
 import FoodCatTree from './FoodCatTree';
-import PromotionDetailSetting from '../../SaleCenterNEW/common/promotionDetailSetting';
+import FoodBox from './FoodBox';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
 import {
@@ -154,7 +154,7 @@ class GiftAddModalStep extends React.Component {
             groupTypes: [],
             giftData: [],
             sharedGifts: [],
-            isFoodCatNameList: '0',
+            isFoodCatNameList: '1',
             foodNameList: [],
             scopeLst: [],
             foodNameListStatus: 'success',
@@ -287,6 +287,7 @@ class GiftAddModalStep extends React.Component {
         //     _.remove(newKeys, function (k) {
         //         return k === 'isMapTotrd';
         //     }) : null
+        values[key] = value;
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -364,22 +365,18 @@ class GiftAddModalStep extends React.Component {
                 break;
             case 'foodNameList':
                 if (value) {
-                    const { foodCategory, dishes, categoryOrDish } = value;
+                    const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
                     const _foodCategory = foodCategory && foodCategory.map((cat) => {
                         return cat.foodCategoryName
                     })
                     const _dishes = dishes && dishes.map((dish) => {
                         return dish.foodName + dish.unit || dish.foodNameWithUnit
                     })
-                    this.setState({
-                        isFoodCatNameList: categoryOrDish,
-                        foodNameList: categoryOrDish == '0' ? _foodCategory : _dishes,
-                    }, () => {
-                        // console.log(this.state.foodNameList)
-                    })
+                    values.isFoodCatNameList = categoryOrDish;
+                    values.foodNameList = categoryOrDish == '1' ? _foodCategory : _dishes;
                 } else {
                     this.setState({
-                        isFoodCatNameList: '0',
+                        isFoodCatNameList: '1',
                         foodNameList: [],
                     })
                 }
@@ -439,14 +436,6 @@ class GiftAddModalStep extends React.Component {
             default:
                 break;
         }
-        if (value && key == 'foodNameList') {
-            values.isFoodCatNameList = value.categoryOrDish;
-            values.foodNameList = value.categoryOrDish == '0' ? value.foodCategory : value.dishes;
-        } else {
-            values[key] = value;
-            values.isFoodCatNameList = '0';
-        }
-
         this.setState({ values });
     }
     /**
@@ -471,24 +460,23 @@ class GiftAddModalStep extends React.Component {
         this.props.onCancel();
     }
     handleNext = (cb) => {
-        const validateFoodList = (_cb) => {
-            if (this.state.foodNameList.length == 0) {
+        const validateFoodList = (basicValues, _cb) => {
+            if (!basicValues.foodNameList
+                || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
+                || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
                 this.setState({ foodNameListStatus: 'error' })
                 return false;
             }
             this.setState({ foodNameListStatus: 'success' })
-
             _cb && _cb();
         }
-        this.firstForm.validateFieldsAndScroll((error) => {
-            if (error) {
-                if (this.props.gift.value == '20') {
-                    validateFoodList();
-                }
-            } else if (this.props.gift.value == '20') {
-                validateFoodList(cb);
+        this.firstForm.validateFieldsAndScroll((error, basicValues) => {
+            if (this.props.gift.value == '20') {
+                validateFoodList(basicValues, cb);
+                if (error) return
             } else {
-                cb && cb();
+                if (error) return
+                cb();
             }
         })
     }
@@ -515,7 +503,7 @@ class GiftAddModalStep extends React.Component {
         })
     }
     handleFinish = (cb) => {
-        const { values, groupTypes, foodNameList, isFoodCatNameList } = this.state;
+        const { values, groupTypes, } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -595,8 +583,8 @@ class GiftAddModalStep extends React.Component {
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
-            params.foodNameList = foodNameList instanceof Array ? foodNameList.join(',') : foodNameList;
-            params.isFoodCatNameList = isFoodCatNameList == '0' ? '1' : '0';
+            params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
+            params.isFoodCatNameList = values.isFoodCatNameList
             this.setState({
                 finishLoading: true,
             });
@@ -699,11 +687,9 @@ class GiftAddModalStep extends React.Component {
     renderFoodName(decorator, form) {
         const { getFieldValue } = form;
         const formItemLayout = { labelCol: { span: 1 }, wrapperCol: { span: 23 } };
-        // const isFoodCatNameList = getFieldValue('isFoodCatNameList') || '0';
-        // const nameType = isFoodCatNameList == '0' ? '菜品' : '分类';
         let _scopeLst = [];
         if (this.props.type == 'edit') {
-            const { isFoodCatNameList = '0', foodNameList = [] } = this.props.gift.data;
+            const { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
                 return isFoodCatNameList == '1' ? {
@@ -722,17 +708,10 @@ class GiftAddModalStep extends React.Component {
                 label={''}
                 className={styles.foodBox}
                 validateStatus={this.state.foodNameListStatus}
-                help={this.state.foodNameListStatus == 'success' ? null : '抵扣菜品或分类不能为空'}
+                help={this.state.foodNameListStatus=='success'?null:'不可为空'}
             >
                 {
-                    decorator({
-                        rules: [
-                            {
-                                required: true,
-                                message: '抵扣菜品或分类不能为空',
-                            },
-                        ],
-                    })(<PromotionDetailSetting radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
+                    decorator({})(<FoodBox radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
                 }
             </FormItem>
 
@@ -829,6 +808,7 @@ class GiftAddModalStep extends React.Component {
                 type: 'custom',
                 labelCol: { span: 0 },
                 wrapperCol: { span: 24 },
+                rules: [{ required: true, message: '不能为空' }],
                 render: (decorator, form) => this.renderFoodName(decorator, form),
             },
             numberOfTimeType: {
