@@ -11,6 +11,8 @@ const GiftCfg = {
         { name: '礼品定额卡', describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值', value: '90', color: '#c49b79' },
         { name: '活动券', describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码', value: '100', color: '#c49b79' },
         { name: '线上礼品卡', describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费', value: '91', color: '#84aac6' },
+        { name: '买赠券', describe: '购买x份某编码菜品，赠送本编码菜品y份', value: '110', color: '#c49b79' },
+        { name: '折扣券', describe: '指定菜品满x元，折扣率为y', value: '111', color: '#84aac6' },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -23,6 +25,8 @@ const GiftCfg = {
         { label: '礼品定额卡', value: '90' },
         { label: '活动券', value: '100' },
         { label: '线上礼品卡', value: '91' },
+        { label: '买赠券', value: '110'},
+        { label: '折扣券', value: '111'},
     ],
     transferType: [
         { label: '不可分享', value: 0 },

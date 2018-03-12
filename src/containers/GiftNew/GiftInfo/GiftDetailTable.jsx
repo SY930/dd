@@ -322,6 +322,8 @@ class GiftDetailTable extends Component {
                 case '80':
                 case '100':
                 case '91':
+                case '110':
+                case '111':
                     return <GiftAddModalStep {...editProps} />;
                 case '30':
                 case '40':
@@ -342,6 +344,8 @@ class GiftDetailTable extends Component {
                 case '42':
                 case '91':
                 case '100':
+                case '110':
+                case '111':
                     return (<GiftDetailModal
                         {...detailProps}
                         usedTotalSize={this.state.usedTotalSize || 0}
