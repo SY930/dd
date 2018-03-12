@@ -279,7 +279,7 @@ class GiftAddModalStep extends React.Component {
 
     handleFormChange(key, value, form) {
         const { gift: { name: describe, data }, type } = this.props;
-        let { secondKeys, values, trdTemplateInfoList = [] } = this.state;
+        let { firstKeys, secondKeys, values, trdTemplateInfoList = [] } = this.state;
         let newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
@@ -384,13 +384,19 @@ class GiftAddModalStep extends React.Component {
             case 'isMapTotrd':
                 describe !== '会员权益券' && value ?
                     !newKeys.includes('trdChannelID') ?
-                        newKeys.splice(1, 0, 'trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel') :
+                        (describe == '买赠券' || describe == '折扣券' ?
+                            firstKeys[describe][0].keys.push('trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel')
+                            : newKeys.splice(1, 0, 'trdChannelID', 'wechatMpName', 'trdTemplateID', 'trdTemplateIDLabel')) :
                         null :
-                    _.remove(newKeys, function (k) {
-                        return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'wechatMpName';
-                    });
+                    (describe == '买赠券' || describe == '折扣券' ?
+                        _.remove(firstKeys[describe][0].keys, function (k) {
+                            return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'wechatMpName';
+                        })
+                        : _.remove(newKeys, function (k) {
+                            return k === 'trdChannelID' || k === 'trdTemplateID' || k === 'trdTemplateIDLabel' || k === 'wechatMpName';
+                        }));
                 secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys });
+                this.setState({ secondKeys, firstKeys });
                 describe !== '会员权益券' ?
                     value ?
                         this.props.queryUnbindCouponPromotion({ channelID: data.trdChannelID || 10 }) :
@@ -405,14 +411,20 @@ class GiftAddModalStep extends React.Component {
                 }
                 break;
             case 'trdChannelID':
-                // if (releaseENV) break
-                describe !== '会员权益券' && value === 10 && newKeys.includes('trdChannelID') ? (!newKeys.includes('wechatMpName') ? newKeys.splice(2, 0, 'wechatMpName') : null) :
-                    _.remove(newKeys, function (k) {
+                let whichKey = describe == '买赠券' || describe == '折扣券' ? firstKeys[describe][0].keys : newKeys;
+                let whichIdx = describe == '买赠券' || describe == '折扣券' ? 7 : 2
+                describe !== '会员权益券' && value === 10 && whichKey.includes('trdChannelID')
+                    ? (!whichKey.includes('wechatMpName')
+                        ? whichKey.splice(whichIdx, 0, 'wechatMpName')
+                        : null)
+                    : _.remove(whichKey, function (k) {
                         return k === 'wechatMpName';
                     });
                 secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys, trdTemplateInfoList: [] }, () => {
-                    this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
+                this.setState({ firstKeys, secondKeys, trdTemplateInfoList: [] }, () => {
+                    describe == '买赠券' || describe == '折扣券'
+                        ? this.firstForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' })
+                        : this.secondForm.setFieldsValue({ trdChannelID: value, trdTemplateID: '', trdTemplateIDLabel: '', wechatMpName: '' });
                     if (type === 'add') {
                         this.queryTrdTemplate((value === 10 && this.state.mpList ? (this.state.mpList[0] ? this.state.mpList[0].mpID : undefined) : undefined), value)
                         values.isMapTotrd ? this.props.queryUnbindCouponPromotion({ channelID: value || 10 }) : null;
@@ -421,17 +433,19 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'wechatMpName':
-                // if (releaseENV) break
                 this.setState({ secondKeys, }, () => {
-                    this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
+                    describe == '买赠券' || describe == '折扣券'
+                        ? this.firstForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' })
+                        : this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
                     const mp = (this.state.mpList || []).find(mp => mp.mpName == value);
                     const mpID = mp ? mp.mpID : this.state.mpList ? this.state.mpList[0].mpID : undefined;
                     type === 'add' ? this.queryTrdTemplate(mpID, 10) : null; // wx公众号券模版/////////////////////////////////////
                 })
                 break;
             case 'trdTemplateID':
-                // if (releaseENV) break
-                this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
+                describe == '买赠券' || describe == '折扣券'
+                    ? this.firstForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
+                    : this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                 break;
             default:
                 break;
@@ -559,10 +573,16 @@ class GiftAddModalStep extends React.Component {
                 }
             }
             if (value != 80) {
+                // 买赠券和折扣券在第一步的formvalues
+                let wechatMpName = value == '110' || value == '111' ? this.firstForm.getFieldsValue().wechatMpName : formValues.wechatMpName;
+                let trdTemplateID = value == '110' || value == '111' ? this.firstForm.getFieldsValue().trdTemplateID : formValues.trdTemplateID;
+                if (value == '110' || value == '111') {
+                    params.wechatMpName = wechatMpName
+                }
                 params.extraInfo = JSON.stringify({
-                    wechatMpName: formValues.wechatMpName,
+                    wechatMpName: wechatMpName,
                     trdTemplateIDLabel: ((this.state.trdTemplateInfoList || []).find(template => {
-                        return template.trdGiftItemID == formValues.trdTemplateID
+                        return template.trdGiftItemID == trdTemplateID
                     }) || {}).trdGiftName ||
                         (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
@@ -708,7 +728,7 @@ class GiftAddModalStep extends React.Component {
                 label={''}
                 className={styles.foodBox}
                 validateStatus={this.state.foodNameListStatus}
-                help={this.state.foodNameListStatus=='success'?null:'不可为空'}
+                help={this.state.foodNameListStatus == 'success' ? null : '不可为空'}
             >
                 {
                     decorator({})(<FoodBox radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
