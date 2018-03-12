@@ -160,11 +160,11 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['shopNames', 'transferLimitType', 'couponTrdChannelStockNums'],
+        keys: ['stages', 'shopNames', 'transferLimitType',],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['shopNames', 'transferLimitType', 'couponTrdChannelStockNums'],
+        keys: ['shopNames', 'transferLimitType',],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

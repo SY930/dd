@@ -664,6 +664,35 @@ class GiftAddModalStep extends React.Component {
             </Row>
         )
     }
+    renderStages(decorator) {
+        return (
+            <Row>
+                <Col span={7}>购买同一编码菜品满</Col>
+                <Col span={5} style={{ margin: '-4px 13px 0 0' }}>
+                    <FormItem>
+                        {decorator({
+                            key: 'stageAmount',
+                            rules: [{ required: true, message: '不能为空' }],
+                        })(<Input
+                            addonAfter='份'
+                        />)}
+                    </FormItem>
+                </Col>
+                <Col span={2}>赠送</Col>
+                <Col span={5} style={{ margin: '-4px 12px 0 0' }}>
+                    <FormItem>
+                        {decorator({
+                            key: 'giveFoodCount',
+                            rules: [{ required: true, message: '不能为空' },]
+                        })(<Input
+                            addonAfter='份'
+                        />)}
+                    </FormItem>
+                </Col>
+                <Col span={4} style={{ marginRight: -10}}>本编码菜品</Col>
+            </Row>
+        )
+    }
     renderGiftTree(decorator, giftItemID) {
         return (
             <Row>
@@ -1054,6 +1083,11 @@ class GiftAddModalStep extends React.Component {
                 label: '投放渠道',
                 type: 'custom',
                 render: (decorator, form, formData) => this.renderCouponTrdChannelStockNums(decorator, form, formData)
+            },
+            stages: {
+                label: '买赠条件',
+                type: 'custom',
+                render: decorator => this.renderStages(decorator),
             },
         };
         let formData = {};
