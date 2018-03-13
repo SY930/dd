@@ -11,6 +11,7 @@ import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
 import FoodCatTree from './FoodCatTree';
 import FoodBox from './FoodBox';
+// import MoreFoodBox from './MoreFoodBox';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
 import {
@@ -914,7 +915,8 @@ class GiftAddModalStep extends React.Component {
         return (
             <FormItem>
                 {
-                    decorator({})(<FoodBox />)
+                    decorator({})(<Input />)
+                    // decorator({})(<MoreFoodBox />)
                 }
             </FormItem>
         )
