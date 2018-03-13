@@ -664,6 +664,35 @@ class GiftAddModalStep extends React.Component {
             </Row>
         )
     }
+    renderDisCountStages(decorator) {
+        let { discountType } = this.state.values
+        return (
+            <Row style={{ marginTop: -6 }}>
+                <Col span={discountType == '0' ? 24 : 12}>
+                    <FormItem>
+                        {decorator({
+                            key: 'discountType',
+                            initialValue: '0',
+                        })(<Select className="giftNameStep">
+                            {
+                                [{ label: '无门槛折扣', value: '0' }, { label: '指定菜品消费满', value: '1' }].map((t, i) => {
+                                    return <Option key={t.label} value={t.value}>{t.label}</Option>
+                                })
+                            }
+                        </Select>)}
+                    </FormItem>
+                </Col>
+                <Col span={discountType == '0' ? 0 : 12}>
+                    <FormItem style={{ marginTop: 2 }}>
+                        {decorator({
+                            key: 'discountThreshold',
+                        })(<Input size="large" addonAfter='元' disabled={discountType == '0'} />)}
+                    </FormItem>
+                </Col>
+            </Row>
+        )
+
+    }
     renderStages(decorator) {
         return (
             <Row>
@@ -689,7 +718,7 @@ class GiftAddModalStep extends React.Component {
                         />)}
                     </FormItem>
                 </Col>
-                <Col span={4} style={{ marginRight: -10}}>本编码菜品</Col>
+                <Col span={4} style={{ marginRight: -10 }}>本编码菜品</Col>
             </Row>
         )
     }
@@ -1089,6 +1118,11 @@ class GiftAddModalStep extends React.Component {
                 type: 'custom',
                 render: decorator => this.renderStages(decorator),
             },
+            disCountStages: {
+                label: '活动条件',
+                type: 'custom',
+                render: decorator => this.renderDisCountStages(decorator),
+            }
         };
         let formData = {};
         // if (type == 'edit') {
