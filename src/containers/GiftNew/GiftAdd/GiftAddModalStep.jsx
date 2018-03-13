@@ -910,6 +910,15 @@ class GiftAddModalStep extends React.Component {
             </FormItem>
         )
     }
+    renderFoodsboxs(decorator) {
+        return (
+            <FormItem>
+                {
+                    decorator({})(<FoodBox />)
+                }
+            </FormItem>
+        )
+    }
     renderCouponTrdChannelStockNums(decorator, form, formData) {
         return (
             decorator({})(<CouponTrdChannelStockNums form={form} giftItemID={this.props.gift.data.giftItemID} />)
@@ -1230,7 +1239,12 @@ class GiftAddModalStep extends React.Component {
                 label: ' ',
                 type: 'custom',
                 render: decorator => this.renderDisCountRate(decorator),
-            }
+            },
+            foodsboxs: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => this.renderFoodsboxs(decorator),
+            },
         };
         let formData = {};
         // if (type == 'edit') {
