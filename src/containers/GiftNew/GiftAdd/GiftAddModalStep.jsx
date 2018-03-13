@@ -1243,7 +1243,7 @@ class GiftAddModalStep extends React.Component {
                 render: decorator => this.renderDisCountRate(decorator),
             },
             foodsboxs: {
-                label: ' ',
+                label: '选择菜品',
                 type: 'custom',
                 render: decorator => this.renderFoodsboxs(decorator),
             },
