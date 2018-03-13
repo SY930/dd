@@ -233,7 +233,7 @@ class GiftAddModalStep extends React.Component {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
         const { gift: { name, data, value }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
-        const { secondKeys } = this.state;
+        const { secondKeys, values } = this.state;
         if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
                 secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
@@ -254,9 +254,14 @@ class GiftAddModalStep extends React.Component {
                 }
             }
         }
+        if (type === 'edit' && value == '111') {
+            values.isDiscountOffMax = values.discountOffMax > 0 ? 1 : 0
+            values.discountRate_111 = data.discountRate * 100
+        }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+            values: { ...values, ...data }
         });
     }
     proSharedGifts = (sharedGifts = []) => {
@@ -447,6 +452,9 @@ class GiftAddModalStep extends React.Component {
                     ? this.firstForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                     : this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                 break;
+            case 'isDiscountOffMax':
+                this.secondForm.setFieldsValue({ discountOffMax: '' });
+                break;
             default:
                 break;
         }
@@ -549,7 +557,7 @@ class GiftAddModalStep extends React.Component {
                 // 不传值0,1,2创建会报错
                 params.giftShareType = '0'
             }
-            if (!params.isDiscountRate) {
+            if (!params.isDiscountRate && value != '111') {
                 params.discountRate = 1
             }
             if (!params.isPointRate) {
@@ -587,6 +595,12 @@ class GiftAddModalStep extends React.Component {
                         (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
                 params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
+            }
+            if (params.discountRate_111 && value == '111') {
+                params.discountRate = (params.discountRate_111 / 100).toFixed(2)
+            }
+            if (params.isDiscountOffMax == 0 && value == '111') {
+                params.discountOffMax = 0 //0标识不限制
             }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
@@ -668,27 +682,100 @@ class GiftAddModalStep extends React.Component {
         let { discountType } = this.state.values
         return (
             <Row style={{ marginTop: -6 }}>
-                <Col span={discountType == '0' ? 24 : 12}>
+                <Col span={discountType == 0 ? 24 : 12}>
                     <FormItem>
                         {decorator({
                             key: 'discountType',
-                            initialValue: '0',
+                            initialValue: discountType || 0,
                         })(<Select className="giftNameStep">
                             {
-                                [{ label: '无门槛折扣', value: '0' }, { label: '指定菜品消费满', value: '1' }].map((t, i) => {
+                                [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t, i) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
                                 })
                             }
                         </Select>)}
                     </FormItem>
                 </Col>
-                <Col span={discountType == '0' ? 0 : 12}>
-                    <FormItem style={{ marginTop: 2 }}>
+                {
+                    discountType == 0 ? null :
+                        <Col span={12}>
+                            <FormItem style={{ marginTop: 2 }}>
+                                {decorator({
+                                    key: 'discountThreshold',
+                                    rules: [{ required: true, message: '不得为空' }, {
+                                        validator: (rule, v, cb) => {
+                                            if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                                                cb(rule.message);
+                                            }
+                                            cb();
+                                        },
+                                        message: '整数不超过8位，小数不超过2位',
+                                    }]
+                                })(<Input size="large" addonAfter='元' />)}
+                            </FormItem>
+                        </Col>
+                }
+            </Row>
+        )
+    }
+    renderDisCountRate(decorator) {
+        let { discountOffMax, isDiscountOffMax, discountRate_111 } = this.state.values
+        return (
+            <Row style={{ marginTop: -6 }}>
+                <Col span={3} style={{ marginTop: 5 }}>折扣率</Col>
+                <Col span={5}>
+                    <FormItem>
                         {decorator({
-                            key: 'discountThreshold',
-                        })(<Input size="large" addonAfter='元' disabled={discountType == '0'} />)}
+                            key: 'discountRate_111',
+                            initialValue: discountRate_111 || '',
+                            rules: [{ required: true, message: '不得为空' }, {
+                                validator: (rule, v, cb) => {
+                                    if (!/^\+?\d{0,2}$/.test(Number(v))) {
+                                        cb(rule.message);
+                                    }
+                                    cb();
+                                },
+                                message: '整数不超过2位',
+                            }]
+                        })(<Input size="large" addonAfter='%' />)}
                     </FormItem>
                 </Col>
+                <Col span={1}></Col>
+                <Col span={5} style={{ marginTop: 5 }}>最大折扣上限</Col>
+                <Col span={isDiscountOffMax == 0 ? 10 : 5} style={{ marginTop: -2 }}>
+                    <FormItem>
+                        {decorator({
+                            key: 'isDiscountOffMax',
+                            initialValue: isDiscountOffMax || 0,
+                        })(<Select className="giftNameStep">
+                            {
+                                [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t, i) => {
+                                    return <Option key={t.label} value={t.value}>{t.label}</Option>
+                                })
+                            }
+                        </Select>)}
+                    </FormItem>
+                </Col>
+                {
+                    isDiscountOffMax == 0 ? null :
+                        <Col span={5}>
+                            <FormItem>
+                                {decorator({
+                                    key: 'discountOffMax',
+                                    rules: [{ required: true, message: '不能为空' }, {
+                                        validator: (rule, v, cb) => {
+                                            if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                                                cb(rule.message);
+                                            }
+                                            cb();
+                                        },
+                                        message: '整数不超过8位，小数不超过2位',
+                                    }],
+                                    initialValue: discountOffMax > 0 ? discountOffMax : '',
+                                })(<Input size="large" addonAfter='元' />)}
+                            </FormItem>
+                        </Col>
+                }
             </Row>
         )
 
@@ -701,7 +788,15 @@ class GiftAddModalStep extends React.Component {
                     <FormItem>
                         {decorator({
                             key: 'stageAmount',
-                            rules: [{ required: true, message: '不能为空' }],
+                            rules: [{ required: true, message: '不能为空' }, {
+                                validator: (rule, v, cb) => {
+                                    if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                                        cb(rule.message);
+                                    }
+                                    cb();
+                                },
+                                message: '整数不超过8位',
+                            }],
                         })(<Input
                             addonAfter='份'
                         />)}
@@ -712,7 +807,15 @@ class GiftAddModalStep extends React.Component {
                     <FormItem>
                         {decorator({
                             key: 'giveFoodCount',
-                            rules: [{ required: true, message: '不能为空' },]
+                            rules: [{ required: true, message: '不能为空' }, {
+                                validator: (rule, v, cb) => {
+                                    if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                                        cb(rule.message);
+                                    }
+                                    cb();
+                                },
+                                message: '整数不超过8位',
+                            }]
                         })(<Input
                             addonAfter='份'
                         />)}
@@ -1122,6 +1225,11 @@ class GiftAddModalStep extends React.Component {
                 label: '活动条件',
                 type: 'custom',
                 render: decorator => this.renderDisCountStages(decorator),
+            },
+            disCountRate_Max: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => this.renderDisCountRate(decorator),
             }
         };
         let formData = {};

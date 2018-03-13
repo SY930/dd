@@ -164,7 +164,7 @@ const SECOND_KEYS = {
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['disCountStages','shopNames', 'transferLimitType',],
+        keys: ['disCountStages','disCountRate_Max','shopNames', 'transferLimitType',],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
