@@ -103,85 +103,81 @@ class MoreFoodBox extends React.Component {
         this.initialData = this.initialData.bind(this);
         this.renderExcludeRange = this.renderExcludeRange.bind(this);
         this.handleisExcludeFoodChange = this.handleisExcludeFoodChange.bind(this);
-
     }
-    //将props中的数据匹配到分类，单品，排除框中
+    // 将props中的数据匹配到分类，单品，排除框中
     initialData(_scopeLst, foodCategoryCollection) {
-        if (_scopeLst === undefined || foodCategoryCollection === undefined) {
+        if (_scopeLst === undefined || !_scopeLst || foodCategoryCollection === undefined) {
             return
         }
-        if (_scopeLst.length == 0 || foodCategoryCollection.length == 0) {
+        if (_scopeLst.length === 0 || foodCategoryCollection.length === 0) {
             return
         }
-        //     const foodCategorySelections = new Set(), foodSelections = new Set(), excludeSelections = new Set();
-        //     // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
-        //     if (_scopeLst.length > 0) {
-        //         let foodSelectType = 1;
-        //         _scopeLst.map((scope) => {
-        //             if (scope.scopeType == 'CATEGORY_INCLUDED') {
-        //                 foodCategoryCollection
-        //                     .forEach((categoryGroup) => {
-        //                         categoryGroup.foodCategoryName
-        //                             .find((category) => {
-        //                                 if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
-        //                                     foodSelectType = 1
-        //                                     foodCategorySelections.add(category);
-        //                                 }
-        //                             });
-        //                     });
-        //             }
-        //             if (scope.scopeType == 'FOOD_EXCLUDED') {
-        //                 foodCategoryCollection
-        //                     .forEach((categoryGroup) => {
-        //                         categoryGroup.foodCategoryName
-        //                             .forEach((category) => {
-        //                                 category.foods
-        //                                     .find((menu) => {
-        //                                         if (menu.itemID == scope.targetID) {
-        //                                             foodSelectType = 1;
-        //                                             excludeSelections.add(menu);
-        //                                         }
-        //                                     });
-        //                             })
-        //                     });
-        //             }
-        //             if (scope.scopeType == 'FOOD_INCLUDED') {
-        //                 foodCategoryCollection
-        //                     .forEach((categoryGroup) => {
-        //                         categoryGroup.foodCategoryName
-        //                             .forEach((category) => {
-        //                                 category.foods
-        //                                     .find((menu) => {
-        //                                         if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
-        //                                             foodSelectType = 0;
-        //                                             foodSelections.add(menu);
-        //                                         }
-        //                                     });
-        //                             })
-        //                     });
-        //             }
-        //         });
+        const foodCategorySelections = new Set(),
+            foodSelections = new Set(),
+            excludeSelections = new Set();
+        // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
+        if (_scopeLst.length > 0) {
+            _scopeLst.forEach((scope) => {
+                if (scope.scopeType === 1) {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
+                                        foodCategorySelections.add(category);
+                                    }
+                                });
+                        });
+                }
+                if (scope.scopeType === 4) {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    category.foods
+                                        .forEach((menu) => {
+                                            if (menu.itemID == scope.targetID) {
+                                                excludeSelections.add(menu);
+                                            }
+                                        });
+                                })
+                        });
+                }
+                if (scope.scopeType === 2) {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    category.foods
+                                        .forEach((menu) => {
+                                            if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
+                                                foodSelections.add(menu);
+                                            }
+                                        });
+                                })
+                        });
+                }
+            });
 
-        //         this.setState({
-        //             foodSelectType,
-        //             foodCategorySelections,
-        //             foodSelections,
-        //             excludeSelections,
-        //         });
-        //     }
+            this.setState({
+                foodCategorySelections,
+                foodSelections,
+                excludeSelections,
+            });
+        }
     }
     componentDidMount() {
-        var opts = {
+        const opts = {
             _groupID: this.props.user.toJS().accountInfo.groupID,
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
-        let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
-        if (this.props.catOrFoodValue) {
-            const _scopeLst2 = this.props.catOrFoodValue;
+        const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        if (this.props.scopeLst) {
+            const scopeLst = this.props.scopeLst;
             this.setState({
                 foodCategoryCollection,
-                scopeLst: _scopeLst2,
+                scopeLst,
             }, () => {
                 this.initialData(this.state.scopeLst, this.state.foodCategoryCollection);
             });
@@ -192,7 +188,7 @@ class MoreFoodBox extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !=
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
-            let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
+            const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             this.setState({
                 foodCategoryCollection,
             }, () => {
@@ -236,7 +232,7 @@ class MoreFoodBox extends React.Component {
             // dishes: [],
             isExcludeFood: 0,
             // excludeDishes: [],
-            CouponFoodScope: [], //菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
+            CouponFoodScope: [], // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
         })
     }
 

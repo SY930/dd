@@ -955,16 +955,22 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderFoodsboxs(decorator) {
+        const { gift: { data } } = this.props;
+        debugger;
         return (
             <FormItem>
                 {
-                    // decorator({})(<Input />)
-                    decorator({})(<MoreFoodBox />)
+                    decorator({})(
+                        <MoreFoodBox
+                            scopeLst={data.couponFoodScopeList}
+                            foodSelectType={data.foodSelectType}
+                            isExcludeFood={data.isExcludeFood}
+                        />)
                 }
             </FormItem>
         )
     }
-    renderCouponTrdChannelStockNums(decorator, form, formData) {
+    renderCouponTrdChannelStockNums(decorator, form) {
         return (
             decorator({})(<CouponTrdChannelStockNums form={form} giftItemID={this.props.gift.data.giftItemID} />)
         )
