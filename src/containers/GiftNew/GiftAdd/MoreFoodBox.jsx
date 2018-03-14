@@ -102,9 +102,11 @@ class MoreFoodBox extends React.Component {
         this.clear = this.clear.bind(this);
         this.initialData = this.initialData.bind(this);
         this.renderExcludeRange = this.renderExcludeRange.bind(this);
+        this.handleisExcludeFoodChange = this.handleisExcludeFoodChange.bind(this);
+        
     }
 
-    // initialData(_scopeLst, foodCategoryCollection) {
+    initialData(_scopeLst, foodCategoryCollection) {
     //     if (_scopeLst === undefined || foodCategoryCollection === undefined) {
     //         return
     //     }
@@ -167,7 +169,7 @@ class MoreFoodBox extends React.Component {
     //             excludeSelections,
     //         });
     //     }
-    // }
+    }
     // componentDidMount() {
     //     var opts = {
     //         _groupID: this.props.user.toJS().accountInfo.groupID,
@@ -479,11 +481,11 @@ class MoreFoodBox extends React.Component {
 
     // 点击排除菜品范围radio
     handleisExcludeFoodChange(e) {
-        const { excludeDishes } = this.state;
-        excludeDishes.clear();
+        const { excludeSelections } = this.state;
+        excludeSelections.clear();
         this.setState({
             isExcludeFood: e.target.value,
-            excludeDishes,
+            excludeDishes: [],
         });
         this.props.onChange && this.props.onChange({
             excludeDishes: [],
