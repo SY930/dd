@@ -963,7 +963,7 @@ class GiftAddModalStep extends React.Component {
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         return (
-            <FormItem style={{ marginTop: -12, marginBottom: 12 }}>
+            <FormItem style={{ marginTop: -12, marginBottom: 0 }}>
                 {
                     decorator({})(
                         <MoreFoodBox
