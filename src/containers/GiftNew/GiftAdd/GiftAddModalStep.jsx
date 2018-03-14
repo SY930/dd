@@ -603,6 +603,49 @@ class GiftAddModalStep extends React.Component {
             if (params.isDiscountOffMax == 0 && value == '111') {
                 params.discountOffMax = 0 //0标识不限制
             }
+            //foodbxs数据,目前买赠券和折扣券用
+            if (formValues.hasOwnProperty('foodsboxs')) {
+                if (!formValues.foodsboxs) {//用户没选择，默认信息
+                    params.foodSelectType = 2;
+                    params.isExcludeFood = 0;
+                }
+                if (formValues.foodsboxs && formValues.foodsboxs instanceof Object) {
+                    const { foodSelectType, isExcludeFood, foodCategory, excludeDishes, dishes } = formValues.foodsboxs;
+                    params.foodSelectType = foodSelectType;
+                    params.isExcludeFood = isExcludeFood;
+                    //菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
+                    params.couponFoodScopes = foodCategory.map(cat => {
+                        return {
+                            scopeType: 1,
+                            targetID: cat.foodCategoryID,
+                            targetCode: cat.foodCategoryCode,
+                            targetName: cat.foodCategoryName,
+                            // targetUnitName
+                        }
+                    }).concat(
+                        excludeDishes.map(food => {
+                            return {
+                                scopeType: 4,
+                                targetID: food.foodID,
+                                targetCode: food.foodCode,
+                                targetName: food.foodName,
+                                targetUnitName: food.unit || '',
+                            }
+                        })
+                    ).concat(
+                        dishes.map(food => {
+                            return {
+                                scopeType: 2,
+                                targetID: food.foodID,
+                                targetCode: food.foodCode,
+                                targetName: food.foodName,
+                                targetUnitName: food.unit || '',
+                            }
+                        })
+                    )
+                }
+                delete params.foodsboxs
+            }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID == '-1') {

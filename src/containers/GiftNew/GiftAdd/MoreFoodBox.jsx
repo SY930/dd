@@ -232,10 +232,11 @@ class MoreFoodBox extends React.Component {
         });
         this.props.onChange && this.props.onChange({
             foodSelectType: e.target.value,
-            foodCategory: [],
-            dishes: [],
+            // foodCategory: [],
+            // dishes: [],
             isExcludeFood: 0,
-            excludeDishes: [],
+            // excludeDishes: [],
+            CouponFoodScope: [], //菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
         })
     }
 
@@ -429,7 +430,6 @@ class MoreFoodBox extends React.Component {
                 dishes: [],
                 isExcludeFood,
                 excludeDishes: Array.from(excludeSelections),
-
             })
         });
     }
