@@ -875,6 +875,109 @@ class GiftAddModalStep extends React.Component {
             </Row>
         )
     }
+    renderGiveLimits(decorator) {
+        // 一笔订单最多赠送菜品 maxGiveCountPerBill 
+        // 一笔订单同一菜品最多赠送菜品 maxGiveCountPerFoodPerBill
+        //    一笔订单同时满足多个单品，优惠金额按照 BOGOdiscountWay 1 高价单品优先 2 低价单品优先
+        const { ismaxGiveCountPerBill = 0, maxGiveCountPerBill = '', ismaxGiveCountPerFoodPerBill = 0, maxGiveCountPerFoodPerBill = '', BOGOdiscountWay = 1 } = this.state.values;
+        return (
+            <div>
+                <Row style={{ marginBottom: 12 }}>
+                    <Col span={4}></Col>
+                    <Col span={10}>一笔订单最多赠送菜品</Col>
+                    <Col span={ismaxGiveCountPerBill == 0 ? 10 : 5} style={{ marginTop: -8 }}>
+                        <FormItem>
+                            {decorator({
+                                key: 'ismaxGiveCountPerBill',
+                                initialValue: ismaxGiveCountPerBill || 0,
+                            })(<Select className="giftNameStep">
+                                {
+                                    [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
+                                        return <Option key={t.label} value={t.value}>{t.label}</Option>
+                                    })
+                                }
+                            </Select>)}
+                        </FormItem>
+                    </Col>
+                    {
+                        ismaxGiveCountPerBill == 0 ? null :
+                            <Col span={5} style={{ marginTop: -6 }}>
+                                <FormItem>
+                                    {decorator({
+                                        key: 'maxGiveCountPerBill',
+                                        rules: [{ required: true, message: '不能为空' }, {
+                                            validator: (rule, v, cb) => {
+                                                if (!/(^\+?\d{0,8}$)/.test(Number(v))) {
+                                                    cb(rule.message);
+                                                }
+                                                cb();
+                                            },
+                                            message: '整数不超过8位',
+                                        }],
+                                        initialValue: maxGiveCountPerBill > 0 ? maxGiveCountPerBill : '',
+                                    })(<Input size="large" addonAfter="份" />)}
+                                </FormItem>
+                            </Col>
+                    }
+                </Row>
+                <Row style={{ marginBottom: 12 }}>
+                    <Col span={3}></Col>
+                    <Col span={11}>一笔订单同一菜品最多赠送菜品</Col>
+                    <Col span={ismaxGiveCountPerFoodPerBill == 0 ? 10 : 5} style={{ marginTop: -8 }}>
+                        <FormItem>
+                            {decorator({
+                                key: 'ismaxGiveCountPerFoodPerBill',
+                                initialValue: ismaxGiveCountPerFoodPerBill || 0,
+                            })(<Select className="giftNameStep">
+                                {
+                                    [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
+                                        return <Option key={t.label} value={t.value}>{t.label}</Option>
+                                    })
+                                }
+                            </Select>)}
+                        </FormItem>
+                    </Col>
+                    {
+                        ismaxGiveCountPerFoodPerBill == 0 ? null :
+                            <Col span={5} style={{ marginTop: -6 }}>
+                                <FormItem>
+                                    {decorator({
+                                        key: 'maxGiveCountPerFoodPerBill',
+                                        rules: [{ required: true, message: '不能为空' }, {
+                                            validator: (rule, v, cb) => {
+                                                if (!/(^\+?\d{0,8}$)/.test(Number(v))) {
+                                                    cb(rule.message);
+                                                }
+                                                cb();
+                                            },
+                                            message: '整数不超过8位',
+                                        }],
+                                        initialValue: maxGiveCountPerFoodPerBill > 0 ? maxGiveCountPerFoodPerBill : '',
+                                    })(<Input size="large" addonAfter="份" />)}
+                                </FormItem>
+                            </Col>
+                    }
+                </Row>
+                <Row style={{ marginBottom: 12 }}>
+                    <Col span={14}>一笔订单同时满足多个单品，优惠金额按照</Col>
+                    <Col span={10} style={{ marginTop: -6 }}>
+                        <FormItem>
+                            {decorator({
+                                key: 'BOGOdiscountWay',
+                                initialValue: BOGOdiscountWay || 1,
+                            })(<Select className="giftNameStep">
+                                {
+                                    [{ label: '高价单品优先', value: 1 }, { label: '低价单品优先', value: 2 }].map((t) => {
+                                        return <Option key={t.label} value={t.value}>{t.label}</Option>
+                                    })
+                                }
+                            </Select>)}
+                        </FormItem>
+                    </Col>
+                </Row>
+            </div>
+        )
+    }
     renderGiftTree(decorator, giftItemID) {
         return (
             <Row>
@@ -1295,6 +1398,11 @@ class GiftAddModalStep extends React.Component {
                 label: '选择菜品',
                 type: 'custom',
                 render: decorator => this.renderFoodsboxs(decorator),
+            },
+            giveLimits: {
+                label: '赠送菜品数量限制',
+                type: 'custom',
+                render: decorator => this.renderGiveLimits(decorator),
             },
         };
         let formData = {};
