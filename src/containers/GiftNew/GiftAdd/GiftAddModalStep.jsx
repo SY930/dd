@@ -262,8 +262,17 @@ class GiftAddModalStep extends React.Component {
             }
         }
         if (type === 'edit' && value == '111') {
-            values.isDiscountOffMax = values.discountOffMax > 0 ? 1 : 0
+            values.discountOffMax = data.discountOffMax
+            values.isDiscountOffMax = data.discountOffMax > 0 ? 1 : 0
+            values.discountType = data.discountThreshold > 0 ? 1 : 0
             values.discountRate_111 = data.discountRate * 100
+        }
+        if (type === 'edit' && value == '110') {
+            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
+            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
+            values.maxGiveCountPerBill = data.maxGiveCountPerBill
+            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
+            values.BOGOdiscountWay = data.BOGOdiscountWay
         }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
@@ -609,6 +618,14 @@ class GiftAddModalStep extends React.Component {
             }
             if (params.isDiscountOffMax == 0 && value == '111') {
                 params.discountOffMax = 0 // 0标识不限制
+            }
+            if (value == '110') {
+                if (params.ismaxGiveCountPerBill == 0) {
+                    params.maxGiveCountPerBill = 0 // 0标识不限制
+                }
+                if (params.ismaxGiveCountPerFoodPerBill == 0) {
+                    params.maxGiveCountPerFoodPerBill = 0 // 0标识不限制
+                }
             }
             // foodbxs数据,目前买赠券和折扣券用
             if (formValues.hasOwnProperty('foodsboxs')) {
