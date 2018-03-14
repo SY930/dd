@@ -112,9 +112,9 @@ class MoreFoodBox extends React.Component {
         if (_scopeLst.length === 0 || foodCategoryCollection.length === 0) {
             return
         }
-        const foodCategorySelections = new Set(),
-            foodSelections = new Set(),
-            excludeSelections = new Set();
+        const foodCategorySelections = new Set()
+        const foodSelections = new Set()
+        const excludeSelections = new Set();
         // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
         if (_scopeLst.length > 0) {
             _scopeLst.forEach((scope) => {
@@ -211,7 +211,7 @@ class MoreFoodBox extends React.Component {
     // 渲染活动范围radio
     renderPromotionRange() {
         return (
-            <FormItem>
+            <FormItem style={{ marginBottom: -8 }}>
                 <RadioGroup
                     value={this.state.foodSelectType}
                     onChange={this.handlefoodSelectTypeChange}
@@ -483,7 +483,7 @@ class MoreFoodBox extends React.Component {
     // 渲染排除菜品radio
     renderExcludeRange() {
         return (
-            <FormItem>
+            <FormItem style={{ marginBottom: -8, marginTop: 18 }}>
                 <RadioGroup
                     value={this.state.isExcludeFood || 0}
                     onChange={this.handleisExcludeFoodChange}
@@ -495,7 +495,7 @@ class MoreFoodBox extends React.Component {
             </FormItem>
 
         );
-    }    // }
+    }
 
     // 点击排除菜品范围radio
     handleisExcludeFoodChange(e) {
@@ -546,9 +546,7 @@ class MoreFoodBox extends React.Component {
 
         return (
             <div>
-                <FormItem
-                //  label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}
-                >
+                <FormItem style={{ marginBottom: 8 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
                             label={'排除菜品'}
@@ -651,9 +649,9 @@ class MoreFoodBox extends React.Component {
                 treeData.push(item)
             });
         } else {
-            this.state.foodCategoryCollection.map((item) => {
+            this.state.foodCategoryCollection.forEach((item) => {
                 if (typeof item === 'object') {
-                    item.foodCategoryName.map((cate) => {
+                    item.foodCategoryName.forEach((cate) => {
                         treeData.push(cate)
                     })
                 }
@@ -743,9 +741,9 @@ class MoreFoodBox extends React.Component {
     // 渲染菜品单品modal
     renderDishsSelectionBox() {
         const treeData = [];
-        this.state.foodCategoryCollection.map((item) => {
+        this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.map((cate) => {
+                item.foodCategoryName.forEach((cate) => {
                     treeData.push(cate)
                 })
             }
@@ -753,7 +751,7 @@ class MoreFoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.map((item, index) => {
+                return data.forEach((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -763,9 +761,7 @@ class MoreFoodBox extends React.Component {
         };
         return (
             <div>
-                <FormItem
-                // label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}
-                >
+                <FormItem style={{ marginBottom: 8 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
                             label={'适用菜品'}
@@ -857,9 +853,9 @@ class MoreFoodBox extends React.Component {
         }
         const indexArray = parseInt(value[0]);
         const treeData = [];
-        this.state.foodCategoryCollection.map((item) => {
+        this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.map((cate) => {
+                item.foodCategoryName.forEach((cate) => {
                     treeData.push(cate)
                 })
             }
@@ -963,8 +959,8 @@ class MoreFoodBox extends React.Component {
             <div>
                 {this.renderPromotionRange()}
                 {
-                    this.state.foodSelectType == '0' ? this.renderDishsSelectionBox() :
-                        this.state.foodSelectType == '1' ? this.renderCategorySelectionBox() :
+                    this.state.foodSelectType == 0 ? this.renderDishsSelectionBox() :
+                        this.state.foodSelectType == 1 ? this.renderCategorySelectionBox() :
                             null
                 }
             </div>

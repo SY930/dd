@@ -9,7 +9,7 @@ import BaseForm from '../../../components/common/BaseForm';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
-import FoodCatTree from './FoodCatTree';
+// import FoodCatTree from './FoodCatTree';
 import FoodBox from './FoodBox';
 import MoreFoodBox from './MoreFoodBox';
 import GiftPromotion from './GiftPromotion';
@@ -18,11 +18,15 @@ import {
     FetchGiftList,
     FetchGiftSort,
 } from '../_action';
-import { saleCenterResetDetailInfoAC, fetchAllPromotionListAC, queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {
+    saleCenterResetDetailInfoAC,
+    fetchAllPromotionListAC,
+    queryUnbindCouponPromotion,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const TreeNode = TreeSelect.TreeNode;
+// const TreeNode = TreeSelect.TreeNode;
 
 
 class CouponTrdChannelStockNums extends React.Component {
@@ -35,7 +39,7 @@ class CouponTrdChannelStockNums extends React.Component {
                 // { trdPartyPlatformID: 3001, trdStockNum: '', name: '悸动小程序' },
                 // { trdPartyPlatformID: 3002, trdStockNum: '', name: '悸动小程序' },
             ],
-            checkedArr: [true, false, false, false]
+            checkedArr: [true, false, false, false],
         }
     }
     componentDidMount() {
@@ -43,7 +47,7 @@ class CouponTrdChannelStockNums extends React.Component {
         if (this.props.value) {
             checkedArr = [false, false, false, false]
             couponTrdChannelStockNums.forEach((channel, index) => {
-                let hadSet = this.props.value.find(_chan => {
+                const hadSet = this.props.value.find((_chan) => {
                     return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
                 });
                 if (hadSet) {
@@ -55,10 +59,10 @@ class CouponTrdChannelStockNums extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        let { couponTrdChannelStockNums } = this.state;
+        const { couponTrdChannelStockNums } = this.state;
         if (nextProps.value) {
-            couponTrdChannelStockNums.forEach(channel => {
-                let hadSet = nextProps.value.find(_chan => {
+            couponTrdChannelStockNums.forEach((channel) => {
+                const hadSet = nextProps.value.find((_chan) => {
                     return _chan.trdPartyPlatformID == channel.trdPartyPlatformID;
                 });
                 if (hadSet) {
@@ -69,24 +73,24 @@ class CouponTrdChannelStockNums extends React.Component {
         }
     }
     handleCheckboxChange(index, checked) {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        const { couponTrdChannelStockNums, checkedArr } = this.state;
         checkedArr[index] = checked;
         if (!checked) {
             couponTrdChannelStockNums[index].trdStockNum = '';
-            let input = 'input' + index;
+            const input = "input" + index;
             this.props.form.setFieldsValue({ [input]: '' })
         }
         this.setState({ couponTrdChannelStockNums, checkedArr });
         this.props.onChange(couponTrdChannelStockNums)
     }
     handleInputChange(index, value) {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        const { couponTrdChannelStockNums, checkedArr } = this.state;
         couponTrdChannelStockNums[index].trdStockNum = checkedArr[index] ? value : '';
         this.setState({ couponTrdChannelStockNums });
         this.props.onChange(couponTrdChannelStockNums)
     }
     render() {
-        let { couponTrdChannelStockNums, checkedArr } = this.state;
+        const { couponTrdChannelStockNums, checkedArr } = this.state;
         return (
             <div style={{ marginTop: -6 }}>
                 {
@@ -105,7 +109,8 @@ class CouponTrdChannelStockNums extends React.Component {
                                         checked={checkedArr[index]}
                                         onChange={(e) => {
                                             this.handleCheckboxChange(index, e.target.checked)
-                                        }}>
+                                        }}
+                                    >
                                         {channel.name}
                                     </Checkbox>
                                 </Col>
@@ -125,7 +130,8 @@ class CouponTrdChannelStockNums extends React.Component {
                                                     disabled={!checkedArr[index]}
                                                     onChange={(e) => {
                                                         this.handleInputChange(index, e.target.value)
-                                                    }} />
+                                                    }}
+                                                />
 
                                             )
                                         }
@@ -166,7 +172,7 @@ class GiftAddModalStep extends React.Component {
     }
 
     componentDidMount() {
-        const { FetchGiftSort, type, data, visible, gift: thisGift } = this.props;
+        const { FetchGiftSort, gift: thisGift } = this.props;
 
         fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
             let { cities, shops } = data;
@@ -177,7 +183,7 @@ class GiftAddModalStep extends React.Component {
             if (shops === undefined) {
                 shops = [];
             }
-            cities.map((city, index) => {
+            cities.forEach((city) => {
                 const newShops = [];
                 shops.filter((shop) => {
                     return shop.cityID == city.cityID;
@@ -200,7 +206,7 @@ class GiftAddModalStep extends React.Component {
         fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
             if (!data) return;
             const groupTypes = [];
-            data.map((d) => {
+            data.forEach((d) => {
                 groupTypes.push({ value: d.brandID, label: d.brandName })
             });
             groupTypes.push({ value: '-1', label: '(空)' });
@@ -233,7 +239,7 @@ class GiftAddModalStep extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.firstForm && this.firstForm.resetFields();
         this.secondForm && this.secondForm.resetFields();
-        const { gift: { name, data, value }, type, giftData, sharedGifts, FetchSharedGifts, visible } = nextProps;
+        const { gift: { name, data, value }, type, sharedGifts } = nextProps;
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
@@ -248,7 +254,7 @@ class GiftAddModalStep extends React.Component {
                     // 三方券模版
                     const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
                     const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
-                    this.queryTrdTemplate(mpID, data.trdChannelID)/////////////////////////////////////////////////
+                    this.queryTrdTemplate(mpID, data.trdChannelID)
                     this.props.fetchAllPromotionList({
                         groupID: this.props.accountInfo.toJS().groupID,
                     })
@@ -262,7 +268,7 @@ class GiftAddModalStep extends React.Component {
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
-            values: { ...values, ...data }
+            // values: { ...values, ...data } // ?带上data提交时也会带上冗余
         });
     }
     proSharedGifts = (sharedGifts = []) => {
@@ -271,7 +277,7 @@ class GiftAddModalStep extends React.Component {
                 return [];
             }
             const proSharedGifts = [];
-            sharedGifts.forEach((sharedGift, idx) => {
+            sharedGifts.forEach((sharedGift) => {
                 proSharedGifts.push({
                     itemID: sharedGift.sID,
                     giftItemID: sharedGift.sID,
@@ -283,10 +289,10 @@ class GiftAddModalStep extends React.Component {
         return [];
     }
 
-    handleFormChange(key, value, form) {
+    handleFormChange(key, value) {
         const { gift: { name: describe, data }, type } = this.props;
-        let { firstKeys, secondKeys, values, trdTemplateInfoList = [] } = this.state;
-        let newKeys = [...secondKeys[describe][0].keys];
+        const { firstKeys, secondKeys, values } = this.state;
+        const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
         // releaseENV ?
@@ -439,7 +445,7 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'wechatMpName':
-                this.setState({ secondKeys, }, () => {
+                this.setState({ secondKeys }, () => {
                     describe == '买赠券' || describe == '折扣券'
                         ? this.firstForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' })
                         : this.secondForm.setFieldsValue({ trdTemplateID: '', trdTemplateIDLabel: '' });
@@ -467,7 +473,7 @@ class GiftAddModalStep extends React.Component {
      * @param  {int}   current current index of the steps which is passed to CustomProgressBar
      * @return {null}
      */
-    handleCancel = (cb, current) => {
+    handleCancel = (cb) => {
         this.setState({
             current: 0,
             values: {},
@@ -526,7 +532,7 @@ class GiftAddModalStep extends React.Component {
         })
     }
     handleFinish = (cb) => {
-        const { values, groupTypes, } = this.state;
+        const { values, groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -535,7 +541,7 @@ class GiftAddModalStep extends React.Component {
             let shopNames = '',
                 shopIDs = '',
                 callServer;
-            params.shopNames && params.shopNames.map((shop, idx) => {
+            params.shopNames && params.shopNames.forEach((shop) => {
                 shopNames += `${shop.content},`;
                 shopIDs += `${shop.id},`;
             });
@@ -543,7 +549,7 @@ class GiftAddModalStep extends React.Component {
             params.shopIDs = shopIDs;
             if (params.giftShareType == '2') {
                 let shareIDs = '';
-                params.shareIDs && params.shareIDs.map((share, idx) => {
+                params.shareIDs && params.shareIDs.forEach((share) => {
                     shareIDs += `${share.giftItemID},`;
                 });
                 params.shareIDs = shareIDs.substring(0, shareIDs.lastIndexOf(','));
@@ -566,8 +572,9 @@ class GiftAddModalStep extends React.Component {
             }
             if (formValues.couponTrdChannelStockNums) {
                 // 线上礼品卡
-                let issueChannel = [], couponTrdChannelStockNums = [];
-                formValues.couponTrdChannelStockNums.map((channel, index) => {
+                const issueChannel = []
+                const couponTrdChannelStockNums = [];
+                formValues.couponTrdChannelStockNums.forEach((channel) => {
                     if (channel.trdStockNum > 0) {
                         issueChannel.push(channel.trdPartyPlatformID);
                         couponTrdChannelStockNums.push(channel);
@@ -583,14 +590,14 @@ class GiftAddModalStep extends React.Component {
             }
             if (value != 80) {
                 // 买赠券和折扣券在第一步的formvalues
-                let wechatMpName = value == '110' || value == '111' ? this.firstForm.getFieldsValue().wechatMpName : formValues.wechatMpName;
-                let trdTemplateID = value == '110' || value == '111' ? this.firstForm.getFieldsValue().trdTemplateID : formValues.trdTemplateID;
+                const wechatMpName = value == '110' || value == '111' ? this.firstForm.getFieldsValue().wechatMpName : formValues.wechatMpName;
+                const trdTemplateID = value == '110' || value == '111' ? this.firstForm.getFieldsValue().trdTemplateID : formValues.trdTemplateID;
                 if (value == '110' || value == '111') {
                     params.wechatMpName = wechatMpName
                 }
                 params.extraInfo = JSON.stringify({
                     wechatMpName: wechatMpName,
-                    trdTemplateIDLabel: ((this.state.trdTemplateInfoList || []).find(template => {
+                    trdTemplateIDLabel: ((this.state.trdTemplateInfoList || []).find((template) => {
                         return template.trdGiftItemID == trdTemplateID
                     }) || {}).trdGiftName ||
                         (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
@@ -601,11 +608,11 @@ class GiftAddModalStep extends React.Component {
                 params.discountRate = (params.discountRate_111 / 100).toFixed(2)
             }
             if (params.isDiscountOffMax == 0 && value == '111') {
-                params.discountOffMax = 0 //0标识不限制
+                params.discountOffMax = 0 // 0标识不限制
             }
-            //foodbxs数据,目前买赠券和折扣券用
+            // foodbxs数据,目前买赠券和折扣券用
             if (formValues.hasOwnProperty('foodsboxs')) {
-                if (!formValues.foodsboxs) {//用户没选择，默认信息
+                if (!formValues.foodsboxs) { // 用户没选择，默认信息
                     params.foodSelectType = 2;
                     params.isExcludeFood = 0;
                 }
@@ -613,8 +620,8 @@ class GiftAddModalStep extends React.Component {
                     const { foodSelectType, isExcludeFood, foodCategory, excludeDishes, dishes } = formValues.foodsboxs;
                     params.foodSelectType = foodSelectType;
                     params.isExcludeFood = isExcludeFood;
-                    //菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
-                    params.couponFoodScopes = foodCategory.map(cat => {
+                    // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
+                    params.couponFoodScopes = foodCategory.map((cat) => {
                         return {
                             scopeType: 1,
                             targetID: cat.foodCategoryID,
@@ -623,7 +630,7 @@ class GiftAddModalStep extends React.Component {
                             // targetUnitName
                         }
                     }).concat(
-                        excludeDishes.map(food => {
+                        excludeDishes.map((food) => {
                             return {
                                 scopeType: 4,
                                 targetID: food.itemID,
@@ -633,7 +640,7 @@ class GiftAddModalStep extends React.Component {
                             }
                         })
                     ).concat(
-                        dishes.map(food => {
+                        dishes.map((food) => {
                             return {
                                 scopeType: 2,
                                 targetID: food.itemID,
@@ -655,7 +662,7 @@ class GiftAddModalStep extends React.Component {
                     const brandJSON = _.find(groupTypes, { value: values.brandID }) || {};
                     params.giftName = `${brandJSON.label || ''}${values.giftName}`;
                 }
-            } else if (type == 'edit') {
+            } else if (type === 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
@@ -677,7 +684,7 @@ class GiftAddModalStep extends React.Component {
                     message.success('成功', 3);
                     this.handleCancel(cb);
                 }
-                if (type == 'edit') {
+                if (type === 'edit') {
                     const { params, FetchGiftList } = this.props;
                     const listParams = params.toJS();
                     FetchGiftList(listParams);
@@ -715,8 +722,7 @@ class GiftAddModalStep extends React.Component {
                     <FormItem style={{ marginBottom: 0 }}>
                         {decorator({
                             key: 'giftName',
-                            rules: [{ required: true, message: '礼品名称不能为空' },
-                            { max: 50, message: '请输入不超过50个字符的名称' }],
+                            rules: [{ required: true, message: '礼品名称不能为空' }, { max: 50, message: '请输入不超过50个字符的名称' }],
                         })(<Input size="large" placeholder="请输入礼品名称" />)}
                     </FormItem>
                 </Col>
@@ -724,7 +730,7 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderDisCountStages(decorator) {
-        let { discountType } = this.state.values
+        const { discountType } = this.state.values
         return (
             <Row style={{ marginTop: -6 }}>
                 <Col span={discountType == 0 ? 24 : 12}>
@@ -734,7 +740,7 @@ class GiftAddModalStep extends React.Component {
                             initialValue: discountType || 0,
                         })(<Select className="giftNameStep">
                             {
-                                [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t, i) => {
+                                [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
                                 })
                             }
@@ -755,8 +761,8 @@ class GiftAddModalStep extends React.Component {
                                             cb();
                                         },
                                         message: '整数不超过8位，小数不超过2位',
-                                    }]
-                                })(<Input size="large" addonAfter='元' />)}
+                                    }],
+                                })(<Input size="large" addonAfter="元" />)}
                             </FormItem>
                         </Col>
                 }
@@ -764,7 +770,7 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderDisCountRate(decorator) {
-        let { discountOffMax, isDiscountOffMax, discountRate_111 } = this.state.values
+        const { discountOffMax, isDiscountOffMax, discountRate_111 } = this.state.values
         return (
             <Row style={{ marginTop: -6 }}>
                 <Col span={3} style={{ marginTop: 5 }}>折扣率</Col>
@@ -781,8 +787,8 @@ class GiftAddModalStep extends React.Component {
                                     cb();
                                 },
                                 message: '整数不超过2位',
-                            }]
-                        })(<Input size="large" addonAfter='%' />)}
+                            }],
+                        })(<Input size="large" addonAfter="%" />)}
                     </FormItem>
                 </Col>
                 <Col span={1}></Col>
@@ -794,7 +800,7 @@ class GiftAddModalStep extends React.Component {
                             initialValue: isDiscountOffMax || 0,
                         })(<Select className="giftNameStep">
                             {
-                                [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t, i) => {
+                                [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
                                 })
                             }
@@ -817,13 +823,12 @@ class GiftAddModalStep extends React.Component {
                                         message: '整数不超过8位，小数不超过2位',
                                     }],
                                     initialValue: discountOffMax > 0 ? discountOffMax : '',
-                                })(<Input size="large" addonAfter='元' />)}
+                                })(<Input size="large" addonAfter="元" />)}
                             </FormItem>
                         </Col>
                 }
             </Row>
         )
-
     }
     renderStages(decorator) {
         return (
@@ -860,9 +865,9 @@ class GiftAddModalStep extends React.Component {
                                     cb();
                                 },
                                 message: '整数不超过8位',
-                            }]
+                            }],
                         })(<Input
-                            addonAfter='份'
+                            addonAfter="份"
                         />)}
                     </FormItem>
                 </Col>
@@ -911,10 +916,10 @@ class GiftAddModalStep extends React.Component {
     }
 
     renderFoodName(decorator, form) {
-        const { getFieldValue } = form;
+        // const { getFieldValue } = form;
         const formItemLayout = { labelCol: { span: 1 }, wrapperCol: { span: 23 } };
         let _scopeLst = [];
-        if (this.props.type == 'edit') {
+        if (this.props.type === 'edit') {
             const { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
@@ -934,7 +939,7 @@ class GiftAddModalStep extends React.Component {
                 label={''}
                 className={styles.foodBox}
                 validateStatus={this.state.foodNameListStatus}
-                help={this.state.foodNameListStatus == 'success' ? null : '不可为空'}
+                help={this.state.foodNameListStatus === 'success' ? null : '不可为空'}
             >
                 {
                     decorator({})(<FoodBox radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
@@ -943,9 +948,9 @@ class GiftAddModalStep extends React.Component {
 
         )
     }
-    renderGiftPromotion(decorator, form) {
+    renderGiftPromotion(decorator) {
         const { gift: { data }, type } = this.props;
-        let promotionID = type === 'edit' ? (data.promotionID ? [{ sharedIDStr: data.promotionID }] : [])
+        const promotionID = type === 'edit' ? (data.promotionID ? [{ sharedIDStr: data.promotionID }] : [])
             : this.state.values.promotionID
         return (
             <FormItem>
@@ -958,7 +963,7 @@ class GiftAddModalStep extends React.Component {
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         return (
-            <FormItem>
+            <FormItem style={{ marginTop: -12, marginBottom: 12 }}>
                 {
                     decorator({})(
                         <MoreFoodBox
@@ -975,14 +980,9 @@ class GiftAddModalStep extends React.Component {
             decorator({})(<CouponTrdChannelStockNums form={form} giftItemID={this.props.gift.data.giftItemID} />)
         )
     }
-    // afterClose = () => {
-    // 	this.setState({
-    // 		modalKey: Math.random()
-    // 	})
-    // }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { current, firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [], trdTemplateID, trdTemplateIDLabel } = this.state;
+            { firstKeys, secondKeys, values, mpList = [], trdTemplateInfoList = [] } = this.state;
         const dates = Object.assign({}, data);
         if (dates.discountRate && dates.discountRate != 1) {
             dates.isDiscountRate = true
@@ -1004,7 +1004,7 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
-        dates.isMapTotrd = dates.trdChannelID && dates.trdChannelID != 1 ? true : false;
+        dates.isMapTotrd = dates.trdChannelID && dates.trdChannelID != 1;
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1055,14 +1055,14 @@ class GiftAddModalStep extends React.Component {
             numberOfTimeType: {
                 // label: '使用次数限制',
                 type: 'custom',
-                render: (decorator, form, formData) => {
+                render: (decorator, form) => {
                     return (
                         <Row style={{ display: 'none' }}>
                             <Col span={12}>
                                 <FormItem>
                                     {decorator({
                                         key: 'numberOfTimeType',
-                                        initialValue: this.props.type == 'edit' ? `${this.props.gift.data.numberOfTimeType}` : '0',
+                                        initialValue: this.props.type === 'edit' ? `${this.props.gift.data.numberOfTimeType}` : '0',
                                     })(<Select>
                                         <Option value="0">不限制</Option>
                                         <Option value="1">限制</Option>
@@ -1097,7 +1097,7 @@ class GiftAddModalStep extends React.Component {
                             <FormItem>
                                 {decorator({
                                     key: 'moneyTopLimitType',
-                                    initialValue: this.props.type == 'edit' ? `${this.props.gift.data.moneyTopLimitType}` : '0',
+                                    initialValue: this.props.type === 'edit' ? `${this.props.gift.data.moneyTopLimitType}` : '0',
                                 })(<Select>
                                     <Option value="0">不限制</Option>
                                     <Option value="1">限制</Option>
@@ -1130,7 +1130,7 @@ class GiftAddModalStep extends React.Component {
                 defaultValue: false,
                 onLabel: '是',
                 offLabel: '否',
-                props: { disabled: type === 'edit' }
+                props: { disabled: type === 'edit' },
             },
             trdChannelID: {
                 label: '第三方渠道',
@@ -1140,7 +1140,7 @@ class GiftAddModalStep extends React.Component {
                 rules: [{ required: true, message: '不能为空' }],
                 defaultValue: 10,
                 options: GiftCfg.trdChannelIDs,
-                props: { disabled: type === 'edit' }
+                props: { disabled: type === 'edit' },
             },
             wechatMpName: {
                 label: '微信公众号选择',
@@ -1149,13 +1149,13 @@ class GiftAddModalStep extends React.Component {
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
                 defaultValue: mpList[0] ? mpList[0].mpName : '',
-                options: mpList.map(mp => {
+                options: mpList.map((mp) => {
                     return {
                         label: mp.mpName,
                         value: mp.mpName,
                     }
                 }),
-                props: { disabled: type === 'edit' }
+                props: { disabled: type === 'edit' },
             },
             trdTemplateID: {
                 label: '第三方券模板或活动',
@@ -1164,7 +1164,7 @@ class GiftAddModalStep extends React.Component {
                 type: 'combo',
                 rules: [{ required: true, message: '不能为空' }],
                 defaultValue: '',
-                options: type == 'add' ? trdTemplateInfoList.map(template => {
+                options: type === 'add' ? trdTemplateInfoList.map((template) => {
                     return {
                         label: template.trdGiftName,
                         value: template.trdGiftItemID,
@@ -1173,7 +1173,7 @@ class GiftAddModalStep extends React.Component {
                     label: this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : '',
                     value: this.props.gift.data.trdTemplateID,
                 }],
-                props: { disabled: type === 'edit' }
+                props: { disabled: type === 'edit' },
             },
             trdTemplateIDLabel: {
                 label: '第三方券模板或活动ID',
@@ -1182,7 +1182,7 @@ class GiftAddModalStep extends React.Component {
                 type: 'text',
                 defaultValue: '',
                 // value: trdTemplateID || dates.trdTemplateID || '',
-                props: { disabled: true }
+                props: { disabled: true },
                 // render: () => <Input value={trdTemplateID || dates.trdTemplateID || ''} disabled />
             },
             promotionID: {
@@ -1191,7 +1191,7 @@ class GiftAddModalStep extends React.Component {
                 rules: [{ required: true, message: '不能为空' }],
                 labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
-                render: (decorator, form) => this.renderGiftPromotion(decorator, form) // <GiftPromotion></GiftPromotion>,
+                render: (decorator, form) => this.renderGiftPromotion(decorator, form), // <GiftPromotion></GiftPromotion>,
             },
             price: {
                 label: '礼品售价',
@@ -1227,14 +1227,14 @@ class GiftAddModalStep extends React.Component {
             transferLimitType: {
                 label: '转赠设置',
                 type: 'custom',
-                render: (decorator, form, formData) => {
+                render: (decorator, form) => {
                     return (
                         <Row>
                             <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -6 }}>
                                 <FormItem>
                                     {decorator({
                                         key: 'transferLimitType',
-                                        initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
+                                        initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
                                     })(<Select>
                                         <Option value="-1">可转赠</Option>
                                         <Option value="0">不可转赠</Option>
@@ -1252,7 +1252,7 @@ class GiftAddModalStep extends React.Component {
                                             <FormItem>
                                                 {decorator({
                                                     key: 'transferLimitTypeValue',
-                                                    initialValue: this.props.type == 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
+                                                    initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
                                                     rules: [{
                                                         required: true,
                                                         pattern: /^[1-9]\d{0,9}$/,
@@ -1260,7 +1260,7 @@ class GiftAddModalStep extends React.Component {
                                                     }],
                                                 })(<Input
                                                     placeholder={'请输入限定次数'}
-                                                    addonAfter='次'
+                                                    addonAfter="次"
                                                 />)}
                                             </FormItem>
                                         </Col>
@@ -1274,7 +1274,7 @@ class GiftAddModalStep extends React.Component {
             couponTrdChannelStockNums: {
                 label: '投放渠道',
                 type: 'custom',
-                render: (decorator, form, formData) => this.renderCouponTrdChannelStockNums(decorator, form, formData)
+                render: (decorator, form, formData) => this.renderCouponTrdChannelStockNums(decorator, form, formData),
             },
             stages: {
                 label: '买赠条件',
@@ -1301,7 +1301,7 @@ class GiftAddModalStep extends React.Component {
         // if (type == 'edit') {
         formData = data === undefined ? dates : values;
         // }
-        if (type == 'edit') {
+        if (type === 'edit') {
             formData = dates;
             formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];
         }
@@ -1395,8 +1395,8 @@ function mapDispatchToProps(dispatch) {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
         saleCenterResetDetailInfo: opts => dispatch(saleCenterResetDetailInfoAC(opts)),
-        queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
-        fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
+        queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
+        fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
     };
 }
 
@@ -1411,3 +1411,4 @@ class MyProjectEditBox extends React.Component {
         return <ProjectEditBox {...otherProps} data={value} />;
     }
 }
+

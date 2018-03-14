@@ -14,10 +14,21 @@ import { connect } from 'react-redux';
 import { Form, Radio, Tree } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 
-import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import {
+    saleCenterSetPromotionDetailAC,
+    fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {
+    HualalaEditorBox,
+    HualalaTreeSelect,
+    HualalaGroupSelect,
+    HualalaSelected,
+    HualalaSearchInput,
+    // CC2PY,
+} from '../../../components/common';
 
-const Immutable = require('immutable');
+// const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 
@@ -89,68 +100,68 @@ class FoodBox extends React.Component {
     }
 
     initialData(_scopeLst, foodCategoryCollection) {
-            if (_scopeLst === undefined || foodCategoryCollection === undefined) {
-                return
-            }
-            if (_scopeLst.length == 0 || foodCategoryCollection.length == 0) {
-                return
-            }
-            const foodCategorySelections=new Set(), foodSelections=new Set(), excludeSelections=new Set();
-            // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
-            if (_scopeLst.length > 0) {
-                let categoryOrDish = 1;
-                _scopeLst.map((scope) => {
-                    if (scope.scopeType == 'CATEGORY_INCLUDED') {
-                        foodCategoryCollection
-                            .forEach((categoryGroup) => {
-                                categoryGroup.foodCategoryName
-                                    .find((category) => {
-                                        if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
-                                            categoryOrDish = 1
-                                            foodCategorySelections.add(category);
-                                        }
-                                    });
-                            });
-                    }
-                    if (scope.scopeType == 'FOOD_EXCLUDED') {
-                        foodCategoryCollection
-                            .forEach((categoryGroup) => {
-                                categoryGroup.foodCategoryName
-                                    .forEach((category) => {
-                                        category.foods
-                                            .find((menu) => {
-                                                if (menu.itemID == scope.targetID) {
-                                                    categoryOrDish = 1;
-                                                    excludeSelections.add(menu);
-                                                }
-                                            });
-                                    })
-                            });
-                    }
-                    if (scope.scopeType == 'FOOD_INCLUDED') {
-                        foodCategoryCollection
-                            .forEach((categoryGroup) => {
-                                categoryGroup.foodCategoryName
-                                    .forEach((category) => {
-                                        category.foods
-                                            .find((menu) => {
-                                                if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
-                                                    categoryOrDish = 0;
-                                                    foodSelections.add(menu);
-                                                }
-                                            });
-                                    })
-                            });
-                    }
-                });
+        if (_scopeLst === undefined || foodCategoryCollection === undefined) {
+            return
+        }
+        if (_scopeLst.length == 0 || foodCategoryCollection.length == 0) {
+            return
+        }
+        const foodCategorySelections = new Set(), foodSelections = new Set(), excludeSelections = new Set();
+        // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
+        if (_scopeLst.length > 0) {
+            let categoryOrDish = 1;
+            _scopeLst.forEach((scope) => {
+                if (scope.scopeType === 'CATEGORY_INCLUDED') {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
+                                        categoryOrDish = 1
+                                        foodCategorySelections.add(category);
+                                    }
+                                });
+                        });
+                }
+                if (scope.scopeType === 'FOOD_EXCLUDED') {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    category.foods
+                                        .forEach((menu) => {
+                                            if (menu.itemID == scope.targetID) {
+                                                categoryOrDish = 1;
+                                                excludeSelections.add(menu);
+                                            }
+                                        });
+                                })
+                        });
+                }
+                if (scope.scopeType === 'FOOD_INCLUDED') {
+                    foodCategoryCollection
+                        .forEach((categoryGroup) => {
+                            categoryGroup.foodCategoryName
+                                .forEach((category) => {
+                                    category.foods
+                                        .forEach((menu) => {
+                                            if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
+                                                categoryOrDish = 0;
+                                                foodSelections.add(menu);
+                                            }
+                                        });
+                                })
+                        });
+                }
+            });
 
-                this.setState({
-                    categoryOrDish,
-                    foodCategorySelections,
-                    foodSelections,
-                    excludeSelections,
-                });
-            }
+            this.setState({
+                categoryOrDish,
+                foodCategorySelections,
+                foodSelections,
+                excludeSelections,
+            });
+        }
     }
     componentDidMount() {
         var opts = {
@@ -158,7 +169,7 @@ class FoodBox extends React.Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
-        let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.catOrFoodValue) {
             const _scopeLst2 = this.props.catOrFoodValue;
             this.setState({
@@ -172,9 +183,9 @@ class FoodBox extends React.Component {
 
     // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !=
+        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
-            let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
+            const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             this.setState({
                 foodCategoryCollection,
             }, () => {
@@ -335,9 +346,9 @@ class FoodBox extends React.Component {
                 }
             });
         } else {
-            this.state.foodCategoryCollection.map((item) => {
+            this.state.foodCategoryCollection.forEach((item) => {
                 if (typeof item === 'object') {
-                    item.foodCategoryName.map((cate) => {
+                    item.foodCategoryName.forEach((cate) => {
                         treeData.push(cate)
                     })
                 }
@@ -407,9 +418,9 @@ class FoodBox extends React.Component {
 
     renderDishsSelectionBox() {
         const treeData = [];
-        this.state.foodCategoryCollection.map((item) => {
+        this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.map((cate) => {
+                item.foodCategoryName.forEach((cate) => {
                     treeData.push(cate)
                 })
             }
@@ -711,9 +722,9 @@ class FoodBox extends React.Component {
                 treeData.push(item)
             });
         } else {
-            this.state.foodCategoryCollection.map((item) => {
+            this.state.foodCategoryCollection.forEach((item) => {
                 if (typeof item === 'object') {
-                    item.foodCategoryName.map((cate) => {
+                    item.foodCategoryName.forEach((cate) => {
                         treeData.push(cate)
                     })
                 }
@@ -838,9 +849,9 @@ class FoodBox extends React.Component {
         }
         const indexArray = parseInt(value[0]);
         const treeData = [];
-        this.state.foodCategoryCollection.map((item) => {
+        this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.map((cate) => {
+                item.foodCategoryName.forEach((cate) => {
                     treeData.push(cate)
                 })
             }
