@@ -103,7 +103,7 @@ class MoreFoodBox extends React.Component {
         this.initialData = this.initialData.bind(this);
         this.renderExcludeRange = this.renderExcludeRange.bind(this);
         this.handleisExcludeFoodChange = this.handleisExcludeFoodChange.bind(this);
-        
+
     }
     //将props中的数据匹配到分类，单品，排除框中
     initialData(_scopeLst, foodCategoryCollection) {
@@ -113,62 +113,62 @@ class MoreFoodBox extends React.Component {
         if (_scopeLst.length == 0 || foodCategoryCollection.length == 0) {
             return
         }
-    //     const foodCategorySelections = new Set(), foodSelections = new Set(), excludeSelections = new Set();
-    //     // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
-    //     if (_scopeLst.length > 0) {
-    //         let foodSelectType = 1;
-    //         _scopeLst.map((scope) => {
-    //             if (scope.scopeType == 'CATEGORY_INCLUDED') {
-    //                 foodCategoryCollection
-    //                     .forEach((categoryGroup) => {
-    //                         categoryGroup.foodCategoryName
-    //                             .find((category) => {
-    //                                 if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
-    //                                     foodSelectType = 1
-    //                                     foodCategorySelections.add(category);
-    //                                 }
-    //                             });
-    //                     });
-    //             }
-    //             if (scope.scopeType == 'FOOD_EXCLUDED') {
-    //                 foodCategoryCollection
-    //                     .forEach((categoryGroup) => {
-    //                         categoryGroup.foodCategoryName
-    //                             .forEach((category) => {
-    //                                 category.foods
-    //                                     .find((menu) => {
-    //                                         if (menu.itemID == scope.targetID) {
-    //                                             foodSelectType = 1;
-    //                                             excludeSelections.add(menu);
-    //                                         }
-    //                                     });
-    //                             })
-    //                     });
-    //             }
-    //             if (scope.scopeType == 'FOOD_INCLUDED') {
-    //                 foodCategoryCollection
-    //                     .forEach((categoryGroup) => {
-    //                         categoryGroup.foodCategoryName
-    //                             .forEach((category) => {
-    //                                 category.foods
-    //                                     .find((menu) => {
-    //                                         if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
-    //                                             foodSelectType = 0;
-    //                                             foodSelections.add(menu);
-    //                                         }
-    //                                     });
-    //                             })
-    //                     });
-    //             }
-    //         });
+        //     const foodCategorySelections = new Set(), foodSelections = new Set(), excludeSelections = new Set();
+        //     // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
+        //     if (_scopeLst.length > 0) {
+        //         let foodSelectType = 1;
+        //         _scopeLst.map((scope) => {
+        //             if (scope.scopeType == 'CATEGORY_INCLUDED') {
+        //                 foodCategoryCollection
+        //                     .forEach((categoryGroup) => {
+        //                         categoryGroup.foodCategoryName
+        //                             .find((category) => {
+        //                                 if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
+        //                                     foodSelectType = 1
+        //                                     foodCategorySelections.add(category);
+        //                                 }
+        //                             });
+        //                     });
+        //             }
+        //             if (scope.scopeType == 'FOOD_EXCLUDED') {
+        //                 foodCategoryCollection
+        //                     .forEach((categoryGroup) => {
+        //                         categoryGroup.foodCategoryName
+        //                             .forEach((category) => {
+        //                                 category.foods
+        //                                     .find((menu) => {
+        //                                         if (menu.itemID == scope.targetID) {
+        //                                             foodSelectType = 1;
+        //                                             excludeSelections.add(menu);
+        //                                         }
+        //                                     });
+        //                             })
+        //                     });
+        //             }
+        //             if (scope.scopeType == 'FOOD_INCLUDED') {
+        //                 foodCategoryCollection
+        //                     .forEach((categoryGroup) => {
+        //                         categoryGroup.foodCategoryName
+        //                             .forEach((category) => {
+        //                                 category.foods
+        //                                     .find((menu) => {
+        //                                         if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
+        //                                             foodSelectType = 0;
+        //                                             foodSelections.add(menu);
+        //                                         }
+        //                                     });
+        //                             })
+        //                     });
+        //             }
+        //         });
 
-    //         this.setState({
-    //             foodSelectType,
-    //             foodCategorySelections,
-    //             foodSelections,
-    //             excludeSelections,
-    //         });
-    //     }
+        //         this.setState({
+        //             foodSelectType,
+        //             foodCategorySelections,
+        //             foodSelections,
+        //             excludeSelections,
+        //         });
+        //     }
     }
     componentDidMount() {
         var opts = {
@@ -219,7 +219,7 @@ class MoreFoodBox extends React.Component {
     }
     // 点击活动范围radio
     handlefoodSelectTypeChange(e) {
-        const { foodSelectType, foodCategorySelections, foodSelections, isExcludeFood, excludeSelections,  } = this.state;
+        const { foodSelectType, foodCategorySelections, foodSelections, isExcludeFood, excludeSelections, } = this.state;
         foodSelections.clear();
         foodCategorySelections.clear();
         excludeSelections.clear();
@@ -232,10 +232,10 @@ class MoreFoodBox extends React.Component {
         });
         this.props.onChange && this.props.onChange({
             foodSelectType: e.target.value,
-            foodCategory:[],
-            dishes:[],
+            foodCategory: [],
+            dishes: [],
             isExcludeFood: 0,
-            excludeDishes:[],
+            excludeDishes: [],
         })
     }
 
@@ -411,7 +411,7 @@ class MoreFoodBox extends React.Component {
 
     // 处理菜品分类modal确定ok事件
     handleFoodCategoryEditorBoxChange(value) {
-        const { foodSelectType, isExcludeFood, excludeSelections,  } = this.state;
+        const { foodSelectType, isExcludeFood, excludeSelections, } = this.state;
         const foodCategorySelections = value;
         const foodCategoryCurrentSelections = [];
         this.state.foodCategoryOptions.forEach((storeEntity) => {
@@ -426,16 +426,16 @@ class MoreFoodBox extends React.Component {
             this.props.onChange && this.props.onChange({
                 foodSelectType: '1',
                 foodCategory: Array.from(this.state.foodCategorySelections),
-                dishes:[],
+                dishes: [],
                 isExcludeFood,
-                excludeDishes:Array.from(excludeSelections),
+                excludeDishes: Array.from(excludeSelections),
 
             })
         });
     }
     // 删除已选菜品分类事件
     handleFoodCategorySelectedChange(value) {
-        let { foodCategorySelections, foodCategoryCurrentSelections, foodSelections,isExcludeFood,  excludeSelections, excludeCurrentSelections, excludeOptions } = this.state;
+        let { foodCategorySelections, foodCategoryCurrentSelections, foodSelections, isExcludeFood, excludeSelections, excludeCurrentSelections, excludeOptions } = this.state;
 
         if (value !== undefined) {
             foodCategorySelections.delete(value);
@@ -467,9 +467,9 @@ class MoreFoodBox extends React.Component {
         this.props.onChange && this.props.onChange({
             foodSelectType: '1',
             foodCategory: Array.from(foodCategorySelections),
-            dishes:[],
+            dishes: [],
             isExcludeFood,
-            excludeDishes:Array.from(excludeSelections),
+            excludeDishes: Array.from(excludeSelections),
         })
     }
 
@@ -492,7 +492,7 @@ class MoreFoodBox extends React.Component {
 
     // 点击排除菜品范围radio
     handleisExcludeFoodChange(e) {
-        const { foodSelectType, foodCategorySelections, isExcludeFood, excludeSelections,  } = this.state;
+        const { foodSelectType, foodCategorySelections, isExcludeFood, excludeSelections, } = this.state;
         excludeSelections.clear();
         this.setState({
             isExcludeFood: e.target.value,
@@ -501,7 +501,7 @@ class MoreFoodBox extends React.Component {
         this.props.onChange && this.props.onChange({
             foodSelectType: '1',
             foodCategory: Array.from(foodCategorySelections),
-            dishes:[],
+            dishes: [],
             isExcludeFood: e.target.value,
             excludeDishes: [],
         })
@@ -689,7 +689,7 @@ class MoreFoodBox extends React.Component {
     }
     // 排除菜品modal确定事件
     handleExcludeEditorBoxChange(value) {
-        const { foodSelectType, foodCategorySelections, isExcludeFood,  } = this.state;
+        const { foodSelectType, foodCategorySelections, isExcludeFood, } = this.state;
         const excludeSelections = value;
         const excludeCurrentSelections = [];
         this.state.excludeOptions.forEach((storeEntity) => {
@@ -704,7 +704,7 @@ class MoreFoodBox extends React.Component {
         this.props.onChange && this.props.onChange({
             foodSelectType: '1',
             foodCategory: Array.from(foodCategorySelections),
-            dishes:[],
+            dishes: [],
             isExcludeFood: 1,
             excludeDishes: Array.from(value),
         })
@@ -724,10 +724,10 @@ class MoreFoodBox extends React.Component {
             excludeCurrentSelections,
             excludeSelections,
         });
-        this.props.setPromotionDetail({
+        this.props.onChange && this.props.onChange({
             foodSelectType: '1',
             foodCategory: Array.from(foodCategorySelections),
-            dishes:[],
+            dishes: [],
             isExcludeFood: 1,
             excludeDishes: Array.from(excludeSelections),
         });
@@ -911,8 +911,8 @@ class MoreFoodBox extends React.Component {
                 foodSelectType: '0',
                 foodCategory: [],
                 dishes: Array.from(this.state.foodSelections),
-                isExcludeFood:0,
-                excludeDishes:[],
+                isExcludeFood: 0,
+                excludeDishes: [],
             })
         });
     }
@@ -936,8 +936,8 @@ class MoreFoodBox extends React.Component {
             foodSelectType: '0',
             foodCategory: [],
             dishes: Array.from(foodSelections),
-            isExcludeFood:0,
-            excludeDishes:[],
+            isExcludeFood: 0,
+            excludeDishes: [],
         })
     }
 
