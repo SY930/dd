@@ -626,7 +626,7 @@ class GiftAddModalStep extends React.Component {
                         excludeDishes.map(food => {
                             return {
                                 scopeType: 4,
-                                targetID: food.foodID,
+                                targetID: food.itemID,
                                 targetCode: food.foodCode,
                                 targetName: food.foodName,
                                 targetUnitName: food.unit || '',
@@ -636,7 +636,7 @@ class GiftAddModalStep extends React.Component {
                         dishes.map(food => {
                             return {
                                 scopeType: 2,
-                                targetID: food.foodID,
+                                targetID: food.itemID,
                                 targetCode: food.foodCode,
                                 targetName: food.foodName,
                                 targetUnitName: food.unit || '',
@@ -645,6 +645,7 @@ class GiftAddModalStep extends React.Component {
                     )
                 }
                 delete params.foodsboxs
+                delete params.couponFoodScopeList // 后台返回的已选菜品数据
             }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
@@ -956,7 +957,6 @@ class GiftAddModalStep extends React.Component {
     }
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
-        debugger;
         return (
             <FormItem>
                 {
@@ -964,7 +964,7 @@ class GiftAddModalStep extends React.Component {
                         <MoreFoodBox
                             scopeLst={data.couponFoodScopeList}
                             foodSelectType={data.foodSelectType}
-                            isExcludeFood={data.isExcludeFood}
+                            isExcludeFood={data.isExcludeFood ? 1 : 0}
                         />)
                 }
             </FormItem>

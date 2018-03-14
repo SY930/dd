@@ -118,18 +118,18 @@ class MoreFoodBox extends React.Component {
         // const { foodCategorySelections, foodSelections, excludeSelections } = this.state;
         if (_scopeLst.length > 0) {
             _scopeLst.forEach((scope) => {
-                if (scope.scopeType === 1) {
+                if (scope.scopeType == 1) {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
                                 .forEach((category) => {
                                     if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
-                                        foodCategorySelections.add(category);
+                                        foodCategorySelections.add(category); // 返回的已选分类
                                     }
                                 });
                         });
                 }
-                if (scope.scopeType === 4) {
+                if (scope.scopeType == 4) {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -137,13 +137,13 @@ class MoreFoodBox extends React.Component {
                                     category.foods
                                         .forEach((menu) => {
                                             if (menu.itemID == scope.targetID) {
-                                                excludeSelections.add(menu);
+                                                excludeSelections.add(menu); // 返回的排除菜品
                                             }
                                         });
                                 })
                         });
                 }
-                if (scope.scopeType === 2) {
+                if (scope.scopeType == 2) {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -151,7 +151,7 @@ class MoreFoodBox extends React.Component {
                                     category.foods
                                         .forEach((menu) => {
                                             if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
-                                                foodSelections.add(menu);
+                                                foodSelections.add(menu); // 返回的已选单品
                                             }
                                         });
                                 })
@@ -163,6 +163,15 @@ class MoreFoodBox extends React.Component {
                 foodCategorySelections,
                 foodSelections,
                 excludeSelections,
+            }, () => {
+                const { foodSelectType, isExcludeFood } = this.state;
+                this.props.onChange && this.props.onChange({
+                    foodSelectType,
+                    foodCategory: Array.from(foodCategorySelections),
+                    dishes: Array.from(foodSelections),
+                    isExcludeFood,
+                    excludeDishes: Array.from(excludeSelections),
+                })
             });
         }
     }
@@ -174,10 +183,12 @@ class MoreFoodBox extends React.Component {
         this.props.fetchFoodMenuInfo({ ...opts });
         const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.scopeLst) {
-            const scopeLst = this.props.scopeLst;
+            const { scopeLst, foodSelectType = 2, isExcludeFood = 0 } = this.props;
             this.setState({
                 foodCategoryCollection,
                 scopeLst,
+                foodSelectType,
+                isExcludeFood,
             }, () => {
                 this.initialData(this.state.scopeLst, this.state.foodCategoryCollection);
             });
@@ -186,7 +197,7 @@ class MoreFoodBox extends React.Component {
 
     // // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !=
+        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
             const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             this.setState({
