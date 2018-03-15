@@ -274,6 +274,7 @@ class GiftAddModalStep extends React.Component {
             values.maxGiveCountPerBill = data.maxGiveCountPerBill
             values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
             values.BOGOdiscountWay = data.BOGOdiscountWay
+            values.couponPeriodSettings = data.couponPeriodSettingList
         }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
@@ -1000,7 +1001,7 @@ class GiftAddModalStep extends React.Component {
         return (
             <Row>
                 <Col>
-                    {decorator({})(<SeniorDateSetting />)}
+                    {decorator({})(<SeniorDateSetting couponPeriodSettings={this.state.values.couponPeriodSettings} />)}
                 </Col>
             </Row>
         )

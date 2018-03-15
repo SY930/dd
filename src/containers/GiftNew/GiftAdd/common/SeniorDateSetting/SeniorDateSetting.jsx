@@ -61,7 +61,27 @@ class SeniorDateSetting extends React.Component {
     }
 
     componentDidMount() {
-
+        let { selectType, couponPeriodSettings } = this.state
+        const _couponPeriodSettings = this.props.couponPeriodSettings
+        if (!_couponPeriodSettings) return;
+        if (_couponPeriodSettings instanceof Array) {
+            selectType = String(_couponPeriodSettings[0].periodType)
+            couponPeriodSettings = _couponPeriodSettings.map((setting) => {
+                return {
+                    activeType: '0',
+                    periodType: String(setting.periodType),
+                    periodStart: setting.periodStart.length === 3 ? "0" + setting.periodStart : String(setting.periodStart),
+                    periodEnd: setting.periodEnd.length === 3 ? "0" + setting.periodEnd : String(setting.periodEnd),
+                    periodLabel: String(setting.periodLabel),
+                }
+            })
+        }
+        this.setState({
+            selectType,
+            couponPeriodSettings,
+        }, () => {
+            console.log(this.state)
+        })
     }
     update(couponPeriodSettings) {
         this.setState({
@@ -135,6 +155,7 @@ class SeniorDateSetting extends React.Component {
                 <Select
                     style={{ marginBottom: 10 }}
                     defaultValue={selectType}
+                    value={selectType}
                     onSelect={this.onSelect}
                 >
                     {CYCLE_TYPE.map(type => <Option key={type.value} value={type.value}>{type.name}</Option>)}
