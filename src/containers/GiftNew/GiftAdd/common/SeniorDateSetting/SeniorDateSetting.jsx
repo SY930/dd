@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { Checkbox, Select } from 'antd';
+import { Checkbox, Select, Icon, Row, Col } from 'antd';
 import Moment from 'moment';
 
 import { WrappedAdvancedTimeSetting } from '../../../../SaleCenterNEW/common/AdvancedTimeSetting';
@@ -57,6 +57,7 @@ class SeniorDateSetting extends React.Component {
         };
         this.onChange = this._onChange.bind(this);
         this.onSelect = this.onSelect.bind(this);
+        this.add = this.add.bind(this);
     }
 
     componentDidMount() {
@@ -64,13 +65,14 @@ class SeniorDateSetting extends React.Component {
     }
 
     _onChange(checkedValues) {
+        console.log(checkedValues)
         this.setState({
 
         }, () => {
             this.props.onChange && this.props.onChange(this.state.couponPeriodSettings)
         });
     }
-
+    // 每日
     getTimeSLot(timeSlot) {
         const couponPeriodSettings = timeSlot.data.map((time) => {
             return {
@@ -89,13 +91,32 @@ class SeniorDateSetting extends React.Component {
     }
 
     onSelect(value) {
-        this.setState({ selectType: value }, () => {
+        this.setState({
+            selectType: value,
+            couponPeriodSettings: [{
+                selectType: value,
+            }],
+        }, () => {
             this.props.onChange && this.props.onChange([])
         });
     }
-
+    add() {
+        const { selectType, couponPeriodSettings } = this.state;
+        couponPeriodSettings.push({
+            activeType: '0',
+            periodType: selectType,
+            periodStart: '0000',
+            periodEnd: '2359',
+            periodLabel: '',
+        })
+        this.setState({
+            couponPeriodSettings,
+        }, () => {
+            this.props.onChange && this.props.onChange(couponPeriodSettings)
+        });
+    }
     render() {
-        const { selectType } = this.state;
+        const { selectType, couponPeriodSettings } = this.state;
         return (
             <div className={styles.SeniorDateMain}>
                 <Select
@@ -115,18 +136,38 @@ class SeniorDateSetting extends React.Component {
                     : null
                 }
                 {selectType === '1' ?
-                    (
-                        <div className={styles.SeniorDateWeek}>
-                            <CheckboxGroup options={options} onChange={this.onChange} />
-                        </div>
-                    )
+                    couponPeriodSettings.map((setting, idx) => {
+                        return (
+                            <div className={styles.SeniorDateWeek} key={idx}>
+                                <CheckboxGroup options={options} onChange={this.onChange} />
+                                <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                                <WrappedAdvancedTimeSetting
+                                    onChange={
+                                        (timeSlot) => {
+                                            this.getTimeSLot(timeSlot);
+                                        }}
+                                    noPlusIcon={true}
+                                />
+                            </div>
+                        )
+                    })
                     : null}
                 {selectType === '2' ?
-                    (
-                        <div className={styles.SeniorDateMonth}>
-                            <CheckboxGroup options={days} onChange={this.onChange} />
-                        </div>
-                    )
+                    couponPeriodSettings.map((setting, idx) => {
+                        return (
+                            <div className={styles.SeniorDateMonth} key={idx}>
+                                <CheckboxGroup options={days} onChange={this.onChange} />
+                                <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                                <WrappedAdvancedTimeSetting
+                                    onChange={
+                                        (timeSlot) => {
+                                            this.getTimeSLot(timeSlot);
+                                        }}
+                                    noPlusIcon={true}
+                                />
+                            </div>
+                        )
+                    })
                     : null
                 }
             </div>

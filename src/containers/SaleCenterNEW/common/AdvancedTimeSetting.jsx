@@ -173,16 +173,21 @@ class AdvancedTimeSetting extends React.Component {
                             className={styles.timePicker2}
                         />
                     </Col>
+                    {
+                        this.props.noPlusIcon ? null :
+                            (<Col span={2} offset={2}>
+                                {(index == length - 1 && index < this.state.maxCount - 1)
+                                    ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
+                            </Col>)
+                    }
 
-                    <Col span={2} offset={2}>
-                        {(index == length - 1 && index < this.state.maxCount - 1)
-                            ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
-                    </Col>
+                    {
+                        this.props.noPlusIcon ? null :
+                            (<Col span={2}>
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
 
-                    <Col span={2}>
-                        <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
-
-                    </Col>
+                            </Col>)
+                    }
                 </div>
             );
         });
