@@ -51,7 +51,7 @@ class SeniorDateSetting extends React.Component {
             selectType: '-1',
             couponPeriodSettings: [
                 {
-                    selectType: '',
+                    activeType: '0',
                 },
             ],
         };
@@ -63,12 +63,22 @@ class SeniorDateSetting extends React.Component {
     componentDidMount() {
 
     }
-
+    update(couponPeriodSettings) {
+        this.setState({
+            couponPeriodSettings,
+        }, () => {
+            this.props.onChange && this.props.onChange(couponPeriodSettings)
+        });
+    }
     onSelect(value) {
         this.setState({
             selectType: value,
             couponPeriodSettings: [{
-                selectType: value,
+                activeType: '0',
+                periodType: value,
+                periodStart: '',
+                periodEnd: '',
+                periodLabel: '',
             }],
         }, () => {
             this.props.onChange && this.props.onChange([])
@@ -85,34 +95,20 @@ class SeniorDateSetting extends React.Component {
                 periodLabel: '',
             }
         })
-        this.setState({
-            couponPeriodSettings,
-        }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
-        });
+        this.update(couponPeriodSettings);
     }
     // 每周或每月的天数的变化
     _onChange(checkedValues, idx) {
-        console.log(checkedValues, idx)
         const { couponPeriodSettings } = this.state;
         couponPeriodSettings[idx].periodLabel = checkedValues.join(',');
-        this.setState({
-            couponPeriodSettings,
-        }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
-        });
+        this.update(couponPeriodSettings);
     }
     // 每周或每月的时间的变化
     getWeekOrMonthTimeSLot(timeSlot, idx) {
-        console.log(timeSlot, idx)
         const { couponPeriodSettings } = this.state;
         couponPeriodSettings[idx].periodStart = timeSlot.data[0].start.format('HHmm');
         couponPeriodSettings[idx].periodEnd = timeSlot.data[0].end.format('HHmm');
-        this.setState({
-            couponPeriodSettings,
-        }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
-        });
+        this.update(couponPeriodSettings);
     }
     add() {
         const { selectType, couponPeriodSettings } = this.state;
@@ -123,11 +119,7 @@ class SeniorDateSetting extends React.Component {
             periodEnd: '',
             periodLabel: '',
         })
-        this.setState({
-            couponPeriodSettings,
-        }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
-        });
+        this.update(couponPeriodSettings);
     }
     remove(index) {
         const { couponPeriodSettings } = this.state;
@@ -135,11 +127,7 @@ class SeniorDateSetting extends React.Component {
             return null;
         }
         couponPeriodSettings.splice(index, 1);
-        this.setState({
-            couponPeriodSettings,
-        }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
-        });
+        this.update(couponPeriodSettings);
     }
     render() {
         const { selectType, couponPeriodSettings } = this.state;
