@@ -112,6 +112,7 @@ class SeniorDateSetting extends React.Component {
     }
     add() {
         const { selectType, couponPeriodSettings } = this.state;
+        if (couponPeriodSettings.length >= 5) return
         couponPeriodSettings.push({
             activeType: '0',
             periodType: selectType,
@@ -123,9 +124,7 @@ class SeniorDateSetting extends React.Component {
     }
     remove(index) {
         const { couponPeriodSettings } = this.state;
-        if (couponPeriodSettings.length === 1) {
-            return null;
-        }
+        if (couponPeriodSettings.length === 1) return;
         couponPeriodSettings.splice(index, 1);
         this.update(couponPeriodSettings);
     }
@@ -149,12 +148,12 @@ class SeniorDateSetting extends React.Component {
                     )
                     : null
                 }
-                {selectType === '1' ?
+                {selectType === '1' || selectType === '2' ?
                     couponPeriodSettings.map((setting, idx) => {
                         return (
-                            <div className={styles.SeniorDateWeek} key={idx}>
-                                <CheckboxGroup options={options} onChange={checkedValues => this.onChange(checkedValues, idx)} />
-                                <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                            <div className={selectType === '1' ? styles.SeniorDateWeek : styles.SeniorDateMonth} key={idx}>
+                                <CheckboxGroup options={selectType === '1' ? options : days} onChange={checkedValues => this.onChange(checkedValues, idx)} />
+                                <Icon className={styles.pulsIcon} type="plus-circle-o" disabled={couponPeriodSettings.length >= 5} onClick={this.add} />
                                 <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
                                 <WrappedAdvancedTimeSetting
                                     onChange={
@@ -167,12 +166,12 @@ class SeniorDateSetting extends React.Component {
                         )
                     })
                     : null}
-                {selectType === '2' ?
+                {/* {selectType === '2' ?
                     couponPeriodSettings.map((setting, idx) => {
                         return (
                             <div className={styles.SeniorDateMonth} key={idx}>
                                 <CheckboxGroup options={days} onChange={checkedValues => this.onChange(checkedValues, idx)} />
-                                <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                                <Icon className={styles.pulsIcon} type="plus-circle-o" disabled={couponPeriodSettings.length >= 5} onClick={this.add} />
                                 <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
                                 <WrappedAdvancedTimeSetting
                                     onChange={
@@ -185,7 +184,7 @@ class SeniorDateSetting extends React.Component {
                         )
                     })
                     : null
-                }
+                } */}
             </div>
         );
     }
