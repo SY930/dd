@@ -142,8 +142,10 @@ class SeniorDateSetting extends React.Component {
                 {selectType === '0' ?
                     (
                         <div className={styles.SeniorDateMonth}>
-                            <WrappedAdvancedTimeSetting onChange={
-                                (timeSlot) => { this.getTimeSLot(timeSlot); }}
+                            <WrappedAdvancedTimeSetting
+                                onChange={
+                                    (timeSlot) => { this.getTimeSLot(timeSlot); }}
+                                count="5"
                             /></div>
                     )
                     : null
@@ -153,7 +155,11 @@ class SeniorDateSetting extends React.Component {
                         return (
                             <div className={selectType === '1' ? styles.SeniorDateWeek : styles.SeniorDateMonth} key={idx}>
                                 <CheckboxGroup options={selectType === '1' ? options : days} onChange={checkedValues => this.onChange(checkedValues, idx)} />
-                                <Icon className={styles.pulsIcon} type="plus-circle-o" disabled={couponPeriodSettings.length >= 5} onClick={this.add} />
+
+                                {
+                                    (couponPeriodSettings.length === 1 || idx === couponPeriodSettings.length - 1) && idx !== 4 ?
+                                        (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : null
+                                }
                                 <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
                                 <WrappedAdvancedTimeSetting
                                     onChange={
@@ -161,6 +167,7 @@ class SeniorDateSetting extends React.Component {
                                             this.getWeekOrMonthTimeSLot(timeSlot, idx);
                                         }}
                                     noPlusIcon={true}
+                                    count="5"
                                 />
                             </div>
                         )

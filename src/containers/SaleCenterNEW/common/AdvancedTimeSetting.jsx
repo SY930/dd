@@ -152,7 +152,7 @@ class AdvancedTimeSetting extends React.Component {
         const formItems = this.state.timeSlot.map((k, index) => {
             return (
                 <div>
-                    <Col span={6}>
+                    <Col span={7}>
                         <TimePicker
                             className={styles.timePicker}
                             format={format}
@@ -162,8 +162,8 @@ class AdvancedTimeSetting extends React.Component {
                             disabledMinutes={(h) => { return this.getDisableMinutes(index, 0, h); }}
                         />
                     </Col>
-                    <Col span={2} offset={2}>--</Col>
-                    <Col span={6}>
+                    <Col span={2} offset={2} style={{ position: 'relative', left: -16 }}>--</Col>
+                    <Col span={7}>
                         <TimePicker
                             format={format}
                             value={this.state.timeSlot[index].end}
