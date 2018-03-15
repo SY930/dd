@@ -64,12 +64,14 @@ class SeniorDateSetting extends React.Component {
 
     }
 
-    _onChange(checkedValues) {
-        console.log(checkedValues)
+    onSelect(value) {
         this.setState({
-
+            selectType: value,
+            couponPeriodSettings: [{
+                selectType: value,
+            }],
         }, () => {
-            this.props.onChange && this.props.onChange(this.state.couponPeriodSettings)
+            this.props.onChange && this.props.onChange([])
         });
     }
     // 每日
@@ -89,15 +91,27 @@ class SeniorDateSetting extends React.Component {
             this.props.onChange && this.props.onChange(couponPeriodSettings)
         });
     }
-
-    onSelect(value) {
+    // 每周或每月的天数的变化
+    _onChange(checkedValues, idx) {
+        console.log(checkedValues, idx)
+        const { couponPeriodSettings } = this.state;
+        couponPeriodSettings[idx].periodLabel = checkedValues.join(',');
         this.setState({
-            selectType: value,
-            couponPeriodSettings: [{
-                selectType: value,
-            }],
+            couponPeriodSettings,
         }, () => {
-            this.props.onChange && this.props.onChange([])
+            this.props.onChange && this.props.onChange(couponPeriodSettings)
+        });
+    }
+    // 每周或每月的时间的变化
+    getWeekOrMonthTimeSLot(timeSlot, idx) {
+        console.log(timeSlot, idx)
+        const { couponPeriodSettings } = this.state;
+        couponPeriodSettings[idx].periodStart = timeSlot.data[0].start.format('HHmm');
+        couponPeriodSettings[idx].periodEnd = timeSlot.data[0].end.format('HHmm');
+        this.setState({
+            couponPeriodSettings,
+        }, () => {
+            this.props.onChange && this.props.onChange(couponPeriodSettings)
         });
     }
     add() {
@@ -105,10 +119,22 @@ class SeniorDateSetting extends React.Component {
         couponPeriodSettings.push({
             activeType: '0',
             periodType: selectType,
-            periodStart: '0000',
-            periodEnd: '2359',
+            periodStart: '',
+            periodEnd: '',
             periodLabel: '',
         })
+        this.setState({
+            couponPeriodSettings,
+        }, () => {
+            this.props.onChange && this.props.onChange(couponPeriodSettings)
+        });
+    }
+    remove(index) {
+        const { couponPeriodSettings } = this.state;
+        if (couponPeriodSettings.length === 1) {
+            return null;
+        }
+        couponPeriodSettings.splice(index, 1);
         this.setState({
             couponPeriodSettings,
         }, () => {
@@ -139,12 +165,13 @@ class SeniorDateSetting extends React.Component {
                     couponPeriodSettings.map((setting, idx) => {
                         return (
                             <div className={styles.SeniorDateWeek} key={idx}>
-                                <CheckboxGroup options={options} onChange={this.onChange} />
+                                <CheckboxGroup options={options} onChange={checkedValues => this.onChange(checkedValues, idx)} />
                                 <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
                                 <WrappedAdvancedTimeSetting
                                     onChange={
                                         (timeSlot) => {
-                                            this.getTimeSLot(timeSlot);
+                                            this.getWeekOrMonthTimeSLot(timeSlot, idx);
                                         }}
                                     noPlusIcon={true}
                                 />
@@ -156,12 +183,13 @@ class SeniorDateSetting extends React.Component {
                     couponPeriodSettings.map((setting, idx) => {
                         return (
                             <div className={styles.SeniorDateMonth} key={idx}>
-                                <CheckboxGroup options={days} onChange={this.onChange} />
+                                <CheckboxGroup options={days} onChange={checkedValues => this.onChange(checkedValues, idx)} />
                                 <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
                                 <WrappedAdvancedTimeSetting
                                     onChange={
                                         (timeSlot) => {
-                                            this.getTimeSLot(timeSlot);
+                                            this.getWeekOrMonthTimeSLot(timeSlot, idx);
                                         }}
                                     noPlusIcon={true}
                                 />
