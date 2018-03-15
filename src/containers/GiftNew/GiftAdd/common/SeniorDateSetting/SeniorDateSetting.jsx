@@ -60,9 +60,9 @@ class SeniorDateSetting extends React.Component {
         this.add = this.add.bind(this);
     }
 
-    componentDidMount() {
+    componentWillReceiveProps(nextProps) {
         let { selectType, couponPeriodSettings } = this.state
-        const _couponPeriodSettings = this.props.couponPeriodSettings
+        const _couponPeriodSettings = nextProps.couponPeriodSettings
         if (!_couponPeriodSettings) return;
         if (_couponPeriodSettings instanceof Array) {
             selectType = String(_couponPeriodSettings[0].periodType)
@@ -175,7 +175,11 @@ class SeniorDateSetting extends React.Component {
                     couponPeriodSettings.map((setting, idx) => {
                         return (
                             <div className={selectType === '1' ? styles.SeniorDateWeek : styles.SeniorDateMonth} key={idx}>
-                                <CheckboxGroup options={selectType === '1' ? options : days} onChange={checkedValues => this.onChange(checkedValues, idx)} />
+                                <CheckboxGroup
+                                    value={setting.periodLabel.split(',')}
+                                    options={selectType === '1' ? options : days}
+                                    onChange={checkedValues => this.onChange(checkedValues, idx)}
+                                />
 
                                 {
                                     (couponPeriodSettings.length === 1 || idx === couponPeriodSettings.length - 1) && idx !== 4 ?
