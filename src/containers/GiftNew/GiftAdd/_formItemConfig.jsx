@@ -160,7 +160,7 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['stages', 'foodsboxs', 'giveLimits'],
+        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },

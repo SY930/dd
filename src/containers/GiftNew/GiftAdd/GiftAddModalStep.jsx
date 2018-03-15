@@ -23,6 +23,7 @@ import {
     fetchAllPromotionListAC,
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -995,6 +996,15 @@ class GiftAddModalStep extends React.Component {
             </div>
         )
     }
+    renderCouponPeriodSettings(decorator) {
+        return (
+            <Row>
+                <Col>
+                    {decorator({})(<SeniorDateSetting />)}
+                </Col>
+            </Row>
+        )
+    }
     renderGiftTree(decorator, giftItemID) {
         return (
             <Row>
@@ -1420,6 +1430,11 @@ class GiftAddModalStep extends React.Component {
                 label: '赠送菜品数量限制',
                 type: 'custom',
                 render: decorator => this.renderGiveLimits(decorator),
+            },
+            couponPeriodSettings: {
+                label: '使用时段',
+                type: 'custom',
+                render: decorator => this.renderCouponPeriodSettings(decorator),
             },
         };
         let formData = {};
