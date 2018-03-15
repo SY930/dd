@@ -9,7 +9,7 @@
  */
 
 
-import { Form, Input, Icon, Button, TimePicker } from 'antd';
+import { Form, Input, Icon, Button, TimePicker, Col } from 'antd';
 import React from 'react';
 import styles from './SeniorDateSetting/styles.less';
 
@@ -152,28 +152,37 @@ class AdvancedTimeSetting extends React.Component {
         const formItems = this.state.timeSlot.map((k, index) => {
             return (
                 <div>
-                    <TimePicker
-                        className={styles.timePicker}
-                        format={format}
-                        value={this.state.timeSlot[index].start}
-                        onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
-                        disabledHours={() => { return this.getDisableHours(index, 0); }}
-                        disabledMinutes={(h) => { return this.getDisableMinutes(index, 0, h); }}
-                    />
-                    <span className={styles.timePickerZj}>--</span>
-                    <TimePicker
-                        format={format}
-                        value={this.state.timeSlot[index].end}
-                        onChange={(time, timeString) => this.onTimePickerChange(time, 1, index)}
-                        disabledHours={() => { return this.getDisableHours(index, 1); }}
-                        disabledMinutes={(h) => { return this.getDisableMinutes(index, 1, h); }}
-                        className={styles.timePicker2}
-                    />
+                    <Col span={6}>
+                        <TimePicker
+                            className={styles.timePicker}
+                            format={format}
+                            value={this.state.timeSlot[index].start}
+                            onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
+                            disabledHours={() => { return this.getDisableHours(index, 0); }}
+                            disabledMinutes={(h) => { return this.getDisableMinutes(index, 0, h); }}
+                        />
+                    </Col>
+                    <Col span={2} offset={2}>--</Col>
+                    <Col span={6}>
+                        <TimePicker
+                            format={format}
+                            value={this.state.timeSlot[index].end}
+                            onChange={(time, timeString) => this.onTimePickerChange(time, 1, index)}
+                            disabledHours={() => { return this.getDisableHours(index, 1); }}
+                            disabledMinutes={(h) => { return this.getDisableMinutes(index, 1, h); }}
+                            className={styles.timePicker2}
+                        />
+                    </Col>
 
-                    {(index == length - 1 && index < this.state.maxCount - 1)
-                        ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
+                    <Col span={2} offset={2}>
+                        {(index == length - 1 && index < this.state.maxCount - 1)
+                            ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
+                    </Col>
 
-                    <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
+                    <Col span={2}>
+                        <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
+
+                    </Col>
                 </div>
             );
         });
