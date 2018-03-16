@@ -9,12 +9,12 @@
  */
 
 
-import { Form, Input, Icon, Button, TimePicker, Col } from 'antd';
 import React from 'react';
+import { connect } from 'react-redux';
+import { Form, Input, Icon, Button, TimePicker, Col } from 'antd';
 import styles from './SeniorDateSetting/styles.less';
 
 const FormItem = Form.Item;
-import { connect } from 'react-redux';
 
 
 const uuid = 0;
@@ -99,7 +99,22 @@ class AdvancedTimeSetting extends React.Component {
 
 
     componentDidMount() {
-
+        let timeSlot = this.props.value;
+        timeSlot = timeSlot.map((time) => {
+            return {
+                start: this.format(time.periodStart, 'HH:mm'),
+                end: this.format(time.periodEnd, 'HH:mm'),
+            }
+        })
+        this.setState({ timeSlot })
+    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log(nextProps.value)
+    // }
+    format(timeStr) {
+        if (!timeStr) return ''
+        if (timeStr.length === 3) return moment('0' + timeStr, 'HH:mm')
+        if (timeStr.length === 4) return moment(timeStr, 'HH:mm')
     }
 
     getDisableHours(index, startOrEnd) {

@@ -10,7 +10,6 @@
 
 import React from 'react';
 import { Checkbox, Select, Icon, Row, Col } from 'antd';
-import Moment from 'moment';
 
 import { WrappedAdvancedTimeSetting } from '../../../../SaleCenterNEW/common/AdvancedTimeSetting';
 import styles from './styles.less';
@@ -41,7 +40,6 @@ const CYCLE_TYPE = Object.freeze([
 ]);
 const options = WEEK_OPTIONS;
 const days = MONTH_OPTIONS;
-window.Moment = Moment
 
 class SeniorDateSetting extends React.Component {
     constructor(props) {
@@ -167,6 +165,7 @@ class SeniorDateSetting extends React.Component {
                                 onChange={
                                     (timeSlot) => { this.getTimeSLot(timeSlot); }}
                                 count="5"
+                                value={couponPeriodSettings}
                             /></div>
                     )
                     : null
@@ -193,6 +192,7 @@ class SeniorDateSetting extends React.Component {
                                         }}
                                     noPlusIcon={true}
                                     count="5"
+                                    value={[setting]}
                                 />
                             </div>
                         )
