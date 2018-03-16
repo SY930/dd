@@ -103,8 +103,10 @@ const FORMITEMS = {
         label: '折扣率',
         type: 'text',
         placeholder: '0.7(7折),0.77(77折)',
-        rules: [{ required: true, message: '折扣率不能为空' },
-        { pattern: /^([0](\.\d{1,2})?|1(\.[0]{1,2})?)$/, message: '取值范围0~1,最多可取两位小数,未开启表示无折扣' }],
+        rules: [
+            { required: true, message: '折扣率不能为空' },
+            { pattern: /^([0](\.\d{1,2})?|1(\.[0]{1,2})?)$/, message: '取值范围0~1,最多可取两位小数,未开启表示无折扣' },
+        ],
     },
     isPointRate: {
         label: '享受积分',
@@ -117,11 +119,19 @@ const FORMITEMS = {
         label: '积分系数',
         type: 'text',
         placeholder: '0.12（现金12%积分）',
-        rules: [{ required: true, message: '积分系数不能为空' },
-        {
-            pattern: /(?!^0\.0?0$)^[0-9][0-9]?(\.[0-9]{1,2})?$|^100$/,
-            message: '请输入0到100的数,可输入两位小数',
-        }],
+        rules: [
+            { required: true, message: '积分系数不能为空' },
+            {
+                pattern: /(?!^0\.0?0$)^[0-9][0-9]?(\.[0-9]{1,2})?$|^100$/,
+                message: '请输入0到100的数,可输入两位小数',
+            },
+        ],
+    },
+    couponCodeType: {
+        label: '是否生成券码',
+        type: 'radio',
+        defaultValue: 1,
+        options: GiftCfg.couponCodeType,
     },
 };
 
@@ -160,11 +170,11 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings'],
+        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings', 'supportOrderType', 'couponCodeType', 'giftShareType', 'shopNames'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['disCountStages', 'disCountRate_Max', 'shopNames'],
+        keys: ['disCountStages', 'disCountRate_Max', 'foodsboxs', 'couponPeriodSettings', 'supportOrderType', 'couponCodeType', 'giftShareType', 'shopNames'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

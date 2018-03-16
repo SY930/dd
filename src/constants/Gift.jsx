@@ -25,8 +25,8 @@ const GiftCfg = {
         { label: '礼品定额卡', value: '90' },
         { label: '活动券', value: '100' },
         { label: '线上礼品卡', value: '91' },
-        { label: '买赠券', value: '110'},
-        { label: '折扣券', value: '111'},
+        { label: '买赠券', value: '110' },
+        { label: '折扣券', value: '111' },
     ],
     transferType: [
         { label: '不可分享', value: 0 },
@@ -152,6 +152,10 @@ const GiftCfg = {
         { label: '眉州', value: 4, disabled: releaseENV },
         { label: '5i', value: 5, disabled: releaseENV },
         { label: '拉格代尔', value: 6, disabled: releaseENV },
+    ],
+    couponCodeType: [
+        { value: 1, label: '是' },
+        { value: 0, label: '否' },
     ],
 }
 
