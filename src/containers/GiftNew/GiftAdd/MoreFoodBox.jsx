@@ -41,11 +41,11 @@ const PROMOTION_OPTIONS = Object.freeze([
 ]);
 const EXCLUDE_OPTIONS = Object.freeze([
     {
-        value: 0,
+        value: '0',
         name: '无排除菜品',
     },
     {
-        value: 1,
+        value: '1',
         name: '有排除菜品',
     },
 ]);
