@@ -238,8 +238,8 @@ class GiftAddModalStep extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.firstForm && this.firstForm.resetFields();
-        this.secondForm && this.secondForm.resetFields();
+        // this.firstForm && this.firstForm.resetFields(); // 此处本来是有的，后来因为自定义组件内部this.props.onchange导致刷新，值被清空，就拿不到值
+        // this.secondForm && this.secondForm.resetFields();// 就注释了
         const { gift: { name, data, value }, type, sharedGifts } = nextProps;
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value === '10') {
@@ -274,7 +274,7 @@ class GiftAddModalStep extends React.Component {
             values.maxGiveCountPerBill = data.maxGiveCountPerBill
             values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
             values.BOGOdiscountWay = data.BOGOdiscountWay
-            values.couponPeriodSettings = data.couponPeriodSettingList
+            // values.couponPeriodSettings = data.couponPeriodSettingList//这样会被没值得时候清空
         }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
@@ -473,6 +473,7 @@ class GiftAddModalStep extends React.Component {
             case 'isDiscountOffMax':
                 this.secondForm.setFieldsValue({ discountOffMax: '' });
                 break;
+
             default:
                 break;
         }
@@ -1001,10 +1002,11 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderCouponPeriodSettings(decorator) {
+        const { gift: { data } } = this.props;
         return (
             <Row>
                 <Col>
-                    {decorator({})(<SeniorDateSetting couponPeriodSettings={this.state.values.couponPeriodSettings} />)}
+                    {decorator({})(<SeniorDateSetting couponPeriodSettings={data.couponPeriodSettingList} />)}
                 </Col>
             </Row>
         )
