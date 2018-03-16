@@ -10,14 +10,14 @@
 
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { Form, Input, Icon, Button, TimePicker, Col } from 'antd';
+// import { connect } from 'react-redux';
+import { Icon, TimePicker, Col } from 'antd';
 import styles from './SeniorDateSetting/styles.less';
 
-const FormItem = Form.Item;
+// const FormItem = Form.Item;
 
 
-const uuid = 0;
+// const uuid = 0;
 const moment = require('moment');
 
 // generate the time range
@@ -191,7 +191,7 @@ class AdvancedTimeSetting extends React.Component {
                     {
                         this.props.noPlusIcon ? null :
                             (<Col span={2} offset={2}>
-                                {(index == length - 1 && index < this.state.maxCount - 1)
+                                {(index === length - 1 && index < this.state.maxCount - 1)
                                     ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
                             </Col>)
                     }
@@ -199,7 +199,7 @@ class AdvancedTimeSetting extends React.Component {
                     {
                         this.props.noPlusIcon ? null :
                             (<Col span={2}>
-                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length === 1} onClick={() => this.remove(index)} />
 
                             </Col>)
                     }
@@ -214,12 +214,5 @@ class AdvancedTimeSetting extends React.Component {
         );
     }
 }
-
-/** If the form has been decorated by Form.create then it has this.props.form property.
- *this.props.form provides some APIs as follows
- * @fields {getFieldsValue} Get the specified fields' values. If you don't specify a parameter, you will get all fields' values.
- * @fields {getFieldValue} Get the value of a field
- */
-
 
 export const WrappedAdvancedTimeSetting = AdvancedTimeSetting;
