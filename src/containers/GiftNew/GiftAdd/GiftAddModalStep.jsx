@@ -636,7 +636,7 @@ class GiftAddModalStep extends React.Component {
             if (formValues.hasOwnProperty('foodsboxs')) {
                 if (!formValues.foodsboxs) { // 用户没选择，默认信息
                     params.foodSelectType = 2;
-                    params.isExcludeFood = 0;
+                    params.isExcludeFood = '0';
                 }
                 if (formValues.foodsboxs && formValues.foodsboxs instanceof Object) {
                     const { foodSelectType, isExcludeFood, foodCategory, excludeDishes, dishes } = formValues.foodsboxs;
@@ -1103,7 +1103,7 @@ class GiftAddModalStep extends React.Component {
                         <MoreFoodBox
                             scopeLst={data.couponFoodScopeList}
                             foodSelectType={data.foodSelectType}
-                            isExcludeFood={data.isExcludeFood ? 1 : 0}
+                            isExcludeFood={data.isExcludeFood ? '1' : '0'}
                         />)
                 }
             </FormItem>

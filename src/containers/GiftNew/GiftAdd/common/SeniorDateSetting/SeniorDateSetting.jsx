@@ -17,6 +17,7 @@ import {
     MONTH_OPTIONS,
     WEEK_OPTIONS,
 } from '../../../../../redux/actions/saleCenterNEW/fullCutActivity.action';
+import { is }  from 'immutable';
 
 const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
@@ -63,24 +64,29 @@ class SeniorDateSetting extends React.Component {
         let { selectType, couponPeriodSettings } = this.state
         // const _couponPeriodSettings = this.props.couponPeriodSettings
         const _couponPeriodSettings = nextProps.couponPeriodSettings
+        console.log(is(this.props.couponPeriodSettings, _couponPeriodSettings))
         if (!_couponPeriodSettings) return;
-        if (_couponPeriodSettings instanceof Array) {
-            if (_couponPeriodSettings.length === 0) return
-            selectType = String(_couponPeriodSettings[0].periodType)
-            couponPeriodSettings = _couponPeriodSettings.map((setting) => {
-                return {
-                    activeType: '0',
-                    periodType: String(setting.periodType),
-                    periodStart: setting.periodStart.length === 3 ? "0" + setting.periodStart : String(setting.periodStart),
-                    periodEnd: setting.periodEnd.length === 3 ? "0" + setting.periodEnd : String(setting.periodEnd),
-                    periodLabel: String(setting.periodLabel),
-                }
+        if (!is(this.props.couponPeriodSettings, _couponPeriodSettings)) {
+            if (_couponPeriodSettings instanceof Array) {
+                if (_couponPeriodSettings.length === 0) return
+                selectType = String(_couponPeriodSettings[0].periodType)
+                couponPeriodSettings = _couponPeriodSettings.map((setting) => {
+                    return {
+                        activeType: '0',
+                        periodType: String(setting.periodType),
+                        periodStart: setting.periodStart.length === 3 ? "0" + setting.periodStart : String(setting.periodStart),
+                        periodEnd: setting.periodEnd.length === 3 ? "0" + setting.periodEnd : String(setting.periodEnd),
+                        periodLabel: String(setting.periodLabel),
+                    }
+                })
+            }
+            this.setState({
+                selectType,
+                couponPeriodSettings,
+            }, () => {
+                // this.props.onChange && this.props.onChange(couponPeriodSettings)
             })
         }
-        this.setState({
-            selectType,
-            couponPeriodSettings,
-        })
     }
     update(couponPeriodSettings) {
         this.setState({

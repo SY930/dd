@@ -59,7 +59,7 @@ class MoreFoodBox extends React.Component {
             foodSelectType: 2,
             selectedCategory: [],
             selectedDishes: [],
-            isExcludeFood: 0,
+            isExcludeFood: '0',
             excludeDishes: [],
 
             foodCategoryCollection: [], // 存储所有相关数据
@@ -183,7 +183,7 @@ class MoreFoodBox extends React.Component {
         this.props.fetchFoodMenuInfo({ ...opts });
         const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.scopeLst) {
-            const { scopeLst, foodSelectType = 2, isExcludeFood = 0 } = this.props;
+            const { scopeLst, foodSelectType = 2, isExcludeFood = '0' } = this.props;
             this.setState({
                 foodCategoryCollection,
                 scopeLst,
@@ -234,14 +234,14 @@ class MoreFoodBox extends React.Component {
             foodSelectType: e.target.value,
             foodCategorySelections,
             foodSelections,
-            isExcludeFood: 0,
+            isExcludeFood: '0',
             excludeSelections,
         });
         this.props.onChange && this.props.onChange({
             foodSelectType: e.target.value,
             // foodCategory: [],
             // dishes: [],
-            isExcludeFood: 0,
+            isExcludeFood: '0',
             // excludeDishes: [],
             CouponFoodScope: [], // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
         })
@@ -312,7 +312,7 @@ class MoreFoodBox extends React.Component {
                 </FormItem>
                 {this.renderExcludeRange()}
                 {
-                    this.state.isExcludeFood == 1 && this.state.foodSelectType == 1 ? this.renderExcludedFoodMenu() : null
+                    this.state.isExcludeFood == '1' && this.state.foodSelectType == 1 ? this.renderExcludedFoodMenu() : null
                 }
             </div>
         );
@@ -432,7 +432,7 @@ class MoreFoodBox extends React.Component {
             foodCategoryCurrentSelections,
         }, () => {
             this.props.onChange && this.props.onChange({
-                foodSelectType: '1',
+                foodSelectType: 1,
                 foodCategory: Array.from(this.state.foodCategorySelections),
                 dishes: [],
                 isExcludeFood,
@@ -472,7 +472,7 @@ class MoreFoodBox extends React.Component {
             excludeOptions,
         });
         this.props.onChange && this.props.onChange({
-            foodSelectType: '1',
+            foodSelectType: 1,
             foodCategory: Array.from(foodCategorySelections),
             dishes: [],
             isExcludeFood,
@@ -482,10 +482,11 @@ class MoreFoodBox extends React.Component {
 
     // 渲染排除菜品radio
     renderExcludeRange() {
+        console.log('isExcludeFood', this.state.isExcludeFood)
         return (
             <FormItem style={{ marginBottom: -8, marginTop: 18 }}>
                 <RadioGroup
-                    value={this.state.isExcludeFood || 0}
+                    value={this.state.isExcludeFood || '0'}
                     onChange={this.handleisExcludeFoodChange}
                 >
                     {EXCLUDE_OPTIONS.map((type) => {
@@ -506,7 +507,7 @@ class MoreFoodBox extends React.Component {
             excludeSelections: new Set(),
         });
         this.props.onChange && this.props.onChange({
-            foodSelectType: '1',
+            foodSelectType: 1,
             foodCategory: Array.from(foodCategorySelections),
             dishes: [],
             isExcludeFood: e.target.value,
@@ -707,10 +708,10 @@ class MoreFoodBox extends React.Component {
             excludeCurrentSelections,
         });
         this.props.onChange && this.props.onChange({
-            foodSelectType: '1',
+            foodSelectType: 1,
             foodCategory: Array.from(foodCategorySelections),
             dishes: [],
-            isExcludeFood: 1,
+            isExcludeFood: '1',
             excludeDishes: Array.from(value),
         })
     }
@@ -730,10 +731,10 @@ class MoreFoodBox extends React.Component {
             excludeSelections,
         });
         this.props.onChange && this.props.onChange({
-            foodSelectType: '1',
+            foodSelectType: 1,
             foodCategory: Array.from(foodCategorySelections),
             dishes: [],
-            isExcludeFood: 1,
+            isExcludeFood: '1',
             excludeDishes: Array.from(excludeSelections),
         });
     }
@@ -911,10 +912,10 @@ class MoreFoodBox extends React.Component {
             foodCurrentSelections,
         }, () => {
             this.props.onChange && this.props.onChange({
-                foodSelectType: '0',
+                foodSelectType: 0,
                 foodCategory: [],
                 dishes: Array.from(this.state.foodSelections),
-                isExcludeFood: 0,
+                isExcludeFood: '0',
                 excludeDishes: [],
             })
         });
@@ -936,10 +937,10 @@ class MoreFoodBox extends React.Component {
             foodSelections,
         });
         this.props.onChange && this.props.onChange({
-            foodSelectType: '0',
+            foodSelectType: 0,
             foodCategory: [],
             dishes: Array.from(foodSelections),
-            isExcludeFood: 0,
+            isExcludeFood: '0',
             excludeDishes: [],
         })
     }
