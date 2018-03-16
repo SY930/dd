@@ -629,6 +629,9 @@ class GiftAddModalStep extends React.Component {
                     params.maxGiveCountPerFoodPerBill = 0 // 0标识不限制
                 }
             }
+            if (value == '110' || value == '111') {
+                params.giftValue = 0 // 不传会报错，后台说传0
+            }
             // foodbxs数据,目前买赠券和折扣券用
             if (formValues.hasOwnProperty('foodsboxs')) {
                 if (!formValues.foodsboxs) { // 用户没选择，默认信息
