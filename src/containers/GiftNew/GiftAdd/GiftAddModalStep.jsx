@@ -174,6 +174,7 @@ class GiftAddModalStep extends React.Component {
 
     componentDidMount() {
         const { FetchGiftSort, gift: thisGift } = this.props;
+        debugger
 
         fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
             let { cities, shops } = data;
@@ -256,7 +257,8 @@ class GiftAddModalStep extends React.Component {
                     const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
                     const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
                     this.queryTrdTemplate(mpID, data.trdChannelID)
-                    this.props.fetchAllPromotionList({
+                    // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
+                    value === '100' && this.props.fetchAllPromotionList({
                         groupID: this.props.accountInfo.toJS().groupID,
                     })
                 }
