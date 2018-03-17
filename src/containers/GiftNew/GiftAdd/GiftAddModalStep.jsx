@@ -244,7 +244,7 @@ class GiftAddModalStep extends React.Component {
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value === '10') {
             if (data.moneyLimitType != 0) {
-                secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
+                // secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
                 this.setState({ secondKeys })
             }
         }
