@@ -608,6 +608,7 @@ class SendCard extends React.Component {
                             _key={_key}
                             giftItemID={this.props.data.giftItemID}
                             handleClose={() => this.setState({ exportVisible: false })}
+                            shopData={this.props.shopData}
                         />
                 }
             </div>

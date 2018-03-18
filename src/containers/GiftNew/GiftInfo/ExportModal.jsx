@@ -92,11 +92,19 @@ export default class ExportModal extends Component {
         }
     }
     exportRecords = (giftItemID, key) => {
-        axiosData('/crm/quotaCardExport/export.ajax', {
+        const data = {
             giftItemID,
             exportQuotaType: key === 'made' ? '3' : key === 'send' ? '2' : '4',
             ...this.props.params,
-        }, null, { path: 'data' })
+        }
+        if (data.usingShopID) {
+            data.usingShopName = this.props.shopData.toJS().find(shop => {
+                return shop.shopID === data.usingShopID
+            }).shopName
+        } else {
+            data.usingShopName = ''
+        }
+        axiosData('/crm/quotaCardExport/export.ajax', data, null, { path: 'data' })
             .then(_records => {
                 this.getExportRecords(key)
             })
