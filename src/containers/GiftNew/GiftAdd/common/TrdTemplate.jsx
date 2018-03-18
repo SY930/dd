@@ -45,6 +45,21 @@ class TrdTemplate extends React.Component {
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: 1 })
     }
+    // 向父传递
+    propsChange = () => {
+        const { channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
+        const wechatMpName = mpList.find(mp => mp.mpID === mpID).mpName
+        const trdTemplateIDLabel = trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID).trdGiftName
+        debugger
+        const values = {
+            extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
+            trdChannelID,
+            trdTemplateID,
+            trdTemplateIDLabel,
+            wechatMpName,
+        }
+        this.props.onChange(values)
+    }
     // 第三方券模版
     queryTrdTemplate = (mpID, trdChannelID) => {
         if (trdChannelID == 10 && !mpID) return
@@ -63,10 +78,10 @@ class TrdTemplate extends React.Component {
     }
     // Switch Button
     handleDefaultChecked = (value) => {
-        this.setState({ 
+        this.setState({
             defaultChecked: value,
-            channelID:10,
-            mpID:'',
+            channelID: 10,
+            mpID: '',
             trdGiftItemID: '',
         })
         if (this.props.describe === '活动券') {
@@ -78,11 +93,11 @@ class TrdTemplate extends React.Component {
     // 渠道选择
     handleTrdChannelSelect = (value) => {
         console.log(value)
-        this.setState({ 
+        this.setState({
             channelID: value,
-            mpID:'',
+            mpID: '',
             trdGiftItemID: '',
-         })
+        })
         if (this.props.describe === '活动券') {
             this.props.queryUnbindCouponPromotion({ channelID: value }) // 查询未绑定过的活动
             this.props.clearPromotion() // 清空已选活动
@@ -98,7 +113,7 @@ class TrdTemplate extends React.Component {
     handleMpSelect = (value) => {
         console.log(value)
         this.setState({
-            mpID:value,
+            mpID: value,
             trdGiftItemID: '',
         })
         this.queryTrdTemplate(value, 10) // 带着微信号查模板        
@@ -106,7 +121,9 @@ class TrdTemplate extends React.Component {
     // 三方模板选择
     handleTrdTemplate = (value) => {
         console.log(value)
-        this.setState({ trdGiftItemID: value })
+        this.setState({ trdGiftItemID: value }, () => {
+            this.propsChange() // 向父传递
+        })
     }
     render() {
         const { defaultChecked, channelID = 10, mpList, mpID, trdTemplateInfoList, trdGiftItemID, } = this.state;

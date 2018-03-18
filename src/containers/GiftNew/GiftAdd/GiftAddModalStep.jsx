@@ -582,7 +582,8 @@ class GiftAddModalStep extends React.Component {
                     params.couponTrdChannelStockNums = couponTrdChannelStockNums;
                 }
             }
-            if (value != 80) {
+            if (value === 80) {
+                return;
                 // 买赠券和折扣券在第一步的formvalues
                 const wechatMpName = value == '110' || value == '111' ? this.firstForm.getFieldsValue().wechatMpName : formValues.wechatMpName;
                 const trdTemplateID = value == '110' || value == '111' ? this.firstForm.getFieldsValue().trdTemplateID : formValues.trdTemplateID;
@@ -597,6 +598,10 @@ class GiftAddModalStep extends React.Component {
                         (this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : undefined),
                 })
                 params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
+            }
+            if(params.TrdTemplate){
+                params={...params, ...params.TrdTemplate}
+                debugger
             }
             if (params.discountRate_111 && value == '111') {
                 params.discountRate = (params.discountRate_111 / 100).toFixed(2)
