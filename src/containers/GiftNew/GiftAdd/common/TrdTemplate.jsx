@@ -63,7 +63,12 @@ class TrdTemplate extends React.Component {
     }
     // Switch Button
     handleDefaultChecked = (value) => {
-        this.setState({ defaultChecked: value })
+        this.setState({ 
+            defaultChecked: value,
+            channelID:10,
+            mpID:'',
+            trdGiftItemID: '',
+        })
         if (this.props.describe === '活动券') {
             const channelID = value ? 10 : 1 // 10微信，1普通哗啦营销活动
             this.props.queryUnbindCouponPromotion({ channelID }) // 查询未绑定过的活动
@@ -73,7 +78,11 @@ class TrdTemplate extends React.Component {
     // 渠道选择
     handleTrdChannelSelect = (value) => {
         console.log(value)
-        this.setState({ channelID: value })
+        this.setState({ 
+            channelID: value,
+            mpID:'',
+            trdGiftItemID: '',
+         })
         if (this.props.describe === '活动券') {
             this.props.queryUnbindCouponPromotion({ channelID: value }) // 查询未绑定过的活动
             this.props.clearPromotion() // 清空已选活动
@@ -85,10 +94,16 @@ class TrdTemplate extends React.Component {
         }
     }
 
+    // 微信号选择
     handleMpSelect = (value) => {
         console.log(value)
+        this.setState({
+            mpID:value,
+            trdGiftItemID: '',
+        })
         this.queryTrdTemplate(value, 10) // 带着微信号查模板        
     }
+    // 三方模板选择
     handleTrdTemplate = (value) => {
         console.log(value)
         this.setState({ trdGiftItemID: value })
@@ -126,7 +141,7 @@ class TrdTemplate extends React.Component {
                                         label='微信公众号选择'
                                         {...itemStyle}
                                     >
-                                        <Select onChange={this.handleMpSelect} value={mpID}>
+                                        <Select value={mpID} onChange={this.handleMpSelect}>
                                             {
                                                 mpList.map(mp => {
                                                     return <Option value={mp.mpID}>{mp.mpName}</Option>
