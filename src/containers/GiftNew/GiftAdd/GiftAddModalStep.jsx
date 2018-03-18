@@ -179,10 +179,10 @@ class GiftAddModalStep extends React.Component {
         const { secondKeys, values } = this.state;
 
         if (type === 'edit' && value === '100') {
-                // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
-                value === '100' && this.props.fetchAllPromotionList({
-                    groupID: this.props.accountInfo.toJS().groupID,
-                })
+            // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
+            value === '100' && this.props.fetchAllPromotionList({
+                groupID: this.props.accountInfo.toJS().groupID,
+            })
         }
         if (type === 'edit' && value == '111') {
             values.discountOffMax = data.discountOffMax
@@ -560,6 +560,9 @@ class GiftAddModalStep extends React.Component {
                 }
                 delete params.foodsboxs
                 delete params.couponFoodScopeList // 后台返回的已选菜品数据
+            }
+            if (params.supportOrderTypes) {
+                params.supportOrderTypes = params.supportOrderTypes.join(',')
             }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';

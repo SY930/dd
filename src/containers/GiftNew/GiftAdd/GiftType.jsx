@@ -59,6 +59,7 @@ class GiftType extends React.Component {
                 g.giftRule = g.giftRule.split('</br>');
                 g.num = i + 1;
                 g.usingTimeType = g.usingTimeType.split(',');
+                g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
                 g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
                 return g;
             });

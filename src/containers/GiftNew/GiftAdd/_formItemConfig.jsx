@@ -36,6 +36,13 @@ const FORMITEMS = {
         defaultValue: '2',
         options: GiftCfg.supportOrderType,
     },
+    supportOrderTypes: {
+        label: '业务支持',
+        type: 'checkbox',
+        defaultValue: ['0', '1', '2', '3', '4'],
+        options: GiftCfg.supportOrderTypes,
+        rules: [{ type: 'array', required: true, message: '请选择业务支持' }],
+    },
     isOfflineCanUsing: {
         label: '到店使用',
         type: 'radio',
@@ -170,11 +177,11 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings', 'supportOrderType', 'couponCodeType', 'giftShareType', 'shopNames'],
+        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings', 'supportOrderTypes', 'couponCodeType', 'giftShareType', 'shopNames'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['disCountStages', 'disCountRate_Max', 'foodsboxs', 'couponPeriodSettings', 'supportOrderType', 'couponCodeType', 'giftShareType', 'shopNames'],
+        keys: ['disCountStages', 'disCountRate_Max', 'foodsboxs', 'couponPeriodSettings', 'supportOrderTypes', 'couponCodeType', 'giftShareType', 'shopNames'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

@@ -50,6 +50,13 @@ const GiftCfg = {
         { label: '堂食', value: '0' },
         { label: '外送', value: '1' },
     ],
+    supportOrderTypes: [
+        { label: '堂食', value: '0' },
+        { label: '外送', value: '1' },
+        { label: '自提', value: '2' },
+        { label: '闪吃', value: '3' },
+        { label: '预定', value: '4' },
+    ],
     isOfflineCanUsing: [
         { label: '不支持', value: 'false' },
         { label: '支持', value: 'true' },
