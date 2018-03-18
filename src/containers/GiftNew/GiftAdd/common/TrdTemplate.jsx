@@ -36,27 +36,67 @@ class TrdTemplate extends React.Component {
         };
     }
     componentDidMount() {
+        let channelID = undefined;
+        let mpID = undefined;
+        let wechatMpName = undefined;
+        let trdTemplateID = undefined;
+        let trdTemplateIDLabel = undefined;
+        //编辑
+        if (this.props.data) {
+            this.propsChange(this.props.data)
+            const { extraInfo, trdChannelID, trdTemplateID: _trdTemplateID } = this.props.data
+            const { wechatMpName: _wechatMpName, trdTemplateIDLabel: _trdTemplateIDLabel } = JSON.parse(extraInfo);
+            channelID = trdChannelID; // 渠道id
+            wechatMpName = _wechatMpName // 微信名
+            trdTemplateID = _trdTemplateID // 模板id
+            trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
+        }
         // 公众号
         fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
             this.setState({ mpList: mpList || [], mpID: mpList[0].mpID })
+            // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
+            mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
             // 第三方券模版
-            this.queryTrdTemplate(mpList[0].mpID, 10)
+            this.queryTrdTemplate(mpID ? mpID : mpList[0].mpID, channelID ? channelID : 10).then(trdTemplateInfoList => {
+                // 编辑时，已选模板不会再查询到，需要拼接出来
+                if (this.props.data) {
+                    this.setState({
+                        defaultChecked: true,
+                        channelID,
+                        mpID,
+                        trdGiftItemID: trdTemplateID,
+                        trdTemplateIDLabel,
+                        trdTemplateInfoList: trdTemplateInfoList.concat([{
+                            label: trdTemplateIDLabel,
+                            value: trdTemplateID,
+                        }])
+                    })
+                }
+            })
+
         })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
-        this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: 1 })
+        this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
+
     }
     // 向父传递
-    propsChange = () => {
+    propsChange = (data) => {
+        if (data) {
+            //点编辑时，向父组件传递用户已设置的初始值
+            this.props.onChange(data);
+            return
+        }
+        // 新建时
         const { channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
         const wechatMpName = mpList.find(mp => mp.mpID === mpID).mpName
         const trdTemplateIDLabel = trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID).trdGiftName
-        debugger
+
         const values = {
             extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
             trdChannelID,
             trdTemplateID,
-            trdTemplateIDLabel,
-            wechatMpName,
+            //trdTemplateIDLabel,
+            //wechatMpName,
         }
         this.props.onChange(values)
     }
@@ -64,7 +104,7 @@ class TrdTemplate extends React.Component {
     queryTrdTemplate = (mpID, trdChannelID) => {
         if (trdChannelID == 10 && !mpID) return
         // 第三方券模版
-        fetchData('queryTrdTemplate', {
+        return fetchData('queryTrdTemplate', {
             groupID: this.props.accountInfo.toJS().groupID,
             channelID: trdChannelID || 10,
             forceRefresh: 1,
@@ -74,6 +114,7 @@ class TrdTemplate extends React.Component {
             this.setState({
                 trdTemplateInfoList: trdTemplateInfoList || [],
             })
+            return Promise.resolve(trdTemplateInfoList || [])
         });
     }
     // Switch Button
@@ -127,7 +168,7 @@ class TrdTemplate extends React.Component {
     }
     render() {
         const { defaultChecked, channelID = 10, mpList, mpID, trdTemplateInfoList, trdGiftItemID, } = this.state;
-        const { type } = this.props
+        const edit = this.props.type === 'edit'
         return (
             <div>
                 <FormItem
@@ -135,7 +176,13 @@ class TrdTemplate extends React.Component {
                     {...itemStyle}
                     required={false}
                 >
-                    <Switch checkedChildren="是" unCheckedChildren="否" defaultChecked={defaultChecked} onChange={this.handleDefaultChecked} />
+                    <Switch
+                        checkedChildren="是"
+                        unCheckedChildren="否"
+                        checked={defaultChecked}
+                        onChange={this.handleDefaultChecked}
+                        disabled={edit}
+                    />
                 </FormItem>
                 {
                     !defaultChecked ? null :
@@ -144,7 +191,7 @@ class TrdTemplate extends React.Component {
                                 label='第三方渠道'
                                 {...itemStyle}
                             >
-                                <Select value={channelID} onChange={this.handleTrdChannelSelect}>
+                                <Select value={channelID} onChange={this.handleTrdChannelSelect} disabled={edit}>
                                     {
                                         GiftCfg.trdChannelIDs.map(trdChannel => {
                                             return <Option value={trdChannel.value}>{trdChannel.label}</Option>
@@ -158,7 +205,7 @@ class TrdTemplate extends React.Component {
                                         label='微信公众号选择'
                                         {...itemStyle}
                                     >
-                                        <Select value={mpID} onChange={this.handleMpSelect}>
+                                        <Select value={mpID} onChange={this.handleMpSelect} disabled={edit}>
                                             {
                                                 mpList.map(mp => {
                                                     return <Option value={mp.mpID}>{mp.mpName}</Option>
@@ -170,24 +217,13 @@ class TrdTemplate extends React.Component {
                                 label='第三方券模板或活动'
                                 {...itemStyle}
                             >
-                                {
-                                    /*type === 'add' ? trdTemplateInfoList.map((template) => {
-                                        return {
-                                            label: template.trdGiftName,
-                                            value: template.trdGiftItemID,
-                                        }
-                                    }) : [{
-                                        label: this.props.gift.data.extraInfo ? JSON.parse(this.props.gift.data.extraInfo).trdTemplateIDLabel : '',
-                                        value: this.props.gift.data.trdTemplateID,
-                                    }]*/
-                                    <Select onChange={this.handleTrdTemplate} value={trdGiftItemID}>
-                                        {
-                                            trdTemplateInfoList.map(template => {
-                                                return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
-                                            })
-                                        }
-                                    </Select>
-                                }
+                                <Select onChange={this.handleTrdTemplate} value={trdGiftItemID} disabled={edit}>
+                                    {
+                                        trdTemplateInfoList.map(template => {
+                                            return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
+                                        })
+                                    }
+                                </Select>
                             </FormItem>
                             <FormItem
                                 label='券模板或活动ID'

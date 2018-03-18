@@ -599,8 +599,8 @@ class GiftAddModalStep extends React.Component {
                 })
                 params = params.isMapTotrd ? params : { ...params, trdChannelID: undefined, trdTemplateID: undefined, trdTemplateIDLabel: undefined, wechatMpName: undefined }
             }
-            if(params.TrdTemplate){
-                params={...params, ...params.TrdTemplate}
+            if (params.TrdTemplate) {
+                params = { ...params, ...params.TrdTemplate }
                 debugger
             }
             if (params.discountRate_111 && value == '111') {
@@ -1260,6 +1260,7 @@ class GiftAddModalStep extends React.Component {
                             values.promotionID = [] // 清空已选活动
                             this.setState({ values })
                         }}
+                        data={data.extraInfo ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
                     />
                 )
             },
