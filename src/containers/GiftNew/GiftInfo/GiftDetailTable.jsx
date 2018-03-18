@@ -324,12 +324,12 @@ class GiftDetailTable extends Component {
                 case '91':
                 case '110':
                 case '111':
-                    return <GiftAddModalStep {...editProps} />;
+                    return visibleEdit ? <GiftAddModalStep {...editProps} /> : null;
                 case '30':
                 case '40':
                 case '42':
                 case '90':
-                    return <GiftAddModal {...editProps} />;
+                    return visibleDetail ? <GiftAddModal {...editProps} /> : null;
                 default:
                     return null;
             }
@@ -380,10 +380,10 @@ class GiftDetailTable extends Component {
                         </div>
                         <Col span={22} style={{ textAlign: 'right' }}>
                             {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
-                                <Button
-                                    type="ghost"
-                                    onClick={() => this.setState({ exportVisible: true })}
-                                ><Icon type="export" />导出历史</Button>
+                            <Button
+                                type="ghost"
+                                onClick={() => this.setState({ exportVisible: true })}
+                            ><Icon type="export" />导出历史</Button>
                             {/* </Authority> */}
                         </Col>
                     </Row>

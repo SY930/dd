@@ -24,6 +24,7 @@ import {
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
+import TrdTemplate from './common/TrdTemplate';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -173,8 +174,48 @@ class GiftAddModalStep extends React.Component {
     }
 
     componentDidMount() {
-        const { FetchGiftSort, gift: thisGift } = this.props;
-        debugger
+        const { FetchGiftSort, type, gift: thisGift } = this.props;
+        const { name, data, value } = thisGift;
+        const { secondKeys, values } = this.state;
+        if (type === 'edit' && value === '10') {
+            if (data.moneyLimitType != 0) {
+                // secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
+                this.setState({ secondKeys })
+            }
+        }
+        if (type === 'edit' && value !== '80') {
+            if (data.trdTemplateID) {
+                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
+                //if (data.giftItemID !== this.props.gift.data.giftItemID) {
+                // 三方券模版
+                const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
+                const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
+                this.queryTrdTemplate(mpID, data.trdChannelID)
+                // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
+                value === '100' && this.props.fetchAllPromotionList({
+                    groupID: this.props.accountInfo.toJS().groupID,
+                })
+                //}
+            }
+        }
+        if (type === 'edit' && value == '111') {
+            values.discountOffMax = data.discountOffMax
+            values.isDiscountOffMax = data.discountOffMax > 0 ? 1 : 0
+            values.discountType = data.discountThreshold > 0 ? 1 : 0
+            values.discountRate_111 = data.discountRate * 100
+        }
+        if (type === 'edit' && value == '110') {
+            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
+            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
+            values.maxGiveCountPerBill = data.maxGiveCountPerBill
+            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
+            values.BOGOdiscountWay = data.BOGOdiscountWay
+            // values.couponPeriodSettings = data.couponPeriodSettingList//这样会被没值得时候清空
+        }
+        this.setState({
+            values
+        });
+
 
         fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
             let { cities, shops } = data;
@@ -214,74 +255,16 @@ class GiftAddModalStep extends React.Component {
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
         });
-        // 公众号
-        thisGift.value != 80 ? fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
-            this.setState({ mpList: mpList || [] })
-            // 微信公众号券模版
-            this.queryTrdTemplate(mpList[0].mpID, 10)
-        }) : null;
         FetchGiftSort({});
-    }
-    queryTrdTemplate = (mpID, trdChannelID) => {
-        if (trdChannelID == 10 && !mpID) return
-        // 第三方券模版
-        fetchData('queryTrdTemplate', {
-            groupID: this.props.accountInfo.toJS().groupID,
-            channelID: trdChannelID || 10,
-            forceRefresh: 1,
-            mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
-        }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
-            // console.log(trdTemplateInfoList)
-            this.setState({
-                trdTemplateInfoList: trdTemplateInfoList || [],
-            })
-        });
     }
 
     componentWillReceiveProps(nextProps) {
         // this.firstForm && this.firstForm.resetFields(); // 此处本来是有的，后来因为自定义组件内部this.props.onchange导致刷新，值被清空，就拿不到值
         // this.secondForm && this.secondForm.resetFields();// 就注释了
         const { gift: { name, data, value }, type, sharedGifts } = nextProps;
-        const { secondKeys, values } = this.state;
-        if (type === 'edit' && value === '10') {
-            if (data.moneyLimitType != 0) {
-                // secondKeys[name][0].keys = ['isMapTotrd', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'moenyLimitValue', 'shopNames'];
-                this.setState({ secondKeys })
-            }
-        }
-        if (type === 'edit' && value !== '80') {
-            if (data.trdTemplateID) {
-                this.secondForm.setFieldsValue({ trdTemplateIDLabel: data.trdTemplateID });
-                if (data.giftItemID !== this.props.gift.data.giftItemID) {
-                    // 三方券模版
-                    const mp = (this.state.mpList || []).find(mp => mp.mpName == data.wechatMpName);
-                    const mpID = mp ? mp.mpID : this.state.mpList[0].mpID;
-                    this.queryTrdTemplate(mpID, data.trdChannelID)
-                    // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
-                    value === '100' && this.props.fetchAllPromotionList({
-                        groupID: this.props.accountInfo.toJS().groupID,
-                    })
-                }
-            }
-        }
-        if (type === 'edit' && value == '111') {
-            values.discountOffMax = data.discountOffMax
-            values.isDiscountOffMax = data.discountOffMax > 0 ? 1 : 0
-            values.discountType = data.discountThreshold > 0 ? 1 : 0
-            values.discountRate_111 = data.discountRate * 100
-        }
-        if (type === 'edit' && value == '110') {
-            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
-            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
-            values.maxGiveCountPerBill = data.maxGiveCountPerBill
-            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
-            values.BOGOdiscountWay = data.BOGOdiscountWay
-            // values.couponPeriodSettings = data.couponPeriodSettingList//这样会被没值得时候清空
-        }
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
-            // values: { ...values, ...data } // ?带上data提交时也会带上冗余
         });
     }
     proSharedGifts = (sharedGifts = []) => {
@@ -471,9 +454,6 @@ class GiftAddModalStep extends React.Component {
                 describe == '买赠券' || describe == '折扣券'
                     ? this.firstForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
                     : this.secondForm.setFieldsValue({ trdTemplateID: value, trdTemplateIDLabel: value })
-                break;
-            case 'isDiscountOffMax':
-                this.secondForm.setFieldsValue({ discountOffMax: '' });
                 break;
 
             default:
@@ -1261,6 +1241,22 @@ class GiftAddModalStep extends React.Component {
                         </Col>
                     </Row>
                 ),
+            },
+            TrdTemplate: {
+                label: ' ',
+                labelCol: { span: 3 },
+                wrapperCol: { span: 21 },
+                type: 'custom',
+                render: (decorator) => decorator({})(
+                    <TrdTemplate
+                        type={type}
+                        describe={describe}
+                        clearPromotion={() => {
+                            values.promotionID = [] // 清空已选活动
+                            this.setState({ values })
+                        }}
+                    />
+                )
             },
             isMapTotrd: {
                 label: '是否关联第三方券',

@@ -150,7 +150,7 @@ const FIRST_KEYS = {
 const SECOND_KEYS = {
     '电子代金券': [{
         col: { span: 24, pull: 2 },
-        keys: ['isMapTotrd', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],
     '菜品优惠券': [{
         col: { span: 24, pull: 2 },
@@ -162,7 +162,7 @@ const SECOND_KEYS = {
     }],
     '活动券': [{
         col: { span: 24, pull: 2 },
-        keys: ['isMapTotrd', 'promotionID'],
+        keys: ['TrdTemplate', 'promotionID'],
     }],
     '线上礼品卡': [{
         col: { span: 24, pull: 2 },
