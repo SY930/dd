@@ -103,7 +103,7 @@ class GroupTicketDetailInfo extends React.Component {
         if (_state.giftValue == null || _state.giftValue == '') {
             _state.giftValueFlag = false;
         }
-        _state.transFeeFlag = voucherVerify != 1 || _state.transFee > 0;
+        _state.transFeeFlag = voucherVerify != 1 || _state.transFee >= 0;
         this.setState(_state);
 
         let nextFlag = true;
@@ -203,7 +203,7 @@ class GroupTicketDetailInfo extends React.Component {
         const voucherVerify = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerify']);
         let { transFee } = this.state;
         transFee = value.number;
-        this.setState({ transFee, transFeeFlag: voucherVerify != 1 || value.number > 0 });
+        this.setState({ transFee, transFeeFlag: voucherVerify != 1 || value.number >= 0 });
     }
     onStageAmountChange(value) {
         let { stageAmount } = this.state;
