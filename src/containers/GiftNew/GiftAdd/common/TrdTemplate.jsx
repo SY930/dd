@@ -77,12 +77,12 @@ class TrdTemplate extends React.Component {
         })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
-
     }
     // 向父传递
     propsChange = (data) => {
         if (data) {
             // 点编辑时，向父组件传递用户已设置的初始值
+            data.TrdTemplateStatus = true;
             this.props.onChange(data);
             return
         }
