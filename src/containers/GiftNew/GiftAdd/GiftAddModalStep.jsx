@@ -498,6 +498,10 @@ class GiftAddModalStep extends React.Component {
                 }
             }
             if (params.TrdTemplate) {
+                const { extraInfo, trdChannelID, trdTemplateID } = params.TrdTemplate;
+                if (!trdChannelID || !trdTemplateID || (trdChannelID == 10 && !JSON.parse(extraInfo).wechatMpName)) {
+                    return
+                }
                 params = { ...params, ...params.TrdTemplate }
             }
             if (params.discountRate_111 && value == '111') {
