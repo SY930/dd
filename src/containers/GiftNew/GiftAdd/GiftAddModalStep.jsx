@@ -1011,12 +1011,12 @@ class GiftAddModalStep extends React.Component {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
-        if (dates.discountRate && dates.discountRate != 1) {
+        if (dates.discountRate < 1) {
             dates.isDiscountRate = true
         } else {
             dates.isDiscountRate = false
         }
-        if (dates.pointRate) {
+        if (dates.pointRate > 0) {
             dates.isPointRate = true
         } else {
             dates.isPointRate = false
