@@ -326,7 +326,12 @@ class GiftAddModal extends React.Component {
                     this.handleCancel()
                 }}
                 footer={[<Button key="0" type="ghost" onClick={() => this.handleCancel()}>取消</Button>,
-                <Button key="1" type="primary" style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }} onClick={() => this.handleOk()}>确定</Button>]}
+                <Button
+                    key="1"
+                    type="primary"
+                    disabled={this.state.finishLoading}
+                    style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }}
+                    onClick={() => this.handleOk()}>确定</Button>]}
                 key={`${describe}-${type}`}
             >
                 <div className={styles.giftAddModal}>

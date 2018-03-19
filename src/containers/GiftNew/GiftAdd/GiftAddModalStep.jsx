@@ -1355,6 +1355,7 @@ class GiftAddModalStep extends React.Component {
                                 onFinish={this.handleFinish}
                                 onPrev={this.handlePrev}
                                 onCancel={this.handleCancel}
+                                loading={this.state.finishLoading}
                             />
                         </div>
                         : null
