@@ -461,12 +461,10 @@ class MyActivitiesShop extends React.Component {
     };
 
     handleUpdateOpe() {
-        const opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-            shopID: arguments[1].maintenanceLevel == 'SHOP_LEVEL' ? arguments[1].shopIDLst : undefined,
-        };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
+            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
+        }
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,
@@ -479,6 +477,14 @@ class MyActivitiesShop extends React.Component {
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
                 return null;
+            }
+            if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
+                const opts = {
+                    _groupID: this.props.user.accountInfo.groupID,
+                    shopID: responseJSON.promotionInfo.master.shopIDLst,
+                };
+                this.props.fetchFoodCategoryInfo({ ...opts });
+                this.props.fetchFoodMenuInfo({ ...opts });
             }
             // 把查询到的活动信息存到redux
             this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
