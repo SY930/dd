@@ -211,7 +211,7 @@ class GiftDetailTable extends Component {
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         // queryCouponShopList({ groupID: this.props.user.accountInfo.groupID, giftItemID: rec.giftItemID }); //券适用店铺查询 ,暂时无用
         // 请求获取promotionList--券活动
-        debugger
+        // debugger
         gift.value != 80 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
         }) : null;
