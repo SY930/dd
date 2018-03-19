@@ -33,6 +33,9 @@ class TrdTemplate extends React.Component {
             defaultChecked: false,
             mpList: [], // 公众号
             trdTemplateInfoList: [], // 第三方券模版
+            channelIDStatus: true,
+            mpIDStatus: true,
+            trdGiftItemIDStatus: true,
         };
     }
     componentDidMount() {
