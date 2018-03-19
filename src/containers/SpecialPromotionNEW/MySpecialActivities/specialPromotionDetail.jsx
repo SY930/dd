@@ -156,7 +156,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
                 {
                     record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                    record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
+                        record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
                         (
                             <Row>
                                 <Col span={4} style={{ textAlign: 'right' }}>活动时间</Col>
@@ -451,7 +451,7 @@ class SpecialPromotionDetail extends React.Component {
                 // gender: sexInfo[user.customerSex].lable, // 0 ,1 ,2  女 男  未知
                 cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
-                level: `${user.cardTypeName}-${user.cardLevelName}`,
+                level: `${user.cardTypeName || ''}-${user.cardLevelName && user.cardLevelName !== 'null' ? user.cardLevelName : ''}`,
                 consumptionTotal: user.consumptionTotal,
                 consumptionCount: user.consumptionCount,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
