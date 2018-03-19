@@ -752,10 +752,8 @@ class MoreFoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.forEach((item, index) => {
-                    if (typeof item === 'object') {
-                        return <TreeNode key={index} title={item.foodCategoryName} />;
-                    }
+                return data.map((item, index) => {
+                    return typeof item === 'object' ? <TreeNode key={index} title={item.foodCategoryName} /> : null
                 });
             }
             return null;
