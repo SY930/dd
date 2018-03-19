@@ -168,7 +168,7 @@ class ReturnGift extends React.Component {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes=>giftTypes.giftType != '100');
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType != '100');
             } catch (err) {
                 giftInfo = [];
             }
@@ -186,7 +186,7 @@ class ReturnGift extends React.Component {
             });
             this.setState({
                 giftTreeData: this.proGiftTreeData(filterOffLine ? _giftInfo : giftInfo),
-                giftsForTree: filterOffLine ? _giftInfo : giftInfo,
+                giftsForTree: filterOffLine ? _giftInfo : giftInfo.filter(giftTypes => giftTypes.giftType < 90),
             });
         }
     }
