@@ -87,27 +87,33 @@ class TrdTemplate extends React.Component {
             return
         }
         // 新建时
-        const { defaultChecked, channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
-        const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined
-        const trdTemplateIDLabel = trdTemplateID ? trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID).trdGiftName : undefined
+        this.validatorTemp().then((TrdTemplateStatus) => {
+            const { defaultChecked, channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
+            const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined
+            const trdTemplateIDLabel = trdTemplateID ? trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID).trdGiftName : undefined
 
-        const values = {
-            extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
-            trdChannelID,
-            trdTemplateID,
-        }
-        defaultChecked ? this.validatorTemp() : null // 先校验表单
-        this.props.onChange(defaultChecked ? values : undefined)
+            const values = {
+                TrdTemplateStatus,
+                extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
+                trdChannelID,
+                trdTemplateID,
+            }
+            this.props.onChange(defaultChecked ? values : undefined)
+        })
     }
+    // 校验表单
     validatorTemp = () => {
-        const { channelID, mpID, trdGiftItemID } = this.state
+        const { defaultChecked, channelID, mpID, trdGiftItemID } = this.state
+        if (!defaultChecked) return Promise.resolve(true)
+        let TrdTemplateStatus = true;
         let channelIDStatus = true;
         let mpIDStatus = true;
         let trdGiftItemIDStatus = true;
-        if (!channelID) { channelIDStatus = false }
-        if (channelID == 10 && !mpID) { mpIDStatus = false }
-        if (!trdGiftItemID) { trdGiftItemIDStatus = false }
+        if (!channelID) { channelIDStatus = false; TrdTemplateStatus = false; }
+        if (channelID == 10 && !mpID) { mpIDStatus = false; TrdTemplateStatus = false; }
+        if (!trdGiftItemID) { trdGiftItemIDStatus = false; TrdTemplateStatus = false; }
         this.setState({ channelIDStatus, mpIDStatus, trdGiftItemIDStatus })
+        return Promise.resolve(TrdTemplateStatus)
     }
     // 第三方券模版
     queryTrdTemplate = (mpID, trdChannelID) => {
