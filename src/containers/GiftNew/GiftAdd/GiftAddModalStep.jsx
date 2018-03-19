@@ -532,7 +532,7 @@ class GiftAddModalStep extends React.Component {
                     params.foodSelectType = foodSelectType;
                     params.isExcludeFood = isExcludeFood;
                     // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
-                    params.couponFoodScopes = foodCategory.map((cat) => {
+                    params.couponFoodScopes = (foodCategory || []).map((cat) => {
                         return {
                             scopeType: 1,
                             targetID: cat.foodCategoryID,
@@ -541,7 +541,7 @@ class GiftAddModalStep extends React.Component {
                             // targetUnitName
                         }
                     }).concat(
-                        excludeDishes.map((food) => {
+                        (excludeDishes || []).map((food) => {
                             return {
                                 scopeType: 4,
                                 targetID: food.itemID,
@@ -551,7 +551,7 @@ class GiftAddModalStep extends React.Component {
                             }
                         })
                     ).concat(
-                        dishes.map((food) => {
+                        (dishes || []).map((food) => {
                             return {
                                 scopeType: 2,
                                 targetID: food.itemID,
