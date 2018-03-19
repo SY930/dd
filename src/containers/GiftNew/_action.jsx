@@ -74,7 +74,7 @@ const getQuotaCardSumSuccessAC = (opt) => {
 export const FetchQuotaCardSum = (opts) => {
     return (dispatch) => {
         dispatch(getQuotaCardSumBegin(true));
-        return fetchData('getQuotaSummary_dkl', { ...opts }, null, {
+        return axiosData('/coupon/couponQuotaService_getQuotaCardSummary.ajax', { ...opts }, null, {
             path: 'data.summary',
         })
             .then((records) => {
@@ -169,7 +169,7 @@ export const getQuotaListSuccessAC = (opt) => {
 
 export const FetchQuotaList = (opts) => {
     return (dispatch) => {
-        return fetchData(opts.callserver, { ...opts.params }, null, {
+        return axiosData(opts.callserver, { ...opts.params }, null, {
             path: 'data',
         })
             .then((records) => {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, Row, Col, Input, Form } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
 import {
     FetchGiftLevel,
@@ -118,7 +118,7 @@ class CardOperate extends React.Component {
                 params.endNO = params.startEnd_max;
             }
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum', 'useCardTypeID']);
-            fetchData(callserver, _params, null, { path: 'data' }).then((data) => {
+            axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
         });
@@ -142,9 +142,9 @@ class CardOperate extends React.Component {
         const { type } = this.props;
         switch (type) {
             case 'sendCard':
-                return 'addSendCard_dkl';
+                return '/coupon/couponQuotaService_addQuotaBatch.ajax';
             default:
-                return 'changeQuotaStatus_dkl';
+                return '/coupon/couponQuotaService_updateGiftCardStatus.ajax';
         }
     }
     getLevelsByCardTypeID = (cardTypeID) => {
