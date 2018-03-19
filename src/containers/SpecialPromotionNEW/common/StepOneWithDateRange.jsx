@@ -480,6 +480,7 @@ class StepOneWithDateRange extends React.Component {
                                                 placeholder="请选择时间"
                                             />
                                         )}
+                                        <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
                                     </FormItem>
                                 </Col>
                             </Row> : null
