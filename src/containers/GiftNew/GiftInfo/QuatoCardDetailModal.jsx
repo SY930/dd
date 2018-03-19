@@ -38,7 +38,7 @@ class QuatoCardDetailModal extends Component {
         // });
     }
     componentWillReceiveProps(nextProps) {
-        const { visible, data: { giftItemID }, FetchQuotaCardSum, quotaCardSumSource } = nextProps;
+        const { visible, data: { giftItemID }, FetchQuotaCardSum, quotaCardSumSource } = nextProps
         if (visible === true && this.props.visible !== visible) {
             FetchQuotaCardSum({
                 giftItemID,
