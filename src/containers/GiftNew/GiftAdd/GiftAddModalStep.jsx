@@ -1179,12 +1179,12 @@ class GiftAddModalStep extends React.Component {
                 surfix: '元',
                 rules: [{ required: true, message: `礼品售价不能为空` }, {
                     validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) || Number(v) > values.giftValue) {
                             cb(rule.message);
                         }
                         cb();
                     },
-                    message: '整数不超过8位，小数不超过2位',
+                    message: '整数不超过8位，小数不超过2位, 且不允许大于礼品价值',
                 }],
             },
             validityDays: {
