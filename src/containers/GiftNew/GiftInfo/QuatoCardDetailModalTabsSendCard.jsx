@@ -118,7 +118,7 @@ class CardOperate extends React.Component {
                 params.endNO = params.startEnd_max;
             }
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum', 'useCardTypeID']);
-            axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
+            fetchData(callserver, _params, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
         });
@@ -142,9 +142,9 @@ class CardOperate extends React.Component {
         const { type } = this.props;
         switch (type) {
             case 'sendCard':
-                return '/coupon/couponQuotaService_addQuotaBatch.ajax';
+                return 'addSendCard_dkl';
             default:
-                return '/coupon/couponQuotaService_updateGiftCardStatus.ajax';
+                return 'changeQuotaStatus_dkl';
         }
     }
     getLevelsByCardTypeID = (cardTypeID) => {
