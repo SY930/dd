@@ -11,7 +11,7 @@
 
 import React from 'react';
 // import { connect } from 'react-redux';
-import { Icon, TimePicker, Col } from 'antd';
+import { Icon, TimePicker, Col, Form } from 'antd';
 import styles from './SeniorDateSetting/styles.less';
 
 // const FormItem = Form.Item;
@@ -19,6 +19,7 @@ import styles from './SeniorDateSetting/styles.less';
 
 // const uuid = 0;
 const moment = require('moment');
+const FormItem = Form.Item;
 
 // generate the time range
 function range(start, end) {
@@ -174,6 +175,7 @@ class AdvancedTimeSetting extends React.Component {
     }
 
     render() {
+        const { errorIdxArr = [] } = this.props;
         const length = this.state.timeSlot.length;
         const format = 'HH:mm';
         const formItems = this.state.timeSlot.map((k, index) => {
@@ -214,6 +216,10 @@ class AdvancedTimeSetting extends React.Component {
                                 <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length === 1} onClick={() => this.remove(index)} />
 
                             </Col>)
+                    }
+
+                    {
+                        errorIdxArr[index] === false ? (<p style={{ color: 'orange', display: 'inline-block' }}>和其它档位时间段重合</p>) : null
                     }
                 </div>
             );

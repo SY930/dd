@@ -52,6 +52,7 @@ class SeniorDateSetting extends React.Component {
                     activeType: '0',
                 },
             ],
+            errorIdxArr: [],
         };
         this.onChange = this._onChange.bind(this);
         this.onSelect = this.onSelect.bind(this);
@@ -83,14 +84,16 @@ class SeniorDateSetting extends React.Component {
         })
     }
     update(couponPeriodSettings) {
+        this.validatorTime(couponPeriodSettings)
         this.setState({
             couponPeriodSettings,
         }, () => {
             this.props.onChange && this.props.onChange(couponPeriodSettings)
         });
     }
-    validatorTime(couponPeriodSettings) {
+    validatorTime = (couponPeriodSettings) => {
         let couponPeriodSettingsStatus = true;
+        const errorIdxArr = [];
         couponPeriodSettings.forEach((period, index) => {
             const { periodType, periodLabel, periodStart, periodEnd } = period
             if ((periodType == 1 || periodType == 2) && !periodLabel) {
@@ -100,17 +103,23 @@ class SeniorDateSetting extends React.Component {
                 couponPeriodSettingsStatus = false
             }
             const periodLabelArr = periodLabel.split(',')
-            couponPeriodSettings.filter((p, i) => i !== index).forEach(Otherperiod => {
-                const { periodLabel: otherperiodLabel, periodStart: otherperiodStart, periodEnd: otherperiodEnd } = Otherperiod
-                const OtherperiodLabelArr = otherperiodLabel.split(',')
-                const repeat = _.intersection(periodLabelArr, OtherperiodLabelArr).length > 0;
-                if (periodType === 0 || repeat) {
-                    if (otherperiodStart > periodEnd || otherperiodEnd < periodStart) {
-                    } else {
-                        couponPeriodSettingsStatus = false
+            couponPeriodSettings.forEach((Otherperiod, idx) => {
+                if (idx !== index) {
+                    const { periodLabel: otherperiodLabel, periodStart: otherperiodStart, periodEnd: otherperiodEnd } = Otherperiod
+                    const OtherperiodLabelArr = otherperiodLabel.split(',')
+                    const repeat = _.intersection(periodLabelArr, OtherperiodLabelArr).length > 0;
+                    if (periodType === 0 || repeat) {
+                        if (!(otherperiodStart > periodEnd || otherperiodEnd < periodStart)) {
+                            couponPeriodSettingsStatus = false
+                            errorIdxArr[idx] = false
+                        }
                     }
                 }
             })
+        })
+        console.log(errorIdxArr)
+        this.setState({
+            errorIdxArr,
         })
     }
     onSelect(value) {
@@ -176,7 +185,7 @@ class SeniorDateSetting extends React.Component {
         this.update(couponPeriodSettings);
     }
     render() {
-        const { selectType, couponPeriodSettings } = this.state;
+        const { selectType, couponPeriodSettings, errorIdxArr } = this.state;
         return (
             <div className={styles.SeniorDateMain}>
                 <Select
@@ -195,6 +204,7 @@ class SeniorDateSetting extends React.Component {
                                     (timeSlot) => { this.getTimeSLot(timeSlot); }}
                                 count="5"
                                 value={couponPeriodSettings}
+                                errorIdxArr={this.state.errorIdxArr}
                             /></div>
                     )
                     : null
@@ -224,6 +234,9 @@ class SeniorDateSetting extends React.Component {
                                     count="5"
                                     value={[setting]}
                                 />
+                                {
+                                    errorIdxArr[idx] === false ? (<p style={{ color: 'orange', display: 'inline-block' }}>和其它档位时间段重合</p>) : null
+                                }
                             </div>
                         )
                     })
