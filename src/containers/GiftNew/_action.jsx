@@ -20,6 +20,7 @@ export const GIFT_NEW_GET_SHARED_GIFTS = 'gift new:: get shared gifts';
 export const GIFT_NEW_EMPTY_GET_SHARED_GIFTS = 'gift new:: empty get shared gifts';
 export const GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO = 'gift new :: get quota card shop by batchNo';
 export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
+export const GIFT_NEW_QUERY_WECHAT_MPINFO = 'gift new :: query wechat mpinfo';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -337,15 +338,32 @@ export const FetchQuotaCardBatchNo = (opts) => {
             });
     }
 };
- // 券适用店铺查询 ,暂时无用{groupID:10890,giftItemID: '6526002596388280970' }-->data:{couponShopList:[]}
- 
- export const queryCouponShopList = (opts) => {
+// 券适用店铺查询 ,暂时无用{groupID:10890,giftItemID: '6526002596388280970' }-->data:{couponShopList:[]}
+
+export const queryCouponShopList = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
             path: 'data',
         })
             .then((response) => {
                 console.log(response)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+};
+
+// 公众号
+export const queryWechatMpInfo = () => {
+    return (dispatch) => {
+        return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' })
+            .then((mpList) => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO,
+                    payload: mpList || [],
+                })
+                return Promise.resolve(mpList)
             })
             .catch((error) => {
                 console.log(error)

@@ -13,6 +13,7 @@ import _ from 'lodash';
 import Authority from '../../../components/common/Authority';
 import {
     emptyGetSharedGifts,
+    queryWechatMpInfo,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -30,6 +31,7 @@ class GiftType extends React.Component {
     }
     componentWillMount() {
         this.getData();
+        this.props.queryWechatMpInfo();
     }
     componentDidMount() {
         this.onWindowResize();
@@ -155,6 +157,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(toggleIsUpdateAC(opts))
         },
         queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
+        queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
     };
 }
 export default connect(

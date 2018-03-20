@@ -17,6 +17,9 @@ import {
     fetchAllPromotionListAC,
     queryUnbindCouponPromotion,
 } from '../../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {
+    queryWechatMpInfo,
+} from '../../_action';
 
 const FormItem = Form.Item
 const Option = Select.Option;
@@ -55,31 +58,36 @@ class TrdTemplate extends React.Component {
             trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
         }
         // 公众号
-        fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' }).then((mpList) => {
-            this.setState({ mpList: mpList || [], mpID: mpList[0].mpID })
-            // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
-            mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
-            // 第三方券模版
-            this.queryTrdTemplate(mpID ? mpID : mpList[0].mpID, channelID ? channelID : 10).then(trdTemplateInfoList => {
-                // 编辑时，已选模板不会再查询到，需要拼接出来
-                if (this.props.data) {
-                    this.setState({
-                        defaultChecked: true,
-                        channelID,
-                        mpID,
-                        trdGiftItemID: trdTemplateID,
-                        trdTemplateIDLabel,
-                        trdTemplateInfoList: trdTemplateInfoList.concat([{
-                            label: trdTemplateIDLabel,
-                            value: trdTemplateID,
-                        }])
-                    })
-                }
-            })
-
+        const mpList = this.props.mpList.toJS()
+        // this.props.queryWechatMpInfo((mpList) => {
+        this.setState({ mpList: mpList || [], mpID: (mpList[0] || {}).mpID })
+        // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
+        mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
+        // 第三方券模版
+        this.queryTrdTemplate(mpID ? mpID : (mpList[0] || {}).mpID, channelID ? channelID : 10).then(trdTemplateInfoList => {
+            // 编辑时，已选模板不会再查询到，需要拼接出来
+            if (this.props.data) {
+                this.setState({
+                    defaultChecked: true,
+                    channelID,
+                    mpID,
+                    trdGiftItemID: trdTemplateID,
+                    trdTemplateIDLabel,
+                    trdTemplateInfoList: trdTemplateInfoList.concat([{
+                        label: trdTemplateIDLabel,
+                        value: trdTemplateID,
+                    }]),
+                })
+            }
         })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.mpList !== nextProps.mpList) {
+            this.setState({ mpList: nextProps.mpList || [] })
+        }
     }
     // 向父传递
     propsChange = (data) => {
@@ -271,6 +279,7 @@ class TrdTemplate extends React.Component {
 function mapStateToProps(state) {
     return {
         accountInfo: state.user.get('accountInfo'),
+        mpList: state.sale_giftInfoNew.get('mpList'),
     }
 }
 
@@ -278,6 +287,7 @@ function mapDispatchToProps(dispatch) {
     return {
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
+        queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
     };
 }
 

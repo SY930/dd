@@ -22,6 +22,7 @@ import {
     FetchSharedGifts,
     emptyGetSharedGifts,
     queryCouponShopList,
+    queryWechatMpInfo,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -61,6 +62,7 @@ class GiftDetailTable extends Component {
         }).then((data = []) => {
             this.proGiftData(data);
         });
+        this.props.queryWechatMpInfo();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -211,7 +213,6 @@ class GiftDetailTable extends Component {
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         // queryCouponShopList({ groupID: this.props.user.accountInfo.groupID, giftItemID: rec.giftItemID }); //券适用店铺查询 ,暂时无用
         // 请求获取promotionList--券活动
-        // debugger
         gift.value == 100 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
         }) : null;
@@ -474,6 +475,7 @@ function mapDispatchToProps(dispatch) {
         },
         fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
         queryCouponShopList: (opts) => dispatch(queryCouponShopList(opts)),
+        queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
     };
 }
 
