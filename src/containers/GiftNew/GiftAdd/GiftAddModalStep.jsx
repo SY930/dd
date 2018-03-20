@@ -574,6 +574,9 @@ class GiftAddModalStep extends React.Component {
             if (params.supportOrderTypes) {
                 params.supportOrderTypes = params.supportOrderTypes.join(',')
             }
+            if (params.discountType === 0) {
+                params.discountThreshold = 0
+            }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID == '-1') {

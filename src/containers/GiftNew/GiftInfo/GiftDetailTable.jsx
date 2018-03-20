@@ -231,13 +231,15 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }).then((data) => {
-                    message.success('此礼品删除成功');
-                    const { queryParams } = this.state;
-                    const { FetchGiftList } = this.props;
-                    FetchGiftList(queryParams).then((data = []) => {
-                        this.proGiftData(data);
-                    });
+                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
+                    if(data.code==='000'){
+                        message.success('此礼品删除成功');
+                        const { queryParams } = this.state;
+                        const { FetchGiftList } = this.props;
+                        FetchGiftList(queryParams).then((data = []) => {
+                            this.proGiftData(data);
+                        });
+                    }
                 });
             },
             onCancel: () => {
