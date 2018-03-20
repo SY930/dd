@@ -80,15 +80,15 @@ class SeniorDateSetting extends React.Component {
             selectType,
             couponPeriodSettings,
         }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
+            this.props.onChange && this.props.onChange({ couponPeriodSettings, couponPeriodSettingsStatus: true })
         })
     }
     update(couponPeriodSettings) {
-        this.validatorTime(couponPeriodSettings)
+        const couponPeriodSettingsStatus = this.validatorTime(couponPeriodSettings)
         this.setState({
             couponPeriodSettings,
         }, () => {
-            this.props.onChange && this.props.onChange(couponPeriodSettings)
+            this.props.onChange && this.props.onChange({ couponPeriodSettings, couponPeriodSettingsStatus })
         });
     }
     validatorTime = (couponPeriodSettings) => {
@@ -117,10 +117,10 @@ class SeniorDateSetting extends React.Component {
                 }
             })
         })
-        console.log(errorIdxArr)
         this.setState({
             errorIdxArr,
         })
+        return couponPeriodSettingsStatus
     }
     onSelect(value) {
         this.setState({
@@ -133,7 +133,7 @@ class SeniorDateSetting extends React.Component {
                 periodLabel: '1',
             }],
         }, () => {
-            this.props.onChange && this.props.onChange([])
+            this.props.onChange && this.props.onChange({ couponPeriodSettings: [], couponPeriodSettingsStatus: value == -1 })
         });
     }
     // 每日
