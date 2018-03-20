@@ -50,6 +50,12 @@ class AdvancedTimeSetting extends React.Component {
         }
 
         this.state.timeSlot.splice(index, 1);
+        if (this.props.onChange) {
+            this.props.onChange({
+                data: this.state.timeSlot,
+                validateStatus: 'success',
+            });
+        }
 
         this.forceUpdate();
     }
@@ -61,6 +67,12 @@ class AdvancedTimeSetting extends React.Component {
                 start: moment('00:00', 'HH:mm'),
                 end: moment('00:00', 'HH:mm'),
             });
+            if (this.props.onChange) {
+                this.props.onChange({
+                    data: this.state.timeSlot,
+                    validateStatus: 'success',
+                });
+            }
 
             this.forceUpdate();
         }

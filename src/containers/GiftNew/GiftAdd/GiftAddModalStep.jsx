@@ -577,6 +577,34 @@ class GiftAddModalStep extends React.Component {
             if (params.discountType === 0) {
                 params.discountThreshold = 0
             }
+            if (params.couponPeriodSettings) {
+                let couponPeriodSettingsStatus = true;
+                params.couponPeriodSettings.forEach((period, index) => {
+                    const { periodType, periodLabel, periodStart, periodEnd } = period
+                    if ((periodType == 1 || periodType == 2) && !periodLabel) {
+                        couponPeriodSettingsStatus = false
+                    }
+                    if (!periodStart || !periodEnd || periodStart > periodEnd) {
+                        couponPeriodSettingsStatus = false
+                    }
+                    const periodLabelArr = periodLabel.split(',')
+                    params.couponPeriodSettings.filter((p, i) => i !== index).forEach(Otherperiod => {
+                        const { periodLabel: otherperiodLabel, periodStart: otherperiodStart, periodEnd: otherperiodEnd } = Otherperiod
+                        const OtherperiodLabelArr = otherperiodLabel.split(',')
+                        const repeat = _.intersection(periodLabelArr, OtherperiodLabelArr).length > 0;
+                        if (periodType === 0 || repeat) {
+                            if (otherperiodStart > periodEnd || otherperiodEnd < periodStart) {
+                            } else {
+                                couponPeriodSettingsStatus = false
+                            }
+                        }
+                    })
+                })
+                if (!couponPeriodSettingsStatus) {
+                    message.warning((<div><p>时间不能为空</p><p>起始日期必须小于终止日期</p><p>有交集的日期内，时间不能有重合</p></div>))
+                    return
+                }
+            }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID == '-1') {
