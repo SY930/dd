@@ -60,18 +60,18 @@ class QuotaCardBatchSold extends React.Component {
     handleFormChange = (key, value) => {
         switch (key) {
             case 'batchNO':
-            {
-                const { data, FetchQuotaCardShopByBatchNoAC } = this.props;
-                const { batchSoldFormData } = this.state;
-                if (value) {
-                    FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value });
-                    this.setState({
-                        batchSoldFormData: { ...batchSoldFormData, [key]: value },
-                    });
+                {
+                    const { data, FetchQuotaCardShopByBatchNoAC } = this.props;
+                    const { batchSoldFormData } = this.state;
+                    if (value) {
+                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value });
+                        this.setState({
+                            batchSoldFormData: { ...batchSoldFormData, [key]: value },
+                        });
+                        break;
+                    }
                     break;
                 }
-                break;
-            }
             default:
                 {
                     const { batchSoldFormData } = this.state;
@@ -206,6 +206,12 @@ class QuotaCardBatchSold extends React.Component {
             if (err) return;
             this.setState({
                 buttonLoading: true,
+            }, () => {
+                setTimeout(() => {
+                    this.setState({
+                        buttonLoading: false,
+                    })
+                }, 1000)
             });
             const { CrmBatchSellGiftCardsAC, data, $$accountInfo } = this.props;
             const params = this.formatFormData(Values);
@@ -214,9 +220,6 @@ class QuotaCardBatchSold extends React.Component {
             params.groupName = _accountInfo.groupName;
             params.operator = _accountInfo.loginName;
             CrmBatchSellGiftCardsAC({ ...params, giftItemID: data.giftItemID, shopName }).then(() => {
-                this.setState({
-                    buttonLoading: false,
-                });
                 message.success('批量售卖成功！', 1, () => {
                     this.batchSoldForm && this.batchSoldForm.resetFields();
                     this.setState({
