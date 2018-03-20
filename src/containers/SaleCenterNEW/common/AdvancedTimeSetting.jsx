@@ -131,43 +131,43 @@ class AdvancedTimeSetting extends React.Component {
     }
 
     getDisableHours(index, startOrEnd) {
-        return [];
-        // if(index == 0) {          // 第一个时间段
-        //     if(startOrEnd){
-        //         return range(0, this.state.timeSlot[index].start.hour()-1)
-        //     } else {
-        //         return []
-        //     }
-        // } else {
-        //     if(startOrEnd){
-        //         return range(0, this.state.timeSlot[index].start.hour()-1)
-        //     } else {
-        //         return range(0, this.state.timeSlot[index-1].end.hour()-1)
-        //     }
-        // }
+        // return [];
+        if (index == 0) { // 第一个时间段
+            if (startOrEnd) {
+                return range(0, this.state.timeSlot[index].start.hour() - 1)
+            } else {
+                return []
+            }
+        } else {
+            if (startOrEnd) {
+                return range(0, this.state.timeSlot[index].start.hour() - 1)
+            } else {
+                return range(0, this.state.timeSlot[index - 1].end.hour() - 1)
+            }
+        }
     }
 
     getDisableMinutes(index, startOrEnd, hour) {
-        return [];
+        // return [];
         // first timeSlot
-        // if(index == 0) {
-        //     if(startOrEnd){
-        //         // return range(0, this.state.timeSlot[index].start.hour-1)
-        //         if (this.state.timeSlot[index].start.hour() == hour)
-        //             return range(0, this.state.timeSlot[index].start.minute());
-        //     } else {
-        //         return []
-        //     }
-        // } else {
-        //     if(startOrEnd){
-        //         if (hour == this.state.timeSlot[index].start.hour())
-        //             return range(0, this.state.timeSlot[index].start.minute())
-        //     } else {
-        //         if (hour == this.state.timeSlot[index-1].end.hour()){
-        //             return range(0, this.state.timeSlot[index-1].end.minute())
-        //         }
-        //     }
-        // }
+        if (index == 0) {
+            if (startOrEnd) {
+                // return range(0, this.state.timeSlot[index].start.hour-1)
+                if (this.state.timeSlot[index].start.hour() == hour)
+                    return range(0, this.state.timeSlot[index].start.minute());
+            } else {
+                return []
+            }
+        } else {
+            if (startOrEnd) {
+                if (hour == this.state.timeSlot[index].start.hour())
+                    return range(0, this.state.timeSlot[index].start.minute())
+            } else {
+                if (hour == this.state.timeSlot[index - 1].end.hour()) {
+                    return range(0, this.state.timeSlot[index - 1].end.minute())
+                }
+            }
+        }
     }
 
     renderAddButton(index) {
