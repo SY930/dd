@@ -409,6 +409,12 @@ class GiftAddModalStep extends React.Component {
             _cb && _cb();
         }
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
+            if (basicValues.TrdTemplate) {
+                const { TrdTemplateStatus } = basicValues.TrdTemplate;
+                if (!TrdTemplateStatus) {
+                    return
+                }
+            }
             if (this.props.gift.value == '20') {
                 validateFoodList(basicValues, cb);
                 if (error) return
