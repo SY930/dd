@@ -89,6 +89,30 @@ class SeniorDateSetting extends React.Component {
             this.props.onChange && this.props.onChange(couponPeriodSettings)
         });
     }
+    validatorTime(couponPeriodSettings) {
+        let couponPeriodSettingsStatus = true;
+        couponPeriodSettings.forEach((period, index) => {
+            const { periodType, periodLabel, periodStart, periodEnd } = period
+            if ((periodType == 1 || periodType == 2) && !periodLabel) {
+                couponPeriodSettingsStatus = false
+            }
+            if (!periodStart || !periodEnd || periodStart > periodEnd) {
+                couponPeriodSettingsStatus = false
+            }
+            const periodLabelArr = periodLabel.split(',')
+            couponPeriodSettings.filter((p, i) => i !== index).forEach(Otherperiod => {
+                const { periodLabel: otherperiodLabel, periodStart: otherperiodStart, periodEnd: otherperiodEnd } = Otherperiod
+                const OtherperiodLabelArr = otherperiodLabel.split(',')
+                const repeat = _.intersection(periodLabelArr, OtherperiodLabelArr).length > 0;
+                if (periodType === 0 || repeat) {
+                    if (otherperiodStart > periodEnd || otherperiodEnd < periodStart) {
+                    } else {
+                        couponPeriodSettingsStatus = false
+                    }
+                }
+            })
+        })
+    }
     onSelect(value) {
         this.setState({
             selectType: value,
