@@ -198,7 +198,6 @@ class SpecialRangeInfo extends React.Component {
         }
         // 获取会员等级信息
         if (nextProps.groupCardTypeList) {
-            debugger
             this.setState({
                 cardInfo: nextProps.groupCardTypeList.toJS(),
             })
