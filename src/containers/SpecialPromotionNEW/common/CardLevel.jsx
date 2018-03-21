@@ -98,18 +98,10 @@ class CardLevel extends React.Component {
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         // 获取会员等级信息
-        if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data) {
-            if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList) {
-                this.setState({
-                    cardInfo: nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList,
-                })
-            } else {
-                this.setState({
-                    cardInfo: [],
-                })
-            }
+        if (nextProps.groupCardTypeList) {
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
         }
         // 【升级，累计】：每次第一步选择时间变化，就清空已选
         if (this.props.type === '61' || this.props.type === '62') {
@@ -301,7 +293,7 @@ class CardLevel extends React.Component {
                             {
                                 !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
 
-                                <Icon
+                                    <Icon
                                         type="exclamation-circle" className={styles.cardLevelTreeIcon}
                                         onClick={() => {
                                             this.setState({ tableDisplay: !this.state.tableDisplay })
@@ -312,7 +304,7 @@ class CardLevel extends React.Component {
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-                    <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}>
+                        <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}>
                             <ExcludeCardTable catOrCard={this.props.catOrCard} />
                         </div>
                 }
@@ -324,7 +316,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
 
     };

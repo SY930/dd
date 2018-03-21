@@ -196,6 +196,13 @@ class SpecialRangeInfo extends React.Component {
                 autoRegister: specialPromotion.autoRegister == 0 ? 0 : 1,
             })
         }
+        // 获取会员等级信息
+        if (nextProps.groupCardTypeList) {
+            debugger
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
+        }
     }
     handlePrev() {
         return this.handleSubmit(true)
@@ -678,7 +685,7 @@ const mapStateToProps = (state) => {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
     }
 };
 
