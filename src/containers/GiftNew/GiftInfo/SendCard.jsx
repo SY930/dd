@@ -228,9 +228,9 @@ class SendCard extends React.Component {
         let params = { ...{ pageNo: 1, pageSize: 10, giftItemID }, ..._params }
         let callserver = '';
         if (_key === 'send') {
-            callserver = 'getQuotaBatchInfo_dkl';
+            callserver = '/coupon/couponQuotaService_getQuotaBatch.ajax';
         } else {
-            callserver = 'getQuotaBatchDetail_dkl';
+            callserver = '/coupon/couponQuotaService_getQuotaBatchDetails.ajax';
         }
         if (_key === 'made') {
             const { batchNO } = this.props;
