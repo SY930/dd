@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio } from 'antd';
+import { Form, Checkbox, Radio, Select, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
@@ -15,6 +15,8 @@ import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySp
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+const Option = Select.Option;
+
 
 class SpecialRangeInfo extends React.Component {
     constructor(props) {
@@ -598,8 +600,25 @@ class SpecialRangeInfo extends React.Component {
                         />
                 }
                 {
-                    this.props.type === '23' ?
+                    this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
                         <FormItem
+                            style={{ marginBottom: 8 }}
+                        //   validateStatus={'error'}
+                        >
+                            <Col span={7} style={{ paddingLeft: 6 }}>新用户注册成为会员的卡类选择</Col>
+                            <Col span={14}>
+                                <Select
+                                    showSearch={true}
+                                >
+                                    <Option value={1}>xxx</Option>
+                                    <Option value={0}>yyy</Option>
+                                </Select>
+                            </Col>
+                        </FormItem> : null
+                }
+                {
+                    this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
+                        (<FormItem
                             label={'参加活动成为会员'}
                             className={styles.noPadding}
                             wrapperCol={{ span: 17 }}
@@ -609,7 +628,7 @@ class SpecialRangeInfo extends React.Component {
                                 <Radio value={1}>无需用户填写注册信息</Radio>
                                 <Radio value={0}>用户须填写注册信息</Radio>
                             </RadioGroup>
-                        </FormItem> : null
+                        </FormItem>) : null
                 }
                 {
                     this.props.type !== '23' ?
