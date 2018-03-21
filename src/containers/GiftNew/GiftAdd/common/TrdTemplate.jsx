@@ -43,14 +43,16 @@ class TrdTemplate extends React.Component {
         };
     }
     componentDidMount() {
+        let channelID = undefined;
         // 编辑
         if (this.props.data) {
             this.propsChange(this.props.data)
             const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
             const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
+            channelID = trdChannelID
             this.setState({
                 defaultChecked: true,
-                channelID: trdChannelID,
+                channelID,
                 mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
                 trdGiftItemID: trdTemplateID,
                 trdTemplateIDLabel,

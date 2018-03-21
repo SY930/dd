@@ -72,8 +72,6 @@ class GiftType extends React.Component {
     }
     handleAdd(g) {
         this.setState({ visible: true, gift: { ...this.state.gift, ...g } });
-        // 请求获取promotionList--券活动
-        g.value != 80 ? this.props.queryUnbindCouponPromotion({ channelID: 1 }) : null;
     }
     handleCancel() {
         this.setState({ visible: false });
