@@ -93,6 +93,9 @@ class AdvancedTimeSetting extends React.Component {
             this.state.timeSlot[index].end = time;
         } else {
             this.state.timeSlot[index].start = time;
+            if (!this.state.timeSlot[index].end || this.state.timeSlot[index].end.hour() <= this.state.timeSlot[index].start.hour()) {
+                this.state.timeSlot[index].end = time.clone().add(1, 'm'); // +1 minute
+            }
         }
 
         this.forceUpdate();
@@ -131,42 +134,12 @@ class AdvancedTimeSetting extends React.Component {
     }
 
     getDisableHours(index, startOrEnd) {
-        // return [];
-        if (index == 0) { // 第一个时间段
-            if (startOrEnd) {
-                return range(0, this.state.timeSlot[index].start.hour() - 1)
-            } else {
-                return []
-            }
-        } else {
-            if (startOrEnd) {
-                return range(0, this.state.timeSlot[index].start.hour() - 1)
-            } else {
-                return range(0, this.state.timeSlot[index - 1].end.hour() - 1)
-            }
-        }
+        return range(0, this.state.timeSlot[index].start.hour() - 1)
     }
 
     getDisableMinutes(index, startOrEnd, hour) {
-        // return [];
-        // first timeSlot
-        if (index == 0) {
-            if (startOrEnd) {
-                // return range(0, this.state.timeSlot[index].start.hour-1)
-                if (this.state.timeSlot[index].start.hour() == hour)
-                    return range(0, this.state.timeSlot[index].start.minute());
-            } else {
-                return []
-            }
-        } else {
-            if (startOrEnd) {
-                if (hour == this.state.timeSlot[index].start.hour())
-                    return range(0, this.state.timeSlot[index].start.minute())
-            } else {
-                if (hour == this.state.timeSlot[index - 1].end.hour()) {
-                    return range(0, this.state.timeSlot[index - 1].end.minute())
-                }
-            }
+        if (hour == this.state.timeSlot[index].start.hour()) {
+            return range(0, this.state.timeSlot[index].start.minute())
         }
     }
 
@@ -187,8 +160,6 @@ class AdvancedTimeSetting extends React.Component {
                             format={format}
                             value={this.state.timeSlot[index].start}
                             onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
-                            disabledHours={() => { return this.getDisableHours(index, 0); }}
-                            disabledMinutes={(h) => { return this.getDisableMinutes(index, 0, h); }}
                         />
                     </Col>
                     <Col span={2} offset={2} style={{ position: 'relative', left: -16 }}>--</Col>
