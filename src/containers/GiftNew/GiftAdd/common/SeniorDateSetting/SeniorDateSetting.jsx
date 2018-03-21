@@ -109,7 +109,7 @@ class SeniorDateSetting extends React.Component {
                     const OtherperiodLabelArr = otherperiodLabel.split(',')
                     const repeat = _.intersection(periodLabelArr, OtherperiodLabelArr).length > 0;
                     if (periodType === 0 || repeat) {
-                        if (!(otherperiodStart > periodEnd || otherperiodEnd < periodStart)) {
+                        if (!(otherperiodStart >= periodEnd || otherperiodEnd <= periodStart)) {
                             couponPeriodSettingsStatus = false
                             errorIdxArr[idx] = false
                         }
