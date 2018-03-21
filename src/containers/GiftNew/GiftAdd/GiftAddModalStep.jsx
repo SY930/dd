@@ -177,13 +177,6 @@ class GiftAddModalStep extends React.Component {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
         const { name, data, value } = thisGift;
         const { secondKeys, values } = this.state;
-
-        if (type === 'edit' && value === '100') {
-            // 因为编辑活动券时，已选择的基础营销活动不返回，但又要渲染匹配，so
-            value === '100' && this.props.fetchAllPromotionList({
-                groupID: this.props.accountInfo.toJS().groupID,
-            })
-        }
         if (type === 'edit' && value == '111') {
             values.discountOffMax = data.discountOffMax
             values.isDiscountOffMax = data.discountOffMax > 0 ? 1 : 0
