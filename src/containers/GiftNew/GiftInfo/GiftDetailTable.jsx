@@ -257,10 +257,6 @@ class GiftDetailTable extends Component {
                 .then((records) => {
                     this.setState({ sendTotalSize: records.totalSize })
                 });
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' } })
-                .then((records) => {
-                    this.setState({ usedTotalSize: records.totalSize })
-                });
         }
     }
 
