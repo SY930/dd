@@ -133,7 +133,7 @@ class SeniorDateSetting extends React.Component {
                 periodLabel: '1',
             }],
         }, () => {
-            this.props.onChange && this.props.onChange({ couponPeriodSettings: [], couponPeriodSettingsStatus: value == -1 })
+            this.update(this.state.couponPeriodSettings);
         });
     }
     // 每日
@@ -209,14 +209,46 @@ class SeniorDateSetting extends React.Component {
                     )
                     : null
                 }
-                {selectType === '1' || selectType === '2' ?
+                {selectType === '1' ?
                     couponPeriodSettings.map((setting, idx) => {
                         return (
-                            <div className={selectType === '1' ? styles.SeniorDateWeek : styles.SeniorDateMonth} key={idx}>
+                            <div className={styles.SeniorDateWeek} key={idx}>
                                 <CheckboxGroup
                                     defaultValue={['1']}
                                     value={setting.periodLabel.split(',')}
-                                    options={selectType === '1' ? options : days}
+                                    options={options}
+                                    onChange={checkedValues => this.onChange(checkedValues, idx)}
+                                />
+
+                                {
+                                    (couponPeriodSettings.length === 1 || idx === couponPeriodSettings.length - 1) && idx !== 4 ?
+                                        (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : null
+                                }
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={couponPeriodSettings.length === 1} onClick={() => this.remove(idx)} />
+                                <WrappedAdvancedTimeSetting
+                                    onChange={
+                                        (timeSlot) => {
+                                            this.getWeekOrMonthTimeSLot(timeSlot, idx);
+                                        }}
+                                    noPlusIcon={true}
+                                    count="5"
+                                    value={[setting]}
+                                />
+                                {
+                                    errorIdxArr[idx] === false ? (<p style={{ color: 'orange', display: 'inline-block' }}>和其它档位时间段重合</p>) : null
+                                }
+                            </div>
+                        )
+                    })
+                    : null}
+                {selectType === '2' ?
+                    couponPeriodSettings.map((setting, idx) => {
+                        return (
+                            <div className={styles.SeniorDateMonth} key={idx}>
+                                <CheckboxGroup
+                                    defaultValue={['1']}
+                                    value={setting.periodLabel.split(',')}
+                                    options={days}
                                     onChange={checkedValues => this.onChange(checkedValues, idx)}
                                 />
 

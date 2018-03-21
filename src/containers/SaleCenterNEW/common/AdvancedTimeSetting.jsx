@@ -65,8 +65,8 @@ class AdvancedTimeSetting extends React.Component {
         const length = this.state.timeSlot.length;
         if (length <= this.state.maxCount) {
             this.state.timeSlot.push({
-                start: moment('00:00', 'HH:mm'),
-                end: moment('00:00', 'HH:mm'),
+                start: '',
+                end: '',
             });
             if (this.props.onChange) {
                 this.props.onChange({
@@ -93,22 +93,19 @@ class AdvancedTimeSetting extends React.Component {
             this.state.timeSlot[index].end = time;
         } else {
             this.state.timeSlot[index].start = time;
-            if (!this.state.timeSlot[index].end || this.state.timeSlot[index].end.hour() <= this.state.timeSlot[index].start.hour()) {
-                this.state.timeSlot[index].end = time.clone().add(1, 'm'); // +1 minute
+            if (time) {
+                if (!this.state.timeSlot[index].end || this.state.timeSlot[index].end.hour() <= this.state.timeSlot[index].start.hour()) {
+                    this.state.timeSlot[index].end = time.clone().add(1, 'm'); // +1 minute
+                }
             }
         }
 
         this.forceUpdate();
 
-        const _validate = this.state.timeSlot.reduce((preStatus, timeArr) => {
-            const _status = timeArr.start.isBefore(timeArr.end);
-            return preStatus && _status;
-        }, true);
-
         if (this.props.onChange) {
             this.props.onChange({
                 data: this.state.timeSlot,
-                validateStatus: _validate ? 'success' : 'error',
+                validateStatus: 'success',
             });
         }
     }
@@ -124,9 +121,11 @@ class AdvancedTimeSetting extends React.Component {
         })
         this.setState({ timeSlot })
     }
-    // componentWillReceiveProps(nextProps) {
-    //     console.log(nextProps.value)
-    // }
+    componentWillReceiveProps(nextProps) {
+        // if(this.props.value, nextProps.value){
+
+        // }
+    }
     format(timeStr) {
         if (!timeStr) return ''
         if (timeStr.length === 3) return moment('0' + timeStr, 'HH:mm')
@@ -158,7 +157,7 @@ class AdvancedTimeSetting extends React.Component {
                         <TimePicker
                             className={styles.timePicker}
                             format={format}
-                            value={this.state.timeSlot[index].start}
+                            value={k.start}
                             onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
                         />
                     </Col>
@@ -166,10 +165,11 @@ class AdvancedTimeSetting extends React.Component {
                     <Col span={7}>
                         <TimePicker
                             format={format}
-                            value={this.state.timeSlot[index].end}
+                            value={k.end}
                             onChange={(time, timeString) => this.onTimePickerChange(time, 1, index)}
                             disabledHours={() => { return this.getDisableHours(index, 1); }}
                             disabledMinutes={(h) => { return this.getDisableMinutes(index, 1, h); }}
+                            disabled={!k.start}
                             className={styles.timePicker2}
                         />
                     </Col>
