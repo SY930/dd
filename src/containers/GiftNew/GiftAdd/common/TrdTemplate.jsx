@@ -42,95 +42,34 @@ class TrdTemplate extends React.Component {
         };
     }
     componentDidMount() {
-        let channelID = undefined;
-        let mpID = undefined;
-        let wechatMpName = undefined;
-        let trdTemplateID = undefined;
-        let trdTemplateIDLabel = undefined;
         // 编辑
         if (this.props.data) {
             this.propsChange(this.props.data)
-            const { extraInfo, trdChannelID, trdTemplateID: _trdTemplateID } = this.props.data
-            const { wechatMpName: _wechatMpName, trdTemplateIDLabel: _trdTemplateIDLabel } = JSON.parse(extraInfo);
-            channelID = trdChannelID; // 渠道id
-            wechatMpName = _wechatMpName // 微信名
-            trdTemplateID = _trdTemplateID // 模板id
-            trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
+            const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
+            const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
+            this.setState({
+                defaultChecked: true,
+                channelID: trdChannelID,
+                mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
+                trdGiftItemID: trdTemplateID,
+                trdTemplateIDLabel,
+                trdTemplateInfoList: [{
+                    trdGiftName: trdTemplateIDLabel,
+                    trdGiftItemID: trdTemplateID,
+                }],
+            })
         }
         // 公众号
         const mpList = this.props.mpList.toJS()
-        // this.props.queryWechatMpInfo((mpList) => {
-        this.setState({ mpList: mpList || [], mpID: (mpList[0] || {}).mpID })
-        // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
-        mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
-        // 第三方券模版
-        mpList.length > 0 && this.queryTrdTemplate(mpID ? mpID : (mpList[0] || {}).mpID, channelID ? channelID : 10)
-            .then((trdTemplateInfoList) => {
-                // 编辑时，已选模板不会再查询到，需要拼接出来
-                if (this.props.data) {
-                    this.setState({
-                        defaultChecked: true,
-                        channelID,
-                        mpID,
-                        trdGiftItemID: trdTemplateID,
-                        trdTemplateIDLabel,
-                        trdTemplateInfoList: trdTemplateInfoList.concat([{
-                            label: trdTemplateIDLabel,
-                            value: trdTemplateID,
-                        }]),
-                    })
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        this.setState({ mpList: mpList || [] })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.mpList !== nextProps.mpList) {
-            let channelID = undefined;
-            let mpID = undefined;
-            let wechatMpName = undefined;
-            let trdTemplateID = undefined;
-            let trdTemplateIDLabel = undefined;
-            // 编辑
-            if (nextProps.data) {
-                const { extraInfo, trdChannelID, trdTemplateID: _trdTemplateID } = nextProps.data
-                const { wechatMpName: _wechatMpName, trdTemplateIDLabel: _trdTemplateIDLabel } = JSON.parse(extraInfo);
-                channelID = trdChannelID; // 渠道id
-                wechatMpName = _wechatMpName // 微信名
-                trdTemplateID = _trdTemplateID // 模板id
-                trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
-            }
-            // 公众号
             const mpList = nextProps.mpList.toJS()
-            // this.props.queryWechatMpInfo((mpList) => {
-            this.setState({ mpList: mpList || [], mpID: (mpList[0] || {}).mpID })
-            // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
-            mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
-            // 第三方券模版
-            mpList.length > 0 && this.queryTrdTemplate(mpID ? mpID : (mpList[0] || {}).mpID, channelID ? channelID : 10)
-                .then((trdTemplateInfoList) => {
-                    // 编辑时，已选模板不会再查询到，需要拼接出来
-                    if (nextProps.data) {
-                        this.setState({
-                            defaultChecked: true,
-                            channelID,
-                            mpID,
-                            trdGiftItemID: trdTemplateID,
-                            trdTemplateIDLabel,
-                            trdTemplateInfoList: trdTemplateInfoList.concat([{
-                                label: trdTemplateIDLabel,
-                                value: trdTemplateID,
-                            }]),
-                        })
-                    }
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+            this.setState({ mpList: mpList || [] })
         }
     }
     // 向父传递
