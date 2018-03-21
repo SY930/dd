@@ -166,6 +166,7 @@ class GiftSendOrUsedCount extends React.Component {
                     d.sendShopName = d.sendShopName ? d.sendShopName : '';
                     d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY/MM/DD') : '--';
                     d.createTime = d.createTime ? Moment(d.createTime, 'YYYYMMDDHHmmss').format(format) : '--';
+                    d.usingTime = d.usingTime && d.usingTime != 0 ? Moment(d.usingTime, 'YYYYMMDDHHmmss').format(format) : '--';
                     return d;
                 });
                 this.setState({

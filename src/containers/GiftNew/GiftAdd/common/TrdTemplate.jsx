@@ -10,8 +10,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Checkbox, Select, Icon, Form, Row, Col, Switch, Input } from 'antd';
-import { fetchData, axiosData } from '../../../../helpers/util';
+import { Select, Form, Switch, Input, Spin } from 'antd';
+import { fetchData } from '../../../../helpers/util';
 import GiftCfg from '../../../../constants/Gift';
 import {
     fetchAllPromotionListAC,
@@ -39,98 +39,41 @@ class TrdTemplate extends React.Component {
             channelIDStatus: true,
             mpIDStatus: true,
             trdGiftItemIDStatus: true,
+            loading: false,
         };
     }
     componentDidMount() {
         let channelID = undefined;
-        let mpID = undefined;
-        let wechatMpName = undefined;
-        let trdTemplateID = undefined;
-        let trdTemplateIDLabel = undefined;
         // 编辑
         if (this.props.data) {
             this.propsChange(this.props.data)
-            const { extraInfo, trdChannelID, trdTemplateID: _trdTemplateID } = this.props.data
-            const { wechatMpName: _wechatMpName, trdTemplateIDLabel: _trdTemplateIDLabel } = JSON.parse(extraInfo);
-            channelID = trdChannelID; // 渠道id
-            wechatMpName = _wechatMpName // 微信名
-            trdTemplateID = _trdTemplateID // 模板id
-            trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
+            const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
+            const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
+            channelID = trdChannelID
+            this.setState({
+                defaultChecked: true,
+                channelID,
+                mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
+                trdGiftItemID: trdTemplateID,
+                trdTemplateIDLabel,
+                trdTemplateInfoList: [{ // 不用查询了，直接根据返回的label和id拼装成只有一个选项的列表
+                    trdGiftName: trdTemplateIDLabel,
+                    trdGiftItemID: trdTemplateID,
+                }],
+            })
         }
         // 公众号
         const mpList = this.props.mpList.toJS()
-        // this.props.queryWechatMpInfo((mpList) => {
-        this.setState({ mpList: mpList || [], mpID: (mpList[0] || {}).mpID })
-        // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
-        mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
-        // 第三方券模版
-        mpList.length > 0 && this.queryTrdTemplate(mpID ? mpID : (mpList[0] || {}).mpID, channelID ? channelID : 10)
-            .then((trdTemplateInfoList) => {
-                // 编辑时，已选模板不会再查询到，需要拼接出来
-                if (this.props.data) {
-                    this.setState({
-                        defaultChecked: true,
-                        channelID,
-                        mpID,
-                        trdGiftItemID: trdTemplateID,
-                        trdTemplateIDLabel,
-                        trdTemplateInfoList: trdTemplateInfoList.concat([{
-                            label: trdTemplateIDLabel,
-                            value: trdTemplateID,
-                        }]),
-                    })
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        mpList.length === 0 ? this.props.queryWechatMpInfo() : null
+        this.setState({ mpList: mpList || [] })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.mpList !== nextProps.mpList) {
-            let channelID = undefined;
-            let mpID = undefined;
-            let wechatMpName = undefined;
-            let trdTemplateID = undefined;
-            let trdTemplateIDLabel = undefined;
-            // 编辑
-            if (nextProps.data) {
-                const { extraInfo, trdChannelID, trdTemplateID: _trdTemplateID } = nextProps.data
-                const { wechatMpName: _wechatMpName, trdTemplateIDLabel: _trdTemplateIDLabel } = JSON.parse(extraInfo);
-                channelID = trdChannelID; // 渠道id
-                wechatMpName = _wechatMpName // 微信名
-                trdTemplateID = _trdTemplateID // 模板id
-                trdTemplateIDLabel = _trdTemplateIDLabel // 模板名trdTemplateIDLabel
-            }
-            // 公众号
             const mpList = nextProps.mpList.toJS()
-            // this.props.queryWechatMpInfo((mpList) => {
-            this.setState({ mpList: mpList || [], mpID: (mpList[0] || {}).mpID })
-            // 编辑时根据已选的wechatMpName找到mpid,若wechatMpName为undefined,说明是新建或用户已选的不是微信渠道
-            mpID = wechatMpName ? mpList.find(mp => mp.mpName === wechatMpName).mpID : undefined
-            // 第三方券模版
-            mpList.length > 0 && this.queryTrdTemplate(mpID ? mpID : (mpList[0] || {}).mpID, channelID ? channelID : 10)
-                .then((trdTemplateInfoList) => {
-                    // 编辑时，已选模板不会再查询到，需要拼接出来
-                    if (nextProps.data) {
-                        this.setState({
-                            defaultChecked: true,
-                            channelID,
-                            mpID,
-                            trdGiftItemID: trdTemplateID,
-                            trdTemplateIDLabel,
-                            trdTemplateInfoList: trdTemplateInfoList.concat([{
-                                label: trdTemplateIDLabel,
-                                value: trdTemplateID,
-                            }]),
-                        })
-                    }
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+            this.setState({ mpList: mpList || [] })
         }
     }
     // 向父传递
@@ -180,9 +123,9 @@ class TrdTemplate extends React.Component {
             forceRefresh: 1,
             mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
-            // console.log(trdTemplateInfoList)
             this.setState({
                 trdTemplateInfoList: trdTemplateInfoList || [],
+                loading: false,
             })
             return Promise.resolve(trdTemplateInfoList || [])
         });
@@ -194,6 +137,7 @@ class TrdTemplate extends React.Component {
             channelID: 10,
             mpID: '',
             trdGiftItemID: '',
+            trdTemplateInfoList: [], // 清空当下微信号模板
         }, () => {
             this.propsChange() // 向父传递
         })
@@ -228,10 +172,12 @@ class TrdTemplate extends React.Component {
         this.setState({
             mpID: value,
             trdGiftItemID: '',
+            trdTemplateInfoList: [], // 清空当下微信号模板
+            loading: true,
         }, () => {
             this.propsChange() // 向父传递
+            this.queryTrdTemplate(value, 10) // 带着微信号查模板  
         })
-        this.queryTrdTemplate(value, 10) // 带着微信号查模板        
     }
     // 三方模板选择
     handleTrdTemplate = (value) => {
@@ -241,79 +187,81 @@ class TrdTemplate extends React.Component {
         })
     }
     render() {
-        const { defaultChecked, channelID = 10, mpList, mpID, trdTemplateInfoList, trdGiftItemID, channelIDStatus, mpIDStatus, trdGiftItemIDStatus } = this.state;
+        const { defaultChecked, channelID = 10, mpList, mpID, trdTemplateInfoList, trdGiftItemID, channelIDStatus, mpIDStatus, trdGiftItemIDStatus, loading } = this.state;
         const edit = this.props.type === 'edit'
         return (
             <div>
-                <FormItem
-                    label='是否关联第三方券'
-                    {...itemStyle}
-                    required={false}
-                >
-                    <Switch
-                        checkedChildren="是"
-                        unCheckedChildren="否"
-                        checked={defaultChecked}
-                        onChange={this.handleDefaultChecked}
-                        disabled={edit}
-                    />
-                </FormItem>
-                {
-                    !defaultChecked ? null :
-                        (<div>
-                            <FormItem
-                                label='第三方渠道'
-                                {...itemStyle}
-                                validateStatus={channelIDStatus ? 'success' : 'error'}
-                                help={channelIDStatus ? null : '不得为空'}
-                            >
-                                <Select value={channelID} onChange={this.handleTrdChannelSelect} disabled={edit}>
-                                    {
-                                        GiftCfg.trdChannelIDs.map(trdChannel => {
-                                            return <Option value={trdChannel.value}>{trdChannel.label}</Option>
-                                        })
-                                    }
-                                </Select>
-                            </FormItem>
-                            {
-                                channelID !== 10 ? null :
-                                    (<FormItem
-                                        label='微信公众号选择'
-                                        {...itemStyle}
-                                        validateStatus={mpIDStatus ? 'success' : 'error'}
-                                        help={mpIDStatus ? null : '不得为空'}
-                                    >
-                                        <Select value={mpID} onChange={this.handleMpSelect} disabled={edit}>
-                                            {
-                                                mpList.map(mp => {
-                                                    return <Option value={mp.mpID}>{mp.mpName}</Option>
-                                                })
-                                            }
-                                        </Select>
-                                    </FormItem>)
-                            }
-                            <FormItem
-                                label='第三方券模板或活动'
-                                {...itemStyle}
-                                validateStatus={trdGiftItemIDStatus ? 'success' : 'error'}
-                                help={trdGiftItemIDStatus ? null : '不得为空'}
-                            >
-                                <Select onChange={this.handleTrdTemplate} value={trdGiftItemID} disabled={edit}>
-                                    {
-                                        trdTemplateInfoList.map(template => {
-                                            return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
-                                        })
-                                    }
-                                </Select>
-                            </FormItem>
-                            <FormItem
-                                label='券模板或活动ID'
-                                {...itemStyle}
-                            >
-                                <Input disabled={true} value={trdGiftItemID} />
-                            </FormItem>
-                        </div>)
-                }
+                <Spin spinning={loading}>
+                    <FormItem
+                        label='是否关联第三方券'
+                        {...itemStyle}
+                        required={false}
+                    >
+                        <Switch
+                            checkedChildren="是"
+                            unCheckedChildren="否"
+                            checked={defaultChecked}
+                            onChange={this.handleDefaultChecked}
+                            disabled={edit}
+                        />
+                    </FormItem>
+                    {
+                        !defaultChecked ? null :
+                            (<div>
+                                <FormItem
+                                    label='第三方渠道'
+                                    {...itemStyle}
+                                    validateStatus={channelIDStatus ? 'success' : 'error'}
+                                    help={channelIDStatus ? null : '不得为空'}
+                                >
+                                    <Select value={channelID} onChange={this.handleTrdChannelSelect} disabled={edit}>
+                                        {
+                                            GiftCfg.trdChannelIDs.map(trdChannel => {
+                                                return <Option value={trdChannel.value}>{trdChannel.label}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                </FormItem>
+                                {
+                                    channelID !== 10 ? null :
+                                        (<FormItem
+                                            label='微信公众号选择'
+                                            {...itemStyle}
+                                            validateStatus={mpIDStatus ? 'success' : 'error'}
+                                            help={mpIDStatus ? null : '不得为空'}
+                                        >
+                                            <Select value={mpID} onChange={this.handleMpSelect} disabled={edit}>
+                                                {
+                                                    mpList.map(mp => {
+                                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormItem>)
+                                }
+                                <FormItem
+                                    label='第三方券模板或活动'
+                                    {...itemStyle}
+                                    validateStatus={trdGiftItemIDStatus ? 'success' : 'error'}
+                                    help={trdGiftItemIDStatus ? null : '不得为空'}
+                                >
+                                    <Select onChange={this.handleTrdTemplate} value={trdGiftItemID} disabled={edit}>
+                                        {
+                                            trdTemplateInfoList.map(template => {
+                                                return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                </FormItem>
+                                <FormItem
+                                    label='券模板或活动ID'
+                                    {...itemStyle}
+                                >
+                                    <Input disabled={true} value={trdGiftItemID} />
+                                </FormItem>
+                            </div>)
+                    }
+                </Spin>
             </div>
         );
     }

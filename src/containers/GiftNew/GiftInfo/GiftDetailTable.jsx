@@ -112,7 +112,7 @@ class GiftDetailTable extends Component {
             this.setState({ dataSource: [], total: _total });
             return;
         }
-        const newDataSource = gifts.map((g, i) => {
+        const newDataSource = (gifts || []).map((g, i) => {
             g.key = i + 1;
             g.giftType = String(g.giftType);
             g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
@@ -211,7 +211,6 @@ class GiftDetailTable extends Component {
         this.setState({ visibleEdit: true, editGift: gift });
         const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
-        // queryCouponShopList({ groupID: this.props.user.accountInfo.groupID, giftItemID: rec.giftItemID }); //券适用店铺查询 ,暂时无用
         // 请求获取promotionList--券活动
         gift.value == 100 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -232,7 +231,7 @@ class GiftDetailTable extends Component {
             ),
             onOk: () => {
                 axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
-                    if(data.code==='000'){
+                    if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
                         const { FetchGiftList } = this.props;
@@ -258,7 +257,10 @@ class GiftDetailTable extends Component {
                 .then((records) => {
                     this.setState({ sendTotalSize: records.totalSize })
                 });
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' } })
+
+            axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' }, null, {
+                path: 'data',
+            })
                 .then((records) => {
                     this.setState({ usedTotalSize: records.totalSize })
                 });
