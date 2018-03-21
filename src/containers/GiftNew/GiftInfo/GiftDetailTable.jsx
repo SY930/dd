@@ -112,7 +112,7 @@ class GiftDetailTable extends Component {
             this.setState({ dataSource: [], total: _total });
             return;
         }
-        const newDataSource = gifts.map((g, i) => {
+        const newDataSource = (gifts || []).map((g, i) => {
             g.key = i + 1;
             g.giftType = String(g.giftType);
             g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
@@ -231,7 +231,7 @@ class GiftDetailTable extends Component {
             ),
             onOk: () => {
                 axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
-                    if(data.code==='000'){
+                    if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
                         const { FetchGiftList } = this.props;

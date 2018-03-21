@@ -49,7 +49,7 @@ class GiftType extends React.Component {
             if (gifts === undefined) {
                 return;
             }
-            const newDataSource = gifts.map((g, i) => {
+            const newDataSource = (gifts || []).map((g, i) => {
                 g.key = i + 1;
                 g.giftType = String(g.giftType);
                 g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label;
