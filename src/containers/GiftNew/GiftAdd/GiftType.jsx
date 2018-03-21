@@ -30,7 +30,6 @@ class GiftType extends React.Component {
         }
     }
     componentWillMount() {
-        this.getData();
         this.props.queryWechatMpInfo();
     }
     componentDidMount() {
@@ -40,35 +39,6 @@ class GiftType extends React.Component {
     onWindowResize = () => {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
         this.setState({ contentHeight });
-    }
-    getData(params = {}) {
-        const { user } = this.props;
-        params.groupID = user.accountInfo.groupID;
-        axiosData('/coupon/couponService_getBoards.ajax', params, null, { path: 'data' }).then((gifts) => {
-            // console.log('gifts,', gifts);
-            if (gifts === undefined) {
-                return;
-            }
-            const newDataSource = (gifts || []).map((g, i) => {
-                g.key = i + 1;
-                g.giftType = String(g.giftType);
-                g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label;
-                g.createStamp = g.createStamp == 0 ? '————/——/—— ——:——:——' : Moment(g.createStamp).format(format);
-                g.actionStamp = g.actionStamp == 0 ? '————/——/—— ——:——:——' : Moment(g.actionStamp).format(format);
-                g.operateTime = <div>{g.createStamp}<br />{g.actionStamp}</div>;
-                g.createBy = g.createBy == undefined ? '——  ——' : '——  ——';
-                g.operator = `${g.createBy} / ${g.createBy}`;
-                g.giftRule = g.giftRule.split('</br>');
-                g.num = i + 1;
-                g.usingTimeType = g.usingTimeType.split(',');
-                g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
-                g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
-                return g;
-            });
-            this.setState({ dataSource: [...newDataSource] }, () => {
-                // console.log('this.state', this.state);
-            })
-        });
     }
     handleAdd(g) {
         this.setState({ visible: true, gift: { ...this.state.gift, ...g } });
