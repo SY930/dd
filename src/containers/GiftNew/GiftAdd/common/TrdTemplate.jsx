@@ -64,6 +64,7 @@ class TrdTemplate extends React.Component {
         }
         // 公众号
         const mpList = this.props.mpList.toJS()
+        mpList.length === 0 ? this.props.queryWechatMpInfo() : null
         this.setState({ mpList: mpList || [] })
         // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
         this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
