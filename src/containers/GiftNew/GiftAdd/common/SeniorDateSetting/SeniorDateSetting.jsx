@@ -84,7 +84,7 @@ class SeniorDateSetting extends React.Component {
         })
     }
     update(couponPeriodSettings) {
-        const couponPeriodSettingsStatus = this.validatorTime(couponPeriodSettings)
+        const couponPeriodSettingsStatus = this.state.selectType == -1 ? true : this.validatorTime(couponPeriodSettings)
         this.setState({
             couponPeriodSettings,
         }, () => {
