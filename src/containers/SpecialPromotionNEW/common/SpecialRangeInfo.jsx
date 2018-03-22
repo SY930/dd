@@ -580,37 +580,6 @@ class SpecialRangeInfo extends React.Component {
             autoRegister: e.target.value,
         });
     }
-    handleDefaultCardTypeChange = (value) => {
-        this.setState({ defaultCardType: value })
-    }
-    renderDefaultCardType = () => {
-        const { cardInfo = [], cardLevelIDList = [], cardLevelRangeType, defaultCardType } = this.state;
-        const DefaultCardTypes = cardLevelRangeType == 0 ? cardInfo : cardInfo.filter((cat) => {
-            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该卡类
-            const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
-            return _.intersection(thisCatIds, cardLevelIDList).length > 0
-        });
-
-        return (
-            <FormItem
-                style={{ marginBottom: 8 }}
-            //   validateStatus={'error'}
-            >
-                <Col span={7} style={{ paddingLeft: 6 }}>新用户注册成为会员的卡类选择</Col>
-                <Col span={14}>
-                    <Select
-                        showSearch={true}
-                        onChange={this.handleDefaultCardTypeChange}
-                        value={defaultCardType}
-                    >
-                        {
-                            DefaultCardTypes.map(cate => <Option value={cate.cardTypeID}>{cate.cardTypeName}</Option>)
-                        }
-                    </Select>
-                </Col>
-            </FormItem>
-        )
-    }
     render() {
         const getFieldDecorator = this.props.form.getFieldDecorator;
         return (
@@ -632,10 +601,6 @@ class SpecialRangeInfo extends React.Component {
                             type={this.props.type}
                             form={this.props.form}
                         />
-                }
-                {
-                    this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
-                        this.renderDefaultCardType() : null
                 }
                 {
                     this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
