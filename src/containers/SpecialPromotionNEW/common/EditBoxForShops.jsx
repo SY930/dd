@@ -56,7 +56,7 @@ class EditBoxForShops extends React.Component {
     componentWillReceiveProps(nextProps) {
         const data = nextProps.value;
         const cityAreasShops = nextProps.cityAreasShops || [];
-        const selections = this.state.selections;
+        const selections = new Set();
         let cityAreasShops_filter = [],
             filterOption = [];
         if (this.props.cityAreasShops !== nextProps.cityAreasShops ||
@@ -83,7 +83,6 @@ class EditBoxForShops extends React.Component {
                 })
             }
         }
-
         if (!Immutable.is(Immutable.fromJS(this.props.canUseShops), Immutable.fromJS(nextProps.canUseShops))) {
             const { canUseShops = [] } = nextProps
             // 更新店铺源
@@ -102,7 +101,7 @@ class EditBoxForShops extends React.Component {
             })
             // 更新选择框右侧选项，不然显示的 仍是上次的状态
             filterOption = this.state.storeOptions.filter((option) => {
-                return !canUseShops.includes(option.shopID)
+                return canUseShops.includes(option.shopID)
             })
             this.setState({
                 cityAreasShops: cityAreasShops_filter,
