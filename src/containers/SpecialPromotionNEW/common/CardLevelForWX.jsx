@@ -24,7 +24,7 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
-import EditBoxForShops from '../../SaleCenterNEW/common/EditBoxForShops';
+import EditBoxForShops from './EditBoxForShops';
 
 // import _ from 'lodash';
 // import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
