@@ -60,19 +60,11 @@ class CardLevel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // 获取所有会员等级信息
-        if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data) {
-            if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList) {
-                this.setState({
-                    cardInfo: nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList,
-                })
-            } else {
-                this.setState({
-                    cardInfo: [],
-                })
-            }
+        // 获取会员等级信息
+        if (nextProps.groupCardTypeList) {
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
         }
         // 获取已选会员等级信息
         if (this.props.changeValue && nextProps.changeValue && this.props.changeValue.length != nextProps.changeValue.length) {
@@ -293,7 +285,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
 
     };

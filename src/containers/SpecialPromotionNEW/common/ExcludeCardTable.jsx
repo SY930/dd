@@ -52,14 +52,14 @@ class ExcludeCardTable extends React.Component {
 
     componentDidMount() {
         this.setState({
-            cardInfo: this.props.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList,
+            cardInfo: this.props.groupCardTypeList || [],
             getExcludeCardLevelIds: this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [],
         });
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            cardInfo: nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList,
+            cardInfo: nextProps.groupCardTypeList || [],
             getExcludeCardLevelIds: nextProps.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [],
         });
     }
@@ -160,7 +160,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
 
     };

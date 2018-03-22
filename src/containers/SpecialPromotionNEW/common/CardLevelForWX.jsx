@@ -10,6 +10,8 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
+
 import {
     Form,
     Radio,
@@ -43,6 +45,7 @@ class CardLevelForWX extends React.Component {
             cardLevelIDList: [],
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
+            canUseShops: [], // 所选卡类适用店铺
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -137,21 +140,15 @@ class CardLevelForWX extends React.Component {
         }
     }
     handleSelectChange(value) {
-        // const { cardTypeHadQuery = {} } = this.state;
-        // if (!Object.keys(cardTypeHadQuery).includes(value[value.length - 1]) && value[value.length - 1]) { // 判断是否已被查询过
-        //     this.props.FetchSelectedShopsAC({
-        //         cardTypeID: value[value.length - 1],
+        // axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', {}).then(res => {
+        //     let canUseShops = [];
+        //     (res.data || []).forEach((cardType) => {
+        //         canUseShops = [...canUseShops, cardType.shopLst]
         //     })
-        //         .then((record) => {
-        //             console.log(record);
-        //             this.setState({
-        //                 cardTypeHadQuery: {
-        //                     ...cardTypeHadQuery, // ...{id:[shopName,shopName], id:[shopName,shopName], id:[shopName,shopName]}
-        //                     [value[value.length - 1]]: record, // id:[shopName,shopName]
-        //                 },
-        //             })
-        //         })
-        // }
+        //     this.setState({ canUseShops })
+        //     console.log(canUseShops)
+        // })
+
         this.setState({
             cardLevelIDList: value,
         }, () => {
@@ -232,7 +229,7 @@ class CardLevelForWX extends React.Component {
                             }
                             {
                                 !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-                                <Icon
+                                    <Icon
                                         type="exclamation-circle"
                                         className={styles.cardLevelTreeIcon}
                                         onClick={() => {
@@ -244,7 +241,7 @@ class CardLevelForWX extends React.Component {
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length === 0 ? null :
-                    <div
+                        <div
                             style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}
                         >
                             <ExcludeCardTable catOrCard={'cat'} />
