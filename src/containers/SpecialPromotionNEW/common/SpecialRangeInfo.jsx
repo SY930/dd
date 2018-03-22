@@ -47,6 +47,7 @@ class SpecialRangeInfo extends React.Component {
             cardLevelRangeType: '0',
             freeGetJoinRangeStatus: 'success',
             autoRegister: 1, // 是否需用户填写注册信息
+            defaultCardType: '', // 用户静默注册为何种会员
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -227,6 +228,7 @@ class SpecialRangeInfo extends React.Component {
             maxPartInPersonStatus,
             freeGetJoinRangeStatus,
             autoRegister,
+            defaultCardType,
         } = this.state;
         const opts = {
             rewardOnly,
@@ -247,7 +249,13 @@ class SpecialRangeInfo extends React.Component {
         if (this.props.type === '23' && this.state.cardLevelRangeType === '0') {
             opts.cardLevelRangeType = '4'; // 全部微信会员
         }
-        if (this.props.type === '23') opts.autoRegister = autoRegister
+        if (this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30') {
+            opts.autoRegister = autoRegister
+            opts.defaultCardType = defaultCardType
+            if (this.props.type !== '23' && !defaultCardType) {
+                nextFlag = false;
+            }
+        }
         // 由于redux里面存的可能是所有字段,所以修改的时候需要把之前设置过,现在要取消的东西初始化
 
         if (nextFlag) {
