@@ -189,8 +189,13 @@ class CardLevelForWX extends React.Component {
         })
     }
     editBoxForShopsChange = (val) => {
+        debugger
         this.setState({
-            selections_shopsInfo: { shopsInfo: val.map(shop => shop.shopID) },
+            selections_shopsInfo: { shopsInfo: val.map(shop => shop.shopID) }, // shopIDList
+        }, () => {
+            this.props.onChange && this.props.onChange({
+                shopIDList: this.state.selections_shopsInfo.shopsInfo,
+            })
         })
     }
     renderShopsOptions() {
@@ -201,8 +206,8 @@ class CardLevelForWX extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                // validateStatus={noSelected64 ? 'error' : 'success'}
-                // help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
+                    validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
+                    help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
                 >
                     <EditBoxForShops
                         value={this.state.selections_shopsInfo}
