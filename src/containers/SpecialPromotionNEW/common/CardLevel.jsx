@@ -87,10 +87,12 @@ class CardLevel extends React.Component {
             this.setState({
                 cardLevelRangeType: thisEventInfo.cardLevelRangeType || '0',
                 cardLevelIDList: thisEventInfo.cardLevelIDList || [],
+                defaultCardType: thisEventInfo.defaultCardType || '',
             }, () => {
                 this.props.onChange({
                     cardLevelRangeType: this.state.cardLevelRangeType,
                     cardLevelIDList: this.state.cardLevelIDList,
+                    defaultCardType: this.state.defaultCardType,
                 })
             })
         }
