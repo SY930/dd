@@ -140,14 +140,14 @@ class CardLevelForWX extends React.Component {
         }
     }
     handleSelectChange(value) {
-        // axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', {}).then(res => {
-        //     let canUseShops = [];
-        //     (res.data || []).forEach((cardType) => {
-        //         canUseShops = [...canUseShops, cardType.shopLst]
-        //     })
-        //     this.setState({ canUseShops })
-        //     console.log(canUseShops)
-        // })
+        axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', {}).then(res => {
+            let canUseShops = [];
+            (res.data || []).forEach((cardType) => {
+                canUseShops = [...canUseShops, ...cardType.shopLst]
+            })
+            this.setState({ canUseShops })
+            console.log(Array.from(new Set((canUseShops))))
+        })
 
         this.setState({
             cardLevelIDList: value,
