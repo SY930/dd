@@ -169,15 +169,24 @@ class CardLevel extends React.Component {
         }
     }
     handleSelectChange(value) {
-        const _value = value.filter((val) => {
-            return val.indexOf('CAT_') == -1;
-        })
+        let { cardInfo = [], defaultCardType = '' } = this.state;
+        const DefaultCardTypes = cardInfo.filter((cat) => {
+            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
+            const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
+            return _.intersection(thisCatIds, value).length > 0
+        });
+        const DefaultCardTypesIDs = DefaultCardTypes.map(cate => cate.cardTypeID); // 当前可选新用户注册卡类
+        defaultCardType = DefaultCardTypesIDs.includes(defaultCardType) ? defaultCardType : ''; // 当前可选新用户注册卡类包含已选注册卡类吗？
+
+        // 点击适用卡等级，对点击卡类不作出反应
+        const _value = value.filter(val => val.indexOf('CAT_') == -1)
         this.setState({
             cardLevelIDList: _value,
+            defaultCardType,
         }, () => {
             this.props.form.setFieldsValue({ 'treeSelect': _value });
         })
-        this.props.onChange && this.props.onChange({ cardLevelIDList: _value })
+        this.props.onChange && this.props.onChange({ cardLevelIDList: _value, defaultCardType })
     }
     handleRadioChange(e) {
         const opts = {
@@ -195,7 +204,7 @@ class CardLevel extends React.Component {
     renderDefaultCardType = () => {
         const { cardInfo = [], cardLevelIDList = [], cardLevelRangeType, defaultCardType = '' } = this.state;
         const DefaultCardTypes = cardLevelRangeType == 0 ? cardInfo : cardInfo.filter((cat) => {
-            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该卡类
+            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
             const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
             return _.intersection(thisCatIds, cardLevelIDList).length > 0
         });
