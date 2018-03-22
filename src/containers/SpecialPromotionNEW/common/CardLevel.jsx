@@ -211,21 +211,22 @@ class CardLevel extends React.Component {
 
         return (
             <FormItem
-                style={{ marginBottom: 8 }}
-            //   validateStatus={'error'}
+                style={{ marginLeft: -13 }}
+                validateStatus={defaultCardType ? 'success' : 'error'}
+                help={defaultCardType ? null : '不可为空'}
+                label="新用户注册成为会员的卡类选择"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 14 }}
             >
-                <Col span={7} style={{ paddingLeft: 6 }}>新用户注册成为会员的卡类选择</Col>
-                <Col span={14}>
-                    <Select
-                        showSearch={true}
-                        onChange={this.handleDefaultCardTypeChange}
-                        value={defaultCardType}
-                    >
-                        {
-                            DefaultCardTypes.map(cate => <Option value={cate.cardTypeID}>{cate.cardTypeName}</Option>)
-                        }
-                    </Select>
-                </Col>
+                <Select
+                    showSearch={true}
+                    onChange={this.handleDefaultCardTypeChange}
+                    value={defaultCardType}
+                >
+                    {
+                        DefaultCardTypes.map(cate => <Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Option>)
+                    }
+                </Select>
             </FormItem>
         )
     }
