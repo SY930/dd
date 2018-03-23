@@ -11,6 +11,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { axiosData } from '../../../helpers/util';
+
 
 import {
     Form,
@@ -154,15 +156,21 @@ class CardLevelForWX extends React.Component {
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
         // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
-        axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
-            let canUseShops = [];
-            (res.data || []).forEach((cardType) => {
-                canUseShops = [...canUseShops, ...cardType.shopLst]
+        //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            cardTypeIds: cardTypeIDs.join(','),
+            queryCardType: cardTypeIDs.length === 0 ? 0 : 1,
+        }, null, { path: '' })
+            .then(res => {
+                let canUseShops = [];
+                (res.data || []).forEach((cardType) => {
+                    canUseShops = [...canUseShops, ...cardType.shopLst]
+                })
+                const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
+                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+                console.log(Array.from(new Set((canUseShops))), shopsInfo)
             })
-            const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
-            this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
-            console.log(Array.from(new Set((canUseShops))), shopsInfo)
-        })
     }
     handleSelectChange(value) {
         const opts = {
