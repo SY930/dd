@@ -71,7 +71,7 @@ class ReturnGiftDetailInfo extends React.Component {
                         msg: null,
                     },
                     // 使用张数
-                    giftMaxNum: {
+                    giftMaxUseNum: {
                         value: 1,
                         validateStatus: 'success',
                         msg: null,
@@ -147,7 +147,7 @@ class ReturnGiftDetailInfo extends React.Component {
                                 msg: null,
                             },
                             // 使用张数
-                            giftMaxNum: {
+                            giftMaxUseNum: {
                                 value: 1,
                                 validateStatus: 'success',
                                 msg: null,
@@ -182,7 +182,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 rule.data[0].giftInfo.giftName = _rule.giftName;
                 rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
                 rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
-                rule.data[0].giftMaxNum.value = _rule.giftMaxNum;
+                rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
                 rule.data[0].giftValidType = _rule.giftStartTime ? '1' : '0';
                 rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftEffectiveTime / 60;
             }
@@ -230,7 +230,7 @@ class ReturnGiftDetailInfo extends React.Component {
                                     msg: null,
                                 },
                                 // 使用张数
-                                giftMaxNum: {
+                                giftMaxUseNum: {
                                     value: 1,
                                     validateStatus: 'success',
                                     msg: null,
@@ -265,7 +265,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[0].giftInfo.giftName = _rule.giftName;
                     rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
                     rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
-                    rule.data[0].giftMaxNum.value = _rule.giftMaxNum;
+                    rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
                     rule.data[0].giftValidType = _rule.giftStartTime ? '1' : '0';
                     rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftEffectiveTime / 60;
                 }
@@ -312,7 +312,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 stageType: this.state.rule.type,
                 giftValidType: this.state.rule.data[0].giftValidType,
                 stageAmount: this.state.rule.data[0].stageAmount.value,
-                giftMaxNum: this.state.rule.data[0].giftMaxNum.value,
+                giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
                 giftValidDays: this.state.rule.data[0].giftValidDays.value,
                 giftEffectiveTime: (this.state.rule.data[0].giftEffectiveTime.value || 0) * 60,
                 giftNum: this.state.rule.data[0].giftNum.value,
@@ -327,7 +327,7 @@ class ReturnGiftDetailInfo extends React.Component {
             stageType: this.state.rule.type,
             giftValidType: this.state.rule.data[0].giftValidType,
             stageAmount: this.state.rule.data[0].stageAmount.value,
-            giftMaxNum: this.state.rule.data[0].giftMaxNum.value,
+            giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
             giftStartTime: range.value[0] ? parseInt(range.value[0].format('YYYYMMDD') + '000000') : '',
             giftEndTime: range.value[1] ? parseInt(range.value[1].format('YYYYMMDD') + '235959') : '',
             giftNum: this.state.rule.data[0].giftNum.value,
