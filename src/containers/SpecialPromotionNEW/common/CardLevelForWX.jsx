@@ -153,6 +153,7 @@ class CardLevelForWX extends React.Component {
 
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
+        // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
         axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
             let canUseShops = [];
             (res.data || []).forEach((cardType) => {
