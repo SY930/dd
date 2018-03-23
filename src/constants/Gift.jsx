@@ -167,6 +167,10 @@ const GiftCfg = {
         { value: 1, label: '是' },
         { value: 0, label: '否' },
     ],
+    isNeedCustomerInfo: [
+        { value: 0, label: '不需要' },
+        { value: 1, label: '需要' },
+    ]
 }
 
 export default GiftCfg
