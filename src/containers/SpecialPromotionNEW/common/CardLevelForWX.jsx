@@ -19,6 +19,8 @@ import {
     Icon,
     Tag,
 } from 'antd';
+import Immutable from 'immutable';
+
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
@@ -63,12 +65,14 @@ class CardLevelForWX extends React.Component {
         this.setState({
             cardLevelRangeType: cardLevelRangeType || '0',
             cardLevelIDList: thisEventInfo.cardLevelIDList || [],
+            selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
         }, () => {
             this.props.onChange({
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
         })
+        this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
     }
 
     componentWillReceiveProps(nextProps) {
@@ -142,6 +146,9 @@ class CardLevelForWX extends React.Component {
         } else {
             this.setState({ allCheckDisabel: false })
         }
+        if (!Immutable.is(Immutable.fromJS(thisEventInfo.shopIDList), Immutable.fromJS(nextEventInfo.shopIDList))) {
+            this.setState({ selections_shopsInfo: { shopsInfo: nextEventInfo.shopIDList || [] } })
+        }
     }
 
     // 查询已选卡类型的可用店铺
@@ -151,7 +158,7 @@ class CardLevelForWX extends React.Component {
             (res.data || []).forEach((cardType) => {
                 canUseShops = [...canUseShops, ...cardType.shopLst]
             })
-            const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(selectShop))
+            const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
             this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
             console.log(Array.from(new Set((canUseShops))), shopsInfo)
         })
@@ -189,7 +196,6 @@ class CardLevelForWX extends React.Component {
         })
     }
     editBoxForShopsChange = (val) => {
-        debugger
         this.setState({
             selections_shopsInfo: { shopsInfo: val.map(shop => shop.shopID) }, // shopIDList
         }, () => {
