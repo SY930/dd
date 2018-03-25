@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { fetchData, axiosData } from '../../../helpers/util';
-import { Row, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox } from 'antd';
+import { Row, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
@@ -29,6 +29,7 @@ import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 // const TreeNode = TreeSelect.TreeNode;
 
 class GiftAddModalStep extends React.Component {
@@ -248,7 +249,7 @@ class GiftAddModalStep extends React.Component {
         }
         this.setState({ values });
     }
-    
+
     handleCancel = (cb) => {
         this.setState({
             current: 0,
@@ -859,6 +860,24 @@ class GiftAddModalStep extends React.Component {
 
         )
     }
+    renderisNeedCustomerInfo(decorator) {
+        return <FormItem style={{ marginLeft: 22 }}>
+            <Col span={11}>券核销时是否校验会员注册信息</Col>
+            <Col span={11}>
+                {
+                    decorator({})(
+                        <RadioGroup>
+                            {
+                                GiftCfg.isNeedCustomerInfo.map(r => {
+                                    return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
+                                })
+                            }
+                        </RadioGroup>
+                    )
+                }
+                </Col>
+        </FormItem>
+    }
     renderGiftPromotion(decorator) {
         const { gift: { data }, type } = this.props;
         const promotionID = type === 'edit' ? (data.promotionID ? [{ sharedIDStr: data.promotionID }] : [])
@@ -1171,6 +1190,13 @@ class GiftAddModalStep extends React.Component {
                 label: '使用时段',
                 type: 'custom',
                 render: decorator => this.renderCouponPeriodSettings(decorator),
+            },
+            isNeedCustomerInfo: {
+                //label: `券核销时是否校验会员注册信息`,
+                type: 'custom',
+                defaultValue: 0,
+                //options: GiftCfg.isNeedCustomerInfo,
+                render: decorator => this.renderisNeedCustomerInfo(decorator),
             },
         };
         let formData = {};

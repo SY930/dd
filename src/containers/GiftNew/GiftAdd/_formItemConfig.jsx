@@ -140,15 +140,6 @@ const FORMITEMS = {
         defaultValue: 1,
         options: GiftCfg.couponCodeType,
     },
-    isNeedCustomerInfo: {
-        label: `券核销时是否校验会员注册信息`,
-        type: 'radio',
-        defaultValue: 0,
-        options: GiftCfg.isNeedCustomerInfo,
-        props: {
-            //style: { marginLeft: 300 }
-        },
-    },
 };
 
 const FIRST_KEYS = {
