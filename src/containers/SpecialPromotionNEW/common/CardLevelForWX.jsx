@@ -161,15 +161,16 @@ class CardLevelForWX extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
             cardTypeIds: cardTypeIDs.join(','),
             queryCardType: cardTypeIDs.length === 0 ? 0 : 1,
-        }, null, { path: '' })
-            .then(res => {
+        }, null, { path: 'data.cardTypeShopList' })
+            .then(cardTypeShopList => {
                 let canUseShops = [];
-                (res.data || []).forEach((cardType) => {
-                    canUseShops = [...canUseShops, ...cardType.shopLst]
+                (cardTypeShopList || []).forEach((cardType) => {
+                    cardType.cardTypeShopResDetailList.forEach(shop=>{
+                        canUseShops.push(String(shop.shopID))
+                    })
                 })
                 const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
-                console.log(Array.from(new Set((canUseShops))), shopsInfo)
             })
     }
     handleSelectChange(value) {
