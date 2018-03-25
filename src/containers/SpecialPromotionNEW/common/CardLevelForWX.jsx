@@ -236,7 +236,7 @@ class CardLevelForWX extends React.Component {
                 </Form.Item>
                 <div
                     className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
-                    style={{ left: 80, width: '71%', height: '81%', top: 7 }}
+                    style={{ left: 110, width: '71%', height: '81%', top: 7 }}
                 ></div>
             </div>
         );
