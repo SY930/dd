@@ -236,6 +236,9 @@ class MoreFoodBox extends React.Component {
             foodSelections,
             isExcludeFood: '0',
             excludeSelections,
+            foodCategoryCurrentSelections: [],
+            foodCurrentSelections: [],
+            excludeCurrentSelections: [],
         });
         this.props.onChange && this.props.onChange({
             foodSelectType: e.target.value,
