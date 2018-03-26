@@ -1197,7 +1197,7 @@ class GiftAddModalStep extends React.Component {
             isNeedCustomerInfo: {
                 //label: `券核销时是否校验会员注册信息`,
                 type: 'custom',
-                defaultValue: '0',
+                defaultValue: false,
                 //options: GiftCfg.isNeedCustomerInfo,
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
             },

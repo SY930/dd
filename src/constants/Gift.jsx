@@ -168,8 +168,8 @@ const GiftCfg = {
         { value: 0, label: '否' },
     ],
     isNeedCustomerInfo: [
-        { value: '0', label: '不需要' },
-        { value: '1', label: '需要' },
+        { value: false, label: '不需要' },
+        { value: true, label: '需要' },
     ],
 }
 
