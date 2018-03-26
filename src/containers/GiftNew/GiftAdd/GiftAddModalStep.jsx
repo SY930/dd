@@ -860,23 +860,24 @@ class GiftAddModalStep extends React.Component {
 
         )
     }
-    renderisNeedCustomerInfo(decorator) {
-        return <FormItem style={{ marginLeft: 22 }}>
-            <Col span={11}>券核销时是否校验会员注册信息</Col>
-            <Col span={11}>
-                {
-                    decorator({})(
-                        <RadioGroup>
-                            {
-                                GiftCfg.isNeedCustomerInfo.map(r => {
-                                    return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
-                                })
-                            }
-                        </RadioGroup>
-                    )
-                }
+    renderisNeedCustomerInfo = (decorator) => {
+        return (
+            <FormItem style={{ marginLeft: 20 }}>
+                <Col span={11}>券核销时是否校验会员注册信息</Col>
+                <Col span={11}>
+                    {
+                        decorator({})(
+                            <RadioGroup>
+                                {
+                                    GiftCfg.isNeedCustomerInfo.map(r => {
+                                        return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
+                                    })
+                                }
+                            </RadioGroup>
+                        )
+                    }
                 </Col>
-        </FormItem>
+            </FormItem>)
     }
     renderGiftPromotion(decorator) {
         const { gift: { data }, type } = this.props;
