@@ -862,7 +862,7 @@ class GiftAddModalStep extends React.Component {
     }
     renderisNeedCustomerInfo = (decorator) => {
         return (
-            <FormItem style={{ marginLeft: 22 }}>
+            <FormItem style={{ marginLeft: 20 }}>
                 <Col span={11}>券核销时是否校验会员注册信息</Col>
                 <Col span={11}>
                     {
