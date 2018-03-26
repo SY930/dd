@@ -31,6 +31,7 @@ class EditBoxForShops extends React.Component {
             this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
         const data = this.props.value;
+        const shopsInfo = !data.shopsInfo || data.shopsInfo === '[]' ? [] : data.shopsInfo
         const cityAreasShops = this.props.cityAreasShops || [];
         const selections = this.state.selections;
 
@@ -38,7 +39,7 @@ class EditBoxForShops extends React.Component {
             cityAreasShops.forEach((city) => {
                 city.children.forEach((area) => {
                     area.children.forEach((shop) => {
-                        (data.shopsInfo || []).forEach((id) => {
+                        shopsInfo.forEach((id) => {
                             if (shop.itemID == id) {
                                 selections.add(shop)
                             }
@@ -55,6 +56,7 @@ class EditBoxForShops extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const data = nextProps.value;
+        const shopsInfo = !data.shopsInfo || data.shopsInfo === '[]' ? [] : data.shopsInfo
         const cityAreasShops = nextProps.cityAreasShops || [];
         const selections = new Set();
         let cityAreasShops_filter = [],
@@ -66,7 +68,7 @@ class EditBoxForShops extends React.Component {
                     cityAreasShops.forEach((city) => {
                         city.children.forEach((area) => {
                             area.children.forEach((shop) => {
-                                (data.shopsInfo || []).forEach((id) => {
+                                shopsInfo.forEach((id) => {
                                     if (shop.itemID == id) {
                                         selections.add(shop);
                                     }

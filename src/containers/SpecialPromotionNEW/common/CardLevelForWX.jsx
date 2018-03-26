@@ -222,8 +222,8 @@ class CardLevelForWX extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
-                    help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
+                    // validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
+                    // help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
                 >
                     <EditBoxForShops
                         value={this.state.selections_shopsInfo}
