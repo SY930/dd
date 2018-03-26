@@ -404,7 +404,7 @@ class GiftAddModalStep extends React.Component {
                 if (formValues.foodsboxs && formValues.foodsboxs instanceof Object) {
                     const { foodSelectType, isExcludeFood, foodCategory, excludeDishes, dishes } = formValues.foodsboxs;
                     params.foodSelectType = foodSelectType;
-                    params.isExcludeFood = isExcludeFood;
+                    params.isExcludeFood = excludeDishes.length > 0 ? '1' : '0';
                     // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
                     params.couponFoodScopes = (foodCategory || []).map((cat) => {
                         return {
