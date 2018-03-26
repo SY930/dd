@@ -1100,15 +1100,15 @@ class GiftAddModalStep extends React.Component {
                 type: 'text',
                 placeholder: '不填为不限制有效期',
                 surfix: '天',
-                // rules: [{ required: false, message: `请输入数字` }, {
-                //     validator: (rule, v, cb) => {
-                //         if (!/^\+?\d{0,8}$/.test(Number(v))) {
-                //             cb(rule.message);
-                //         }
-                //         cb();
-                //     },
-                //     message: '请输入数字，不超过8位',
-                // }],
+                rules: [{ required: false, message: `请输入数字` }, {
+                    validator: (rule, v, cb) => {
+                        if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请输入数字，不超过8位',
+                }],
             },
             transferLimitType: {
                 label: '转赠设置',
