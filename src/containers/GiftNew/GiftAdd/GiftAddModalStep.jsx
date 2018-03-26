@@ -639,12 +639,13 @@ class GiftAddModalStep extends React.Component {
                             key: 'stageAmount',
                             rules: [{ required: true, message: '不能为空' }, {
                                 validator: (rule, v, cb) => {
-                                    if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                                    const lt = Number(this.state.values.giveFoodCount) > Number(v);
+                                    if (!/^\+?\d{0,8}$/.test(Number(v)) || lt) {
                                         cb(rule.message);
                                     }
                                     cb();
                                 },
-                                message: '整数不超过8位',
+                                message: '整数不超过8位 要大于赠送数量',
                             }],
                         })(<Input
                             addonAfter='份'
@@ -658,6 +659,7 @@ class GiftAddModalStep extends React.Component {
                             key: 'giveFoodCount',
                             rules: [{ required: true, message: '不能为空' }, {
                                 validator: (rule, v, cb) => {
+                                    this.secondForm.validateFields(['stageAmount'], { force: true })
                                     if (!/^\+?\d{0,8}$/.test(Number(v))) {
                                         cb(rule.message);
                                     }
