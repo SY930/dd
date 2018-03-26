@@ -190,7 +190,6 @@ class SelectLevel2 extends Component {
             // const array = this.props.plainOptions.filter((item, idx, array) => {
             //     return (this.state.checkedList.indexOf(item.content) != -1)
             // })
-            debugger
             const array = [];
             this.props.treeData.forEach((item) => {
                 item.shops.forEach((itm) => {
@@ -225,11 +224,17 @@ class SelectLevel2 extends Component {
     }
     componentWillReceiveProps(props) {
         const array = [];
-        if (props.selectedCities) {
-            props.selectedCities.map((item) => {
-                array.push(item.content);
+        // if (props.selectedCities) {
+        //     props.selectedCities.map((item) => {
+        //         array.push(item.content);
+        //     })
+        // }
+        props.treeData.forEach(tree => {
+            tree.selectedCities.forEach(selected => {
+                !array.includes(selected.content) && array.push(selected.content)
             })
-        }
+        })
+
         this.plainOptions = [];
         props.plainOptions.map((item) => {
             this.plainOptions.push(item.content);
@@ -392,11 +397,10 @@ export default class TreeSelect extends Component {
         const index = this.state.index;
         this.state.treeData[index].selectedCities = selectedCities;
         const showItems = [];
-        debugger
         this.state.treeData.map((item, index) => {
             if (item.selectedCities) {
                 item.selectedCities.map((itm, idx) => {
-                    showItems.push(itm)
+                    !_.find(showItems, itm) && showItems.push(itm)
                 })
             }
         })
