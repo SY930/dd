@@ -10,8 +10,9 @@ const SENDCARD_COLUMNS = [
         title: '批次号',
         dataIndex: 'batchNO',
         key: 'batchNO',
+        // className: 'x-tr',
         fixed: 'left',
-        width: 140,
+        width: 80,
     }, {
         title: '张数',
         dataIndex: 'totalSum',
