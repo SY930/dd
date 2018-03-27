@@ -4,16 +4,16 @@ export const FORMITEM_CONFIG = {
         type: 'text',
         placeholder: '请输入批次号',
         rules: [{ required: true, message: '批次号不能为空' },
-            { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
-            {
-                validator: (rule, v, cb) => {
-                    if (v === '') cb();
-                    if (v > 0 && v < 999999) {
-                        cb()
-                    } else { cb(rule.message); }
-                },
-                message: '批次号必须是1-999999之间的值',
-            }],
+        { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
+        {
+            validator: (rule, v, cb) => {
+                if (v === '') cb();
+                if (v > 0 && v < 999999) {
+                    cb()
+                } else { cb(rule.message); }
+            },
+            message: '批次号必须是1-999999之间的值',
+        }],
     },
     startEnd: {
         label: '起止号',
@@ -41,9 +41,9 @@ export const FORMITEM_CONFIG = {
         type: 'combo',
         defaultValue: '',
         // options: cardList,
-                props: {
-                    showSearch: true,
-                },
+        props: {
+            showSearch: true,
+        },
         rules: [
             { required: true, message: '会员卡类型不能为空' },
         ],
@@ -53,9 +53,9 @@ export const FORMITEM_CONFIG = {
         type: 'combo',
         defaultValue: '',
         // options: levelList,
-                props: {
-                    showSearch: true,
-                },
+        props: {
+            showSearch: true,
+        },
         rules: [
             { required: true, message: '会员卡等级不能为空' },
         ],

@@ -23,21 +23,16 @@ class CardOperate extends React.Component {
             selectedRow: [],
         }
         this.form = null;
+        this.proGiftLevel = this.proGiftLevel.bind(this);
     }
-    componentWillMount() {
+    componentDidMount() {
         const { levelList, FetchGiftLevel } = this.props;
         const _levelList = levelList.toJS();
         FetchGiftLevel({}).then((data = []) => {
             this.proGiftLevel(data);
         });
-        // if(_levelList.length > 0) {
-        //     this.proGiftLevel(_levelList);
-        // } else {
-        //     FetchGiftLevel({}).then((data = []) => {
-        //         this.proGiftLevel(data);
-        //     });
-        // }
     }
+
     componentWillReceiveProps(nextProps) {
         const { visible, type } = nextProps;
         this.form && this.form.resetFields();

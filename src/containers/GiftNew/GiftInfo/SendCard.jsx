@@ -600,7 +600,9 @@ class SendCard extends React.Component {
                             null
                     }
                 </Row>
-                <CardOperate {...cardProps} />
+                {
+                    cardProps.visible ? <CardOperate {...cardProps} /> : null
+                }
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal
