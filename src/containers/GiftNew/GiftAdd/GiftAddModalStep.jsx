@@ -1104,7 +1104,7 @@ class GiftAddModalStep extends React.Component {
                 surfix: '天',
                 rules: [{ required: false, message: `请输入数字` }, {
                     validator: (rule, v, cb) => {
-                        if (!/^\+?\d{0,8}$/.test(Number(v))) {
+                        if (!/^\+?\d{0,8}$/.test(Number(v)) && v !== undefined) { // 可不填，填了就校验
                             cb(rule.message);
                         }
                         cb();
