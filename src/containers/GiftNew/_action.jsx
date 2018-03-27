@@ -314,7 +314,15 @@ export const FetchQuotaCardShopByBatchNo = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
-            });
+            })
+            .catch(err => {
+                dispatch(getQuotaCardShopByBatchNoAC({
+                    payload: {
+                        dataSource: [],
+                    },
+                }));
+                return Promise.resolve([]);
+            })
     }
 };
 export const getQuotaCardBatchNoAC = (opt) => {
