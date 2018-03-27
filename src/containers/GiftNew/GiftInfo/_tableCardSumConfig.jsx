@@ -112,6 +112,9 @@ const CARD_SUM_FORMITEMS = {
         label: '卡状态',
         type: 'combo',
         options: GiftCfg.giftCardStatus,
+        props: {
+            showSearch: true,
+        },
         defaultValue: '',
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
@@ -145,6 +148,9 @@ const CARD_SUM_FORMITEMS = {
         defaultValue: '',
         labelCol: { span: 6 },
         wrapperCol: { span: 18 },
+        props: {
+            showSearch: true,
+        },
     },
 };
 const CARD_SUM_FROMKEYS = [{ col: { span: 8 }, keys: ['batchNO_sum', 'payWayName'] },

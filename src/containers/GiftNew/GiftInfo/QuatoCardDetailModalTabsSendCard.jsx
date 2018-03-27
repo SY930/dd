@@ -247,6 +247,9 @@ class CardOperate extends React.Component {
                 type: 'combo',
                 defaultValue: '',
                 options: cardList,
+                props: {
+                    showSearch: true,
+                },
                 rules: [
                     { required: true, message: '会员卡类型不能为空' },
                 ],
@@ -256,6 +259,9 @@ class CardOperate extends React.Component {
                 type: 'combo',
                 defaultValue: '',
                 options: levelList,
+                props: {
+                    showSearch: true,
+                },
                 rules: [
                     { required: true, message: '会员卡等级不能为空' },
                 ],

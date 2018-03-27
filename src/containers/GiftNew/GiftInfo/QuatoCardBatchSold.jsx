@@ -278,6 +278,9 @@ class QuotaCardBatchSold extends React.Component {
                 label: '批次号',
                 placeholder: '请选择批次号',
                 fixPopup: true,
+                props: {
+                    showSearch: true,
+                },
                 options: this.getBatchNoOptions(batchNoData),
             },
             price: {

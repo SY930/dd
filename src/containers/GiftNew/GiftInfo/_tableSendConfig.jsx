@@ -24,6 +24,9 @@ const FORMITEMS = {
     getWay: {
         label: '发出方式',
         type: 'combo',
+        props: {
+            showSearch: true,
+        },
         defaultValue: '',
         options: GiftCfg.getWay,
         labelCol: { span: 4 },

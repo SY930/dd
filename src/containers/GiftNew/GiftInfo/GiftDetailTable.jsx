@@ -375,6 +375,9 @@ class GiftDetailTable extends Component {
                 type: 'combo',
                 defaultValue: '',
                 options: GiftCfg.giftTypeName,
+                props: {
+                    showSearch: true,
+                },
             },
         };
         const formKeys = ['giftName', 'giftType'];

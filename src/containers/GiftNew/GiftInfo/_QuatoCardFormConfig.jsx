@@ -41,6 +41,9 @@ export const FORMITEM_CONFIG = {
         type: 'combo',
         defaultValue: '',
         // options: cardList,
+                props: {
+                    showSearch: true,
+                },
         rules: [
             { required: true, message: '会员卡类型不能为空' },
         ],
@@ -50,6 +53,9 @@ export const FORMITEM_CONFIG = {
         type: 'combo',
         defaultValue: '',
         // options: levelList,
+                props: {
+                    showSearch: true,
+                },
         rules: [
             { required: true, message: '会员卡等级不能为空' },
         ],

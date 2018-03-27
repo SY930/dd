@@ -142,7 +142,7 @@ const GiftCfg = {
     ],
     payWayName: [
         { value: '', label: '全部' },
-        { value: '现金', label: '现金' },
+        { value: '人民币', label: '人民币' },
         { value: '银行卡', label: '银行卡' },
         { value: '支票', label: '支票' },
         { value: '微信', label: '微信' },
