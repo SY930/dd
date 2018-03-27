@@ -85,7 +85,8 @@ class EditBoxForShops extends React.Component {
                 })
             }
         }
-        if (!Immutable.is(Immutable.fromJS(this.props.canUseShops), Immutable.fromJS(nextProps.canUseShops))) {
+        if (!Immutable.is(Immutable.fromJS(this.props.canUseShops), Immutable.fromJS(nextProps.canUseShops)) ||
+            !Immutable.is(Immutable.fromJS(nextProps.value), Immutable.fromJS(this.props.value))) {
             const { canUseShops = [] } = nextProps
             // 更新店铺源
             cityAreasShops_filter = (cityAreasShops || []).map((city) => {
