@@ -244,6 +244,19 @@ class GiftAddModalStep extends React.Component {
                 }
                 break;
 
+            case 'TrdTemplate':
+                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '活动券') {
+                    if (value) {
+                        newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
+                    } else {
+                        newKeys.includes('validityDays') ? newKeys.splice(-2, 1) : null
+                        delete values.validityDays
+                    }
+                    secondKeys[describe][0].keys = [...newKeys];
+                    this.setState({ secondKeys });
+                }
+                break;
+
             default:
                 break;
         }
