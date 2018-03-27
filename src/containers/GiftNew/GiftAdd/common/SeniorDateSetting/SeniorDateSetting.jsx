@@ -70,8 +70,8 @@ class SeniorDateSetting extends React.Component {
                 return {
                     activeType: '0',
                     periodType: String(setting.periodType),
-                    periodStart: setting.periodStart.length === 3 ? "0" + setting.periodStart : String(setting.periodStart),
-                    periodEnd: setting.periodEnd.length === 3 ? "0" + setting.periodEnd : String(setting.periodEnd),
+                    periodStart: !setting.periodStart ? '' : String(setting.periodStart),
+                    periodEnd: !setting.periodEnd ? '' : String(setting.periodEnd),
                     periodLabel: String(setting.periodLabel),
                 }
             })
