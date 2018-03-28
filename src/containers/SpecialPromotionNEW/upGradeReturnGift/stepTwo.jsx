@@ -106,8 +106,8 @@ class StepTwo extends React.Component {
                 ...addUpOpts,
             }
             if (this.props.type == '70' || this.props.type == '64') {
-                opts.selections = specialPromotion.shopIDList.filter(shopID => shopID != 0);
-                opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList.filter(shopID => shopID != 0) };
+                opts.selections = specialPromotion.shopIDList || [];
+                opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList || [] };
             }
             this.setState(opts)
         }
