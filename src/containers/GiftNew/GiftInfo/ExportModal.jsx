@@ -17,7 +17,7 @@ const ExportStatus = [
 const COLUMNS = [{
     title: '序号',
     dataIndex: 'index',
-    width: 40,
+    width: 20,
     className: styles.tdCenter,
     render: (text, record, index) => {
         return (
@@ -28,20 +28,20 @@ const COLUMNS = [{
     title: '名称',
     dataIndex: 'recordName',
     className: 'TableTxtCenter',
-    width: 120,
+    width: 230,
     render: (text) => {
-        return <span>{text || '--'}</span>
+        return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
     },
 }, {
     title: '时间',
     dataIndex: 'createStamp',
     className: 'TableTxtRight',
-    width: 60,
+    width: 80,
 }, {
     title: '状态',
     dataIndex: 'exportStatus',
     className: 'TableTxtLeft',
-    width: 60,
+    width: 40,
     render: (text, record, index) => {
         return <span>{mapValueToLabel(ExportStatus, String(text))}</span>
     },
@@ -49,7 +49,7 @@ const COLUMNS = [{
     title: '操作',
     dataIndex: 'payType',
     className: 'TableTxtLeft',
-    width: 60,
+    width: 40,
     render(text, record) {
         return (
             <span>
