@@ -1080,6 +1080,7 @@ class GiftAddModalStep extends React.Component {
                         describe={describe}
                         clearPromotion={() => {
                             values.promotionID = [] // 清空已选活动
+                            this.secondForm.setFieldsValue({ promotionID: [] })
                             this.setState({ values })
                         }}
                         data={data.extraInfo ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
