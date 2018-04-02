@@ -56,19 +56,15 @@ class BaseHualalaModal extends React.Component {
     componentDidMount() {
         this.setState({
             leftTreeData: this.props.treeData,
-            hadSelected: this.props.data,
-        }, () => {
-            this.state.hadSelected.size > 0 && this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
+            hadSelected: this.props.data || new Set(),
         });
     }
     componentWillReceiveProps(nextProps) {
         if (!is(fromJS(this.props.treeData), fromJS(nextProps.treeData)) || !is(fromJS(this.props.data), fromJS(nextProps.data))) {
             this.setState({
                 leftTreeData: nextProps.treeData,
-                hadSelected: nextProps.data,
-            }, () => {
-                this.state.hadSelected.size > 0 && this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
-            });
+                hadSelected: nextProps.data || new Set(),
+            })
         }
     }
 
@@ -76,7 +72,7 @@ class BaseHualalaModal extends React.Component {
         const { outItemName = '', outItemID = '', innerleftLabelKey = '', innerRightLabel = '', innerRightValue = '', innerBottomItemName = '' } = this.props
         const { outLabel = '', innerleftTitle = '', innerBottomTitle = '' } = this.props
         // loop左侧类别树
-        const { leftTreeData } = this.state;
+        const { leftTreeData, hadSelected = new Set() } = this.state;
         const loop = (data) => {
             if (undefined === data) {
                 return null
@@ -94,7 +90,7 @@ class BaseHualalaModal extends React.Component {
                     label={outLabel} // 外层➕下方文案
                     itemName={outItemName} // 外层已选，条目对应的展示name的key
                     itemID={outItemID} // 外层已选，条目对应的展示id的key
-                    data={this.state.hadSelected} // 外层已选，展示条目数据s
+                    data={hadSelected} // 外层已选，展示条目数据s
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
@@ -113,7 +109,7 @@ class BaseHualalaModal extends React.Component {
                         <HualalaSelected
                             selectdTitle={innerBottomTitle} // Modal内下侧框title
                             itemName={innerBottomItemName} // Modal内下侧已选条目展示name对应的key
-                            value={this.state.hadSelected} // Modal内下侧已选项s
+                            value={hadSelected} // Modal内下侧已选项s
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}
                         />

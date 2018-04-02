@@ -342,6 +342,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     renderCardLeval = () => {
         const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
+        const boxData = new Set()
+        // debugger
+        // cardScopeType=1 // @mock
+        cardScopeIDs.forEach((id) => {
+            // ['759692756909309952'].forEach((id) => { //  @mock
+            cardInfo.forEach((cat) => {
+                cat.cardTypeLevelList.forEach((level) => {
+                    if (level.cardLevelID === id) {
+                        boxData.add(level)
+                    }
+                })
+            })
+        })
         return (
             <div>
                 <FormItem
@@ -392,7 +405,27 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 }
                             </Select>)
                             :
-                            (<BaseHualalaModal />)
+                            (<BaseHualalaModal
+                                outLabel={'卡等级'} //   外侧选项+号下方文案
+                                outItemName="cardLevelName" //   外侧已选条目选项的label
+                                outItemID="cardLevelID" //   外侧已选条目选项的value
+                                innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                                leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                                innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                onChange={(value) => {
+                                    // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                    const _value = value.map(level => level.cardLevelID)
+                                    this.handleCardScopeList({
+                                        cardScopeIDs: _value,
+                                    });
+                                }}
+                            />)
                     }
                 </FormItem>
 
