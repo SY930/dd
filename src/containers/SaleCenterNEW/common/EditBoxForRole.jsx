@@ -117,7 +117,7 @@ class EditBoxForSubject extends React.Component {
 
         return (
             <div className={styles.treeSelectMain}>
-                <HualalaModal
+                <BaseHualalaModal
                     outLabel={'活动执行角色'} //   外侧选项+号下方文案
                     outItemName="roleName" //   外侧已选条目选项的label
                     outItemID="roleID" //   外侧已选条目选项的value
