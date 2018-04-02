@@ -9,6 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
+import { is } from 'immutable';
 import styles from '../ActivityPage.less';
 // import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import {
@@ -23,6 +24,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
+import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
@@ -46,6 +48,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
             blackListRadio: '0',
             display: 'none',
             cardScopeType: 0,
+            cardInfo: [],
+            cardScopeIDs: [],
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -59,6 +63,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.handleBlackListRadioChange = this.handleBlackListRadioChange.bind(this);
     }
     componentDidMount() {
+        this.props.fetchSpecialCardLevel({
+            data: { groupID: this.props.user.accountInfo.groupID }
+        })
         let userSetting = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
         const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         const blackList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'blackList']);
@@ -82,6 +89,12 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType'])) {
             subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
             this.setState({ subjectType });
+        }
+        // 获取会员等级信息
+        if (!is(this.props.groupCardTypeList, nextProps.groupCardTypeList)) {
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
         }
     }
 
@@ -310,7 +323,23 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
-    renderCardLeval = ($promotionDetail) => {
+    handleCardScopeList = (opts) => {
+        this.setState(opts, () => {
+            const { cardScopeType, cardScopeIDs } = this.state
+            this.props.setPromotionDetail({
+                cardScopeList: cardScopeIDs.length === 0
+                    ? [{ cardScopeType }]
+                    : cardScopeIDs.map((cardTypeID) => {
+                        return {
+                            cardScopeType,
+                            cardTypeID,
+                        }
+                    }),
+            })
+        })
+    }
+    renderCardLeval = () => {
+        const { cardInfo = [], cardScopeIDs = [] } = this.state;
         return (
             <div>
                 <FormItem
@@ -322,12 +351,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <RadioGroup
                         value={this.state.cardScopeType}
                         onChange={(e) => {
-                            this.setState({
+                            this.handleCardScopeList({
                                 cardScopeType: e.target.value,
                             });
-                            this.props.setPromotionDetail({
-                                cardScopeType: e.target.value,
-                            })
                         }
                         }
                     >
@@ -343,20 +369,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 >
                     <Select
                         size={'default'}
+                        multiple={true}
+                        showSearch={true}
                         className={styles.linkSelectorRight}
-                        // value={}
+                        value={cardScopeIDs}
                         onChange={(val) => {
-                            {/* console.log(val) */ }
-                            this.setState({
-                                // userSetting: val,
+                            console.log(val)
+                            this.handleCardScopeList({
+                                cardScopeIDs: val,
                             });
-                            this.props.setPromotionDetail({
-                                // userSetting: val,
-                            })
                         }}
                     >
                         {
-                            [].map(type => <Option key={type.key} value={type.key}>{type.name}</Option>)
+                            cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
 
                         }
                     </Select>
@@ -399,6 +424,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         user: state.user.toJS(),
     }
 };
@@ -419,6 +445,9 @@ const mapDispatchToProps = (dispatch) => {
 
         fetchSubjectListInfo: (opts) => {
             dispatch(fetchSubjectListInfoAC(opts));
+        },
+        fetchSpecialCardLevel: (opts) => {
+            dispatch(fetchSpecialCardLevel(opts));
         },
     }
 };

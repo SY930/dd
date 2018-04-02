@@ -4,7 +4,7 @@ import { connect } from 'react-redux'; import { Tree } from 'antd';
 import styles from '../ActivityPage.less';
 import BaseHualalaModal from './BaseHualalaModal';
 import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { fromJS, is } from 'immutable';
+import { is } from 'immutable';
 
 const TreeNode = Tree.TreeNode;
 

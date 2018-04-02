@@ -146,6 +146,7 @@ class NewPromotion extends React.Component {
             priceLst,
             scopeLst,
             shareLst: opts.shareLst,
+            cardScopeList: detailInfo.cardScopeList,
         }
         if (this.props.isNew === false) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
