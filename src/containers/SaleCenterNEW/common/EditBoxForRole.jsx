@@ -4,6 +4,7 @@ import { connect } from 'react-redux'; import { Tree } from 'antd';
 import styles from '../ActivityPage.less';
 import BaseHualalaModal from './BaseHualalaModal';
 import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { fromJS, is } from 'immutable';
 
 const TreeNode = Tree.TreeNode;
 
@@ -21,11 +22,12 @@ class EditBoxForSubject extends React.Component {
     }
 
     initialState(roleList, roleCollection) {
-        if (roleList === undefined || roleCollection === undefined) {
+        if (roleList === undefined || roleCollection === undefined || roleList.size === 0 || roleCollection.length === 0) {
             return
         }
 
         const _roleSelections = this.state.roleSelections;
+        _roleSelections.clear()
         roleCollection.forEach((roles) => {
             roles.roleName.forEach((role) => {
                 roleList.forEach((roleID) => {
@@ -54,7 +56,6 @@ class EditBoxForSubject extends React.Component {
 
         if (this.props.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
             this.clear();
-
             this.props.setPromotionDetail({
                 role: '',
             });
@@ -73,13 +74,12 @@ class EditBoxForSubject extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']) !=
-            nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree'])) {
+        if (!is(this.props.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']),
+            nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']))) {
             let _roles = nextProps.promotionDetailInfo.getIn(['$roleInfo', 'data', 'roleTree']);
             _roles = _roles ? _roles.toJS() : [];
             if (nextProps.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
                 this.clear();
-
                 this.props.setPromotionDetail({
                     role: '',
                 });
@@ -97,11 +97,9 @@ class EditBoxForSubject extends React.Component {
             }, () => {
                 this.initialState(this.state.role, this.state.roleCollection);
             });
-
         }
-
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']) !=
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role'])) {
+        if (!is(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']),
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role']))) {
             let _role = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'role']);
             _role = _role ? _role.toJS() : [];
             this.setState({

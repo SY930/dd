@@ -58,7 +58,7 @@ class BaseHualalaModal extends React.Component {
             leftTreeData: this.props.treeData,
             hadSelected: this.props.data,
         }, () => {
-            this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
+            this.state.hadSelected.size > 0 && this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -67,7 +67,7 @@ class BaseHualalaModal extends React.Component {
                 leftTreeData: nextProps.treeData,
                 hadSelected: nextProps.data,
             }, () => {
-                this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
+                this.state.hadSelected.size > 0 && this.props.onChange && this.props.onChange(Array.from(this.state.hadSelected));
             });
         }
     }
