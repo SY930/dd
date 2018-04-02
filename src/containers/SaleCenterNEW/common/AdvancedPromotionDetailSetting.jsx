@@ -28,6 +28,8 @@ import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySp
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
+import BaseHualalaModal from './BaseHualalaModal';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -339,7 +341,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
     }
     renderCardLeval = () => {
-        const { cardInfo = [], cardScopeIDs = [] } = this.state;
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
         return (
             <div>
                 <FormItem
@@ -353,6 +355,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         onChange={(e) => {
                             this.handleCardScopeList({
                                 cardScopeType: e.target.value,
+                                cardScopeIDs: [],
                             });
                         }
                         }
@@ -362,30 +365,35 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     </RadioGroup >
                 </FormItem>
                 <FormItem
-                    label="适用卡类/等级"
+                    label={`适用${cardScopeType == 0 ? '卡类' : '卡等级'}`}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select
-                        size={'default'}
-                        multiple={true}
-                        showSearch={true}
-                        className={styles.linkSelectorRight}
-                        value={cardScopeIDs}
-                        onChange={(val) => {
-                            console.log(val)
-                            this.handleCardScopeList({
-                                cardScopeIDs: val,
-                            });
-                        }}
-                    >
-                        {
-                            cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
+                    {
+                        cardScopeType == 0
+                            ?
+                            (<Select
+                                size={'default'}
+                                multiple={true}
+                                showSearch={true}
+                                className={styles.linkSelectorRight}
+                                value={cardScopeIDs}
+                                onChange={(val) => {
+                                    console.log(val)
+                                    this.handleCardScopeList({
+                                        cardScopeIDs: val,
+                                    });
+                                }}
+                            >
+                                {
+                                    cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
 
-                        }
-                    </Select>
-
+                                }
+                            </Select>)
+                            :
+                            (<BaseHualalaModal />)
+                    }
                 </FormItem>
 
             </div>
