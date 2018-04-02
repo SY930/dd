@@ -45,6 +45,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             subjectType: '0',
             blackListRadio: '0',
             display: 'none',
+            cardScopeType: 0,
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -319,19 +320,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup
-                        // value={this.state.subjectType}
+                        value={this.state.cardScopeType}
                         onChange={(e) => {
                             this.setState({
-                                // subjectType: e.target.value,
+                                cardScopeType: e.target.value,
                             });
                             this.props.setPromotionDetail({
-                                // subjectType: e.target.value,
+                                cardScopeType: e.target.value,
                             })
                         }
                         }
                     >
-                        <Radio key={'0'} value={'0'}>卡类别</Radio >
-                        <Radio key={'1'} value={'1'}>卡等级</Radio >
+                        <Radio key={0} value={0}>卡类别</Radio >
+                        <Radio key={1} value={1}>卡等级</Radio >
                     </RadioGroup >
                 </FormItem>
                 <FormItem
