@@ -105,7 +105,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 && this.state.userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' :
                                 this.state.userSetting}
                     onChange={(val) => {
-                        {/* console.log(val) */}
+                        {/* console.log(val) */ }
                         this.setState({
                             userSetting: val,
                         });
@@ -309,6 +309,62 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
+    renderCardLeval = ($promotionDetail) => {
+        return (
+            <div>
+                <FormItem
+                    label="会员范围"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        // value={this.state.subjectType}
+                        onChange={(e) => {
+                            this.setState({
+                                // subjectType: e.target.value,
+                            });
+                            this.props.setPromotionDetail({
+                                // subjectType: e.target.value,
+                            })
+                        }
+                        }
+                    >
+                        <Radio key={'0'} value={'0'}>卡类别</Radio >
+                        <Radio key={'1'} value={'1'}>卡等级</Radio >
+                    </RadioGroup >
+                </FormItem>
+                <FormItem
+                    label="适用卡类/等级"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        size={'default'}
+                        className={styles.linkSelectorRight}
+                        // value={}
+                        onChange={(val) => {
+                            {/* console.log(val) */ }
+                            this.setState({
+                                // userSetting: val,
+                            });
+                            this.props.setPromotionDetail({
+                                // userSetting: val,
+                            })
+                        }}
+                    >
+                        {
+                            [].map(type => <Option key={type.key} value={type.key}>{type.name}</Option>)
+
+                        }
+                    </Select>
+
+                </FormItem>
+
+            </div>
+        )
+    }
 
     render() {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
@@ -318,6 +374,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
+                {this.renderCardLeval($promotionDetail)}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)

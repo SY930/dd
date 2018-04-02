@@ -1,16 +1,11 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
 import { connect } from 'react-redux'; import { Tree } from 'antd';
+import styles from '../ActivityPage.less';
+import BaseHualalaModal from './BaseHualalaModal';
+import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const TreeNode = Tree.TreeNode;
-
-import styles from '../ActivityPage.less';
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
-import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 class EditBoxForSubject extends React.Component {
     constructor(props) {
@@ -22,13 +17,6 @@ class EditBoxForSubject extends React.Component {
             roleCurrentSelections: [],
             role: [], // 后台取过来的role
         };
-
-        this.handleTreeNodeChange = this.handleTreeNodeChange.bind(this);
-        this.handleGroupSelect = this.handleGroupSelect.bind(this);
-        this.handleSelectedChange = this.handleSelectedChange.bind(this);
-        this.handleEditorBoxChange = this.handleEditorBoxChange.bind(this);
-        this.handleSearchInputChange = this.handleSearchInputChange.bind(this);
-        this.clear = this.clear.bind(this);
         this.initialState = this.initialState.bind(this);
     }
 
@@ -125,161 +113,30 @@ class EditBoxForSubject extends React.Component {
     }
 
     render() {
-        const _roleCollection = this.state.roleCollection;
-        const loop = (data) => {
-            if (undefined === data) {
-                return null
-            }
+        const { roleCollection, roleSelections } = this.state;
 
-            return data.map((item, index) => {
-                return <TreeNode key={index} title={item.roleGroupName.content} />;
-            });
-        };
         return (
             <div className={styles.treeSelectMain}>
-                <HualalaEditorBox
-                    label={'活动执行角色'}
-                    itemName="roleName"
-                    itemID="roleID"
-                    data={this.state.roleSelections}
-                    onChange={this.handleEditorBoxChange}
-                    onTagClose={this.handleSelectedChange}
-                >
-                    <HualalaTreeSelect level1Title={'全部执行角色'}>
-                        <HualalaSearchInput onChange={this.handleSearchInputChange} />
-                        <Tree onSelect={this.handleTreeNodeChange}>
-                            {loop(_roleCollection)}
-                        </Tree>
-                        <HualalaGroupSelect
-                            options={this.state.roleOptions}
-                            labelKey="roleName"
-                            valueKey="roleID"
-                            value={this.state.roleCurrentSelections}
-                            onChange={this.handleGroupSelect}
-                        />
-                        <HualalaSelected itemName="roleName" selectdTitle={'已选执行角色'} value={this.state.roleSelections} onChange={this.handleSelectedChange} onClear={() => this.clear()} />
-                    </HualalaTreeSelect>
-                </HualalaEditorBox>
+                <HualalaModal
+                    outLabel={'活动执行角色'} //   外侧选项+号下方文案
+                    outItemName="roleName" //   外侧已选条目选项的label
+                    outItemID="roleID" //   外侧已选条目选项的value
+                    innerleftTitle={'全部执行角色'} //   内部左侧分类title
+                    innerleftLabelKey={'roleGroupName.content'}//   内部左侧分类对象的哪个属性为分类label
+                    leftToRightKey={'roleName'} // 点击左侧分类，的何种属性展开到右侧
+                    innerRightLabel="roleName" //   内部右侧checkbox选项的label
+                    innerRightValue="roleID" //   内部右侧checkbox选项的value
+                    innerBottomTitle={'已选执行角色'} //   内部底部box的title
+                    innerBottomItemName="roleName" //   内部底部已选条目选项的label
+                    treeData={roleCollection} // 树形全部数据源【{}，{}，{}】
+                    data={roleSelections} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                    onChange={(value) => {
+                        // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                        this.props.onChange && this.props.onChange(value)
+                    }}
+                />
             </div>
         );
-    }
-
-    clear() {
-        const { roleSelections } = this.state;
-        roleSelections.clear();
-        this.setState({
-            roleCurrentSelections: [],
-            roleSelections,
-        })
-    }
-
-    handleSearchInputChange(value) {
-        const roleList = this.state.roleCollection;
-        if (undefined === roleList) {
-            return null;
-        }
-
-        if (!((roleList instanceof Array) && roleList.length > 0)) {
-            return null;
-        }
-
-        const allMatchItem = [];
-        roleList.forEach((promotions) => {
-            promotions.roleName.forEach((promotion) => {
-                if (CC2PY(promotion.roleName).indexOf(value) !== -1 || promotion.roleName.indexOf(value) !== -1) {
-                    allMatchItem.push(promotion);
-                }
-            });
-        });
-
-        const roleCurrentSelections = [];
-        allMatchItem.forEach((storeEntity) => {
-            if (this.state.roleSelections.has(storeEntity)) {
-                roleCurrentSelections.push(storeEntity.roleID)
-            }
-        });
-
-        this.setState({
-            roleOptions: allMatchItem,
-            roleCurrentSelections,
-        });
-    }
-
-    // it's depends on
-    handleEditorBoxChange(value) {
-        const roleSelections = value;
-        // update currentSelections according the selections
-        const roleCurrentSelections = [];
-        this.state.roleOptions.forEach((storeEntity) => {
-            if (roleSelections.has(storeEntity)) {
-                roleCurrentSelections.push(storeEntity.roleID)
-            }
-        });
-
-        this.setState({
-            roleSelections: value,
-            roleCurrentSelections,
-        }, () => {
-            this.props.onChange && this.props.onChange(Array.from(value));
-        });
-    }
-
-    handleSelectedChange(value) {
-        const roleSelections = this.state.roleSelections;
-        let roleCurrentSelections = this.state.roleCurrentSelections;
-        if (value !== undefined) {
-            roleSelections.delete(value);
-            roleCurrentSelections = roleCurrentSelections.filter((item) => {
-                return item !== value.roleID
-            })
-        }
-
-        this.setState({
-            roleSelections,
-            roleCurrentSelections,
-        }, () => {
-            this.props.onChange && this.props.onChange(Array.from(roleSelections));
-        });
-    }
-
-    handleGroupSelect(value) {
-        if (value instanceof Array) {
-            // get the selections
-            const selectionsSet = this.state.roleSelections;
-            this.state.roleOptions.forEach((shopEntity) => {
-                if (value.includes(shopEntity.roleID)) {
-                    selectionsSet.add(shopEntity);
-                } else {
-                    selectionsSet.delete(shopEntity)
-                }
-            });
-
-            this.setState({ roleCurrentSelections: value, roleSelections: selectionsSet });
-        }
-    }
-
-    handleTreeNodeChange(value) {
-        const { roleSelections } = this.state;
-        if (value === undefined || value[0] === undefined) {
-            return null;
-        }
-        const indexArray = value[0].split('-').map((val) => {
-            return parseInt(val)
-        });
-        let storeOptions = [];
-        if (indexArray.length === 1) {
-            storeOptions = storeOptions.concat(this.state.roleCollection[indexArray[0]].roleName);
-        } else if (indexArray.length === 2) {
-            storeOptions = storeOptions.concat(this.state.roleCollection[indexArray[0]].children[indexArray[1]].children);
-        }
-
-        const roleCurrentSelections = [];
-        storeOptions.forEach((storeEntity) => {
-            if (roleSelections.has(storeEntity)) {
-                roleCurrentSelections.push(storeEntity.roleID)
-            }
-        });
-        this.setState({ roleOptions: storeOptions, roleCurrentSelections });
     }
 }
 
