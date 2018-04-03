@@ -70,6 +70,12 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.props.fetchSpecialCardLevel({
             data: { groupID: this.props.user.accountInfo.groupID }
         })
+        // 获取会员等级信息
+        if (this.props.groupCardTypeList) {
+            this.setState({
+                cardInfo: this.props.groupCardTypeList.toJS(),
+            })
+        }
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
@@ -469,7 +475,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
-                {this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE' ? this.renderCardLeval() : null}
+                {promotionType !== 'RECOMMEND_FOOD' && (this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE') ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)
