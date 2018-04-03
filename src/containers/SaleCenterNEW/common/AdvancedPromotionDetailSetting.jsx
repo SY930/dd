@@ -105,7 +105,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         let cardScopeType = 0;
         const cardScopeIDs = [];
         (cardScopeList || []).forEach((card) => {
-            cardScopeType = card.get('cardScopeType')
+            cardScopeType = card.get('cardScopeType') || 0
             cardScopeIDs.push(card.get('cardScopeID'))
         })
         this.setState({
