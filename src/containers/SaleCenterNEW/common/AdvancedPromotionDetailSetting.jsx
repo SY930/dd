@@ -143,10 +143,13 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
                 userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
-                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
+                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,              
+                cardScopeType: 0,
+                cardScopeIDs: [],
             }, () => {
                 this.props.setPromotionDetail({
                     userSetting: this.state.userSetting,
+                    cardScopeList: [],
                 })
             });
         }
@@ -169,12 +172,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     className={styles.linkSelectorRight}
                     value={this.state.userSetting}
                     onChange={(val) => {
-                        {/* console.log(val) */ }
                         this.setState({
                             userSetting: val,
+                            cardScopeType: 0,
+                            cardScopeIDs: [],
                         });
                         this.props.setPromotionDetail({
                             userSetting: val,
+                            cardScopeList: [],
                         })
                     }}
                 >
