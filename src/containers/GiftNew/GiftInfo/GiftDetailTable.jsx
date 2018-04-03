@@ -257,8 +257,13 @@ class GiftDetailTable extends Component {
                 .then((records) => {
                     this.setState({ sendTotalSize: records.totalSize })
                 });
-
-            axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' }, null, {
+            const opts = { pageNo: 1, pageSize: 10, giftItemID }
+            if (giftType === '91') { // 线上礼品卡
+                opts.WXgiftCardStatus = '1'
+            } else {
+                opts.giftStatus = '2'
+            }
+            axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
                 path: 'data',
             })
                 .then((records) => {

@@ -31,7 +31,7 @@ export const CLIENT_CATEGORY_RETURN_POINT = [
 export const CLIENT_CATEGORY_ADD_UP = [
     { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
     { key: 'CUSTOMER_SHOP_ACTIVATE', value: 'CUSTOMER_SHOP_ACTIVATE', name: '仅本店入会的会员' },
-    { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
+    // { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
 ];
 export const PAYMENTS_OPTIONS = Object.freeze([
     { key: 'ALL_SUBJECT', value: '0', name: '不限制' },

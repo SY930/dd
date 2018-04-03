@@ -21,6 +21,14 @@ const FORMITEMS = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
     },
+    WXgiftCardStatus: {
+        label: '状态',
+        type: 'combo',
+        defaultValue: '',
+        options: GiftCfg.WXgiftCardStatus,
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+    },
     getWay: {
         label: '发出方式',
         type: 'combo',
@@ -48,7 +56,9 @@ const FORMITEMS = {
     },
 };
 const SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
-    { col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
+{ col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
+const WX_SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
+{ col: { span: 12, offset: 0 }, keys: ['WXgiftCardStatus'] }];
 const SEND_COLUMNS = [
     {
         title: '序号',
@@ -150,4 +160,4 @@ const USED_COLUMNS = [
         key: 'customerMobile',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS };
