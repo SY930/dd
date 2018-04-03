@@ -263,7 +263,7 @@ class GiftDetailTable extends Component {
             } else {
                 opts.giftStatus = '2'
             }
-            axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
+            giftType !== '91' && axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
                 path: 'data',
             })
                 .then((records) => {
