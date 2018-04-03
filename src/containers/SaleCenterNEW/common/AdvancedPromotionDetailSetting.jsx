@@ -21,6 +21,7 @@ import {
 import {
     CLIENT_CATEGORY,
     PAYMENTS_OPTIONS,
+    CLIENT_CATEGORY_RETURN_POINT,
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
@@ -52,6 +53,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardScopeType: 0,
             cardInfo: [],
             cardScopeIDs: [],
+            userSettingOPtios: [],
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -70,16 +72,33 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
-        let subjectType = $promotionDetail.get('subjectType');
-        let blackList = $promotionDetail.get('blackList');
+        const subjectType = $promotionDetail.get('subjectType');
+        const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        userSetting = (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
-            && userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' : userSetting;
+        let userSettingOPtios = []
+        if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
+            userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
+        } else if (promotionType === 'RETURN_GIFT') {
+            userSettingOPtios =  this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
+        } else if (promotionType === 'RETURN_POINT') {
+            userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
+        } else {
+            userSettingOPtios = CLIENT_CATEGORY
+        }
+        if ((promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') && userSetting === 'ALL_USER') {
+            userSetting = 'CUSTOMER_ONLY';
+        }
+        if (promotionType === 'RETURN_GIFT' && this.props.stashSome) {
+            userSetting = 'CUSTOMER_ONLY';
+        }
+        if (promotionType === 'RETURN_POINT') {
+            userSetting = 'CUSTOMER_ONLY';
+        }
 
         const cardScopeList = $promotionDetail.get('cardScopeList');
         let cardScopeType = 0;
-        const cardScopeIDs = []
-        cardScopeList.forEach((card) => {
+        const cardScopeIDs = [];
+        (cardScopeList || []).forEach((card) => {
             cardScopeType = card.get('cardScopeType')
             cardScopeIDs.push(card.get('cardScopeID'))
         })
@@ -89,10 +108,16 @@ class AdvancedPromotionDetailSetting extends React.Component {
             blackListRadio: blackList ? '1' : '0',
             cardScopeType,
             cardScopeIDs,
+            userSettingOPtios,
+        }, () => {
+            this.props.setPromotionDetail({
+                userSetting: this.state.userSetting,
+            })
         });
     }
     componentWillReceiveProps(nextProps) {
         let { userSetting, subjectType } = this.state;
+        const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
             userSetting = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
@@ -108,6 +133,16 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.setState({
                 cardInfo: nextProps.groupCardTypeList.toJS(),
             })
+        }
+        if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
+            this.setState({
+                userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
+                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
+            }, () => {
+                this.props.setPromotionDetail({
+                    userSetting: this.state.userSetting,
+                })
+            });
         }
     }
 
@@ -126,11 +161,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 <Select
                     size={'default'}
                     className={styles.linkSelectorRight}
-                    value={promotionType === 'RETURN_POINT' ? 'CUSTOMER_ONLY' :
-                        promotionType === 'RETURN_GIFT' && this.props.stashSome ? 'CUSTOMER_ONLY' :
-                            (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
-                                && this.state.userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' :
-                                this.state.userSetting}
+                    value={this.state.userSetting}
                     onChange={(val) => {
                         {/* console.log(val) */ }
                         this.setState({
@@ -142,23 +173,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     }}
                 >
                     {
-                        promotionType === 'RETURN_POINT' ? (<Option key={'CUSTOMER_ONLY'} value={'CUSTOMER_ONLY'}>{'仅会员'}</Option>) :
-                            promotionType === 'RETURN_GIFT' ?
-                                this.props.stashSome ?
-                                    [CLIENT_CATEGORY_RETURN_GIFT[1]].map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                    CLIENT_CATEGORY_RETURN_GIFT.map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE' ?
-                                    CLIENT_CATEGORY_ADD_UP.map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                    CLIENT_CATEGORY
-                                        .map((type) => {
-                                            return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                        })
+                        this.state.userSettingOPtios
+                            .map((type) => {
+                                return <Option key={type.key} value={type.key}>{type.name}</Option>
+                            })
                     }
                 </Select>
             </FormItem>
@@ -451,7 +469,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
-                {this.renderCardLeval($promotionDetail)}
+                {this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE' ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)
