@@ -157,7 +157,13 @@ class GiftAddModal extends React.Component {
                     <FormItem style={{ marginBottom: 0 }}>
                         {decorator({
                             key: 'giftName',
-                            rules: [{ required: true, message: '礼品名称不能为空' }, { max: 50, message: '最多50个字符' }],
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '汉字、字母、数字，50个字符以内',
+                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{1,50}$/,
+                                },
+                            ],
                         })(<Input size="large" placeholder="请输入礼品名称" />)}
                     </FormItem>
                 </Col>
