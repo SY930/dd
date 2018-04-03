@@ -68,16 +68,27 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.props.fetchSpecialCardLevel({
             data: { groupID: this.props.user.accountInfo.groupID }
         })
-        let userSetting = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
-        const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
-        const blackList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'blackList']);
+        const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
+        let userSetting = $promotionDetail.get('userSetting');
+        let subjectType = $promotionDetail.get('subjectType');
+        let blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         userSetting = (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
             && userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' : userSetting;
+
+        const cardScopeList = $promotionDetail.get('cardScopeList');
+        let cardScopeType = 0;
+        const cardScopeIDs = []
+        cardScopeList.forEach((card) => {
+            cardScopeType = card.get('cardScopeType')
+            cardScopeIDs.push(card.get('cardScopeID'))
+        })
         this.setState({
             userSetting,
             subjectType,
             blackListRadio: blackList ? '1' : '0',
+            cardScopeType,
+            cardScopeIDs,
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -331,10 +342,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.props.setPromotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
                     ? [{ cardScopeType }]
-                    : cardScopeIDs.map((cardTypeID) => {
+                    : cardScopeIDs.map((cardScopeID) => {
                         return {
                             cardScopeType,
-                            cardTypeID,
+                            cardScopeID,
                         }
                     }),
             })
@@ -343,7 +354,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
     renderCardLeval = () => {
         const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
         const boxData = new Set()
-        // debugger
         // cardScopeType=1 // @mock
         cardScopeIDs.forEach((id) => {
             // ['759692756909309952'].forEach((id) => { //  @mock

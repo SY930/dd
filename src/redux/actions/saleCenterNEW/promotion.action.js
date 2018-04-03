@@ -151,6 +151,7 @@ export const fetchPromotionDetail = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_DETAIL,
         })
+        // fetch('http://rap2api.taobao.org/app/mock/8221/POST/detail', {
         fetch('/api/promotion/detail_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),

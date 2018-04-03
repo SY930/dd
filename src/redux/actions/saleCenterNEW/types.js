@@ -701,6 +701,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             categoryOrDish: 0, // promotion advanced setting
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
+            cardScopeList: source.cardScopeList || [],
         };
     }
     // compose scopeList
