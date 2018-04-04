@@ -126,7 +126,7 @@ class SendMsgInfo extends React.Component {
                                 (specialPromotion.accountInfoList || []).map((accountInfo) => {
                                     if (accountInfo.settleUnitID == settleUnitID) {
                                         return (
-                                            <div style={{ margin: '8px 8px 0' }}>{`短信可用条数：${accountInfo.smsCount}条； 可用金额：${accountInfo.balance}元； 先扣条数，条数不足再扣金额`}</div>
+                                            <div style={{ margin: '8px 8px 0' }}>{`短信可用条数：${accountInfo.smsCount}条`}</div>
                                         )
                                     }
                                 })
