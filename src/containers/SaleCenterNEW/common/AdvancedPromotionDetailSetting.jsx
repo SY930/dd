@@ -179,7 +179,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         });
                         this.props.setPromotionDetail({
                             userSetting: val,
-                            cardScopeList: [],
+                            cardScopeList: undefined,
                         })
                     }}
                 >
@@ -370,7 +370,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             const { cardScopeType, cardScopeIDs } = this.state
             this.props.setPromotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
-                    ? [{ cardScopeType }]
+                    ? undefined
                     : cardScopeIDs.map((cardScopeID) => {
                         return {
                             cardScopeType,
