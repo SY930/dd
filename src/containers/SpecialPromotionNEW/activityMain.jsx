@@ -89,13 +89,14 @@ class ActivityMain extends React.Component {
         ];
         const _vipStash = [
             NewWakeUpReturnGift, // 唤醒送礼
+            NewColorsEggCat, // 评价送礼，复用彩蛋猫
         ];
         let pagesArr;
-        if (HUALALA.ENVIRONMENT !== 'production-release') {
+        // if (HUALALA.ENVIRONMENT !== 'production-release') {
             pagesArr = _pages.concat(_vipStash);
-        } else {
-            pagesArr = _pages;
-        }
+        // } else {
+        //     pagesArr = _pages;
+        // }
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion, {
                 callbacktwo: (arg) => {

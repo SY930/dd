@@ -16,6 +16,7 @@ import {
     Radio,
     TreeSelect,
     Icon,
+    Col,
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -45,6 +46,7 @@ class CardLevel extends React.Component {
             tableDisplay: false,
             cardLevelRangeType: '0',
             allCheckDisabel: false,
+            defaultCardType: '',
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -85,10 +87,12 @@ class CardLevel extends React.Component {
             this.setState({
                 cardLevelRangeType: thisEventInfo.cardLevelRangeType || '0',
                 cardLevelIDList: thisEventInfo.cardLevelIDList || [],
+                defaultCardType: thisEventInfo.defaultCardType || '',
             }, () => {
                 this.props.onChange({
                     cardLevelRangeType: this.state.cardLevelRangeType,
                     cardLevelIDList: this.state.cardLevelIDList,
+                    defaultCardType: this.state.defaultCardType,
                 })
             })
         }
@@ -98,18 +102,10 @@ class CardLevel extends React.Component {
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         // 获取会员等级信息
-        if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data) {
-            if (nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data &&
-                nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList) {
-                this.setState({
-                    cardInfo: nextProps.mySpecialActivities.$specialDetailInfo.data.cardInfo.data.groupCardTypeList,
-                })
-            } else {
-                this.setState({
-                    cardInfo: [],
-                })
-            }
+        if (nextProps.groupCardTypeList) {
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
         }
         // 【升级，累计】：每次第一步选择时间变化，就清空已选
         if (this.props.type === '61' || this.props.type === '62') {
@@ -175,23 +171,66 @@ class CardLevel extends React.Component {
         }
     }
     handleSelectChange(value) {
-        const _value = value.filter((val) => {
-            return val.indexOf('CAT_') == -1;
-        })
+        let { cardInfo = [], defaultCardType = '' } = this.state;
+        const DefaultCardTypes = cardInfo.filter((cat) => {
+            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
+            const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
+            return _.intersection(thisCatIds, value).length > 0
+        });
+        const DefaultCardTypesIDs = DefaultCardTypes.map(cate => cate.cardTypeID); // 当前可选新用户注册卡类
+        defaultCardType = DefaultCardTypesIDs.includes(defaultCardType) ? defaultCardType : ''; // 当前可选新用户注册卡类包含已选注册卡类吗？
+
+        // 点击适用卡等级，对点击卡类不作出反应
+        const _value = value.filter(val => val.indexOf('CAT_') == -1)
         this.setState({
             cardLevelIDList: _value,
+            defaultCardType,
         }, () => {
             this.props.form.setFieldsValue({ 'treeSelect': _value });
         })
-        this.props.onChange && this.props.onChange({ cardLevelIDList: _value })
+        this.props.onChange && this.props.onChange({ cardLevelIDList: _value, defaultCardType })
     }
     handleRadioChange(e) {
         const opts = {
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
+            defaultCardType: '',
         };
         this.setState(opts)
         this.props.onChange && this.props.onChange(opts)
+    }
+    handleDefaultCardTypeChange = (value) => {
+        this.setState({ defaultCardType: value })
+        this.props.onChange && this.props.onChange({ defaultCardType: value })
+    }
+    renderDefaultCardType = () => {
+        const { cardInfo = [], cardLevelIDList = [], cardLevelRangeType, defaultCardType = '' } = this.state;
+        const DefaultCardTypes = cardLevelRangeType == 0 ? cardInfo : cardInfo.filter((cat) => {
+            // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
+            const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
+            return _.intersection(thisCatIds, cardLevelIDList).length > 0
+        });
+
+        return (
+            <FormItem
+                style={{ marginLeft: -13 }}
+                validateStatus={defaultCardType ? 'success' : 'error'}
+                help={defaultCardType ? null : '不可为空'}
+                label="新用户注册成为会员的卡类选择"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 14 }}
+            >
+                <Select
+                    showSearch={true}
+                    onChange={this.handleDefaultCardTypeChange}
+                    value={defaultCardType}
+                >
+                    {
+                        DefaultCardTypes.map(cate => <Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Option>)
+                    }
+                </Select>
+            </FormItem>
+        )
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -301,7 +340,7 @@ class CardLevel extends React.Component {
                             {
                                 !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
 
-                                <Icon
+                                    <Icon
                                         type="exclamation-circle" className={styles.cardLevelTreeIcon}
                                         onClick={() => {
                                             this.setState({ tableDisplay: !this.state.tableDisplay })
@@ -312,9 +351,13 @@ class CardLevel extends React.Component {
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-                    <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}>
+                        <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}>
                             <ExcludeCardTable catOrCard={this.props.catOrCard} />
                         </div>
+                }
+                {
+                    this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
+                        this.renderDefaultCardType() : null
                 }
             </Form>
         );
@@ -324,7 +367,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
 
     };

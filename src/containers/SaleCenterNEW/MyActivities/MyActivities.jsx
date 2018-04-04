@@ -341,7 +341,19 @@ class MyActivities extends React.Component {
             }
         }
     }
-
+    shouldComponentUpdate(nextProps, nextState) {
+        const thisStatus = this.props.myActivities.getIn(['$promotionDetailInfo', 'status']);
+        const nextStatus = nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
+        // console.log('props渲染:-----', (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
+        //     (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')))
+        // console.log('state渲染:-----', !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)))
+        // console.log('详情detail渲染:-----', thisStatus !== nextStatus && nextStatus === 'success')
+        return (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
+            (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList') ||
+                !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)) ||
+                (thisStatus !== nextStatus && nextStatus === 'success'))
+        // return true
+    }
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
@@ -460,12 +472,10 @@ class MyActivities extends React.Component {
     };
 
     handleUpdateOpe() {
-        const opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-            shopID: arguments[1].maintenanceLevel == 'SHOP_LEVEL' ? arguments[1].shopIDLst : undefined,
-        };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
+            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
+        }
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,
@@ -478,6 +488,14 @@ class MyActivities extends React.Component {
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
                 return null;
+            }
+            if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
+                const opts = {
+                    _groupID: this.props.user.accountInfo.groupID,
+                    shopID: responseJSON.promotionInfo.master.shopIDLst,
+                };
+                this.props.fetchFoodCategoryInfo({ ...opts });
+                this.props.fetchFoodMenuInfo({ ...opts });
             }
             // 把查询到的活动信息存到redux
             this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
@@ -1130,6 +1148,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
+        // console.log('渲染:-----')
         return (
             <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <Col span={24} className="layoutsHeader">

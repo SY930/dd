@@ -84,31 +84,31 @@ export const COLUMNS = [
     //     key: 'usedCount',
     //     width: 100,
     //     className: 'x-tr',
-    }, {
-        title: '礼品规则',
-        dataIndex: 'giftRule',
-        key: 'giftRule',
-        className: 'gift-rule',
-        render: (value, record) => {
-            if (record.giftTypeName == '菜品优惠券') {
-                return (record.isFoodCatNameList ?
-                    <div>
-                        {value.map((item, idx) => {
-                            if (idx < (value.length - 1)) {
-                                return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-                            }
-                            return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-                        })}
-                    </div>
-                    :
-                    <div>{value.map((item, idx) => {
-                        return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-                    })}</div>)
-            }
-            return (<div>{value.map((item, idx) => {
-                return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-            })}</div>)
-        },
+    // }, {
+    //     title: '礼品规则',
+    //     dataIndex: 'giftRule',
+    //     key: 'giftRule',
+    //     className: 'gift-rule',
+    //     render: (value, record) => {
+    //         if (record.giftTypeName == '菜品优惠券') {
+    //             return (record.isFoodCatNameList ?
+    //                 <div>
+    //                     {value.map((item, idx) => {
+    //                         if (idx < (value.length - 1)) {
+    //                             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
+    //                         }
+    //                         return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
+    //                     })}
+    //                 </div>
+    //                 :
+    //                 <div>{value.map((item, idx) => {
+    //                     return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
+    //                 })}</div>)
+    //         }
+    //         return (<div>{value.map((item, idx) => {
+    //             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
+    //         })}</div>)
+    //     },
     }, {
         title: '礼品描述',
         dataIndex: 'giftRemark',

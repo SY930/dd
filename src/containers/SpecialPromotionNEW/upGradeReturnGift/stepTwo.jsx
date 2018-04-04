@@ -105,13 +105,14 @@ class StepTwo extends React.Component {
                 // cardLevelIDList: specialPromotion.cardLevelIDList,
                 ...addUpOpts,
             }
-            if (this.props.type == '70') {
-                opts.selections = specialPromotion.shopIDList.filter(shopID => shopID != 0);
-                opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList.filter(shopID => shopID != 0) };
+            if (this.props.type == '70' || this.props.type == '64') {
+                opts.selections = specialPromotion.shopIDList || [];
+                opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList || [] };
             }
             this.setState(opts)
         }
-        if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) && this.props.type == '70') {
+        if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
+            (this.props.type == '70' || this.props.type == '64')) {
             this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
     }
@@ -200,7 +201,8 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
-        const opts = this.props.type == '70' ?
+
+        const opts = this.props.type == '70' || this.props.type == '64' ?
             {
                 smsTemplate: this.state.message,
                 shopIDList: this.state.selections,
@@ -223,10 +225,15 @@ class StepTwo extends React.Component {
         if (this.state.settleUnitID) {
             opts.settleUnitID = this.state.settleUnitID;
         }
-        if (flag) {
+        //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
+        const noSelected64 = this.props.type == 64 &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
+            this.state.selections.length === 0
+        if (flag && !noSelected64) {
             this.props.setSpecialBasicInfo(opts);
         }
-        return flag;
+        return flag && !noSelected64;
     }
     onCardLevelChange(obj) {
         this.setState(obj)
@@ -237,20 +244,33 @@ class StepTwo extends React.Component {
         })
     }
     renderShopsOptions() {
+        // 当有人领取礼物后，礼物不可编辑，加蒙层
+        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;
+        //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
+        const noSelected64 = this.props.type == 64 &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
+            this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
+            this.state.selections.length === 0
         return (
-            <Form.Item
-                label="适用店铺"
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-            >
-                <EditBoxForShops
-                    value={this.state.selections_shopsInfo}
-                    onChange={
-                        this.editBoxForShopsChange
-                    }
-                />
-            </Form.Item>
+            <div className={styles.giftWrap}>
+                <Form.Item
+                    label="适用店铺"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    validateStatus={noSelected64 ? 'error' : 'success'}
+                    help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
+                >
+                    <EditBoxForShops
+                        value={this.state.selections_shopsInfo}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        type={this.props.type}
+                    />
+                </Form.Item>
+                <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
+            </div>
         );
     }
     render() {
@@ -267,7 +287,7 @@ class StepTwo extends React.Component {
         return (
             <Form>
                 {
-                    this.props.type == '70' ? this.renderShopsOptions() : null
+                    this.props.type == '70' || this.props.type == '64' ? this.renderShopsOptions() : null
                 }
                 {
                     this.props.type == '62' ?
@@ -300,7 +320,7 @@ class StepTwo extends React.Component {
                                 type={this.props.type}
                                 form={this.props.form}
                             />
-                        </div> : (this.props.type == '70' ? null :
+                        </div> : (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
                                 catOrCard={'card'}
@@ -339,6 +359,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
 
     };
 };

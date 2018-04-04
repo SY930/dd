@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
@@ -12,6 +12,7 @@ import GiftDetailModal from './GiftDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
 import GiftAddModalStep from '../GiftAdd/GiftAddModalStep';
+import ExportModal from './ExportModal';
 import { COLUMNS } from './_tableListConfig';
 import {
     FetchGiftList,
@@ -20,6 +21,8 @@ import {
     UpdateDetailModalVisible,
     FetchSharedGifts,
     emptyGetSharedGifts,
+    queryCouponShopList,
+    queryWechatMpInfo,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -59,6 +62,7 @@ class GiftDetailTable extends Component {
         }).then((data = []) => {
             this.proGiftData(data);
         });
+        this.props.queryWechatMpInfo();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -108,7 +112,7 @@ class GiftDetailTable extends Component {
             this.setState({ dataSource: [], total: _total });
             return;
         }
-        const newDataSource = gifts.map((g, i) => {
+        const newDataSource = (gifts || []).map((g, i) => {
             g.key = i + 1;
             g.giftType = String(g.giftType);
             g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
@@ -121,6 +125,7 @@ class GiftDetailTable extends Component {
             g.giftRule = g.giftRule.split('</br>');
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
             g.usingTimeType = g.usingTimeType.split(',');
+            g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             return g;
         });
@@ -204,10 +209,10 @@ class GiftDetailTable extends Component {
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         this.setState({ visibleEdit: true, editGift: gift });
-        const { FetchSharedGifts } = this.props;
+        const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         // 请求获取promotionList--券活动
-        gift.value != 80 ? this.props.fetchAllPromotionList({
+        gift.value == 100 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
         }) : null;
     }
@@ -225,13 +230,15 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                fetchData('removeGift_dkl', { giftItemID }).then((data) => {
-                    message.success('此礼品删除成功');
-                    const { queryParams } = this.state;
-                    const { FetchGiftList } = this.props;
-                    FetchGiftList(queryParams).then((data = []) => {
-                        this.proGiftData(data);
-                    });
+                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
+                    if (data.code === '000') {
+                        message.success('此礼品删除成功');
+                        const { queryParams } = this.state;
+                        const { FetchGiftList } = this.props;
+                        FetchGiftList(queryParams).then((data = []) => {
+                            this.proGiftData(data);
+                        });
+                    }
                 });
             },
             onCancel: () => {
@@ -250,7 +257,10 @@ class GiftDetailTable extends Component {
                 .then((records) => {
                     this.setState({ sendTotalSize: records.totalSize })
                 });
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' } })
+
+            axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { pageNo: 1, pageSize: 10, giftItemID, giftStatus: '2' }, null, {
+                path: 'data',
+            })
                 .then((records) => {
                     this.setState({ usedTotalSize: records.totalSize })
                 });
@@ -318,12 +328,15 @@ class GiftDetailTable extends Component {
                 case '20':
                 case '80':
                 case '100':
-                    return <GiftAddModalStep {...editProps} />;
+                case '91':
+                case '110':
+                case '111':
+                    return visibleEdit ? <GiftAddModalStep {...editProps} /> : null;
                 case '30':
                 case '40':
                 case '42':
                 case '90':
-                    return <GiftAddModal {...editProps} />;
+                    return visibleEdit ? <GiftAddModal {...editProps} /> : null;
                 default:
                     return null;
             }
@@ -336,7 +349,10 @@ class GiftDetailTable extends Component {
                 case '30':
                 case '40':
                 case '42':
+                case '91':
                 case '100':
+                case '110':
+                case '111':
                     return (<GiftDetailModal
                         {...detailProps}
                         usedTotalSize={this.state.usedTotalSize || 0}
@@ -359,6 +375,9 @@ class GiftDetailTable extends Component {
                 type: 'combo',
                 defaultValue: '',
                 options: GiftCfg.giftTypeName,
+                props: {
+                    showSearch: true,
+                },
             },
         };
         const formKeys = ['giftName', 'giftType'];
@@ -369,6 +388,14 @@ class GiftDetailTable extends Component {
                         <div className="layoutsToolLeft">
                             <h1>礼品信息</h1>
                         </div>
+                        <Col span={22} style={{ textAlign: 'right' }}>
+                            {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+                            <Button
+                                type="ghost"
+                                onClick={() => this.setState({ exportVisible: true })}
+                            ><Icon type="export" />导出历史</Button>
+                            {/* </Authority> */}
+                        </Col>
                     </Row>
                     <Row className="layoutsLine"></Row>
                     <Row className="layoutsSearch">
@@ -423,6 +450,12 @@ class GiftDetailTable extends Component {
                 <Col>
                     {GiftEdit(editGift.value)}
                 </Col>
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </Row>
         )
     }
@@ -448,6 +481,8 @@ function mapDispatchToProps(dispatch) {
             dispatch(toggleIsUpdateAC(opts))
         },
         fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
+        queryCouponShopList: (opts) => dispatch(queryCouponShopList(opts)),
+        queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
     };
 }
 

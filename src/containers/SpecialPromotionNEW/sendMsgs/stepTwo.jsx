@@ -342,7 +342,7 @@ class StepTwo extends React.Component {
         }
         return (
             <Form>
-                <FormItem
+                {/* <FormItem
                     label="最后消费日期"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -365,13 +365,13 @@ class StepTwo extends React.Component {
                     </Col>
                     <Col span={12} offset={1}>
                         <FormItem className={styles.FormItemStyle} validateStatus={lastTransTimeStatus} help={lastTransTimeStatus == 'success' ? null : '请选择最后消费日期'}>
-                            {/* 选择不限制的时候,不能选择最后消费日期 */}
+                            
                             <DatePicker disabled={lastTransTimeFilter == '0'} {...lastTimeProps} />
                         </FormItem>
                     </Col>
-                </FormItem>
+                </FormItem> */}
 
-                <FormItem
+                {/* <FormItem
                     label="最后消费店铺"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -380,7 +380,7 @@ class StepTwo extends React.Component {
                     <Col span={24} className="crmOperationTree">
                         <TreeSelect {...treeProps} />
                     </Col>
-                </FormItem>
+                </FormItem> */}
                 <FormItem
                     label="会员群体"
                     className={styles.FormItemStyle}
@@ -405,7 +405,7 @@ class StepTwo extends React.Component {
                     )
                     }
                 </FormItem>
-                <FormItem
+                {/* <FormItem
                     label="其他限制"
                     className={[styles.noPadding, styles.firstRadio].join(' ')}
                     wrapperCol={{ span: 17 }}
@@ -415,7 +415,7 @@ class StepTwo extends React.Component {
                         <Radio value={'0'} key={0}>不限制</Radio>
                         <Radio value={'1'} key={1}>仅限本月生日的会员参与</Radio>
                     </RadioGroup>
-                </FormItem>
+                </FormItem> */}
 
                 <SendMsgInfo
                     sendFlag={sendFlag}

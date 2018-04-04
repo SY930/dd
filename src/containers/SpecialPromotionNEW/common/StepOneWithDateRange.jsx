@@ -8,6 +8,7 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     saleCenterGetExcludeEventList,
+    saleCenterGetShopOfEventByDate,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { SEND_MSG } from '../../../redux//actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -92,7 +93,7 @@ class StepOneWithDateRange extends React.Component {
             },
         })
     }
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps, nextState) {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
@@ -134,6 +135,10 @@ class StepOneWithDateRange extends React.Component {
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
             this.setErrors('rangePicker', '相同时段内，只允许一个唤醒送礼活动进行，您已有唤醒送礼活动正在进行，请重选时段')
+        }
+        if (this.state.allShopCheck) {
+            nextFlag = false;
+            this.setErrors('rangePicker', '当前时段内，可选店铺被其他同类活动全部占用，请重选时段')
         }
         if (nextFlag) {
             if (this.props.type == '53' || this.props.type == '50') {
@@ -205,9 +210,21 @@ class StepOneWithDateRange extends React.Component {
             if (this.props.type === '63') {
                 this.props.saleCenterGetExcludeEventList(opts);
             }
+            if (this.props.type === '64') {
+                // EditBoxForShops组件-编辑时-componentDidMount再发一次;
+                this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined }).then(allShopCheck => {
+                    this.setState({
+                        allShopCheck
+                    }, () => {
+                        allShopCheck && this.setErrors('rangePicker', '当前时段内，可选店铺被其他同类活动全部占用，请重选时段')
+                    })
+                })
+            }
+
         }
         this.setState({
             dateRange: date,
+            dateString,
         })
     }
 
@@ -463,6 +480,7 @@ class StepOneWithDateRange extends React.Component {
                                                 placeholder="请选择时间"
                                             />
                                         )}
+                                        <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
                                     </FormItem>
                                 </Col>
                             </Row> : null
@@ -555,7 +573,7 @@ class StepOneWithDateRange extends React.Component {
                                     </Row>
                                     {
                                         (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.state.iconDisplay) ||
-                                        this.state.getExcludeEventList.length > 0 ?
+                                            this.state.getExcludeEventList.length > 0 ?
                                             <Icon
                                                 type="exclamation-circle"
                                                 className={styles.cardLevelTreeIcon}
@@ -625,6 +643,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         saleCenterGetExcludeEventList: (opts) => {
             dispatch(saleCenterGetExcludeEventList(opts));
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            return dispatch(saleCenterGetShopOfEventByDate(opts));
         },
     }
 };

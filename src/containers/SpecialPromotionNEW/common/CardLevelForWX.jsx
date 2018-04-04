@@ -10,6 +10,10 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import axios from 'axios';
+import { axiosData } from '../../../helpers/util';
+
+
 import {
     Form,
     Radio,
@@ -17,11 +21,15 @@ import {
     Icon,
     Tag,
 } from 'antd';
+import Immutable from 'immutable';
+
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
+import EditBoxForShops from './EditBoxForShops';
+
 // import _ from 'lodash';
 // import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
@@ -43,10 +51,13 @@ class CardLevelForWX extends React.Component {
             cardLevelIDList: [],
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
+            canUseShops: [], // 所选卡类适用店铺      
+            selections_shopsInfo: { shopsInfo: [] }, // 已选店铺
+
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
-        this.renderTags = this.renderTags.bind(this);
+        this.renderShopsOptions = this.renderShopsOptions.bind(this);
     }
 
     componentDidMount() {
@@ -56,12 +67,14 @@ class CardLevelForWX extends React.Component {
         this.setState({
             cardLevelRangeType: cardLevelRangeType || '0',
             cardLevelIDList: thisEventInfo.cardLevelIDList || [],
+            selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
         }, () => {
             this.props.onChange({
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
         })
+        this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
     }
 
     componentWillReceiveProps(nextProps) {
@@ -135,26 +148,42 @@ class CardLevelForWX extends React.Component {
         } else {
             this.setState({ allCheckDisabel: false })
         }
+        if (!Immutable.is(Immutable.fromJS(thisEventInfo.shopIDList), Immutable.fromJS(nextEventInfo.shopIDList))) {
+            this.setState({ selections_shopsInfo: { shopsInfo: nextEventInfo.shopIDList || [] } })
+        }
+    }
+
+    // 查询已选卡类型的可用店铺
+    queryCanuseShops = (cardTypeIDs) => {
+        // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
+        //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            cardTypeIds: cardTypeIDs.join(','),
+            queryCardType: cardTypeIDs.length === 0 ? 0 : 1,
+        }, null, { path: 'data.cardTypeShopList' })
+            .then(cardTypeShopList => {
+                let canUseShops = [];
+                (cardTypeShopList || []).forEach((cardType) => {
+                    cardType.cardTypeShopResDetailList.forEach(shop=>{
+                        canUseShops.push(String(shop.shopID))
+                    })
+                })
+                const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
+                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+            })
     }
     handleSelectChange(value) {
-        // const { cardTypeHadQuery = {} } = this.state;
-        // if (!Object.keys(cardTypeHadQuery).includes(value[value.length - 1]) && value[value.length - 1]) { // 判断是否已被查询过
-        //     this.props.FetchSelectedShopsAC({
-        //         cardTypeID: value[value.length - 1],
-        //     })
-        //         .then((record) => {
-        //             console.log(record);
-        //             this.setState({
-        //                 cardTypeHadQuery: {
-        //                     ...cardTypeHadQuery, // ...{id:[shopName,shopName], id:[shopName,shopName], id:[shopName,shopName]}
-        //                     [value[value.length - 1]]: record, // id:[shopName,shopName]
-        //                 },
-        //             })
-        //         })
-        // }
-        this.setState({
+        const opts = {
             cardLevelIDList: value,
-        }, () => {
+        }
+        if (value.length === 0) {
+            opts.canUseShops = []
+            opts.selections_shopsInfo = { shopsInfo: [] }
+        } else {
+            this.queryCanuseShops(value)
+        }
+        this.setState(opts, () => {
             this.props.form.setFieldsValue({ 'treeSelect': value });
         })
         this.props.onChange && this.props.onChange({ cardLevelIDList: value });
@@ -164,17 +193,53 @@ class CardLevelForWX extends React.Component {
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
         };
+        if (e.target.value !== '0') {
+            opts.canUseShops = []
+            opts.selections_shopsInfo = { shopsInfo: [] }
+        } else {
+            this.queryCanuseShops([])
+        }
         this.setState(opts)
-        this.props.onChange && this.props.onChange(opts)
+        this.props.onChange && this.props.onChange({
+            cardLevelRangeType: e.target.value,
+            cardLevelIDList: [],
+        })
     }
-    renderTags() {
-        const { cardLevelIDList = [], cardTypeHadQuery = {} } = this.state;
-        const tags = cardLevelIDList.map((cardTypeId) => { // 已选卡类ids
-            return (cardTypeHadQuery[cardTypeId] || []).map((shop) => {
-                return <Tag key={shop} > {shop} </Tag>
+    editBoxForShopsChange = (val) => {
+        this.setState({
+            selections_shopsInfo: { shopsInfo: val.map(shop => shop.shopID) }, // shopIDList
+        }, () => {
+            this.props.onChange && this.props.onChange({
+                shopIDList: this.state.selections_shopsInfo.shopsInfo,
             })
-        });
-        return tags;
+        })
+    }
+    renderShopsOptions() {
+        return (
+            <div className={styles.giftWrap}>
+                <Form.Item
+                    label="适用店铺"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    // validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
+                    // help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
+                >
+                    <EditBoxForShops
+                        value={this.state.selections_shopsInfo}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        type={this.props.type}
+                        canUseShops={this.state.canUseShops}
+                    />
+                </Form.Item>
+                <div
+                    className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
+                    style={{ left: 110, width: '71%', height: '81%', top: 7 }}
+                ></div>
+            </div>
+        );
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -232,7 +297,7 @@ class CardLevelForWX extends React.Component {
                             }
                             {
                                 !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-                                <Icon
+                                    <Icon
                                         type="exclamation-circle"
                                         className={styles.cardLevelTreeIcon}
                                         onClick={() => {
@@ -244,27 +309,13 @@ class CardLevelForWX extends React.Component {
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length === 0 ? null :
-                    <div
+                        <div
                             style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}
                         >
                             <ExcludeCardTable catOrCard={'cat'} />
                         </div>
                 }
-                {/* {
-                    this.state.cardLevelIDList.length > 0 ?
-                        <FormItem
-                            label={'卡类适用店铺'}
-                            className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            <div
-                                style={{ padding: 10, border: '1px solid #e2dcdc', minHeight: 33, borderRadius: 3 }}
-                            >
-                                {this.renderTags()}
-                            </div>
-                        </FormItem> : null
-                } */}
+                {this.renderShopsOptions()}
             </Form>
         );
     }

@@ -6,6 +6,9 @@ import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import CardOperate from './QuatoCardDetailModalTabsSendCard';
+import ExportModal from './ExportModal';
+import Authority from '../../../components/common/Authority';
+
 import styles from './GiftInfo.less';
 import { mapValueToLabel } from './CommonFn';
 import { SENDCARD_COLUMNS, SENDCARD_QUERY_FORMITEMS, SENDCARD_FORMKEYS } from './_tableSendCardListConfig';
@@ -24,7 +27,7 @@ class SendCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
+            loading: false,
             dataSource: [],
             cardProps: {},
             total: 2,
@@ -225,9 +228,9 @@ class SendCard extends React.Component {
         let params = { ...{ pageNo: 1, pageSize: 10, giftItemID }, ..._params }
         let callserver = '';
         if (_key === 'send') {
-            callserver = 'getQuotaBatchInfo_dkl';
+            callserver = '/coupon/couponQuotaService_getQuotaBatch.ajax';
         } else {
-            callserver = 'getQuotaBatchDetail_dkl';
+            callserver = '/coupon/couponQuotaService_getQuotaBatchDetails.ajax';
         }
         if (_key === 'made') {
             const { batchNO } = this.props;
@@ -241,6 +244,10 @@ class SendCard extends React.Component {
         }
         this.setState({
             loading: true,
+        }, () => {
+            setTimeout(() => {
+                this.setState({ loading: false, })
+            }, 0)
         });
         return FetchQuotaListAC({
             params,
@@ -289,35 +296,35 @@ class SendCard extends React.Component {
         let params = _params;
         switch (_key) {
             case 'send':
-            {
-                params.batchNO = params.batchNO_sendCard;
-                const sendTime = params.timeRangeSend_sendCard;
-                if (sendTime && sendTime.length > 0) {
-                    params.beginCreateStamp = sendTime[0].format('YYYYMMDDHHmmss');
-                    params.endCreateStamp = sendTime[1].format('YYYYMMDDHHmmss');
+                {
+                    params.batchNO = params.batchNO_sendCard;
+                    const sendTime = params.timeRangeSend_sendCard;
+                    if (sendTime && sendTime.length > 0) {
+                        params.beginCreateStamp = sendTime[0].format('YYYYMMDDHHmmss');
+                        params.endCreateStamp = sendTime[1].format('YYYYMMDDHHmmss');
+                    }
+                    params = _.omit(params, 'batchNO_sendCard', 'timeRangeSend_sendCard');
+                    return params;
                 }
-                params = _.omit(params, 'batchNO_sendCard', 'timeRangeSend_sendCard');
-                return params;
-            }
             case 'made':
-            {
-                params.cardNO = params.cardNO_madeCard;
-                params.batchNO = params.batchNO_madeCard;
-                params = _.omit(params, 'cardNO_madeCard', 'batchNO_madeCard');
-                return params;
-            }
-            case 'sum':
-            {
-                params.cardNO = params.cardNO_sum;
-                params.batchNO = params.batchNO_sum;
-                const sumTime = params.timeRangeSend_sum;
-                if (sumTime && sumTime.length > 0) {
-                    params.beginSellTime = sumTime[0].format('YYYYMMDDHHmmss');
-                    params.endSellTime = sumTime[1].format('YYYYMMDDHHmmss');
+                {
+                    params.cardNO = params.cardNO_madeCard;
+                    params.batchNO = params.batchNO_madeCard;
+                    params = _.omit(params, 'cardNO_madeCard', 'batchNO_madeCard');
+                    return params;
                 }
-                params = _.omit(params, 'batchNO_sum', 'cardNO_sum', 'timeRangeSend_sum');
-                return params;
-            }
+            case 'sum':
+                {
+                    params.cardNO = params.cardNO_sum;
+                    params.batchNO = params.batchNO_sum;
+                    const sumTime = params.timeRangeSend_sum;
+                    if (sumTime && sumTime.length > 0) {
+                        params.beginSellTime = sumTime[0].format('YYYYMMDDHHmmss');
+                        params.endSellTime = sumTime[1].format('YYYYMMDDHHmmss');
+                    }
+                    params = _.omit(params, 'batchNO_sum', 'cardNO_sum', 'timeRangeSend_sum');
+                    return params;
+                }
             default:
                 return null;
         }
@@ -455,6 +462,19 @@ class SendCard extends React.Component {
     handleSelected(selectedRowKeys, selectedRows) {
         this.setState({ selectedRowKeys, selectedRows });
     }
+    handleExport() {
+        const { _key } = this.props;
+        this.queryForm.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            const params = this.formatFormData(values);
+            const _params = this.proParamsByType(params);
+            this.setState({
+                params: _params,
+                exportVisible: true
+            });
+        });
+        // this.setState({ exportVisible: true })
+    }
 
     render() {
         const { loading, dataSource, cardProps, sumData, pageNo, pageSize, total, formData } = this.state;
@@ -477,39 +497,66 @@ class SendCard extends React.Component {
                         {
                             _key === 'made' ?
                                 <Row>
-                                    <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
+                                    <Col span={6}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                         type="search"
                                     />查询</Button></Col>
-                                    {/* <Col span={6}><Button type="ghost"><Icon type="export" />导出</Button></Col> */}
-                                    <Col span={8}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
+                                    <Col span={6}>
+                                        {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+                                        <Button type="ghost" onClick={() => this.handleExport()}>
+                                            <Icon
+                                                type="export" />导出</Button>
+                                        {/* </Authority> */}
+                                    </Col>
+                                    <Col span={6}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                         className="send-gray"
                                         iconName={'作废'}
                                     />作废</Button></Col>
-                                    <Col span={8}><Button
+                                    <Col span={6}><Button
                                         type="ghost"
+                                        style={{ padding: '4px 10px' }}
                                         onClick={() => this.handleCancelDelete()}
                                     >取消作废</Button></Col>
                                 </Row>
                                 : (
                                     _key === 'send' ?
                                         <Row>
-                                            <Col span={10}><Button type="primary" onClick={() => this.handleQuery()}><Icon
+                                            <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                                 type="search"
                                             />查询</Button></Col>
-                                            {/* <Col span={8} ><Button type="ghost"><Icon type="export" />导出</Button></Col> */}
+                                            <Col span={8} >
+                                                {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+                                                <Button type="ghost" onClick={() => this.handleExport()}>
+                                                    <Icon
+                                                        type="export"
+                                                    />导出</Button>
+                                                {/* </Authority> */}
+                                            </Col>
                                             <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
                                                 className="send-gray"
                                                 iconName={'发布'}
                                             />发卡</Button></Col>
                                         </Row>
                                         :
-                                        <Row>
-                                            <Col span={24} style={{ textAlign: 'right' }}>
-                                                <Button
-                                                    type="primary"
-                                                    onClick={() => this.handleQuery()}
-                                                ><Icon type="search" />查询</Button></Col>
-                                        </Row>
+                                        <div>
+                                            <Row>
+                                                <Col span={24} style={{ textAlign: 'right' }}>
+                                                    <Button
+                                                        type="primary"
+                                                        onClick={() => this.handleQuery()}
+                                                    ><Icon type="search" />查询</Button>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col span={24} style={{ textAlign: 'right' }}>
+                                                    {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+                                                    <Button
+                                                        type="ghost"
+                                                        onClick={() => this.handleExport()}
+                                                    ><Icon type="export" />导出</Button>
+                                                    {/* </Authority> */}
+                                                </Col>
+                                            </Row>
+                                        </div>
                                 )
 
                         }
@@ -545,15 +592,27 @@ class SendCard extends React.Component {
                     {
                         _key === 'sum' ?
                             !_.isEmpty(sumData)
-                        && (<div className="sumData">
-                            <div>{`共计：${sumData.total}条记录`}</div>
-                            <div>{`实收合计：${sumData.moneyTotal}`}</div>
-                        </div>)
+                            && (<div className="sumData">
+                                <div>{`共计：${sumData.total}条记录`}</div>
+                                <div>{`实收合计：${sumData.moneyTotal}`}</div>
+                            </div>)
                             :
                             null
                     }
                 </Row>
-                <CardOperate {...cardProps} />
+                {
+                    cardProps.visible ? <CardOperate {...cardProps} /> : null
+                }
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            params={this.state.params}
+                            _key={_key}
+                            giftItemID={this.props.data.giftItemID}
+                            handleClose={() => this.setState({ exportVisible: false })}
+                            shopData={this.props.shopData}
+                        />
+                }
             </div>
         )
     }

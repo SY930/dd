@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
+import axios from 'axios';
 import { Row, Col, Modal, Form, Button, Select, Input, Upload, message, Icon, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
@@ -87,7 +88,7 @@ class GiftAddModal extends React.Component {
             params.giftImagePath = imageUrl;
             params.transferType = transferType;
             if (type === 'add') {
-                callServer = 'addGift_dkl';
+                callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID === '-1') {
                     params = _.omit(params, 'brandID');
                 } else {
@@ -95,7 +96,7 @@ class GiftAddModal extends React.Component {
                     params.giftName = `${brandJSON.label || ''}${values.giftName}`;
                 }
             } else if (type === 'edit') {
-                callServer = 'updateGift_dkl';
+                callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
             this.setState({
@@ -103,15 +104,13 @@ class GiftAddModal extends React.Component {
             });
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
-            fetchData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
+            axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
                 this.setState({
                     finishLoading: false,
                 });
                 if (data) {
                     message.success('成功', 3)
                     this.handleCancel();
-                } else {
-                    message.success('失败', 3)
                 }
                 if (type === 'edit') {
                     const { params, FetchGiftList } = this.props;
@@ -327,7 +326,12 @@ class GiftAddModal extends React.Component {
                     this.handleCancel()
                 }}
                 footer={[<Button key="0" type="ghost" onClick={() => this.handleCancel()}>取消</Button>,
-                <Button key="1" type="primary" style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }} onClick={() => this.handleOk()}>确定</Button>]}
+                <Button
+                    key="1"
+                    type="primary"
+                    disabled={this.state.finishLoading}
+                    style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }}
+                    onClick={() => this.handleOk()}>确定</Button>]}
                 key={`${describe}-${type}`}
             >
                 <div className={styles.giftAddModal}>

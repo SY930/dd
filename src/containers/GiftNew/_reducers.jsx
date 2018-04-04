@@ -20,6 +20,7 @@ import {
     GIFT_NEW_EMPTY_GET_SHARED_GIFTS,
     GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO,
     GIFT_NEW_QUOTA_CARD_BATCHNO,
+    GIFT_NEW_QUERY_WECHAT_MPINFO,
 } from './_action';
 
 const $initialState = Immutable.fromJS({
@@ -52,6 +53,7 @@ const $initialState = Immutable.fromJS({
     sharedGifts: [],
     shopsByBatchNo: [],
     batchNoInfo: [],
+    mpList: [],
 });
 export function giftInfoNew($$state = $initialState, action) {
     switch (action.type) {
@@ -97,6 +99,9 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('shopsByBatchNo', Immutable.fromJS(action.payload.dataSource))
         case GIFT_NEW_QUOTA_CARD_BATCHNO:
             return $$state.set('batchNoInfo', Immutable.fromJS(action.payload.dataSource))
+        case GIFT_NEW_QUERY_WECHAT_MPINFO:
+            return $$state.set('mpList', Immutable.fromJS(action.payload))
+
         default:
             return $$state
     }

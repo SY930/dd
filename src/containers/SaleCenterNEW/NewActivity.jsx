@@ -37,6 +37,7 @@ import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 
+const Immutable = require('immutable');
 function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
@@ -87,6 +88,10 @@ class NewActivity extends React.Component {
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState))
+        // return true
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);

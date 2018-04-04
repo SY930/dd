@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio } from 'antd';
+import { Form, Checkbox, Radio, Select, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
@@ -15,12 +15,13 @@ import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySp
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+const Option = Select.Option;
+
 
 class SpecialRangeInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            cardInfo: [],
             joinRange: [],
             freeGetJoinRange: ['0'],
             deductPointsStatus: 'success',
@@ -44,6 +45,9 @@ class SpecialRangeInfo extends React.Component {
             cardLevelIDList: [],
             cardLevelRangeType: '0',
             freeGetJoinRangeStatus: 'success',
+            autoRegister: 1, // 是否需用户填写注册信息
+            defaultCardType: '', // 用户静默注册为何种会员
+            shopIDList: [],
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -72,9 +76,6 @@ class SpecialRangeInfo extends React.Component {
             _loginName: user.accountInfo.loginName,
             _groupLoginName: user.accountInfo.groupLoginName,
         };
-        this.props.fetchSpecialCardLevel({
-            data: opts,
-        });
         this.props.getSubmitFn({
             // prev: undefined,
             prev: this.handlePrev,
@@ -132,6 +133,7 @@ class SpecialRangeInfo extends React.Component {
                 cardLevelIDList: specialPromotion.cardLevelIDList || [],
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
                 [partInTimesNoValidName]: specialPromotion.partInTimes, // 最大参与次数
+                autoRegister: specialPromotion.autoRegister == 0 ? 0 : 1,
             })
         }
     }
@@ -189,6 +191,7 @@ class SpecialRangeInfo extends React.Component {
                 cardLevelID: specialPromotion.cardLevelID || '0',
                 cardLevelIDList: specialPromotion.cardLevelIDList || [],
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
+                autoRegister: specialPromotion.autoRegister == 0 ? 0 : 1,
             })
         }
     }
@@ -218,6 +221,9 @@ class SpecialRangeInfo extends React.Component {
             maxPartInPerson, // 参与人数
             maxPartInPersonStatus,
             freeGetJoinRangeStatus,
+            autoRegister,
+            defaultCardType,
+            shopIDList,
         } = this.state;
         const opts = {
             rewardOnly,
@@ -237,6 +243,18 @@ class SpecialRangeInfo extends React.Component {
         }
         if (this.props.type === '23' && this.state.cardLevelRangeType === '0') {
             opts.cardLevelRangeType = '4'; // 全部微信会员
+        }
+        if (this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30') {
+            opts.autoRegister = autoRegister
+            opts.defaultCardType = defaultCardType
+            if (this.props.type !== '23' && !defaultCardType) {
+                nextFlag = false;
+            }
+        }
+        if (this.props.type === '23') {
+            opts.shopIDList = shopIDList
+            opts.shopRange = shopIDList.length > 0 ? 1 : 2
+            // if (shopIDList.length === 0) nextFlag = false;
         }
         // 由于redux里面存的可能是所有字段,所以修改的时候需要把之前设置过,现在要取消的东西初始化
 
@@ -341,9 +359,9 @@ class SpecialRangeInfo extends React.Component {
                     className={[styles.noPadding, styles.inlineCheckBox].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 20 }}
-                    // validateStatus={this.state.freeGetJoinRangeStatus}
-                    // help='请选择参与范围'
-                    // 不用status，flag置为false即可，用了还要手动改变success或error,getFieldDecorator自动改变
+                // validateStatus={this.state.freeGetJoinRangeStatus}
+                // help='请选择参与范围'
+                // 不用status，flag置为false即可，用了还要手动改变success或error,getFieldDecorator自动改变
                 >
                     {this.props.form.getFieldDecorator('freeGetJoinRange', {
                         rules: [{
@@ -565,13 +583,18 @@ class SpecialRangeInfo extends React.Component {
     onCardLevelChange(obj) {
         this.setState(obj)
     }
+    autoRegisterChange = (e) => {
+        this.setState({
+            autoRegister: e.target.value,
+        });
+    }
     render() {
         const getFieldDecorator = this.props.form.getFieldDecorator;
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
-                {this.props.type !== '23' ? this.renderJoinRange() : null }
-                {this.props.type !== '22' ? this.renderJoinCount() : null }
+                {this.props.type !== '23' ? this.renderJoinRange() : null}
+                {this.props.type !== '22' ? this.renderJoinCount() : null}
                 {
                     this.props.type === '23' ?
                         <CardLevelForWX
@@ -586,6 +609,20 @@ class SpecialRangeInfo extends React.Component {
                             type={this.props.type}
                             form={this.props.form}
                         />
+                }
+                {
+                    this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
+                        (<FormItem
+                            label={'参加活动成为会员'}
+                            className={styles.noPadding}
+                            wrapperCol={{ span: 17 }}
+                            labelCol={{ span: 4 }}
+                        >
+                            <RadioGroup onChange={this.autoRegisterChange} value={this.state.autoRegister}>
+                                <Radio value={1}>无需用户填写注册信息</Radio>
+                                <Radio value={0}>用户须填写注册信息</Radio>
+                            </RadioGroup>
+                        </FormItem>) : null
                 }
                 {
                     this.props.type !== '23' ?
@@ -635,7 +672,6 @@ const mapStateToProps = (state) => {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
     }
 };
 

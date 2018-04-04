@@ -8,11 +8,12 @@ import GiftCfg from '../../../constants/Gift';
 import Moment from 'moment';
 import GiftAddModalStep from './GiftAddModalStep';
 import GiftAddModal from './GiftAddModal';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
 import Authority from '../../../components/common/Authority';
 import {
     emptyGetSharedGifts,
+    queryWechatMpInfo,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -29,7 +30,7 @@ class GiftType extends React.Component {
         }
     }
     componentWillMount() {
-        this.getData();
+        this.props.queryWechatMpInfo();
     }
     componentDidMount() {
         this.onWindowResize();
@@ -39,38 +40,8 @@ class GiftType extends React.Component {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
         this.setState({ contentHeight });
     }
-    getData(params = {}) {
-        const { user } = this.props;
-        params.groupID = user.accountInfo.groupID;
-        fetchData('getGifts_dkl', params, null, { path: 'data.crmGiftList' }).then((gifts) => {
-            // console.log('gifts,', gifts);
-            if (gifts === undefined) {
-                return;
-            }
-            const newDataSource = gifts.map((g, i) => {
-                g.key = i + 1;
-                g.giftType = String(g.giftType);
-                g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label;
-                g.createStamp = g.createStamp == 0 ? '————/——/—— ——:——:——' : Moment(g.createStamp).format(format);
-                g.actionStamp = g.actionStamp == 0 ? '————/——/—— ——:——:——' : Moment(g.actionStamp).format(format);
-                g.operateTime = <div>{g.createStamp}<br />{g.actionStamp}</div>;
-                g.createBy = g.createBy == undefined ? '——  ——' : '——  ——';
-                g.operator = `${g.createBy} / ${g.createBy}`;
-                g.giftRule = g.giftRule.split('</br>');
-                g.num = i + 1;
-                g.usingTimeType = g.usingTimeType.split(',');
-                g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
-                return g;
-            });
-            this.setState({ dataSource: [...newDataSource] }, () => {
-                // console.log('this.state', this.state);
-            })
-        });
-    }
     handleAdd(g) {
         this.setState({ visible: true, gift: { ...this.state.gift, ...g } });
-        // 请求获取promotionList--券活动
-        g.value != 80 ? this.props.queryUnbindCouponPromotion({ channelID: 1 }) : null;
     }
     handleCancel() {
         this.setState({ visible: false });
@@ -88,6 +59,9 @@ class GiftType extends React.Component {
                 case '20':
                 case '80':
                 case '100':
+                case '91':
+                case '110':
+                case '111':
                     return <GiftAddModalStep type="add" {...this.state} onCancel={() => { this.handleCancel() }} />;
                 case '30':
                 case '40':
@@ -151,6 +125,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(toggleIsUpdateAC(opts))
         },
         queryUnbindCouponPromotion: (opts) => dispatch(queryUnbindCouponPromotion(opts)),
+        queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
     };
 }
 export default connect(

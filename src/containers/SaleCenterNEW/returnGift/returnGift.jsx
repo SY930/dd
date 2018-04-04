@@ -67,7 +67,7 @@ const defaultData = {
         msg: null,
     },
     // 使用张数
-    giftMaxNum: {
+    giftMaxUseNum: {
         value: 1,
         validateStatus: 'success',
         msg: null,
@@ -106,7 +106,7 @@ class ReturnGift extends React.Component {
                     giftNum: 0,
                     giftName: null,
                     giftItemID: null,
-                    giftMaxNum: 0,
+                    giftMaxUseNum: 0,
                     giftValidType: '0',
                     giftEffectiveTime: 0,
                     giftValidDays: 0,
@@ -123,7 +123,7 @@ class ReturnGift extends React.Component {
         this.remove = this.remove.bind(this);
         this.getGiftValue = this.getGiftValue.bind(this);
         this.handleGiftChange = this.handleGiftChange.bind(this);
-        this.handleGiftMaxNumChange = this.handleGiftMaxNumChange.bind(this);
+        this.handlegiftMaxUseNumChange = this.handlegiftMaxUseNumChange.bind(this);
         this.handleValidateTypeChange = this.handleValidateTypeChange.bind(this);
         this.renderValidOptions = this.renderValidOptions.bind(this);
         this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
@@ -168,7 +168,7 @@ class ReturnGift extends React.Component {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes=>giftTypes.giftType != '100');
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType != '100');
             } catch (err) {
                 giftInfo = [];
             }
@@ -186,7 +186,7 @@ class ReturnGift extends React.Component {
             });
             this.setState({
                 giftTreeData: this.proGiftTreeData(filterOffLine ? _giftInfo : giftInfo),
-                giftsForTree: filterOffLine ? _giftInfo : giftInfo,
+                giftsForTree: filterOffLine ? _giftInfo : giftInfo.filter(giftTypes => giftTypes.giftType < 90),
             });
         }
     }
@@ -339,15 +339,15 @@ class ReturnGift extends React.Component {
                                     className={styles.FormItemStyle}
                                     labelCol={{ span: 0 }}
                                     wrapperCol={{ span: 24 }}
-                                    validateStatus={info.giftMaxNum.validateStatus}
-                                    help={info.giftMaxNum.msg}
+                                    validateStatus={info.giftMaxUseNum.validateStatus}
+                                    help={info.giftMaxUseNum.msg}
                                 >
                                     <PriceInput
                                         addonBefore="最多返券"
                                         addonAfter="张"
                                         modal="int"
-                                        value={{ number: info.giftMaxNum.value }}
-                                        onChange={(val) => { this.handleGiftMaxNumChange(val, index); }}
+                                        value={{ number: info.giftMaxUseNum.value }}
+                                        onChange={(val) => { this.handlegiftMaxUseNumChange(val, index); }}
                                     />
                                 </FormItem> : null
                         }
@@ -594,17 +594,17 @@ class ReturnGift extends React.Component {
         });
     }
 
-    handleGiftMaxNumChange(value, index) {
+    handlegiftMaxUseNumChange(value, index) {
         const _infos = this.state.infos;
-        _infos[index].giftMaxNum.value = value.number;
+        _infos[index].giftMaxUseNum.value = value.number;
 
         const _value = parseInt(value.number);
         if (_value > 0) {
-            _infos[index].giftMaxNum.validateStatus = 'success';
-            _infos[index].giftMaxNum.msg = null;
+            _infos[index].giftMaxUseNum.validateStatus = 'success';
+            _infos[index].giftMaxUseNum.msg = null;
         } else {
-            _infos[index].giftMaxNum.validateStatus = 'error';
-            _infos[index].giftMaxNum.msg = '使用数量必须大于等于1';
+            _infos[index].giftMaxUseNum.validateStatus = 'error';
+            _infos[index].giftMaxUseNum.msg = '使用数量必须大于等于1';
         }
         this.setState({
             infos: _infos,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, Row, Col, Input, Form } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
-import { fetchData } from '../../../helpers/util';
+import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
 import {
     FetchGiftLevel,
@@ -23,21 +23,16 @@ class CardOperate extends React.Component {
             selectedRow: [],
         }
         this.form = null;
+        this.proGiftLevel = this.proGiftLevel.bind(this);
     }
-    componentWillMount() {
+    componentDidMount() {
         const { levelList, FetchGiftLevel } = this.props;
         const _levelList = levelList.toJS();
         FetchGiftLevel({}).then((data = []) => {
             this.proGiftLevel(data);
         });
-        // if(_levelList.length > 0) {
-        //     this.proGiftLevel(_levelList);
-        // } else {
-        //     FetchGiftLevel({}).then((data = []) => {
-        //         this.proGiftLevel(data);
-        //     });
-        // }
     }
+
     componentWillReceiveProps(nextProps) {
         const { visible, type } = nextProps;
         this.form && this.form.resetFields();
@@ -118,7 +113,7 @@ class CardOperate extends React.Component {
                 params.endNO = params.startEnd_max;
             }
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum', 'useCardTypeID']);
-            fetchData(callserver, _params, null, { path: 'data' }).then((data) => {
+            axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
         });
@@ -142,9 +137,9 @@ class CardOperate extends React.Component {
         const { type } = this.props;
         switch (type) {
             case 'sendCard':
-                return 'addSendCard_dkl';
+                return '/coupon/couponQuotaService_addQuotaBatch.ajax';
             default:
-                return 'changeQuotaStatus_dkl';
+                return '/coupon/couponQuotaService_updateGiftCardStatus.ajax';
         }
     }
     getLevelsByCardTypeID = (cardTypeID) => {
@@ -175,12 +170,14 @@ class CardOperate extends React.Component {
                             decorator({
                                 key: 'startEnd_min',
                                 rules: [{ required: true, message: '起始号不能为空' },
-                                    { type: 'integer', message: '起始号必须为整数', transform: value => Number(value) },
-                                    { validator: (rule, v, cb) => {
-                                        if (v === '')cb();
+                                { type: 'integer', message: '起始号必须为整数', transform: value => Number(value) },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (v === '') cb();
                                         v > 0 && v < 999999 ? cb() : cb(rule.message);
                                     },
-                                    message: '起始号必须是1-999999之间的值' }],
+                                    message: '起始号必须是1-999999之间的值'
+                                }],
                             })(<Input placeholder="起始号" />)
                         }
                     </FormItem>
@@ -192,12 +189,14 @@ class CardOperate extends React.Component {
                             decorator({
                                 key: 'startEnd_max',
                                 rules: [{ required: true, message: '终止号不能为空' },
-                                    { type: 'integer', message: '终止号必须为整数', transform: value => Number(value) },
-                                    { validator: (rule, v, cb) => {
-                                        if (v === '')cb();
+                                { type: 'integer', message: '终止号必须为整数', transform: value => Number(value) },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (v === '') cb();
                                         v >= min && v < 999999 ? cb() : cb(rule.message);
                                     },
-                                    message: '终止号必须是起始号到999999之间的值' }],
+                                    message: '终止号必须是起始号到999999之间的值'
+                                }],
                             })(<Input placeholder="终止号" />)
                         }
                     </FormItem>
@@ -224,12 +223,14 @@ class CardOperate extends React.Component {
                 type: 'text',
                 placeholder: '请输入批次号',
                 rules: [{ required: true, message: '批次号不能为空' },
-                    { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
-                    { validator: (rule, v, cb) => {
-                        if (v === '')cb();
+                { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
+                {
+                    validator: (rule, v, cb) => {
+                        if (v === '') cb();
                         v > 0 && v < 999999 ? cb() : cb(rule.message);
                     },
-                    message: '批次号必须是1-999999之间的值' }],
+                    message: '批次号必须是1-999999之间的值'
+                }],
             },
             startEnd: {
                 label: '起止号',
@@ -241,6 +242,9 @@ class CardOperate extends React.Component {
                 type: 'combo',
                 defaultValue: '',
                 options: cardList,
+                props: {
+                    showSearch: true,
+                },
                 rules: [
                     { required: true, message: '会员卡类型不能为空' },
                 ],
@@ -250,6 +254,9 @@ class CardOperate extends React.Component {
                 type: 'combo',
                 defaultValue: '',
                 options: levelList,
+                props: {
+                    showSearch: true,
+                },
                 rules: [
                     { required: true, message: '会员卡等级不能为空' },
                 ],
@@ -259,7 +266,7 @@ class CardOperate extends React.Component {
                 type: 'textarea',
                 placeholder: `请输入${operateRemarkLabel}`,
                 rules: [{ required: true, message: `${operateRemarkLabel}不能为空` },
-                    { max: 250, message: '字符不能超过250个' }],
+                { max: 250, message: '字符不能超过250个' }],
             },
         };
         return (
@@ -274,6 +281,24 @@ class CardOperate extends React.Component {
             >
                 <Row className={styles.quatoCardDetailModalTabsSendCard}>
                     <Col span={24} pull={3}>
+                        <div style={{ border: '3px dashed #e9e9e9', margin: '0 10px 10px 60px', width: 420, padding: 10 }}>
+                            {[{ tip1: '666', tip2: '3位标识符', tip3: '（系统固定）' }, { tip1: 'XXXXXX', tip2: '6位批次号', tip3: '（手动输入）' },
+                            { tip1: 'YYYYYY', tip2: '6位顺序号', tip3: '（手动输入）' }, { tip1: 'ZZZ', tip2: '3位随机号', tip3: '（系统随机）' }].map((node, index) => {
+                                return (
+                                    <div key={node.tip1} style={{ textAlign: 'center', width: 98, display: 'inline-block' }}>
+                                        <div style={{ textAlign: 'center', width: index != 3 ? 88 : 93, display: 'inline-block' }}>
+                                            <div style={{ textAlign: 'center', border: '5px solid #e9e9e9', color: '#999', borderRadius: 20, height: 40, width: 95, lineHeight: '30px', fontSize: 14 }}>{node.tip1}</div>
+                                            <div style={{ margin: '2px 0', color: '#787878', fontSize: 16 }}>{node.tip2}</div>
+                                            <div style={{ margin: '2px 0', color: '#999' }}>{node.tip3}</div>
+                                        </div>
+                                        {index != 3 ?
+                                            <div style={{ height: 10, width: 9, display: 'inline-block', background: '#e9e9e9', marginBottom: 55, paddingLeft: 10, position: 'relative', left: 3 }}></div>
+                                            : null}
+                                    </div>
+                                )
+                            })}
+                            <div style={{ textAlign: 'center', marginTop: 10, fontSize: 16, color: '#999', letterSpacing: 5 }}>卡号组成图示</div>
+                        </div>
                         <BaseForm
                             getForm={form => this.form = form}
                             formItems={formItems}

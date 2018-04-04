@@ -1,4 +1,4 @@
-import { fetchData } from '../../helpers/util';
+import { fetchData, axiosData } from '../../helpers/util';
 
 export const GIFT_NEW_FETCH_LIST_BEGIN = 'gift new:: fetch list';
 export const GIFT_NEW_FETCH_LIST_OK = 'gift new :: fetch list ok';
@@ -20,6 +20,7 @@ export const GIFT_NEW_GET_SHARED_GIFTS = 'gift new:: get shared gifts';
 export const GIFT_NEW_EMPTY_GET_SHARED_GIFTS = 'gift new:: empty get shared gifts';
 export const GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO = 'gift new :: get quota card shop by batchNo';
 export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
+export const GIFT_NEW_QUERY_WECHAT_MPINFO = 'gift new :: query wechat mpinfo';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -42,8 +43,8 @@ const updateGiftListParams = (opt) => {
 export const FetchGiftList = (opts) => {
     return (dispatch) => {
         dispatch(getGiftListBegin(true));
-        return fetchData('getGifts_dkl', { ...opts }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getGiftListSuccessAC({
@@ -74,7 +75,7 @@ const getQuotaCardSumSuccessAC = (opt) => {
 export const FetchQuotaCardSum = (opts) => {
     return (dispatch) => {
         dispatch(getQuotaCardSumBegin(true));
-        return fetchData('getQuotaSummary_dkl', { ...opts }, null, {
+        return axiosData('/coupon/couponQuotaService_getQuotaCardSummary.ajax', { ...opts }, null, {
             path: 'data.summary',
         })
             .then((records) => {
@@ -169,7 +170,7 @@ export const getQuotaListSuccessAC = (opt) => {
 
 export const FetchQuotaList = (opts) => {
     return (dispatch) => {
-        return fetchData(opts.callserver, { ...opts.params }, null, {
+        return axiosData(opts.callserver, { ...opts.params }, null, {
             path: 'data',
         })
             .then((records) => {
@@ -192,8 +193,8 @@ export const getSendorUsedListSuccessAC = (opt) => {
 
 export const FetchSendorUsedList = (opts) => {
     return (dispatch) => {
-        return fetchData('getGiftUsageInfo_dkl', { ...opts.params }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getSendorUsedListSuccessAC({
@@ -242,8 +243,8 @@ const getGiftSortSuccessAC = (opt) => {
 };
 export const FetchGiftSort = (opts) => {
     return (dispatch) => {
-        return fetchData('getSortedGifts_dkl', { ...opts }, null, {
-            path: 'crmGiftTypes',
+        return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
+            path: 'data.crmGiftTypes',
         })
             .then((records) => {
                 dispatch(getGiftSortSuccessAC({
@@ -264,8 +265,8 @@ const getSharedGiftsSuccessAC = (opt) => {
 };
 export const FetchSharedGifts = (opts) => {
     return (dispatch) => {
-        return fetchData('getSharedGifts', { ...opts }, null, {
-            path: '',
+        return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
+            path: 'data',
         })
             .then((records) => {
                 dispatch(getSharedGiftsSuccessAC({
@@ -313,7 +314,15 @@ export const FetchQuotaCardShopByBatchNo = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
-            });
+            })
+            .catch(err => {
+                dispatch(getQuotaCardShopByBatchNoAC({
+                    payload: {
+                        dataSource: [],
+                    },
+                }));
+                return Promise.resolve([]);
+            })
     }
 };
 export const getQuotaCardBatchNoAC = (opt) => {
@@ -335,5 +344,37 @@ export const FetchQuotaCardBatchNo = (opts) => {
                 }));
                 return Promise.resolve(records);
             });
+    }
+};
+// 券适用店铺查询 ,暂时无用{groupID:10890,giftItemID: '6526002596388280970' }-->data:{couponShopList:[]}
+
+export const queryCouponShopList = (opts) => {
+    return (dispatch) => {
+        return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
+            path: 'data',
+        })
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+};
+
+// 公众号
+export const queryWechatMpInfo = () => {
+    return (dispatch) => {
+        return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' })
+            .then((mpList) => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO,
+                    payload: mpList || [],
+                })
+                return Promise.resolve(mpList)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 };

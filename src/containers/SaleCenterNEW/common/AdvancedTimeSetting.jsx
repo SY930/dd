@@ -9,16 +9,17 @@
  */
 
 
-import { Form, Input, Icon, Button, TimePicker } from 'antd';
 import React from 'react';
+// import { connect } from 'react-redux';
+import { Icon, TimePicker, Col, Form } from 'antd';
 import styles from './SeniorDateSetting/styles.less';
 
-const FormItem = Form.Item;
-import { connect } from 'react-redux';
+// const FormItem = Form.Item;
 
 
-const uuid = 0;
+// const uuid = 0;
 const moment = require('moment');
+const FormItem = Form.Item;
 
 // generate the time range
 function range(start, end) {
@@ -50,6 +51,12 @@ class AdvancedTimeSetting extends React.Component {
         }
 
         this.state.timeSlot.splice(index, 1);
+        if (this.props.onChange) {
+            this.props.onChange({
+                data: this.state.timeSlot,
+                validateStatus: 'success',
+            });
+        }
 
         this.forceUpdate();
     }
@@ -58,9 +65,15 @@ class AdvancedTimeSetting extends React.Component {
         const length = this.state.timeSlot.length;
         if (length <= this.state.maxCount) {
             this.state.timeSlot.push({
-                start: moment('00:00', 'HH:mm'),
-                end: moment('00:00', 'HH:mm'),
+                start: '',
+                end: '',
             });
+            if (this.props.onChange) {
+                this.props.onChange({
+                    data: this.state.timeSlot,
+                    validateStatus: 'success',
+                });
+            }
 
             this.forceUpdate();
         }
@@ -80,66 +93,53 @@ class AdvancedTimeSetting extends React.Component {
             this.state.timeSlot[index].end = time;
         } else {
             this.state.timeSlot[index].start = time;
+            if (time) {
+                if (!this.state.timeSlot[index].end || this.state.timeSlot[index].end.hour() <= this.state.timeSlot[index].start.hour()) {
+                    this.state.timeSlot[index].end = time.clone().add(1, 'm'); // +1 minute
+                }
+            }
         }
 
         this.forceUpdate();
 
-        const _validate = this.state.timeSlot.reduce((preStatus, timeArr) => {
-            const _status = timeArr.start.isBefore(timeArr.end);
-            return preStatus && _status;
-        }, true);
-
         if (this.props.onChange) {
             this.props.onChange({
                 data: this.state.timeSlot,
-                validateStatus: _validate ? 'success' : 'error',
+                validateStatus: 'success',
             });
         }
     }
 
 
     componentDidMount() {
+        let timeSlot = this.props.value;
+        timeSlot = timeSlot.map((time) => {
+            return {
+                start: this.format(time.periodStart, 'HH:mm'),
+                end: this.format(time.periodEnd, 'HH:mm'),
+            }
+        })
+        this.setState({ timeSlot })
+    }
+    componentWillReceiveProps(nextProps) {
+        // if(this.props.value, nextProps.value){
 
+        // }
+    }
+    format(timeStr) {
+        if (!timeStr) return ''
+        if (timeStr.length === 3) return moment('0' + timeStr, 'HH:mm')
+        if (timeStr.length === 4) return moment(timeStr, 'HH:mm')
     }
 
     getDisableHours(index, startOrEnd) {
-        return [];
-        // if(index == 0) {          // 第一个时间段
-        //     if(startOrEnd){
-        //         return range(0, this.state.timeSlot[index].start.hour()-1)
-        //     } else {
-        //         return []
-        //     }
-        // } else {
-        //     if(startOrEnd){
-        //         return range(0, this.state.timeSlot[index].start.hour()-1)
-        //     } else {
-        //         return range(0, this.state.timeSlot[index-1].end.hour()-1)
-        //     }
-        // }
+        return range(0, this.state.timeSlot[index].start.hour() - 1)
     }
 
     getDisableMinutes(index, startOrEnd, hour) {
-        return [];
-        // first timeSlot
-        // if(index == 0) {
-        //     if(startOrEnd){
-        //         // return range(0, this.state.timeSlot[index].start.hour-1)
-        //         if (this.state.timeSlot[index].start.hour() == hour)
-        //             return range(0, this.state.timeSlot[index].start.minute());
-        //     } else {
-        //         return []
-        //     }
-        // } else {
-        //     if(startOrEnd){
-        //         if (hour == this.state.timeSlot[index].start.hour())
-        //             return range(0, this.state.timeSlot[index].start.minute())
-        //     } else {
-        //         if (hour == this.state.timeSlot[index-1].end.hour()){
-        //             return range(0, this.state.timeSlot[index-1].end.minute())
-        //         }
-        //     }
-        // }
+        if (hour == this.state.timeSlot[index].start.hour()) {
+            return range(0, this.state.timeSlot[index].start.minute())
+        }
     }
 
     renderAddButton(index) {
@@ -147,33 +147,51 @@ class AdvancedTimeSetting extends React.Component {
     }
 
     render() {
+        const { errorIdxArr = [] } = this.props;
         const length = this.state.timeSlot.length;
         const format = 'HH:mm';
         const formItems = this.state.timeSlot.map((k, index) => {
             return (
                 <div>
-                    <TimePicker
-                        className={styles.timePicker}
-                        format={format}
-                        value={this.state.timeSlot[index].start}
-                        onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
-                        disabledHours={() => { return this.getDisableHours(index, 0); }}
-                        disabledMinutes={(h) => { return this.getDisableMinutes(index, 0, h); }}
-                    />
-                    <span className={styles.timePickerZj}>--</span>
-                    <TimePicker
-                        format={format}
-                        value={this.state.timeSlot[index].end}
-                        onChange={(time, timeString) => this.onTimePickerChange(time, 1, index)}
-                        disabledHours={() => { return this.getDisableHours(index, 1); }}
-                        disabledMinutes={(h) => { return this.getDisableMinutes(index, 1, h); }}
-                        className={styles.timePicker2}
-                    />
+                    <Col span={7}>
+                        <TimePicker
+                            className={styles.timePicker}
+                            format={format}
+                            value={k.start}
+                            onChange={(time, timeString) => this.onTimePickerChange(time, 0, index)}
+                        />
+                    </Col>
+                    <Col span={2} offset={2} style={{ position: 'relative', left: -16 }}>--</Col>
+                    <Col span={7}>
+                        <TimePicker
+                            format={format}
+                            value={k.end}
+                            onChange={(time, timeString) => this.onTimePickerChange(time, 1, index)}
+                            disabledHours={() => { return this.getDisableHours(index, 1); }}
+                            disabledMinutes={(h) => { return this.getDisableMinutes(index, 1, h); }}
+                            disabled={!k.start}
+                            className={styles.timePicker2}
+                        />
+                    </Col>
+                    {
+                        this.props.noPlusIcon ? null :
+                            (<Col span={2} offset={2}>
+                                {(index === length - 1 && index < this.state.maxCount - 1)
+                                    ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
+                            </Col>)
+                    }
 
-                    {(index == length - 1 && index < this.state.maxCount - 1)
-                        ? (<Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.add} />) : (null)}
+                    {
+                        this.props.noPlusIcon ? null :
+                            (<Col span={2}>
+                                <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length === 1} onClick={() => this.remove(index)} />
 
-                    <Icon className={styles.deleteIcon} type="minus-circle-o" disabled={length == 1} onClick={() => this.remove(index)} />
+                            </Col>)
+                    }
+
+                    {
+                        errorIdxArr[index] === false ? (<p style={{ color: 'orange', display: 'inline-block' }}>和其它档位时间段重合</p>) : null
+                    }
                 </div>
             );
         });
@@ -185,12 +203,5 @@ class AdvancedTimeSetting extends React.Component {
         );
     }
 }
-
-/** If the form has been decorated by Form.create then it has this.props.form property.
- *this.props.form provides some APIs as follows
- * @fields {getFieldsValue} Get the specified fields' values. If you don't specify a parameter, you will get all fields' values.
- * @fields {getFieldValue} Get the value of a field
- */
-
 
 export const WrappedAdvancedTimeSetting = AdvancedTimeSetting;

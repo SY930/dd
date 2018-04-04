@@ -92,8 +92,7 @@ class SpecialDetailInfo extends React.Component {
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                    || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+                if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
                 } else {
                     data[index].giftTotalCount.value = gift.giftTotalCount;
@@ -144,8 +143,7 @@ class SpecialDetailInfo extends React.Component {
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                    || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+                if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
                 } else {
                     data[index].giftTotalCount.value = gift.giftTotalCount;
@@ -174,8 +172,7 @@ class SpecialDetailInfo extends React.Component {
                     data[index].giftInfo.giftName = gift.giftName;
                     data[index].giftInfo.giftItemID = gift.giftID;
                     data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                    if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                        || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+                    if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                         data[index].giftCount.value = gift.giftCount;
                     } else {
                         data[index].giftTotalCount.value = gift.giftTotalCount;
@@ -226,8 +223,7 @@ class SpecialDetailInfo extends React.Component {
                     data[index].giftInfo.giftName = gift.giftName;
                     data[index].giftInfo.giftItemID = gift.giftID;
                     data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                    if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                        || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+                    if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                         data[index].giftCount.value = gift.giftCount;
                     } else {
                         data[index].giftTotalCount.value = gift.giftTotalCount;
@@ -266,8 +262,7 @@ class SpecialDetailInfo extends React.Component {
                 }
             }
             // console.log(this.props.type)
-            if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+            if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 gifts.giftCount = giftInfo.giftCount.value;
             } else {
                 gifts.giftTotalCount = giftInfo.giftTotalCount.value
@@ -356,8 +351,7 @@ class SpecialDetailInfo extends React.Component {
 
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType == '1' ? 'giftValidDays' : 'giftEffectiveTime';
-            if (this.props.type == '51' || this.props.type == '52' || this.props.type == '53'
-                || this.props.type == '60' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23') {
+            if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 return Object.assign(ruleInfo, {
                     giftCount: checkgiftCount(ruleInfo.giftCount),
                     giftInfo: checkGiftInfo(ruleInfo.giftInfo),

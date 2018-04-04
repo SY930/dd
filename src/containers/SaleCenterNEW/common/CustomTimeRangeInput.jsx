@@ -9,9 +9,11 @@
 */
 
 import React, { PropTypes } from 'react';
-import { TimePicker, Input, Button, Col, Row, InputNumber, Icon,
+import {
+    TimePicker, Input, Button, Col, Row, InputNumber, Icon,
 } from 'antd';
 import styles from '../ActivityPage.less';
+const moment = require('moment');
 
 function range(start, end) {
     return Array(end - start).fill(0).map((value, idx) => {
@@ -49,29 +51,47 @@ class CustomTimeRangeInput extends React.Component {
     }
 
     onStartChange(value) {
-        const start = value;
-        let end = this.state.end;
-        if (value > end || value === null || end === undefined) {
-            end = value;
+        let start = value;
+        if (start !== null && start !== undefined) {
+            let startString = start.format('YYYYMMDDHHmm');
+            let startMM = start.format('mm');
+            if (startMM < 30) {
+                startString = startString.slice(0, 10) + '00'
+            } else {
+                startString = startString.slice(0, 10) + '30'
+            }
+            start = moment(startString, 'YYYYMMDDHHmm')
         }
         this.setState({
-            end,
             start,
-
         });
 
         const onChange = this.props.onChange;
         if (onChange) {
             onChange({
-                start: value,
-                end,
+                start,
+                // end,
             });
         }
     }
 
     onEndChange(value) {
+        let end = value;
+        if (end !== null && end !== undefined) {
+            let start = this.state.start;
+            let endString = end.format('YYYYMMDDHHmm');
+            let startMM = start.format('mm');
+            let endMM = end.format('mm');
+            if (start.format('HH') == end.format('HH') && startMM == '30') {
+                endString = endString.slice(0, 10) + '59';
+            } else {
+                endMM = endMM <= 29 ? '29' : '59';
+                endString = endString.slice(0, 10) + endMM;
+            }
+            end = moment(endString, 'YYYYMMDDHHmm')
+        }
         this.setState({
-            end: value,
+            end,
         });
 
         const onChange = this.props.onChange;
@@ -79,7 +99,7 @@ class CustomTimeRangeInput extends React.Component {
         if (onChange) {
             onChange({
                 start: this.state.start,
-                end: value,
+                end,
             });
         }
     }
@@ -110,6 +130,9 @@ class CustomTimeRangeInput extends React.Component {
                         onChange={this.onStartChange}
                         value={this.state.start}
                         format={this.state.format}
+                        disabledMinutes={(h) => range(1, 30).concat(range(31, 60))}
+                        hideDisabledOptions
+                    // minuteStep={30}
                     />
                 </Col>
 
@@ -125,7 +148,9 @@ class CustomTimeRangeInput extends React.Component {
                         disabled={!this.state.start}
                         format={this.state.format}
                         disabledHours={() => { return this.getDisableHours(); }}
-                        disabledMinutes={(h) => { return this.getDisableMinutes(h); }}
+                        // disabledMinutes={(h) => { return this.getDisableMinutes(h); }}
+                        disabledMinutes={(h) => range(0, 29).concat(range(30, 59))}
+                        hideDisabledOptions
                     />
                 </Col>
             </Row>

@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import axios from 'axios';
 import ReactDOM from 'react-dom';
 import { Modal } from 'antd';
 import _ from 'lodash';
@@ -506,7 +507,7 @@ export function Focus(dom, callback) {
 export function enterKeyHandler(dom, callback) {
     if (process.env.__CLIENT__ === true) {
         window.focusIndex = 0;
-        $(dom).on("keydown", '.enter-focus', function(e){
+        $(dom).on("keydown", '.enter-focus', function (e) {
             let index = -1,
                 enterfocusEls = $(dom).find('.enter-focus').not(':disabled'),
                 meEl = $(e.currentTarget),
@@ -516,12 +517,12 @@ export function enterKeyHandler(dom, callback) {
                 index = enterfocusEls.index(meEl);
                 nextFocusEl = enterfocusEls.eq(index + 1);
                 window.focusIndex = index + 1;
-                if(nextFocusEl.hasClass('enter-focus-antd-select')){
+                if (nextFocusEl.hasClass('enter-focus-antd-select')) {
                     nextFocusEl.find("input").click();
-                }else{
+                } else {
                     nextFocusEl.focus().select();
                 }
-                if(meEl.hasClass("add-row") && !$(dom).find(".ant-table-tbody tr").length || meEl.hasClass("add-row-sure")){
+                if (meEl.hasClass("add-row") && !$(dom).find(".ant-table-tbody tr").length || meEl.hasClass("add-row-sure")) {
                     callback();
                     $(dom).find('.enter-focus').eq(window.focusIndex).find("input").click().select();
                 }
@@ -533,8 +534,8 @@ export function enterKeyHandler(dom, callback) {
 export function enterKeyHandlerLeftTable(dom, rightTableFocusNum) {
     if (process.env.__CLIENT__ === true) {
         window.rightFocusIndex = 0;
-        $(dom).on("keydown", '.left-enter-focus', function(e){
-            if(e.keyCode == 13){
+        $(dom).on("keydown", '.left-enter-focus', function (e) {
+            if (e.keyCode == 13) {
                 let closestTr = $(e.target).closest("tr");
                 let allTrEl = $(e.target).closest("tbody").find("tr");
                 let index = allTrEl.index(closestTr);
@@ -654,3 +655,53 @@ export function downloadFile(url = '', filename = '') {
 }
 
 export const generateUniqID = uuid
+
+// 封装营销专用的axios
+// axios.post('/api/v1/universal', {
+//     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+//     method: '/gift/add.ajax',
+//     type: 'post',
+//     data: { ...params, groupName, groupID: this.props.gift.data.groupID }
+// })
+//     .then(data => console.log(data)).catch(err => console.log(err))
+
+export function axiosData(api, params, cache, {
+    path = 'data.records',  // path for response
+} = {}, domain = 'HTTP_SERVICE_URL_CRM') {
+    const { groupID } = getAccountInfo();
+    const reqParams = {
+        ...(groupID ? { groupID, _groupID: groupID } : {}),
+        ...params,
+    };
+    return axios.post('/api/v1/universal', {
+        service: domain, //? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
+        method: api,
+        type: 'post',
+        data: reqParams
+    })
+        .then(json => {
+            const { code, message } = json;
+            if (code !== '000') {
+                Modal.error({
+                    title: '啊哦！好像有问题呦~~',
+                    content: `${message}`,
+                });
+                return Promise.redirect && window.setTimeout(() => doRedirect(), 1500);
+                return Promise.reject({ code, message, response: json });
+            }
+            if (!path) {
+                return Promise.resolve(json);
+            }
+            else {
+                const paths = path.split('.');
+                const data = paths.reduce((ret, path) => {
+                    if (!ret) return ret;
+                    return ret[path];
+                }, json);
+                return Promise.resolve(data);
+            }
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}

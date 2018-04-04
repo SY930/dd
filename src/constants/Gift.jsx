@@ -10,6 +10,9 @@ const GiftCfg = {
         { name: '会员权益券', describe: '会员获取后，可享受折扣，会员价，插队等权益', value: '80', color: '#84aac6' },
         { name: '礼品定额卡', describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值', value: '90', color: '#c49b79' },
         { name: '活动券', describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码', value: '100', color: '#c49b79' },
+        { name: '线上礼品卡', describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费', value: '91', color: '#84aac6' },
+        { name: '买赠券', describe: '购买x份某编码菜品，赠送本编码菜品y份', value: '110', color: '#c49b79' },
+        { name: '折扣券', describe: '指定菜品满x元，折扣率为y', value: '111', color: '#84aac6' },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -21,6 +24,9 @@ const GiftCfg = {
         { label: '会员权益券', value: '80' },
         { label: '礼品定额卡', value: '90' },
         { label: '活动券', value: '100' },
+        { label: '线上礼品卡', value: '91' },
+        { label: '买赠券', value: '110' },
+        { label: '折扣券', value: '111' },
     ],
     transferType: [
         { label: '不可分享', value: 0 },
@@ -43,6 +49,13 @@ const GiftCfg = {
         { label: '全部支持', value: '2' },
         { label: '堂食', value: '0' },
         { label: '外送', value: '1' },
+    ],
+    supportOrderTypes: [
+        { label: '堂食', value: '0' },
+        { label: '外送', value: '1' },
+        { label: '自提', value: '2' },
+        { label: '闪吃', value: '3' },
+        { label: '预定', value: '4' },
     ],
     isOfflineCanUsing: [
         { label: '不支持', value: 'false' },
@@ -92,6 +105,9 @@ const GiftCfg = {
         { value: '111', label: '升级送礼' },
         { value: '113', label: '累计消费送礼' },
         { value: '114', label: '线上餐厅送礼' },
+        { value: '115', label: '微信购买领取' },
+        { value: '116', label: '微信受赠领取' },
+        { value: '117', label: '激活送礼' },
         { value: '3010', label: '基础营销消费返券' },
     ],
     giftSendStatus: [
@@ -126,7 +142,7 @@ const GiftCfg = {
     ],
     payWayName: [
         { value: '', label: '全部' },
-        { value: '现金', label: '现金' },
+        { value: '人民币', label: '人民币' },
         { value: '银行卡', label: '银行卡' },
         { value: '支票', label: '支票' },
         { value: '微信', label: '微信' },
@@ -146,6 +162,14 @@ const GiftCfg = {
         { label: '眉州', value: 4, disabled: releaseENV },
         { label: '5i', value: 5, disabled: releaseENV },
         { label: '拉格代尔', value: 6, disabled: releaseENV },
+    ],
+    couponCodeType: [
+        { value: 1, label: '是' },
+        { value: 0, label: '否' },
+    ],
+    isNeedCustomerInfo: [
+        { value: false, label: '不需要' },
+        { value: true, label: '需要' },
     ],
 }
 

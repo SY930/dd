@@ -156,7 +156,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
                 {
                     record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                    record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
+                        record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
                         (
                             <Row>
                                 <Col span={4} style={{ textAlign: 'right' }}>活动时间</Col>
@@ -239,7 +239,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'EGiftName',
             },
             {
-                title: way === 51 || way === 52 || way === 53 || way === 60 || way === 61 || way === 62 || way === 63 || way === 23 ?
+                title: way != '20' && way != '21' && way != '30' && way != '70' ?
                     '礼品个数' : '礼品总数',
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
@@ -282,7 +282,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
-                EGiftSingleCount: way === 51 || way === 52 || way === 53 || way === 60 || way === 61 || way === 62 || way === 63 || way === 23 ?
+                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
                     gift.giftCount : gift.giftTotalCount,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
@@ -451,7 +451,7 @@ class SpecialPromotionDetail extends React.Component {
                 // gender: sexInfo[user.customerSex].lable, // 0 ,1 ,2  女 男  未知
                 cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
-                level: `${user.cardTypeName}-${user.cardLevelName}`,
+                level: `${user.cardTypeName || ''}-${user.cardLevelName && user.cardLevelName !== 'null' ? user.cardLevelName : ''}`,
                 consumptionTotal: user.consumptionTotal,
                 consumptionCount: user.consumptionCount,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),

@@ -94,17 +94,17 @@ class SearchInput extends Component {
     constructor(props) {
         super(props);
     }
-  handleInputChange = (e) => {
-      this.props.onChange(e.target.value);
-  }
-  render() {
-      return (<Input
-          addonBefore={<Icon type="search" />}
-          placeholder="请选择"
-          onChange={this.handleInputChange}
-          onFocus={this.props.onFocus}
-      />);
-  }
+    handleInputChange = (e) => {
+        this.props.onChange(e.target.value);
+    }
+    render() {
+        return (<Input
+            addonBefore={<Icon type="search" />}
+            placeholder="请选择"
+            onChange={this.handleInputChange}
+            onFocus={this.props.onFocus}
+        />);
+    }
 }
 
 class SelectLevel1 extends Component {
@@ -115,43 +115,43 @@ class SelectLevel1 extends Component {
             ulDisplay: 'normal-ul',
         };
     }
-  onChange=(item) => {
-      this.props.onchange(item);
-      this.props.onFocus();
-  }
-  handleUlDisplay=() => {
-      this.setState({
-          ulDisplay: (this.state.ulDisplay == 'normal-ul' ? 'ul-hide' : 'normal-ul'),
-      })
-  }
-  render() {
-      return (
-          <Col span={8}>
-              <div className={styles.SelectLevel1}>
-                  <div className={styles.SelectTit} onClick={() => { this.handleUlDisplay() }}>
-                      {this.props.level1Title}
-                  </div>
-                  <ul className={this.state.ulDisplay}>
-                      {
-                          this.props.treeData.map((item, index) => {
-                              const province = item[this.props.levelsNames];
-                              return (
-                                  <a className={styles.Selectlia} key={`${province.content}${index}`}>
-                                      <li
-                                          key={`${province.content}-${index}`}
-                                          className={[item.selected, styles.SelectLi].join(' ')}
-                                          onClick={() => { this.onChange(index) }}
-                                      >
-                                          {province.content}
-                                      </li>
-                                  </a>)
-                          })
-                      }
-                  </ul>
-              </div>
-          </Col>
-      );
-  }
+    onChange = (item) => {
+        this.props.onchange(item);
+        this.props.onFocus();
+    }
+    handleUlDisplay = () => {
+        this.setState({
+            ulDisplay: (this.state.ulDisplay == 'normal-ul' ? 'ul-hide' : 'normal-ul'),
+        })
+    }
+    render() {
+        return (
+            <Col span={8}>
+                <div className={styles.SelectLevel1}>
+                    <div className={styles.SelectTit} onClick={() => { this.handleUlDisplay() }}>
+                        {this.props.level1Title}
+                    </div>
+                    <ul className={this.state.ulDisplay}>
+                        {
+                            this.props.treeData.map((item, index) => {
+                                const province = item[this.props.levelsNames];
+                                return (
+                                    <a className={styles.Selectlia} key={`${province.content}${index}`}>
+                                        <li
+                                            key={`${province.content}-${index}`}
+                                            className={[item.selected, styles.SelectLi].join(' ')}
+                                            onClick={() => { this.onChange(index) }}
+                                        >
+                                            {province.content}
+                                        </li>
+                                    </a>)
+                            })
+                        }
+                    </ul>
+                </div>
+            </Col>
+        );
+    }
 }
 
 class SelectLevel2 extends Component {
@@ -181,90 +181,103 @@ class SelectLevel2 extends Component {
     componentDidMount() {
         this.setState({ plainOptions: this.props.treeData[0][this.props.childrenNames] });
     }
-  onChange=(checkedList) => {
-      this.setState({
-          checkedList,
-          indeterminate: false,
-          checkAll: checkedList.length === this.props.plainOptions.length,
-      }, () => {
-          const array = this.props.plainOptions.filter((item, idx, array) => {
-              return (this.state.checkedList.indexOf(item.content) != -1)
-          })
+    onChange = (checkedList) => {
+        this.setState({
+            checkedList,
+            indeterminate: false,
+            checkAll: checkedList.length === this.props.plainOptions.length,
+        }, () => {
+            // const array = this.props.plainOptions.filter((item, idx, array) => {
+            //     return (this.state.checkedList.indexOf(item.content) != -1)
+            // })
+            const array = [];
+            this.props.treeData.forEach((item) => {
+                item.shops.forEach((itm) => {
+                    if (checkedList.includes(itm.content)) {
+                        array.push(itm)
+                    }
+                })
+            })
+            this.props.onChange(array);
+        });
+    }
+    onCheckAllChange = (e) => {
+        let array = [],
+            list = [];
+        if (e.target.checked) {
+            this.props.plainOptions.map((item) => {
+                array.push(item.content);
+                list.push(item);
+            })
+        }
 
-          this.props.onChange(array);
-      });
-  }
-  onCheckAllChange=(e) => {
-      let array = [],
-          list = [];
-      if (e.target.checked) {
-          this.props.plainOptions.map((item) => {
-              array.push(item.content);
-              list.push(item);
-          })
-      }
+        this.setState({
+            checkedList: e.target.checked ? array : [],
+            indeterminate: false,
+            checkAll: e.target.checked,
+        }, () => {
+            /* let array =this.props.plainOptions.filter((item,idx,array)=>{
+             return (this.state.checkedList.indexOf(item.content)!= -1)
+             }) */
+            this.props.onChange(list);
+        });
+    }
+    componentWillReceiveProps(props) {
+        const array = [];
+        // if (props.selectedCities) {
+        //     props.selectedCities.map((item) => {
+        //         array.push(item.content);
+        //     })
+        // }
+        props.treeData.forEach(tree => {
+            tree.selectedCities.forEach(selected => {
+                !array.includes(selected.content) && array.push(selected.content)
+            })
+        })
 
-      this.setState({
-          checkedList: e.target.checked ? array : [],
-          indeterminate: false,
-          checkAll: e.target.checked,
-      }, () => {
-      /* let array =this.props.plainOptions.filter((item,idx,array)=>{
-       return (this.state.checkedList.indexOf(item.content)!= -1)
-       }) */
-          this.props.onChange(list);
-      });
-  }
-  componentWillReceiveProps(props) {
-      const array = [];
-      if (props.selectedCities) {
-          props.selectedCities.map((item) => {
-              array.push(item.content);
-          })
-      }
-      this.plainOptions = [];
-      props.plainOptions.map((item) => {
-          this.plainOptions.push(item.content);
-      })
-      this.setState({
-          checkedList: array,
-      })
-      if (!props.selectedCities || (props.selectedCities.length != props.plainOptions.length)) {
-          this.setState({
-              checkAll: false,
-          })
-      } else {
-          this.setState({
-              checkAll: true,
-          })
-      }
-  }
-  /* componentWillUnmount(){
-   console.log("SelectLevel2Unmount")
-   console.log(this.state.checkedList)
-   } */
-  render() {
-      // console.log(this.props.plainOptions);
-      return (
-          <Col span={16} style={{ paddingLeft: 10 }}>
-              <div className={styles.SelectLevel2}>
-                  <div className={styles.SelectLevelTop}>
-                      <div className={styles.Sche}>
-                          <Checkbox indeterminate={this.state.indeterminate} onChange={this.onCheckAllChange} checked={this.state.checkAll}>
+        this.plainOptions = [];
+        props.plainOptions.map((item) => {
+            this.plainOptions.push(item.content);
+        })
+        this.setState({
+            checkedList: array,
+        })
+        if (!props.selectedCities || (props.selectedCities.length != props.plainOptions.length)) {
+            this.setState({
+                checkAll: false,
+            })
+        } else {
+            this.setState({
+                checkAll: true,
+            })
+        }
+    }
+    /* componentWillUnmount(){
+     console.log("SelectLevel2Unmount")
+     console.log(this.state.checkedList)
+     } */
+    render() {
+        // console.log(this.props.plainOptions);
+        return (
+            <Col span={16} style={{ paddingLeft: 10 }}>
+                <div className={styles.SelectLevel2}>
+                    <div className={styles.SelectLevelTop}>
+                        <div className={styles.Sche}>
+                            <Checkbox indeterminate={this.state.indeterminate} onChange={this.onCheckAllChange} checked={this.state.checkAll}>
 
-                          </Checkbox>
-                      </div>
-                      <div className={styles.Stit}>
-                          {this.props.level2Title}
-                      </div>
-                  </div>
-                  <div className={styles.SelectLevelB}>
-                      <CheckboxGroup options={this.plainOptions} value={this.state.checkedList} onChange={this.onChange} />
-                  </div>
-              </div>
-          </Col>
-      );
-  }
+                            </Checkbox>
+                        </div>
+                        <div className={styles.Stit}>
+                            {this.props.level2Title}
+                        </div>
+                    </div>
+                    <div className={styles.SelectLevelB}>
+                        <CheckboxGroup options={this.plainOptions} value={this.state.checkedList} onChange={this.onChange} />
+                    </div>
+                </div>
+            </Col>
+        );
+    }
 }
 
 class Selected extends Component {
@@ -339,213 +352,213 @@ export default class TreeSelect extends Component {
             plainOptions: treelist[0][this.props.childrenNames],
         }
     }
-  error = () => {
-      message.error('This is a message of error');
-  }
-  componentWillReceiveProps(nextProps) {
-      // console.log("componentWillReceiveProps");
-      if (nextProps.tagNames) {
-      // console.log(nextProps.tagNames);
-      // console.log(this.deletList);
-          if (this.deletList.length == 0 || (nextProps.tagNames[0] !== this.deletList[0])) {
-              // console.log(nextProps.tagNames);
-              // console.log(this.deletList);
-              this.deletList = [];
-              nextProps.tagNames.map((item) => {
-                  this.deletList.push(item);
-              })
-              if (nextProps.tagNames.length != 0) {
-                  this.deleteCity(nextProps.tagNames);
-              }
-          }
-      }
-  }
+    error = () => {
+        message.error('This is a message of error');
+    }
+    componentWillReceiveProps(nextProps) {
+        // console.log("componentWillReceiveProps");
+        if (nextProps.tagNames) {
+            // console.log(nextProps.tagNames);
+            // console.log(this.deletList);
+            if (this.deletList.length == 0 || (nextProps.tagNames[0] !== this.deletList[0])) {
+                // console.log(nextProps.tagNames);
+                // console.log(this.deletList);
+                this.deletList = [];
+                nextProps.tagNames.map((item) => {
+                    this.deletList.push(item);
+                })
+                if (nextProps.tagNames.length != 0) {
+                    this.deleteCity(nextProps.tagNames);
+                }
+            }
+        }
+    }
 
-  componentWillUnmount() {
-      this.props.callback && this.props.callback(this.state.showItems);
-      this.allItem = [];
-      this.state.searchResult = [];
-  }
-
-
-  handleLevel1Change=(index) => {
-      this.state.treeData.map((itm, idx) => {
-          this.state.treeData[idx].selected = 'noSel'
-      });
-      this.state.treeData[index].selected = 'selected';
-
-      this.setState({
-          index,
-          plainOptions: this.state.treeData[index][this.props.childrenNames],
-      });
-  }
-
-  handleLevel2Change=(selectedCities) => {
-      const index = this.state.index;
-      this.state.treeData[index].selectedCities = selectedCities;
-      const showItems = [];
-      this.state.treeData.map((item, index) => {
-          if (item.selectedCities) {
-              item.selectedCities.map((itm, idx) => {
-                  showItems.push(itm)
-              })
-          }
-      })
-      this.setState({
-          showItems,
-      }, function () {
-          this.props.callback && this.props.callback(this.state.showItems);
-          if (this.props.onTreeChange) {
-              this.props.onTreeChange(this.state.showItems);
-          }
-      });
-  }
-
-  deleteCity=(item) => {
-      // console.log('------------------------------');
-      // console.log(item);
-      if (Array.isArray(item)) {
-          let newShowItems = this.state.showItems;
-          item.map((ele) => {
-              newShowItems = newShowItems.filter((itm) => {
-                  return (itm.id != ele.id)
-              })
-              this.state.treeData.map((itm, idx) => {
-                  if (itm.selectedCities) {
-                      const newSelects = itm.selectedCities.filter((it, idx, array) => {
-                          return (it.id != ele.id)
-                      })
-                      itm.selectedCities = newSelects;
-                  }
-              })
-          })
-          this.setState({
-              showItems: newShowItems,
-          }, function () {
-              this.props.callback && this.props.callback(this.state.showItems);
-          });
-      } else {
-          const newShowItems = this.state.showItems.slice().filter((itm, idx, array) => {
-              return (itm.id != item.id)
-          })
-          this.state.treeData.map((itm, idx) => {
-              if (itm.selectedCities) {
-                  const newSelectes = itm.selectedCities.filter((it, idx, array) => {
-                      return (it.id != item.id)
-                  })
-                  itm.selectedCities = newSelectes;
-              }
-          })
-          this.setState({
-              showItems: newShowItems,
-          }, function () {
-              this.props.callback && this.props.callback(this.state.showItems);
-          });
-      }
-  }
-
-  handleClear=() => {
-      // console.log('333333');
-      const treeData = this.state.treeData.map((item, index) => {
-          item.selectedCities = item.selectedCities ? [] : [];
-          return item
-      })
-      this.setState({
-          showItems: [],
-          treeData,
-      }, function () {
-          this.props.callback && this.props.callback(this.state.showItems);
-      })
-      // console.log(treeData);
-  }
-
-  render() {
-      // console.log('--------------------------------------');
-      // console.log(this.props.showItems);
-
-      this.props.getResult && this.props.getResult(this.state.showItems);
-      let plainOptions;
-      if (this.state.focus == '2') {
-          plainOptions = this.state.searchResult;
-      } else {
-          plainOptions = this.state.plainOptions
-      }
-
-      const level1Props = {
-          level1Title: this.state.level1Title,
-          treeData: this.state.treeData,
-          levelsNames: this.props.levelsNames,
-          childrenNames: this.props.childrenNames,
-          style: {
-              width: 300,
-          },
-          onchange: this.handleLevel1Change,
-          onFocus: () => {
-              this.setState({
-                  focus: '1',
-              })
-          },
-      };
-      const level2Props = {
-          level2Title: this.state.level2Title,
-          treeData: this.state.treeData,
-          plainOptions,
-          levelsNames: this.props.levelsNames,
-          childrenNames: this.props.childrenNames,
-          selectedCities: this.state.treeData[this.state.index].selectedCities,
-          style: {
-              width: 300,
-          },
-          onChange: this.handleLevel2Change,
-      };
-      const selectedProps = {
-          selectdTitle: this.state.selectdTitle,
-          showItems: this.state.showItems,
-          onChange: this.deleteCity,
-      };
-
-      return (
-          <div className={styles.treeSelectMain}>
-              <SearchInput
-                  onChange={(value) => {
-                      let list
-                      if (!value) {
-                          list = this.allItem
-                      } else {
-                          list = this.allItem.filter((node, index) => {
-                              // console.log(this.allItemPY[index])
-                              if (node.content.indexOf(value) != -1 || this.allItemPY[index].indexOf(value) != -1) {
-                                  return true;
-                              }
-                              return false;
-                          });
-                      }
+    componentWillUnmount() {
+        this.props.callback && this.props.callback(this.state.showItems);
+        this.allItem = [];
+        this.state.searchResult = [];
+    }
 
 
-                      this.setState({
-                          searchResult: list,
-                      })
-                      // console.log(this.searchResult);
-                  }}
+    handleLevel1Change = (index) => {
+        this.state.treeData.map((itm, idx) => {
+            this.state.treeData[idx].selected = 'noSel'
+        });
+        this.state.treeData[index].selected = 'selected';
 
-                  onFocus={() => {
-                      this.setState({
-                          focus: '2',
-                      })
-                  }}
-              />
-              <div className={styles.treeSelectBody}>
-                  <Row>
-                      <SelectLevel1 {...level1Props} />
-                      <SelectLevel2 {...level2Props} />
-                  </Row>
-              </div>
-              <div className={styles.treeSelectFooter}>
-                  <Selected {...selectedProps} />
-                  <div onClick={this.handleClear} className={styles.Tclear}>清空</div>
-              </div>
+        this.setState({
+            index,
+            plainOptions: this.state.treeData[index][this.props.childrenNames],
+        });
+    }
 
-          </div>
-      );
-  }
+    handleLevel2Change = (selectedCities) => {
+        const index = this.state.index;
+        this.state.treeData[index].selectedCities = selectedCities;
+        const showItems = [];
+        this.state.treeData.map((item, index) => {
+            if (item.selectedCities) {
+                item.selectedCities.map((itm, idx) => {
+                    !_.find(showItems, itm) && showItems.push(itm)
+                })
+            }
+        })
+        this.setState({
+            showItems,
+        }, function () {
+            this.props.callback && this.props.callback(this.state.showItems);
+            if (this.props.onTreeChange) {
+                this.props.onTreeChange(this.state.showItems);
+            }
+        });
+    }
+
+    deleteCity = (item) => {
+        // console.log('------------------------------');
+        // console.log(item);
+        if (Array.isArray(item)) {
+            let newShowItems = this.state.showItems;
+            item.map((ele) => {
+                newShowItems = newShowItems.filter((itm) => {
+                    return (itm.id != ele.id)
+                })
+                this.state.treeData.map((itm, idx) => {
+                    if (itm.selectedCities) {
+                        const newSelects = itm.selectedCities.filter((it, idx, array) => {
+                            return (it.id != ele.id)
+                        })
+                        itm.selectedCities = newSelects;
+                    }
+                })
+            })
+            this.setState({
+                showItems: newShowItems,
+            }, function () {
+                this.props.callback && this.props.callback(this.state.showItems);
+            });
+        } else {
+            const newShowItems = this.state.showItems.slice().filter((itm, idx, array) => {
+                return (itm.id != item.id)
+            })
+            this.state.treeData.map((itm, idx) => {
+                if (itm.selectedCities) {
+                    const newSelectes = itm.selectedCities.filter((it, idx, array) => {
+                        return (it.id != item.id)
+                    })
+                    itm.selectedCities = newSelectes;
+                }
+            })
+            this.setState({
+                showItems: newShowItems,
+            }, function () {
+                this.props.callback && this.props.callback(this.state.showItems);
+            });
+        }
+    }
+
+    handleClear = () => {
+        // console.log('333333');
+        const treeData = this.state.treeData.map((item, index) => {
+            item.selectedCities = item.selectedCities ? [] : [];
+            return item
+        })
+        this.setState({
+            showItems: [],
+            treeData,
+        }, function () {
+            this.props.callback && this.props.callback(this.state.showItems);
+        })
+        // console.log(treeData);
+    }
+
+    render() {
+        // console.log('--------------------------------------');
+        // console.log(this.props.showItems);
+
+        this.props.getResult && this.props.getResult(this.state.showItems);
+        let plainOptions;
+        if (this.state.focus == '2') {
+            plainOptions = this.state.searchResult;
+        } else {
+            plainOptions = this.state.plainOptions
+        }
+
+        const level1Props = {
+            level1Title: this.state.level1Title,
+            treeData: this.state.treeData,
+            levelsNames: this.props.levelsNames,
+            childrenNames: this.props.childrenNames,
+            style: {
+                width: 300,
+            },
+            onchange: this.handleLevel1Change,
+            onFocus: () => {
+                this.setState({
+                    focus: '1',
+                })
+            },
+        };
+        const level2Props = {
+            level2Title: this.state.level2Title,
+            treeData: this.state.treeData,
+            plainOptions,
+            levelsNames: this.props.levelsNames,
+            childrenNames: this.props.childrenNames,
+            selectedCities: this.state.treeData[this.state.index].selectedCities,
+            style: {
+                width: 300,
+            },
+            onChange: this.handleLevel2Change,
+        };
+        const selectedProps = {
+            selectdTitle: this.state.selectdTitle,
+            showItems: this.state.showItems,
+            onChange: this.deleteCity,
+        };
+
+        return (
+            <div className={styles.treeSelectMain}>
+                <SearchInput
+                    onChange={(value) => {
+                        let list
+                        if (!value) {
+                            list = this.allItem
+                        } else {
+                            list = this.allItem.filter((node, index) => {
+                                // console.log(this.allItemPY[index])
+                                if (node.content.indexOf(value) != -1 || this.allItemPY[index].indexOf(value) != -1) {
+                                    return true;
+                                }
+                                return false;
+                            });
+                        }
+
+
+                        this.setState({
+                            searchResult: list,
+                        })
+                        // console.log(this.searchResult);
+                    }}
+
+                    onFocus={() => {
+                        this.setState({
+                            focus: '2',
+                        })
+                    }}
+                />
+                <div className={styles.treeSelectBody}>
+                    <Row>
+                        <SelectLevel1 {...level1Props} />
+                        <SelectLevel2 {...level2Props} />
+                    </Row>
+                </div>
+                <div className={styles.treeSelectFooter}>
+                    <Selected {...selectedProps} />
+                    <div onClick={this.handleClear} className={styles.Tclear}>清空</div>
+                </div>
+
+            </div>
+        );
+    }
 }

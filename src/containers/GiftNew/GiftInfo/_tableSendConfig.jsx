@@ -24,6 +24,9 @@ const FORMITEMS = {
     getWay: {
         label: '发出方式',
         type: 'combo',
+        props: {
+            showSearch: true,
+        },
         defaultValue: '',
         options: GiftCfg.getWay,
         labelCol: { span: 4 },
@@ -123,7 +126,7 @@ const USED_COLUMNS = [
     }, {
         title: '使用时间',
         dataIndex: 'usingTime',
-        key: 'usedTime',
+        key: 'usingTime',
         render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
     }, {
         title: '使用店铺',
