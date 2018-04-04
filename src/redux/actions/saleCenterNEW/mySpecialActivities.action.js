@@ -457,6 +457,11 @@ export const fetchSpecialCardLevel = opts => {
             .then((response) => {
                 if (response.code === '000') {
                     opts.success && opts.success();
+                    (response.data.groupCardTypeList || []).forEach((cat) => {
+                        (cat.cardTypeLevelList || []).forEach((level) => {
+                            level.cardTypeName = cat.cardTypeName
+                        })
+                    })
                     return dispatch(fetchSpecialCardLevelfilled(response));
                 }
                 opts.fail && opts.fail(response.message);

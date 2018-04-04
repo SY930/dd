@@ -85,7 +85,9 @@ class HualalaEditorBox extends React.Component {
                             return (
                                 <div key={`${idx}`} className={styles.projectTag}>
                                     <Tag key={item[itemID]} closable={true} afterClose={() => this.handleClose(item)} className={styles.projectTags}>
-                                        {item[itemName] || `${item.foodName}  (${item.unit})`}
+                                        {this.props.itemNameJoinCatName ?
+                                            `${item[this.props.itemNameJoinCatName] ? item[this.props.itemNameJoinCatName] + '---' : ''}${item[itemName]}` :
+                                            item[itemName]}
                                     </Tag>
                                 </div>
                             );
@@ -142,8 +144,8 @@ HualalaEditorBox.propTypes = {
 }
 
 HualalaEditorBox.defaultProps = {
-    onChange: () => {},
-    onTagClose: () => {},
+    onChange: () => { },
+    onTagClose: () => { },
 }
 
 
