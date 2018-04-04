@@ -85,7 +85,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
         } else if (promotionType === 'RETURN_GIFT') {
-            userSettingOPtios =  this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
+            userSettingOPtios = this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
         } else if (promotionType === 'RETURN_POINT') {
             userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
         } else {
@@ -143,7 +143,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
                 userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
-                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,              
+                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
                 cardScopeType: 0,
                 cardScopeIDs: [],
             }, () => {
@@ -467,7 +467,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             />)
                     }
                 </FormItem>
-
+                {
+                    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
+                }
             </div>
         )
     }
