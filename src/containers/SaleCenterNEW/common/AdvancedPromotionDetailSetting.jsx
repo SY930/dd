@@ -9,7 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
-import { is } from 'immutable';
+import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 // import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import {
@@ -67,7 +67,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.handleBlackListRadioChange = this.handleBlackListRadioChange.bind(this);
     }
     componentDidMount() {
-        
         const data = { groupID: this.props.user.accountInfo.groupID }
         if (!this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionID'])) { // 新建
             let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
@@ -76,9 +75,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         } else { // 编辑
             data.shopIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS().join(',')
         }
-        this.props.fetchSpecialCardLevel({
-            data
-        })
+        this.props.fetchSpecialCardLevel({ data })
         // 获取会员等级信息
         if (this.props.groupCardTypeList) {
             this.setState({
@@ -161,6 +158,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     cardScopeList: [],
                 })
             });
+        }
+        // 第二步店铺更改重新获取卡类卡等级
+        if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
+            // 新建
+            let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+            _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+            if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
+                const data = { groupID: this.props.user.accountInfo.groupID }
+                data.shopIDs = _shopsIDs.join(',')
+                this.props.fetchSpecialCardLevel({ data })
+            }
         }
     }
 
