@@ -67,8 +67,17 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.handleBlackListRadioChange = this.handleBlackListRadioChange.bind(this);
     }
     componentDidMount() {
+        
+        const data = { groupID: this.props.user.accountInfo.groupID }
+        if (!this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionID'])) { // 新建
+            let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            shopsIDs = shopsIDs.map(shop => shop.shopID).join(',')
+            data.shopIDs = shopsIDs
+        } else { // 编辑
+            data.shopIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS().join(',')
+        }
         this.props.fetchSpecialCardLevel({
-            data: { groupID: this.props.user.accountInfo.groupID }
+            data
         })
         // 获取会员等级信息
         if (this.props.groupCardTypeList) {

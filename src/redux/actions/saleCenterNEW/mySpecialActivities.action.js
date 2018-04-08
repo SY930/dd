@@ -432,28 +432,9 @@ export const fetchSpecialCardLevelTimeout = () => ({ type: SALE_CENTER_FETCH_CAR
 export const fetchSpecialCardLevel = opts => {
     return dispatch => {
         dispatch({ type: SALE_CENTER_FETCH_CARD_LEVEL_START, payload: opts });
-        const params = generateXWWWFormUrlencodedParams(opts.data);
-        fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
-            method: 'POST',
-            body: { _groupID: params._groupID },
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
+        fetchData('getSetUsedLevels_dkl', { ...opts.data }, null, {
+            path: '',
         })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json();
-                    }
-                    return response.text();
-                }
-                return Promise.reject(new Error(response.statusText));
-            })
-            .catch((error) => {
-                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-            })
             .then((response) => {
                 if (response.code === '000') {
                     opts.success && opts.success();
