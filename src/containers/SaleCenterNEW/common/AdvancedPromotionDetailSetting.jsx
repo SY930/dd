@@ -159,7 +159,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             });
         }
-        // 第二步店铺更改重新获取卡类卡等级
+        // 第二步店铺更改重新获取卡类卡等级，并且重置已选
         if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
             // 新建
             let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
@@ -170,6 +170,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 const data = { groupID: this.props.user.accountInfo.groupID }
                 data.shopIDs = _shopsIDs.join(',')
                 this.props.fetchSpecialCardLevel({ data })
+                this.handleCardScopeList({
+                    cardScopeIDs: [],
+                });
             }
         }
     }
