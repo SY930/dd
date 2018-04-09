@@ -16,6 +16,7 @@
 import {
     fetchData,
     generateXWWWFormUrlencodedParams,
+    axiosData,
 } from '../../../helpers/util';
 
 import 'rxjs';
@@ -436,6 +437,34 @@ export const fetchSpecialCardLevel = opts => {
             path: '',
         })
             .then((response) => {
+                if (response.code === '000') {
+                    opts.success && opts.success();
+                    (response.data.groupCardTypeList || []).forEach((cat) => {
+                        (cat.cardTypeLevelList || []).forEach((level) => {
+                            level.cardTypeName = cat.cardTypeName
+                        })
+                    })
+                    return dispatch(fetchSpecialCardLevelfilled(response));
+                }
+                opts.fail && opts.fail(response.message);
+                return dispatch(fetchSpecialCardLevelFail(response.code));
+            })
+            .catch((err) => {
+                if (err.name === 'TimeoutError') {
+                    return dispatch(fetchSpecialCardLevelTimeout());
+                }
+            })
+    }
+}
+// /crm/groupParamsService_getGroupShopsCardTypeLevel.ajax可接受shopIDs的接口
+export const fetchShopCardLevel = opts => {
+    return dispatch => {
+        dispatch({ type: SALE_CENTER_FETCH_CARD_LEVEL_START, payload: opts });
+        axiosData('/crm/groupParamsService_getGroupShopsCardTypeLevel.ajax', { ...opts.data }, null, {
+            path: '',
+        })
+            .then((response) => {
+                debugger
                 if (response.code === '000') {
                     opts.success && opts.success();
                     (response.data.groupCardTypeList || []).forEach((cat) => {

@@ -25,7 +25,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
-import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
@@ -75,7 +75,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         } else { // 编辑
             data.shopIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS().join(',')
         }
-        this.props.fetchSpecialCardLevel({ data })
+        this.props.fetchShopCardLevel({ data })
         // 获取会员等级信息
         if (this.props.groupCardTypeList) {
             this.setState({
@@ -169,7 +169,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
                 data.shopIDs = _shopsIDs.join(',')
-                this.props.fetchSpecialCardLevel({ data })
+                this.props.fetchShopCardLevel({ data })
                 this.handleCardScopeList({
                     cardScopeIDs: [],
                 });
@@ -551,8 +551,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchSubjectListInfo: (opts) => {
             dispatch(fetchSubjectListInfoAC(opts));
         },
-        fetchSpecialCardLevel: (opts) => {
-            dispatch(fetchSpecialCardLevel(opts));
+        fetchShopCardLevel: (opts) => {
+            dispatch(fetchShopCardLevel(opts));
         },
     }
 };
