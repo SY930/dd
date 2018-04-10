@@ -68,20 +68,15 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         const data = { groupID: this.props.user.accountInfo.groupID }
-        if (!this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionID'])) { // 新建
-            let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
-            shopsIDs = shopsIDs.map(shop => shop.shopID).join(',')
-            data.shopIDs = shopsIDs
-        } else { // 编辑
-            data.shopIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS().join(',')
-        }
+        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+        data.shopIDs = shopsIDs.join(',')
         this.props.fetchShopCardLevel({ data })
         // 获取会员等级信息
-        if (this.props.groupCardTypeList) {
-            this.setState({
-                cardInfo: this.props.groupCardTypeList.toJS(),
-            })
-        }
+        const { groupCardTypeList = fromJS([]) } = this.props
+        this.setState({
+            cardInfo: groupCardTypeList.toJS(),
+        })
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
@@ -141,9 +136,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.setState({ subjectType });
         }
         // 获取会员等级信息
-        if (!is(this.props.groupCardTypeList, nextProps.groupCardTypeList)) {
+        const { groupCardTypeList = fromJS([]) } = this.props
+        const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
+        if (!is(groupCardTypeList, _groupCardTypeList)) {
             this.setState({
-                cardInfo: nextProps.groupCardTypeList.toJS(),
+                cardInfo: _groupCardTypeList.toJS(),
             })
         }
         if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
