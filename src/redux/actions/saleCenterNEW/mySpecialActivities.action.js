@@ -465,7 +465,6 @@ export const fetchShopCardLevel = opts => {
             path: '',
         })
             .then((response) => {
-                debugger
                 if (response.code === '000') {
                     opts.success && opts.success();
                     (response.data.groupCardTypeList || []).forEach((cat) => {
