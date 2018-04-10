@@ -460,7 +460,8 @@ export const fetchSpecialCardLevel = opts => {
 export const fetchShopCardLevel = opts => {
     return dispatch => {
         dispatch({ type: SALE_CENTER_FETCH_CARD_LEVEL_START, payload: opts });
-        axiosData('/crm/groupParamsService_getGroupShopsCardTypeLevel.ajax', { ...opts.data }, null, {
+        axiosData('/crm/groupParamsService_getGroupShopCardTypeLevels.ajax', { ...opts.data }, null, {
+            // axiosData('/crm/groupParamsService_getGroupShopsCardTypeLevel.ajax', { ...opts.data }, null, {
             path: '',
         })
             .then((response) => {
