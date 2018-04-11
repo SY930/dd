@@ -90,7 +90,8 @@ class BaseHualalaModal extends React.Component {
                     label={outLabel} // 外层➕下方文案
                     itemName={outItemName} // 外层已选，条目对应的展示name的key
                     itemID={outItemID} // 外层已选，条目对应的展示id的key
-                    data={hadSelected} // 外层已选，展示条目数据s
+                    data={hadSelected} // 外层已选，展示条目数据s                            
+                    itemNameJoinCatName={this.props.itemNameJoinCatName} // item条目展示名称是否拼接类别名称
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
@@ -110,6 +111,7 @@ class BaseHualalaModal extends React.Component {
                             selectdTitle={innerBottomTitle} // Modal内下侧框title
                             itemName={innerBottomItemName} // Modal内下侧已选条目展示name对应的key
                             value={hadSelected} // Modal内下侧已选项s
+                            itemNameJoinCatName={this.props.itemNameJoinCatName} // item条目展示名称是否拼接类别名称
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}
                         />

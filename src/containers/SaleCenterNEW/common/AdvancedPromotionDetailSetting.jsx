@@ -9,7 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
-import { is } from 'immutable';
+import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 // import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import {
@@ -25,7 +25,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
-import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
@@ -67,15 +67,16 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.handleBlackListRadioChange = this.handleBlackListRadioChange.bind(this);
     }
     componentDidMount() {
-        this.props.fetchSpecialCardLevel({
-            data: { groupID: this.props.user.accountInfo.groupID }
-        })
+        const data = { groupID: this.props.user.accountInfo.groupID }
+        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+        data.shopIDs = shopsIDs.join(',')
+        this.props.fetchShopCardLevel({ data })
         // 获取会员等级信息
-        if (this.props.groupCardTypeList) {
-            this.setState({
-                cardInfo: this.props.groupCardTypeList.toJS(),
-            })
-        }
+        const { groupCardTypeList = fromJS([]) } = this.props
+        this.setState({
+            cardInfo: groupCardTypeList.toJS(),
+        })
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
@@ -85,7 +86,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
         } else if (promotionType === 'RETURN_GIFT') {
-            userSettingOPtios =  this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
+            userSettingOPtios = this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
         } else if (promotionType === 'RETURN_POINT') {
             userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
         } else {
@@ -135,15 +136,17 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.setState({ subjectType });
         }
         // 获取会员等级信息
-        if (!is(this.props.groupCardTypeList, nextProps.groupCardTypeList)) {
+        const { groupCardTypeList = fromJS([]) } = this.props
+        const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
+        if (!is(groupCardTypeList, _groupCardTypeList)) {
             this.setState({
-                cardInfo: nextProps.groupCardTypeList.toJS(),
+                cardInfo: _groupCardTypeList.toJS(),
             })
         }
         if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
                 userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
-                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,              
+                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
                 cardScopeType: 0,
                 cardScopeIDs: [],
             }, () => {
@@ -152,6 +155,22 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     cardScopeList: [],
                 })
             });
+        }
+        // 第二步店铺更改重新获取卡类卡等级，并且重置已选
+        if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
+            // 新建
+            let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+            _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+            if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
+                const data = { groupID: this.props.user.accountInfo.groupID }
+                data.shopIDs = _shopsIDs.join(',')
+                this.props.fetchShopCardLevel({ data })
+                this.handleCardScopeList({
+                    cardScopeIDs: [],
+                });
+            }
         }
     }
 
@@ -179,7 +198,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         });
                         this.props.setPromotionDetail({
                             userSetting: val,
-                            cardScopeList: [],
+                            cardScopeList: undefined,
                         })
                     }}
                 >
@@ -370,7 +389,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             const { cardScopeType, cardScopeIDs } = this.state
             this.props.setPromotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
-                    ? [{ cardScopeType }]
+                    ? undefined
                     : cardScopeIDs.map((cardScopeID) => {
                         return {
                             cardScopeType,
@@ -455,6 +474,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
                                 innerBottomTitle={'已选卡等级'} //   内部底部box的title
                                 innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
                                 treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
                                 data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                                 onChange={(value) => {
@@ -467,7 +487,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             />)
                     }
                 </FormItem>
-
+                {
+                    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
+                }
             </div>
         )
     }
@@ -526,8 +548,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchSubjectListInfo: (opts) => {
             dispatch(fetchSubjectListInfoAC(opts));
         },
-        fetchSpecialCardLevel: (opts) => {
-            dispatch(fetchSpecialCardLevel(opts));
+        fetchShopCardLevel: (opts) => {
+            dispatch(fetchShopCardLevel(opts));
         },
     }
 };

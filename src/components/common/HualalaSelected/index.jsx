@@ -54,7 +54,7 @@ export default class HualalaSelected extends React.Component {
                 <div className={styles.SelectedLi}>
                     <div className={styles.SelectedLiT}>
                         <span>{this.props.selectdTitle}</span>（单击移除）</div>
-                    <ul className={styles.SelectedLiB} style={{height: 200}}>
+                    <ul className={styles.SelectedLiB} style={{ height: 200 }}>
                         {this.state.data.map((shopEntity, index) => {
                             return (
                                 <li
@@ -62,7 +62,13 @@ export default class HualalaSelected extends React.Component {
                                     onClick={() => {
                                         this.onChange(index);
                                     }}
-                                >{shopEntity[this.props.itemName] || `${shopEntity.foodName}  (${shopEntity.unit})`}</li>
+                                >
+                                    {
+                                        this.props.itemNameJoinCatName ?
+                                            `${shopEntity[this.props.itemNameJoinCatName] ? shopEntity[this.props.itemNameJoinCatName] + '---' : ''}${shopEntity[this.props.itemName]}` :
+                                            shopEntity[this.props.itemName] || `${shopEntity.foodName}  (${shopEntity.unit})`
+                                    }
+                                </li>
                             )
                         })}
                     </ul>

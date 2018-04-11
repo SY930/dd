@@ -160,8 +160,8 @@ class GiftAddModal extends React.Component {
                             rules: [
                                 {
                                     required: true,
-                                    message: '汉字、字母、数字，50个字符以内',
-                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9]{1,50}$/,
+                                    message: '汉字、字母、数字、小数点，50个字符以内',
+                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
                                 },
                             ],
                         })(<Input size="large" placeholder="请输入礼品名称" />)}
