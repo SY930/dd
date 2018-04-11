@@ -89,6 +89,13 @@ class SpecialDetailInfo extends React.Component {
         )
     }
     dishesChange(val) {
+        val.forEach(item => {
+            if (Number(item.newPrice) === 0) {
+                item.newPrice = 0;
+            } else if (item.newPrice === -1) {
+                item.newPrice = item.price
+            }
+        });
         this.setState({
             data: val,
         })

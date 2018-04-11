@@ -33,18 +33,30 @@ export default class HualalaSelectedTable extends React.Component {
 
     onCellChange = (val, record) => {
         // record.newPrice = val.number;
-        const data = this.state.data;
-        data.forEach(food => {
-            if (food.foodID == record.foodID) {
-                food.newPrice = val.number;
-            }
-        })
-        this.setState({ data })
+        const food = this.state.data.find(item => item.itemID === record.itemID);
+        if (!food) {
+            return;
+        }
+        if (val.number > food.price) {// 特价不超过原价
+            val.number = food.price;
+        }else if (val.number < 0) {// 特价不小于0
+            val.number = 0;
+        }
+        food.newPrice = val.number;
+        this.setState({data: this.state.data })
     }
 
     componentDidMount() {
+        this.mapValueToData();
+    }
+
+    mapValueToData() {
+        const data = [...(this.props.value || [])].map(item => {
+            item.displayName = item[this.props.itemName] || `${item.foodName}  (${item.unit})`;// 菜品名拼接后的displayName字段
+            return item;
+        });
         this.setState({
-            data: [...this.props.value] || [],
+            data
         });
     }
 
@@ -57,10 +69,8 @@ export default class HualalaSelectedTable extends React.Component {
                     food.newPrice = food[nextProps.filterPrice]
                     // food.newPrice = food[this.state.filterPrice]
                 }
-            })
-            this.setState({
-                data: [...value],
-            })
+            });
+            this.mapValueToData();
         }
     }
 
@@ -82,8 +92,8 @@ export default class HualalaSelectedTable extends React.Component {
         const columns = [
             {
                 title: '菜品',
-                dataIndex: 'foodName',
-                key: 'foodName',
+                dataIndex: 'displayName',
+                key: 'displayName',
                 fixed: 'left',
                 width: 150,
                 className: 'TableTxtLeft',
@@ -135,7 +145,7 @@ export default class HualalaSelectedTable extends React.Component {
                                     food.newPrice = food[v]; // 将newPrice变为对应option价
                                     return food
                                 })
-                                console.log(newData)
+                                // console.log(newData)
                                 this.setState({ filterPrice: v, data: newData }, () => {
                                     this.props.filterPriceChange(v);
                                 })
