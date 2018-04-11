@@ -127,7 +127,7 @@ export default class HualalaSelectedTable extends React.Component {
                                 key={`table${index}`}
                                 type="text"
                                 modal="float"
-                                value={{ number: record['newPrice'] == -1 ? '' : record['newPrice'] }}
+                                value={{ number: record['newPrice'] == -1 ? record.price : record['newPrice'] }}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
                             />
@@ -173,7 +173,7 @@ export default class HualalaSelectedTable extends React.Component {
                 key: 'salePercent',
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return record.newPrice == -1 || record.price == 0 ? '' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                    return record.newPrice == -1 || record.price == 0 ? '100%' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
                 },
             }];
         const data = this.state.data;
