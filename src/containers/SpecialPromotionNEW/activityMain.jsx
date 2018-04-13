@@ -29,6 +29,10 @@ import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
+import {
+    CHARACTERISTIC_CATEGORIES,
+} from '../../redux/actions/saleCenterNEW/types';
+
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
 }
@@ -62,7 +66,11 @@ class ActivityMain extends React.Component {
                     </div>
                 );
             default:
-                return null;
+                return (
+                    <div className={styles.promotionTip}>
+                        <div style={{ marginBottom: 20 }}>{CHARACTERISTIC_CATEGORIES.find(type => type.key === this.props.eventWay).text || ''}</div>
+                    </div>
+                );
         }
     }
 
@@ -93,7 +101,7 @@ class ActivityMain extends React.Component {
         ];
         let pagesArr;
         // if (HUALALA.ENVIRONMENT !== 'production-release') {
-            pagesArr = _pages.concat(_vipStash);
+        pagesArr = _pages.concat(_vipStash);
         // } else {
         //     pagesArr = _pages;
         // }
@@ -127,7 +135,7 @@ class ActivityMain extends React.Component {
                         <ActivityLogo index={index} titletext={this.state.promotionType[index].title} activityMain={true} />
                         <br />
                         {
-                            // this.renderSideBar()
+                            this.renderSideBar()
                         }
                         <br />
                     </Col>
@@ -141,7 +149,10 @@ class ActivityMain extends React.Component {
 }
 
 function mapStateToProps(state) {
-    return { saleCenter: state.sale_saleCenter_NEW };
+    return {
+        saleCenter: state.sale_saleCenter_NEW,
+        eventWay: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'eventWay']),
+    };
 }
 
 function mapDispatchToProps(dispatch) {
