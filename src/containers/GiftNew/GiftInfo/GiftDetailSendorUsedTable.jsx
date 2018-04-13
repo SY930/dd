@@ -11,7 +11,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS } from './_tableSendConfig';
 
 const format = 'YYYY/MM/DD HH:mm';
 class GiftSendOrUsedCount extends React.Component {
@@ -42,8 +42,8 @@ class GiftSendOrUsedCount extends React.Component {
         this.proRecords(sendorUsedList);
         if (_key === 'send') {
             this.setState({
-                columns: SEND_COLUMNS,
-                formKeys: SEND_FORMKEYS,
+                columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
                 formItems: {
                     ...FORMITEMS,
                     sendShopID: {
@@ -94,8 +94,8 @@ class GiftSendOrUsedCount extends React.Component {
         }
         if (_key === 'send') {
             this.setState({
-                columns: SEND_COLUMNS,
-                formKeys: SEND_FORMKEYS,
+                columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
                 giftType,
             });
         } else if (_key === 'used') {

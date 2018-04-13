@@ -21,6 +21,14 @@ const FORMITEMS = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
     },
+    WXgiftCardStatus: {
+        label: '状态',
+        type: 'combo',
+        defaultValue: '',
+        options: GiftCfg.WXgiftCardStatus,
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+    },
     getWay: {
         label: '发出方式',
         type: 'combo',
@@ -48,8 +56,10 @@ const FORMITEMS = {
     },
 };
 const SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
-    { col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
-const SEND_COLUMNS = [
+{ col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
+const WX_SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
+{ col: { span: 12, offset: 0 }, keys: ['WXgiftCardStatus'] }];
+const BASE_COLUMNS = [
     {
         title: '序号',
         dataIndex: 'num',
@@ -77,13 +87,6 @@ const SEND_COLUMNS = [
         key: 'validUntilDate',
         render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
     }, {
-        title: '状态',
-        dataIndex: 'giftStatus',
-        key: 'giftStatus',
-        render: (value) => {
-            return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
-        },
-    }, {
         title: '姓名',
         dataIndex: 'customerName',
         key: 'customerName',
@@ -100,6 +103,22 @@ const SEND_COLUMNS = [
         key: 'customerMobile',
     },
 ];
+const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
+    title: '状态',
+    dataIndex: 'giftStatus',
+    key: 'giftStatus',
+    render: (value) => {
+        return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+    },
+}, ...BASE_COLUMNS.slice(5)]
+const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
+    title: '状态',
+    dataIndex: 'giftStatus',
+    key: 'giftStatus',
+    render: (value) => {
+        return <span>{mapValueToLabel(GiftCfg.WXgiftCardStatus, String(value))}</span>
+    },
+}, ...BASE_COLUMNS.slice(5)]
 const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 const USED_COLUMNS = [
     {
@@ -150,4 +169,4 @@ const USED_COLUMNS = [
         key: 'customerMobile',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS };

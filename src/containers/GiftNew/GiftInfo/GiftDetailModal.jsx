@@ -226,7 +226,7 @@ class GiftDetailModal extends Component {
                             <h3>查询明细的统计</h3>
                             <Table
                                 bordered={true}
-                                columns={totalColumns}
+                                columns={giftType === '91' ? totalColumns.slice(0, 1) : totalColumns}
                                 dataSource={totalData}
                                 pagination={false}
                             />

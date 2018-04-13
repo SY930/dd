@@ -9,6 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
+import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 // import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import {
@@ -20,12 +21,16 @@ import {
 import {
     CLIENT_CATEGORY,
     PAYMENTS_OPTIONS,
+    CLIENT_CATEGORY_RETURN_POINT,
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
+import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
+import BaseHualalaModal from './BaseHualalaModal';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -45,6 +50,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
             subjectType: '0',
             blackListRadio: '0',
             display: 'none',
+            cardScopeType: 0,
+            cardInfo: [],
+            cardScopeIDs: [],
+            userSettingOPtios: [],
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -58,20 +67,64 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.handleBlackListRadioChange = this.handleBlackListRadioChange.bind(this);
     }
     componentDidMount() {
-        let userSetting = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
-        const subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
-        const blackList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'blackList']);
+        const data = { groupID: this.props.user.accountInfo.groupID }
+        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+        data.shopIDs = shopsIDs.join(',')
+        this.props.fetchShopCardLevel({ data })
+        // 获取会员等级信息
+        const { groupCardTypeList = fromJS([]) } = this.props
+        this.setState({
+            cardInfo: groupCardTypeList.toJS(),
+        })
+        const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
+        let userSetting = $promotionDetail.get('userSetting');
+        const subjectType = $promotionDetail.get('subjectType');
+        const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        userSetting = (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
-            && userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' : userSetting;
+        let userSettingOPtios = []
+        if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
+            userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
+        } else if (promotionType === 'RETURN_GIFT') {
+            userSettingOPtios = this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
+        } else if (promotionType === 'RETURN_POINT') {
+            userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
+        } else {
+            userSettingOPtios = CLIENT_CATEGORY
+        }
+        if ((promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') && userSetting === 'ALL_USER') {
+            userSetting = 'CUSTOMER_ONLY';
+        }
+        if (promotionType === 'RETURN_GIFT' && this.props.stashSome) {
+            userSetting = 'CUSTOMER_ONLY';
+        }
+        if (promotionType === 'RETURN_POINT') {
+            userSetting = 'CUSTOMER_ONLY';
+        }
+
+        const cardScopeList = $promotionDetail.get('cardScopeList');
+        let cardScopeType = 0;
+        const cardScopeIDs = [];
+        (cardScopeList || []).forEach((card) => {
+            cardScopeType = card.get('cardScopeType') || 0
+            cardScopeIDs.push(card.get('cardScopeID'))
+        })
         this.setState({
             userSetting,
             subjectType,
             blackListRadio: blackList ? '1' : '0',
+            cardScopeType,
+            cardScopeIDs,
+            userSettingOPtios,
+        }, () => {
+            this.props.setPromotionDetail({
+                userSetting: this.state.userSetting,
+            })
         });
     }
     componentWillReceiveProps(nextProps) {
         let { userSetting, subjectType } = this.state;
+        const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
             userSetting = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
@@ -81,6 +134,43 @@ class AdvancedPromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType'])) {
             subjectType = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
             this.setState({ subjectType });
+        }
+        // 获取会员等级信息
+        const { groupCardTypeList = fromJS([]) } = this.props
+        const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
+        if (!is(groupCardTypeList, _groupCardTypeList)) {
+            this.setState({
+                cardInfo: _groupCardTypeList.toJS(),
+            })
+        }
+        if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
+            this.setState({
+                userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
+                userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
+                cardScopeType: 0,
+                cardScopeIDs: [],
+            }, () => {
+                this.props.setPromotionDetail({
+                    userSetting: this.state.userSetting,
+                    cardScopeList: [],
+                })
+            });
+        }
+        // 第二步店铺更改重新获取卡类卡等级，并且重置已选
+        if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
+            // 新建
+            let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+            shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+            _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+            if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
+                const data = { groupID: this.props.user.accountInfo.groupID }
+                data.shopIDs = _shopsIDs.join(',')
+                this.props.fetchShopCardLevel({ data })
+                this.handleCardScopeList({
+                    cardScopeIDs: [],
+                });
+            }
         }
     }
 
@@ -99,39 +189,24 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 <Select
                     size={'default'}
                     className={styles.linkSelectorRight}
-                    value={promotionType === 'RETURN_POINT' ? 'CUSTOMER_ONLY' :
-                        promotionType === 'RETURN_GIFT' && this.props.stashSome ? 'CUSTOMER_ONLY' :
-                            (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE')
-                                && this.state.userSetting === 'ALL_USER' ? 'CUSTOMER_ONLY' :
-                                this.state.userSetting}
+                    value={this.state.userSetting}
                     onChange={(val) => {
-                        {/* console.log(val) */}
                         this.setState({
                             userSetting: val,
+                            cardScopeType: 0,
+                            cardScopeIDs: [],
                         });
                         this.props.setPromotionDetail({
                             userSetting: val,
+                            cardScopeList: undefined,
                         })
                     }}
                 >
                     {
-                        promotionType === 'RETURN_POINT' ? (<Option key={'CUSTOMER_ONLY'} value={'CUSTOMER_ONLY'}>{'仅会员'}</Option>) :
-                            promotionType === 'RETURN_GIFT' ?
-                                this.props.stashSome ?
-                                    [CLIENT_CATEGORY_RETURN_GIFT[1]].map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                    CLIENT_CATEGORY_RETURN_GIFT.map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE' ?
-                                    CLIENT_CATEGORY_ADD_UP.map((type) => {
-                                        return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                    }) :
-                                    CLIENT_CATEGORY
-                                        .map((type) => {
-                                            return <Option key={type.key} value={type.key}>{type.name}</Option>
-                                        })
+                        this.state.userSettingOPtios
+                            .map((type) => {
+                                return <Option key={type.key} value={type.key}>{type.name}</Option>
+                            })
                     }
                 </Select>
             </FormItem>
@@ -309,6 +384,115 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
+    handleCardScopeList = (opts) => {
+        this.setState(opts, () => {
+            const { cardScopeType, cardScopeIDs } = this.state
+            this.props.setPromotionDetail({
+                cardScopeList: cardScopeIDs.length === 0
+                    ? undefined
+                    : cardScopeIDs.map((cardScopeID) => {
+                        return {
+                            cardScopeType,
+                            cardScopeID,
+                        }
+                    }),
+            })
+        })
+    }
+    renderCardLeval = () => {
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
+        const boxData = new Set()
+        // cardScopeType=1 // @mock
+        cardScopeIDs.forEach((id) => {
+            // ['759692756909309952'].forEach((id) => { //  @mock
+            cardInfo.forEach((cat) => {
+                cat.cardTypeLevelList.forEach((level) => {
+                    if (level.cardLevelID === id) {
+                        boxData.add(level)
+                    }
+                })
+            })
+        })
+        return (
+            <div>
+                <FormItem
+                    label="会员范围"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        value={this.state.cardScopeType}
+                        onChange={(e) => {
+                            this.handleCardScopeList({
+                                cardScopeType: e.target.value,
+                                cardScopeIDs: [],
+                            });
+                        }
+                        }
+                    >
+                        <Radio key={0} value={0}>卡类别</Radio >
+                        <Radio key={1} value={1}>卡等级</Radio >
+                    </RadioGroup >
+                </FormItem>
+                <FormItem
+                    label={`适用${cardScopeType == 0 ? '卡类' : '卡等级'}`}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        cardScopeType == 0
+                            ?
+                            (<Select
+                                size={'default'}
+                                multiple={true}
+                                showSearch={true}
+                                className={styles.linkSelectorRight}
+                                value={cardScopeIDs}
+                                onChange={(val) => {
+                                    console.log(val)
+                                    this.handleCardScopeList({
+                                        cardScopeIDs: val,
+                                    });
+                                }}
+                            >
+                                {
+                                    cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
+
+                                }
+                            </Select>)
+                            :
+                            (<BaseHualalaModal
+                                outLabel={'卡等级'} //   外侧选项+号下方文案
+                                outItemName="cardLevelName" //   外侧已选条目选项的label
+                                outItemID="cardLevelID" //   外侧已选条目选项的value
+                                innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                                leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                                innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
+                                treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                onChange={(value) => {
+                                    // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                    const _value = value.map(level => level.cardLevelID)
+                                    this.handleCardScopeList({
+                                        cardScopeIDs: _value,
+                                    });
+                                }}
+                            />)
+                    }
+                </FormItem>
+                {
+                    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
+                }
+            </div>
+        )
+    }
 
     render() {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
@@ -318,6 +502,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
+                {promotionType !== 'RECOMMEND_FOOD' && (this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE') ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)
@@ -341,6 +526,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         user: state.user.toJS(),
     }
 };
@@ -361,6 +547,9 @@ const mapDispatchToProps = (dispatch) => {
 
         fetchSubjectListInfo: (opts) => {
             dispatch(fetchSubjectListInfoAC(opts));
+        },
+        fetchShopCardLevel: (opts) => {
+            dispatch(fetchShopCardLevel(opts));
         },
     }
 };

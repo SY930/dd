@@ -16,20 +16,23 @@ export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
     WEEKLY: '1',
     MONTHLY: '2',
 });
-export const CLIENT_CATEGORY = Object.freeze([
-    { key: 'ALL_USER', value: '0', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: '1', name: '仅会员' },
-    { key: 'CUSTOMER_EXCLUDED', value: '2', name: '非会员' },
-]);
-export const CLIENT_CATEGORY_RETURN_GIFT = Object.freeze([
-    { key: 'ALL_USER', value: '0', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: '1', name: '全部会员' },
-]);
-export const CLIENT_CATEGORY_ADD_UP = Object.freeze([
-    { key: 'CUSTOMER_ONLY', value: '0', name: '全部会员' },
-    { key: 'CUSTOMER_SHOP_ACTIVATE', value: '1', name: '仅本店入会的会员' },
-    // {key:'CUSTOMER_CARD_TYPE',value:'2', name:'"可使用卡类的会员"'},
-]);
+export const CLIENT_CATEGORY = [
+    { key: 'ALL_USER', value: 'ALL_USER', name: '不限制' },
+    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '仅会员' },
+    { key: 'CUSTOMER_EXCLUDED', value: 'CUSTOMER_EXCLUDED', name: '非会员' },
+];
+export const CLIENT_CATEGORY_RETURN_GIFT = [
+    { key: 'ALL_USER', value: 'ALL_USER', name: '不限制' },
+    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
+];
+export const CLIENT_CATEGORY_RETURN_POINT = [
+    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
+];
+export const CLIENT_CATEGORY_ADD_UP = [
+    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
+    { key: 'CUSTOMER_SHOP_ACTIVATE', value: 'CUSTOMER_SHOP_ACTIVATE', name: '仅本店入会的会员' },
+    // { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
+];
 export const PAYMENTS_OPTIONS = Object.freeze([
     { key: 'ALL_SUBJECT', value: '0', name: '不限制' },
     { key: 'REAL_INCOME', value: '1', name: '仅实收' },
@@ -450,7 +453,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         },
     ];
     // if (HUALALA.ENVIRONMENT != 'production-release') {
-        return basic.concat(extral);
+    return basic.concat(extral);
     // }
 
     // return basic;
@@ -701,6 +704,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             categoryOrDish: 0, // promotion advanced setting
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
+            cardScopeList: source.cardScopeList || [],
         };
     }
     // compose scopeList

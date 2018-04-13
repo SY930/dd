@@ -46,10 +46,10 @@ class NewPromotion extends React.Component {
 
         const isActive = detailInfo.isActive;
         let userType = detailInfo.userSetting;
-        userType = basicInfo.promotionType == 'RETURN_POINT' ? 'CUSTOMER_ONLY' : userType;
-        userType = basicInfo.promotionType == 'RETURN_GIFT' && detailInfo.rule.gainCodeMode == '0' ? 'CUSTOMER_ONLY' : userType;
-        userType = (basicInfo.promotionType == 'BILL_CUMULATION_FREE' || basicInfo.promotionType == 'FOOD_CUMULATION_GIVE')
-            && userType == 'ALL_USER' ? 'CUSTOMER_ONLY' : userType;// 累计减免赠送
+        // userType = basicInfo.promotionType == 'RETURN_POINT' ? 'CUSTOMER_ONLY' : userType;
+        // userType = basicInfo.promotionType == 'RETURN_GIFT' && detailInfo.rule.gainCodeMode == '0' ? 'CUSTOMER_ONLY' : userType;
+        // userType = (basicInfo.promotionType == 'BILL_CUMULATION_FREE' || basicInfo.promotionType == 'FOOD_CUMULATION_GIVE')
+        //     && userType == 'ALL_USER' ? 'CUSTOMER_ONLY' : userType;// 累计减免赠送
         const subjectType = detailInfo.subjectType == '0' ? 'ALL_SUBJECT' : 'REAL_INCOME';
         const sharedPromotionIDLst = detailInfo.mutexPromotions || [];
         const excludedSubjectLst = typeof detailInfo.mutexSubjects === 'object' ? detailInfo.mutexSubjects.join(',') : detailInfo.mutexSubjects;
@@ -146,6 +146,7 @@ class NewPromotion extends React.Component {
             priceLst,
             scopeLst,
             shareLst: opts.shareLst,
+            cardScopeList: detailInfo.cardScopeList,
         }
         if (this.props.isNew === false) {
             promotionInfo.master.promotionID = basicInfo.promotionID;

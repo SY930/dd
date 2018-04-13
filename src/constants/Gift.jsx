@@ -126,6 +126,14 @@ const GiftCfg = {
         { value: '13', label: '已作废' },
         { value: '99', label: '已充值' },
     ],
+    WXgiftCardStatus: [ // 线上礼品卡
+        { value: '', label: '全部' },
+        { value: '0', label: '待激活' },
+        { value: '1', label: '可使用' },
+        { value: '2', label: '转赠中' },
+        { value: '3', label: '过期' },
+        { value: '4', label: '注销 ' },
+    ],
     giftUsedStatus: [
         { value: '', label: '全部' },
         { value: '1', label: '待处理' },
