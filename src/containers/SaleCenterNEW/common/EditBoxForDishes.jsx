@@ -200,7 +200,7 @@ class EditBoxForDishes extends React.Component {
                             onChange={(value) => {
                                 this.handleFoodGroupSelect(value)
                             }}
-                            autoMax={20}
+                            // autoMax={20} // 杨雪要求取消买赠活动的数量限制
                             foodSelections={Array.from(this.state.foodSelections || [])}
                         />
                         <HualalaSelected
