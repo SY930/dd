@@ -17,6 +17,9 @@ if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
 }
 
+import {
+    ACTIVITY_CATEGORIES,
+} from '../../redux/actions/saleCenterNEW/types';
 import { ActivityLogo } from './ActivityLogo/ActivityLogo'; // 活动logo
 import NewReturnGiftActivity from './returnGift/newReturnGiftActivity'; // 消费返礼品
 
@@ -108,7 +111,12 @@ class ActivityMain extends React.Component {
                     </div>
                 );
             default:
-                return null;
+                return (
+                    <div className={styles.promotionTip}>
+                        <div style={{ marginBottom: 20 }}>{ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).text || ''}</div>
+                        <div>{ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).example || ''}</div>
+                    </div>
+                );
         }
     }
 
@@ -221,6 +229,7 @@ class ActivityMain extends React.Component {
 function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
+        promotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),
     };
 }
 

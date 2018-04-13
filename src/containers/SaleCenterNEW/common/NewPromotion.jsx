@@ -141,6 +141,7 @@ class NewPromotion extends React.Component {
                 excludedSubjectLst,
                 maintenanceLevel,
                 usageMode,
+                needSyncToAliPay: detailInfo.needSyncToAliPay,
             },
             timeLst: opts.timeLst,
             priceLst,

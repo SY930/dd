@@ -705,6 +705,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
             cardScopeList: source.cardScopeList || [],
+            needSyncToAliPay: source.master.needSyncToAliPay || 0,
         };
     }
     // compose scopeList
