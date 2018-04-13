@@ -68,7 +68,7 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{CHARACTERISTIC_CATEGORIES.find(type => type.key === this.props.eventWay).text || ''}</div>
+                        <div style={{ marginBottom: 20 }}>{CHARACTERISTIC_CATEGORIES.find(type => type.key == this.props.eventWay).text || ''}</div>
                     </div>
                 );
         }
