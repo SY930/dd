@@ -164,7 +164,7 @@ class SendMsgInfo extends React.Component {
                                     {'请不要输入"【】" "[]"符号'}
                                 </p>
                                 <p className={styles.blockP}>
-                                    预计字数：38字，67字为一条，最多500字（含标点空格）
+                                    预计字数：{ (this.state.message || '').length }字，67字为一条，最多500字（含标点空格）
                                 </p>
                                 <p className={styles.blockP}>
                                     短信费用0.08元/条
