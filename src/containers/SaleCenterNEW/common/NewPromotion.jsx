@@ -184,7 +184,10 @@ class NewPromotion extends React.Component {
                         loading: false,
                     });
                     this.props.clear();
-                    const menuID = this.props.user.get('menuList').toJS().find(tab => tab.entryCode === '1000076001').menuID
+                    const menuID = this.props.user.get('shopID') ?
+                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === 'shop.dianpu.promotion').menuID
+                        :
+                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === '1000076001').menuID
                     jumpPage({ menuID })
                 },
                 fail: () => {
