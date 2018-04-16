@@ -13,6 +13,7 @@ import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCent
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
+    SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 
 
@@ -396,8 +397,33 @@ class AddGifts extends React.Component {
         if (info.effectType == '1') {
             return (
                 <div>
+
                     <FormItem
-                        label="相对有效期"
+                        className={[styles.FormItemStyle].join(' ')}
+                    >
+                        <span className={styles.formLabel}>相对有效期:</span>
+                        <RadioGroup
+                            className={styles.radioMargin}
+                            value={Number(info.giftEffectiveTime.value) >= 24 ? '1' : '0'}
+                            onChange={e => {
+                                const infos = this.state.infos;
+                                infos[index].giftEffectiveTime.value = e.target.value !== '1' ? '0' : '24';
+                                this.setState({
+                                    infos,
+                                }, () => {
+                                    this.props.onChange && this.props.onChange(this.state.infos);
+                                })
+                            }}
+                        >
+                            {
+                                [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
+                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
+                                })
+                            }
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        label="何时生效"
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -412,7 +438,7 @@ class AddGifts extends React.Component {
                             onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
                         >
                             {
-                                SALE_CENTER_GIFT_EFFICT_TIME
+                                (Number(info.giftEffectiveTime.value) < 24 ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
                                     .map((item, index) => {
                                         return (<Option value={item.value} key={index}>{item.label}</Option>);
                                     })
