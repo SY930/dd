@@ -17,8 +17,8 @@
     },
     "author": "C. <chenhuangfang@hualala.com>",
     "dependencies": {
-        "@hualala/platform-base": "4.0.0",
-        "@hualala/platform-components": "~1.4.11",
+        "@hualala/platform-base": "^4.4.0",
+        "@hualala/platform-components": "^1.5.5",
         "@hualala/react-lazyload": "^2.3.0",
         "babel-loader": "^7.1.2",
         "jquery": "^3.3.1",

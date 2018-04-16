@@ -13,12 +13,17 @@ export const SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO = 'sale center: fetch promot
 export const SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_SUCCESS = 'sale center: fetch promotion scope info success new';
 export const SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_FAILED = 'sale center: fetch promotion scope info failed new';
 
+export const SALE_CENTER_GET_SHOP_SCHEMA = 'sale center:  get shop schema new';
+export const SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS = 'sale center: get shop schema success new';
+export const SALE_CENTER_GET_SHOP_SCHEMA_FAILED = 'sale center: get shop schema failed new';
+
 
 export const SALE_CENTER_SET_ACTIVITY_SCOPE_INFO = 'sale center : set promotion scope info new';
 export const SALE_CENTER_GET_SHOP_BY_PARAM = 'sale center : get shop by param success new';
 export const SALE_CENTER_RESET_SCOPE_INFO = 'sale center : reset scope info new';
 
 import { message } from 'antd';
+import { axios } from '@hualala/platform-base';
 
 export const SCENARIOS = Object.freeze([{
     value: '0',
@@ -79,6 +84,24 @@ export const fetchPromotionScopeInfo = (opts) => {
     };
 };
 
+export const getPromotionShopSchema = (params) => {
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_GET_SHOP_SCHEMA,
+        });
+
+        axios.post('/api/shopapi/schema', params).then((response) => {
+            if (response.code !== '000') throw new Error(response.statusText);
+            return response;
+        }).then((responseJSON) => {
+            dispatch(getPromotionShopSchemaSuccess(responseJSON.data));
+        }).catch((error) => {
+            message.error(`店铺、品牌信息获取失败 ${error}`);
+            dispatch(getPromotionShopSchemaFailed());
+        });
+    };
+};
+
 let fetchPromotionScopeInfoSuccess = (opts) => {
     return {
         type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_SUCCESS,
@@ -89,6 +112,20 @@ let fetchPromotionScopeInfoSuccess = (opts) => {
 let fetchPromotionScopeInfoFailed = (opts) => {
     return {
         type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_FAILED,
+        payload: opts,
+    };
+};
+
+let getPromotionShopSchemaSuccess = (opts) => {
+    return {
+        type: SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS,
+        payload: opts,
+    };
+};
+
+let getPromotionShopSchemaFailed = (opts) => {
+    return {
+        type: SALE_CENTER_GET_SHOP_SCHEMA_FAILED,
         payload: opts,
     };
 };

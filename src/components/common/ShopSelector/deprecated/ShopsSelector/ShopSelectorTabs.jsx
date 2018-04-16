@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Row, Col, Select } from 'antd';
+import {Button, Row, Col, Select} from 'antd';
 
 
-class ShopSelectorTabs extends React.Component {
-    constructor(props) {
+class ShopSelectorTabs extends  React.Component {
+    constructor(props){
         super(props);
 
         this.state = {
@@ -12,58 +12,60 @@ class ShopSelectorTabs extends React.Component {
                     code: 'org',
                     title: '组织',
                     selected: true,
-                    activate: true,
+                    activate: true
                 },
 
                 {
                     code: 'city',
                     title: '城市',
                     selected: true,
-                    activate: false,
+                    activate: false
                 },
 
                 {
                     code: 'brand',
                     title: '品牌',
                     selected: true,
-                    activate: false,
+                    activate: false
                 },
 
                 {
                     code: 'group',
                     title: '门店组',
                     selected: true,
-                    activate: false,
+                    activate: false
                 },
 
                 {
                     code: 'businessPattern',
                     title: '经营方式',
                     selected: false,
-                    activate: false,
+                    activate: false
                 },
 
                 {
                     code: 'businessMode',
                     title: '运营模式',
                     selected: false,
-                    activate: false,
-                },
-            ],
+                    activate: false
+                }
+            ]
 
         }
+
     }
 
-    componentDidMount() {
+    componentDidMount(){
+
         if (this.props.onChange) {
             this.props.onChange(this.state.info[0])
         }
     }
 
-    handleButtonClick = (val) => {
-        const buttonsInfo = this.state.info;
+    handleButtonClick = (val)=>{
+        let buttonsInfo = this.state.info;
 
-        const _info = buttonsInfo.map((item, index) => {
+        let _info = buttonsInfo.map((item, index)=>{
             if (val.code !== item.code) {
                 item.activate = false;
                 return item
@@ -74,29 +76,28 @@ class ShopSelectorTabs extends React.Component {
         });
 
         this.setState({
-            info: _info,
-        }, () => {
-            if (this.props.onChange) {
+            info: _info
+        }, ()=>{
+            if(this.props.onChange) {
                 this.props.onChange(val);
             }
         });
     };
 
-    render() {
+    render(){
         return (
             <div>
                 <Row>
                     <Col span={20}>
                         <Row type="flex" justify="start">
                             {
-                                this.state.info.filter(item => item.selected).map((item, index) => {
+                                this.state.info.filter((item)=> item.selected).map((item, index) => {
                                     return (
                                         <Button
                                             type={item.activate ? 'primary' : 'default'}
-                                            onClick={() => {
-                                                this.handleButtonClick(item)
-                                            }}
-                                        >{item.title}</Button>
+                                            onClick={()=>{
+                                            this.handleButtonClick(item)
+                                        }}>{item.title}</Button>
                                     )
                                 })
                             }
@@ -107,11 +108,13 @@ class ShopSelectorTabs extends React.Component {
                             multiple={true}
                             value={
                                 this.state.info
-                                    .filter((item) => {
+                                    .filter((item)=>{
                                         return item.selected;
                                     })
-                                    .map((item) => {
+                                    .map((item)=>{
+
                                         return item.code
+
                                     })
                             }
                         >

@@ -654,7 +654,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
         orderTypeLst: _source.orderType.join(','),
         shopIDLst: _source.shopsInfo
             .map((item) => {
-                return item.shopID;
+                return item.shopID || item; //object[] or string[]
             })
             .join(','),
         usageMode: _source.usageMode || 1,
@@ -816,6 +816,13 @@ export const TRIPLE_STATE = Object.freeze({
     OPTION1: '1',
     OPTION2: '2',
 });
+
+export const BUSINESS_MODEL = Object.freeze({
+    '1': '直营',
+    '2': '加盟',
+    '3': '托管',
+});
+
 
 // 是否发信息
 export const SEND_MSG = Object.freeze([{
