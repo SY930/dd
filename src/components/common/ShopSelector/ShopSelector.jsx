@@ -39,7 +39,6 @@ class ShopSelector extends Component {
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
         if (!cache) {
-            console.log('woshi zhende fu!');
             return Promise.resolve();
         }
         // if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
