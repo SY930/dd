@@ -414,15 +414,16 @@ class MySpecialActivities extends React.Component {
                 <div className="layoutsToolLeft">
                     <h1 style={{ display: 'inline-block' }}>特色营销信息</h1>
                     <Button
-                        type="primary"
-                        style={{ top: -3, left: 20 }}
+                        type="ghost"
+                        icon="plus"
+                        style={{ width: 75, top: -3, left: 20, color: '#44a984', borderColor: '#44a984', borderRadius: 5 }}
                         onClick={
                             () => {
                                 const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076004').menuID
                                 jumpPage({ menuID })
                             }
                         }
-                    >新建特色营销</Button>
+                    >新建</Button>
                 </div>
 
             </div>

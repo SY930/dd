@@ -658,15 +658,16 @@ class MyActivities extends React.Component {
                 <div className="layoutsToolLeft">
                     <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
                     <Button
-                        type="primary"
-                        style={{ top: -3, left: 20 }}
+                        type="ghost"
+                        icon="plus"
+                        style={{ width: 75, top: -3, left: 20, color: '#44a984', borderColor: '#44a984', borderRadius: 5 }}
                         onClick={
                             () => {
                                 const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID
                                 jumpPage({ menuID })
                             }
                         }
-                    >新建基础营销</Button>
+                    >新建</Button>
                 </div>
             </div>
         );
