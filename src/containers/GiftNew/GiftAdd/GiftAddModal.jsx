@@ -362,6 +362,7 @@ function mapStateToProps(state) {
     return {
         params: state.sale_giftInfoNew.get('listParams'),
         accountInfo: state.user.get('accountInfo'),
+        menuList: state.user.get('menuList'),
         myActivities: state.sale_myActivities_NEW,
     }
 }
