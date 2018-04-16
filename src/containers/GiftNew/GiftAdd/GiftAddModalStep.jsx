@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { jumpPage } from '@hualala/platform-base'
 import { fetchData, axiosData } from '../../../helpers/util';
 import { Row, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
@@ -495,6 +496,8 @@ class GiftAddModalStep extends React.Component {
                 if (data) {
                     message.success('成功', 3);
                     this.handleCancel(cb);
+                    const menuID = this.props.menuList.toJS().find(tab => tab.entryCode === '1000076005').menuID
+                    jumpPage({ menuID })
                 }
                 if (type === 'edit') {
                     const { params, FetchGiftList } = this.props;
@@ -1307,6 +1310,7 @@ function mapStateToProps(state) {
         params: state.sale_giftInfoNew.get('listParams'),
         giftData: state.sale_giftInfoNew.get('giftSort'),
         accountInfo: state.user.get('accountInfo'),
+        menuList: state.user.get('menuList'),
         sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
     }
 }

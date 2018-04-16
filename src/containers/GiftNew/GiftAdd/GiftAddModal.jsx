@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { jumpPage } from '@hualala/platform-base'
 import _ from 'lodash';
 import { fetchData, axiosData } from '../../../helpers/util';
 import axios from 'axios';
@@ -111,6 +112,8 @@ class GiftAddModal extends React.Component {
                 if (data) {
                     message.success('成功', 3)
                     this.handleCancel();
+                    const menuID = this.props.menuList.toJS().find(tab => tab.entryCode === '1000076005').menuID
+                    jumpPage({ menuID })
                 }
                 if (type === 'edit') {
                     const { params, FetchGiftList } = this.props;

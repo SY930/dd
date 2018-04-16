@@ -10,6 +10,7 @@
 
 import React from 'react';
 import { message } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 
 export default class NewPromotion extends React.Component {
     constructor(props) {
@@ -67,6 +68,8 @@ export default class NewPromotion extends React.Component {
                         loading: false,
                     });
                     cb();
+                    const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                    jumpPage({ menuID })
                 },
                 fail: (info) => {
                     message.error(`活动添加失败, ${info}`);
