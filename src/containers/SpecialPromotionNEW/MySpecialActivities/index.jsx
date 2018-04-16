@@ -6,6 +6,7 @@ import {
     Button, Modal, Row, Col, message,
     Spin, Icon,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 import moment from 'moment';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import Cfg from '../../../constants/SpecialPromotionCfg';
@@ -411,7 +412,17 @@ class MySpecialActivities extends React.Component {
         return (
             <div className="layoutsTool">
                 <div className="layoutsToolLeft">
-                    <h1>特色营销信息</h1>
+                    <h1 style={{ display: 'inline-block' }}>特色营销信息</h1>
+                    <Button
+                        type="primary"
+                        style={{ top: -3, left: 20 }}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076004').menuID
+                                jumpPage({ menuID })
+                            }
+                        }
+                    >新建特色营销</Button>
                 </div>
 
             </div>

@@ -17,6 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
@@ -298,6 +299,7 @@ class MyActivitiesShop extends React.Component {
         if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("shop.dianpu.promotion")) {
+                debugger
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
@@ -646,7 +648,17 @@ class MyActivitiesShop extends React.Component {
         return (
             <div className="layoutsTool">
                 <div className="layoutsToolLeft">
-                    <h1>基础营销信息</h1>
+                    <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
+                    <Button
+                        type="primary"
+                        style={{ top: -3, left: 20 }}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
+                                jumpPage({ menuID })
+                            }
+                        }
+                    >新建基础营销</Button>
                 </div>
             </div>
         );
