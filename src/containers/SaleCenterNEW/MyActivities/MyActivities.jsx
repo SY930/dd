@@ -660,7 +660,7 @@ class MyActivities extends React.Component {
                     <Button
                         type="ghost"
                         icon="plus"
-                        style={{ width: 75, top: -3, left: 20, color: '#44a984', borderColor: '#44a984', borderRadius: 5 }}
+                        className={styles.jumpToCreate}
                         onClick={
                             () => {
                                 const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID

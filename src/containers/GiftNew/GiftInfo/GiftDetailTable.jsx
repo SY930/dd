@@ -9,6 +9,7 @@ import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
+import styles2 from '../../SaleCenterNEW/ActivityPage.less';
 import GiftDetailModal from './GiftDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
@@ -396,7 +397,7 @@ class GiftDetailTable extends Component {
                             <Button
                                 type="ghost"
                                 icon="plus"
-                                style={{ width: 75, top: -3, left: 20, color: '#44a984', borderColor: '#44a984', borderRadius: 5 }}
+                                className={styles2.jumpToCreate}
                                 onClick={
                                     () => {
                                         const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
