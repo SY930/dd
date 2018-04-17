@@ -17,6 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
@@ -554,15 +555,22 @@ class MyActivities extends React.Component {
         });
     }
 
-    searchProName = (val) => {
-        this.setState({ promotionName: val }, () => {
+    searchProName = _.debounce((_val) => {
+        const val = _val.trim()
+        if (!val) return
+        const had = (this.state.promotionNameLst || []).includes(val) // 若是从下拉框选择的，就不再实时查询；清空Lst是为了debug从下拉选择后下拉框再次跳出来
+        const opts = { promotionName: val }
+        if (had) { opts.promotionNameLst = [] }
+        this.setState(opts, () => {
+            if (had) return
             const opt = this.getParams()
             axiosData('/promotionV1/listPromotionName.ajax', opt, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-                .then(res => {
+                .then((res) => {
                     this.setState({ promotionNameLst: res.promotionNameLst || [] })
                 })
         })
-    }
+    }, 500)
+
     /**
      * Render promotion update Modal
      * wrapped normally.
