@@ -2,12 +2,14 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
+import { jumpPage } from '@hualala/platform-base'
 import _ from 'lodash';
 import { fetchData, axiosData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
+import styles2 from '../../SaleCenterNEW/ActivityPage.less';
 import GiftDetailModal from './GiftDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
@@ -391,7 +393,18 @@ class GiftDetailTable extends Component {
                 <Col className="layoutsHeader">
                     <Row className="layoutsTool">
                         <div className="layoutsToolLeft">
-                            <h1>礼品信息</h1>
+                            <h1 style={{ display: 'inline-block' }}>礼品信息</h1>
+                            <Button
+                                type="ghost"
+                                icon="plus"
+                                className={styles2.jumpToCreate}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
+                                        jumpPage({ menuID })
+                                    }
+                                }
+                            >新建</Button>
                         </div>
                         <Col span={22} style={{ textAlign: 'right' }}>
                             {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}

@@ -10,6 +10,7 @@
 
 import React from 'react';
 import { message } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 import PromotionBasicInfo from './promotionBasicInfo';
 import PromotionScopeInfo from './promotionScopeInfo';
 import CustomProgressBar from './CustomProgressBar';
@@ -155,7 +156,7 @@ class NewPromotion extends React.Component {
                 // data: {...opts,modifiedBy:this.props.user.toJS().accountInfo.userName},
                 data: { promotionInfo },
                 success: () => {
-                    message.success('活动更新成功，5分钟后saas才能获取到更新的基础营销活动',5);
+                    message.success('活动更新成功，5分钟后saas才能获取到更新的基础营销活动', 5);
                     this.setState({
                         loading: false,
                     });
@@ -178,11 +179,16 @@ class NewPromotion extends React.Component {
                 data: { promotionInfo },
                 success: () => {
                     cb();
-                    message.success('活动创建完毕，5分钟后saas才能获取到最新创建的基础营销活动',5);
+                    message.success('活动创建完毕，5分钟后saas才能获取到最新创建的基础营销活动', 5);
                     this.setState({
                         loading: false,
                     });
                     this.props.clear();
+                    const menuID = this.props.user.get('shopID') ?
+                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === 'shop.dianpu.promotion').menuID
+                        :
+                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === '1000076001').menuID
+                    jumpPage({ menuID })
                 },
                 fail: () => {
                     message.error('活动创建失败');

@@ -17,6 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
 import {
@@ -655,7 +656,18 @@ class MyActivities extends React.Component {
         return (
             <div className="layoutsTool">
                 <div className="layoutsToolLeft">
-                    <h1>基础营销信息</h1>
+                    <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID
+                                jumpPage({ menuID })
+                            }
+                        }
+                    >新建</Button>
                 </div>
             </div>
         );

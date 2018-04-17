@@ -17,6 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
@@ -646,7 +647,18 @@ class MyActivitiesShop extends React.Component {
         return (
             <div className="layoutsTool">
                 <div className="layoutsToolLeft">
-                    <h1>基础营销信息</h1>
+                    <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
+                                jumpPage({ menuID })
+                            }
+                        }
+                    >新建</Button>
                 </div>
             </div>
         );
