@@ -34,7 +34,7 @@ import EditBoxForShops from './EditBoxForShops';
 // import _ from 'lodash';
 // import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
-import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
+import ShopSelector from "../../../components/common/ShopSelector";
 
 const FormItem = Form.Item;
 // const Option = Select.Option;

@@ -28,7 +28,7 @@ import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promo
 import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
-import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
+import ShopSelector from "../../../components/common/ShopSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;

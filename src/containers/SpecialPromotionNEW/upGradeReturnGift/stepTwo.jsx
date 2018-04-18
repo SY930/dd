@@ -30,7 +30,7 @@ import {
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import EditBoxForShops from '../../SaleCenterNEW/common/EditBoxForShops';
-import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
+import ShopSelector from "../../../components/common/ShopSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
