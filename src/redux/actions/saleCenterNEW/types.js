@@ -229,6 +229,10 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
     label: '23小时生效',
     value: '23',
 },
+{
+    label: '24小时生效',
+    value: '24',
+},
 ]);
 
 
