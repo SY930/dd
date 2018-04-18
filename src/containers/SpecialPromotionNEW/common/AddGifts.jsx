@@ -306,7 +306,7 @@ class AddGifts extends React.Component {
                             <span className={styles.formLabel}>生效方式:</span>
                             <RadioGroup
                                 className={styles.radioMargin}
-                                value={info.effectType}
+                                value={info.effectType == '2' ? '2' : '1'}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
                             >
                                 {
@@ -394,7 +394,7 @@ class AddGifts extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        if (info.effectType == '1') {
+        if (info.effectType != '2') {
             return (
                 <div>
 
@@ -404,10 +404,11 @@ class AddGifts extends React.Component {
                         <span className={styles.formLabel}>相对有效期:</span>
                         <RadioGroup
                             className={styles.radioMargin}
-                            value={Number(info.giftEffectiveTime.value) >= 24 ? '1' : '0'}
+                            value={info.effectType == '3' ? '1' : '0'}
                             onChange={e => {
                                 const infos = this.state.infos;
-                                infos[index].giftEffectiveTime.value = e.target.value !== '1' ? '0' : '24';
+                                infos[index].effectType = e.target.value == '1' ? '3' : '1';
+                                infos[index].giftEffectiveTime.value = e.target.value;
                                 this.setState({
                                     infos,
                                 }, () => {
@@ -438,7 +439,7 @@ class AddGifts extends React.Component {
                             onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
                         >
                             {
-                                (Number(info.giftEffectiveTime.value) < 24 ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
+                                (info.effectType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
                                     .map((item, index) => {
                                         return (<Option value={item.value} key={index}>{item.label}</Option>);
                                     })
