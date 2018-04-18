@@ -88,7 +88,7 @@ class SpecialDetailInfo extends React.Component {
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
                 data[index].effectType = `${gift.effectType}`,
-                data[index].giftEffectiveTime.value = gift.effectType == '1' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
+                data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -139,7 +139,7 @@ class SpecialDetailInfo extends React.Component {
                     },
                 };
                 data[index].effectType = `${gift.effectType}`,
-                data[index].giftEffectiveTime.value = gift.effectType == '1' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
+                data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -168,7 +168,7 @@ class SpecialDetailInfo extends React.Component {
             giftInfo.forEach((gift, index) => {
                 if (data[index] !== undefined) {
                     data[index].effectType = `${gift.effectType}`,
-                    data[index].giftEffectiveTime.value = gift.effectType == '1' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
+                    data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                     data[index].giftInfo.giftName = gift.giftName;
                     data[index].giftInfo.giftItemID = gift.giftID;
                     data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -219,7 +219,7 @@ class SpecialDetailInfo extends React.Component {
                         },
                     };
                     data[index].effectType = `${gift.effectType}`,
-                    data[index].giftEffectiveTime.value = gift.effectType == '1' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
+                    data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                     data[index].giftInfo.giftName = gift.giftName;
                     data[index].giftInfo.giftItemID = gift.giftID;
                     data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -242,10 +242,10 @@ class SpecialDetailInfo extends React.Component {
     getGiftInfo(data) {
         const giftObj = data.map((giftInfo, index) => {
             let gifts;
-            if (giftInfo.effectType == '1') {
+            if (giftInfo.effectType != '2') {
                 // 相对期限
                 gifts = {
-                    effectType: '1',
+                    effectType: giftInfo.effectType,
                     giftEffectTimeHours: giftInfo.giftEffectiveTime.value,
                     giftValidUntilDayCount: giftInfo.giftValidDays.value,
                     giftID: giftInfo.giftInfo.giftItemID,
@@ -350,14 +350,14 @@ class SpecialDetailInfo extends React.Component {
         }
 
         const validatedRuleData = data.map((ruleInfo, index) => {
-            const giftValidDaysOrEffect = ruleInfo.effectType == '1' ? 'giftValidDays' : 'giftEffectiveTime';
+            const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 return Object.assign(ruleInfo, {
                     giftCount: checkgiftCount(ruleInfo.giftCount),
                     giftInfo: checkGiftInfo(ruleInfo.giftInfo),
                     giftOdds: checkGiftOdds(ruleInfo.giftOdds),
                     // giftValidDays: checkGiftValidDays(ruleInfo.giftValidDays, index)
-                    [giftValidDaysOrEffect]: ruleInfo.effectType == '1' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                    [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
                 });
             }
             return Object.assign(ruleInfo, {
@@ -365,7 +365,7 @@ class SpecialDetailInfo extends React.Component {
                 giftInfo: checkGiftInfo(ruleInfo.giftInfo),
                 giftOdds: checkGiftOdds(ruleInfo.giftOdds),
                 // giftValidDays: checkGiftValidDays(ruleInfo.giftValidDays, index)
-                [giftValidDaysOrEffect]: ruleInfo.effectType == '1' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {

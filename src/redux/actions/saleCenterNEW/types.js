@@ -235,123 +235,123 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
 export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     {
         label: '1天生效',
-        value: String(24 * 1),
+        value: '1',
     },
     {
         label: '2天生效',
-        value: String(24 * 2),
+        value: '2',
     },
     {
         label: '3天生效',
-        value: String(24 * 3),
+        value: '3',
     },
     {
         label: '4天生效',
-        value: String(24 * 4),
+        value: '4',
     },
     {
         label: '5天生效',
-        value: String(24 * 5),
+        value: '5',
     },
     {
         label: '6天生效',
-        value: String(24 * 6),
+        value: '6',
     },
     {
         label: '7天生效',
-        value: String(24 * 7),
+        value: '7',
     },
     {
         label: '8天生效',
-        value: String(24 * 8),
+        value: '8',
     },
     {
         label: '9天生效',
-        value: String(24 * 9),
+        value: '9',
     },
     {
         label: '10天生效',
-        value: String(24 * 10),
+        value: '10',
     },
     {
         label: '11天生效',
-        value: String(24 * 11),
+        value: '11',
     },
     {
         label: '12天生效',
-        value: String(24 * 12),
+        value: '12',
     },
     {
         label: '13天生效',
-        value: String(24 * 13),
+        value: '13',
     },
     {
         label: '14天生效',
-        value: String(24 * 14),
+        value: '14',
     },
     {
         label: '15天生效',
-        value: String(24 * 15),
+        value: '15',
     },
     {
         label: '16天生效',
-        value: String(24 * 16),
+        value: '16',
     },
     {
         label: '17天生效',
-        value: String(24 * 17),
+        value: '17',
     },
     {
         label: '18天生效',
-        value: String(24 * 18),
+        value: '18',
     },
     {
         label: '19天生效',
-        value: String(24 * 19),
+        value: '19',
     },
     {
         label: '20天生效',
-        value: String(24 * 20),
+        value: '20',
     },
     {
         label: '21天生效',
-        value: String(24 * 21),
+        value: '21',
     },
     {
         label: '22天生效',
-        value: String(24 * 22),
+        value: '22',
     },
     {
         label: '23天生效',
-        value: String(24 * 23),
+        value: '23',
     },
     {
         label: '24天生效',
-        value: String(24 * 24),
+        value: '24',
     },
     {
         label: '25天生效',
-        value: String(24 * 25),
+        value: '25',
     },
     {
         label: '26天生效',
-        value: String(24 * 26),
+        value: '26',
     },
     {
         label: '27天生效',
-        value: String(24 * 27),
+        value: '27',
     },
     {
         label: '28天生效',
-        value: String(24 * 28),
+        value: '28',
     },
     {
         label: '29天生效',
-        value: String(24 * 29),
+        value: '29',
     },
     {
         label: '30天生效',
-        value: String(24 * 30),
+        value: '30',
     },
 ]);
 // process.env.NODE_ENV !== 'production'
