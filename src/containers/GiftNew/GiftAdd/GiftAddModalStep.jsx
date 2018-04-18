@@ -37,6 +37,7 @@ const RadioGroup = Radio.Group;
 class GiftAddModalStep extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchemaJs = props.shopSchema.getIn(['shopSchema']).toJS();
         this.state = {
             current: 0,
             shopsData: [],
@@ -44,6 +45,7 @@ class GiftAddModalStep extends React.Component {
             finishLoading: false,
             numberOfTimeValueDisabled: true,
             moneyTopLimitValueDisabled: true,
+            shopSchemaJs, // 后台请求来的值
             // modalKey:1,
             firstKeys: { ...FIRST_KEYS },
             secondKeys: { ...SECOND_KEYS },
@@ -62,14 +64,9 @@ class GiftAddModalStep extends React.Component {
 
     componentDidMount() {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
-        const { getPromotionShopSchema, shopSchema } = this.props;
+        const { getPromotionShopSchema} = this.props;
 
-        if (!shopSchema.getIn(['isSchemaInitialized'])) {
-            getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
-        }
-        const shopSchemaJs = this.props.shopSchema.getIn(['shopSchema']).toJS();
-        this.setState({shopSchemaJs, // 后台请求来的值
-        });
+        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { name, data, value } = thisGift;
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value == '111') {

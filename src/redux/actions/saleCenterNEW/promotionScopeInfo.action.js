@@ -16,11 +16,13 @@ export const SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_FAILED = 'sale center: fetch
 export const SALE_CENTER_GET_SHOP_SCHEMA = 'sale center:  get shop schema new';
 export const SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS = 'sale center: get shop schema success new';
 export const SALE_CENTER_GET_SHOP_SCHEMA_FAILED = 'sale center: get shop schema failed new';
+export const SALE_CENTER_RESET_SHOP_SCHEMA = 'sale center : reset shop schema new';
 
 
 export const SALE_CENTER_SET_ACTIVITY_SCOPE_INFO = 'sale center : set promotion scope info new';
 export const SALE_CENTER_GET_SHOP_BY_PARAM = 'sale center : get shop by param success new';
 export const SALE_CENTER_RESET_SCOPE_INFO = 'sale center : reset scope info new';
+
 
 import { message } from 'antd';
 import { axios } from '@hualala/platform-base';
@@ -99,6 +101,13 @@ export const getPromotionShopSchema = (params) => {
             message.error(`店铺、品牌信息获取失败 ${error}`);
             dispatch(getPromotionShopSchemaFailed());
         });
+    };
+};
+
+export const saleCenterResetShopSchemaAC = (opts) => {
+    return {
+        type: SALE_CENTER_RESET_SHOP_SCHEMA,
+        payload: null,
     };
 };
 

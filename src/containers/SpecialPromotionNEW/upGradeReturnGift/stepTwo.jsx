@@ -84,9 +84,7 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        if (!this.props.shopSchemaInfo.getIn(['isSchemaInitialized'])) {
-            this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
-        }
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         if (this.props.type == '64' && !isEmpty(currentOccupiedShops) && !isEmpty(this.state.shopSchema.shops)) {
             this.filterAvailableShops(currentOccupiedShops);

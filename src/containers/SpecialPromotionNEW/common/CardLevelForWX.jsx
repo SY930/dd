@@ -48,9 +48,12 @@ if (process.env.__CLIENT__ === true) {
 class CardLevelForWX extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchema = props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         this.state = {
             cardInfo: [],
             cardLevelIDList: [],
+            shopSchema,
+            dynamicShopSchema: shopSchema,
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
             canUseShops: [], // 所选卡类适用店铺
@@ -64,14 +67,7 @@ class CardLevelForWX extends React.Component {
 
     componentDidMount() {
         this.props.FetchCrmCardTypeLst({});
-        if (!this.props.shopSchemaInfo.getIn(['isSchemaInitialized'])) {
-            this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
-        } else {
-            const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
-            this.setState({shopSchema, // 后台请求来的值
-                dynamicShopSchema: shopSchema
-            });
-        }
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const cardLevelRangeType = thisEventInfo.cardLevelRangeType == '4' ? '0' : thisEventInfo.cardLevelRangeType;
         this.setState({

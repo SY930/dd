@@ -50,8 +50,7 @@ const initialShopSchema = Immutable.fromJS({
         tags: [],
         businessModels: [],
         shops: [],
-    },
-    isSchemaInitialized: false,
+    }
 });
 
 
@@ -65,8 +64,10 @@ import {
 } from '../../actions/saleCenterNEW/promotionScopeInfo.action.js';
 import {BUSINESS_MODEL} from "../../actions/saleCenterNEW/types";
 import {
-    SALE_CENTER_GET_SHOP_SCHEMA, SALE_CENTER_GET_SHOP_SCHEMA_FAILED,
-    SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS
+    SALE_CENTER_GET_SHOP_SCHEMA,
+    SALE_CENTER_GET_SHOP_SCHEMA_FAILED,
+    SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS,
+    SALE_CENTER_RESET_SHOP_SCHEMA
 } from "../../actions/saleCenterNEW/promotionScopeInfo.action";
 
 function constructTreeDataContainsCityAndShop(data) {
@@ -144,9 +145,9 @@ export const shopSchema_New = ($$state = initialShopSchema, action) => {
         case SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS:
             const data = action.payload;
             constructBusinessArray(data);
-            $$state.setIn(['isSchemaInitialized'], Immutable.fromJS(true));
             return $$state.setIn(['shopSchema'], Immutable.fromJS(data));
         case SALE_CENTER_GET_SHOP_SCHEMA_FAILED:        return $$state;
+        case SALE_CENTER_RESET_SHOP_SCHEMA:        return initialShopSchema;
         default:                                        return $$state;
     }
 }
