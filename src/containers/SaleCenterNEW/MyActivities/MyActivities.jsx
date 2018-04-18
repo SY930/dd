@@ -557,12 +557,12 @@ class MyActivities extends React.Component {
 
     searchProName = _.debounce((_val) => {
         const val = _val.trim()
-        if (!val) return
+        // if (!val) return
         const had = (this.state.promotionNameLst || []).includes(val) // 若是从下拉框选择的，就不再实时查询；清空Lst是为了debug从下拉选择后下拉框再次跳出来
         const opts = { promotionName: val }
         if (had) { opts.promotionNameLst = [] }
         this.setState(opts, () => {
-            if (had) return
+            if (had || !val) return
             const opt = this.getParams()
             axiosData('/promotionV1/listPromotionName.ajax', opt, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then((res) => {
