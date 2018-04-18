@@ -397,7 +397,30 @@ class AddGifts extends React.Component {
         if (info.effectType != '2') {
             return (
                 <div>
-
+                    {/* 若回退版本，把下面注释放开，把424-471行注释即可，其它的不用改 */}
+                    {/* <FormItem
+                        label="相对有效期"
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                    >
+                        <Select
+                            size="default"
+                            value={
+                                typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
+                                    '0' :
+                                    `${this.state.infos[index].giftEffectiveTime.value}`
+                            }
+                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                        >
+                            {
+                                SALE_CENTER_GIFT_EFFICT_TIME
+                                    .map((item, index) => {
+                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                    })
+                            }
+                        </Select>
+                    </FormItem> */}
                     <FormItem
                         className={[styles.FormItemStyle].join(' ')}
                     >

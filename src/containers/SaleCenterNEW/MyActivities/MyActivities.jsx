@@ -423,6 +423,7 @@ class MyActivities extends React.Component {
             usageMode: -1,
             ..._opt,
         };
+        opt.cb = this.showNothing;
         this.props.query(opt);
     }
 
