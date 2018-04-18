@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { jumpPage } from '@hualala/platform-base'
 import { fetchData, axiosData } from '../../../helpers/util';
-import { Row, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
+import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
@@ -24,9 +24,11 @@ import {
     fetchAllPromotionListAC,
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
 import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
+import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -36,6 +38,7 @@ const RadioGroup = Radio.Group;
 class GiftAddModalStep extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchemaJs = props.shopSchema.getIn(['shopSchema']).toJS();
         this.state = {
             current: 0,
             shopsData: [],
@@ -43,6 +46,7 @@ class GiftAddModalStep extends React.Component {
             finishLoading: false,
             numberOfTimeValueDisabled: true,
             moneyTopLimitValueDisabled: true,
+            shopSchemaJs, // 后台请求来的值
             // modalKey:1,
             firstKeys: { ...FIRST_KEYS },
             secondKeys: { ...SECOND_KEYS },
@@ -61,6 +65,9 @@ class GiftAddModalStep extends React.Component {
 
     componentDidMount() {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
+        const { getPromotionShopSchema} = this.props;
+
+        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { name, data, value } = thisGift;
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value == '111') {
@@ -79,7 +86,7 @@ class GiftAddModalStep extends React.Component {
         this.setState({
             values
         });
-        fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
+        /*fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
             let { cities, shops } = data;
             const treeData = [];
             if (cities === undefined) {
@@ -107,7 +114,7 @@ class GiftAddModalStep extends React.Component {
                 });
             });
             this.setState({ shopsData: [...treeData] });
-        });
+        });*/
         fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
             if (!data) return;
             const groupTypes = [];
@@ -123,6 +130,12 @@ class GiftAddModalStep extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { gift: { name, data, value }, type, sharedGifts } = nextProps;
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
+        if (!_.isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+            });
+        }
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
@@ -333,17 +346,20 @@ class GiftAddModalStep extends React.Component {
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
+            // console.log('表单value：', formValues);
             let params = _.assign({}, values, formValues, { giftType: value });
             params = this.formatFormData(params);
             let shopNames = '',
                 shopIDs = '',
                 callServer;
-            params.shopNames && params.shopNames.forEach((shop) => {
-                shopNames += `${shop.content},`;
-                shopIDs += `${shop.id},`;
+            const shops = this.state.shopSchema.shops;
+            const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
+            selectedShopEntities.forEach((shop) => {
+                shopNames += `${shop.content + ',' || ''}`;
+                shopIDs += `${shop.id + ',' || ''}`;
             });
-            params.shopNames = shopNames;
-            params.shopIDs = shopIDs;
+            params.shopNames = shopNames || ',';
+            params.shopIDs = shopIDs || ',';
             if (params.giftShareType == '2') {
                 let shareIDs = '';
                 params.shareIDs && params.shareIDs.forEach((share) => {
@@ -699,7 +715,7 @@ class GiftAddModalStep extends React.Component {
         )
     }
     renderGiveLimits(decorator) {
-        // 一笔订单最多赠送菜品 maxGiveCountPerBill 
+        // 一笔订单最多赠送菜品 maxGiveCountPerBill
         // 一笔订单同一菜品最多赠送菜品 maxGiveCountPerFoodPerBill
         //    一笔订单同时满足多个单品，优惠金额按照 BOGOdiscountWay 1 高价单品优先 2 低价单品优先
         const { ismaxGiveCountPerBill = 0, maxGiveCountPerBill = '', ismaxGiveCountPerFoodPerBill = 0, maxGiveCountPerFoodPerBill = '', BOGOdiscountWay = 1 } = this.state.values;
@@ -827,9 +843,16 @@ class GiftAddModalStep extends React.Component {
         )
     }
 
+    handleShopSelectorChange(values) {
+        this.setState({
+            values: {...this.state.values, shopNames: values}
+        });
+    }
+
     renderShopNames(decorator) {
         const { shopNames = [] } = this.state.values;
-        const shopCfg = {
+        // const shopIdArray = shopNames.map(item => item.id);
+        /*const shopCfg = {
             treeData: this.state.shopsData,
             level1Title: '全部店铺',
             level2Title: '店铺',
@@ -837,14 +860,18 @@ class GiftAddModalStep extends React.Component {
             levelsNames: 'province',
             childrenNames: 'shops',
             showItems: shopNames,
-        };
+        };*/
         return (
-            <Row style={{ marginBottom: shopNames.length == 0 ? -15 : 0 }}>
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col>
-                    {decorator({})(<MyProjectEditBox
-                        treeProps={shopCfg}
-                        title="店铺"
-                    />)}
+                    {decorator({})(
+                            <ShopSelector
+                                onChange={
+                                    this.handleShopSelectorChange
+                                }
+                                schemaData={this.state.shopSchema}
+                            />
+                        )}
                 </Col>
                 <p style={{ color: 'orange', display: shopNames.length > 0 ? 'none' : 'block' }}>未选择门店时默认所有门店通用</p>
             </Row>
@@ -939,6 +966,9 @@ class GiftAddModalStep extends React.Component {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
+        if (dates.shopNames && dates.shopNames.length > 0) {
+            dates.shopNames = dates.shopNames.map(shop => shop.id);
+        }
         if (dates.discountRate < 1) {
             dates.isDiscountRate = true
         } else {
@@ -1309,6 +1339,7 @@ function mapStateToProps(state) {
     return {
         params: state.sale_giftInfoNew.get('listParams'),
         giftData: state.sale_giftInfoNew.get('giftSort'),
+        shopSchema: state.sale_shopSchema_New,
         accountInfo: state.user.get('accountInfo'),
         menuList: state.user.get('menuList'),
         sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
@@ -1319,6 +1350,9 @@ function mapDispatchToProps(dispatch) {
     return {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
+        getPromotionShopSchema: (opts) => {
+            dispatch(getPromotionShopSchema(opts));
+        },
         saleCenterResetDetailInfo: opts => dispatch(saleCenterResetDetailInfoAC(opts)),
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),

@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 import classnames from 'classnames';
 
 import HualalaTable from '../HualalaTable';
-import styles from './assets/SelectedList.less';
+import './assets/SelectedList.less';
 
 const emptyFn = () => {};
 
@@ -36,7 +36,7 @@ class SelectedList extends Component {
         switch (display) {
             case 'table':
                 return (
-                    <div className={`${styles.content} ${styles.table}`}>
+                    <div className="content table">
                         <HualalaTable
                             bordered={true}
                             scroll={{ y: 126 }}
@@ -49,12 +49,12 @@ class SelectedList extends Component {
                 );
             default:
                 return (
-                    <ul className={styles.content}>
+                    <ul className="content">
                         {items.map(item => (
                             <li
                                 key={item.value}
                                 role="presentation"
-                                className={styles.item}
+                                className="item"
                                 onClick={() => this.handleRemove(item)}
                             >{item.label}</li>
                         ))}
@@ -67,13 +67,13 @@ class SelectedList extends Component {
         const { title, className, items } = this.props;
         const { collapsed } = this.state;
 
-        const wrapperClz = classnames(styles.wrapper, {
-            [styles.collapsed]: collapsed,
+        const wrapperClz = classnames('hll-selected-list', {
+            collapsed,
         }, className);
 
         return (
             <div className={wrapperClz}>
-                <div className={styles.header}>
+                <div className="header">
                     <Icon
                         type={`${collapsed ? 'up' : 'down'}-square-o`}
                         onClick={this.handleCollapse}
@@ -82,7 +82,7 @@ class SelectedList extends Component {
                     <a href="javascript:void(0);" onClick={this.handleClear}>清空</a>
                 </div>
                 {collapsed ? (
-                    <div className={styles.content}>查看已选请向下展开</div>
+                    <div className="content">查看已选请向下展开</div>
                 ) : this.renderList()}
             </div>
         );

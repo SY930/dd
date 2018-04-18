@@ -11,6 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { isEqual, uniq } from 'lodash';
 import { axiosData } from '../../../helpers/util';
 
 
@@ -25,7 +26,7 @@ import Immutable from 'immutable';
 
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
 import EditBoxForShops from './EditBoxForShops';
@@ -33,6 +34,7 @@ import EditBoxForShops from './EditBoxForShops';
 // import _ from 'lodash';
 // import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
+import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 
 const FormItem = Form.Item;
 // const Option = Select.Option;
@@ -46,12 +48,15 @@ if (process.env.__CLIENT__ === true) {
 class CardLevelForWX extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchema = props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         this.state = {
             cardInfo: [],
             cardLevelIDList: [],
+            shopSchema,
+            dynamicShopSchema: shopSchema,
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
-            canUseShops: [], // 所选卡类适用店铺      
+            canUseShops: [], // 所选卡类适用店铺
             selections_shopsInfo: { shopsInfo: [] }, // 已选店铺
 
         };
@@ -62,6 +67,7 @@ class CardLevelForWX extends React.Component {
 
     componentDidMount() {
         this.props.FetchCrmCardTypeLst({});
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const cardLevelRangeType = thisEventInfo.cardLevelRangeType == '4' ? '0' : thisEventInfo.cardLevelRangeType;
         this.setState({
@@ -78,6 +84,13 @@ class CardLevelForWX extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
+        if (!isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+                dynamicShopSchema: nextShopSchema
+            });
+        }
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
@@ -168,9 +181,22 @@ class CardLevelForWX extends React.Component {
                     cardType.cardTypeShopResDetailList.forEach(shop=>{
                         canUseShops.push(String(shop.shopID))
                     })
-                })
-                const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop)))
-                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+                });
+                if (canUseShops.length > 0) {
+                    let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+                    dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(shop.shopID));
+                    const shops = dynamicShopSchema.shops;
+                    const availableCities = uniq(shops.map(shop => shop.cityID));
+                    const availableBM = uniq(shops.map(shop => shop.businessModel));
+                    const availableBrands = uniq(shops.map(shop => shop.brandID));
+                    const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+                    dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
+                    dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
+                    dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
+                    dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
+                    const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop))).map(shopID => String(shopID));
+                    this.setState({ canUseShops, dynamicShopSchema, selections_shopsInfo: { shopsInfo } })
+                }
             })
     }
     handleSelectChange(value) {
@@ -207,7 +233,7 @@ class CardLevelForWX extends React.Component {
     }
     editBoxForShopsChange = (val) => {
         this.setState({
-            selections_shopsInfo: { shopsInfo: val.map(shop => shop.shopID) }, // shopIDList
+            selections_shopsInfo: { shopsInfo: val }, // shopIDList
         }, () => {
             this.props.onChange && this.props.onChange({
                 shopIDList: this.state.selections_shopsInfo.shopsInfo,
@@ -225,19 +251,26 @@ class CardLevelForWX extends React.Component {
                     // validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
                     // help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
                 >
-                    <EditBoxForShops
+                    {/*<EditBoxForShops
                         value={this.state.selections_shopsInfo}
                         onChange={
                             this.editBoxForShopsChange
                         }
                         type={this.props.type}
                         canUseShops={this.state.canUseShops}
+                    />*/}
+                    <ShopSelector
+                        value={this.state.selections_shopsInfo.shopsInfo}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        schemaData={this.state.dynamicShopSchema}
                     />
                 </Form.Item>
                 <div
                     className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
                     style={{ left: 110, width: '71%', height: '81%', top: 7 }}
-                ></div>
+                />
             </div>
         );
     }
@@ -326,12 +359,14 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        shopSchemaInfo: state.sale_shopSchema_New,
         crmCardTypeNew: state.sale_crmCardTypeNew,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },

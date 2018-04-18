@@ -3,7 +3,7 @@ import { Checkbox } from 'antd';
 import LazyLoad, { forceCheck } from '@hualala/react-lazyload';
 import PropTypes from 'prop-types';
 
-import styles from './styles.less';
+import './styles.less';
 
 class PlainList extends Component {
     componentDidUpdate() {
@@ -13,7 +13,7 @@ class PlainList extends Component {
     render() {
         const { value, options, onCheck } = this.props;
         return (
-            <ul className={styles.list}>
+            <ul>
                 {options.map(({ value: optVal, label, disabled }) => (
                     <LazyLoad
                         key={optVal}
@@ -21,7 +21,7 @@ class PlainList extends Component {
                         overflow={true}
                         offset={560}
                     >
-                        <li className={styles.item}>
+                        <li className="item">
                             <Checkbox
                                 checked={value.indexOf(optVal) > -1}
                                 disabled={disabled}

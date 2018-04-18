@@ -18,15 +18,19 @@ import {
     Radio,
     TreeSelect,
 } from 'antd';
-import _ from 'lodash';
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {isEqual, uniq, isEmpty} from 'lodash';
+import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
-import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import {
+    fetchPromotionScopeInfo,
+    getPromotionShopSchema
+} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import EditBoxForShops from '../../SaleCenterNEW/common/EditBoxForShops';
+import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -46,6 +50,7 @@ const Immutable = require('immutable');
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         this.state = {
             message: '',
             cardLevelIDList: [],
@@ -57,6 +62,8 @@ class StepTwo extends React.Component {
                 modal: 'float',
             },
             _opts: {},
+            shopSchema,
+            dynamicShopSchema: shopSchema,
             settleUnitID: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
@@ -77,6 +84,23 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
+        if (this.props.type == '64' && !isEmpty(currentOccupiedShops) && !isEmpty(this.state.shopSchema.shops)) {
+            this.filterAvailableShops(currentOccupiedShops);
+        }
+
+        if (this.props.type === '64') {
+            const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+            if (specialPromotion.itemID) {
+                this.props.saleCenterGetShopOfEventByDate({
+                    groupID: this.props.user.accountInfo.groupID,
+                    eventStartDate: specialPromotion.eventStartDate || '',
+                    eventEndDate: specialPromotion.eventEndDate || '',
+                    eventID: specialPromotion.itemID
+                });
+            }
+        }
 
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         if (Object.keys(specialPromotion).length > 30) {
@@ -117,7 +141,51 @@ class StepTwo extends React.Component {
         }
     }
 
+    filterAvailableShops(occupiedShops, shopSchema = this.state.shopSchema) {
+        if (occupiedShops.length > 0) {
+            let dynamicShopSchema = Object.assign({}, shopSchema);
+            if (!dynamicShopSchema) return;
+
+            dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
+            const shops = dynamicShopSchema.shops;
+            const availableCities = uniq(shops.map(shop => shop.cityID));
+            const availableBM = uniq(shops.map(shop => shop.businessModel));
+            const availableBrands = uniq(shops.map(shop => shop.brandID));
+            const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+            dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
+            dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
+            dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
+            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
+            this.setState({ dynamicShopSchema })
+        } else {
+            this.setState({ dynamicShopSchema: shopSchema })
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
+        if (!isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+                dynamicShopSchema: nextShopSchema
+            });
+            // 评价送礼 type==='64' specific
+            if (this.props.type == '64') {
+                const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
+                if (!isEmpty(nextOccupiedShops)) {
+                    this.filterAvailableShops(nextOccupiedShops, nextShopSchema);
+                }
+            }
+        } else {
+            if (this.props.type == '64') {
+                const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
+                const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
+                if (!isEqual(currentOccupiedShops, nextOccupiedShops)) {
+                    this.filterAvailableShops(nextOccupiedShops, nextShopSchema);
+                }
+            }
+        }
+
         const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
         const _specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         const cardLevelIDListChange = specialPromotion.eventStartDate != _specialPromotion.eventStartDate || specialPromotion.eventEndDate != _specialPromotion.eventEndDate;
@@ -240,7 +308,7 @@ class StepTwo extends React.Component {
     }
     editBoxForShopsChange(val) {
         this.setState({
-            selections: val.map(shop => shop.shopID),
+            selections: val,
         })
     }
     renderShopsOptions() {
@@ -250,7 +318,8 @@ class StepTwo extends React.Component {
         const noSelected64 = this.props.type == 64 &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
-            this.state.selections.length === 0
+            this.state.selections.length === 0;
+        const selectedShopIdStrings = this.state.selections.map(shopIdNum => String(shopIdNum));
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
@@ -261,12 +330,19 @@ class StepTwo extends React.Component {
                     validateStatus={noSelected64 ? 'error' : 'success'}
                     help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
                 >
-                    <EditBoxForShops
+                    {/*<EditBoxForShops
                         value={this.state.selections_shopsInfo}
                         onChange={
                             this.editBoxForShopsChange
                         }
                         type={this.props.type}
+                    />*/}
+                    <ShopSelector
+                        value={selectedShopIdStrings}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        schemaData={this.state.dynamicShopSchema}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
@@ -357,6 +433,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        shopSchemaInfo: state.sale_shopSchema_New,
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
@@ -369,12 +446,14 @@ const mapDispatchToProps = (dispatch) => {
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
+        saleCenterGetShopOfEventByDate: opts => dispatch(saleCenterGetShopOfEventByDate(opts)),
         queryGroupMembersList: (opts) => {
             dispatch(queryGroupMembersList(opts));
         },
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
+        getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
     };
 };
 
