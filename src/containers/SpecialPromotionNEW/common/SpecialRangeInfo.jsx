@@ -581,7 +581,7 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     onCardLevelChange(obj) {
-        this.setState(obj)
+        this.setState(obj);
     }
     autoRegisterChange = (e) => {
         this.setState({

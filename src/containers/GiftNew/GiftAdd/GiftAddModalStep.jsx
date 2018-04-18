@@ -966,7 +966,7 @@ class GiftAddModalStep extends React.Component {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
-        if (dates.shopNames.length > 0) {
+        if (dates.shopNames && dates.shopNames.length > 0) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
         if (dates.discountRate < 1) {

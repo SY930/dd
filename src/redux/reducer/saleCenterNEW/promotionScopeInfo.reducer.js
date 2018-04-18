@@ -144,7 +144,7 @@ export const shopSchema_New = ($$state = initialShopSchema, action) => {
         case SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS:
             const data = action.payload;
             constructBusinessArray(data);
-            $$state.setIn(['isSchemaInitialized'], true);
+            $$state.setIn(['isSchemaInitialized'], Immutable.fromJS(true));
             return $$state.setIn(['shopSchema'], Immutable.fromJS(data));
         case SALE_CENTER_GET_SHOP_SCHEMA_FAILED:        return $$state;
         default:                                        return $$state;

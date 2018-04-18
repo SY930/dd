@@ -139,6 +139,8 @@ ShopSelector.defaultProps = {
 ShopSelector.propTypes = {
     /** 当前选择的项 */
     value: PropTypes.arrayOf(PropTypes.string),
+    /**传入的店铺信息*/
+    schemaData: PropTypes.object,
     /** 选项改变时的回调 */
     onChange: PropTypes.func,
     /** 是否默认全选 */

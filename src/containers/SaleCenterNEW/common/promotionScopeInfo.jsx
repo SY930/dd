@@ -155,12 +155,16 @@ class PromotionScopeInfo extends React.Component {
 
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
             fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID });
-            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID});
         }
-        const shopSchema = this.props.shopSchema.getIn(['shopSchema']).toJS();
-        this.setState({shopSchema, // 后台请求来的值
+        if (!this.props.shopSchema.getIn(['isSchemaInitialized'])) {
+            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID});
+        } else {
+            const shopSchema = this.props.shopSchema.getIn(['shopSchema']).toJS();
+            this.setState({shopSchema, // 后台请求来的值
                 dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
-                });
+            });
+        }
+
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
             const _stateFromRedux = this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
             const voucherVerify = _stateFromRedux.voucherVerify;
