@@ -17,9 +17,11 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
+import { axiosData } from '../../../helpers/util'
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -355,6 +357,54 @@ class MyActivities extends React.Component {
                 (thisStatus !== nextStatus && nextStatus === 'success'))
         // return true
     }
+    getParams = () => {
+        const {
+            promotionType,
+            promotionDateRange,
+            promotionValid,
+            promotionState,
+            promotionCategory,
+            promotionTags,
+            promotionBrands,
+            promotionOrder,
+            promotionShop,
+            promotionName,
+        } = this.state;
+        const opt = {};
+        if (promotionType !== '' && promotionType !== undefined) {
+            opt.promotionType = promotionType;
+        }
+        if (promotionDateRange !== '' && promotionDateRange !== undefined) {
+            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+        if (promotionCategory !== '' && promotionCategory !== undefined) {
+            opt.categoryName = promotionCategory;
+        }
+        if (promotionBrands !== '' && promotionBrands !== undefined) {
+            opt.brandID = promotionBrands;
+        }
+        if (promotionOrder !== '' && promotionOrder !== undefined) {
+            opt.orderType = promotionOrder;
+        }
+        if (promotionShop !== '' && promotionShop !== undefined) {
+            opt.shopID = promotionShop;
+        }
+        if (promotionState !== '' && promotionState != '0') {
+            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
+        }
+        if (promotionValid !== '' && promotionValid != '0') {
+            opt.status = promotionValid;
+        }
+        if (promotionTags !== '' && promotionTags != '0') {
+            opt.tag = promotionTags;
+        }
+        if (promotionName !== '' && promotionName !== undefined) {
+            opt.promotionName = promotionName;
+        }
+        opt.groupID = this.props.user.accountInfo.groupID;
+        return opt
+    }
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
@@ -366,53 +416,13 @@ class MyActivities extends React.Component {
                 this.setState({ queryDisabled: false })
             }, 500)
         });
-        const {
-            promotionType,
-            promotionDateRange,
-            promotionValid,
-            promotionState,
-            promotionCategory,
-            promotionTags,
-            promotionBrands,
-            promotionOrder,
-            promotionShop,
-        } = this.state;
-
+        const _opt = this.getParams()
         const opt = {
-            groupID: this.props.user.accountInfo.groupID,
             pageSize: this.state.pageSizes,
             pageNo,
             usageMode: -1,
+            ..._opt,
         };
-        if (promotionType != '' && promotionType != 'undefined') {
-            opt.promotionType = promotionType;
-        }
-        if (promotionDateRange != '' && promotionDateRange != undefined) {
-            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-        }
-        if (promotionCategory != '' && promotionCategory != undefined) {
-            opt.categoryName = promotionCategory;
-        }
-        if (promotionBrands != '' && promotionBrands != undefined) {
-            opt.brandID = promotionBrands;
-        }
-        if (promotionOrder != '' && promotionOrder != undefined) {
-            opt.orderType = promotionOrder;
-        }
-        if (promotionShop != '' && promotionShop != undefined) {
-            opt.shopID = promotionShop;
-        }
-        if (promotionState != '' && promotionState != '0') {
-            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-        }
-        if (promotionValid != '' && promotionValid != '0') {
-            opt.status = promotionValid;
-        }
-        if (promotionTags != '' && promotionTags != '0') {
-            opt.tag = promotionTags;
-        }
-        opt.cb = this.showNothing;
         this.props.query(opt);
     }
 
@@ -544,6 +554,22 @@ class MyActivities extends React.Component {
             fail: failFn,
         });
     }
+
+    searchProName = _.debounce((_val) => {
+        const val = _val.trim()
+        if (!val) return
+        const had = (this.state.promotionNameLst || []).includes(val) // 若是从下拉框选择的，就不再实时查询；清空Lst是为了debug从下拉选择后下拉框再次跳出来
+        const opts = { promotionName: val }
+        if (had) { opts.promotionNameLst = [] }
+        this.setState(opts, () => {
+            if (had) return
+            const opt = this.getParams()
+            axiosData('/promotionV1/listPromotionName.ajax', opt, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                .then((res) => {
+                    this.setState({ promotionNameLst: res.promotionNameLst || [] })
+                })
+        })
+    }, 500)
 
     /**
      * Render promotion update Modal
@@ -758,10 +784,21 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>适用店铺</h5>
+                            <h5>活动名称</h5>
                         </li>
                         <li>
-                            {this.renderShopsInTreeSelectMode()}
+                            <Select
+                                combobox={true}
+                                style={{ width: 160 }}
+                                onChange={this.searchProName}
+                                filterOption={false}
+                                placeholder="请输入活动名称"
+                            >
+                                {
+                                    (this.state.promotionNameLst || []).map(v => <Option key={v} value={v}>{v}</Option>)
+
+                                }
+                            </Select>
                         </li>
 
                         <li>
@@ -807,6 +844,13 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
+
+                        <li>
+                            <h5>适用店铺</h5>
+                        </li>
+                        <li>
+                            {this.renderShopsInTreeSelectMode()}
+                        </li>
                         <li>
                             <h5>有效状态</h5>
                         </li>
