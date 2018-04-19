@@ -360,7 +360,7 @@ class MyActivitiesShop extends React.Component {
             promotionName,
         } = this.state;
         const opt = {};
-        if (promotionType !== '' && promotionType !== undefined) {
+        if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
             opt.promotionType = promotionType;
         }
         if (promotionDateRange !== '' && promotionDateRange !== undefined) {
@@ -1131,52 +1131,11 @@ class MyActivitiesShop extends React.Component {
                                 pageNo: page,
                             })
                             const opt = {
-                                groupID: this.props.user.accountInfo.groupID,
-                                shopID: this.props.user.shopID,
                                 pageSize,
                                 pageNo: page,
                                 usageMode: -1,
+                                ...this.getParams(),
                             };
-                            const {
-                                promotionType,
-                                promotionDateRange,
-                                promotionValid,
-                                promotionState,
-                                promotionCategory,
-                                promotionTags,
-                                promotionBrands,
-                                promotionOrder,
-                                promotionShop,
-                            } = this.state;
-
-                            if (promotionType != '' && promotionType != 'undefined') {
-                                opt.promotionType = promotionType;
-                            }
-                            if (promotionDateRange != '' && promotionDateRange != undefined) {
-                                opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-                                opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-                            }
-                            if (promotionCategory != '' && promotionCategory != undefined) {
-                                opt.categoryName = promotionCategory;
-                            }
-                            if (promotionBrands != '' && promotionBrands != undefined) {
-                                opt.brandID = promotionBrands;
-                            }
-                            if (promotionOrder != '' && promotionOrder != undefined) {
-                                opt.orderType = promotionOrder;
-                            }
-                            if (promotionShop != '' && promotionShop != undefined) {
-                                opt.shopID = promotionShop;
-                            }
-                            if (promotionState != '' && promotionState != '0') {
-                                opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-                            }
-                            if (promotionValid != '' && promotionValid != '0') {
-                                opt.status = promotionValid;
-                            }
-                            if (promotionTags != '' && promotionTags != '0') {
-                                opt.tag = promotionTags;
-                            }
                             opt.cb = this.showNothing;
                             this.props.query(opt);
                         },
