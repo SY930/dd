@@ -21,6 +21,7 @@ import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../index';
+import CC2PY, { CC2PYSS } from '../../../components/common/CC2PY';
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
@@ -232,6 +233,7 @@ class MyActivitiesShop extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
         });
+        this.getNameList();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -302,6 +304,7 @@ class MyActivitiesShop extends React.Component {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("shop.dianpu.promotion")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+                this.getNameList();
             }
         }
         if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
@@ -346,7 +349,6 @@ class MyActivitiesShop extends React.Component {
     }
 
     getParams = () => {
-
         const {
             promotionType,
             promotionDateRange,
@@ -544,21 +546,28 @@ class MyActivitiesShop extends React.Component {
             fail: failFn,
         });
     }
-    searchProName = _.debounce((_val) => {
-        const val = _val.trim()
-        // if (!val) return
-        const had = (this.state.promotionNameLst || []).includes(val) // 若是从下拉框选择的，就不再实时查询；清空Lst是为了debug从下拉选择后下拉框再次跳出来
-        const opts = { promotionName: val }
-        if (had) { opts.promotionNameLst = [] }
-        this.setState(opts, () => {
-            if (had || !val) return
-            const opt = this.getParams()
-            axiosData('/promotionV1/listPromotionName.ajax', opt, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-                .then((res) => {
-                    this.setState({ promotionNameLst: res.promotionNameLst || [] })
+    getNameList = () => {
+        axiosData('/promotionV1/listPromotionName.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((res) => {
+                this.setState({
+                    allPromotionNameLst: res.promotionNameLst || [],
+                    promotionNameLst: (res.promotionNameLst || []).filter((name) => {
+                        return CC2PY(name).indexOf(CC2PY(this.state.promotionName || '')) > -1 || CC2PYSS(name).indexOf(CC2PYSS(this.state.promotionName || '')) > -1
+                    }),
                 })
+            })
+    }
+    searchProName = (_val) => {
+        const val = _val.trim().toLowerCase()
+        const opts = { promotionName: val }
+        opts.promotionNameLst = this.state.allPromotionNameLst.filter((name) => {
+            return CC2PY(name).indexOf(CC2PY(val)) > -1 || CC2PYSS(name).indexOf(CC2PYSS(this.state.promotionName || '')) > -1
         })
-    }, 500)
+        this.setState(opts)
+    }
     /**
      * Render promotion update Modal
      * wrapped normally.
