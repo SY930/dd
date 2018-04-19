@@ -584,7 +584,7 @@ class MySpecialActivities extends React.Component {
                             href="#"
                             className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
                             onClick={() => {
-                                record.isActive == '-1' ? null :
+                                record.isActive == '-1' || statusState ? null :
                                     this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
                             }}
                         >
@@ -594,7 +594,7 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 className={record.isActive != '0' || statusState ? styles.textDisabled : null}
                                 onClick={(e) => {
-                                    if (record.isActive != '0') {
+                                    if (record.isActive != '0' || statusState) {
                                         e.preventDefault()
                                     } else {
                                         this.props.toggleIsUpdate(true)
@@ -617,7 +617,7 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
                                 onClick={() => {
-                                    record.isActive != '0' || record.userCount != 0 ? null :
+                                    record.isActive != '0' || record.userCount != 0 || statusState ? null :
                                         this.checkDeleteInfo(text, record, index);
                                 }}
                             >
@@ -627,7 +627,7 @@ class MySpecialActivities extends React.Component {
                             href="#"
                             className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
                             onClick={() => {
-                                record.isActive == '-1' ? null :
+                                record.isActive == '-1' || statusState ? null :
                                     this.handelStopEvent(text, record, index, '-1', '活动终止成功');
                             }}
                         >
