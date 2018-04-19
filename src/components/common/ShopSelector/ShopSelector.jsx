@@ -9,7 +9,7 @@ import ShopSelectModal from './ShopSelectModal';
 import { FILTERS } from './config';
 import { loadShopSchema } from './utils';
 
-import './assets/ShopSelector.less';
+import style from './assets/ShopSelector.less';
 
 class ShopSelector extends Component {
 
@@ -87,7 +87,7 @@ class ShopSelector extends Component {
         }, []);
 
         return (
-            <div className="hll-shop-selector">
+            <div className={style.wrapper}>
                 {size === 'default' &&
                     <EditableTags
                         title="店铺"
@@ -99,8 +99,8 @@ class ShopSelector extends Component {
                 }
                 {size === 'small' &&
                     <div
-                        className={classnames('smallBox', {
-                            empty: items.length === 0,
+                        className={classnames(style.smallBox, {
+                             [style.empty]: items.length === 0,
                         })}
                         role="presentation"
                         onClick={this.handleAdd}

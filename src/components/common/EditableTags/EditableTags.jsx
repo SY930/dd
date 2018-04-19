@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tag, Icon } from 'antd';
 
-import './EditableTags.less';
+import style from './EditableTags.less';
 
 class EditableTags extends Component {
     handleClose = (evt, value) => {
@@ -14,12 +14,12 @@ class EditableTags extends Component {
         const { title, placeholder, items, onAdd } = this.props;
 
         return items.length > 0 ? (
-            <div className="hll-editable-tags">
-                <div className="itemsWrapper">
+            <div className={style.wrapper}>
+                <div className={style.itemsWrapper}>
                     {items.map(item => (
                         <Tag
                             key={item.value}
-                            className="item"
+                            className={style.item}
                             closable={true}
                             onClose={evt => this.handleClose(evt, item.value)}
                         >
@@ -30,7 +30,7 @@ class EditableTags extends Component {
                 <Icon type="plus-circle-o" title={`添加${title}`} onClick={onAdd} />
             </div>
         ) : (
-            <div className="hll-editable-tags empty">
+            <div className={`${style.wrapper} ${style.empty}`}>
                 <Icon type="plus-circle-o" title={`添加${title}`} onClick={onAdd} />
                 {placeholder && <div>{placeholder}</div>}
             </div>

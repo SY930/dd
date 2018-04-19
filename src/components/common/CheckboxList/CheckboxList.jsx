@@ -8,7 +8,7 @@ import { pyMatch } from '@hualala/platform-base';
 import HualalaTree from '../HualalaTree';
 import HualalaTable from '../HualalaTable';
 import PlainList from './PlainList';
-import './styles.less';
+import style from './styles.less';
 
 const Search = Input.Search;
 
@@ -125,14 +125,14 @@ class CheckboxList extends Component {
         const isAllChecked = options.length > 0 &&
             !options.find(opt => value.indexOf(opt.value) === -1);
 
-        const wrapperClz = classnames('hll-checkbox-list', {
-            collapsed,
-            stripped: display === 'stripped',
-            table: display === 'table',
+        const wrapperClz = classnames(style.wrapper, {
+            [style.collapsed]: collapsed,
+            [style.stripped]: display === 'stripped',
+            [style.table]: display === 'table',
         });
-        const headerClz = classnames('header', {
-            showCheckAll: _showCheckAll,
-            showCollapse,
+        const headerClz = classnames(style.header, {
+            [style.showCheckAll]: _showCheckAll,
+            [style.showCollapse]: showCollapse
         });
 
         return (
@@ -158,7 +158,7 @@ class CheckboxList extends Component {
                         />
                     }
                 </div>
-                <div className="content">
+                <div className={style.content}>
                     {collapsed ? Array.from('查看内容请向右展开').map(
                         (ch, idx) => <p key={idx}>{ch}</p>
                     ) : this.renderList()}
