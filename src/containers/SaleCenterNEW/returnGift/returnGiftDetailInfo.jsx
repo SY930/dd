@@ -417,7 +417,7 @@ class ReturnGiftDetailInfo extends React.Component {
     renderPromotionRule() {
         return (
             <div>
-                <FormItem
+                {/* <FormItem
                     label="同步到支付宝"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -438,7 +438,7 @@ class ReturnGiftDetailInfo extends React.Component {
                                 })
                         }
                     </RadioGroup >
-                </FormItem>
+                </FormItem> */}
                 <FormItem
                     label="券显示方式"
                     className={styles.FormItemStyle}
