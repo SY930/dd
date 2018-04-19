@@ -21,8 +21,6 @@ import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
-import { axiosData } from '../../../helpers/util'
-import CC2PY, { CC2PYSS } from '../../../components/common/CC2PY';
 
 import {
     initializationOfMyActivities,
@@ -63,6 +61,7 @@ import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
 import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
+import PromotionNameSelect from '../common/PromotionNameSelect';
 
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
@@ -78,6 +77,7 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
+
 
 const mapStateToProps = (state) => {
     return {
@@ -233,7 +233,6 @@ class MyActivities extends React.Component {
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
         });
-        this.getNameList();
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -246,10 +245,20 @@ class MyActivities extends React.Component {
      * */
     toggleExpandState() {
         const expand = this.state.expand;
-
-        this.setState({
+        let opt = {
             expand: !expand,
-        });
+        }
+        if (!opt.expand) {
+            opt = {
+                ...opt,
+                promotionCategory: undefined,
+                promotionTags: undefined,
+                promotionBrands: undefined,
+                promotionOrder: undefined,
+                promotionShop: undefined,
+            }
+        }
+        this.setState(opt)
     }
 
     handleDisableClickEvent(text, record) {
@@ -304,7 +313,6 @@ class MyActivities extends React.Component {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("1000076001")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
-                this.getNameList();
             }
         }
         if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
@@ -377,7 +385,7 @@ class MyActivities extends React.Component {
         if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
             opt.promotionType = promotionType;
         }
-        if (promotionDateRange !== '' && promotionDateRange !== undefined) {
+        if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
             opt.startDate = promotionDateRange[0].format('YYYYMMDD');
             opt.endDate = promotionDateRange[1].format('YYYYMMDD');
         }
@@ -558,25 +566,6 @@ class MyActivities extends React.Component {
             fail: failFn,
         });
     }
-    getNameList = () => {
-        axiosData('/promotionV1/listPromotionName.ajax', { groupID: this.props.user.accountInfo.groupID }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((res) => {
-                this.setState({
-                    allPromotionNameLst: res.promotionNameLst || [],
-                    promotionNameLst: (res.promotionNameLst || []).filter((name) => {
-                        return CC2PY(name).indexOf(CC2PY(this.state.promotionName || '')) > -1 || CC2PYSS(name).indexOf(CC2PYSS(this.state.promotionName || '')) > -1
-                    }),
-                })
-            })
-    }
-    searchProName = (_val) => {
-        const val = _val.trim().toLowerCase()
-        const opts = { promotionName: val }
-        opts.promotionNameLst = this.state.allPromotionNameLst.filter((name) => {
-            return CC2PY(name).indexOf(CC2PY(val)) > -1 || CC2PYSS(name).indexOf(CC2PYSS(this.state.promotionName || '')) > -1
-        })
-        this.setState(opts)
-    }
 
     /**
      * Render promotion update Modal
@@ -731,6 +720,7 @@ class MyActivities extends React.Component {
     }
 
     renderFilterBar() {
+        const opt = this.getParams()
         return (
             <div>
                 <div className="layoutsSearch">
@@ -794,18 +784,26 @@ class MyActivities extends React.Component {
                             <h5>活动名称</h5>
                         </li>
                         <li>
-                            <Select
-                                combobox={true}
-                                style={{ width: 160 }}
-                                onChange={this.searchProName}
-                                filterOption={false}
-                                placeholder="请输入活动名称"
-                            >
-                                {
-                                    (this.state.promotionNameLst || []).map(v => <Option key={v} value={v}>{v}</Option>)
+                            <PromotionNameSelect
+                                getParams={opt}
+                                onChange={(promotionName) => {
+                                    this.setState(promotionName)
+                                }}
+                            />
+                            {/* <Select
+                                    combobox={true}
+                                    style={{ width: 160 }}
+                                    onChange={this.searchProName}
+                                    filterOption={false}
+                                    placeholder="请输入活动名称"
+                                >
+                                    {
+                                        (this.state.promotionNameLst || []).map(v => <Option key={v} value={v}>{v}</Option>)
 
-                                }
-                            </Select>
+                                    }
+                                </Select>
+                            </PromotionNameSelect> */}
+
                         </li>
 
                         <li>
