@@ -93,9 +93,11 @@ class RecommendFoodDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
+        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        _priceLst = _priceLst ? _priceLst.toJS() : [];
+        _scopeLst = _scopeLst ? _scopeLst.toJS() : [];
         rule = rule ? rule.toJS() : {};
         let { stageType = '1', recommendNum = '', recommendTopNum = '' } = rule;
         let { display } = this.state;
@@ -304,7 +306,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                             initialValue: this.state.priceLstAuto,
                                         })(
                                             <EditBoxForDishes onChange={this.autoDishesChange} type="RECOMMEND_FOOD" />
-                                            )}
+                                        )}
                                 </FormItem>
                             </div> : null
                     }
