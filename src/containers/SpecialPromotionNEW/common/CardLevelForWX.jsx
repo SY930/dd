@@ -76,11 +76,12 @@ class CardLevelForWX extends React.Component {
             selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
         }, () => {
             this.props.onChange({
+                shopIDList: thisEventInfo.shopIDList || [],
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
         })
-        this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
+        this.queryCanuseShops(thisEventInfo.cardLevelIDList) // 局部或全部
     }
 
     componentWillReceiveProps(nextProps) {
@@ -176,29 +177,34 @@ class CardLevelForWX extends React.Component {
             queryCardType: cardTypeIDs.length === 0 ? 0 : 1,
         }, null, { path: 'data.cardTypeShopList' })
             .then(cardTypeShopList => {
+                const shopsInfo = this.state.selections_shopsInfo.shopsInfo.map(shopID => String(shopID));
                 let canUseShops = [];
+                canUseShops.push(...shopsInfo);
                 (cardTypeShopList || []).forEach((cardType) => {
                     cardType.cardTypeShopResDetailList.forEach(shop=>{
                         canUseShops.push(String(shop.shopID))
                     })
                 });
-                if (canUseShops.length > 0) {
-                    let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
-                    dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(shop.shopID));
-                    const shops = dynamicShopSchema.shops;
-                    const availableCities = uniq(shops.map(shop => shop.cityID));
-                    const availableBM = uniq(shops.map(shop => shop.businessModel));
-                    const availableBrands = uniq(shops.map(shop => shop.brandID));
-                    const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
-                    dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
-                    dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
-                    dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
-                    dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
-                    const shopsInfo = this.state.selections_shopsInfo.shopsInfo.filter(selectShop => canUseShops.includes(String(selectShop))).map(shopID => String(shopID));
-                    this.setState({ canUseShops, dynamicShopSchema, selections_shopsInfo: { shopsInfo } })
-                }
+                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
             })
     }
+
+    getDynamicShopSchema() {
+        let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        let canUseShops = this.state.canUseShops;
+        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(String(shop.shopID)));
+        const shops = dynamicShopSchema.shops;
+        const availableCities = uniq(shops.map(shop => shop.cityID));
+        const availableBM = uniq(shops.map(shop => shop.businessModel));
+        const availableBrands = uniq(shops.map(shop => shop.brandID));
+        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+        dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
+        dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
+        dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
+        dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
+        return dynamicShopSchema;
+    }
+
     handleSelectChange(value) {
         const opts = {
             cardLevelIDList: value,
@@ -260,11 +266,11 @@ class CardLevelForWX extends React.Component {
                         canUseShops={this.state.canUseShops}
                     />*/}
                     <ShopSelector
-                        value={this.state.selections_shopsInfo.shopsInfo}
+                        value={(this.state.selections_shopsInfo.shopsInfo || []).map(shopID => String(shopID))}
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.state.dynamicShopSchema}
+                        schemaData={this.getDynamicShopSchema()}
                     />
                 </Form.Item>
                 <div

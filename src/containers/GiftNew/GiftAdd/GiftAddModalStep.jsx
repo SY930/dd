@@ -38,7 +38,7 @@ const RadioGroup = Radio.Group;
 class GiftAddModalStep extends React.Component {
     constructor(props) {
         super(props);
-        const shopSchemaJs = props.shopSchema.getIn(['shopSchema']).toJS();
+        const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
         this.state = {
             current: 0,
             shopsData: [],
@@ -46,7 +46,7 @@ class GiftAddModalStep extends React.Component {
             finishLoading: false,
             numberOfTimeValueDisabled: true,
             moneyTopLimitValueDisabled: true,
-            shopSchemaJs, // 后台请求来的值
+            shopSchema, // 后台请求来的值
             // modalKey:1,
             firstKeys: { ...FIRST_KEYS },
             secondKeys: { ...SECOND_KEYS },

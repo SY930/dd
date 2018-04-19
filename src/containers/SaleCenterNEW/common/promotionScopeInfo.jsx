@@ -93,6 +93,8 @@ class PromotionScopeInfo extends React.Component {
             evidence: '0',
             shopStatus: 'success',
             usageMode: 1,
+            filterShops: [],
+            allShopsSet: false
         };
 
         // bind this.
@@ -152,7 +154,11 @@ class PromotionScopeInfo extends React.Component {
             cancel: undefined,
         });
 
-        const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema } = this.props;
+        const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
+        if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
+            this.setState({filterShops: promotionBasicInfo.get('$filterShops').toJS().shopList})
+        }
+        this.setState({allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet});
 
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
             fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID });
@@ -198,6 +204,12 @@ class PromotionScopeInfo extends React.Component {
                 dynamicShopSchema: nextShopSchema, // 随品牌的添加删除而变化
             });
         }
+        if (nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList) {
+            this.setState({filterShops: nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList})
+        } else {
+            this.setState({filterShops: []})
+        }
+        this.setState({allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet});
 
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
             JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
@@ -223,22 +235,7 @@ class PromotionScopeInfo extends React.Component {
 
     // save brand data to store
     handleBrandChange(value) {
-        let dynamicShopSchema;
-        if (value instanceof Array && value.length > 0) {
-            dynamicShopSchema = Object.assign({}, this.state.shopSchema);
-            dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => value.includes(shop.brandID));
-            const shops = dynamicShopSchema.shops;
-            const availableCities = uniq(shops.map(shop => shop.cityID));
-            const availableBM = uniq(shops.map(shop => shop.businessModel));
-            const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
-            dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
-            dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
-            dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
-            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => value.includes(brandCollection.brandID));
-        } else {
-            dynamicShopSchema = this.state.shopSchema;
-        }
-        this.setState({ brands: value, selections: [], dynamicShopSchema});
+        this.setState({ brands: value, selections: []});
     }
     onPointsChange(val) {
         this.setState({ points: val })
@@ -252,6 +249,34 @@ class PromotionScopeInfo extends React.Component {
 
     handleVoucherVerifyChannelChange(val) {
         this.setState({ voucherVerifyChannel: val });
+    }
+
+    getFilteredShopSchema() {
+        console.log('selectedBrands:', this.state.brands);
+        const availableBrands = this.state.brands;
+        const occupiedShops = this.state.filterShops;
+        let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        if (availableBrands instanceof Array && availableBrands.length > 0) {
+            console.log('going to filter');
+            dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
+        }
+        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
+        const shops = dynamicShopSchema.shops;
+        const availableCities = uniq(shops.map(shop => shop.cityID));
+        const availableBM = uniq(shops.map(shop => shop.businessModel));
+        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+        dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
+        dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
+        dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
+        if (availableBrands instanceof Array && availableBrands.length > 0) {
+            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
+            console.log('filteredBrands:', dynamicShopSchema.brands);
+        } else {// all brands
+            const allBrands = uniq(shops.map(shop => shop.brandID));
+            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));
+        }
+        console.log(dynamicShopSchema);
+        return dynamicShopSchema;
     }
 
     renderBrandFormItem() {
@@ -406,13 +431,10 @@ class PromotionScopeInfo extends React.Component {
             >
                 <ShopSelector
                     value={this.state.selections}
-                    schemaData={this.state.dynamicShopSchema}
+                    schemaData={this.getFilteredShopSchema()}
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    handleAllShopSet={(allShopSet) => {
-                        this.setState({ allShopSet })
-                    }}
                 />
                 {
                     this.state.allShopSet ?
