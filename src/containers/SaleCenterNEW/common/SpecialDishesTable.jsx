@@ -252,7 +252,7 @@ class SpecialDishesTable extends React.Component {
         // update currentSelections according the selections
         const foodCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (foodSelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(food => food.itemID == storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -275,7 +275,7 @@ class SpecialDishesTable extends React.Component {
             const selectIds = Array.from(foodSelections).map(select => select.itemID)
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
-                if (value.includes(shopEntity.itemID)) {
+                if (value.includes(Number(shopEntity.itemID)) || value.includes(String(shopEntity.itemID))) {
                     shopEntity.newPrice = shopEntity.newPrice || shopEntity.price
                     !selectIds.includes(shopEntity.itemID) && foodSelections.add(shopEntity);
                 } else {
@@ -317,7 +317,7 @@ class SpecialDishesTable extends React.Component {
         const foodCurrentSelections = [];
 
         storeOptions.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if ((Array.from(this.state.foodSelections).findIndex(food => food.itemID === storeEntity.itemID) > -1)) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
