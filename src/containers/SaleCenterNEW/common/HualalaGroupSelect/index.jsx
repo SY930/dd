@@ -74,7 +74,7 @@ class HualalaGroupSelectS extends React.Component {
                     return {
                         key: item[this.props.labelKey],
                         // label: item[this.props.labelKey] || `${item[this.props.labelKey]}+${item.unit}`,
-                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit})`,
+                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) (${item.price}元)`,
                         value: item[this.props.valueKey],
                     }
                 }),
@@ -95,7 +95,7 @@ class HualalaGroupSelectS extends React.Component {
                 options: nextProps.options.map((item, index) => {
                     return {
                         key: `${index}`,
-                        label: item[nextProps.labelKey] || `${item.foodName}  (${item.unit})`,
+                        label: item[nextProps.labelKey] || `${item.foodName}  (${item.unit}) (${item.price}元)`,
                         value: item[nextProps.valueKey],
                         disabled: this.props.isRecommendFood ?
                             (arr.length > 0 ? (!arr.includes(item[nextProps.valueKey])) : false) :
