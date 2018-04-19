@@ -785,7 +785,7 @@ class MyActivities extends React.Component {
                         </li>
                         <li>
                             <PromotionNameSelect
-                                getParams={opt}
+                                getParams={{ ...opt, promotionName: undefined }}
                                 onChange={(promotionName) => {
                                     this.setState(promotionName)
                                 }}
