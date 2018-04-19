@@ -790,20 +790,6 @@ class MyActivities extends React.Component {
                                     this.setState(promotionName)
                                 }}
                             />
-                            {/* <Select
-                                    combobox={true}
-                                    style={{ width: 160 }}
-                                    onChange={this.searchProName}
-                                    filterOption={false}
-                                    placeholder="请输入活动名称"
-                                >
-                                    {
-                                        (this.state.promotionNameLst || []).map(v => <Option key={v} value={v}>{v}</Option>)
-
-                                    }
-                                </Select>
-                            </PromotionNameSelect> */}
-
                         </li>
 
                         <li>
