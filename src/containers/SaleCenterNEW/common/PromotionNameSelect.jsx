@@ -28,8 +28,9 @@ export default class PromotionNameSelect extends React.Component {
         axiosData('/promotionV1/listPromotionName.ajax', opt, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
                 this.setState({
+                    allPromotionNameLst: res.promotionNameLst || [],
                     promotionNameLst: (res.promotionNameLst || []).filter((name) => {
-                        return CC2PY(name).indexOf(CC2PY(opt.promotionName || '')) > -1 || CC2PYSS(name).indexOf(CC2PYSS(opt.promotionName || '')) > -1
+                        return CC2PY(name).indexOf(CC2PY(this.state.promotionName || '')) > -1 || CC2PYSS(name).indexOf(CC2PYSS(this.state.promotionName || '')) > -1
                     }),
                 })
             })
@@ -37,6 +38,12 @@ export default class PromotionNameSelect extends React.Component {
     searchProName = _.debounce((_val) => {
         const val = _val.trim().toLowerCase()
         const opts = { promotionName: val }
+        this.setState({
+            ...opts,
+            promotionNameLst: (this.state.allPromotionNameLst || []).filter((name) => {
+                return CC2PY(name).indexOf(CC2PY(val || '')) > -1 || CC2PYSS(name).indexOf(CC2PYSS(val || '')) > -1
+            }),
+        })
         this.props.onChange(opts)
     }, 300)
     render() {
@@ -45,6 +52,10 @@ export default class PromotionNameSelect extends React.Component {
                 combobox={true}
                 style={{ width: 160 }}
                 onSearch={this.searchProName}
+                onSelect={(promotionName) => {
+                    this.setState({ promotionName })
+                    this.props.onChange({ promotionName })
+                }}
                 filterOption={false}
                 placeholder="请输入活动名称"
             >
