@@ -81,7 +81,7 @@ class CardLevelForWX extends React.Component {
                 cardLevelIDList: this.state.cardLevelIDList,
             });
         })
-        this.queryCanuseShops(thisEventInfo.cardLevelIDList) // 局部或全部
+        this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
     }
 
     componentWillReceiveProps(nextProps) {
