@@ -252,30 +252,35 @@ class PromotionScopeInfo extends React.Component {
     }
 
     getFilteredShopSchema() {
-        console.log('selectedBrands:', this.state.brands);
         const availableBrands = this.state.brands;
         const occupiedShops = this.state.filterShops;
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        if (dynamicShopSchema.shops.length === 0) {
+            return dynamicShopSchema;
+        }
         if (availableBrands instanceof Array && availableBrands.length > 0) {
-            console.log('going to filter');
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
         }
         dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
         const availableBM = uniq(shops.map(shop => shop.businessModel));
-        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID)
+            .reduce((accumulateArr, currentCategoryIDString) => {
+                accumulateArr.push(...(currentCategoryIDString || '').split(','));
+                return accumulateArr;
+            }, []));
         dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
         dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
         dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
         if (availableBrands instanceof Array && availableBrands.length > 0) {
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
-            console.log('filteredBrands:', dynamicShopSchema.brands);
+            // console.log('filteredBrands:', dynamicShopSchema.brands);
         } else {// all brands
             const allBrands = uniq(shops.map(shop => shop.brandID));
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));
         }
-        console.log(dynamicShopSchema);
+        // console.log(dynamicShopSchema);
         return dynamicShopSchema;
     }
 

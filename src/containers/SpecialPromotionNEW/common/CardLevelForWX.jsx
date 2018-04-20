@@ -191,13 +191,20 @@ class CardLevelForWX extends React.Component {
 
     getDynamicShopSchema() {
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        if (dynamicShopSchema.shops.length === 0) {
+            return dynamicShopSchema;
+        }
         let canUseShops = this.state.canUseShops;
         dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(String(shop.shopID)));
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
         const availableBM = uniq(shops.map(shop => shop.businessModel));
         const availableBrands = uniq(shops.map(shop => shop.brandID));
-        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID)
+            .reduce((accumulateArr, currentCategoryIDString) => {
+                accumulateArr.push(...(currentCategoryIDString || '').split(','));
+                return accumulateArr;
+            }, []));
         dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
         dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
         dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));

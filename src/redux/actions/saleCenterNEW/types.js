@@ -1018,6 +1018,7 @@ export const BUSINESS_MODEL = Object.freeze({
     '1': '直营',
     '2': '加盟',
     '3': '托管',
+    '4': '合作',
 });
 
 

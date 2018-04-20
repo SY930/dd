@@ -160,6 +160,7 @@ function constructBusinessArray (data) {
         {businessModel: '1', businessType: '直营 '},
         {businessModel: '2', businessType: '加盟 '},
         {businessModel: '3', businessType: '托管'},
+        {businessModel: '4', businessType: '合作'},
     ]
 }
 

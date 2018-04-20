@@ -63,7 +63,7 @@ class StepTwo extends React.Component {
             },
             _opts: {},
             shopSchema,
-            dynamicShopSchema: shopSchema,
+            occupiedShopIDs: [],
             settleUnitID: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
@@ -86,9 +86,11 @@ class StepTwo extends React.Component {
         });
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
-        if (this.props.type == '64' && !isEmpty(currentOccupiedShops) && !isEmpty(this.state.shopSchema.shops)) {
+        this.setState({occupiedShopIDs: currentOccupiedShops || []});
+
+        /*if (this.props.type == '64' && !isEmpty(currentOccupiedShops) && !isEmpty(this.state.shopSchema.shops)) {
             this.filterAvailableShops(currentOccupiedShops);
-        }
+        }*/
 
         if (this.props.type === '64') {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -141,25 +143,29 @@ class StepTwo extends React.Component {
         }
     }
 
-    filterAvailableShops(occupiedShops, shopSchema = this.state.shopSchema) {
-        if (occupiedShops.length > 0) {
-            let dynamicShopSchema = Object.assign({}, shopSchema);
-            if (!dynamicShopSchema) return;
-
+    filterAvailableShops() {
+        let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        if (dynamicShopSchema.shops.length === 0) {
+            return dynamicShopSchema;
+        }
+        if (this.state.occupiedShopIDs.length > 0) {
+            const occupiedShops = this.state.occupiedShopIDs;
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
             const shops = dynamicShopSchema.shops;
             const availableCities = uniq(shops.map(shop => shop.cityID));
             const availableBM = uniq(shops.map(shop => shop.businessModel));
             const availableBrands = uniq(shops.map(shop => shop.brandID));
-            const availableCategories = uniq(shops.map(shop => shop.shopCategoryID));
+            const availableCategories = uniq(shops.map(shop => shop.shopCategoryID)
+                .reduce((accumulateArr, currentCategoryIDString) => {
+                    accumulateArr.push(...(currentCategoryIDString || '').split(','));
+                    return accumulateArr;
+                }, []));
             dynamicShopSchema.businessModels = dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel));
             dynamicShopSchema.citys = dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID));
             dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID));
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
-            this.setState({ dynamicShopSchema })
-        } else {
-            this.setState({ dynamicShopSchema: shopSchema })
         }
+        return dynamicShopSchema;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -167,15 +173,15 @@ class StepTwo extends React.Component {
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (!isEqual(previousSchema, nextShopSchema)) {
             this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-                dynamicShopSchema: nextShopSchema
+                // dynamicShopSchema: nextShopSchema
             });
             // 评价送礼 type==='64' specific
-            if (this.props.type == '64') {
+            /*if (this.props.type == '64') {
                 const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
                 if (!isEmpty(nextOccupiedShops)) {
                     this.filterAvailableShops(nextOccupiedShops, nextShopSchema);
                 }
-            }
+            }*/
         } else {
             if (this.props.type == '64') {
                 const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
@@ -342,7 +348,7 @@ class StepTwo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.state.dynamicShopSchema}
+                        schemaData={this.filterAvailableShops()}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
