@@ -220,8 +220,8 @@
 .labeleBeforeSlect{
     :global{
         .ant-select-selection{
-            border-radius: 0;    
-        } 
+            border-radius: 0;
+        }
         .ant-col-8{
             text-align: center !important;
             height: 28px;
@@ -1107,7 +1107,9 @@
     border: 1px solid @normal-color;
     line-height: 26px;
     box-sizing: border-box;
-
+    & + div {
+        margin-left: 14px;
+    }
 }
 .formLabelNoBorder{
     display: inline-block;
@@ -1115,7 +1117,7 @@
     text-align: center;
     background-color: none;
     border: 1px solid @normal-color;
-    border-right:none; 
+    border-right:none;
     line-height: 26px;
     box-sizing: border-box;
 
@@ -1123,7 +1125,7 @@
 .selectTree{
     width: 70%!important;
     margin: 0;
-    border-radius:0; 
+    border-radius:0;
     :global{
         .ant-select-selection {
             border-radius: 0;
@@ -1215,7 +1217,7 @@
         display: inline-block;
         width:78px;
     }
-    
+
 }
 .noBackground{
     :global{
@@ -1466,7 +1468,7 @@
     color: #1ab495;
     border-radius: 5px;
     &:hover{
-        background-color: white; 
+        background-color: white;
         color: #1ab495;
         border-color: #1ab495;
 
