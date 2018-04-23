@@ -13,6 +13,7 @@ import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 
+const RadioGroup = Radio.Group;
 
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less')
@@ -55,8 +56,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             foodCategoryCollection: [],
             freeAmount: '',
             stageAmount: '',
+            stageCount: '',
+            stageType: 2,
             dishes: [],
             freeAmountFlag: true,
+            stageCountFlag: true,
             stageAmountFlag: true,
             dishsSelectionFlag: true,
             ruleType: '0',
@@ -67,6 +71,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
+        this.onRadioChange = this.onRadioChange.bind(this);
+        this.onStageCountChange = this.onStageCountChange.bind(this);
         this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
     }
@@ -95,7 +101,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         // 根据ruleJson填充页面
         this.setState({
             display,
+            stageType: _rule.stageType || 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
+            stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
             ruleType: _scopeLst.size > 0 ? '1' : '0',
 
@@ -136,9 +144,12 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { stageAmount, dishes, stageAmountFlag, foodMenuList, freeAmount, freeAmountFlag, dishsSelectionFlag, ruleType } = this.state;
+        let { stageAmount, stageType, stageCount, dishes, stageCountFlag, stageAmountFlag, foodMenuList, freeAmount, freeAmountFlag, dishsSelectionFlag, ruleType } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
+        }
+        if (stageCount == null || stageCount == '') {
+            stageCountFlag = false;
         }
         if (freeAmount == null || freeAmount == '') {
             freeAmountFlag = false;
@@ -148,12 +159,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         this.setState({ freeAmountFlag, stageAmountFlag, dishsSelectionFlag });
 
-        if (stageAmountFlag && freeAmountFlag && dishsSelectionFlag) {
+        if (((stageType == 2 && stageAmountFlag) || (stageType == 3 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
             const rule = {
-                stageType: 2,
+                stageType,
                 stage: [
                     {
-                        stageAmount,
+                        stageCount: stageCount || 0,
+                        stageAmount: stageAmount || 0,
                         freeAmount,
                     },
                 ],
@@ -200,6 +212,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             { display: !this.state.display }
         )
     };
+    onRadioChange(event) {
+        this.setState({stageType: Number(event.target.value)});
+    }
     // 减免金额
     onStageAmountChange(value) {
         let { stageAmount, stageAmountFlag } = this.state;
@@ -211,6 +226,19 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageAmount = value.number;
         }
         this.setState({ stageAmount, stageAmountFlag });
+    }
+
+    // 减免数量
+    onStageCountChange(value) {
+        let { stageCount, stageCountFlag } = this.state;
+        if (value.number == null || value.number == '') {
+            stageCountFlag = false;
+            stageCount = value.number;
+        } else {
+            stageCountFlag = true;
+            stageCount = value.number;
+        }
+        this.setState({ stageCount, stageCountFlag });
     }
     // 满金额
     handleFreeAmountChange(value) {
@@ -298,14 +326,20 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <FormItem
                         label="活动方式"
+                        required={true}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
                         <p>
-                            任意或指定消费满一定金额后再加价一定金额即可换购指定菜品
+                            任意或指定消费满一定金额或数量后，再加价一定金额即可换购指定菜品
                         </p>
+                        <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
+                            <Radio key={'2'} value={2}>{'按金额'}</Radio>
+                            <Radio key={'3'} value={3}>{'按数量'}</Radio>
+                        </RadioGroup>
                     </FormItem>
+                    {this.state.stageType == 2 ?
                     <FormItem
                         className={[styles.FormItemStyle, styles.explainBack].join(' ')}
                         wrapperCol={{ span: 17, offset: 4 }}
@@ -325,7 +359,27 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             onChange={this.onStageAmountChange}
                             modal="int"
                         />
+                    </FormItem> :
+                    <FormItem
+                        className={[styles.FormItemStyle, styles.explainBack].join(' ')}
+                        wrapperCol={{ span: 17, offset: 4 }}
+                        validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
+                        help={this.state.stageCountFlag ? null : '请输入菜品数量'}>
+                        <PriceInput
+                            addonBefore={
+                                <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                    <Option key="0" value="0">任意菜品数量满</Option>
+                                    <Option key="1" value="1">同一菜品数量满</Option>
+                                </Select>
+                            }
+                            addonAfter={'份'}
+                            value={{ number: this.state.stageCount }}
+                            defaultValue={{ number: this.state.stageCount }}
+                            onChange={this.onStageCountChange}
+                            modal="int"
+                        />
                     </FormItem>
+                    }
                     {
                         this.state.ruleType == '0' ?
                             null :
