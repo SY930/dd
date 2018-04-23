@@ -159,7 +159,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         this.setState({ freeAmountFlag, stageAmountFlag, dishsSelectionFlag });
 
-        if (((stageType == 2 && stageAmountFlag) || (stageType == 3 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
+        if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
             const rule = {
                 stageType,
                 stage: [
@@ -336,7 +336,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         </p>
                         <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
                             <Radio key={'2'} value={2}>{'按金额'}</Radio>
-                            <Radio key={'3'} value={3}>{'按数量'}</Radio>
+                            <Radio key={'1'} value={1}>{'按数量'}</Radio>
                         </RadioGroup>
                     </FormItem>
                     {this.state.stageType == 2 ?
