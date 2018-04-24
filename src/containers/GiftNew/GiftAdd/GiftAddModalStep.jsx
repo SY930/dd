@@ -65,6 +65,7 @@ class GiftAddModalStep extends React.Component {
 
     componentDidMount() {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
+        // console.log('gift:', thisGift);
         const { getPromotionShopSchema} = this.props;
 
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
@@ -240,6 +241,11 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
+                if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
+                    values.isFoodCatNameList = data.isFoodCatNameList;
+                    values.foodNameList = value.slice();
+                    break;
+                }
                 if (value) {
                     const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
                     const _foodCategory = foodCategory && foodCategory.map((cat) => {
@@ -896,6 +902,7 @@ class GiftAddModalStep extends React.Component {
                     }
             })
         }
+        const {isFoodCatNameList} = this.props.gift.data;
         return (
             <FormItem
                 {...formItemLayout}
@@ -905,7 +912,7 @@ class GiftAddModalStep extends React.Component {
                 help={this.state.foodNameListStatus === 'success' ? null : '不可为空'}
             >
                 {
-                    decorator({})(<FoodBox radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
+                    decorator({})(<FoodBox categoryOrDish={Number(isFoodCatNameList)} radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
                 }
             </FormItem>
 
