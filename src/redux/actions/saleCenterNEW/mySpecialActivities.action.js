@@ -288,7 +288,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
         const getGroupCardTypeLevels = param => {
             return fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
                 method: 'POST',
-                body: generateXWWWFormUrlencodedParams({ _groupID: param.data.groupID }),
+                body: generateXWWWFormUrlencodedParams({ _groupID: param.data.groupID, groupID: param.data.groupID }),
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json; charset=UTF-8',
