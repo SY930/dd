@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import {
     Table, Input, Select, DatePicker,
     Button, Modal, Row, Col, message,
@@ -48,6 +49,7 @@ import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../.
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
+import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -646,6 +648,23 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
+                title: '排序',
+                dataIndex: 'sortOrder',
+                key: 'sortOrder',
+                width: 120,
+                // fixed:'left',
+                render: (text, record) => {
+                    return (
+                        <span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className="sort" onClick={()=>console.log('置顶', 'index', record.index)}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className="sort" onClick={()=>console.log('上移', 'index', record.index)}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className="sort" onClick={()=>console.log('下移', 'index', record.index)}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className="sort" onClick={()=>console.log('置底', 'index', record.index)}/></span>
+                        </span>
+                    )
+                },
+            },
+            {
                 title: '活动类型',
                 dataIndex: 'eventWay',
                 key: 'eventWay',
@@ -710,7 +729,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '创建时间/修改时间',
+                title: '创建时间/修改时间123',
                 className: 'TableTxtCenter',
                 dataIndex: 'operateTime',
                 key: 'operateTime',
@@ -725,6 +744,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '创建人/修改人',
                 dataIndex: 'operator',
+                width: 120,
                 key: 'operator',
                 render: (text, record, index) => {
                     if (record.operator === '') {
@@ -737,7 +757,7 @@ class MySpecialActivities extends React.Component {
                 title: '使用状态',
                 dataIndex: 'isActive',
                 key: 'isActive',
-                width: 120,
+
                 render: (isActive) => {
                     return isActive == '-1' ? '已终止' : isActive == '1' ? '已启用' : '已禁用';
                 },
