@@ -53,7 +53,7 @@ class FoodBox extends React.Component {
 
         this.state = {
             // 活动范围
-            categoryOrDish: 1,
+            categoryOrDish: props.hasOwnProperty('categoryOrDish') ? 0 : 1,
             selectedCategory: [],
             selectedDishes: [],
             excludeDishes: [],
@@ -236,7 +236,7 @@ class FoodBox extends React.Component {
                     onChange={this.handleCategoryOrDishChange}
                 >
                     {PROMOTION_OPTIONS.map((type) => {
-                        return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
+                        return (<Radio key={type.name} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
             </FormItem>
