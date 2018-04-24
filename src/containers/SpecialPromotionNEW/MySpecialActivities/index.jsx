@@ -256,10 +256,10 @@ class MySpecialActivities extends React.Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].offsetHeight;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 15 - 20}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 15,
-                    tableHeight: layoutsContent.offsetHeight - 40 - 68,
+                    contentHeight: parentHeight - headerHeight - 120,
+                    tableHeight: layoutsContent.offsetHeight - 68,
                 })
             }
         }
@@ -335,17 +335,18 @@ class MySpecialActivities extends React.Component {
 
     render() {
         return (
-            <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <Col span={24} className="layoutsHeader">
-                    {this.renderHeader()}
-                    <div className="layoutsLine"></div>
-                    {this.renderFilterBar()}
-                </Col>
-                <Col span={24} className="layoutsLineBlock"> </Col>
-                {this.renderTables()}
+            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                {this.renderHeader()}
+                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
+                    <div className="layoutsHeader">
+                        {this.renderFilterBar()}
+                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                    </div>
+                    {this.renderTables()}
+                </div>
                 {this.renderModals()}
                 {this.renderUpdateModals()}
-            </Row>
+            </div>
         );
     }
     // 查询
@@ -409,10 +410,11 @@ class MySpecialActivities extends React.Component {
     }
 
     renderHeader() {
+        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool">
-                <div className="layoutsToolLeft">
-                    <h1 style={{ display: 'inline-block' }}>特色营销信息</h1>
+            <div className="layoutsTool" style={{height: '80px'}}>
+                <div className={headerClasses} style={{lineHeight: '80px'}}>
+                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>特色营销信息</span>
                     <Button
                         type="ghost"
                         icon="plus"
@@ -425,7 +427,6 @@ class MySpecialActivities extends React.Component {
                         }
                     >新建</Button>
                 </div>
-
             </div>
         );
     }
@@ -745,7 +746,7 @@ class MySpecialActivities extends React.Component {
         ];
 
         return (
-            <Col span={24} className="layoutsContent  tableClass">
+            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
@@ -801,7 +802,7 @@ class MySpecialActivities extends React.Component {
                         },
                     }}
                 />
-            </Col>
+            </div>
         );
     }
     // 删除

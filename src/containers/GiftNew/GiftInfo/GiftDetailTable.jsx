@@ -97,10 +97,10 @@ class GiftDetailTable extends Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].offsetHeight;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 15 - 20}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 15,
-                    tableHeight: layoutsContent.offsetHeight - 120,
+                    contentHeight: parentHeight - headerHeight - 120,
+                    tableHeight: layoutsContent.offsetHeight - 68,
                 })
             }
         }
@@ -388,10 +388,10 @@ class GiftDetailTable extends Component {
             },
         };
         const formKeys = ['giftName', 'giftType'];
+        const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor}`;
         return (
-            <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <Col className="layoutsHeader">
-                    <Row className="layoutsTool">
+            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                    {/*<Row className="layoutsTool">
                         <div className="layoutsToolLeft">
                             <h1 style={{ display: 'inline-block' }}>礼品信息</h1>
                             <Button
@@ -406,75 +406,96 @@ class GiftDetailTable extends Component {
                                 }
                             >新建</Button>
                         </div>
+
                         <Col span={22} style={{ textAlign: 'right' }}>
-                            {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
+
+                        </Col>
+                    </Row>*/}
+                    <div className="layoutsTool" style={{height: '80px'}}>
+                        <div className={headerClasses} style={{lineHeight: '80px'}}>
+                            <span style={{lineHeight: '80px'}} className={styles2.customHeader}>礼品信息</span>
                             <Button
                                 type="ghost"
-                                onClick={() => this.setState({ exportVisible: true })}
-                            ><Icon type="export" />导出历史</Button>
-                            {/* </Authority> */}
-                        </Col>
-                    </Row>
-                    <Row className="layoutsLine"></Row>
-                    <Row className="layoutsSearch">
-                        <ul>
-                            <li className={styles.formWidth}>
-                                <BaseForm
-                                    getForm={form => this.queryFrom = form}
-                                    formItems={formItems}
-                                    formKeys={formKeys}
-                                    formData={queryParams}
-                                    layout="inline"
-                                    onChange={(key, value) => this.handleFormChange(key, value)}
-                                />
-                            </li>
-                            <li>
-                                <Authority rightCode="marketing.lipinxinxixin.query">
-                                    <Button type="primary" onClick={() => this.handleQuery()}>
-                                        <Icon type="search" />
-                                        查询
-                                    </Button>
-                                </Authority>
-                            </li>
-                        </ul>
-                    </Row>
-                </Col>
-                <Col className="layoutsLineBlock"></Col>
-                <Col className={[styles.giftTable, ' layoutsContent tableClass '].join(' ')} style={{ height: this.state.contentHeight }}>
-                    <Table
-                        bordered={true}
-                        columns={this.columns.map(c => (c.render ? ({
-                            ...c,
-                            render: c.render.bind(this),
-                        }) : c))}
-                        dataSource={this.state.dataSource}
-                        pagination={{
-                            showSizeChanger: true,
-                            pageSize,
-                            current: pageNo,
-                            total: this.state.total,
-                            showQuickJumper: true,
-                            onChange: this.handlePageChange,
-                            onShowSizeChange: this.handlePageChange,
-                            showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                        }}
-                        loading={this.props.loading}
-                        scroll={{ x: 1600, y: this.state.tableHeight }}
-                    />
-                </Col>
-                <Col>
+                                icon="plus"
+                                className={styles2.jumpToCreate}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
+                                        jumpPage({ menuID })
+                                    }
+                                }
+                            >新建</Button>
+                            <Authority rightCode="marketing.lipinxinxixin.query">
+                                <Button className={styles2.exportBtn}
+                                    type="ghost"
+                                    onClick={() => this.setState({ exportVisible: true })}
+                                ><Icon type="export" />导出历史</Button>
+                            </Authority>
+                        </div>
+                    </div>
+                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
+                    <div className="layoutsHeader">
+                        <div className="layoutsSearch">
+                            <ul>
+                                <li className={styles.formWidth}>
+                                    <BaseForm
+                                        getForm={form => this.queryFrom = form}
+                                        formItems={formItems}
+                                        formKeys={formKeys}
+                                        formData={queryParams}
+                                        layout="inline"
+                                        onChange={(key, value) => this.handleFormChange(key, value)}
+                                    />
+                                </li>
+                                <li>
+                                    <Authority rightCode="marketing.lipinxinxixin.query">
+                                        <Button type="primary" onClick={() => this.handleQuery()}>
+                                            <Icon type="search" />
+                                            查询
+                                        </Button>
+                                    </Authority>
+                                </li>
+                            </ul>
+                        </div>
+                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                    </div>
+                    <div className={[styles.giftTable, ' layoutsContent tableClass '].join(' ')} style={{ height: this.state.contentHeight }}>
+                        <Table
+                            bordered={true}
+                            columns={this.columns.map(c => (c.render ? ({
+                                ...c,
+                                render: c.render.bind(this),
+                            }) : c))}
+                            dataSource={this.state.dataSource}
+                            pagination={{
+                                showSizeChanger: true,
+                                pageSize,
+                                current: pageNo,
+                                total: this.state.total,
+                                showQuickJumper: true,
+                                onChange: this.handlePageChange,
+                                onShowSizeChange: this.handlePageChange,
+                                showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                            }}
+                            loading={this.props.loading}
+                            scroll={{ x: 1600, y: this.state.tableHeight }}
+                        />
+                    </div>
+                </div>
+
+                <div>
                     {GiftDetail(data.giftType)}
-                </Col>
-                <Col>
+                </div>
+                <div>
                     {GiftEdit(editGift.value)}
-                </Col>
+                </div>
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
-            </Row>
+            </div>
         )
     }
 }
