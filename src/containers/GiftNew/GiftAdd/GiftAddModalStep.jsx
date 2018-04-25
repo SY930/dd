@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { jumpPage } from '@hualala/platform-base'
@@ -241,9 +241,10 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
+                // console.log('strange:', value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
                     values.isFoodCatNameList = data.isFoodCatNameList;
-                    values.foodNameList = value.slice();
+                    values.foodNameList = [];
                     break;
                 }
                 if (value) {
@@ -300,10 +301,11 @@ class GiftAddModalStep extends React.Component {
     }
     handleNext = (cb) => {
         const validateFoodList = (basicValues, _cb) => {
-            if (!basicValues.foodNameList
+            if (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
                 || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
                 || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
-                this.setState({ foodNameListStatus: 'error' })
+                message.warning('请至少选择一个菜品');
+                this.setState({ foodNameListStatus: 'error' });
                 return false;
             }
             this.setState({ foodNameListStatus: 'success' })

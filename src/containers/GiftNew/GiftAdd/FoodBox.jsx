@@ -122,6 +122,10 @@ class FoodBox extends React.Component {
                                     }
                                 });
                         });
+                    this.props.onChange && this.props.onChange({
+                        foodCategory: Array.from(foodCategorySelections),
+                        categoryOrDish: '1',
+                    });
                 }
                 if (scope.scopeType === 'FOOD_EXCLUDED') {
                     foodCategoryCollection
@@ -152,6 +156,10 @@ class FoodBox extends React.Component {
                                         });
                                 })
                         });
+                    this.props.onChange && this.props.onChange({
+                        dishes: Array.from(foodSelections),
+                        categoryOrDish: '0',
+                    });
                 }
             });
 
