@@ -5,6 +5,7 @@
 .Trashes
 .DS_Store
 .vscode
+.gitattributes
 
 node_modules
 lib
