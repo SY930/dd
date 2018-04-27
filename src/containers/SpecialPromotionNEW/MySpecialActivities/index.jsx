@@ -126,7 +126,7 @@ class MySpecialActivities extends React.Component {
         super(props);
         this.tableRef = null;
         this.setTableRef = el => this.tableRef = el;
-        this.changeSortOrder = throttle(this.changeSortOrder, 400, {leading: true});
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -543,9 +543,8 @@ class MySpecialActivities extends React.Component {
         })
     };
     changeSortOrder(record, direction) {
-        // console.log(record);
         const params = {itemID: record.itemID, rankingType: direction};
-        axiosData('/specialPromotion/updateEventRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+        axiosData('/specialPromotion/updateEventRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -675,10 +674,10 @@ class MySpecialActivities extends React.Component {
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'BOTTOM')}/></span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
                         </span>
                     )
                 },
@@ -836,8 +835,8 @@ class MySpecialActivities extends React.Component {
                                     groupID: this.props.user.accountInfo.groupID,
                                     ...opt,
                                 },
-                                start: () => this.setState({loading: true}),
-                                end: () => this.setState({loading: false}),
+                                // start: () => this.setState({loading: true}),
+                                // end: () => this.setState({loading: false}),
                                 fail: (msg) => message.error(msg),
                             });
                         },
