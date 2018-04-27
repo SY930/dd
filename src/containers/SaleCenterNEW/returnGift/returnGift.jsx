@@ -357,6 +357,7 @@ class ReturnGift extends React.Component {
                         >
                             <span className={styles.formLabel}>生效方式</span>
                             <RadioGroup
+                                className={styles.radioMargin}
                                 value={info.giftValidType}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
                             >

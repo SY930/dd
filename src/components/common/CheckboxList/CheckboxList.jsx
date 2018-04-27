@@ -4,11 +4,11 @@ import { Checkbox, Input, Icon } from 'antd';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 
-import { pyMatch } from '../../../helpers/util';
+import { pyMatch } from '@hualala/platform-base';
 import HualalaTree from '../HualalaTree';
 import HualalaTable from '../HualalaTable';
 import PlainList from './PlainList';
-import styles from './styles.less';
+import style from './styles.less';
 
 const Search = Input.Search;
 
@@ -125,14 +125,14 @@ class CheckboxList extends Component {
         const isAllChecked = options.length > 0 &&
             !options.find(opt => value.indexOf(opt.value) === -1);
 
-        const wrapperClz = classnames(styles.wrapper, {
-            [styles.collapsed]: collapsed,
-            [styles.stripped]: display === 'stripped',
-            [styles.table]: display === 'table',
+        const wrapperClz = classnames(style.wrapper, {
+            [style.collapsed]: collapsed,
+            [style.stripped]: display === 'stripped',
+            [style.table]: display === 'table',
         });
-        const headerClz = classnames(styles.header, {
-            [styles.showCheckAll]: _showCheckAll,
-            [styles.showCollapse]: showCollapse,
+        const headerClz = classnames(style.header, {
+            [style.showCheckAll]: _showCheckAll,
+            [style.showCollapse]: showCollapse
         });
 
         return (
@@ -158,7 +158,7 @@ class CheckboxList extends Component {
                         />
                     }
                 </div>
-                <div className={styles.content}>
+                <div className={style.content}>
                     {collapsed ? Array.from('查看内容请向右展开').map(
                         (ch, idx) => <p key={idx}>{ch}</p>
                     ) : this.renderList()}
@@ -175,9 +175,9 @@ CheckboxList.propTypes = {
     options: PropTypes.arrayOf(PropTypes.shape({
         value: PropTypes.string.isRequired, // 选项的值
         label: PropTypes.string.isRequired, // 选项显示的名称
-        disabled: PropTypes.bool, // 是否禁用该选项
-        py: PropTypes.string, // 用于支持拼音检索
-        parent: PropTypes.string, // 显示为树结构时生效
+        disabled: PropTypes.bool,           // 是否禁用该选项
+        py: PropTypes.string,               // 用于支持拼音检索
+        parent: PropTypes.string,           // 显示为树结构时生效
         [PropTypes.any]: PropTypes.any,
     })),
     /** 宽度 */

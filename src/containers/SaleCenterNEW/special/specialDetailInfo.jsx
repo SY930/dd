@@ -11,7 +11,7 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio } from 'antd';
+import { Row, Col, Form, Select, Radio, message } from 'antd';
 import { connect } from 'react-redux'
 
 
@@ -76,6 +76,10 @@ class SpecialDetailInfo extends React.Component {
                 price: parseFloat(data.newPrice) < 0 ?  data.price : parseFloat(data.newPrice),
             }
         });
+        if (priceLst.length === 0) {
+            message.warning('请至少添加一个菜品');
+            return false;
+        }
         this.props.setPromotionDetail({
             priceLst,
             rule: {}, // 为黑白名单而设
@@ -89,6 +93,13 @@ class SpecialDetailInfo extends React.Component {
         )
     }
     dishesChange(val) {
+        val.forEach(item => {
+            if (Number(item.newPrice) === 0) {
+                item.newPrice = 0;
+            } else if (item.newPrice === -1) {
+                item.newPrice = item.price
+            }
+        });
         this.setState({
             data: val,
         })

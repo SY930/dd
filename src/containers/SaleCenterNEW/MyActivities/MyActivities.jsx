@@ -17,8 +17,11 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import _ from 'lodash'
+import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
+
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -58,6 +61,7 @@ import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
 import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
+import PromotionNameSelect from '../common/PromotionNameSelect';
 
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
@@ -73,6 +77,7 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
+
 
 const mapStateToProps = (state) => {
     return {
@@ -228,7 +233,6 @@ class MyActivities extends React.Component {
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
         });
-
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -241,10 +245,20 @@ class MyActivities extends React.Component {
      * */
     toggleExpandState() {
         const expand = this.state.expand;
-
-        this.setState({
+        let opt = {
             expand: !expand,
-        });
+        }
+        if (!opt.expand) {
+            opt = {
+                ...opt,
+                promotionCategory: undefined,
+                promotionTags: undefined,
+                promotionBrands: undefined,
+                promotionOrder: undefined,
+                promotionShop: undefined,
+            }
+        }
+        this.setState(opt)
     }
 
     handleDisableClickEvent(text, record) {
@@ -285,10 +299,10 @@ class MyActivities extends React.Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].offsetHeight;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 15 - 20}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 15,
-                    tableHeight: layoutsContent.offsetHeight - 40 - 68,
+                    contentHeight: parentHeight - headerHeight - 120,
+                    tableHeight: layoutsContent.offsetHeight - 68,
                 })
             }
         }
@@ -354,6 +368,54 @@ class MyActivities extends React.Component {
                 (thisStatus !== nextStatus && nextStatus === 'success'))
         // return true
     }
+    getParams = () => {
+        const {
+            promotionType,
+            promotionDateRange,
+            promotionValid,
+            promotionState,
+            promotionCategory,
+            promotionTags,
+            promotionBrands,
+            promotionOrder,
+            promotionShop,
+            promotionName,
+        } = this.state;
+        const opt = {};
+        if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
+            opt.promotionType = promotionType;
+        }
+        if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
+            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+        if (promotionCategory !== '' && promotionCategory !== undefined) {
+            opt.categoryName = promotionCategory;
+        }
+        if (promotionBrands !== '' && promotionBrands !== undefined) {
+            opt.brandID = promotionBrands;
+        }
+        if (promotionOrder !== '' && promotionOrder !== undefined) {
+            opt.orderType = promotionOrder;
+        }
+        if (promotionShop !== '' && promotionShop !== undefined) {
+            opt.shopID = promotionShop;
+        }
+        if (promotionState !== '' && promotionState != '0') {
+            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
+        }
+        if (promotionValid !== '' && promotionValid != '0') {
+            opt.status = promotionValid;
+        }
+        if (promotionTags !== '' && promotionTags != '0') {
+            opt.tag = promotionTags;
+        }
+        if (promotionName !== '' && promotionName !== undefined) {
+            opt.promotionName = promotionName;
+        }
+        opt.groupID = this.props.user.accountInfo.groupID;
+        return opt
+    }
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
@@ -365,52 +427,13 @@ class MyActivities extends React.Component {
                 this.setState({ queryDisabled: false })
             }, 500)
         });
-        const {
-            promotionType,
-            promotionDateRange,
-            promotionValid,
-            promotionState,
-            promotionCategory,
-            promotionTags,
-            promotionBrands,
-            promotionOrder,
-            promotionShop,
-        } = this.state;
-
+        const _opt = this.getParams()
         const opt = {
-            groupID: this.props.user.accountInfo.groupID,
             pageSize: this.state.pageSizes,
             pageNo,
             usageMode: -1,
+            ..._opt,
         };
-        if (promotionType != '' && promotionType != 'undefined') {
-            opt.promotionType = promotionType;
-        }
-        if (promotionDateRange != '' && promotionDateRange != undefined) {
-            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-        }
-        if (promotionCategory != '' && promotionCategory != undefined) {
-            opt.categoryName = promotionCategory;
-        }
-        if (promotionBrands != '' && promotionBrands != undefined) {
-            opt.brandID = promotionBrands;
-        }
-        if (promotionOrder != '' && promotionOrder != undefined) {
-            opt.orderType = promotionOrder;
-        }
-        if (promotionShop != '' && promotionShop != undefined) {
-            opt.shopID = promotionShop;
-        }
-        if (promotionState != '' && promotionState != '0') {
-            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-        }
-        if (promotionValid != '' && promotionValid != '0') {
-            opt.status = promotionValid;
-        }
-        if (promotionTags != '' && promotionTags != '0') {
-            opt.tag = promotionTags;
-        }
         opt.cb = this.showNothing;
         this.props.query(opt);
     }
@@ -652,10 +675,21 @@ class MyActivities extends React.Component {
     }
 
     renderHeader() {
+        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool">
-                <div className="layoutsToolLeft">
-                    <h1>基础营销信息</h1>
+            <div className="layoutsTool" style={{height: '80px'}}>
+                <div className={headerClasses} style={{lineHeight: '80px'}}>
+                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID
+                                jumpPage({ menuID })
+                            }
+                        }>新建</Button>
                 </div>
             </div>
         );
@@ -686,6 +720,7 @@ class MyActivities extends React.Component {
     }
 
     renderFilterBar() {
+        const opt = this.getParams()
         return (
             <div>
                 <div className="layoutsSearch">
@@ -746,10 +781,15 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>适用店铺</h5>
+                            <h5>活动名称</h5>
                         </li>
                         <li>
-                            {this.renderShopsInTreeSelectMode()}
+                            <PromotionNameSelect
+                                getParams={{ ...opt, promotionName: undefined }}
+                                onChange={(promotionName) => {
+                                    this.setState(promotionName)
+                                }}
+                            />
                         </li>
 
                         <li>
@@ -795,6 +835,13 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
+
+                        <li>
+                            <h5>适用店铺</h5>
+                        </li>
+                        <li>
+                            {this.renderShopsInTreeSelectMode()}
+                        </li>
                         <li>
                             <h5>有效状态</h5>
                         </li>
@@ -1073,7 +1120,7 @@ class MyActivities extends React.Component {
         ];
 
         return (
-            <Col span={24} className="layoutsContent  tableClass">
+            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
@@ -1093,74 +1140,40 @@ class MyActivities extends React.Component {
                                 pageNo: page,
                             })
                             const opt = {
-                                groupID: this.props.user.accountInfo.groupID,
                                 pageSize,
                                 pageNo: page,
                                 usageMode: -1,
+                                ...this.getParams(),
                             };
-                            const {
-                                promotionType,
-                                promotionDateRange,
-                                promotionValid,
-                                promotionState,
-                                promotionCategory,
-                                promotionTags,
-                                promotionBrands,
-                                promotionOrder,
-                                promotionShop,
-                            } = this.state;
-
-                            if (promotionType != '' && promotionType != 'undefined') {
-                                opt.promotionType = promotionType;
-                            }
-                            if (promotionDateRange != '' && promotionDateRange != undefined) {
-                                opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-                                opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-                            }
-                            if (promotionCategory != '' && promotionCategory != undefined) {
-                                opt.categoryName = promotionCategory;
-                            }
-                            if (promotionBrands != '' && promotionBrands != undefined) {
-                                opt.brandID = promotionBrands;
-                            }
-                            if (promotionOrder != '' && promotionOrder != undefined) {
-                                opt.orderType = promotionOrder;
-                            }
-                            if (promotionShop != '' && promotionShop != undefined) {
-                                opt.shopID = promotionShop;
-                            }
-                            if (promotionState != '' && promotionState != '0') {
-                                opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-                            }
-                            if (promotionValid != '' && promotionValid != '0') {
-                                opt.status = promotionValid;
-                            }
-                            if (promotionTags != '' && promotionTags != '0') {
-                                opt.tag = promotionTags;
-                            }
                             opt.cb = this.showNothing;
                             this.props.query(opt);
                         },
                     }}
                 />
-            </Col>
+            </div>
         );
     }
 
     render() {
         // console.log('渲染:-----')
         return (
-            <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <Col span={24} className="layoutsHeader">
-                    {this.renderHeader()}
-                    <div className="layoutsLine"></div>
-                    {this.renderFilterBar()}
-                </Col>
-                <Col span={24} className="layoutsLineBlock"></Col>
-                {this.renderTables()}
-                {this.renderModals()}
-                {this.renderModifyRecordInfoModal(0)}
-            </Row>
+        <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div>
+                {this.renderHeader()}
+            </div>
+
+            <div>
+                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
+                    <div className="layoutsHeader">
+                        {this.renderFilterBar()}
+                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                    </div>
+                    {this.renderTables()}
+                </div>
+            </div>
+            {this.renderModals()}
+            {this.renderModifyRecordInfoModal(0)}
+        </div>
         );
     }
 }

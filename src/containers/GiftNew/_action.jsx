@@ -287,7 +287,8 @@ export const emptyGetSharedGifts = () => {
 };
 export const CrmBatchSellGiftCards = (opts) => {
     return (dispatch) => {
-        return fetchData('crmBatchSellGiftCards', { ...opts }, null, {
+        // return fetchData('crmBatchSellGiftCards', { ...opts }, null, {
+        return axiosData('/coupon/couponQuotaService_batchSellQuotaCards.ajax', { ...opts }, null, {
             path: '',
         })
             .then((data) => {
@@ -333,7 +334,8 @@ export const getQuotaCardBatchNoAC = (opt) => {
 };
 export const FetchQuotaCardBatchNo = (opts) => {
     return (dispatch) => {
-        return fetchData('getQuotaBatchInfo_dkl', { ...opts }, null, {
+        // return fetchData('getQuotaBatchInfo_dkl', { ...opts }, null, {
+        return axiosData('/coupon/couponQuotaService_getQuotaBatch.ajax', { ...opts }, null, {
             path: 'data.quotaCardList',
         })
             .then((records = []) => {

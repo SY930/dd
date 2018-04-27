@@ -1,50 +1,56 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Spin } from 'antd';
-import { uniq, isEqual } from 'lodash';
+import { uniq, isEqual, result } from 'lodash';
 
-import { fetchData } from '../../../helpers/util';
+import { axios, genQueryString, HTTP_CONTENT_TYPE_WWWFORM } from '@hualala/platform-base';
 import FilterSelector from '../FilterSelector';
 import { FILTERS } from './config';
 import { loadShopSchema, mergeFilters } from './utils';
 
 class ShopSelectModal extends Component {
-    state = {
-        loading: false,
-        options: null,
-        filters: mergeFilters(this.props.filters || FILTERS, FILTERS),
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false,
+            options: props.options,
+            filters: props.filters
+        }
     }
+
 
     selected = this.props.defaultValue
 
     componentDidMount() {
-        this.loadShops();
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.props.filters, nextProps.filters)) {
-            this.setState({
-                filters: mergeFilters(nextProps.filters, this.state.filters),
+        if (!isEqual(this.props, nextProps)) {
+            const { options, filters} = nextProps;
+            this.setState = ({
+                options,
+                filters
             });
         }
     }
 
-    loadShops(params = {}, isForce = false) {
+    /*loadShops(params = {}, isForce = false) {
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         this.setState({ loading: true });
         return loadShopSchema(params).then(({ shops, ...filterOptions }) => {
             this.setState({
                 loading: false,
                 options: shops,
-                filters: this.state.filters.map(filter => ({
+                filters: FILTERS.map(filter => ({
                     ...filter,
                     options: filterOptions[filter.name],
                 })),
             });
         });
-    }
+    }*/
 
-    loadOrgs(params = {}) {
+    async loadOrgs(params = {}) {
         const shops = this.props.options || this.state.options || [];
         const orgIDs = uniq(shops.reduce((ret, shop) => {
             const { parentOrgID } = shop;
@@ -53,11 +59,16 @@ class ShopSelectModal extends Component {
         }, []));
         if (orgIDs.length === 0) return Promise.resolve();
         this.setState({ loading: true });
-        return fetchData('getShopOrg', {
-            orgIDs: orgIDs.join(','),
-            returnParentOrg: '1',
-            ...params,
-        }).then((records = []) => {
+        try {
+            const res = await axios.post('/api/shopcenter/org/selectOrgs', genQueryString({
+                orgIDs: orgIDs.join(','),
+                returnParentOrg: '1',
+                ...params,
+            }), {
+                headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+            });
+            if (res.code !== '000') throw new Error(res.message);
+            const records = result(res, 'data.records', []);
             this.setState({
                 loading: false,
                 filters: this.state.filters.map((filter) => {
@@ -74,10 +85,11 @@ class ShopSelectModal extends Component {
                     };
                 }),
             });
-        }).catch((err) => {
+            return records;
+        } catch (error) {
             this.setState({ loading: false });
-            throw err;
-        });
+            throw error;
+        }
     }
 
     async loadShopTags(params = {}) {
@@ -89,10 +101,14 @@ class ShopSelectModal extends Component {
         if (shopTagIDs.length === 0) return;
         this.setState({ loading: true });
         try {
-            const shopTagRecords = await fetchData('shopTagQuery', {
+            const res = await axios.post('/api/shop/shopTagQuery', genQueryString({
                 itemIDs: shopTagIDs.join(','),
                 ...params,
-            }, null, { path: 'data.tagDetailList' });
+            }), {
+                headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+            });
+            if (res.code !== '000') throw new Error(res.message);
+            const shopTagRecords = result(res, 'data.tagDetailList', []);
             this.setState({
                 loading: false,
                 filters: this.state.filters.map((filter) => {
@@ -113,7 +129,7 @@ class ShopSelectModal extends Component {
         }
     }
 
-    loadOrgTags(params = {}) {
+    async loadOrgTags(params = {}) {
         const shops = this.props.options || this.state.options || [];
         const tagIDs = uniq(shops.reduce((ret, shop) => {
             const orgTagIDs = shop.orgTagIDs ? shop.orgTagIDs.split(',') : [];
@@ -121,12 +137,15 @@ class ShopSelectModal extends Component {
         }, []));
         if (tagIDs.length === 0) return Promise.resolve();
         this.setState({ loading: true });
-        return fetchData('shopTagQuery', {
-            itemIDs: tagIDs.join(','),
-            ...params,
-        }, null, {
-            path: 'data.tagDetailList',
-        }).then((records = []) => {
+        try {
+            const res = await axios.post('/api/shop/shopTagQuery', genQueryString({
+                itemIDs: tagIDs.join(','),
+                ...params,
+            }), {
+                headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+            });
+            if (res.code !== '000') throw new Error(res.message);
+            const records = result(res, 'data.tagDetailList', []);
             this.setState({
                 loading: false,
                 filters: this.state.filters.map((filter) => {
@@ -141,10 +160,11 @@ class ShopSelectModal extends Component {
                     };
                 }),
             });
-        }).catch((err) => {
+            return records;
+        } catch (error) {
             this.setState({ loading: false });
-            throw err;
-        });
+            throw error;
+        }
     }
 
     handleChange = (values) => {
@@ -163,7 +183,7 @@ class ShopSelectModal extends Component {
             case 'shopTags':
                 return this.loadShopTags();
             default:
-                return this.loadShops({}, true);
+                return Promise.resolve();
         }
     }
 
@@ -172,10 +192,11 @@ class ShopSelectModal extends Component {
     }
 
     render() {
-        const { defaultValue } = this.props;
-        const { loading, filters } = this.state;
+        const { defaultValue} = this.props;
+        const {options, filters, loading} = this.state;
 
-        const options = this.props.options || this.state.options || [];
+
+        // const options = this.props.options || this.state.options || [];
 
         return (
             <Modal

@@ -17,7 +17,11 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import _ from 'lodash'
+import { jumpPage } from '@hualala/platform-base'
+import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../index';
+import CC2PY, { CC2PYSS } from '../../../components/common/CC2PY';
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
@@ -58,6 +62,7 @@ import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
 import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
+import PromotionNameSelect from '../common/PromotionNameSelect';
 
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
@@ -241,10 +246,20 @@ class MyActivitiesShop extends React.Component {
      * */
     toggleExpandState() {
         const expand = this.state.expand;
-
-        this.setState({
+        let opt = {
             expand: !expand,
-        });
+        }
+        if (!opt.expand) {
+            opt = {
+                ...opt,
+                promotionCategory: undefined,
+                promotionTags: undefined,
+                promotionBrands: undefined,
+                promotionOrder: undefined,
+                promotionShop: undefined,
+            }
+        }
+        this.setState(opt)
     }
 
     handleDisableClickEvent(text, record) {
@@ -342,6 +357,52 @@ class MyActivitiesShop extends React.Component {
         }
     }
 
+    getParams = () => {
+        const {
+            promotionType,
+            promotionDateRange,
+            promotionValid,
+            promotionState,
+            promotionCategory,
+            promotionTags,
+            promotionBrands,
+            promotionOrder,
+            // promotionShop,
+            promotionName,
+        } = this.state;
+        const opt = {};
+        if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
+            opt.promotionType = promotionType;
+        }
+        if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
+            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+        if (promotionCategory !== '' && promotionCategory !== undefined) {
+            opt.categoryName = promotionCategory;
+        }
+        if (promotionBrands !== '' && promotionBrands !== undefined) {
+            opt.brandID = promotionBrands;
+        }
+        if (promotionOrder !== '' && promotionOrder !== undefined) {
+            opt.orderType = promotionOrder;
+        }
+        if (promotionState !== '' && promotionState != '0') {
+            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
+        }
+        if (promotionValid !== '' && promotionValid != '0') {
+            opt.status = promotionValid;
+        }
+        if (promotionTags !== '' && promotionTags != '0') {
+            opt.tag = promotionTags;
+        }
+        if (promotionName !== '' && promotionName !== undefined) {
+            opt.promotionName = promotionName;
+        }
+        opt.groupID = this.props.user.accountInfo.groupID;
+        opt.shopID = this.props.user.shopID;
+        return opt
+    }
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         this.setState({
@@ -353,53 +414,13 @@ class MyActivitiesShop extends React.Component {
                 this.setState({ queryDisabled: false })
             }, 500)
         });
-        const {
-            promotionType,
-            promotionDateRange,
-            promotionValid,
-            promotionState,
-            promotionCategory,
-            promotionTags,
-            promotionBrands,
-            promotionOrder,
-            // promotionShop,
-        } = this.state;
-
+        const _opt = this.getParams()
         const opt = {
-            groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID,
             pageSize: this.state.pageSizes,
             pageNo,
             usageMode: -1,
+            ..._opt,
         };
-        if (promotionType != '' && promotionType != 'undefined') {
-            opt.promotionType = promotionType;
-        }
-        if (promotionDateRange != '' && promotionDateRange != undefined) {
-            opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-            opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-        }
-        if (promotionCategory != '' && promotionCategory != undefined) {
-            opt.categoryName = promotionCategory;
-        }
-        if (promotionBrands != '' && promotionBrands != undefined) {
-            opt.brandID = promotionBrands;
-        }
-        if (promotionOrder != '' && promotionOrder != undefined) {
-            opt.orderType = promotionOrder;
-        }
-        // if (promotionShop != '' && promotionShop != undefined) {
-        //     opt.shopID = promotionShop;
-        // }
-        if (promotionState != '' && promotionState != '0') {
-            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-        }
-        if (promotionValid != '' && promotionValid != '0') {
-            opt.status = promotionValid;
-        }
-        if (promotionTags != '' && promotionTags != '0') {
-            opt.tag = promotionTags;
-        }
         opt.cb = this.showNothing;
         this.props.query(opt);
     }
@@ -534,7 +555,6 @@ class MyActivitiesShop extends React.Component {
             fail: failFn,
         });
     }
-
     /**
      * Render promotion update Modal
      * wrapped normally.
@@ -646,7 +666,18 @@ class MyActivitiesShop extends React.Component {
         return (
             <div className="layoutsTool">
                 <div className="layoutsToolLeft">
-                    <h1>基础营销信息</h1>
+                    <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
+                                jumpPage({ menuID })
+                            }
+                        }
+                    >新建</Button>
                 </div>
             </div>
         );
@@ -677,6 +708,8 @@ class MyActivitiesShop extends React.Component {
     }
 
     renderFilterBar() {
+        const opt = this.getParams()
+
         return (
             <div>
                 <div className="layoutsSearch">
@@ -737,12 +770,17 @@ class MyActivitiesShop extends React.Component {
                             </Select>
                         </li>
 
-                        {/* <li>
-                            <h5>适用店铺</h5>
+                        <li>
+                            <h5>活动名称</h5>
                         </li>
                         <li>
-                            {this.renderShopsInTreeSelectMode()}
-                        </li> */}
+                            <PromotionNameSelect
+                                getParams={{ ...opt, promotionName: undefined }}
+                                onChange={(promotionName) => {
+                                    this.setState(promotionName)
+                                }}
+                            />
+                        </li>
 
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
@@ -1085,52 +1123,11 @@ class MyActivitiesShop extends React.Component {
                                 pageNo: page,
                             })
                             const opt = {
-                                groupID: this.props.user.accountInfo.groupID,
-                                shopID: this.props.user.shopID,
                                 pageSize,
                                 pageNo: page,
                                 usageMode: -1,
+                                ...this.getParams(),
                             };
-                            const {
-                                promotionType,
-                                promotionDateRange,
-                                promotionValid,
-                                promotionState,
-                                promotionCategory,
-                                promotionTags,
-                                promotionBrands,
-                                promotionOrder,
-                                promotionShop,
-                            } = this.state;
-
-                            if (promotionType != '' && promotionType != 'undefined') {
-                                opt.promotionType = promotionType;
-                            }
-                            if (promotionDateRange != '' && promotionDateRange != undefined) {
-                                opt.startDate = promotionDateRange[0].format('YYYYMMDD');
-                                opt.endDate = promotionDateRange[1].format('YYYYMMDD');
-                            }
-                            if (promotionCategory != '' && promotionCategory != undefined) {
-                                opt.categoryName = promotionCategory;
-                            }
-                            if (promotionBrands != '' && promotionBrands != undefined) {
-                                opt.brandID = promotionBrands;
-                            }
-                            if (promotionOrder != '' && promotionOrder != undefined) {
-                                opt.orderType = promotionOrder;
-                            }
-                            if (promotionShop != '' && promotionShop != undefined) {
-                                opt.shopID = promotionShop;
-                            }
-                            if (promotionState != '' && promotionState != '0') {
-                                opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
-                            }
-                            if (promotionValid != '' && promotionValid != '0') {
-                                opt.status = promotionValid;
-                            }
-                            if (promotionTags != '' && promotionTags != '0') {
-                                opt.tag = promotionTags;
-                            }
                             opt.cb = this.showNothing;
                             this.props.query(opt);
                         },

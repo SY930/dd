@@ -1,5 +1,6 @@
-import { fetchData } from '../../../helpers/util';
+import { axios } from '@hualala/platform-base';
 import { FILTERS } from './config';
+import { BUSINESS_MODEL } from '../../../redux/actions/saleCenterNEW/types.js';
 
 function presetFilterOptions(records, filter) {
     const { valueKey, labelKey } = filter;
@@ -15,29 +16,29 @@ function presetFilterOptions(records, filter) {
  * @param {any} params 请求参数
  * @param {any} cache 缓存数据
  */
-export function loadShopSchema(params = {}, cache) {
-    return fetchData('getSchemaData', {
-        ...params,
-    }, cache || null, {
-        path: 'data',
-    }).then((data = {}) => {
-        const filterOptions = FILTERS.reduce((ret, filter) => {
-            const records = data[filter.name];
-            return {
-                ...ret,
-                [filter.name]: records ? presetFilterOptions(records, filter) : undefined,
-            };
-        }, {});
+export async function loadShopSchema(params = {}, cache) {
+    let data = cache;
+    if (!data) {
+        const res = await axios.post('/api/shopapi/schema', params);
+        if (res.code !== '000') throw new Error(res.message);
+        data = res.data;
+    }
+    const filterOptions = FILTERS.reduce((ret, filter) => {
+        const records = data[filter.name];
         return {
-            shops: data.shops ? data.shops.map(shop => ({
-                ...shop,
-                value: shop.shopID,
-                label: shop.shopName,
-                orgTagIDs: `${shop.orgTagMarket},${shop.orgTagBusiness},${shop.orgTagSteer}`,
-            })) : undefined,
-            ...filterOptions,
+            ...ret,
+            [filter.name]: records ? presetFilterOptions(records, filter) : undefined,
         };
-    });
+    }, {});
+    return {
+        shops: data.shops ? data.shops.map(shop => ({
+            ...shop,
+            value: shop.shopID,
+            label: shop.shopName,
+            orgTagIDs: `${shop.orgTagMarket},${shop.orgTagBusiness},${shop.orgTagSteer}`,
+        })) : undefined,
+        ...filterOptions,
+    };
 }
 
 /**

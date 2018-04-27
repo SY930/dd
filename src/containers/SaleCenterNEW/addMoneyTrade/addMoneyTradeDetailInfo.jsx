@@ -255,7 +255,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
                 required={true}
-                validateStatus={this.state.dishsSelectionFlag ? 'sucess' : 'error'}
+                validateStatus={this.state.dishsSelectionFlag ? 'success' : 'error'}
                 help={this.state.dishsSelectionFlag ? null : '请选择换购菜品'}
             >
                 <EditBoxForDishes onChange={(value) => {

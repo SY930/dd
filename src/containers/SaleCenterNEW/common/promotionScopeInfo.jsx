@@ -28,7 +28,8 @@ const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
 
 import styles from '../ActivityPage.less';
-
+import {isEqual, uniq } from 'lodash';
+import ShopSelector from '../../../components/common/ShopSelector';
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
 }
@@ -36,7 +37,7 @@ if (process.env.__CLIENT__ === true) {
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 
 
-import { fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import EditBoxForShops from './EditBoxForShops';
 
 const Immutable = require('immutable');
@@ -66,7 +67,7 @@ class PromotionScopeInfo extends React.Component {
     constructor(props) {
         super(props);
 
-
+        const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
         this.state = {
             cities: [],
             areas: [],
@@ -75,7 +76,8 @@ class PromotionScopeInfo extends React.Component {
             showShops: [],
             // treeData
             cityAreasShops: [],
-
+            shopSchema, // 后台请求来的值
+            dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
             // redux
             channel: '0',
             auto: '0',
@@ -91,6 +93,8 @@ class PromotionScopeInfo extends React.Component {
             evidence: '0',
             shopStatus: 'success',
             usageMode: 1,
+            filterShops: [],
+            allShopsSet: false
         };
 
         // bind this.
@@ -150,17 +154,27 @@ class PromotionScopeInfo extends React.Component {
             cancel: undefined,
         });
 
-        const { promotionScopeInfo, fetchPromotionScopeInfo } = this.props;
+        const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
+        if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
+            this.setState({filterShops: promotionBasicInfo.get('$filterShops').toJS().shopList})
+        }
+        this.setState({allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet});
 
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
             fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID });
         }
+        if (this.props.user.toJS().shopID <= 0) {
+            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID});
+        }
+
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
             const _stateFromRedux = this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
             const voucherVerify = _stateFromRedux.voucherVerify;
             const voucherVerifyChannel = _stateFromRedux.voucherVerifyChannel;
             const points = _stateFromRedux.points;
             const evidence = _stateFromRedux.evidence;
+
+
             this.setState({
                 voucherVerify,
                 voucherVerifyChannel,
@@ -171,49 +185,44 @@ class PromotionScopeInfo extends React.Component {
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
-                selections: _stateFromRedux.shopsInfo.map((item) => {
-                    return this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS().find((shop) => {
-                        shop.itemName = shop.shopName;
-                        shop.itemID = shop.shopID;
-                        return shop.shopID === item
-                    })
-                }),
+                selections: _stateFromRedux.shopsInfo.map((item) => item.shopID || item),
                 initialized: true,
                 currentSelections: _stateFromRedux.shopsInfo,
                 $brands: Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
-                initialized: true,
                 usageMode: _stateFromRedux.usageMode || 1,
             });
         }
     }
 
     componentWillReceiveProps(nextProps) {
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
+        if (!isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+                dynamicShopSchema: nextShopSchema, // 随品牌的添加删除而变化
+            });
+        }
+        if (nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList) {
+            this.setState({filterShops: nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList})
+        } else {
+            this.setState({filterShops: []})
+        }
+        this.setState({allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet});
+
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
             JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
             const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']).toJS() :
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']);
-            const $shops = Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops'])) ?
-                nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS() :
-                nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']);
             this.setState({
                 brands: _data.brands,
                 channel: _data.channel,
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
-                selections: _data.shopsInfo.map((item) => {
-                    if (typeof item === 'string') {
-                        return $shops.find((shop) => {
-                            shop.itemName = shop.shopName;
-                            shop.itemID = shop.shopID;
-                            return shop.shopID === item
-                        })
-                    }
-                    return item
-                }),
+                selections: _data.shopsInfo.map(item => item.shopID || item),
                 currentSelections: _data.shopsInfo,
                 $brands: Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
@@ -226,7 +235,7 @@ class PromotionScopeInfo extends React.Component {
 
     // save brand data to store
     handleBrandChange(value) {
-        this.setState({ brands: value });
+        this.setState({ brands: value, selections: []});
     }
     onPointsChange(val) {
         this.setState({ points: val })
@@ -240,6 +249,39 @@ class PromotionScopeInfo extends React.Component {
 
     handleVoucherVerifyChannelChange(val) {
         this.setState({ voucherVerifyChannel: val });
+    }
+
+    getFilteredShopSchema() {
+        const availableBrands = this.state.brands;
+        const occupiedShops = this.state.filterShops;
+        let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+        if (dynamicShopSchema.shops.length === 0) {
+            return dynamicShopSchema;
+        }
+        if (availableBrands instanceof Array && availableBrands.length > 0) {
+            dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
+        }
+        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
+        const shops = dynamicShopSchema.shops;
+        const availableCities = uniq(shops.map(shop => shop.cityID));
+        const availableBM = uniq(shops.map(shop => shop.businessModel));
+        const availableCategories = uniq(shops.map(shop => shop.shopCategoryID)
+            .reduce((accumulateArr, currentCategoryIDString) => {
+                accumulateArr.push(...(currentCategoryIDString || '').split(','));
+                return accumulateArr;
+            }, []));
+        dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel)) : [];
+        dynamicShopSchema.citys = dynamicShopSchema.citys && dynamicShopSchema.citys instanceof Array ?  dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID)) : [];
+        dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories && dynamicShopSchema.shopCategories instanceof Array ? dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID)) : [];
+        if (availableBrands instanceof Array && availableBrands.length > 0) {
+            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
+            // console.log('filteredBrands:', dynamicShopSchema.brands);
+        } else {// all brands
+            const allBrands = uniq(shops.map(shop => shop.brandID));
+            dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));
+        }
+        // console.log(dynamicShopSchema);
+        return dynamicShopSchema;
     }
 
     renderBrandFormItem() {
@@ -392,14 +434,12 @@ class PromotionScopeInfo extends React.Component {
                 validateStatus={promotionType != 'RECOMMEND_FOOD' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
                 help={promotionType != 'RECOMMEND_FOOD' ? null : this.state.shopStatus ? null : '必须选择店铺'}
             >
-                <EditBoxForShops
-                    filterBrands={this.state.brands}
+                <ShopSelector
+                    value={this.state.selections}
+                    schemaData={this.getFilteredShopSchema()}
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    handleAllShopSet={(allShopSet) => {
-                        this.setState({ allShopSet })
-                    }}
                 />
                 {
                     this.state.allShopSet ?
@@ -486,7 +526,7 @@ class PromotionScopeInfo extends React.Component {
         this.setState({
             selections: val,
             shopStatus: val.length > 0,
-        })
+        });
     }
     renderUsageMode() {
         let detail = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master']);
@@ -536,6 +576,7 @@ const mapStateToProps = (state) => {
     return {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user,
+        shopSchema: state.sale_shopSchema_New,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         myActivities: state.sale_myActivities_NEW,
     };
@@ -553,6 +594,9 @@ const mapDispatchToProps = (dispatch) => {
 
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
+        },
+        getPromotionShopSchema: (opts) => {
+            dispatch(getPromotionShopSchema(opts));
         },
     };
 };

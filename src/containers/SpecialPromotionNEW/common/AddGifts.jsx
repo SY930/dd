@@ -13,6 +13,7 @@ import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCent
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
+    SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 
 
@@ -305,7 +306,7 @@ class AddGifts extends React.Component {
                             <span className={styles.formLabel}>生效方式:</span>
                             <RadioGroup
                                 className={styles.radioMargin}
-                                value={info.effectType}
+                                value={info.effectType == '2' ? '2' : '1'}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
                             >
                                 {
@@ -393,10 +394,11 @@ class AddGifts extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        if (info.effectType == '1') {
+        if (info.effectType != '2') {
             return (
                 <div>
-                    <FormItem
+                    {/* 若回退版本，把下面注释放开，把424-471行注释即可，其它的不用改 */}
+                    {/* <FormItem
                         label="相对有效期"
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                         labelCol={{ span: 8 }}
@@ -413,6 +415,54 @@ class AddGifts extends React.Component {
                         >
                             {
                                 SALE_CENTER_GIFT_EFFICT_TIME
+                                    .map((item, index) => {
+                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                    })
+                            }
+                        </Select>
+                    </FormItem> */}
+                    <FormItem
+                        className={[styles.FormItemStyle].join(' ')}
+                    >
+                        <span className={styles.formLabel}>相对有效期:</span>
+                        <RadioGroup
+                            className={styles.radioMargin}
+                            value={info.effectType == '3' ? '1' : '0'}
+                            onChange={e => {
+                                const infos = this.state.infos;
+                                infos[index].effectType = e.target.value == '1' ? '3' : '1';
+                                infos[index].giftEffectiveTime.value = e.target.value;
+                                this.setState({
+                                    infos,
+                                }, () => {
+                                    this.props.onChange && this.props.onChange(this.state.infos);
+                                })
+                            }}
+                        >
+                            {
+                                [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
+                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
+                                })
+                            }
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        label="何时生效"
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                    >
+                        <Select
+                            size="default"
+                            value={
+                                typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
+                                    '0' :
+                                    `${this.state.infos[index].giftEffectiveTime.value}`
+                            }
+                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                        >
+                            {
+                                (info.effectType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
                                     .map((item, index) => {
                                         return (<Option value={item.value} key={index}>{item.label}</Option>);
                                     })

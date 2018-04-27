@@ -138,29 +138,225 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
     value: '0',
 },
 {
+    label: '1小时生效',
+    value: '1',
+},
+{
+    label: '2小时生效',
+    value: '2',
+},
+{
     label: '3小时生效',
     value: '3',
+},
+{
+    label: '4小时生效',
+    value: '4',
+},
+{
+    label: '5小时生效',
+    value: '5',
 },
 {
     label: '6小时生效',
     value: '6',
 },
 {
+    label: '7小时生效',
+    value: '7',
+},
+{
+    label: '8小时生效',
+    value: '8',
+},
+{
     label: '9小时生效',
     value: '9',
+},
+{
+    label: '10小时生效',
+    value: '10',
+},
+{
+    label: '11小时生效',
+    value: '11',
 },
 {
     label: '12小时生效',
     value: '12',
 },
 {
+    label: '13小时生效',
+    value: '13',
+},
+{
+    label: '14小时生效',
+    value: '14',
+},
+{
+    label: '15小时生效',
+    value: '15',
+},
+{
+    label: '16小时生效',
+    value: '16',
+},
+{
+    label: '17小时生效',
+    value: '17',
+},
+{
     label: '18小时生效',
     value: '18',
+},
+{
+    label: '19小时生效',
+    value: '19',
+},
+{
+    label: '20小时生效',
+    value: '20',
+},
+{
+    label: '21小时生效',
+    value: '21',
+},
+{
+    label: '22小时生效',
+    value: '22',
+},
+{
+    label: '23小时生效',
+    value: '23',
 },
 {
     label: '24小时生效',
     value: '24',
 },
+]);
+
+
+export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
+    {
+        label: '1天生效',
+        value: '1',
+    },
+    {
+        label: '2天生效',
+        value: '2',
+    },
+    {
+        label: '3天生效',
+        value: '3',
+    },
+    {
+        label: '4天生效',
+        value: '4',
+    },
+    {
+        label: '5天生效',
+        value: '5',
+    },
+    {
+        label: '6天生效',
+        value: '6',
+    },
+    {
+        label: '7天生效',
+        value: '7',
+    },
+    {
+        label: '8天生效',
+        value: '8',
+    },
+    {
+        label: '9天生效',
+        value: '9',
+    },
+    {
+        label: '10天生效',
+        value: '10',
+    },
+    {
+        label: '11天生效',
+        value: '11',
+    },
+    {
+        label: '12天生效',
+        value: '12',
+    },
+    {
+        label: '13天生效',
+        value: '13',
+    },
+    {
+        label: '14天生效',
+        value: '14',
+    },
+    {
+        label: '15天生效',
+        value: '15',
+    },
+    {
+        label: '16天生效',
+        value: '16',
+    },
+    {
+        label: '17天生效',
+        value: '17',
+    },
+    {
+        label: '18天生效',
+        value: '18',
+    },
+    {
+        label: '19天生效',
+        value: '19',
+    },
+    {
+        label: '20天生效',
+        value: '20',
+    },
+    {
+        label: '21天生效',
+        value: '21',
+    },
+    {
+        label: '22天生效',
+        value: '22',
+    },
+    {
+        label: '23天生效',
+        value: '23',
+    },
+    {
+        label: '24天生效',
+        value: '24',
+    },
+    {
+        label: '25天生效',
+        value: '25',
+    },
+    {
+        label: '26天生效',
+        value: '26',
+    },
+    {
+        label: '27天生效',
+        value: '27',
+    },
+    {
+        label: '28天生效',
+        value: '28',
+    },
+    {
+        label: '29天生效',
+        value: '29',
+    },
+    {
+        label: '30天生效',
+        value: '30',
+    },
 ]);
 // process.env.NODE_ENV !== 'production'
 
@@ -654,7 +850,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
         orderTypeLst: _source.orderType.join(','),
         shopIDLst: _source.shopsInfo
             .map((item) => {
-                return item.shopID;
+                return item.shopID || item; //object[] or string[]
             })
             .join(','),
         usageMode: _source.usageMode || 1,
@@ -705,6 +901,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
             cardScopeList: source.cardScopeList || [],
+            needSyncToAliPay: source.master.needSyncToAliPay || 0,
         };
     }
     // compose scopeList
@@ -816,6 +1013,14 @@ export const TRIPLE_STATE = Object.freeze({
     OPTION1: '1',
     OPTION2: '2',
 });
+
+export const BUSINESS_MODEL = Object.freeze({
+    '1': '直营',
+    '2': '加盟',
+    '3': '托管',
+    '4': '合作',
+});
+
 
 // 是否发信息
 export const SEND_MSG = Object.freeze([{

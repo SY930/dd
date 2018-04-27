@@ -37,8 +37,20 @@ const $initialState = Immutable.fromJS({
             role: [],
             shops: [],
             constructedData: [],
-        },
+        }
     },
+});
+
+const initialShopSchema = Immutable.fromJS({
+    shopSchema: {
+        areas: [],
+        brands: [],
+        citys: [],
+        shopCategories: [],
+        tags: [],
+        businessModels: [],
+        shops: [],
+    }
 });
 
 
@@ -50,6 +62,13 @@ import {
     SALE_CENTER_SET_ACTIVITY_SCOPE_INFO,
     SALE_CENTER_RESET_SCOPE_INFO,
 } from '../../actions/saleCenterNEW/promotionScopeInfo.action.js';
+import {BUSINESS_MODEL} from "../../actions/saleCenterNEW/types";
+import {
+    SALE_CENTER_GET_SHOP_SCHEMA,
+    SALE_CENTER_GET_SHOP_SCHEMA_FAILED,
+    SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS,
+    SALE_CENTER_RESET_SHOP_SCHEMA
+} from "../../actions/saleCenterNEW/promotionScopeInfo.action";
 
 function constructTreeDataContainsCityAndShop(data) {
     const { cities, shops } = data;
@@ -118,6 +137,31 @@ function getDataStructureContainCityAndArea(data) {
         }
     });
     return _compositeData;
+}
+
+export const shopSchema_New = ($$state = initialShopSchema, action) => {
+    switch (action.type) {
+        case SALE_CENTER_GET_SHOP_SCHEMA:               return $$state;
+        case SALE_CENTER_GET_SHOP_SCHEMA_SUCCESS:
+            const data = action.payload;
+            constructBusinessArray(data);
+            return $$state.setIn(['shopSchema'], Immutable.fromJS(data));
+        case SALE_CENTER_GET_SHOP_SCHEMA_FAILED:        return $$state;
+        case SALE_CENTER_RESET_SHOP_SCHEMA:        return initialShopSchema;
+        default:                                        return $$state;
+    }
+}
+
+function constructBusinessArray (data) {
+    data.shops.forEach(item => {
+        item.businessType = BUSINESS_MODEL[item.businessModel];
+    });
+    data.businessModels = [
+        {businessModel: '1', businessType: '直营 '},
+        {businessModel: '2', businessType: '加盟 '},
+        {businessModel: '3', businessType: '托管'},
+        {businessModel: '4', businessType: '合作'},
+    ]
 }
 
 export const promotionScopeInfo_NEW = ($$state = $initialState, action) => {

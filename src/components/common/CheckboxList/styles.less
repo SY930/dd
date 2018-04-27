@@ -11,7 +11,7 @@
         height: 35px;
         line-height: 35px;
         border-bottom: 1px solid @border-color;
-        & > :global(.anticon) {
+        & > [class*='anticon'] {
             float: right;
             cursor: pointer;
             color: @lightGrey;
@@ -21,41 +21,42 @@
                 color: @btn1-hover-background;
             }
         }
-        & > :global(.ant-input-preSuffix-wrapper) {
+        & > [class*='ant-input'] {
             position: absolute;
             left: 0;
             right: 0;
             width: initial;
             padding: 0;
             border: none;
-            :global {
-                .ant-input {
-                    padding: 4px 10px 4px 24px;
-                    background-color: transparent;
-                    border: none;
-                    &:focus, &:hover {
-                        border: none !important;
-                        box-shadow: none;
-                    }
-                }
-                .ant-input-suffix {
-                    left: 7px;
-                    right: initial;
-                    color: @lightGrey;
+            &  input {
+                padding: 4px 10px 4px 24px;
+                background-color: transparent;
+                border: none;
+                &:focus, &:hover {
+                    border: none !important;
+                    box-shadow: none;
                 }
             }
+
+            & [class$='ant-input-suffix'] {
+                left: 7px;
+                right: initial;
+                color: @lightGrey;
+            }
         }
-        &.showCheckAll > :global(.ant-input-preSuffix-wrapper) {
+
+
+        &.showCheckAll > [class*='ant-input'] {
             left: 60%;
         }
-        &.showCollapse > :global(.ant-input-preSuffix-wrapper) {
+        &.showCollapse > [class*='ant-input'] {
             right: 20px;
         }
     }
     .content {
         height: 193px;
         overflow: auto;
-        .item {
+        [class=item] {
             padding: 4px 8px;
             & > label {
                 margin-bottom: 0;
@@ -66,7 +67,7 @@
         width: 30px;
         .header {
             margin: 0 5px;
-            & > :global(.anticon) {
+            & > .anticon {
                 margin-right: 2px;
             }
         }
@@ -91,6 +92,7 @@
         }
     }
     &.table {
+        margin-bottom: 0;
         .header {
             margin: 0;
         }
