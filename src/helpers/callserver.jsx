@@ -380,7 +380,7 @@ const apiCfg = [
     ['queryTrdTemplate', '/api/promotion/queryTrdTemplate', { type: 'JSON' }],
     ['queryWechatMpInfo', '/api/promotion/queryWechatMpInfo', { type: 'JSON' }],
     ['queryUnbindCouponPromotion', '/api/promotion/queryUnbindCouponPromotion', { type: 'JSON' }],
-    
+
 
 
     /* SupplyChain ben 加工单 ProcessingSheet */

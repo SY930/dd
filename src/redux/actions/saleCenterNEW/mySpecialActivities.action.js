@@ -70,6 +70,7 @@ export const fetchPromotionListTimeout = () => ({ type: SPECIAL_PROMOTION_FETCH_
 
 export const fetchSpecialPromotionList = (opts) => {
     return dispatch => {
+        opts.start && opts.start();
         dispatch({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
         fetch('/api/specialPromotion/queryEvents_NEW', {
             method: 'POST',
@@ -81,6 +82,7 @@ export const fetchSpecialPromotionList = (opts) => {
             },
         })
             .then((response) => {
+                opts.end && opts.end();
                 if (response.status >= 200 && response.status < 300) {
                     if (response.headers.get('content-type').indexOf('application/json') >= 0) {
                         return response.json();
@@ -90,13 +92,15 @@ export const fetchSpecialPromotionList = (opts) => {
                 return Promise.reject(new Error(response.statusText));
             })
             .catch((error) => {
+                opts.end && opts.end();
                 throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
             })
             .then((response) => {
                 if (response.code === '000') {
                     return dispatch(fetchPromotionListFullfilled(response));
                 }
-                action.payload.fail && action.payload.fail(response.message);
+                opts.fail && opts.fail(response.message);
+                // action.payload.fail && action.payload.fail(response.message);
                 return dispatch(fetchPromotionListFail(response.code));
             })
             .catch((err) => {

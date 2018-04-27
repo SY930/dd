@@ -17,9 +17,10 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import _ from 'lodash'
+import {throttle} from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
+import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
 
 import {
@@ -72,6 +73,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
+import {axiosData} from "../../../helpers/util";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -164,6 +166,9 @@ const mapDispatchToProps = (dispatch) => {
 class MyActivities extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = null;
+        this.setTableRef = el => this.tableRef = el;
+        this.changeSortOrder = throttle(this.changeSortOrder, 500, {leading: true});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -485,6 +490,17 @@ class MyActivities extends React.Component {
                 promotionShop: value,
             });
         }
+    }
+
+    changeSortOrder(record, direction) {
+        const params = {promotionID: record.promotionIDStr, rankingType: direction};
+        axiosData('/promotionV1/updatePromotionRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
     }
 
     // 切换每页显示条数
@@ -1023,6 +1039,25 @@ class MyActivities extends React.Component {
                 },
             },
             {
+                title: '排序',
+                dataIndex: 'sortOrder',
+                key: 'sortOrder',
+                width: 120,
+                // fixed:'left',
+                render: (text, record, index) => {
+                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
+                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+                    return (
+                        <span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'BOTTOM')}/></span>
+                        </span>
+                    )
+                },
+            },
+            {
                 title: '活动类型',
                 dataIndex: 'promotionType',
                 key: 'promotionType',
@@ -1112,7 +1147,7 @@ class MyActivities extends React.Component {
                 dataIndex: 'isActive',
                 className: 'TableTxtCenter',
                 key: 'isActive',
-                // width: 120,
+                width: 72,
                 render: (isActive) => {
                     return (isActive === 'ACTIVE' ? '启用' : '禁用');
                 },
@@ -1122,6 +1157,7 @@ class MyActivities extends React.Component {
         return (
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
+                    ref={this.setTableRef}
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
@@ -1144,6 +1180,9 @@ class MyActivities extends React.Component {
                                 pageNo: page,
                                 usageMode: -1,
                                 ...this.getParams(),
+                                fail: () => message.error('出错了，请稍后再试'),
+                                start: () => this.setState({loading: true}),
+                                end: () => this.setState({loading: false}),
                             };
                             opt.cb = this.showNothing;
                             this.props.query(opt);

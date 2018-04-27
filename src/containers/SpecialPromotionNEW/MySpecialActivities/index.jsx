@@ -7,6 +7,7 @@ import {
     Button, Modal, Row, Col, message,
     Spin, Icon,
 } from 'antd';
+import {throttle} from 'lodash';
 import { jumpPage } from '@hualala/platform-base'
 import moment from 'moment';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -50,6 +51,7 @@ import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redu
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
+import {axiosData} from "../../../helpers/util";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -122,6 +124,9 @@ const mapDispatchToProps = (dispatch) => {
 class MySpecialActivities extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = null;
+        this.setTableRef = el => this.tableRef = el;
+        this.changeSortOrder = throttle(this.changeSortOrder, 400, {leading: true});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -537,6 +542,17 @@ class MySpecialActivities extends React.Component {
             pageSizes: pageSize,
         })
     };
+    changeSortOrder(record, direction) {
+        // console.log(record);
+        const params = {itemID: record.itemID, rankingType: direction};
+        axiosData('/specialPromotion/updateEventRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
+    }
 
     renderTables() {
         const SmsSendStatus = [
@@ -654,13 +670,15 @@ class MySpecialActivities extends React.Component {
                 key: 'sortOrder',
                 width: 120,
                 // fixed:'left',
-                render: (text, record) => {
+                render: (text, record, index) => {
+                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
+                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className="sort" onClick={()=>console.log('置顶', 'index', record.index)}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className="sort" onClick={()=>console.log('上移', 'index', record.index)}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className="sort" onClick={()=>console.log('下移', 'index', record.index)}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className="sort" onClick={()=>console.log('置底', 'index', record.index)}/></span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'BOTTOM')}/></span>
                         </span>
                     )
                 },
@@ -730,11 +748,11 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '创建时间/修改时间123',
+                title: '创建时间/修改时间',
                 className: 'TableTxtCenter',
                 dataIndex: 'operateTime',
                 key: 'operateTime',
-                width: 360,
+                width: 300,
                 render: (text, record, index) => {
                     if (record.actionStamp === '' && record.createStamp === '') {
                         return '--';
@@ -768,6 +786,7 @@ class MySpecialActivities extends React.Component {
         return (
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
+                    ref={this.setTableRef}
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
@@ -817,7 +836,9 @@ class MySpecialActivities extends React.Component {
                                     groupID: this.props.user.accountInfo.groupID,
                                     ...opt,
                                 },
-                                fail: (msg) => { message.success(msg) },
+                                start: () => this.setState({loading: true}),
+                                end: () => this.setState({loading: false}),
+                                fail: (msg) => message.error(msg),
                             });
                         },
                     }}
