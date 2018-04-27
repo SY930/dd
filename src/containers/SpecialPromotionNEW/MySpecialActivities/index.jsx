@@ -939,11 +939,12 @@ class MySpecialActivities extends React.Component {
 
     // Row Actions: 查看
     checkDetailInfo() {
+        const _record = arguments[1];
         this.setState({
             visible: true,
-            currentItemID: arguments[1].itemID ? arguments[1].itemID : this.state.currentItemID,
+            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
         });
-        const _record = arguments[1];
+
         const user = this.props.user;
 
         const failFn = () => {
@@ -952,7 +953,7 @@ class MySpecialActivities extends React.Component {
 
         this.props.fetchSpecialPromotionDetail({
             data: {
-                itemID: _record.itemID || this.state.currentItemID,
+                itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
             },
             fail: failFn,

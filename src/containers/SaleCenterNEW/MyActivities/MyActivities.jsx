@@ -495,18 +495,22 @@ class MyActivities extends React.Component {
     };
 
     handleUpdateOpe() {
-        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        const _record = arguments[1];
+        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
-        this.setState({
-            updateModalVisible: true,
-            currentPromotionID: arguments[1].promotionIDStr,
-        });
+        if (_record ) {
+            this.setState({
+                updateModalVisible: true,
+                currentPromotionID: _record.promotionIDStr,
+            });
+        }
+
         // Set promotion information to the PromotionBasic and promotionScope redux
-        const _record = arguments[1];
+
         const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record.promotionType);
+            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.promotionType);
             const _serverToRedux = false;
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
@@ -539,7 +543,7 @@ class MyActivities extends React.Component {
         };
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr || this.state.currentPromotionID,
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
             },
             success: successFn,
@@ -560,7 +564,7 @@ class MyActivities extends React.Component {
 
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
             },
             fail: failFn,
@@ -575,7 +579,6 @@ class MyActivities extends React.Component {
 
     renderContentOfThisModal() {
         const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const handleUpdateOpe = this.handleUpdateOpe;
         const _state = this.state;
         if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
             return (
@@ -587,7 +590,7 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={handleUpdateOpe}>重试</a>
+                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>重试</a>
                 </div>
             );
         }

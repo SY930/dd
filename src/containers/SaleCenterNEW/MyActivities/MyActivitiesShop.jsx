@@ -482,18 +482,20 @@ class MyActivitiesShop extends React.Component {
     };
 
     handleUpdateOpe() {
-        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        const _record = arguments[1];
+        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
-        this.setState({
-            updateModalVisible: true,
-            currentPromotionID: arguments[1].promotionIDStr,
-        });
+        if (_record ) {
+            this.setState({
+                updateModalVisible: true,
+                currentPromotionID: _record.promotionIDStr,
+            });
+        }
         // Set promotion information to the PromotionBasic and promotionScope redux
-        const _record = arguments[1];
         const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record.promotionType);
+            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.promotionType);
             const _serverToRedux = false;
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
@@ -526,7 +528,7 @@ class MyActivitiesShop extends React.Component {
         };
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr || this.state.currentPromotionID,
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID,
             },
@@ -548,7 +550,7 @@ class MyActivitiesShop extends React.Component {
 
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID,
             },
