@@ -835,18 +835,20 @@ class MySpecialActivities extends React.Component {
 
     // 编辑
     handleUpdateOpe() {
-        this.setState({
-            updateModalVisible: true,
-            currentItemID: arguments[1].itemID ? arguments[1].itemID : this.state.currentItemID,
-        });
+        let _record = arguments[1];
+        if (_record) {
+            this.setState({
+                updateModalVisible: true,
+                currentItemID: _record.itemID ? _record.itemID : this.state.currentItemID,
+            });
+        }
         // Set promotion information to the PromotionBasic and promotionScope redux
-        const _record = arguments[1];
 
         const user = this.props.user;
 
 
         const successFn = (response) => {
-            const _promotionIdx = getSpecialPromotionIdx(`${_record.eventWay}`);
+            const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.eventWay}`);
             const _serverToRedux = false;
             if (response === undefined || response.data === undefined) {
                 message.error('没有查询到相应数据');
@@ -865,7 +867,7 @@ class MySpecialActivities extends React.Component {
         };
         this.props.fetchSpecialDetail({
             data: {
-                itemID: _record.itemID || this.state.currentItemID, // 点击重试时record为undefiend
+                itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
                 groupID: user.accountInfo.groupID,
             },
             success: successFn,
@@ -906,7 +908,6 @@ class MySpecialActivities extends React.Component {
 
     renderContentOfThisModal() {
         const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
-        const handleUpdateOpe = this.handleUpdateOpe;
         const _state = this.state;
         if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
             return (
@@ -918,7 +919,7 @@ class MySpecialActivities extends React.Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={handleUpdateOpe}>重试</a>
+                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>重试</a>
                 </div>
             );
         }
