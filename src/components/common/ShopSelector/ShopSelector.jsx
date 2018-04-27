@@ -9,13 +9,17 @@ import ShopSelectModal from './ShopSelectModal';
 import { FILTERS } from './config';
 import { loadShopSchema } from './utils';
 
-import styles from './assets/ShopSelector.less';
+import style from './assets/ShopSelector.less';
 
 class ShopSelector extends Component {
-    state = {
-        showModal: false,
-        options: null,
-        filters: null,
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false,
+            options: props.schemaData && props.schemaData.options,
+            filters: props.schemaData && props.schemaData.filters,
+        }
     }
 
     componentDidMount() {
@@ -34,7 +38,10 @@ class ShopSelector extends Component {
     }
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
-        if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
+        if (!cache) {
+            return Promise.resolve();
+        }
+        // if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
                 this.setState({
@@ -71,7 +78,6 @@ class ShopSelector extends Component {
     render() {
         const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
         const { showModal } = this.state;
-
         const options = this.props.options || this.state.options || [];
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {
@@ -81,7 +87,7 @@ class ShopSelector extends Component {
         }, []);
 
         return (
-            <div className={styles.wrapper}>
+            <div className={style.wrapper}>
                 {size === 'default' &&
                     <EditableTags
                         title="店铺"
@@ -93,9 +99,10 @@ class ShopSelector extends Component {
                 }
                 {size === 'small' &&
                     <div
-                        className={classnames(styles.smallBox, {
-                            [styles.empty]: items.length === 0,
+                        className={classnames(style.smallBox, {
+                             [style.empty]: items.length === 0,
                         })}
+                        role="presentation"
                         onClick={this.handleAdd}
                     >
                         {items.length === 0 && placeholder}
@@ -106,7 +113,7 @@ class ShopSelector extends Component {
                 }
                 {showModal &&
                     <ShopSelectModal
-                        {...otherProps}
+                        // {...otherProps}
                         visible={true}
                         options={options}
                         filters={filters}
@@ -132,6 +139,8 @@ ShopSelector.defaultProps = {
 ShopSelector.propTypes = {
     /** 当前选择的项 */
     value: PropTypes.arrayOf(PropTypes.string),
+    /**传入的店铺信息*/
+    schemaData: PropTypes.object,
     /** 选项改变时的回调 */
     onChange: PropTypes.func,
     /** 是否默认全选 */

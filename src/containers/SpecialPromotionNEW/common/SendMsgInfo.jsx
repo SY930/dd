@@ -141,10 +141,10 @@ class SendMsgInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('message', {
-                            rules: [{
-                                required: true,
-                                message: '请输入短信模板',
-                            }],
+                            rules: [
+                                { required: true, message: '请输入短信模板' },
+                                { max: 500, message: '最多500个字符' },
+                            ],
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
                         })(
@@ -164,7 +164,7 @@ class SendMsgInfo extends React.Component {
                                     {'请不要输入"【】" "[]"符号'}
                                 </p>
                                 <p className={styles.blockP}>
-                                    预计字数：38字，67字为一条，最多500字（含标点空格）
+                                    预计字数：{(this.state.message || '').length}字，67字为一条，最多500字（含标点空格）
                                 </p>
                                 <p className={styles.blockP}>
                                     短信费用0.08元/条
@@ -183,7 +183,7 @@ class SendMsgInfo extends React.Component {
         }
         return (
             <div className={styles.noMsg}>
-                    您没有开启发送短信功能，可以直接跳过该步骤
+                您没有开启发送短信功能，可以直接跳过该步骤
             </div>
         )
     }

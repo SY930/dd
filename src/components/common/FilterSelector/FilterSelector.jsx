@@ -8,7 +8,7 @@ import CheckboxList from '../CheckboxList';
 import SelectedList from './SelectedList';
 import { filterOptions } from './_utils';
 
-import styles from './assets/FilterSelector.less';
+import style from './assets/FilterSelector.less';
 
 class FilterSelector extends React.Component {
     state = {
@@ -93,21 +93,23 @@ class FilterSelector extends React.Component {
         );
 
         return (
-            <div className={classnames(styles.wrapper, className)}>
-                <div className={styles.filterKeyList}>
+            <div className={classnames(style.hllFilterSelector, className)}>
+                <div className={style.filterKeyList}>
                     {oriFilters.map(({ key, label }) => (
                         <span
                             key={key}
-                            className={classnames(styles.filterKey, {
-                                [styles.active]: key === filterKey,
+                            className={classnames(style.filterKey, {
+                                [style.active]: key === filterKey,
                             })}
+                            role="button"
+                            tabIndex="0"
                             onClick={() => this.handleFilterKeyChange(key)}
                         >
                             {label}
                         </span>
                     ))}
                 </div>
-                <p className={styles.selectedFilters}>
+                <p className={style.selectedFilters}>
                     {selectedFilters.length > 0 ? (
                         <span>
                             已选条件：
@@ -115,14 +117,14 @@ class FilterSelector extends React.Component {
                             <Icon
                                 type="close-circle"
                                 title="清空所有条件"
-                                className={styles.clearBtn}
+                                className={style.clearBtn}
                                 onClick={this.handleFilterClear}
                             />
                         </span>
                     ) : '已选条件：尚未选择过滤条件'}
                 </p>
                 <Row type="flex">
-                    <div className={styles.filterList}>
+                    <div className={style.filterList}>
                         <CheckboxList
                             width={200}
                             showCheckAll={false}
@@ -132,7 +134,7 @@ class FilterSelector extends React.Component {
                             onChange={this.handleFilterChange}
                         />
                     </div>
-                    <div className={styles.resultList}>
+                    <div className={style.resultList}>
                         <CheckboxList
                             display={resultDisplay}
                             showCollapse={false}
@@ -145,7 +147,7 @@ class FilterSelector extends React.Component {
                 </Row>
                 <SelectedList
                     title={title}
-                    className={styles.selectedList}
+                    className={style.selectedList}
                     display={resultDisplay}
                     items={selectedItems}
                     tableColumns={tableColumns}

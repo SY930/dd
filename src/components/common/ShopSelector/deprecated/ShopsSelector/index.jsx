@@ -11,8 +11,8 @@
 
 import React from 'react';
 import styles from './style.less';
-import { Row, Col, Tree } from 'antd';
-import { connect } from 'react-redux';
+import {Row, Col, Tree} from 'antd';
+import {connect} from 'react-redux';
 import HualalaSearchInput from '../HualalaSearchInput';
 import HualalaGroupSelect from '../HualalaGroupSelect';
 import HualalaSelected from '../HualalaSelected';
@@ -21,31 +21,32 @@ import ShopSelectorTabs from './ShopSelectorTabs';
 
 import {
     getSpecifiedUrlConfig,
-    generateXWWWFormUrlencodedParams,
+    generateXWWWFormUrlencodedParams
 } from '../../../helpers/apiConfig';
 
 const TreeNode = Tree.TreeNode;
 
-import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import {fetchPromotionScopeInfo} from '../../../redux/actions/saleCenter/promotionScopeInfo.action';
 
 
 class ShopsSelector extends React.Component {
+
     constructor(props) {
         super(props);
 
         this.state = {
-            shops: [], // 所有店铺
+            shops: [],                      // 所有店铺
             cities: [],
             brands: [],
-            selectorTabInfo: undefined, // 选择的Tabs
+            selectorTabInfo: undefined,     // 选择的Tabs
             areas: [],
-            groups: [], // 门店组
+            groups: [],                     // 门店组
 
 
             // TODO: 尚未对分页数据进行处理
             orgsInfo: {
                 initialized: false,
-                data: {},
+                data: {}
             },
 
 
@@ -65,27 +66,28 @@ class ShopsSelector extends React.Component {
             currentSelections: [],
 
 
+
         }
     }
 
-    componentDidMount() {
-        const $promotionScopeInfo = this.props.promotionScopeInfo;
-        const $user = this.props.user;
+    componentDidMount(){
+        let $promotionScopeInfo = this.props.promotionScopeInfo;
+        let $user = this.props.user;
 
         // Already initialized
-        if ($promotionScopeInfo.getIn(['refs', 'initialized'])) {
+        if($promotionScopeInfo.getIn(['refs', 'initialized'])) {
             this.setState({
                 shops: $promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS(),
                 cities: $promotionScopeInfo.getIn(['refs', 'data', 'cities']).toJS(),
                 brands: $promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS(),
                 groups: $promotionScopeInfo.getIn(['refs', 'data', 'shopCategorys']).toJS(),
-                filteredShops: $promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS(),
+                filteredShops: $promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS()
             })
         }
         // Post the request if the refs data was not prepared
         else {
             this.props.fetchSchema({
-                _groupID: $user.getIn(['accountInfo', 'groupID']),
+                _groupID: $user.getIn(['accountInfo', 'groupID'])
             })
         }
 
@@ -93,7 +95,7 @@ class ShopsSelector extends React.Component {
         // fetch orgs info
         if (!this.state.orgsInfo.initialized) {
             this.fetchOrgInfo({
-                groupID: $user.getIn(['accountInfo', 'groupID']), // groupID
+                groupID: $user.getIn(['accountInfo', 'groupID']),       // groupID
                 orgTypeID: 1,
                 returnParentOrg: 1,
             })
@@ -105,60 +107,69 @@ class ShopsSelector extends React.Component {
      * opts.returnParentOrg indicate that the specified org parent will also be return
      * */
     fetchOrgInfo = (opts) => {
-        const self = this;
-        const params = generateXWWWFormUrlencodedParams(opts);
+        let self = this;
+        let params = generateXWWWFormUrlencodedParams(opts);
         fetch('/org/selectOrgs.svc', {
-            method: 'POST',
+            method:"POST",
             credentials: 'include',
             body: params,
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
+            }
         })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json()
-                    }
-                    return Promise.reject(new Error('The server return the wrong format'));
+        .then( response=>{
+            if(response.status>=200&&response.status<300){
+                if(response.headers.get('content-type').indexOf('application/json') >= 0){
+
+                    return response.json()
                 }
+                else {
+                    return Promise.reject(new Error("The server return the wrong format"));
+                }
+
+
+            }else{
                 return Promise.reject(new Error(response.statusText));
-            })
-            .then((result) => {
+            }
+        })
+        .then(result => {
             // TODO: page info still not handle yet!! Be cautious.
-                self.setState({
-                    orgsInfo: {
-                        initialized: true,
-                        data: result.data.records,
-                    },
-                })
+            self.setState({
+                orgsInfo: {
+                    initialized: true,
+                    data: result.data.records
+                }
             })
-            .catch((error) => {
-                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-            })
+        })
+        .catch( error=> {
+            throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
+        })
+
     };
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps){
         // update the state once the schema return the new dataset
         if (this.props.promotionScopeInfo.get('refs')
-            !== nextProps.promotionScopeInfo.get('refs')) {
+            !== nextProps.promotionScopeInfo.get('refs')){
             this.setState({
                 shops: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS(),
                 cities: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'cities']).toJS(),
                 brands: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS(),
                 groups: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shopCategorys']).toJS(),
-                filteredShops: nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS(),
+                filteredShops:nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS(),
             })
         }
     }
 
 
     renderTree = () => {
-        const selectorTabInfo = this.state.selectorTabInfo;
-        const cities = this.state.cities;
-        const brands = this.state.brands;
-        const areas = this.state.areas;
+
+        let selectorTabInfo = this.state.selectorTabInfo;
+        let cities = this.state.cities;
+        let brands = this.state.brands;
+        let areas = this.state.areas;
+
 
 
         if (undefined === selectorTabInfo) {
@@ -168,6 +179,7 @@ class ShopsSelector extends React.Component {
         let component;
 
         switch (selectorTabInfo.code) {
+
             case 'org':
                 component = this.renderOrgTree();
                 break;
@@ -195,13 +207,15 @@ class ShopsSelector extends React.Component {
     }
 
 
-    constructorOrgDataToTreeFormat = (records) => {
+
+    constructorOrgDataToTreeFormat = (records)=>{
+
         // 最大8层
 
-        const result = [];
+        let result = [];
 
-        for (let i = 1; i <= 8; i++) {
-            const arrs = records.filter((record) => {
+        for(let i = 1; i <= 8; i++) {
+            let arrs =records.filter((record) => {
                 return record.depth == i
             });
 
@@ -212,10 +226,11 @@ class ShopsSelector extends React.Component {
             }
         }
 
-        for (let j = 0; j < result.length - 1; j++) {
-            const currentDepthArr = result[j];
+        for (let j = 0; j < result.length -1; j++) {
+            let currentDepthArr = result[j];
             currentDepthArr.map((parent) => {
-                const children = result[j + 1].filter((child) => {
+
+                let children = result[j+1].filter((child)=>{
                     return child.parentID == parent.orgID;
                 });
 
@@ -228,25 +243,27 @@ class ShopsSelector extends React.Component {
         return result[0];
     };
 
-    onOrgTreeCheck = (val) => {
-        const checkedOrgSet = new Set(val);
+    onOrgTreeCheck = (val)=>{
+        let checkedOrgSet = new Set(val);
 
-        const orgsWithShop = this.state.orgsInfo.data.filter((org) => {
+        let orgsWithShop = this.state.orgsInfo.data.filter((org)=>{
             return checkedOrgSet.has(org.orgID) && org.orgTypeID == 1;
         });
 
         this.setState({
-            selectedOrgs: orgsWithShop,
-        }, () => {
+            selectedOrgs: orgsWithShop
+        }, ()=>{
             this.filter()
         })
     }
 
 
     // 渲染组织
-    renderOrgTree = () => {
+    renderOrgTree = ()=>{
+
         const loop = data => data.map((item) => {
-            if (item.children instanceof Array && item.children.length > 0) {
+
+            if (item.children instanceof  Array && item.children.length > 0) {
                 return (
                     <TreeNode key={item.orgID} title={item.orgName}>
                         {loop(item.children)}
@@ -262,7 +279,7 @@ class ShopsSelector extends React.Component {
             data = this.constructorOrgDataToTreeFormat(data);
             return (
                 <Tree
-                    checkable={true}
+                    checkable
                     onCheck={this.onOrgTreeCheck}
 
                 >
@@ -271,38 +288,41 @@ class ShopsSelector extends React.Component {
                     }
                 </Tree>
             )
+
+        } else {
+            return (
+                <div> 组织信息尚未加载成功 </div>
+            )
         }
-        return (
-            <div> 组织信息尚未加载成功 </div>
-        )
     }
     // checkedKeys={this.state.selectedOrg}
 
     // 门店组树形结构
 
-    onGroupTreeSelect = () => {
+    onGroupTreeSelect = ()=>{
 
     }
 
     onGroupTreeCheck = (value) => {
         this.setState({
-            selectedGroups: value,
-        }, () => {
+            selectedGroups: value
+        }, ()=>{
             this.filter()
         })
     }
 
-    renderGroupTree = () => {
-        const groups = this.state.groups;
+    renderGroupTree = ()=>{
+
+        let groups = this.state.groups;
         return (
             <Tree
-                checkable={true}
+                checkable
                 onSelect={this.onGroupTreeSelect}
                 onCheck={this.onGroupTreeCheck}
                 checkedKeys={this.state.selectedGroups}
             >
                 {
-                    groups.map((group, index) => {
+                    groups.map((group, index)=>{
                         return <TreeNode title={group.shopCategoryName} key={index}></TreeNode>
                     })
                 }
@@ -311,22 +331,24 @@ class ShopsSelector extends React.Component {
     }
 
 
-    onCityTreeSelect = (value) => {
+    onCityTreeSelect = (value)=>{
         // console.log('onCityTreeCheck',value)
     }
 
-    filter = () => {
-        const shops = this.state.shops;
-        const selectedCities = this.state.selectedCities;
-        const selectedBrands = this.state.selectedBrands;
-        const selectedGroups = this.state.selectedGroups;
+    filter = ()=>{
+        let shops = this.state.shops;
+        let selectedCities = this.state.selectedCities;
+        let selectedBrands = this.state.selectedBrands;
+        let selectedGroups = this.state.selectedGroups;
 
-        const selectedOrgs = this.state.selectedOrgs;
+        let selectedOrgs = this.state.selectedOrgs;
         let filteredShops = shops;
 
 
-        if (selectedOrgs instanceof Array && selectedOrgs.length !== 0) {
-            const orgs = new Set(selectedOrgs.map((org) => { return org.shopID }));
+
+        if (selectedOrgs instanceof  Array && selectedOrgs.length !== 0 ){
+
+            let orgs = new Set(selectedOrgs.map((org)=>{return org.shopID}));
 
             filteredShops = filteredShops
                 .filter((shop, index) => {
@@ -335,17 +357,18 @@ class ShopsSelector extends React.Component {
         }
 
         // filer with city
-        if (selectedCities instanceof Array && selectedCities.length !== 0) {
+        if (selectedCities instanceof  Array && selectedCities.length !== 0 ){
             filteredShops = filteredShops
                 .filter((shop, index) => {
-                    return selectedCities.reduce((result, item) => {
+
+                    return selectedCities.reduce((result, item)=>{
                         return (this.state.cities[item].cityID == shop.cityID) || result;
                     }, false);
                 })
         }
 
         // filter with brand
-        if (selectedBrands instanceof Array && selectedBrands.length !== 0) {
+        if(selectedBrands instanceof  Array && selectedBrands.length !== 0) {
             filteredShops = filteredShops
                 .filter((shop) => {
                     return selectedBrands.reduce((result, item) => {
@@ -355,11 +378,11 @@ class ShopsSelector extends React.Component {
         }
 
         // filter with group
-        if (selectedGroups instanceof Array && selectedGroups.length !== 0) {
+        if (selectedGroups instanceof Array && selectedGroups.length !== 0){
             filteredShops = filteredShops
-                .filter((shop) => {
+                .filter((shop)=>{
                     return selectedGroups.reduce((result, item) => {
-                        return this.state.groups[item].shopIDs.reduce((val, shopID) => {
+                        return this.state.groups[item].shopIDs.reduce((val, shopID)=>{
                             // Notice: == is more suitable here than ===.
                             return shopID == shop.shopID || val
                         }, false)
@@ -373,11 +396,11 @@ class ShopsSelector extends React.Component {
 
         let currentSelections = this.state.currentSelections;
 
-        const filteredShopsKeysInSet = new Set(filteredShops.map((shop) => {
+        let filteredShopsKeysInSet = new Set(filteredShops.map((shop)=>{
             return shop.shopID
         }));
 
-        currentSelections = currentSelections.filter((item) => {
+        currentSelections = currentSelections.filter((item)=>{
             return filteredShopsKeysInSet.has(item)
         });
 
@@ -385,31 +408,32 @@ class ShopsSelector extends React.Component {
         // update component state
         this.setState({
             filteredShops,
-            currentSelections,
+            currentSelections
         });
     }
 
     onCityTreeCheck = (value) => {
+
         this.setState({
-            selectedCities: value,
-        }, () => {
+            selectedCities: value
+        }, ()=>{
             this.filter()
         })
     }
 
 
     // render tree component constructed with citys
-    renderCityTree = () => {
-        const cities = this.state.cities;
+    renderCityTree = ()=> {
+        let cities = this.state.cities;
         return (
             <Tree
-                checkable={true}
+                checkable
                 onSelect={this.onCityTreeSelect}
                 onCheck={this.onCityTreeCheck}
                 checkedKeys={this.state.selectedCities}
             >
                 {
-                    cities.map((city, index) => {
+                    cities.map((city, index)=>{
                         return <TreeNode title={city.cityName} key={`${index}`}></TreeNode>
                     })
                 }
@@ -419,25 +443,26 @@ class ShopsSelector extends React.Component {
 
 
     onBrandTreeCheck = (value) => {
+
         this.setState({
-            selectedBrands: value,
-        }, () => {
+            selectedBrands: value
+        }, ()=>{
             this.filter()
         })
     }
 
 
     // render tree component with brand infos
-    renderBrandTree = () => {
-        const brands = this.state.brands;
+    renderBrandTree = ()=> {
+        let brands = this.state.brands;
         return (
             <Tree
-                checkable={true}
+                checkable
                 onCheck={this.onBrandTreeCheck}
-                checkedKeys={this.state.selectedBrands}
+                checkedKeys = {this.state.selectedBrands}
             >
                 {
-                    brands.map((brand, index) => {
+                    brands.map((brand, index)=>{
                         return <TreeNode title={brand.brandName} key={index}></TreeNode>
                     })
                 }
@@ -445,50 +470,53 @@ class ShopsSelector extends React.Component {
         )
     }
 
-    handleGroupSelect = (currentSelections) => {
+    handleGroupSelect = (currentSelections)=>{
+
         this.setState({
-            currentSelections,
+            currentSelections
         });
+
     }
 
     handleSelectedChange = (val) => {
         if (undefined !== val) {
-            const shopID = val.shopID;
+            let shopID = val.shopID;
 
             // remove the selected item
             this.setState({
-                currentSelections: this.state.currentSelections.filter((item) => {
+                currentSelections: this.state.currentSelections.filter((item)=>{
                     return item != shopID
-                }),
+                })
             })
         }
     }
 
     handleShopSelectorStateChange = (selectorTabInfo) => {
         this.setState({
-            selectorTabInfo,
+            selectorTabInfo
         })
     };
 
     // clear up the whole currentSelections
-    handleClearCurrentSelection = () => {
+    handleClearCurrentSelection = ()=>{
         this.setState({
-            currentSelections: [],
+            currentSelections: []
         })
     }
 
 
-    renderFilterConditionInfo = () => {
-        const { selectedCities, selectedBrands, selectedGroups } = this.state;
+    renderFilterConditionInfo = ()=>{
+
+        let {selectedCities, selectedBrands, selectedGroups} = this.state;
 
 
         let citysInfo = null;
         let brandInfo = null;
         let selectedGroupsInfo = null;
-        const info = [];
+        let info = [];
 
         if (selectedCities instanceof Array && selectedCities.length !== 0) {
-            citysInfo = selectedCities.map((cityIndex) => {
+            citysInfo = selectedCities.map((cityIndex)=>{
                 return this.state.cities[cityIndex].cityName
             }).join(',');
         }
@@ -514,7 +542,7 @@ class ShopsSelector extends React.Component {
             info.push(brandInfo);
         }
 
-        if (selectedGroupsInfo) {
+        if (selectedGroupsInfo){
             info.push(selectedGroupsInfo);
         }
 
@@ -526,6 +554,8 @@ class ShopsSelector extends React.Component {
                 }
             </div>
         )
+
+
     }
 
     render() {
@@ -538,7 +568,7 @@ class ShopsSelector extends React.Component {
                 <div className={styles.treeSelectBody}>
                     <Row>
                         <Col span={8}>
-                            <HualalaSearchInput />
+                            <HualalaSearchInput/>
                             <div className={styles.SelectLevel1}>
 
                                 <div className={styles.SelectTit}>
@@ -548,9 +578,9 @@ class ShopsSelector extends React.Component {
                             </div>
                         </Col>
                         <HualalaGroupSelect
-                            options={this.state.filteredShops}
-                            labelKey="shopName"
-                            valueKey="shopID"
+                            options={ this.state.filteredShops }
+                            labelKey = "shopName"
+                            valueKey = "shopID"
                             value={this.state.currentSelections}
                             onChange={this.handleGroupSelect}
                         />
@@ -559,19 +589,19 @@ class ShopsSelector extends React.Component {
 
                 <div className={styles.treeSelectFooter}>
                     <HualalaSelected
-                        itemName="shopName"
-                        selectdTitle={'已选店铺'}
-                        value={
-                            this.state.filteredShops.filter((shop) => {
-                                return this.state.currentSelections.reduce((val, shopID) => {
-                                    return shop.shopID == shopID || val;
-                                }, false)
-                            })}
-                        onChange={(value) => {
-                            this.handleSelectedChange(value)
-                        }}
-                        onClear={() => { this.handleClearCurrentSelection() }}
-                    />
+                         itemName="shopName"
+                         selectdTitle={'已选店铺'}
+                         value={
+                             this.state.filteredShops.filter((shop)=>{
+                                 return this.state.currentSelections.reduce((val, shopID)=>{
+                                     return shop.shopID == shopID || val;
+                                 }, false)
+                         })}
+                         onChange={(value)=> {
+                             this.handleSelectedChange(value)
+                         }}
+                         onClear={()=>{this.handleClearCurrentSelection()}}
+                     />
                 </div>
             </div>
         )
@@ -579,7 +609,7 @@ class ShopsSelector extends React.Component {
 }
 
 ShopsSelector.propTypes = {
-    // children: PropTypes.element.isRequired
+  // children: PropTypes.element.isRequired
 };
 
 ShopsSelector.defaultProps = {
@@ -589,16 +619,16 @@ ShopsSelector.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user,
+        promotionScopeInfo: state.promotionScopeInfo,
+        user: state.user
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchSchema: (opts) => {
+        fetchSchema: (opts)=>{
             dispatch(fetchPromotionScopeInfo(opts))
-        },
+        }
     }
 };
 

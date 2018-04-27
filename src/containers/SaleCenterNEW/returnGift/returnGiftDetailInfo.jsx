@@ -92,6 +92,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     },
                 }],
             },
+            needSyncToAliPay: 0,
         };
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
@@ -112,6 +113,7 @@ class ReturnGiftDetailInfo extends React.Component {
         display = !this.props.isNew;
         this.setState({
             display,
+            needSyncToAliPay: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'needSyncToAliPay']),
         });
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
@@ -340,7 +342,7 @@ class ReturnGiftDetailInfo extends React.Component {
 
 
     handleFinish() {
-        const { rule } = this.state;
+        const { rule, needSyncToAliPay } = this.state;
         function checkStageAmount(stageAmount) {
             const _value = parseFloat(stageAmount.value);
             if (_value > 0) {
@@ -387,6 +389,7 @@ class ReturnGiftDetailInfo extends React.Component {
         if (validateFlag) {
             this.props.setPromotionDetail({
                 rule: this.getRule(),
+                needSyncToAliPay,
             });
             return true;
         }
@@ -399,6 +402,7 @@ class ReturnGiftDetailInfo extends React.Component {
     handlePre() {
         this.props.setPromotionDetail({
             rule: this.state.rule,
+            needSyncToAliPay: this.state.needSyncToAliPay,
         });
         return true;
     }
@@ -413,6 +417,28 @@ class ReturnGiftDetailInfo extends React.Component {
     renderPromotionRule() {
         return (
             <div>
+                {/* <FormItem
+                    label="同步到支付宝"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        value={this.state.needSyncToAliPay}
+                        onChange={(e) => {
+                            this.setState({ needSyncToAliPay: e.target.value }, () => {
+                                // this.props.onChange && this.props.onChange(this.state.rule);
+                            });
+                        }}
+                    >
+                        {
+                            [{ value: 0, name: '否' }, { value: 1, name: '是' }]
+                                .map((type) => {
+                                    return <Radio key={type.value} value={type.value}>{type.name}</Radio >
+                                })
+                        }
+                    </RadioGroup >
+                </FormItem> */}
                 <FormItem
                     label="券显示方式"
                     className={styles.FormItemStyle}
@@ -563,6 +589,7 @@ function mapStateToProps(state) {
         fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 }
 

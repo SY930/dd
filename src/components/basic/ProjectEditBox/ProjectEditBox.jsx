@@ -231,7 +231,7 @@ export default class ProjectEditBox extends React.Component {
                                                   this.setState({
                                                       arg,
                                                       tree: arg,
-                                                  });
+                                                  }, ()=>console.log('gift:', arg));
                                                   // this.forInArg(arg);
                                               }
                                               }

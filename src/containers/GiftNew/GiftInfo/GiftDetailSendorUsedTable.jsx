@@ -36,7 +36,15 @@ class GiftSendOrUsedCount extends React.Component {
         this.queryForm = null;
     }
     componentWillMount() {
+        // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
         const { sendorUsedList, _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData } = this.props;
+        const formItems = Object.assign({}, FORMITEMS);
+        if (giftType === '91') {
+            formItems.getWay.disabled = true;
+        } else {
+            formItems.getWay.disabled = null;
+        }
+
         const { pageNo, pageSize } = this.state;
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
@@ -45,7 +53,7 @@ class GiftSendOrUsedCount extends React.Component {
                 columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
                 formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
                 formItems: {
-                    ...FORMITEMS,
+                    ...formItems,
                     sendShopID: {
                         label: '发出店铺',
                         labelCol: { span: 4 },
@@ -61,7 +69,7 @@ class GiftSendOrUsedCount extends React.Component {
                 columns: USED_COLUMNS,
                 formKeys: USED_FORMKEYS,
                 formItems: {
-                    ...FORMITEMS,
+                    ...formItems,
                     usingShopID: {
                         label: '使用店铺',
                         labelCol: { span: 5 },
@@ -79,6 +87,12 @@ class GiftSendOrUsedCount extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
+        // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
+        const {data} = nextProps;
+        const formItems = this.state.formItems;
+        formItems.getWay.disabled = data.giftType === '91';
+        this.setState({formItems});
+
         this.queryForm && this.queryForm.resetFields();
         const { sendorUsedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData } = nextProps;
         if (sendorUsedPage) {

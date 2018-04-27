@@ -1,3 +1,3 @@
-import FilterSelector from './FilterSelector.jsx';
+import FilterSelector from './FilterSelector';
 
 export default FilterSelector;

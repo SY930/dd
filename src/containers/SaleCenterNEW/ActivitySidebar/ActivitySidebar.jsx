@@ -85,7 +85,7 @@ class ActivitySidebar extends React.Component {
                     ? '是'
                     : '否',
             }, {
-                spanTitle: '适应业务',
+                spanTitle: '适用业务',
                 content: promotionScopeInfo.getIn(['$scopeInfo', 'orderType'])
                     ? promotionScopeInfo.getIn(['$scopeInfo', 'orderType']).map((order) => {
                         return SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST.map((item) => {
