@@ -237,6 +237,9 @@ class SpecialPromotionDetail extends React.Component {
                 title: '礼品名称',
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
+                render: (text, record) => {
+                    return <span title={record.EGiftName}>{record.EGiftName}</span>
+                }
             },
             {
                 title: way != '20' && way != '21' && way != '30' && way != '70' ?
