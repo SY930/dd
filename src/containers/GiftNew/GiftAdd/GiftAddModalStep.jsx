@@ -360,12 +360,18 @@ class GiftAddModalStep extends React.Component {
             let shopNames = '',
                 shopIDs = '',
                 callServer;
-            const shops = this.state.shopSchema.shops;
-            const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
-            selectedShopEntities.forEach((shop) => {
-                shopNames += `${shop.content + ',' || ''}`;
-                shopIDs += `${shop.id + ',' || ''}`;
-            });
+            try {
+                if (params.shopNames) {
+                    const shops = this.state.shopSchema.shops;
+                    const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
+                    selectedShopEntities.forEach((shop) => {
+                        shopNames += `${shop.content + ',' || ''}`;
+                        shopIDs += `${shop.id + ',' || ''}`;
+                    });
+                }
+            } catch (e) {
+                console.log('no shop info');
+            }
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
             if (params.giftShareType == '2') {
