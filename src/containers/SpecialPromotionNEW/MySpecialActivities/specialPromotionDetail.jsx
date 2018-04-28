@@ -52,6 +52,7 @@ class SpecialPromotionDetail extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.query = this.query.bind(this);
+        this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
     }
 
     componentDidMount() {
@@ -320,7 +321,7 @@ class SpecialPromotionDetail extends React.Component {
                             {this.renderOptions()}
                         </Select>
                     </Col>
-                    <Col span={4}><Button type="primary" onClick={this.query}>查询</Button></Col>
+                    <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
                 </Col>
             </div>
         )
@@ -339,12 +340,12 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     // 查询 关键字、等级
-    query() {
+    query(needReset = false) {
         const user = this.props.user;
         const opts = {
             eventID: this.state.eventInfo.data.itemID,
             groupID: user.accountInfo.groupID,
-            pageNo: this.state.pageNo,
+            pageNo: needReset ? 1 : this.state.pageNo,
             pageSize: this.state.pageSize
         };
         if (this.state.keyword !== '') {
@@ -381,7 +382,7 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     handleUserTablePageSizeChange(current, pageSize) {
-        this.setState({pageNo: 1, pageSize}, () => this.query());
+        this.setState({pageNo: 1, pageSize}, () => this.query(true));
     }
 
     // 活动参与表格
@@ -493,10 +494,11 @@ class SpecialPromotionDetail extends React.Component {
                     current: this.state.pageNo,
                     total: this.state.total,
                     showQuickJumper: true,
-                    showSizeChanger: true,
+                    showSizeChanger: false, // 暂时不改变pageSize
                     onShowSizeChange: this.handleUserTablePageSizeChange,
                     pageSize: this.state.pageSize,
-                    pageSizeOptions: ['1', '2', '5', '10'],
+                    showTotal: (total, range) => `本页 ${range[0]} - ${range[1]} / 共 ${total} 条`,
+                    pageSizeOptions: ['5', '10', '20', '40'],
                     onChange: this.handleUserTablePageChange
                 }}
             />
