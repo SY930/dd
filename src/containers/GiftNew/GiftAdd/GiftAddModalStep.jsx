@@ -360,6 +360,7 @@ class GiftAddModalStep extends React.Component {
             let shopNames = '',
                 shopIDs = '',
                 callServer;
+            // console.log('formated params:', params);
             const shops = this.state.shopSchema.shops;
             const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
             selectedShopEntities.forEach((shop) => {

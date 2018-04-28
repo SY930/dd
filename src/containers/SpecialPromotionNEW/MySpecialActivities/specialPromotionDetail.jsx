@@ -36,8 +36,12 @@ class SpecialPromotionDetail extends React.Component {
             },
             userInfo: [],
             cardInfo: [],
+            pageNo: 1,
+            pageSize: 10,
+            total: 0,
         };
-
+        this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
+        this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
         this.renderBaseInfo = this.renderBaseInfo.bind(this);
         this.renderActivityRangeInfo = this.renderActivityRangeInfo.bind(this);
         this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
@@ -75,6 +79,8 @@ class SpecialPromotionDetail extends React.Component {
         }
         this.setState({
             userInfo: record.userInfo.list,
+            pageNo: record.userInfo.pageNo || 1,
+            total: record.userInfo.totalSize || 0,
         })
     }
     componentWillReceiveProps(nextProps) {
@@ -103,10 +109,14 @@ class SpecialPromotionDetail extends React.Component {
             if (nextProps.record.userInfo && nextProps.record.userInfo.list) {
                 this.setState({
                     userInfo: nextProps.record.userInfo.list,
+                    pageNo: nextProps.record.userInfo.pageNo || 1,
+                    total: nextProps.record.userInfo.totalSize || 0,
                 })
             } else {
                 this.setState({
                     userInfo: [],
+                    pageNo: 1,
+                    total: 0,
                 })
             }
         }
@@ -334,6 +344,8 @@ class SpecialPromotionDetail extends React.Component {
         const opts = {
             eventID: this.state.eventInfo.data.itemID,
             groupID: user.accountInfo.groupID,
+            pageNo: this.state.pageNo,
+            pageSize: this.state.pageSize
         };
         if (this.state.keyword !== '') {
             opts.keyword = this.state.keyword;
@@ -363,6 +375,15 @@ class SpecialPromotionDetail extends React.Component {
         }));
         return options;
     }
+
+    handleUserTablePageChange(pageNo, pageSize) {
+        this.setState({pageNo, pageSize}, () => this.query());
+    }
+
+    handleUserTablePageSizeChange(current, pageSize) {
+        this.setState({pageNo: 1, pageSize}, () => this.query());
+    }
+
     // 活动参与表格
     renderActivityInfoTable() {
         const columns = [
@@ -468,6 +489,16 @@ class SpecialPromotionDetail extends React.Component {
                 columns={columns}
                 bordered={true}
                 scroll={{ x: 800 }}
+                pagination={{
+                    current: this.state.pageNo,
+                    total: this.state.total,
+                    showQuickJumper: true,
+                    showSizeChanger: true,
+                    onShowSizeChange: this.handleUserTablePageSizeChange,
+                    pageSize: this.state.pageSize,
+                    pageSizeOptions: ['1', '2', '5', '10'],
+                    onChange: this.handleUserTablePageChange
+                }}
             />
         );
     }
