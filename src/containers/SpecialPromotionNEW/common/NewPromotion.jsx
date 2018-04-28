@@ -31,6 +31,18 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
+        if (specialPromotion.$eventInfo && specialPromotion.$eventInfo.settleUnitID) {
+            // console.log('eventInfo: ', specialPromotion.$eventInfo);
+            const settleUnitID = specialPromotion.$eventInfo.settleUnitID;
+            const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
+            if (!selectedEntity.smsCount) {
+                message.warning('所选结算账户可用短信条数为0，无法创建活动');
+                this.setState({
+                    loading: false,
+                });
+                return;
+            }
+        }
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
