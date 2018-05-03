@@ -14,6 +14,7 @@ export const COLUMNS = [
     }, {
         title: '操作',
         dataIndex: 'operate',
+        className: 'TableTxtCenter',
         key: 'operate',
         // fixed: 'left',
         width: 200,
