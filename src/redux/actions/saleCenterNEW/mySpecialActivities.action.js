@@ -328,7 +328,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
             })
             .catch((err) => {
                 opts.fail();
-                return dispatch(fetchSpecialPromotionDetailFail(result));
+                return dispatch(fetchSpecialPromotionDetailFail(err));
             })
     }
 }
@@ -375,6 +375,7 @@ export const fetchSpecialDetailAC = opts => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialDetailTimeout());
                 }
+                return dispatch(fetchSpecialDetailFail(err));
             })
     }
 }

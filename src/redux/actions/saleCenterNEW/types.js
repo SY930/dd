@@ -978,6 +978,7 @@ export const specialPromotionBasicDataAdapter = function (source, dir) {
 
 // find the idx according the promotinKey, user can use the idx to get the related Component.
 export const getPromotionIdx = function (promotionKey) {
+    console.log('promotion key:', promotionKey);
     if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }

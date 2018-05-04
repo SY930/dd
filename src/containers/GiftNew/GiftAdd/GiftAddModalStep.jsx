@@ -124,7 +124,7 @@ class GiftAddModalStep extends React.Component {
             });
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
-        });
+        }).catch(() => undefined);
         FetchGiftSort({});
     }
 

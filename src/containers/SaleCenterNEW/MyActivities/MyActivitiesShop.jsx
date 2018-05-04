@@ -184,6 +184,7 @@ class MyActivitiesShop extends React.Component {
             loading: true,
             // 以下是用于查询的条件
             promotionType: '',
+            editPromotionType: '',
             promotionDateRange: '',
             promotionValid: '',
             promotionState: '',
@@ -503,12 +504,13 @@ class MyActivitiesShop extends React.Component {
         if (_record ) {
             this.setState({
                 updateModalVisible: true,
+                editPromotionType: _record.promotionType,
                 currentPromotionID: _record.promotionIDStr,
             });
         }
         // Set promotion information to the PromotionBasic and promotionScope redux
         const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.promotionType);
+            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.editPromotionType);
             const _serverToRedux = false;
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
@@ -552,10 +554,11 @@ class MyActivitiesShop extends React.Component {
 
     // Row Actions: 查看
     checkDetailInfo() {
+        const _record = arguments[1];
         this.setState({
             visible: true,
+            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
         });
-        const _record = arguments[1];
 
         const failFn = (msg) => {
             message.error(msg);

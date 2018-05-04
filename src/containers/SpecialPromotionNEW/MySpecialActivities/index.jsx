@@ -148,6 +148,7 @@ class MySpecialActivities extends React.Component {
             promotionDateRange: '',
             isActive: '',
             eventName: '',
+            editEventWay: '',
             pageSizes: 30,
             pageNo: 1,
             record: {
@@ -879,6 +880,7 @@ class MySpecialActivities extends React.Component {
         if (_record) {
             this.setState({
                 updateModalVisible: true,
+                editEventWay: _record.eventWay,
                 currentItemID: _record.itemID ? _record.itemID : this.state.currentItemID,
             });
         }
@@ -888,7 +890,7 @@ class MySpecialActivities extends React.Component {
 
 
         const successFn = (response) => {
-            const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.eventWay}`);
+            const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
             const _serverToRedux = false;
             if (response === undefined || response.data === undefined) {
                 message.error('没有查询到相应数据');

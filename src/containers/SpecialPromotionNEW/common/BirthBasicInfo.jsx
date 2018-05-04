@@ -156,12 +156,13 @@ class PromotionBasicInfo extends React.Component {
     renderPromotionType() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
+        const item = categorys.find(v => v.key === type);
         const lab = type ? categorys.find((cc) => {
             return cc.key === type
         }).title : '';
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{type ? categorys.find(v => v.key === type).tip : ''}</p>
+                <p>{type ?  item ? item.tip : '' : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
