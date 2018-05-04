@@ -46,8 +46,8 @@ class StepTwo extends React.Component {
             }
 
             if(flag){
-                if(this.props.specialPromotion.get('$eventInfo').toJS().smsGate=='1' ||
-                    this.props.specialPromotion.get('$eventInfo').toJS().smsGate=='3'){
+                const info = this.props.specialPromotion.get('$eventInfo').toJS();
+                if(info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4'){
                     this.props.setSpecialBasicInfo({
                         smsTemplate:this.state.message
                     })
@@ -88,8 +88,8 @@ class StepTwo extends React.Component {
     }
 
     render() {
-        let sendFlag = this.props.specialPromotion.get('$eventInfo').toJS().smsGate=='1' ||
-            this.props.specialPromotion.get('$eventInfo').toJS().smsGate=='3';
+        const info = this.props.specialPromotion.get('$eventInfo').toJS();
+        let sendFlag = info.smsGate =='1' || info.smsGate=='3' || info.smsGate=='4';
         return (
             <Form>
                 <SendMsgInfo

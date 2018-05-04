@@ -45,6 +45,7 @@ class SendMsgInfo extends React.Component {
 
     componentDidMount() {
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
         this.setState({
             message: this.props.value,
             settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
@@ -64,6 +65,7 @@ class SendMsgInfo extends React.Component {
         }
         if (this.props.settleUnitID === '') {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
             this.setState({
                 settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
                     (specialPromotion.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),

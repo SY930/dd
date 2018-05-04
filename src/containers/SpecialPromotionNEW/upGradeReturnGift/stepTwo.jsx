@@ -411,7 +411,7 @@ class StepTwo extends React.Component {
                             />)
                 }
                 {
-                    smsGate == '1' || smsGate == '3' ?
+                    smsGate == '1' || smsGate == '3' ||  smsGate == '4'?
                         <SendMsgInfo
                             sendFlag={sendFlag}
                             form={this.props.form}
