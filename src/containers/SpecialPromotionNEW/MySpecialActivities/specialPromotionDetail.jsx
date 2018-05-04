@@ -395,6 +395,9 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 30,
                 fixed: 'left',
+                render:(text, record, index)=> {
+                    return (this.state.pageNo - 1) * this.state.pageSize + Number(text);
+                }
             },
             {
                 title: '姓名',
