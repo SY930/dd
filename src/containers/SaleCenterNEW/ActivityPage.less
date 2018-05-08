@@ -395,6 +395,30 @@
     width:100%;
     position: relative;
 }
+.activityMain{
+    width: 100%;
+    border-radius:0 0 10px 10px;
+    background: #eeeeee;
+    height: 100%;
+    .ant-row{
+        border-radius:0 0 10px 10px;
+    }
+    .ant-row{
+        height: 100%;
+    }
+}
+
+.activityMainLeft{
+    background: #eeeeee;
+    height: 100%;
+    padding:15px 15px 10px 15px;
+    border-radius: 0px 0px 0px 10px;
+}
+.activityMainRight{
+    padding: 15px 15px 10px 15px;
+    background: #FFFFFF;
+    border-radius: 0px 0px 10px 0px;
+}
 .Main-top-title{
     font-weight: bold;
     font-size:14px;
@@ -515,6 +539,125 @@
         margin-left: 10px;
         line-height: 24px;
         color: @text-color;
+    }
+    .CategoryTop{
+        background: #fee5d2;
+    }
+    .CategoryBody{
+        background: #fef4ed;
+        padding: 20px 28px 5px 28px;
+        .ant-input-group-addon{
+            text-align:center!important;
+            background: @bg-color;
+            border-radius: 0px;
+        }
+        .selectLabels{
+            text-align: left;
+            width: 44px;
+        }
+        .Category-Link{
+            .linkSelector-left{
+                text-align: center;
+                background: #e7e7e7;
+                padding: 0px;
+            }
+        }
+        .Category-sel{
+            .linkSelector-left{
+                width: 0px!important;
+                padding: 0px;
+            }
+            .ant-btn{
+                border-radius: 0px!important;
+                line-height:1.9!important;
+            }
+
+        }
+    }
+    .CategoryAdd:hover{
+        color: #2e87c2;
+    }
+    .CategoryAdd{
+        text-align: right;
+        padding: 5px 5px;
+        color: #5fafe4;
+        float: right;
+        cursor: pointer;
+
+    }
+
+    .CategoryList >div:nth-child(1)>div:nth-child(1){
+        .ant-input-group-addon{
+            font-weight: normal!important;
+        }
+    }
+    .CategoryList >div:nth-child(1){
+        .ant-input-group > span:nth-child(1){
+            font-weight: normal!important;
+        }
+    }
+    .CategoryList >div:nth-child(1) >div:nth-child(1) >span:nth-child(1){
+        font-weight: normal!important;
+    }
+    .CategoryList{
+        margin-bottom: 15px;
+        .ant-input-group span:first-child{
+            padding: 0px!important;
+        }
+
+        .ant-input-wrapper input:first-child{
+            background: #FFFFFF!important;
+            padding:0px 7px!important;
+        }
+
+        .UnitInputAll span{
+            background: #e7e7e7;
+        }
+
+        .project-edit-group .project-title{
+            font-size: 12px!important;
+            font-weight: normal!important;
+            text-align: left!important;
+            padding-bottom: 5px;
+            color: @grey;
+        }
+        .project-left{
+            float: none;
+            display: block;
+        }
+        .pro-left{
+            float: none;
+            display: block;
+            font-size: 12px!important;
+            font-weight: normal!important;
+            text-align: left!important;
+            padding-bottom: 5px;
+        }
+        .project-edit-group .project-right{
+            margin-left: 0px!important;
+        }
+        .pro-all .pro-right{
+            margin-left: 0px!important;
+            background: #FFFFFF;
+            margin-bottom: 5px;
+        }
+        .pro-all .pro-r-ico{
+            font-size: 20px;
+        }
+        .project-div-son{
+            background: #FFFFFF!important;
+        }
+        .project-ico{
+            top:35px!important;
+            right: -20px!important;
+        }
+        .project-edit-group .dynamic-add-button{
+            font-size: 16px;
+        }
+        .ant-input{
+            border-radius: 0px!important;
+            height: 32px;
+        }
     }
     .inputUnit{
         width: 8%;

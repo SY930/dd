@@ -249,12 +249,12 @@ class ReturnGift extends React.Component {
         return this.state.infos.map((info, index) => {
             return (
                 <div className={styles.addGrade} key={index}>
-                    <div className="Category-top">
+                    <div className={styles.CategoryTop}>
                         <span className={styles.CategoryTitle}>{this.state.infos.length == 1 ? '礼品' : `礼品${index + 1}`}</span>
                         {this.renderBlockHeader(index)}
                     </div>
 
-                    <div className="Category-body">
+                    <div className={styles.CategoryBody}>
                         <FormItem
                             className={[styles.FormItemStyle, styles.FormItemStyleExplain].join(' ')}
                             labelCol={{ span: 0 }}
@@ -621,16 +621,16 @@ class ReturnGift extends React.Component {
         }
         // 不是最后一个
         if (index === 0 && _length === 1) {
-            return (<span className="Category-add" onClick={this.add}>添加礼品</span>);
+            return (<span className={styles.CategoryAdd} onClick={this.add}>添加礼品</span>);
         } else if (index < _length - 1) {
             return null;
         } else if (index == _length - 1 && _length == this.state.maxCount) {
-            return (<span className="Category-add" onClick={() => this.remove(index)}>删除</span>)
+            return (<span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>)
         } else if (index == _length - 1 && _length < this.state.maxCount) {
             return (
                 <span>
-                    <span className="Category-add" onClick={() => this.remove(index)}>删除</span>
-                    <span className="Category-add" onClick={this.add}>添加礼品</span>
+                    <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>
+                    <span className={styles.CategoryAdd} onClick={this.add}>添加礼品</span>
                 </span>
             );
         }
