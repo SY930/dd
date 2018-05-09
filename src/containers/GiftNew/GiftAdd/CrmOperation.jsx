@@ -108,6 +108,12 @@ export default connect(
 
 export const CrmLogo = ({children, describe, index, ...props}) => (
     <div className={styles[`cardWrap_${index}`]}>
+        {props.tags ? (<div className={styles.tagContainer}>
+                            {props.tags.map(tag => {
+                                return <div className={styles.cardTag} key={tag}>{tag}</div>
+                            })}
+                       </div>) : null
+        }
         <p className={styles.title}>{children}</p>
         <p className={styles.describe}>{describe}</p>
     </div>

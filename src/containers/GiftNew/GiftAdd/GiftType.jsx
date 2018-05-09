@@ -98,7 +98,7 @@ class GiftType extends React.Component {
                                                 this.handleAdd(gift)
                                             }}
                                         >
-                                            <CrmLogo background={gift.color} describe={gift.describe} index={index}>{gift.name}</CrmLogo>
+                                            <CrmLogo background={gift.color} tags={gift.tags} describe={gift.describe} index={index}>{gift.name}</CrmLogo>
                                         </a>
                                     </div>
                                     //{/* </Authority> */}
