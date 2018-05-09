@@ -19,7 +19,7 @@ export class ActivityLogo extends React.Component {
         return (
             <div className={this.props.activityMain ? style[`cardWrap_${index}`] : styles[`cardWrap_${index}`]} >
                 {this.props.tags ? (<div className={styles.tagContainer}>
-                    {this.props.tags.reverse().map(tag => { // float right need reverse
+                    {this.props.tags.slice().reverse().map(tag => { // float right need reverse
                         return <div className={styles.cardTag} key={tag}>{tag}</div>
                     })}
                 </div>) : null
