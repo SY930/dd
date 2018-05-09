@@ -53,6 +53,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.state = {
             display: false,
             foodMenuList: [],
+            previousRuleType: null, // 妥协后端奇妙的数据结构
             foodCategoryCollection: [],
             freeAmount: '',
             stageAmount: '',
@@ -98,6 +99,10 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         let { display } = this.state;
         display = !this.props.isNew;
+        let ruleType = _scopeLst.size > 0 ? 1 : 0;
+        if (Number(_rule.stageStyle) === 1) {
+            ruleType += 2;
+        }
         // 根据ruleJson填充页面
         this.setState({
             display,
@@ -105,8 +110,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-            ruleType: _scopeLst.size > 0 ? '1' : '0',
-
+            //ruleType: _scopeLst.size > 0 ? '1' : '0',
+            ruleType: String(ruleType)
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -143,7 +148,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
     }
 
-    handleSubmit = () => {
+    handleSubmit() {
         let { stageAmount, stageType, stageCount, dishes, stageCountFlag, stageAmountFlag, foodMenuList, freeAmount, freeAmountFlag, dishsSelectionFlag, ruleType } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
@@ -162,6 +167,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
             const rule = {
                 stageType,
+                stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
                 stage: [
                     {
                         stageCount: stageCount || 0,
@@ -186,7 +192,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     price: price.price,
                 }
             });
-            if (ruleType == '0') {
+            if (ruleType == '0' || ruleType == '2') {
                 this.props.setPromotionDetail({
                     rule,
                     priceLst,
@@ -213,7 +219,15 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         )
     };
     onRadioChange(event) {
-        this.setState({stageType: Number(event.target.value)});
+        const stageType = Number(event.target.value);
+        const previousRuleType = this.state.previousRuleType;
+        const ruleType = this.state.ruleType;
+        if (previousRuleType !== null) {
+            this.setState({stageType, ruleType: previousRuleType, previousRuleType: ruleType});
+        } else {
+            this.setState({stageType, ruleType: '0', previousRuleType: ruleType});
+        }
+
     }
     // 减免金额
     onStageAmountChange(value) {
@@ -350,7 +364,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             addonBefore={
                                 <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
                                     <Option key="0" value="0">任意消费满</Option>
+                                    <Option key="2" value="2">任意消费每满</Option>
                                     <Option key="1" value="1">活动菜品消费满</Option>
+                                    <Option key="3" value="3">活动菜品消费每满</Option>
                                 </Select>
                             }
                             addonAfter={'元'}
@@ -381,7 +397,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     </FormItem>
                     }
                     {
-                        this.state.ruleType == '0' ?
+                        this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
                             <PromotionDetailSetting />
                     }
