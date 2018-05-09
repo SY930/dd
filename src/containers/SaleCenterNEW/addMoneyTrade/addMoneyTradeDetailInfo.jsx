@@ -164,7 +164,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 stageType,
                 stage: [
                     {
-                        // stageCount: stageCount || 0,
+                        stageCount: stageCount || 0,
                         stageAmount: stageAmount || 0,
                         freeAmount,
                     },
@@ -334,11 +334,10 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         <p>
                             任意或指定消费满一定金额或数量后，再加价一定金额即可换购指定菜品
                         </p>
-                        {// 待05.23发版时解开注释
-                            /*<RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
+                        <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
                             <Radio key={'2'} value={2}>{'按金额'}</Radio>
                             <Radio key={'1'} value={1}>{'按数量'}</Radio>
-                        </RadioGroup>*/}
+                        </RadioGroup>
                     </FormItem>
                     {this.state.stageType == 2 ?
                     <FormItem
