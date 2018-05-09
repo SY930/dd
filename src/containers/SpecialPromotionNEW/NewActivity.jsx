@@ -131,7 +131,7 @@ class NewActivity extends React.Component {
                 style={{ listStyle: 'none' }}
             >
                 <Authority rightCode="marketing.teseyingxiaoxin.create">
-                    <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                    <ActivityLogo index={index} tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
                 </Authority>
             </li>)
         }).toJS();

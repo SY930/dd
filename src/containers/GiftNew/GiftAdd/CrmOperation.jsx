@@ -109,7 +109,7 @@ export default connect(
 export const CrmLogo = ({children, describe, index, ...props}) => (
     <div className={styles[`cardWrap_${index}`]}>
         {props.tags ? (<div className={styles.tagContainer}>
-                            {props.tags.map(tag => {
+                            {props.tags.reverse().map(tag => {
                                 return <div className={styles.cardTag} key={tag}>{tag}</div>
                             })}
                        </div>) : null
