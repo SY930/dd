@@ -42,7 +42,7 @@ export default class NewPromotion extends React.Component{
             },
             gifts:specialPromotion.$giftInfo
         };
-        
+
         if (this.props.isNew === false){
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,

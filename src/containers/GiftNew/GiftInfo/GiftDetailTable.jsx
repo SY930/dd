@@ -4,6 +4,7 @@ import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import { jumpPage } from '@hualala/platform-base'
 import _ from 'lodash';
+import {throttle} from 'lodash';
 import { fetchData, axiosData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
@@ -30,6 +31,7 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -51,9 +53,32 @@ class GiftDetailTable extends Component {
             tableHeight: '100%',
             contentHeight: '100%',
             usedTotalSize: 0,
-        },
-            this.queryFrom = null;
-        this.columns = COLUMNS;
+        };
+        this.tableRef = null;
+        this.setTableRef = el => this.tableRef = el;
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
+        this.queryFrom = null;
+        this.columns = COLUMNS.slice();
+        this.columns.splice(2, 0, {
+            title: '排序',
+            dataIndex: 'sortOrder',
+            className: 'TableTxtCenter',
+            key: 'sortOrder',
+            width: 120,
+            // fixed:'left',
+            render: (text, record, index) => {
+                const canNotSortUp = this.state.queryParams.pageNo == 1 && index == 0;
+                const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
+                return (
+                    <span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
+                            <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
+                            <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
+                        </span>
+                )
+            },
+        });
     }
 
     componentDidMount() {
@@ -136,6 +161,18 @@ class GiftDetailTable extends Component {
 
     handleFormChange(key, value) {
 
+    }
+
+    changeSortOrder(record, direction) {
+        // console.log('record: ', record);
+        const params = {giftItemID: record.giftItemID, direction};
+        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
     }
 
     handleQuery(thisPageNo) {
@@ -461,6 +498,7 @@ class GiftDetailTable extends Component {
                     </div>
                     <div className={[styles.giftTable, ' layoutsContent tableClass '].join(' ')} style={{ height: this.state.contentHeight }}>
                         <Table
+                            ref={this.setTableRef}
                             bordered={true}
                             columns={this.columns.map(c => (c.render ? ({
                                 ...c,

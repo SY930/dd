@@ -116,7 +116,7 @@ export const saleCenterCheckExist = (opts) => {
     }
 };
 
-// 获得排除卡id集合 getExcludeCardLevelIds 
+// 获得排除卡id集合 getExcludeCardLevelIds
 export const saleCenterGetExcludeCardLevelIds = (opts) => {
     return (dispatch) => {
         fetch('/api/specialPromotion/getExcludeCardLevelIds_NEW', {
@@ -167,7 +167,8 @@ export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
             return Promise.reject(new Error(response.statusText))
         }).then((responseJSON) => {
             if (responseJSON.code === '000') {
-                console.log(responseJSON.accountInfoList)
+                // 应后端要求 余额balance置为0
+                responseJSON.accountInfoList && responseJSON.accountInfoList.forEach(item => item.balance = 0);
                 dispatch({
                     type: SALE_CENTER_FSM_SETTLE_UNIT,
                     payload: responseJSON.accountInfoList,

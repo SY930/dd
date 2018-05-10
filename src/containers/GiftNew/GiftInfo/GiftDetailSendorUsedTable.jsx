@@ -72,6 +72,7 @@ class GiftSendOrUsedCount extends React.Component {
                     ...formItems,
                     usingShopID: {
                         label: '使用店铺',
+                        disabled: giftType === '80',
                         labelCol: { span: 5 },
                         wrapperCol: { span: 19 },
                         type: 'custom',
@@ -91,6 +92,7 @@ class GiftSendOrUsedCount extends React.Component {
         const {data} = nextProps;
         const formItems = this.state.formItems;
         formItems.getWay.disabled = data.giftType === '91';
+        formItems.usingShopID && (formItems.usingShopID.disabled = data.giftType === '80');
         this.setState({formItems});
 
         this.queryForm && this.queryForm.resetFields();

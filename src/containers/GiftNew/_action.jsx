@@ -86,6 +86,8 @@ export const FetchQuotaCardSum = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -102,6 +104,8 @@ export const FetchCardTypeList = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -135,6 +139,8 @@ export const FetchGiftLevel = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -157,6 +163,8 @@ export const FetchGiftSchema = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -180,6 +188,8 @@ export const FetchQuotaList = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -203,6 +213,8 @@ export const FetchSendorUsedList = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -246,14 +258,17 @@ export const FetchGiftSort = (opts) => {
         return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data.crmGiftTypes',
         })
-            .then((records) => {
-                dispatch(getGiftSortSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            });
+        .then((records) => {
+            dispatch(getGiftSortSuccessAC({
+                payload: {
+                    dataSource: records || [],
+                },
+            }));
+            return Promise.resolve(records);
+        })
+        .catch(err => {
+            // empty catch
+        });
     }
 };
 
@@ -275,6 +290,8 @@ export const FetchSharedGifts = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -293,6 +310,8 @@ export const CrmBatchSellGiftCards = (opts) => {
         })
             .then((data) => {
                 return Promise.resolve(data);
+            }).catch(err => {
+                // empty catch
             });
     }
 };
@@ -345,6 +364,8 @@ export const FetchQuotaCardBatchNo = (opts) => {
                     },
                 }));
                 return Promise.resolve(records);
+            }).catch(err => {
+                // empty catch
             });
     }
 };

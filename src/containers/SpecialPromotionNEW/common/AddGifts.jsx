@@ -228,12 +228,12 @@ class AddGifts extends React.Component {
             }
             return (
                 <Form className={styles.addGrade} key={index}>
-                    <div className="Category-top">
+                    <div className={styles.CategoryTop}>
                         <span className={styles.CategoryTitle}>{this.props.type == '20' ? `礼品【${arr[index]}】` : `礼品${index + 1}`}</span>
                         {this.renderBlockHeader(index)}
                     </div>
 
-                    <div className="Category-body">
+                    <div className={styles.CategoryBody}>
                         {/* 礼品名称 */}
                         <FormItem
                             label="礼品名称"
@@ -645,16 +645,16 @@ class AddGifts extends React.Component {
         }
         // 不是最后一个
         if (index === 0 && _length === 1) {
-            return (<span className="Category-add" onClick={this.add}>{this.props.type == '70' ? null : this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>);
+            return (<span className={styles.CategoryAdd} onClick={this.add}>{this.props.type == '70' ? null : this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>);
         } else if (index < _length - 1) {
             return null;
         } else if (index == _length - 1 && _length == this.state.maxCount) {
-            return (<span className="Category-add" onClick={() => this.remove(index)}>删除</span>)
+            return (<span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>)
         } else if (index == _length - 1 && _length < this.state.maxCount) {
             return (
                 <span>
-                    <span className="Category-add" onClick={() => this.remove(index)}>删除</span>
-                    <span className="Category-add" onClick={this.add}>{this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>
+                    <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>
+                    <span className={styles.CategoryAdd} onClick={this.add}>{this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>
                 </span>
             );
         }

@@ -92,13 +92,31 @@ export const getPromotionShopSchema = (params) => {
             type: SALE_CENTER_GET_SHOP_SCHEMA,
         });
 
-        axios.post('/api/shopapi/schema', params).then((response) => {
-            if (response.code !== '000') throw new Error(response.statusText);
-            return response;
+        fetch('/api/shopapi/schema', {
+            method: 'POST',
+            body: params,
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
+            }}).then((response) => {
+            if (response.status >= 200 && response.status < 300) {
+                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                    return response.json();
+                }
+                return response.text();
+            }
+            return Promise.reject(new Error(response.statusText));
         }).then((responseJSON) => {
-            dispatch(getPromotionShopSchemaSuccess(responseJSON.data));
+            if (responseJSON.code === '000') {
+                dispatch(getPromotionShopSchemaSuccess(responseJSON.data));
+            } else {
+                message.error(`店铺、品牌信息获取失败 ${responseJSON.resultmsg}`);
+                dispatch(getPromotionShopSchemaFailed());
+            }
         }).catch((error) => {
-            message.error(`店铺、品牌信息获取失败 ${error}`);
+            message.error(`网络连接异常，请稍后重试`);
+            console.log('错误：', error);
             dispatch(getPromotionShopSchemaFailed());
         });
     };

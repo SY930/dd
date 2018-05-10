@@ -173,7 +173,7 @@ class StepTwo extends React.Component {
         }
         // 获取会员等级信息
         if (nextProps.mySpecialActivities.$groupMembers) {
-            if (nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
+            if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
                 this.setState({
                     cardInfo: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
                 })
@@ -365,7 +365,7 @@ class StepTwo extends React.Component {
                     </Col>
                     <Col span={12} offset={1}>
                         <FormItem className={styles.FormItemStyle} validateStatus={lastTransTimeStatus} help={lastTransTimeStatus == 'success' ? null : '请选择最后消费日期'}>
-                            
+
                             <DatePicker disabled={lastTransTimeFilter == '0'} {...lastTimeProps} />
                         </FormItem>
                     </Col>

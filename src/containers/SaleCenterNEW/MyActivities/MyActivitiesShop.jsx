@@ -21,7 +21,7 @@ import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../index';
-import CC2PY, { CC2PYSS } from '../../../components/common/CC2PY';
+import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
@@ -73,7 +73,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
-
+import {throttle} from 'lodash'
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -164,6 +164,9 @@ const mapDispatchToProps = (dispatch) => {
 class MyActivitiesShop extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = null;
+        this.setTableRef = el => this.tableRef = el;
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -181,6 +184,7 @@ class MyActivitiesShop extends React.Component {
             loading: true,
             // 以下是用于查询的条件
             promotionType: '',
+            editPromotionType: '',
             promotionDateRange: '',
             promotionValid: '',
             promotionState: '',
@@ -209,6 +213,16 @@ class MyActivitiesShop extends React.Component {
         this.showNothing = this.showNothing.bind(this);
         this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
+    }
+    changeSortOrder(record, direction) {
+        const params = {promotionID: record.promotionIDStr, shopID: this.props.user.shopID, rankingType: direction};
+        axiosData('/promotionV1/updatePromotionRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
     }
     componentDidMount() {
         const {
@@ -300,10 +314,10 @@ class MyActivitiesShop extends React.Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].offsetHeight;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 15 - 20}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 15,
-                    tableHeight: layoutsContent.offsetHeight - 40 - 68,
+                    contentHeight: parentHeight - headerHeight - 120,
+                    tableHeight: layoutsContent.offsetHeight - 68,
                 })
             }
         }
@@ -482,18 +496,21 @@ class MyActivitiesShop extends React.Component {
     };
 
     handleUpdateOpe() {
-        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        const _record = arguments[1];
+        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
-        this.setState({
-            updateModalVisible: true,
-            currentPromotionID: arguments[1].promotionIDStr,
-        });
+        if (_record ) {
+            this.setState({
+                updateModalVisible: true,
+                editPromotionType: _record.promotionType,
+                currentPromotionID: _record.promotionIDStr,
+            });
+        }
         // Set promotion information to the PromotionBasic and promotionScope redux
-        const _record = arguments[1];
         const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record.promotionType);
+            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.editPromotionType);
             const _serverToRedux = false;
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
@@ -526,7 +543,7 @@ class MyActivitiesShop extends React.Component {
         };
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr || this.state.currentPromotionID,
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID,
             },
@@ -537,10 +554,11 @@ class MyActivitiesShop extends React.Component {
 
     // Row Actions: 查看
     checkDetailInfo() {
+        const _record = arguments[1];
         this.setState({
             visible: true,
+            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
         });
-        const _record = arguments[1];
 
         const failFn = (msg) => {
             message.error(msg);
@@ -548,7 +566,7 @@ class MyActivitiesShop extends React.Component {
 
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID,
             },
@@ -663,10 +681,11 @@ class MyActivitiesShop extends React.Component {
     }
 
     renderHeader() {
+        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool">
-                <div className="layoutsToolLeft">
-                    <h1 style={{ display: 'inline-block' }}>基础营销信息</h1>
+            <div className="layoutsTool" style={{height: '80px'}}>
+                <div className={headerClasses} style={{lineHeight: '80px'}}>
+                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
                     <Button
                         type="ghost"
                         icon="plus"
@@ -676,8 +695,7 @@ class MyActivitiesShop extends React.Component {
                                 const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
                                 jumpPage({ menuID })
                             }
-                        }
-                    >新建</Button>
+                        }>新建</Button>
                 </div>
             </div>
         );
@@ -1006,6 +1024,25 @@ class MyActivitiesShop extends React.Component {
                 },
             },
             {
+                title: '排序',
+                dataIndex: 'sortOrder',
+                key: 'sortOrder',
+                width: 120,
+                // fixed:'left',
+                render: (text, record, index) => {
+                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
+                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+                    return (
+                        <span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                        </span>
+                    )
+                },
+            },
+            {
                 title: '活动类型',
                 dataIndex: 'promotionType',
                 key: 'promotionType',
@@ -1103,8 +1140,9 @@ class MyActivitiesShop extends React.Component {
         ];
 
         return (
-            <Col span={24} className="layoutsContent  tableClass">
+            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
+                    ref={this.setTableRef}
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
@@ -1133,23 +1171,29 @@ class MyActivitiesShop extends React.Component {
                         },
                     }}
                 />
-            </Col>
+            </div>
         );
     }
 
     render() {
         return (
-            <Row className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <Col span={24} className="layoutsHeader">
+            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                <div>
                     {this.renderHeader()}
-                    <div className="layoutsLine"></div>
-                    {this.renderFilterBar()}
-                </Col>
-                <Col span={24} className="layoutsLineBlock"></Col>
-                {this.renderTables()}
+                </div>
+
+                <div>
+                    <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
+                        <div className="layoutsHeader">
+                            {this.renderFilterBar()}
+                            <div style={{ margin: '0'}} className="layoutsLine"></div>
+                        </div>
+                        {this.renderTables()}
+                    </div>
+                </div>
                 {this.renderModals()}
                 {this.renderModifyRecordInfoModal(0)}
-            </Row>
+            </div>
         );
     }
 }

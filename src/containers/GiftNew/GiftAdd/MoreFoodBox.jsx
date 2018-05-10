@@ -485,7 +485,7 @@ class MoreFoodBox extends React.Component {
 
     // 渲染排除菜品radio
     renderExcludeRange() {
-        console.log('isExcludeFood', this.state.isExcludeFood)
+        // console.log('isExcludeFood', this.state.isExcludeFood)
         return (
             <FormItem style={{ marginBottom: -8, marginTop: 18 }}>
                 <RadioGroup

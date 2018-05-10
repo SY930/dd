@@ -115,13 +115,16 @@ const initializationOfMyActivitiesFailed = (opts) => {
 // Initialization of my activities
 export const initializationOfMyActivities = (opts) => {
     return (dispatch) => {
+        opts.start && opts.start();
         dispatch(initializationOfMyActivitiesStart());
         const _opts = opts;
         fetchData('getPromotionList_NEW', { ..._opts }, null, { path: '' })
             .then((records) => {
+                opts.end && opts.end();
                 dispatch(initializationOfMyActivitiesSucceed(records));
                 opts.cb && opts.cb(records.promotionLst);
-            });
+            })
+            .catch(err => opts.fail && opts.fail());
     }
 };
 

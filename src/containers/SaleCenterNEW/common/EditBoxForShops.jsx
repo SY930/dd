@@ -193,7 +193,7 @@ class EditBoxForShops extends React.Component {
             // 若选择了品牌，则筛掉不属于品牌的店铺
             if (filterBrands.length > 0) {
                 Array.from(_selections).forEach(selected => {
-                    !filterBrands.includes(selected.brandID) && console.log(filterBrands, selected);
+                    // !filterBrands.includes(selected.brandID) && console.log(filterBrands, selected);
                     !filterBrands.includes(selected.brandID) && _selections.delete(selected);
                 })
             }

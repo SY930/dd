@@ -36,8 +36,12 @@ class SpecialPromotionDetail extends React.Component {
             },
             userInfo: [],
             cardInfo: [],
+            pageNo: 1,
+            pageSize: 10,
+            total: 0,
         };
-
+        this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
+        this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
         this.renderBaseInfo = this.renderBaseInfo.bind(this);
         this.renderActivityRangeInfo = this.renderActivityRangeInfo.bind(this);
         this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
@@ -48,6 +52,7 @@ class SpecialPromotionDetail extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.query = this.query.bind(this);
+        this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
     }
 
     componentDidMount() {
@@ -75,6 +80,8 @@ class SpecialPromotionDetail extends React.Component {
         }
         this.setState({
             userInfo: record.userInfo.list,
+            pageNo: record.userInfo.pageNo || 1,
+            total: record.userInfo.totalSize || 0,
         })
     }
     componentWillReceiveProps(nextProps) {
@@ -103,10 +110,14 @@ class SpecialPromotionDetail extends React.Component {
             if (nextProps.record.userInfo && nextProps.record.userInfo.list) {
                 this.setState({
                     userInfo: nextProps.record.userInfo.list,
+                    pageNo: nextProps.record.userInfo.pageNo || 1,
+                    total: nextProps.record.userInfo.totalSize || 0,
                 })
             } else {
                 this.setState({
                     userInfo: [],
+                    pageNo: 1,
+                    total: 0,
                 })
             }
         }
@@ -237,6 +248,9 @@ class SpecialPromotionDetail extends React.Component {
                 title: '礼品名称',
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
+                render: (text, record) => {
+                    return <span title={record.EGiftName}>{record.EGiftName}</span>
+                }
             },
             {
                 title: way != '20' && way != '21' && way != '30' && way != '70' ?
@@ -307,7 +321,7 @@ class SpecialPromotionDetail extends React.Component {
                             {this.renderOptions()}
                         </Select>
                     </Col>
-                    <Col span={4}><Button type="primary" onClick={this.query}>查询</Button></Col>
+                    <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
                 </Col>
             </div>
         )
@@ -326,11 +340,13 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     // 查询 关键字、等级
-    query() {
+    query(needReset = false) {
         const user = this.props.user;
         const opts = {
             eventID: this.state.eventInfo.data.itemID,
             groupID: user.accountInfo.groupID,
+            pageNo: needReset ? 1 : this.state.pageNo,
+            pageSize: this.state.pageSize
         };
         if (this.state.keyword !== '') {
             opts.keyword = this.state.keyword;
@@ -360,6 +376,15 @@ class SpecialPromotionDetail extends React.Component {
         }));
         return options;
     }
+
+    handleUserTablePageChange(pageNo, pageSize) {
+        this.setState({pageNo, pageSize}, () => this.query());
+    }
+
+    handleUserTablePageSizeChange(current, pageSize) {
+        this.setState({pageNo: 1, pageSize}, () => this.query(true));
+    }
+
     // 活动参与表格
     renderActivityInfoTable() {
         const columns = [
@@ -370,6 +395,9 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 30,
                 fixed: 'left',
+                render:(text, record, index)=> {
+                    return (this.state.pageNo - 1) * this.state.pageSize + Number(text);
+                }
             },
             {
                 title: '姓名',
@@ -465,6 +493,17 @@ class SpecialPromotionDetail extends React.Component {
                 columns={columns}
                 bordered={true}
                 scroll={{ x: 800 }}
+                pagination={{
+                    current: this.state.pageNo,
+                    total: this.state.total,
+                    showQuickJumper: true,
+                    showSizeChanger: false, // 暂时不改变pageSize
+                    onShowSizeChange: this.handleUserTablePageSizeChange,
+                    pageSize: this.state.pageSize,
+                    showTotal: (total, range) => `本页 ${range[0]} - ${range[1]} / 共 ${total} 条`,
+                    pageSizeOptions: ['5', '10', '20', '40'],
+                    onChange: this.handleUserTablePageChange
+                }}
             />
         );
     }

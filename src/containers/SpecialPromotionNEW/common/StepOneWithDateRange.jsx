@@ -10,10 +10,11 @@ import {
     saleCenterGetExcludeEventList,
     saleCenterGetShopOfEventByDate,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { SEND_MSG } from '../../../redux//actions/saleCenterNEW/types';
+import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
 
 const Immutable = require('immutable');
 const moment = require('moment');
@@ -57,6 +58,16 @@ class StepOneWithDateRange extends React.Component {
             next: this.handleSubmit,
             finish: undefined,
             cancel: undefined,
+        });
+
+        const opts = {
+            _groupID: this.props.user.accountInfo.groupID,
+            _role: this.props.user.accountInfo.roleType,
+            _loginName: this.props.user.accountInfo.loginName,
+            _groupLoginName: this.props.user.accountInfo.groupLoginName,
+        };
+        this.props.fetchSpecialCardLevel({
+            data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         if (specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
@@ -640,6 +651,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         saleCenterGetExcludeCardLevelIds: (opts) => {
             dispatch(saleCenterGetExcludeCardLevelIds(opts));
+        },
+        fetchSpecialCardLevel: (opts) => {
+            dispatch(fetchSpecialCardLevel(opts));
         },
         saleCenterGetExcludeEventList: (opts) => {
             dispatch(saleCenterGetExcludeEventList(opts));
