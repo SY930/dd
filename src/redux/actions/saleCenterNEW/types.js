@@ -423,7 +423,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#9dc568',
         text: '消费后获得奖励将使顾客下次光临的时间大大提前',
         example: '例如:消费满100元送1张10元代金券',
-        tags: ['SaaS2.0', '微信?'],
+        tags: ['SaaS2.0', '微信'],
         key: 'RETURN_GIFT',
     },
     {
@@ -432,7 +432,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#c49b79',
         text: '会员消费满X元送积分,积分可兑换礼品或抵现',
         example: '例如:全部菜品9折,酒水不打折',
-        tags: ['SaaS2.0', '微信?'],
+        tags: ['SaaS2.0', '微信'],
         key: 'RETURN_POINT',
     },
     {
