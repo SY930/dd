@@ -17,9 +17,10 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import _ from 'lodash'
+import {throttle} from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
+import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
 
 import {
@@ -72,6 +73,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
+import {axiosData} from "../../../helpers/util";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -164,6 +166,9 @@ const mapDispatchToProps = (dispatch) => {
 class MyActivities extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = null;
+        this.setTableRef = el => this.tableRef = el;
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -181,6 +186,7 @@ class MyActivities extends React.Component {
             loading: true,
             // 以下是用于查询的条件
             promotionType: '',
+            editPromotionType: '',
             promotionDateRange: '',
             promotionValid: '',
             promotionState: '',
@@ -355,7 +361,7 @@ class MyActivities extends React.Component {
             }
         }
     }
-    shouldComponentUpdate(nextProps, nextState) {
+    /*shouldComponentUpdate(nextProps, nextState) {
         const thisStatus = this.props.myActivities.getIn(['$promotionDetailInfo', 'status']);
         const nextStatus = nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
         // console.log('props渲染:-----', (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
@@ -367,7 +373,7 @@ class MyActivities extends React.Component {
                 !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)) ||
                 (thisStatus !== nextStatus && nextStatus === 'success'))
         // return true
-    }
+    }*/
     getParams = () => {
         const {
             promotionType,
@@ -487,6 +493,17 @@ class MyActivities extends React.Component {
         }
     }
 
+    changeSortOrder(record, direction) {
+        const params = {promotionID: record.promotionIDStr, rankingType: direction};
+        axiosData('/promotionV1/updatePromotionRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
+    }
+
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
@@ -495,18 +512,23 @@ class MyActivities extends React.Component {
     };
 
     handleUpdateOpe() {
-        if (arguments[1].maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        const _record = arguments[1];
+        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
-        this.setState({
-            updateModalVisible: true,
-            currentPromotionID: arguments[1].promotionIDStr,
-        });
+        if (_record ) {
+            this.setState({
+                updateModalVisible: true,
+                editPromotionType: _record.promotionType,
+                currentPromotionID: _record.promotionIDStr,
+            });
+        }
+
         // Set promotion information to the PromotionBasic and promotionScope redux
-        const _record = arguments[1];
+
         const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record.promotionType);
+            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.editPromotionType);
             const _serverToRedux = false;
             if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
                 message.error('没有查询到相应数据');
@@ -539,7 +561,7 @@ class MyActivities extends React.Component {
         };
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr || this.state.currentPromotionID,
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
                 groupID: this.props.user.accountInfo.groupID,
             },
             success: successFn,
@@ -549,10 +571,12 @@ class MyActivities extends React.Component {
 
     // Row Actions: 查看
     checkDetailInfo() {
+        const _record = arguments[1];
         this.setState({
             visible: true,
+            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
         });
-        const _record = arguments[1];
+
 
         const failFn = (msg) => {
             message.error(msg);
@@ -560,7 +584,7 @@ class MyActivities extends React.Component {
 
         this.props.fetchPromotionDetail_NEW({
             data: {
-                promotionID: _record.promotionIDStr, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
             },
             fail: failFn,
@@ -575,7 +599,6 @@ class MyActivities extends React.Component {
 
     renderContentOfThisModal() {
         const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const handleUpdateOpe = this.handleUpdateOpe;
         const _state = this.state;
         if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
             return (
@@ -587,7 +610,7 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={handleUpdateOpe}>重试</a>
+                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>重试</a>
                 </div>
             );
         }
@@ -1023,6 +1046,25 @@ class MyActivities extends React.Component {
                 },
             },
             {
+                title: '排序',
+                dataIndex: 'sortOrder',
+                key: 'sortOrder',
+                width: 120,
+                // fixed:'left',
+                render: (text, record, index) => {
+                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
+                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+                    return (
+                        <span>
+                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                        </span>
+                    )
+                },
+            },
+            {
                 title: '活动类型',
                 dataIndex: 'promotionType',
                 key: 'promotionType',
@@ -1112,7 +1154,7 @@ class MyActivities extends React.Component {
                 dataIndex: 'isActive',
                 className: 'TableTxtCenter',
                 key: 'isActive',
-                // width: 120,
+                width: 72,
                 render: (isActive) => {
                     return (isActive === 'ACTIVE' ? '启用' : '禁用');
                 },
@@ -1122,6 +1164,7 @@ class MyActivities extends React.Component {
         return (
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
+                    ref={this.setTableRef}
                     scroll={{ x: 1500, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
@@ -1144,6 +1187,9 @@ class MyActivities extends React.Component {
                                 pageNo: page,
                                 usageMode: -1,
                                 ...this.getParams(),
+                                fail: () => message.error('出错了，请稍后再试'),
+                                // start: () => this.setState({loading: true}),
+                                // end: () => this.setState({loading: false}),
                             };
                             opt.cb = this.showNothing;
                             this.props.query(opt);

@@ -208,7 +208,7 @@ export function fetchData(api, params, cache, {
     throttle = 500,         // wait time for frequent ajax request; pass false to turn off
     disablePrompt = false,
     successCode = '000'
-} = {}) {
+} = {}, opts = {}) {
     const channel = `${api}_${JSON.stringify(params)}`;
     const actionFn = () => new Promise((resolve, reject) => {
         // use cache
@@ -240,6 +240,9 @@ export function fetchData(api, params, cache, {
         }).then(json => {
             const { redirect, success, code, msg } = parseResponseJson(json, successCode);
             if (!success) {
+                if (opts.needThrow) {
+                    return Promise.reject();
+                }
                 !disablePrompt && Modal.error({
                     title: '啊哦！好像有问题呦~~',
                     content: `${msg}`,
@@ -665,7 +668,7 @@ export const generateUniqID = uuid
 // })
 //     .then(data => console.log(data)).catch(err => console.log(err))
 
-export function axiosData(api, params, cache, {
+export function axiosData(api, params, opts, {
     path = 'data.records',  // path for response
 } = {}, domain = 'HTTP_SERVICE_URL_CRM') {
     const { groupID } = getAccountInfo();
@@ -682,6 +685,9 @@ export function axiosData(api, params, cache, {
         .then(json => {
             const { code, message } = json;
             if (code !== '000') {
+                if (opts && opts.needThrow) {
+                    return Promise.reject();
+                }
                 Modal.error({
                     title: '啊哦！好像有问题呦~~',
                     content: `${message}`,

@@ -207,20 +207,20 @@ class AddGrade extends React.Component {
         const formItems = keys.map((k, index) => {
             return (
                 <div className={styles.addGrade} key={index}>
-                    <div className="Category-top">
+                    <div className={styles.CategoryTop}>
                         <span className={styles.CategoryTitle}>档次{/* {this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null} */}</span>
                         {// 显示的可操作文字
                             this.props.ruleType == 2 || this.props.ruleType == 3 ? // 满
                 (k == this.uuid ? (
                     k == 0 ? (// 满 第一个档次,//满赠取消分档
-                        <span className="Category-add" onClick={this.add}>{isFullGive ? null : '添加新档'}</span>
+                        <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : '添加新档'}</span>
                     ) : (
                         k == 2 ? (
-                            <span className="Category-add" onClick={() => this.remove(k)}>删除</span>
+                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
                         ) : (// 满 非第一个档次
                             <span>
-                                <span className="Category-add" onClick={this.add}>添加新档</span>
-                                <span className="Category-add" onClick={() => this.remove(k)}>删除</span>
+                                <span className={styles.CategoryAdd} onClick={this.add}>添加新档</span>
+                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
                             </span>
                         )
                     )
@@ -228,7 +228,7 @@ class AddGrade extends React.Component {
 
                         }
                     </div>
-                    <div className="Category-body">
+                    <div className={styles.CategoryBody}>
                         <Row>
                             <Col span={18}>
                                 {
@@ -275,7 +275,7 @@ class AddGrade extends React.Component {
 
                         </div>
                         <div >
-                            <div className="Category-list" style={{ marginBottom: 0 }}>
+                            <div className={styles.CategoryList} style={{ marginBottom: 0 }}>
                                 {this.renderDishsSelectionBox(k)}
                             </div>
                         </div>

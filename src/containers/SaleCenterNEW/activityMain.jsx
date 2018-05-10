@@ -208,9 +208,9 @@ class ActivityMain extends React.Component {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         const index = this.props.index;
         return (
-            <div className={['ActivityMain', styles.activityModal].join(' ')} style={{ padding: '0' }}>
+            <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: '0' }}>
                 <Row>
-                    <Col span={6} className="ActivityMain-Left" style={{ padding: '15px 15px 10px 15px' }}>
+                    <Col span={6} className={styles.activityMainLeft} style={{ padding: '15px 15px 10px 15px' }}>
                         <ActivityLogo index={index} titletext={activityCategories[index].title} activityMain={true} />
                         <br />
                         {
@@ -218,7 +218,7 @@ class ActivityMain extends React.Component {
                         }
                         <br />
                     </Col>
-                    <Col span={18} className="ActivityMain-Right" style={{ padding: '15px 15px 10px 15px' }}> {this.renderActivityTags()}
+                    <Col span={18} className={styles.activityMainRight} style={{ padding: '15px 15px 10px 15px' }}> {this.renderActivityTags()}
                     </Col>
                 </Row>
             </div>

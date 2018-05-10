@@ -358,7 +358,7 @@ class CardLevelForWX extends React.Component {
                         <div
                             style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}
                         >
-                            <ExcludeCardTable catOrCard={'cat'} />
+                            <ExcludeCardTable isWeChatOnly={true} catOrCard={'cat'} />
                         </div>
                 }
                 {this.renderShopsOptions()}

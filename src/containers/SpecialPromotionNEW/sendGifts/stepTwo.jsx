@@ -86,7 +86,7 @@ class StepTwo extends React.Component {
             }
             if (flag) {
                 const opts = {
-                    smsTemplate: smsGate == '1' || smsGate == '3' ? this.state.message : ' ',
+                    smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : ' ',
                     lastTransTimeFilter: this.state.lastTransTimeFilter,
                     lastTransTime: this.state.lastTransTime || '',
                     lastTransShopID: this.state.lastTransShopID,
@@ -361,7 +361,7 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 {
-                    smsGate == '1' || smsGate == '3' ?
+                    smsGate == '1' || smsGate == '3' || smsGate == '4' ?
                         <SendMsgInfo
                             sendFlag={sendFlag}
                             form={this.props.form}

@@ -451,7 +451,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 className={styles.linkSelectorRight}
                                 value={cardScopeIDs}
                                 onChange={(val) => {
-                                    console.log(val)
                                     this.handleCardScopeList({
                                         cardScopeIDs: val,
                                     });

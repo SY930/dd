@@ -43,6 +43,7 @@ class ExcludeCardTable extends React.Component {
         super(props);
         this.state = {
             cardInfo: [],
+            weChatCardInfo: [],
             cardLevelIDList: this.props.value || [],
             getExcludeCardLevelIds: [],
             getExcludeCardLevelIdsStatus: false,
@@ -51,26 +52,34 @@ class ExcludeCardTable extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({        
-            cardInfo: this.props.crmCardTypeNew.get('cardTypeLst').toJS(),
+        this.setState({
+            cardInfo: this.props.groupCardTypeList.toJS(),
+            weChatCardInfo: this.props.crmCardTypeNew.get('cardTypeLst').toJS(),
             getExcludeCardLevelIds: this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [],
         });
     }
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.groupCardTypeList) {
+            this.setState({
+                cardInfo: nextProps.groupCardTypeList.toJS(),
+            })
+        }
         this.setState({
-            cardInfo: nextProps.crmCardTypeNew.get('cardTypeLst').toJS(),
+            weChatCardInfo: nextProps.crmCardTypeNew.get('cardTypeLst').toJS(),
             getExcludeCardLevelIds: nextProps.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [],
         });
     }
 
     render() {
-        const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
-        const treeData = [];
+        let { cardInfo = [], getExcludeCardLevelIds = [], weChatCardInfo = [] } = this.state;
+        if (this.props.isWeChatOnly) {
+            cardInfo = weChatCardInfo;
+        }
         // table数据
         const excludeData = [];
-        const excludeEventCardLevelIdModelList = this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [];
-        if (this.props.catOrCard == 'card') {
+        const excludeEventCardLevelIdModelList = getExcludeCardLevelIds;
+        if (this.props.catOrCard == 'card' && !this.props.isWeChatOnly) {
             excludeEventCardLevelIdModelList.map((excludeEvent) => {
                 if (excludeEvent.allCardLevelCheck) {
                     excludeEvent.idNames = ['全部占用'];
@@ -127,7 +136,7 @@ class ExcludeCardTable extends React.Component {
                 )
             },
         }, {
-            title: this.props.catOrCard == 'card' ? '占用卡等级信息' : '占用卡类信息',
+            title: this.props.isWeChatOnly ? '占用卡类信息' : this.props.catOrCard == 'card' ? '占用卡等级信息' : '占用卡类信息',
             dataIndex: 'idNames',
             key: 'idNames',
             className: 'TableTxtCenter',
@@ -162,6 +171,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
     };
 };
 

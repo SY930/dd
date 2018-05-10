@@ -47,11 +47,11 @@ class StepTwo extends React.Component {
             }
         });
         const opts = {
-            smsTemplate: smsGate === '1' || smsGate === '3' ? this.state.message : '',
+            smsTemplate: smsGate === '1' || smsGate === '3' || smsGate === '4' ? this.state.message : '',
             cardLevelIDList: this.state.cardLevelIDList || [],
             cardLevelRangeType: this.state.cardLevelRangeType,
         }
-        if (smsGate === '1' || smsGate === '3') {
+        if (smsGate === '1' || smsGate === '3' || smsGate === '4') {
             opts.settleUnitID = this.state.settleUnitID;
         }
         this.props.setSpecialBasicInfo(opts);
@@ -87,8 +87,8 @@ class StepTwo extends React.Component {
     }
 
     render() {
-        const sendFlag = this.props.specialPromotion.get('$eventInfo').toJS().smsGate === '1' ||
-            this.props.specialPromotion.get('$eventInfo').toJS().smsGate === '3';
+        const info = this.props.specialPromotion.get('$eventInfo').toJS();
+        const sendFlag = info.smsGate === '1' || info.smsGate === '3' || info.smsGate === '4';
         return (
             <div>
                 <CardLevel

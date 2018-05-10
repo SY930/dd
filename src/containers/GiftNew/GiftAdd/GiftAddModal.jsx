@@ -221,7 +221,7 @@ class GiftAddModal extends React.Component {
             <RadioGroup
                 value={this.state.transferType}
                 onChange={(e) => {
-                    console.log('radio checked', e.target.value);
+                    // console.log('radio checked', e.target.value);
                     this.setState({
                         transferType: e.target.value,
                     });
