@@ -399,7 +399,7 @@ class StepTwo extends React.Component {
                             style={{ width: '100%' }}
                             placeholder="请选择会员群体"
                             onChange={this.handleSelectChange}
-                        >
+                        >{{/*getPopupContainer={() => document.getElementById('.stepsContent:not([style="display: none;"])')}*/}}
                             <Option key={'0'}>全部会员</Option>
                             {this.renderOptions()}
                         </Select>
