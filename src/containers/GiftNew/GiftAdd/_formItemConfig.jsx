@@ -52,7 +52,7 @@ const FORMITEMS = {
     giftShareType: {
         label: '券与券共用',
         type: 'combo',
-        defaultValue: '0',
+        defaultValue: '1',
         options: GiftCfg.shareType,
     },
     moneyLimitType: {

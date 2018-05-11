@@ -62,9 +62,9 @@ const GiftCfg = {
         { label: '支持', value: 'true' },
     ],
     shareType: [
-        { label: '不共用', value: '0' },
         { label: '与所有券共用', value: '1' },
-        { label: '与部分券共用', value: '2' },
+        { label: '与部分券共用', value: '2', disabled: true },
+        { label: '不共用', value: '0', disabled: true },
     ],
     moneyLimitType: [
         { label: '不限', value: '0' },
