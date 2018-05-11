@@ -711,7 +711,7 @@ class GiftAddModalStep extends React.Component {
                             key: 'giveFoodCount',
                             rules: [{ required: true, message: '不能为空' }, {
                                 validator: (rule, v, cb) => {
-                                    this.secondForm.validateFields(['stageAmount'], { force: true })
+                                    this.secondForm.validateFieldsAndScroll(['stageAmount'], { force: true })
                                     if (!/^\+?\d{0,8}$/.test(Number(v))) {
                                         cb(rule.message);
                                     }
