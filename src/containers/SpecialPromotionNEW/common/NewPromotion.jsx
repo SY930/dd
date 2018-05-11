@@ -32,8 +32,9 @@ export default class NewPromotion extends React.Component {
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
-        if (specialPromotion.$eventInfo
-            && (smsGate == '1' || smsGate == '3' || smsGate == '4')
+        // console.log('going to final finish', specialPromotion.$eventInfo);
+        if (specialPromotion.$eventInfo.eventWay == '50'
+            || (smsGate == '1' || smsGate == '3' || smsGate == '4')
             && specialPromotion.$eventInfo.settleUnitID) {
             // console.log('eventInfo: ', specialPromotion.$eventInfo);
             const settleUnitID = specialPromotion.$eventInfo.settleUnitID;
@@ -42,7 +43,7 @@ export default class NewPromotion extends React.Component {
 
                 if (!selectedEntity.smsCount) {
                     message.warning('所选结算账户可用短信条数为0，无法创建活动');
-                    console.log(settleUnitID);
+                    //console.log(settleUnitID);
                     this.setState({
                         loading: false,
                     });
@@ -129,6 +130,7 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
+        // console.log('going to 1 finish');
         let flag = true;
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();
