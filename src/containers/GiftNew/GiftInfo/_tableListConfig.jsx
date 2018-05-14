@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
+import {Tooltip} from 'antd';
 
 export const COLUMNS = [
     {
@@ -21,16 +22,26 @@ export const COLUMNS = [
         render(value, record) {
             return (
                 <span>
-                    <Authority rightCode="marketing.lipinxin.update">
-                        <a
-                            href="javaScript:;"
-                            onClick={() => {
-                                this.props.toggleIsUpdate(true)
-                                this.handleEdit(record)
-                            }
-                            }
-                        >编辑</a>
-                    </Authority>
+                    {record.sendTotalCount > 0 ?
+
+                            <a disabled={true}>
+                                <Tooltip title="券已发出，无法修改了哦">
+                                    <span style={{pointerEvents: 'auto'}}>编辑</span>
+                                </Tooltip>
+                            </a>
+
+                        :
+                        <Authority rightCode="marketing.lipinxin.update">
+                            <a
+                                href="javaScript:;"
+                                onClick={() => {
+                                    this.props.toggleIsUpdate(true);
+                                    this.handleEdit(record)
+                                }
+                                }
+                            >编辑</a>
+                        </Authority>
+                    }
                     <a
                         href="javaScript:;"
                         onClick={() => {
@@ -40,7 +51,9 @@ export const COLUMNS = [
                         }
                     >查看</a>
                     {record.sendTotalCount > 0 ?
-                        <a disabled={true}><span>删除</span></a>
+                        <Tooltip title="券已发出，无法删除">
+                            <a disabled={true}><span style={{pointerEvents: 'auto'}}>删除</span></a>
+                        </Tooltip>
                         :
                         <Authority rightCode="marketing.lipinxin.delete">
                             <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
