@@ -388,8 +388,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                 <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
                                     <Option key="0" value="0">任意菜品数量满</Option>
                                     <Option key="2" value="2">任意菜品数量每满</Option>
-                                    <Option key="1" value="1">同一菜品数量满</Option>
-                                    <Option key="3" value="3">同一菜品数量每满</Option>
+                                    <Option key="1" value="1">活动菜品数量满</Option>
+                                    <Option key="3" value="3">活动菜品数量每满</Option>
                                 </Select>
                             }
                             addonAfter={'份'}
