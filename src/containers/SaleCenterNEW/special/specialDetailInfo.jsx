@@ -13,6 +13,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, message } from 'antd';
 import { connect } from 'react-redux'
+import Immutable from 'immutable';
 
 
 if (process.env.__CLIENT__ === true) {
@@ -62,9 +63,14 @@ class SpecialDetailInfo extends React.Component {
             finish: this.handleSubmit,
         });
         const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
+        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        const amountLimit = Number(_rule.specialFoodMax);
         const display = !this.props.isNew;
         this.setState({
             display,
+            isLimited: Number(!!amountLimit),
+            amountLimit: amountLimit || 1,
             targetScope: _categoryOrDish,
         });
     }
@@ -80,13 +86,20 @@ class SpecialDetailInfo extends React.Component {
                 price: parseFloat(data.newPrice) < 0 ?  data.price : parseFloat(data.newPrice),
             }
         });
+        if (this.state.isLimited == 1 && !this.state.amountLimit) {
+            return false;
+        }
         if (priceLst.length === 0) {
             message.warning('请至少添加一个菜品');
             return false;
         }
+        const rule = {};
+        if (this.state.isLimited && this.state.amountLimit) {
+            rule.specialFoodMax = this.state.amountLimit;
+        }
         this.props.setPromotionDetail({
             priceLst,
-            rule: {}, // 为黑白名单而设
+            rule, // 为黑白名单而设
         });
         return true;
     };
@@ -161,7 +174,7 @@ class SpecialDetailInfo extends React.Component {
                             </Col>
                             {
                                 this.state.isLimited == 1 ?
-                                    <Col span={this.state.isLimited == 0 ? 0 : 16}>
+                                    <Col span={16}>
                                         <FormItem
                                             style={{ marginTop: -6 }}
                                             validateStatus={this.state.amountLimit > 0 ? 'success' : 'error'}
