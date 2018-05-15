@@ -7,7 +7,7 @@ const GiftCfg = {
         { name: '实物礼品券', describe: '顾客获取后，线下展示券密码验证核销使用', value: '30', color: '#e5be6c', tags: ['SaaS2.0', '新微信'] },
         { name: '会员充值券', describe: '会员获取后，可直接充值到卡赠送余额中', value: '40', color: '#9dc568', tags: ['SaaS2.0'] },
         { name: '会员积分券', describe: '会员获取后，可直接充值到卡积分余额中', value: '42', color: '#84aac6', tags: ['SaaS2.0'] },
-        { name: '会员权益券', describe: '会员获取后，可享受折扣，会员价，插队等权益', value: '80', color: '#84aac6', tags: ['SaaS2.0'] },
+        { name: '会员权益券', describe: '会员获取后，可享受折扣，会员价，插队等权益', value: '80', color: '#84aac6'},
         { name: '礼品定额卡', describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值', value: '90', color: '#c49b79', tags: ['SaaS2.0'] },
         { name: '活动券', describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码', value: '100', color: '#c49b79', tags: ['SaaS2.0']},
         { name: '线上礼品卡', describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费', value: '91', color: '#84aac6' },
