@@ -94,6 +94,10 @@ class GiftType extends React.Component {
                                                     message.warn('您没有新建活动的权限，请联系管理员');
                                                     return;
                                                 }
+                                                if (gift.value === '110' || gift.value === '111') {
+                                                    message.success('敬请期待~');
+                                                    return;
+                                                }
                                                 this.props.toggleIsUpdate(true)
                                                 this.handleAdd(gift)
                                             }}
