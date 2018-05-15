@@ -22,26 +22,16 @@ export const COLUMNS = [
         render(value, record) {
             return (
                 <span>
-                    {record.sendTotalCount > 0 ?
-
-                            <a disabled={true}>
-                                <Tooltip title="券已发出，无法修改了哦">
-                                    <span style={{pointerEvents: 'auto'}}>编辑</span>
-                                </Tooltip>
-                            </a>
-
-                        :
-                        <Authority rightCode="marketing.lipinxin.update">
-                            <a
-                                href="javaScript:;"
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true);
-                                    this.handleEdit(record)
-                                }
-                                }
-                            >编辑</a>
-                        </Authority>
-                    }
+                    <Authority rightCode="marketing.lipinxin.update">
+                        <a
+                            href="javaScript:;"
+                            onClick={() => {
+                                this.props.toggleIsUpdate(true);
+                                this.handleEdit(record)
+                            }
+                            }
+                        >编辑</a>
+                    </Authority>
                     <a
                         href="javaScript:;"
                         onClick={() => {
