@@ -77,12 +77,12 @@ class GiftAddModal extends React.Component {
         const { groupTypes, imageUrl, transferType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
-            if (value === '30') {
+            /*if (value === '30') {
                 if (imageUrl === '' || imageUrl === undefined) {
                     message.error('请上传礼品图样!', 3);
                     return;
                 }
-            }
+            }*/ // 礼品图片现在可以不传
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
