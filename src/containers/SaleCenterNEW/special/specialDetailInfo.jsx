@@ -167,9 +167,9 @@ class SpecialDetailInfo extends React.Component {
                         <div style={{width: '300px'}}>
 
                             <Col  span={this.state.isLimited == 0 ? 24 : 8}>
-                                <Select onChange={this.handleIsLimitedChange} value={this.state.isLimited}>
-                                    <Option key="0" value={0}>不限制</Option>
-                                    <Option key="1" value={1}>限制</Option>
+                                <Select onChange={this.handleIsLimitedChange} value={String(this.state.isLimited)}>
+                                    <Option key="0" value={'0'}>不限制</Option>
+                                    <Option key="1" value={'1'}>限制</Option>
                                 </Select>
                             </Col>
                             {

@@ -69,6 +69,12 @@ export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
     key: 'WECHAT',
     value: '2',
 },
+    {
+    idx: 3,
+    name: '饮食通',
+    key: 'YST',
+    value: '3',
+},
 ]);
 
 // TODO: remove the bottom definition,
@@ -872,7 +878,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
     }
     return {
         brandIDLst: _source.brands.join(','),
-        channelLst: _source.channel == 1 ? 'POS' : _source.channel == 0 ? '' : 'WECHAT',
+        channelLst: _source.channel == 1 ? 'POS' : _source.channel == 0 ? '' : _source.channel == 2 ? 'WECHAT' : _source.channel == 3 ? 'YST' : '',
         defaultRun: _source.auto == '1' ? 'YES' : 'NO',
         orderTypeLst: _source.orderType.join(','),
         shopIDLst: _source.shopsInfo
