@@ -603,6 +603,10 @@ class MySpecialActivities extends React.Component {
                             href="#"
                             className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
                             onClick={() => {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning('该活动已下线');
+                                    return;
+                                }
                                 record.isActive == '-1' || statusState ? null :
                                     this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
                             }}
@@ -616,6 +620,10 @@ class MySpecialActivities extends React.Component {
                                     if (record.isActive != '0' || statusState) {
                                         e.preventDefault()
                                     } else {
+                                        if (Number(record.eventWay) === 70) {
+                                            message.warning('该活动已下线');
+                                            return;
+                                        }
                                         this.props.toggleIsUpdate(true)
                                         this.handleUpdateOpe(text, record, index);
                                     }
@@ -626,6 +634,10 @@ class MySpecialActivities extends React.Component {
                         <a
                             href="#"
                             onClick={() => {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning('该活动已下线');
+                                    return;
+                                }
                                 this.props.toggleIsUpdate(false)
                                 this.handleUpdateOpe(text, record, index);
                             }}
@@ -636,6 +648,10 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
                                 onClick={() => {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning('该活动已下线');
+                                        return;
+                                    }
                                     record.isActive != '0' || record.userCount != 0 || statusState ? null :
                                         this.checkDeleteInfo(text, record, index);
                                 }}
@@ -646,6 +662,10 @@ class MySpecialActivities extends React.Component {
                             href="#"
                             className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
                             onClick={() => {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning('该活动已下线');
+                                    return;
+                                }
                                 record.isActive == '-1' || statusState ? null :
                                     this.handelStopEvent(text, record, index, '-1', '活动终止成功');
                             }}
@@ -655,6 +675,10 @@ class MySpecialActivities extends React.Component {
                             <a
                                 href="#"
                                 onClick={() => {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning('该活动已下线');
+                                        return;
+                                    }
                                     this.checkDetailInfo(text, record, index);
                                 }}
                             >
@@ -690,7 +714,7 @@ class MySpecialActivities extends React.Component {
                 width: 120,
                 // fixed:'left',
                 render: (text, record) => {
-                    return <span>{mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
+                    return <span>{record.eventWay == 70 ? '彩蛋猫送礼' : mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
                 },
             },
 
@@ -877,6 +901,11 @@ class MySpecialActivities extends React.Component {
     // 编辑
     handleUpdateOpe() {
         let _record = arguments[1];
+        const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
+        if (!_promotionIdx) {
+            message.warning('出错了, 请刷新重试');
+            return;
+        }
         if (_record) {
             this.setState({
                 updateModalVisible: true,
@@ -890,7 +919,6 @@ class MySpecialActivities extends React.Component {
 
 
         const successFn = (response) => {
-            const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
             const _serverToRedux = false;
             if (response === undefined || response.data === undefined) {
                 message.error('没有查询到相应数据');
