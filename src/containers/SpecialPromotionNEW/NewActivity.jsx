@@ -11,6 +11,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { throttle } from 'lodash';
 import { Modal, Row, Col, message } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
@@ -70,7 +71,7 @@ class NewActivity extends React.Component {
         this.renderActivityButtons = this._renderActivityButtons.bind(this);
         this.onButtonClicked = this._onButtonClicked.bind(this);
         this.renderModal = this._renderModal.bind(this);
-        this.onWindowResize = this.onWindowResize.bind(this);
+        this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
 
     setModal1Visible(modal1Visible) {
@@ -85,15 +86,14 @@ class NewActivity extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        this.setState({ contentHeight })
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        this.setState({ contentHeight });
     }
-    componentWillReceiveProps(nextProps) {
-
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
     }
 
     render() {
-        const contentHeight = this.state.contentHeight - 170;
         return (
             <Row className="layoutsContainer">
                 <Col span={24} className="layoutsHeader">
@@ -104,10 +104,12 @@ class NewActivity extends React.Component {
                     </div>
                 </Col>
                 <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent" style={{ overflowY: 'auto', height: contentHeight }}>
-                    {this.renderActivityButtons()}
-                    {this.renderModal()}
+                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
+                    <ul>
+                        {this.renderActivityButtons()}
+                    </ul>
                 </Col>
+                {this.renderModal()}
             </Row>
 
         );
@@ -135,12 +137,7 @@ class NewActivity extends React.Component {
                 </Authority>
             </li>)
         }).toJS();
-        return (
-            <div>
-                {logos}
-            </div>
-
-        );
+        return logos;
     }
 
     _renderModal() {
