@@ -65,7 +65,7 @@ class SpecialDetailInfo extends React.Component {
         const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        const amountLimit = Number(_rule.specialFoodMax);
+        const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
         const display = !this.props.isNew;
         this.setState({
             display,
