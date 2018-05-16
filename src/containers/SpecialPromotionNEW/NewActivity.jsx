@@ -123,7 +123,7 @@ class NewActivity extends React.Component {
 
         // characteristicCategories = characteristicCategories.slice(0, 3);
 
-        const logos = characteristicCategories.map((activity, index) => {
+        const logos = characteristicCategories.filter(activity => activity.get('key') !== '70').map((activity, index) => { // 注释掉彩蛋猫送礼 key : '70'
             return (<li
                 onClick={() => {
                     this.props.toggleIsUpdate(true)
