@@ -318,7 +318,7 @@ class GroupTicketDetailInfo extends React.Component {
                         className={styles.priceInLine}
                         style={{ marginTop: -20 }}
                         validateStatus={this.state.giftMaxUseNum ? 'success' : 'error'}
-                        help={this.state.giftMaxUseNum ? null : '请输入券面金额'}
+                        help={this.state.giftMaxUseNum ? null : '必须大于0'}
                     >
                         <PriceInput
                             addonBefore={''}
