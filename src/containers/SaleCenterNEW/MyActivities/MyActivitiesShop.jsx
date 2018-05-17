@@ -1063,10 +1063,11 @@ class MyActivitiesShop extends React.Component {
                 width: 200,
                 // fixed:'left',
                 render: (promotionName) => {
+                    let text = promotionName;
                     if (promotionName === undefined || promotionName === null || promotionName === '') {
-                        return '--';
+                        text = '--';
                     }
-                    return promotionName;
+                    return (<span title={text}>{text}</span>);
                 },
             },
             {
@@ -1074,6 +1075,7 @@ class MyActivitiesShop extends React.Component {
                 dataIndex: 'promotionCode',
                 key: 'promotionCode',
                 width: 140,
+                render: text => <span title={text}>{text}</span>,
             },
 
             {

@@ -724,6 +724,7 @@ class MySpecialActivities extends React.Component {
                 key: 'eventName',
                 // fixed:'left',
                 width: 200,
+                render: text => <span title={text}>{text}</span>,
             },
             // {
             //     title: '参与人数',
