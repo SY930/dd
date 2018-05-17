@@ -1011,7 +1011,7 @@ export const specialPromotionBasicDataAdapter = function (source, dir) {
 
 // find the idx according the promotinKey, user can use the idx to get the related Component.
 export const getPromotionIdx = function (promotionKey) {
-    console.log('promotion key:', promotionKey);
+    // console.log('promotion key:', promotionKey);
     if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }
@@ -1027,18 +1027,11 @@ export const getPromotionIdx = function (promotionKey) {
 };
 
 export const getSpecialPromotionIdx = function (promotionKey) {
-    if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
-        throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
+    const promotionKeyStr = String(promotionKey);
+    const _promotionInfo = CHARACTERISTIC_CATEGORIES.find(promotionInfo => promotionInfo.key === promotionKeyStr);
+    if (_promotionInfo) {
+        return _promotionInfo.idx;
     }
-
-    const _promotionInfo = CHARACTERISTIC_CATEGORIES.filter((promotionInfo) => {
-        return promotionInfo.key === promotionKey;
-    });
-
-    if (_promotionInfo.length && _promotionInfo.length === 1) {
-        return _promotionInfo[0].idx;
-    }
-    // throw new Error(`There is not promotion with the specified promotionKey ${promotionKey}`); 意义不明
 };
 
 

@@ -903,7 +903,7 @@ class MySpecialActivities extends React.Component {
     handleUpdateOpe() {
         let _record = arguments[1];
         const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
-        if (!_promotionIdx) {
+        if (_promotionIdx === undefined) {
             message.warning('出错了, 请刷新重试');
             return;
         }
