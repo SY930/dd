@@ -99,7 +99,7 @@ export const getPromotionShopSchema = (params) => {
 
         fetch('/api/shopapi/schema', {
             method: 'POST',
-            body: params,
+            body: JSON.stringify(params),
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',
