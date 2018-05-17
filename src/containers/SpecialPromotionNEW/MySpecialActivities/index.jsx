@@ -711,7 +711,7 @@ class MySpecialActivities extends React.Component {
                 title: '活动类型',
                 dataIndex: 'eventWay',
                 key: 'eventWay',
-                width: 120,
+                width: 100,
                 // fixed:'left',
                 render: (text, record) => {
                     return <span>{record.eventWay == 70 ? '彩蛋猫送礼' : mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
@@ -801,7 +801,7 @@ class MySpecialActivities extends React.Component {
                 title: '使用状态',
                 dataIndex: 'isActive',
                 key: 'isActive',
-
+                width: 100,
                 render: (isActive) => {
                     return isActive == '-1' ? '已终止' : isActive == '1' ? '已启用' : '已禁用';
                 },
@@ -812,7 +812,7 @@ class MySpecialActivities extends React.Component {
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1500, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

@@ -1105,7 +1105,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 200,
+                width: 180,
                 render: (validDate) => {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return '不限制';
@@ -1118,7 +1118,7 @@ class MyActivities extends React.Component {
                 title: '有效状态',
                 dataIndex: 'status',
                 key: 'valid',
-                width: 140,
+                width: 72,
                 render: (status) => {
                     return status == '1' ? '未开始' : status == '2' ? '执行中' : '已结束';
                 },
@@ -1156,7 +1156,7 @@ class MyActivities extends React.Component {
                 dataIndex: 'isActive',
                 className: 'TableTxtCenter',
                 key: 'isActive',
-                width: 72,
+                width: 100,
                 render: (isActive) => {
                     return (isActive === 'ACTIVE' ? '启用' : '禁用');
                 },
@@ -1167,7 +1167,7 @@ class MyActivities extends React.Component {
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1500, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
