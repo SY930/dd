@@ -7,7 +7,7 @@ import {
     Button, Modal, Row, Col, message,
     Spin, Icon,
 } from 'antd';
-import {throttle} from 'lodash';
+import {throttle, isEqual} from 'lodash';
 import { jumpPage } from '@hualala/platform-base'
 import moment from 'moment';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -339,6 +339,10 @@ class MySpecialActivities extends React.Component {
                 record: nextProps.mySpecialActivities.get('$specialDetailInfo').toJS(),
             })
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(this.state, nextState)
     }
 
     render() {

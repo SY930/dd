@@ -21,13 +21,7 @@ import StepTwo from './stepTwo';
 class NewBirthdayGift extends NewPromotion {
     constructor(props) {
         super(props);
-    }
-    render() {
-        if (this.props.component === undefined) {
-            throw new Error('component is required');
-        }
-
-        const steps = [
+        this.steps = [
 
             {
                 title: '基本信息',
@@ -65,10 +59,12 @@ class NewBirthdayGift extends NewPromotion {
                 ),
             },
         ];
+    }
+    render() {
         return (
             <CustomProgressBar
                 loading={this.state.loading}
-                steps={steps}
+                steps={this.steps}
                 callback={(arg) => {
                     this.props.callbacktwo(arg);
                 }}
