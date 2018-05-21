@@ -56,7 +56,7 @@ const FORMITEMS = {
         options: GiftCfg.shareType,
     },
     moneyLimitType: {
-        label: '金额限制',
+        label: '账单金额',
         type: 'combo',
         options: GiftCfg.moneyLimitType,
         defaultValue: '0',
