@@ -109,7 +109,6 @@ class CustomProgressBar extends React.Component {
 
     // this.state.current <div className={styles.stepsContent}>{steps[this.state.current].content}</div>
     render() {
-        console.log('this.props', this.props.steps ? this.props.steps.length : 0);
         const { steps } = this.props;
         const current = this.state.current;
 

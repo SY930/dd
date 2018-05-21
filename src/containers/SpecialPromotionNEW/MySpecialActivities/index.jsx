@@ -406,7 +406,7 @@ class MySpecialActivities extends React.Component {
                 pageNo,
                 ...opt,
             },
-            fail: (msg) => { message.success(msg) },
+            fail: (msg) => { message.error(msg) },
         });
     }
 
