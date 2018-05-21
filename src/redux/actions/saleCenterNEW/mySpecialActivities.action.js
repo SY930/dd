@@ -375,7 +375,7 @@ export const fetchSpecialDetailAC = opts => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialDetailTimeout());
                 }
-                return dispatch(fetchSpecialDetailFail(err));
+                console.log('something is wrong:', err);
             })
     }
 }
