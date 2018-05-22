@@ -1,9 +1,10 @@
 import React from 'react';
+import moment from 'moment';
 import styles from '../../components/basic/ProgressBar/ProgressBar.less';
 import style from '../SaleCenterNEW/ActivityPage.less';
 import ownStyle from './Validator.less';
 import { connect } from 'react-redux';
-import { Steps, Button, Form, Select, Upload, Icon, message } from 'antd';
+import { Steps, Button, Form, Select, Upload, Icon, message, Col } from 'antd';
 import ENV from "../../helpers/env";
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
@@ -25,14 +26,26 @@ class ThreeStepsValidator extends React.Component {
         this.state = {
             current: 0,
             dataType: '1',
+            isBusyTime: false, // 忙时不允许发起校验请求
+            isLoading: false, // 校验请求loading
             adjustmentMethod: '1'
         };
+        this.intervalId = null;
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.steps = null;
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        /*this.intervalId = window.setInterval(() => {
+            this.setState({
+                isBusy: moment().seconds()%2 === 0
+            })
+        }, 500)*/
+    }
+
+    componentWillUnmount() {
+        window.clearInterval(this.intervalId);
     }
 
     handleTypeChange(value) {
@@ -43,9 +56,10 @@ class ThreeStepsValidator extends React.Component {
         this.setState({adjustmentMethod: value});
     }
 
-    renderGiftImagePath() {
+    renderUploadButton() {
         const props = {
             name: 'file',
+            accept: '.xls,.xlsx', // 上传的是excel 文件
             action: '/api/shopcenter/upload',
             onChange: (info) => {
                 console.log('new info', info);
@@ -70,8 +84,8 @@ class ThreeStepsValidator extends React.Component {
         };
         return (
             <Upload {...props}>
-                <Button type="ghost">
-                    <Icon type="upload" /> 点击上传
+                <Button style={{width: '185px', textAlign: 'left', paddingLeft: '7px'}}>
+                    上传Excel附件
                 </Button>
             </Upload>
         )
@@ -98,7 +112,6 @@ class ThreeStepsValidator extends React.Component {
                                 label="变动类型"
                                 className={style.FormItemStyle}
                                 labelCol={{ span: 11 }}
-                                required={true}
                                 wrapperCol={{ span: 13 }}
                                 validateStatus={this.state.dataType > 0 ? 'success' : 'error'}
                                 help={this.state.dataType > 0 ? null : '必须选择一个类型'}
@@ -106,7 +119,7 @@ class ThreeStepsValidator extends React.Component {
                                 <Select
                                     showSearch={false}
                                     placeholder="请选择变动类型"
-                                    style={{ width: 200 }}
+                                    style={{ width: 185 }}
                                     value={this.state.dataType}
                                     onChange={this.handleTypeChange}
                                 >
@@ -119,7 +132,7 @@ class ThreeStepsValidator extends React.Component {
                                         <Select
                                             showSearch={false}
                                             placeholder="请选择调整方式"
-                                            style={{ width: 200 }}
+                                            style={{ width: 185 }}
                                             value={this.state.adjustmentMethod}
                                             onChange={this.handleAdjustmentMethodChange}
 
@@ -133,11 +146,19 @@ class ThreeStepsValidator extends React.Component {
                             </FormItem>
                             <FormItem
                                 label="导入文件"
-                                className={style.FormItemStyle}
                                 labelCol={{ span: 11 }}
-                                wrapperCol={{ span: 4 }}
+                                wrapperCol={{ span: 13 }}
                             >
-                                {this.renderGiftImagePath()}
+                                <div className={ownStyle.flexContainer}>
+                                    <div className={ownStyle.uploaderContainer}>
+                                        {this.renderUploadButton()}
+                                    </div>
+
+                                    <a className={ownStyle.downloadLink}>下载数据导入模板</a>
+
+                                </div>
+
+
                             </FormItem>
                         </Form>
                     </div>
@@ -146,7 +167,7 @@ class ThreeStepsValidator extends React.Component {
             {
                 title: '审核进度',
                 content: (
-                    <div>{this.props.user.shopID}</div>
+                    <div>{`数据正在审核,请稍后查看`}</div>
                 ),
             },
             {
@@ -171,9 +192,11 @@ class ThreeStepsValidator extends React.Component {
 
                 <div className="progressButton">
                     <Button
-                        type="ghost"
-                        onClick={() => console.log(this.props.user)}
-                    >取消
+                        disabled={this.state.isBusyTime}
+                        loading={this.state.isLoading}
+                        type="primary"
+                        onClick={() => console.log(moment().hours())}
+                    >确定
                     </Button>
                 </div>
             </div>

@@ -2,8 +2,7 @@ import React from 'react';
 import registerPage from '../../index';
 import { OLD_NEW_SALE_CENTER } from '../../constants/entryCodes';
 import ThreeStepsValidator from "./ThreeStepsValidator";
-import { Row, Col } from 'antd';
-import { saleCenter } from '../../redux/reducer/saleCenter/saleCenter.reducer';
+import { Row, Col, Button } from 'antd';
 
 @registerPage([OLD_NEW_SALE_CENTER], {
 })
@@ -20,6 +19,11 @@ class CrmDataValidator extends React.Component {
                         <div className="layoutsTool">
                             <div className="layoutsToolLeft">
                                 <h1>会员数据变动校验</h1>
+                            </div>
+                            <div className="layoutsToolRight">
+                                <Button type="ghost" style={{width: '120px'}}>
+                                    校验记录
+                                </Button>
                             </div>
                         </div>
                     </Col>

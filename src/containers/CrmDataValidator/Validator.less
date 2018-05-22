@@ -20,3 +20,22 @@
         }
     }
 }
+
+.flexContainer {
+    display: flex;
+}
+
+.downloadLink {
+    margin-left: 15px;
+    font-size: @font-size-lg - 2px;
+    text-decoration: underline;
+}
+
+.uploaderContainer {
+    :global{
+        .ant-upload-list {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+    }
+}
