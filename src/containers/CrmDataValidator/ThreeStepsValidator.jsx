@@ -3,7 +3,8 @@ import styles from '../../components/basic/ProgressBar/ProgressBar.less';
 import style from '../SaleCenterNEW/ActivityPage.less';
 import ownStyle from './Validator.less';
 import { connect } from 'react-redux';
-import { Steps, Button, Form, Select } from 'antd';
+import { Steps, Button, Form, Select, Upload, Icon, message } from 'antd';
+import ENV from "../../helpers/env";
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 
@@ -23,8 +24,8 @@ class ThreeStepsValidator extends React.Component {
         super(props);
         this.state = {
             current: 0,
-            dataType: 1,
-            adjustmentMethod: undefined
+            dataType: '1',
+            adjustmentMethod: '1'
         };
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -40,6 +41,40 @@ class ThreeStepsValidator extends React.Component {
 
     handleAdjustmentMethodChange(value) {
         this.setState({adjustmentMethod: value});
+    }
+
+    renderGiftImagePath() {
+        const props = {
+            name: 'file',
+            action: '/api/shopcenter/upload',
+            onChange: (info) => {
+                console.log('new info', info);
+                const status = info.file.status;
+                const fileList = info.fileList;
+                /*this.setState({
+                    giftImagePath,
+                })
+                if (status !== 'uploading') {
+                    // console.log(info.file, info.fileList);
+                }*/
+
+                if (status === 'done') {
+                    message.success(`${info.file.name} 上传成功`);
+                    this.setState({
+                        imageUrl: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
+                    })
+                } else if (status === 'error') {
+                    message.error(`${info.file.name} 上传失败`);
+                }
+            },
+        };
+        return (
+            <Upload {...props}>
+                <Button type="ghost">
+                    <Icon type="upload" /> 点击上传
+                </Button>
+            </Upload>
+        )
     }
 
 
@@ -75,31 +110,24 @@ class ThreeStepsValidator extends React.Component {
                                     value={this.state.dataType}
                                     onChange={this.handleTypeChange}
                                 >
-                                    <Option key="1" value={1}>会员数据导入</Option>
-                                    <Option key="2" value={2}>卡类别调整</Option>
+                                    <Option key="1" value={'1'}>会员数据导入</Option>
+                                    <Option key="2" value={'2'}>卡类别调整</Option>
                                 </Select>
                                 {
-                                    this.state.dataType === 2 ?
+                                    this.state.dataType === '2' ?
 
-                                        (<FormItem
-                                            className={style.FormItemStyle}
-                                            validateStatus={this.state.adjustmentMethod > 0 ? 'success' : 'error'}
-                                            help={this.state.adjustmentMethod > 0 ? null : '必须选择一个调整方式'}
-                                            >
-                                                <Select
-                                                    showSearch={false}
-                                                    placeholder="请选择调整方式"
-                                                    style={{ width: 200 }}
-                                                    value={this.state.adjustmentMethod}
-                                                    onChange={this.handleAdjustmentMethodChange}
+                                        <Select
+                                            showSearch={false}
+                                            placeholder="请选择调整方式"
+                                            style={{ width: 200 }}
+                                            value={this.state.adjustmentMethod}
+                                            onChange={this.handleAdjustmentMethodChange}
 
-                                                >
-                                                    <Option key="1" value={1}>根据等级调整</Option>
-                                                    <Option key="2" value={2}>根据入会店铺调整</Option>
-                                                    <Option key="3" value={3}>根据卡号调整</Option>
-                                                </Select>
-                                        </FormItem>
-                                            )
+                                        >
+                                            <Option key="1" value={'1'}>根据等级调整</Option>
+                                            <Option key="2" value={'2'}>根据入会店铺调整</Option>
+                                            <Option key="3" value={'3'}>根据卡号调整</Option>
+                                        </Select>
                                         : null
                                 }
                             </FormItem>
@@ -107,9 +135,9 @@ class ThreeStepsValidator extends React.Component {
                                 label="导入文件"
                                 className={style.FormItemStyle}
                                 labelCol={{ span: 11 }}
-                                wrapperCol={{ span: 13 }}
+                                wrapperCol={{ span: 4 }}
                             >
-                                <p>{`${this.props.user.accountInfo.groupShortName}(ID: ${this.props.user.accountInfo.groupID})`}</p>
+                                {this.renderGiftImagePath()}
                             </FormItem>
                         </Form>
                     </div>
