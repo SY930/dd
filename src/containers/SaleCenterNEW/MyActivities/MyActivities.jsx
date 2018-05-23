@@ -276,7 +276,7 @@ class MyActivities extends React.Component {
     }
 
     toggleStateCallBack() {
-        message.success('使用状态修改成功，5分钟后saas才能获取更新的基础营销活动');
+        message.success('使用状态修改成功');
     }
 
     handleClose() {
