@@ -1270,7 +1270,7 @@ class GiftAddModalStep extends React.Component {
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
             },
         };
-        let formData = {};
+        let formData;
         // if (type == 'edit') {
         formData = data === undefined ? dates : values;
         // }
@@ -1327,24 +1327,20 @@ class GiftAddModalStep extends React.Component {
             // afterClose={this.afterClose}
             // wrapClassName="progressBarModal"
             >
-                {
-                    visible ?
-                        <div className={styles.customProgressBar}>
-                            <CustomProgressBar
-                                style={{ height: '200px' }}
-                                steps={steps}
-                                callback={(arg) => {
-                                    // this.props.callbacktwo(arg);
-                                }}
-                                onNext={this.handleNext}
-                                onFinish={this.handleFinish}
-                                onPrev={this.handlePrev}
-                                onCancel={this.handleCancel}
-                                loading={this.state.finishLoading}
-                            />
-                        </div>
-                        : null
-                }
+                <div className={styles.customProgressBar}>
+                    <CustomProgressBar
+                        style={{ height: '200px' }}
+                        steps={steps}
+                        callback={(arg) => {
+                            // this.props.callbacktwo(arg);
+                        }}
+                        onNext={this.handleNext}
+                        onFinish={this.handleFinish}
+                        onPrev={this.handlePrev}
+                        onCancel={this.handleCancel}
+                        loading={this.state.finishLoading}
+                    />
+                </div>
             </Modal>
         )
     }

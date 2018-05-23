@@ -112,11 +112,14 @@ export const fetchSpecialPromotionList = (opts) => {
                     opts.fail && opts.fail(response.message);
                     return dispatch(fetchPromotionListFail(response.code));
                 }
-            })
-            .catch((err) => {
+            }, (err) => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchPromotionListTimeout());
                 }
+                return dispatch(fetchPromotionListFail(err));
+            })
+            .catch(err => {
+
             })
     }
 }
@@ -396,12 +399,14 @@ export const fetchSpecialDetailAC = opts => {
                     opts.fail && opts.fail();
                     return dispatch(fetchSpecialDetailFail(result));
                 }
-            })
-            .catch((err) => {
+            }, (err) => { // add REAL backend error handler @author: wuhao
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialDetailTimeout());
                 }
-                console.log('something is wrong:', err);
+                return dispatch(fetchSpecialDetailFail(err));
+            })
+            .catch(err => {
+                // empty catch for possible render error
             })
     }
 }
@@ -444,11 +449,14 @@ export const fetchSpecialUserList = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialUserListFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialUserListTimeout());
                 }
+                return dispatch(fetchSpecialUserListFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }
@@ -507,11 +515,14 @@ export const fetchShopCardLevel = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialCardLevelFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialCardLevelTimeout());
                 }
+                return dispatch(fetchSpecialCardLevelFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }

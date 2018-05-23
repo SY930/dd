@@ -188,18 +188,16 @@ class NewActivity extends React.Component {
                     this.props.saleCenterResetDetailInfo();
                 }}
             >
-                {this.state.modal1Visible ? (
-                    <ActivityMain
-                        index={this.state.index}
-                        steps={this.props.steps}
-                        isNew={true}
-                        callbackthree={(arg) => {
-                            if (arg == 3) {
-                                this.setModal1Visible(false);
-                            }
-                        }}
-                    />)
-                    : null}
+                <ActivityMain
+                    index={this.state.index}
+                    steps={this.props.steps}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.setModal1Visible(false);
+                        }
+                    }}
+                />
             </Modal>
         );
     }
@@ -215,6 +213,10 @@ class NewActivity extends React.Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
+        // save the promotionType to redux
+        this.props.setPromotionType({
+            promotionType: activity.get('key'),
+        });
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,
@@ -222,10 +224,6 @@ class NewActivity extends React.Component {
         this.setModal1Visible(true);
         this.setState({
             index,
-        });
-        // save the promotionType to redux
-        this.props.setPromotionType({
-            promotionType: activity.get('key'),
         });
     }
 }

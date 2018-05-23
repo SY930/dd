@@ -227,9 +227,11 @@ class MySpecialActivities extends React.Component {
     handleDismissUpdateModal() {
         this.setState({
             updateModalVisible: false,
+        }, () => {
+            this.props.saleCenterResetDetailInfo();
+            this.showNothing = this.showNothing.bind(this);
         });
-        this.props.saleCenterResetDetailInfo();
-        this.showNothing = this.showNothing.bind(this);
+
     }
 
     componentDidMount() {
@@ -902,15 +904,42 @@ class MySpecialActivities extends React.Component {
             onCancel: () => { },
         });
     }
-
-    // 编辑
-    handleUpdateOpe() {
-        let _record = arguments[1];
-        const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
+    successFn = (response) => {
+        const _serverToRedux = false;
+        const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
         if (_promotionIdx === undefined) {
             message.warning('出错了, 请刷新重试');
             return;
         }
+        if (response === undefined || response.data === undefined) {
+            message.error('没有查询到相应数据');
+            return null;
+        }
+        this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
+        this.setState({
+            modalTitle: '更新活动信息',
+            isNew: false,
+            index: _promotionIdx,
+        });
+    };
+
+    failFn = () => {
+        message.error('啊哦,好像出了点问题~');
+    };
+
+
+    // 编辑
+    handleUpdateOpe() {
+        let _record = arguments[1];
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
+                groupID: user.accountInfo.groupID,
+            },
+            success: this.successFn,
+            fail: this.failFn,
+        });
         if (_record) {
             this.setState({
                 updateModalVisible: true,
@@ -918,36 +947,6 @@ class MySpecialActivities extends React.Component {
                 currentItemID: _record.itemID ? _record.itemID : this.state.currentItemID,
             });
         }
-        // Set promotion information to the PromotionBasic and promotionScope redux
-
-        const user = this.props.user;
-
-
-        const successFn = (response) => {
-            const _serverToRedux = false;
-            if (response === undefined || response.data === undefined) {
-                message.error('没有查询到相应数据');
-                return null;
-            }
-            this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
-            this.setState({
-                modalTitle: '更新活动信息',
-                isNew: false,
-                index: _promotionIdx,
-            });
-        };
-
-        const failFn = () => {
-            message.error('错误');
-        };
-        this.props.fetchSpecialDetail({
-            data: {
-                itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
-                groupID: user.accountInfo.groupID,
-            },
-            success: successFn,
-            fail: failFn,
-        });
     }
     /**
      * Render promotion update Modal
@@ -968,15 +967,11 @@ class MySpecialActivities extends React.Component {
                 onCancel={() => {
                     this.setState({
                         updateModalVisible: false,
-                    });
-                    this.props.saleCenterResetDetailInfo();
+                    }, () => this.props.saleCenterResetDetailInfo());
+
                 }}
             >
-                {
-                    this.state.updateModalVisible ?
-                        this.renderContentOfThisModal()
-                        : null
-                }
+                {this.renderContentOfThisModal()}
             </Modal>
         );
     }
@@ -1015,23 +1010,17 @@ class MySpecialActivities extends React.Component {
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
-        this.setState({
-            visible: true,
-            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
-        });
-
         const user = this.props.user;
-
-        const failFn = () => {
-            message.error('查询详情失败');
-        };
-
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
             },
-            fail: failFn,
+            fail: this.failFn,
+        });
+        this.setState({
+            visible: true,
+            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
         });
     }
     // 关闭详情页
@@ -1044,24 +1033,24 @@ class MySpecialActivities extends React.Component {
     renderModals() {
         const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
         const checkDetailInfo = this.checkDetailInfo;
-        function renderContentOfTheModal(cancelFetchSpecialPromotionDetail) {
-            if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
-                return (
-                    <div className={styles.spinFather}>
-                        <Spin size="large" />
-                    </div>)
-            }
-            if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
-                return (
-                    <div className={styles.spinFather}>
-                        查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
-                    </div>
-                );
-            }
-            if (mySpecialActivities.status === 'success') {
-                return (<SpecialPromotionDetail record={mySpecialActivities.data} />);
-            }
+        let renderContentOfTheModal;
+        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+            renderContentOfTheModal = (
+                <div className={styles.spinFather}>
+                    <Spin size="large" />
+                </div>)
         }
+        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+            renderContentOfTheModal = (
+                <div className={styles.spinFather}>
+                    查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
+                </div>
+            );
+        }
+        if (mySpecialActivities.status === 'success') {
+            renderContentOfTheModal = (<SpecialPromotionDetail record={mySpecialActivities.data} />);
+        }
+
         return (
             <Modal
                 title="活动详情"
@@ -1070,11 +1059,7 @@ class MySpecialActivities extends React.Component {
                 closable={false}
                 width="750px"
             >
-                {
-                    this.state.visible ?
-                        renderContentOfTheModal(this.props.cancelFetchSpecialPromotionDetail)
-                        : null
-                }
+                {renderContentOfTheModal}
             </Modal>
         );
     }

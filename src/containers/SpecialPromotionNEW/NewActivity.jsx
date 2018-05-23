@@ -156,18 +156,16 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                {this.state.modal1Visible ? (
-                    <ActivityMain
-                        index={this.state.index}
-                        steps={this.props.steps}
-                        isNew={true}
-                        callbackthree={(arg) => {
-                            if (arg == 3) {
-                                this.setModal1Visible(false);
-                            }
-                        }}
-                    />)
-                    : null}
+                <ActivityMain
+                    index={this.state.index}
+                    steps={this.props.steps}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.setModal1Visible(false);
+                        }
+                    }}
+                />
             </Modal>
         );
     }
@@ -217,10 +215,10 @@ class NewActivity extends React.Component {
                 fail: () => {
                     message.error('检查失败!');
                 },
-            })
-        } else {
-            this.setModal1Visible(true);
+            });
+            return;
         }
+        this.setModal1Visible(true);
     }
 }
 
