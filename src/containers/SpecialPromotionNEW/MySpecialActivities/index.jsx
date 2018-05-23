@@ -162,6 +162,7 @@ class MySpecialActivities extends React.Component {
 
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
+        this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         // disable selected activity
 
 
@@ -344,8 +345,8 @@ class MySpecialActivities extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState)
-    }
+    return !isEqual(this.state, nextState)
+}
 
     render() {
         return (
@@ -964,12 +965,7 @@ class MySpecialActivities extends React.Component {
                 width="924px"
                 height="569px"
                 maskClosable={false}
-                onCancel={() => {
-                    this.setState({
-                        updateModalVisible: false,
-                    }, () => this.props.saleCenterResetDetailInfo());
-
-                }}
+                onCancel={this.handleDismissUpdateModal}
             >
                 {this.renderContentOfThisModal()}
             </Modal>

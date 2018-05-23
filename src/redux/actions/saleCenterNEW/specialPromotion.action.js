@@ -31,7 +31,7 @@ export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_OK = 'sale center: update spec
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_FAIL = 'sale center: update special promotion fail new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_TIMEOUT = 'sale center: update special promotion time out new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_CANCEL = 'sale center: update special promotion cancel new';
-export const SALE_CENTER_RESET_SPECIAL_PROMOTION = 'sale center: update special promotion cancel new';
+export const SALE_CENTER_RESET_SPECIAL_PROMOTION = 'sale center: update special promotion reset new';
 
 
 export const SALE_CENTER_FETCH_GROUP_MEMBER_START = 'sale center: fetch group member start new';

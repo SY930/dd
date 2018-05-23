@@ -84,6 +84,8 @@ class NewActivity extends React.Component {
         this.renderActivityButtons = this._renderActivityButtons.bind(this);
         this.onButtonClicked = this._onButtonClicked.bind(this);
         this.renderModal = this._renderModal.bind(this);
+        this.clear = this.clear.bind(this);
+        this.setModal1Visible = this.setModal1Visible.bind(this);
         this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentDidMount() {
@@ -103,12 +105,10 @@ class NewActivity extends React.Component {
     }
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
-        // TODO: uncomment the bottom
-        // if (!modal1Visible) {
-        //     this.props.saleCenterResetBasicInfo();
-        //     this.props.saleCenterResetScopeInfo();
-        //     this.props.saleCenterResetDetailInfo();
-        // }函数作用重复===this.props.clear()
+    }
+
+    clear() {
+        this.setState({ modal1Visible : false });
     }
 
     render() {
@@ -126,7 +126,7 @@ class NewActivity extends React.Component {
                     <ul>
                         {this.renderActivityButtons()}
                     </ul>
-                    {this.renderModal()}
+                    {this.state.modal1Visible ? this.renderModal() : null}
                 </Col>
             </Row>
 
@@ -180,13 +180,8 @@ class NewActivity extends React.Component {
                 }}
                 width="924px"
                 visible={this.state.modal1Visible}
-                onOk={() => this.setModal1Visible(false)}
-                onCancel={() => {
-                    this.setModal1Visible(false)
-                    this.props.saleCenterResetBasicInfo();
-                    this.props.saleCenterResetScopeInfo();
-                    this.props.saleCenterResetDetailInfo();
-                }}
+                onOk={this.clear}
+                onCancel={this.clear}
             >
                 <ActivityMain
                     index={this.state.index}
@@ -194,7 +189,7 @@ class NewActivity extends React.Component {
                     isNew={true}
                     callbackthree={(arg) => {
                         if (arg == 3) {
-                            this.setModal1Visible(false);
+                            this.setModal1Visible(false)
                         }
                     }}
                 />

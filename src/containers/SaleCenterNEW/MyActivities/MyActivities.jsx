@@ -17,7 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import {throttle} from 'lodash'
+import {throttle, isEqual} from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
@@ -364,19 +364,9 @@ class MyActivities extends React.Component {
             }
         }
     }
-    /*shouldComponentUpdate(nextProps, nextState) {
-        const thisStatus = this.props.myActivities.getIn(['$promotionDetailInfo', 'status']);
-        const nextStatus = nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
-        // console.log('props渲染:-----', (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
-        //     (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')))
-        // console.log('state渲染:-----', !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)))
-        // console.log('详情detail渲染:-----', thisStatus !== nextStatus && nextStatus === 'success')
-        return (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") ||
-            (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList') ||
-                !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState)) ||
-                (thisStatus !== nextStatus && nextStatus === 'success'))
-        // return true
-    }*/
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(this.state, nextState) || this.props.myActivities.getIn(['$promotionDetailInfo', 'status']) !== nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
+    }
     getParams = () => {
         const {
             promotionType,
@@ -617,7 +607,9 @@ class MyActivities extends React.Component {
                 steps={_state.steps}
                 callbackthree={(arg) => {
                     if (arg == 3) {
-                        this.handleDismissUpdateModal();
+                        this.setState({
+                            updateModalVisible: false,
+                        });
                     }
                 }}
             />);
@@ -1198,7 +1190,7 @@ class MyActivities extends React.Component {
                     {this.renderTables()}
                 </div>
             </div>
-            {this.renderModals()}
+            {/*{this.renderModals()}*/}
             {this.renderModifyRecordInfoModal(0)}
         </div>
         );

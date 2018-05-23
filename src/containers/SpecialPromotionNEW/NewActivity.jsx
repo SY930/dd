@@ -76,7 +76,6 @@ class NewActivity extends React.Component {
 
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
-        // TODO: uncomment the bottom
         if (!modal1Visible) {
             this.props.saleCenterResetDetailInfo();
         }
@@ -109,7 +108,7 @@ class NewActivity extends React.Component {
                         {this.renderActivityButtons()}
                     </ul>
                 </Col>
-                {this.renderModal()}
+                {this.state.modal1Visible ? this.renderModal(): null}
             </Row>
 
         );

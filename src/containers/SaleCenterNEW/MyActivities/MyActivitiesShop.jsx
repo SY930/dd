@@ -17,7 +17,6 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import _ from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../index';
@@ -73,7 +72,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
-import {throttle} from 'lodash'
+import {throttle, isEqual} from 'lodash'
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -199,6 +198,7 @@ class MyActivitiesShop extends React.Component {
             currentPromotionID: '',
         };
 
+        this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
         this.renderModals = this.renderModals.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -299,10 +299,12 @@ class MyActivitiesShop extends React.Component {
     handleDismissUpdateModal() {
         this.setState({
             updateModalVisible: false,
+        }, () => {
+            this.props.saleCenterResetBasicInfo();
+            this.props.saleCenterResetScopeInfo();
+            this.props.saleCenterResetDetailInfo();
+            this.props.cancelFetchPromotionDetail();
         });
-        // this.props.saleCenterResetBasicInfo();
-        // this.props.saleCenterResetScopeInfo();
-        // this.props.saleCenterResetDetailInfo();
     }
 
     onWindowResize = () => {
@@ -321,6 +323,10 @@ class MyActivitiesShop extends React.Component {
                 })
             }
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(this.state, nextState) || this.props.myActivities.getIn(['$promotionDetailInfo', 'status']) !== nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -495,12 +501,54 @@ class MyActivitiesShop extends React.Component {
         })
     };
 
+    successFn = (responseJSON) => {
+        const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
+        const _serverToRedux = false;
+        if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
+            message.error('没有查询到相应数据');
+            return null;
+        }
+        if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
+            const opts = {
+                _groupID: this.props.user.accountInfo.groupID,
+                shopID: responseJSON.promotionInfo.master.shopIDLst,
+            };
+            this.props.fetchFoodCategoryInfo({ ...opts });
+            this.props.fetchFoodMenuInfo({ ...opts });
+        }
+        // 把查询到的活动信息存到redux
+        this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
+        this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
+        this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
+
+        this.setState({
+            promotionInfo: responseJSON.promotionInfo,
+            selectedRecord: responseJSON.promotionInfo, // arguments[1],
+            modalTitle: '更新活动信息',
+            isNew: false,
+            index: _promotionIdx,
+        });
+    };
+
+    failFn = () => {
+        message.error('啊哦,好像出了点问题~');
+    };
+
     handleUpdateOpe() {
         const _record = arguments[1];
         if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
+        this.props.fetchPromotionDetail_NEW({
+            data: {
+                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
+                groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID,
+            },
+            success: this.successFn,
+            fail: this.failFn,
+        });
         if (_record ) {
             this.setState({
                 updateModalVisible: true,
@@ -508,69 +556,22 @@ class MyActivitiesShop extends React.Component {
                 currentPromotionID: _record.promotionIDStr,
             });
         }
-        // Set promotion information to the PromotionBasic and promotionScope redux
-        const successFn = (responseJSON) => {
-            const _promotionIdx = getPromotionIdx(_record ? _record.promotionType : this.state.editPromotionType);
-            const _serverToRedux = false;
-            if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
-                message.error('没有查询到相应数据');
-                return null;
-            }
-            if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
-                const opts = {
-                    _groupID: this.props.user.accountInfo.groupID,
-                    shopID: responseJSON.promotionInfo.master.shopIDLst,
-                };
-                this.props.fetchFoodCategoryInfo({ ...opts });
-                this.props.fetchFoodMenuInfo({ ...opts });
-            }
-            // 把查询到的活动信息存到redux
-            this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
-            this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
-            this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
-
-            this.setState({
-                promotionInfo: responseJSON.promotionInfo,
-                selectedRecord: responseJSON.promotionInfo, // arguments[1],
-                modalTitle: '更新活动信息',
-                isNew: false,
-                index: _promotionIdx,
-            });
-        };
-
-        const failFn = (msg) => {
-            message.error(msg);
-        };
-        this.props.fetchPromotionDetail_NEW({
-            data: {
-                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID,
-            },
-            success: successFn,
-            fail: failFn,
-        });
     }
 
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
-        this.setState({
-            visible: true,
-            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-        });
-
-        const failFn = (msg) => {
-            message.error(msg);
-        };
-
         this.props.fetchPromotionDetail_NEW({
             data: {
                 promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID,
             },
-            fail: failFn,
+            fail: this.failFn,
+        });
+        this.setState({
+            visible: true,
+            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
         });
     }
     /**
@@ -605,7 +606,9 @@ class MyActivitiesShop extends React.Component {
                 steps={_state.steps}
                 callbackthree={(arg) => {
                     if (arg == 3) {
-                        this.handleDismissUpdateModal();
+                        this.setState({
+                            updateModalVisible: false,
+                        });
                     }
                 }}
             />);
@@ -624,21 +627,9 @@ class MyActivitiesShop extends React.Component {
                 width="924px"
                 height="569px"
                 maskClosable={false}
-                onCancel={() => {
-                    this.setState({
-                        updateModalVisible: false,
-                    });
-                    this.props.saleCenterResetBasicInfo();
-                    this.props.saleCenterResetScopeInfo();
-                    this.props.saleCenterResetDetailInfo();
-                    this.props.cancelFetchPromotionDetail();
-                }}
+                onCancel={this.handleDismissUpdateModal}
             >
-                {
-                    this.state.updateModalVisible ?
-                        this.renderContentOfThisModal()
-                        : null
-                }
+                {this.renderContentOfThisModal()}
             </Modal>
         );
     }
@@ -646,24 +637,24 @@ class MyActivitiesShop extends React.Component {
     renderModals() {
         const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
         const checkDetailInfo = this.checkDetailInfo;
-        function renderContentOfTheModal(cancelFetchPromotionDetail) {
+        let renderContentOfTheModal;
             if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
-                return (
+                renderContentOfTheModal = (
                     <div className={styles.spinFather}>
                         <Spin size="large" />
                     </div>)
             }
             if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
-                return (
+                renderContentOfTheModal = (
                     <div className={styles.spinFather}>
                         查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
                     </div>
                 );
             }
             if (promotionDetailInfo.status === 'success') {
-                return (<PromotionDetail record={promotionDetailInfo.data.promotionInfo} />);
+                renderContentOfTheModal = (<PromotionDetail record={promotionDetailInfo.data.promotionInfo} />);
             }
-        }
+
         return (
             <Modal
                 title="活动详情"
@@ -671,11 +662,7 @@ class MyActivitiesShop extends React.Component {
                 footer={<Button onClick={this.handleClose}>关闭</Button>}
                 closable={false}
             >
-                {
-                    this.state.visible ?
-                        renderContentOfTheModal(this.props.cancelFetchPromotionDetail)
-                        : null
-                }
+                {renderContentOfTheModal}
             </Modal>
         );
     }
@@ -1193,7 +1180,7 @@ class MyActivitiesShop extends React.Component {
                         {this.renderTables()}
                     </div>
                 </div>
-                {this.renderModals()}
+                {/*{this.renderModals()}*/}
                 {this.renderModifyRecordInfoModal(0)}
             </div>
         );
