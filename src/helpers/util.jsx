@@ -126,7 +126,7 @@ function getAccountInfo() {
  * @param {String} successCode
  * @return {Object} { success:Boolean, code:String, msg:String }
  */
-function parseResponseJson(rsp, successCode) {
+export function parseResponseJson(rsp, successCode) {
     const resultcode = rsp.resultcode === undefined ? rsp.code : rsp.resultcode;
     const resultmsg = rsp.resultmsg === undefined
         ? (rsp.msg === undefined ? rsp.message : rsp.msg)
@@ -140,7 +140,7 @@ function parseResponseJson(rsp, successCode) {
     return {
         success: isSuccess,
         code: resultcode,
-        msg: resultmsg || rsp.statusText || '网络错误，请稍后重试',
+        msg: doRelogin ? '会话失效,请重新登录' : resultmsg || rsp.statusText || '网络错误，请稍后重试',
         redirect: doRelogin
     };
 }
@@ -240,7 +240,7 @@ export function fetchData(api, params, cache, {
         }).then(json => {
             const { redirect, success, code, msg } = parseResponseJson(json, successCode);
             if (!success) {
-                if (opts.needThrow) {
+                if (!redirect && opts.needThrow) {
                     return Promise.reject();
                 }
                 !disablePrompt && Modal.error({
@@ -685,14 +685,15 @@ export function axiosData(api, params, opts, {
         .then(json => {
             const { code, message } = json;
             if (code !== '000') {
-                if (opts && opts.needThrow) {
+                const {redirect, msg} = parseResponseJson(json, '000');
+                if (!redirect && opts && opts.needThrow) {
                     return Promise.reject();
                 }
                 Modal.error({
                     title: '啊哦！好像有问题呦~~',
-                    content: `${message}`,
+                    content: `${msg}`,
                 });
-                return Promise.redirect && window.setTimeout(() => doRedirect(), 1500);
+                redirect && window.setTimeout(() => doRedirect(), 1500);
                 return Promise.reject({ code, message, response: json });
             }
             if (!path) {

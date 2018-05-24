@@ -116,7 +116,7 @@ export const fetchFoodCategoryInfoAC = (opts) => {
             if (responseJSON.code === '000') {
                 dispatch(fetchFoodCategorySuccess(responseJSON.data))
             } else {
-                message.error(`获取菜品分类失败!${responseJSON.resultmsg}`);
+                message.error(`获取菜品分类失败!${responseJSON.resultmsg || ''}`);
                 dispatch(fetchFoodCategoryFailed(responseJSON.resultmsg));
             }
         }).catch((error) => {

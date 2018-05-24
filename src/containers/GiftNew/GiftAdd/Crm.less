@@ -6,6 +6,27 @@
 .CrmMain{
 
 }
+.tagContainer {
+    padding: 4px;
+    width: 100%;
+    font-size: 12px;
+    position: absolute;
+    color: #ffffff;
+    .cardTag {
+        float: right;
+        border-radius: 9px;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 9px;
+        background-color: rgba(0,0,0,0.06);
+        margin-left: 10px;
+    }
+    &::after{
+        content: '';
+        clear: both;
+        display: block;
+    }
+}
 .horzontalBg{
     // background: @horzontal-bg-color;
     // height: 15px;
@@ -165,6 +186,7 @@
 	height: 180px;
 	background-color: @color;
 	border-radius: 5px;
+    position: relative;
 	margin:0px 20px 20px 0px;
 	float:left;
 	transition:0.2s;

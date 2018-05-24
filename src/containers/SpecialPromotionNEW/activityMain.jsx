@@ -93,7 +93,7 @@ class ActivityMain extends React.Component {
             NewUpGradeReturnGift, // 升级送礼
             NewAddUpReturnGift, // 累计消费送礼
             NewOnLineReturnGift, // 线上送礼
-            NewColorsEggCat, // 彩蛋猫
+            // NewColorsEggCat, 彩蛋猫活动下线 key 70
         ];
         const _vipStash = [
             NewWakeUpReturnGift, // 唤醒送礼

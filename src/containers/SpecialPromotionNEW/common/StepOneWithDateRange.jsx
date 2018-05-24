@@ -389,14 +389,15 @@ class StepOneWithDateRange extends React.Component {
         if (startTime != '' && startTime != 0) {
             sendTimeProps.initialValue = moment(startTime, 'YYYYMMDD');
         }
-        if (timeString != '' && timeString != 0) {
+        if (timeString != '' && timeString !== 0) {
             timeStringInitialValue = moment(timeString, 'HHmm');
         } else {
             timeStringInitialValue = timeString;
         }
+        const promotionTypeConfig = categorys.find(v => v.key == this.props.type);
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{categorys.find((v) => { return v.key == this.props.type }).tip}</p>
+                <p>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -421,7 +422,7 @@ class StepOneWithDateRange extends React.Component {
                 >
                     <p>{lab}</p>
                     {
-                        categorys.find((v) => { return v.key == this.props.type }).tip ?
+                        promotionTypeConfig && promotionTypeConfig.tip ?
                             <Icon
                                 type="question-circle-o"
                                 className={styles.question}
@@ -491,7 +492,9 @@ class StepOneWithDateRange extends React.Component {
                                                 placeholder="请选择时间"
                                             />
                                         )}
-                                        <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
+                                        {
+                                            this.props.type == '50' && <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
+                                        }
                                     </FormItem>
                                 </Col>
                             </Row> : null

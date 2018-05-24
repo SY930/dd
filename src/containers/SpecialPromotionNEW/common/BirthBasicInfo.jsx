@@ -186,7 +186,7 @@ class PromotionBasicInfo extends React.Component {
             >
                 <p>{lab}</p>
                 {
-                    categorys.find((v) => { return v.key === this.props.type }).tip ?
+                    item && item.tip ?
                         <Icon
                             type="question-circle-o"
                             className={styles.question}

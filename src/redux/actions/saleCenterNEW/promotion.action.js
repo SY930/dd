@@ -191,7 +191,6 @@ export const fetchPromotionDetail = (opts) => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchPromotionDetailTimeout());
                 }
-                return dispatch(fetchPromotionDetailFail(err));
             })
     }
 }

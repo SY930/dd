@@ -43,6 +43,9 @@ class CustomProgressBar extends React.Component {
             this.setState({ isUpdate: nextProps.myActivities.get('isUpdate') })
         }
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.loading !== this.props.loading || this.state.current !== nextState.current;
+    }
     next(current) {
         const onNext = this.props.onNext;
         if (typeof onNext === 'function') {

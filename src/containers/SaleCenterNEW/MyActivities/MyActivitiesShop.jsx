@@ -285,7 +285,7 @@ class MyActivitiesShop extends React.Component {
     }
 
     toggleStateCallBack() {
-        message.success('使用状态修改成功，5分钟后saas才能获取更新的基础营销活动');
+        message.success('使用状态修改成功');
     }
 
     handleClose() {
@@ -1063,10 +1063,11 @@ class MyActivitiesShop extends React.Component {
                 width: 200,
                 // fixed:'left',
                 render: (promotionName) => {
+                    let text = promotionName;
                     if (promotionName === undefined || promotionName === null || promotionName === '') {
-                        return '--';
+                        text = '--';
                     }
-                    return promotionName;
+                    return (<span title={text}>{text}</span>);
                 },
             },
             {
@@ -1074,6 +1075,7 @@ class MyActivitiesShop extends React.Component {
                 dataIndex: 'promotionCode',
                 key: 'promotionCode',
                 width: 140,
+                render: text => <span title={text}>{text}</span>,
             },
 
             {
@@ -1081,7 +1083,7 @@ class MyActivitiesShop extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 200,
+                width: 180,
                 render: (validDate) => {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return '不限制';
@@ -1094,7 +1096,7 @@ class MyActivitiesShop extends React.Component {
                 title: '有效状态',
                 dataIndex: 'status',
                 key: 'valid',
-                width: 140,
+                width: 72,
                 render: (status) => {
                     return status == '1' ? '未开始' : status == '2' ? '执行中' : '已结束';
                 },
@@ -1132,7 +1134,7 @@ class MyActivitiesShop extends React.Component {
                 dataIndex: 'isActive',
                 className: 'TableTxtCenter',
                 key: 'isActive',
-                // width: 120,
+                width: 100,
                 render: (isActive) => {
                     return (isActive === 'ACTIVE' ? '启用' : '禁用');
                 },
@@ -1143,7 +1145,7 @@ class MyActivitiesShop extends React.Component {
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1500, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
