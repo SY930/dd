@@ -454,18 +454,10 @@ class MySpecialActivities extends React.Component {
 
     renderFilterBar() {
         const opts = [];
-        let count;
-        if (HUALALA.ENVIRONMENT !== 'production-release') {
-            count = 15;
-        } else {
-            count = 15;
-        }
         Cfg.eventWay.forEach((item, index) => {
-            if (index <= count) {
-                opts.push(
-                    <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
-                );
-            }
+            opts.push(
+                <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+            );
         });
         return (
             <div>
