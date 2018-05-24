@@ -53,7 +53,7 @@ class Tip extends React.Component {
                 <Icon
                     type="question-circle-o"
                     className={styles.question}
-                    // style={{ marginLeft: 6 }} 
+                    // style={{ marginLeft: 6 }}
                     onMouseOver={() => {
                         this.setState({ tipDisplay: 'block' })
                     }}
@@ -144,7 +144,7 @@ class RecommendFoodDetailInfo extends React.Component {
             nextFlag = true,
             dataFalg = true;
         stageType = handSetChecked && !autoSetChecked ? 1 : !handSetChecked && autoSetChecked ? 2 : handSetChecked && autoSetChecked ? 0 : ''
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
             }

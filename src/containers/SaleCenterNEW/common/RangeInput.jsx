@@ -41,7 +41,7 @@ class RangeInput extends React.Component {
 
     onBlur() {
         alert('blur');
-        this.props.form.validateFields((errors, value) => {
+        this.props.form.validateFieldsAndScroll((errors, value) => {
             // console.log("errrors is", errors);
             // console.log("value", value);
         })
@@ -70,7 +70,7 @@ class RangeInput extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 // console.log('Received values of form: ', values);
             }

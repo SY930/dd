@@ -200,7 +200,7 @@ class SpecialRangeInfo extends React.Component {
     }
     handleSubmit(isPrev) {
         let nextFlag = true;
-        this.props.form.validateFields((err) => {
+        this.props.form.validateFieldsAndScroll((err) => {
             if (err) {
                 nextFlag = false;
             }

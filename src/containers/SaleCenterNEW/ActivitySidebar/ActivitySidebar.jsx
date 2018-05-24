@@ -74,11 +74,16 @@ class ActivitySidebar extends React.Component {
                     : '全部',
             }, {
                 spanTitle: '适用场景',
-                content: promotionScopeInfo.getIn(['$scopeInfo', 'channel']) == 0
-                    ? '全部'
-                    : promotionScopeInfo.getIn(['$scopeInfo', 'channel']) == 1
-                        ? '云店'
-                        : '微信',
+                content: (() => {
+                    switch(Number(promotionScopeInfo.getIn(['$scopeInfo', 'channel']))) {
+                        case 0 : return '全部';
+                        case 1 : return '云店';
+                        case 2 : return '微信';
+                        case 3 : return '饮食通';
+                        default: return '全部';
+                    }
+                })()
+
             }, {
                 spanTitle: '自动执行',
                 content: promotionScopeInfo.getIn(['$scopeInfo', 'auto']) == 1

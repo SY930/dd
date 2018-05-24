@@ -198,7 +198,7 @@ class CompositeDetailInfo extends React.Component {
     handleSubmit() {
         let nextFlag = true;
         const { data, conditions } = this.state;
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
             } else {

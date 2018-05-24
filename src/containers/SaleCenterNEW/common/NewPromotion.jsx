@@ -156,7 +156,7 @@ class NewPromotion extends React.Component {
                 // data: {...opts,modifiedBy:this.props.user.toJS().accountInfo.userName},
                 data: { promotionInfo },
                 success: () => {
-                    message.success('活动更新成功，5分钟后saas才能获取到更新的基础营销活动', 5);
+                    message.success('活动更新成功', 5);
                     this.setState({
                         loading: false,
                     });
@@ -179,7 +179,7 @@ class NewPromotion extends React.Component {
                 data: { promotionInfo },
                 success: () => {
                     cb();
-                    message.success('活动创建完毕，5分钟后saas才能获取到最新创建的基础营销活动', 5);
+                    message.success('活动创建完毕', 5);
                     this.setState({
                         loading: false,
                     });

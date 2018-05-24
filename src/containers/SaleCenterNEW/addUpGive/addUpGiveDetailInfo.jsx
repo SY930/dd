@@ -91,7 +91,7 @@ class AddUpGiveDetailInfo extends React.Component {
     handleSubmit = (cbFn) => {
         let nextFlag = true;
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             const { rule, priceLst } = this.state;
             const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
             const _rule = {

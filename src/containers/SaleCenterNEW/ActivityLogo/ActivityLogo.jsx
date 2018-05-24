@@ -18,6 +18,12 @@ export class ActivityLogo extends React.Component {
         const index = this.props.index;
         return (
             <div className={this.props.activityMain ? style[`cardWrap_${index}`] : styles[`cardWrap_${index}`]} >
+                {this.props.tags ? (<div className={styles.tagContainer}>
+                    {this.props.tags.slice().reverse().map(tag => { // float right need reverse
+                        return <div className={styles.cardTag} key={tag}>{tag}</div>
+                    })}
+                </div>) : null
+                }
                 <div className={this.props.activityMain ? style.title : styles.title}>{this.props.titletext}</div>
                 <div className={styles.describe}>{this.props.spantext}</div>
                 <div className={styles.describe}>{this.props.example}</div>

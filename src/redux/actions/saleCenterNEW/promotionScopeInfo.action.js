@@ -42,6 +42,11 @@ export const SCENARIOS = Object.freeze([{
     key: 'WECHAT',
     name: '微信',
 },
+    {
+    value: '3',
+    key: 'YST',
+    name: '饮食通',
+},
 ]);
 
 
@@ -94,7 +99,7 @@ export const getPromotionShopSchema = (params) => {
 
         fetch('/api/shopapi/schema', {
             method: 'POST',
-            body: params,
+            body: JSON.stringify(params),
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',

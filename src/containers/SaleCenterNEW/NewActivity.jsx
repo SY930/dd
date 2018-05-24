@@ -11,6 +11,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { throttle } from 'lodash';
 import { Modal, Row, Col, message } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
@@ -83,7 +84,7 @@ class NewActivity extends React.Component {
         this.renderActivityButtons = this._renderActivityButtons.bind(this);
         this.onButtonClicked = this._onButtonClicked.bind(this);
         this.renderModal = this._renderModal.bind(this);
-        this.onWindowResize = this.onWindowResize.bind(this);
+        this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentDidMount() {
         this.onWindowResize();
@@ -97,8 +98,8 @@ class NewActivity extends React.Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        this.setState({ contentHeight })
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        this.setState({ contentHeight });
     }
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
@@ -121,11 +122,11 @@ class NewActivity extends React.Component {
                     </div>
                 </Col>
                 <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent">
-                    <div style={{ height: '100%' }}>
+                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
+                    <ul>
                         {this.renderActivityButtons()}
-                        {this.renderModal()}
-                    </div>
+                    </ul>
+                    {this.renderModal()}
                 </Col>
             </Row>
 
@@ -135,10 +136,9 @@ class NewActivity extends React.Component {
 
     _renderActivityButtons() {
         const saleCenter = this.props.saleCenter;
-        const contentHeight = this.state.contentHeight - 170;
         return (
-            <div className="clearfix" style={{ overflowY: 'auto', height: contentHeight }}>
-                {
+
+
                     saleCenter.get('activityCategories').map((activity, index) => {
                         return (
                             <li
@@ -154,13 +154,13 @@ class NewActivity extends React.Component {
                                 }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                                    <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
                                 </Authority>
                             </li>
                         );
                     }).toJS()
-                }
-            </div>
+
+
 
         );
     }
