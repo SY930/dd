@@ -135,7 +135,6 @@ class ThreeStepsValidator extends React.Component {
                                             style={{ width: 185 }}
                                             value={this.state.adjustmentMethod}
                                             onChange={this.handleAdjustmentMethodChange}
-
                                         >
                                             <Option key="1" value={'1'}>根据等级调整</Option>
                                             <Option key="2" value={'2'}>根据入会店铺调整</Option>
@@ -153,9 +152,9 @@ class ThreeStepsValidator extends React.Component {
                                     <div className={ownStyle.uploaderContainer}>
                                         {this.renderUploadButton()}
                                     </div>
-
-                                    <a className={ownStyle.downloadLink}>下载数据导入模板</a>
-
+                                    <a href="http://res.tiaofangzi.com/group2/M01/58/FA/wKgVT1mjzfaZPYBaAAAwLLmM7jg77.xlsx"
+                                       className={ownStyle.downloadLink}
+                                       download="数据导入模板.xlsx">下载数据导入模板</a>
                                 </div>
 
 
