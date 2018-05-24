@@ -313,10 +313,12 @@ class GroupTicketDetailInfo extends React.Component {
                             modal="float"
                         />
                     </span>
-                    <span className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}>最多使用团购券</span>
+                    <span id="customLabel" className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}
+                          style={{width: this.state.stageType == 2 ? '22%' : '30%' }}
+                    >{this.state.stageType == 2 ? '最多使用团购券':'可使用一张, 最多使用'}</span>
                     <FormItem
                         className={styles.priceInLine}
-                        style={{ marginTop: -20 }}
+                        style={{ marginTop: -20, width: this.state.stageType == 2 ? '28%' : '20%' }}
                         validateStatus={this.state.giftMaxUseNum ? 'success' : 'error'}
                         help={this.state.giftMaxUseNum ? null : '必须大于0'}
                     >

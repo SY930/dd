@@ -389,7 +389,7 @@ class StepOneWithDateRange extends React.Component {
         if (startTime != '' && startTime != 0) {
             sendTimeProps.initialValue = moment(startTime, 'YYYYMMDD');
         }
-        if (timeString != '' && timeString != 0) {
+        if (timeString != '' && timeString !== 0) {
             timeStringInitialValue = moment(timeString, 'HHmm');
         } else {
             timeStringInitialValue = timeString;
