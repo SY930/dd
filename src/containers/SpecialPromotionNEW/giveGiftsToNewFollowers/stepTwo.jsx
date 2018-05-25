@@ -13,6 +13,9 @@ import { connect } from 'react-redux';
 import {
     Form,
     Select,
+    Icon,
+    message,
+    Tooltip
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -45,6 +48,7 @@ class StepTwo extends React.Component {
         };
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.getWeiXinAccountsList = this.getWeiXinAccountsList.bind(this);
     }
 
     componentDidMount() {
@@ -54,7 +58,7 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        this.getWeiXinAccountsList();
+        this.getWeiXinAccountsList([]);
         this.loadSelections();
 
         // {groupID: this.props.user.accountInfo.groupID}
@@ -76,12 +80,12 @@ class StepTwo extends React.Component {
             this.props.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']);
     }
 
-    getWeiXinAccountsList() {
+    getWeiXinAccountsList(list) {
         this.setState({isLoading: true});
         new Promise((resolve, reject) => {
             setTimeout(() => {
-                resolve(mock);
-            }, 10000)
+                resolve(list instanceof Array ? [] : mock);
+            }, 5000)
         }).then(res => {
             this.setState({availableAccounts: res, isLoading: false});
         })
@@ -96,9 +100,10 @@ class StepTwo extends React.Component {
                     return (
                         <Option value={account.value} key={account.value}>{account.label}</Option>
                     );
-                })
+                });
+                options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~
             } else {
-                options = (<Option value={'0'} disabled={true}>暂无数据</Option>);
+                options = (<Option value={'0'} disabled={true}>未查询到可绑定的微信公众号</Option>);
             }
         } else {
             options = (<Option value={'0'} disabled={true}>数据加载中....</Option>);
@@ -123,29 +128,69 @@ class StepTwo extends React.Component {
                 labelCol={{
                     span: 4,
                 }}
+                required={true}
                 hasFeedback={true}
                 className={styles.FormItemStyle}
             >
+
                 <Select {..._brandList} size="default">
                     {options}
                 </Select>
+                {
+                    this.state.isLoading &&
+                    <Icon
+                        type={'loading'}
+                        style={{color:'inherit'}}
+                        className={styles.cardLevelTreeIcon}
+                    />
+                }
+                {
+                    !this.state.isLoading && !this.state.availableAccounts.length &&
+                    <Tooltip title="未查询到可绑定的微信公众号">
+                        <Icon   onClick={this.getWeiXinAccountsList}
+                                type={'exclamation-circle'}
+                                style={{cursor: 'pointer'}}
+                                className={styles.cardLevelTreeIcon}
+                            />
+                    </Tooltip>
+                }
             </Form.Item>
         );
     }
 
     handleSelectionChange(value) {
-        this.setState({selectedAccounts: value});
+        if (value.includes('-1')) {
+            this.setState({selectedAccounts: ['-1']});
+        } else {
+            this.setState({selectedAccounts: value});
+        }
+
     }
 
     handleSubmit() {
         let flag = true;
-        this.props.setSpecialBasicInfo({weixinAccounts: this.state.selectedAccounts.join(',')});
+        if (this.state.isLoading) {
+            message.warning('正在查询集团下可用微信公众号, 请稍候');
+            return false;
+        }
+        if (!this.state.availableAccounts.length) {
+            message.warning('未查询到该集团下可绑定的微信公众号');
+            return false;
+        }
+        const isAll = this.state.selectedAccounts[0] === '-1'; // 前端虚拟的全部选项
+        let weixinAccounts;
+        if (isAll) {
+            weixinAccounts = this.state.availableAccounts.map(accounts => accounts.value).join(',');
+        }else {
+            weixinAccounts = this.state.selectedAccounts.join(',')
+        }
+        this.props.setSpecialBasicInfo({weixinAccounts});
         return flag;
     }
 
     render() {
         return (
-            <Form>
+            <Form className={styles.cardLevelTree}>
                 {this.renderWeiXinAccountsFormItem()}
             </Form>
         );
