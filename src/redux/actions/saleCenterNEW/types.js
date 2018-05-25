@@ -678,6 +678,14 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '64',
         },
+        {
+            idx: 14,
+            title: '关注送礼',
+            color: '#84aac6',
+            text: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数',
+            example: '',
+            key: '31',
+        },
     ];
     // if (HUALALA.ENVIRONMENT != 'production-release') {
     return basic.concat(extral);

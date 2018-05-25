@@ -37,6 +37,7 @@ const $initialState = Immutable.fromJS({
         eventStartDate: '',
         eventEndDate: '',
         startTime: '',
+        weixinAccounts: '10,11,12',
         excludeEventCardLevelIdModelList: [],
         allCardLevelCheck: false,
         accountInfoList: [], // 短信结算主体
