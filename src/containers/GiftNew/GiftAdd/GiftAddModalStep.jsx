@@ -318,7 +318,7 @@ class GiftAddModalStep extends React.Component {
                     return
                 }
             }
-            if (this.props.gift.value == '20' || '999') {
+            if (this.props.gift.value == '20' || '21') {
                 validateFoodList(basicValues, cb);
                 if (error) return
             } else {
@@ -1008,7 +1008,7 @@ class GiftAddModalStep extends React.Component {
         if (value == '10' || value == '91') {
             giftValueLabel = '礼品价值';
         }
-        if (value == '999') {
+        if (value == '21') {
             giftValueLabel = '兑换金额';
         }
         const formItems = {
