@@ -65,6 +65,15 @@ export const COLUMNS = [
             return <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType))}</span>
         },
     }, {
+        title: '礼品ID',
+        dataIndex: 'giftItemID',
+        key: 'giftItemID',
+        render: (value) => {
+            return <span title={value}>{value}</span>
+        },
+        // fixed: 'left',
+        width: 150,
+    },  {
         title: '礼品名称',
         dataIndex: 'giftName',
         key: 'giftName',
