@@ -28,8 +28,8 @@ class GiftAddModal extends React.Component {
             imageUrl: '',
             transferType: 0,
             isUpdate: true,
-        },
-            this.baseForm = null;
+        };
+        this.baseForm = null;
     }
     componentWillMount() {
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
@@ -265,6 +265,23 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => this.handleGiftName(decorator),
             },
+            giftCost: {
+                type: 'text',
+                label: '卡片工本费',
+                disabled: type !== 'add',
+                placeholder: '请输入卡片工本费金额',
+                surfix: '元',
+                rules: [
+                    { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于或等于0的值，整数不超过9位，小数不超过2位' },
+                    {
+                        validator: (rule, v, cb) => {
+                            const { getFieldValue } = this.baseForm;
+                            const giftValue = getFieldValue('giftValue');
+                            Number(v) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                        },
+                        message: '工本费只能小于或等于礼品价值',
+                    }],
+            },
             price: {
                 type: 'text',
                 label: '建议售价',
@@ -317,7 +334,7 @@ class GiftAddModal extends React.Component {
             '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule'] }],
             '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
             '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
-            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'price', 'giftRemark', 'giftRule'] }],
+            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule'] }],
         };
         let formData = {};
         if (type == 'edit') {
