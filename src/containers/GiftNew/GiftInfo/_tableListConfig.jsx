@@ -80,7 +80,7 @@ export const COLUMNS = [
         // fixed: 'left',
         width: 150,
     }, {
-        title: '礼品金额',
+        title: '礼品金额 (元)',
         dataIndex: 'giftValue',
         key: 'giftValue',
         width: 100,
