@@ -88,6 +88,10 @@ class GiftAddModal extends React.Component {
             let callServer = '';
             params.giftImagePath = imageUrl;
             params.transferType = transferType;
+            // 定额卡工本费
+            if (value == '90') {
+                params.giftCost = `${Number(params.giftCost || 0)}`;
+            }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID === '-1') {
@@ -277,7 +281,7 @@ class GiftAddModal extends React.Component {
                         validator: (rule, v, cb) => {
                             const { getFieldValue } = this.baseForm;
                             const giftValue = getFieldValue('giftValue');
-                            Number(v) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                            Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                         },
                         message: '工本费只能小于或等于礼品价值',
                     }],
