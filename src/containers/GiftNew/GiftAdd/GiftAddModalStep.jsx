@@ -299,18 +299,18 @@ class GiftAddModalStep extends React.Component {
         this.props.saleCenterResetDetailInfo({});
         this.props.onCancel();
     }
-    handleNext = (cb) => {
-        const validateFoodList = (basicValues, _cb) => {
-            if (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
-                || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-                || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
-                message.warning('请至少选择一个菜品');
-                this.setState({ foodNameListStatus: 'error' });
-                return false;
-            }
-            this.setState({ foodNameListStatus: 'success' })
-            _cb && _cb();
+    validateFoodList = (basicValues) => {
+        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
+            || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
+            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
+            message.warning('请至少选择一个菜品');
+            this.setState({ foodNameListStatus: 'error' });
+            return false;
         }
+        this.setState({ foodNameListStatus: 'success' });
+        return true;
+    }
+    handleNext = (cb) => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
             if (basicValues.TrdTemplate) {
                 const { TrdTemplateStatus } = basicValues.TrdTemplate;
@@ -319,12 +319,12 @@ class GiftAddModalStep extends React.Component {
                 }
             }
             if (this.props.gift.value == '20') {
-                validateFoodList(basicValues, cb);
-                if (error) return
-            } else {
-                if (error) return
-                cb();
+                if (this.validateFoodList(basicValues) === false) {
+                    return false;
+                }
             }
+            if (error) return false;
+            cb();
         })
     }
     handlePrev = (cb) => {
@@ -1315,7 +1315,7 @@ class GiftAddModalStep extends React.Component {
                 />),
         }];
         return (
-            <Modal
+        visible && <Modal
                 // key={modalKey}
                 title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
                 className={styles.foodModal}
