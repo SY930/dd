@@ -266,7 +266,7 @@ class GiftAddModalStep extends React.Component {
                 break;
 
             case 'TrdTemplate':
-                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '活动券') {
+                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
                     if (value) {
                         newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
                     } else {
@@ -318,7 +318,7 @@ class GiftAddModalStep extends React.Component {
                     return
                 }
             }
-            if (this.props.gift.value == '20') {
+            if (this.props.gift.value == '20' || '999') {
                 validateFoodList(basicValues, cb);
                 if (error) return
             } else {
@@ -1004,6 +1004,13 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
+        let giftValueLabel = '可抵扣金额';
+        if (value == '10' || value == '91') {
+            giftValueLabel = '礼品价值';
+        }
+        if (value == '999') {
+            giftValueLabel = '兑换金额';
+        }
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1012,7 +1019,7 @@ class GiftAddModalStep extends React.Component {
                 render: () => describe,
             },
             giftValue: {
-                label: value == '10' || value == '91' ? '礼品价值' : '可抵扣金额',
+                label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',

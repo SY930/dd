@@ -175,7 +175,7 @@ class ReturnGift extends React.Component {
             const filterOffLine = this.props.filterOffLine;// 支持到店属性
             const _giftInfo = [];
             giftInfo.map((giftTypes) => {
-                if (giftTypes.giftType == '10' || giftTypes.giftType == '20' || giftTypes.giftType == '30') { // 只有电子代金券和菜品券,shi实物券有支持到店属性
+                if (giftTypes.giftType == '10' || giftTypes.giftType == '20' || giftTypes.giftType == '999' || giftTypes.giftType == '30') { // 只有电子代金券和菜品券,shi实物券有支持到店属性
                     _giftInfo.push({
                         giftType: giftTypes.giftType,
                         crmGifts: giftTypes.crmGifts.filter((gift) => {

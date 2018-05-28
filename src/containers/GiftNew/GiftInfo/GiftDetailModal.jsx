@@ -144,6 +144,7 @@ class GiftDetailModal extends Component {
             switch (v) {
                 case '10':
                 case '20':
+                case '999':
                 case '30':
                 case '40':
                     return <span><em>{data.giftValue}</em>元</span>;
