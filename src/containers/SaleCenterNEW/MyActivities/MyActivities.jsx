@@ -684,6 +684,17 @@ class MyActivities extends React.Component {
                                 jumpPage({ menuID })
                             }
                         }>新建</Button>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                // const menuID = this.props.user.menuList.find(tab => tab.entryCode === '').menuID;
+                                console.log(this.props.user.menuList);
+                                jumpPage({ menuID: 'set_message_templates' })
+                            }
+                        }>新建</Button>
                 </div>
             </div>
         );
