@@ -63,7 +63,7 @@ export const SALE_CENTER_FETCH_USER_INFO_CANCEL = 'sale center: fetch user info 
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK = 'sale center: fetch user info delete new';
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch user info delete Fail new';
 
-export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new'
+export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new';
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });

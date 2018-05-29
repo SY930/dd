@@ -15,6 +15,7 @@ import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+import {queryOccupiedWeiXinAccountsStart} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 
 const Immutable = require('immutable');
 const moment = require('moment');
@@ -223,6 +224,7 @@ class StepOneWithDateRange extends React.Component {
             }
             if (this.props.type === '64') {
                 // EditBoxForShops组件-编辑时-componentDidMount再发一次;
+                this.props.queryWeixinAccounts({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined });
                 this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined }).then(allShopCheck => {
                     this.setState({
                         allShopCheck
@@ -669,6 +671,9 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetShopOfEventByDate: (opts) => {
             return dispatch(saleCenterGetShopOfEventByDate(opts));
         },
+        queryWeixinAccounts: (opts) => {
+            dispatch(queryOccupiedWeiXinAccountsStart(opts));
+        }
     }
 };
 

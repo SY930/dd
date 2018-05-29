@@ -52,6 +52,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/sa
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
+import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -112,6 +113,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_promotionDetailInfo_NEW,
     sale_promotionScopeInfo_NEW,
     sale_fullCut_NEW,
+    queryWeixinAccounts,
     sale_myActivities_NEW,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
