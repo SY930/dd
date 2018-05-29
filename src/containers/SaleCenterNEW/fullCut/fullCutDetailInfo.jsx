@@ -322,7 +322,8 @@ class FullCutDetailInfo extends React.Component {
                                 addonBefore={
                                     <Select
                                         size="default"
-                                        className={styles.linkSelectorRight}
+                                        className={`${styles.linkSelectorRight} fullCutDetailMountClassJs`}
+                                        getPopupContainer={() => document.querySelector('.fullCutDetailMountClassJs')}
                                         value={`${this.state.ruleType}`}
                                         onChange={(val) => {
                                             let { ruleType, maxCount } = this.state;

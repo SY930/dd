@@ -322,7 +322,12 @@ class BuyAFreeDetailInfo extends React.Component {
                                 <PriceInput
                                     addonBefore={
                                         idx == 0 ? (
-                                            <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                            <Select size="default"
+                                                    onChange={this.ruleTypeChange}
+                                                    value={this.state.ruleType}
+                                                    className={`buyFreeDetailMountClassJs`}
+                                                    getPopupContainer={() => document.querySelector('.buyFreeDetailMountClassJs')}
+                                            >
                                                 {
                                                     RULE_TYPE.map((item) => {
                                                         return (<Option key={item.key} value={item.key}>{item.value}</Option>)

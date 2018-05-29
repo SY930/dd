@@ -191,6 +191,8 @@ class SeniorDateSetting extends React.Component {
                 <Select
                     style={{ marginBottom: 10 }}
                     defaultValue={selectType}
+                    className={`advancedDateSettingsMountClassJs`}
+                    getPopupContainer={() => document.querySelector('.advancedDateSettingsMountClassJs')}
                     value={selectType}
                     onSelect={this.onSelect}
                 >

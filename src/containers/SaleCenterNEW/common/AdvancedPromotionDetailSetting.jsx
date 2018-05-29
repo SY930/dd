@@ -188,8 +188,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
                 <Select
                     size={'default'}
-                    className={styles.linkSelectorRight}
                     value={this.state.userSetting}
+                    className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                    getPopupContainer={() => document.querySelector('.advancedDetailClassJs')}
                     onChange={(val) => {
                         this.setState({
                             userSetting: val,
@@ -448,8 +449,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
-                                className={styles.linkSelectorRight}
                                 value={cardScopeIDs}
+                                className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                                getPopupContainer={() => document.querySelector('.advancedDetailClassJs')}
                                 onChange={(val) => {
                                     this.handleCardScopeList({
                                         cardScopeIDs: val,

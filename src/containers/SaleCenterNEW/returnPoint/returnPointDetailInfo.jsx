@@ -241,7 +241,8 @@ class ReturnPointDetailInfo extends React.Component {
 
                     <Select
                         placeholder="请选择活动类别"
-                        className={styles.linkSelectorRight}
+                        className={`${styles.linkSelectorRight} returnPointClassJs`}
+                        getPopupContainer={() => document.querySelector('.returnPointClassJs')}
                         value={`${this.state.ruleType}`}
                         onChange={(val) => {
                             let { ruleType, maxCount } = this.state;

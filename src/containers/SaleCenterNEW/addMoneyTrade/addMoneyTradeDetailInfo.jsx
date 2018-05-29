@@ -364,7 +364,12 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     >
                         <PriceInput
                             addonBefore={
-                                <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                <Select size="default"
+                                        onChange={this.ruleTypeChange}
+                                        value={this.state.ruleType}
+                                        className="addMoneyTradeMountClassJs"
+                                        getPopupContainer={() => document.querySelector('.addMoneyTradeMountClassJs')}
+                                >
                                     <Option key="0" value="0">任意消费满</Option>
                                     <Option key="2" value="2">任意消费每满</Option>
                                     <Option key="1" value="1">活动菜品消费满</Option>
@@ -385,7 +390,12 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         help={this.state.stageCountFlag ? null : '请输入菜品数量'}>
                         <PriceInput
                             addonBefore={
-                                <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                <Select size="default"
+                                        onChange={this.ruleTypeChange}
+                                        value={this.state.ruleType}
+                                        className="addMoneyTradeMountClassJs"
+                                        getPopupContainer={() => document.querySelector('.addMoneyTradeMountClassJs')}
+                                >
                                     <Option key="0" value="0">任意菜品数量满</Option>
                                     <Option key="2" value="2">任意菜品数量每满</Option>
                                     <Option key="1" value="1">活动菜品数量满</Option>

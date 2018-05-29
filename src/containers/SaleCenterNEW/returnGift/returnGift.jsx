@@ -390,7 +390,8 @@ class ReturnGift extends React.Component {
                     >
                         <Select
                             size="default"
-                            className={styles.noRadius}
+                            className={`${styles.noRadius} returnGiftMount1ClassJs`}
+                            getPopupContainer={() => document.querySelector('.returnGiftMount1ClassJs')}
                             value={
                                 typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
                                     '0' :

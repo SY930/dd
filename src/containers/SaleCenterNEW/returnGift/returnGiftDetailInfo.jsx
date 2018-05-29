@@ -480,7 +480,8 @@ class ReturnGiftDetailInfo extends React.Component {
                     <Select
                         size="default"
                         placeholder="请选择活动类别"
-                        className={styles.linkSelectorRight}
+                        className={`${styles.linkSelectorRight} returnGiftDetailMountClassJs`}
+                        getPopupContainer={() => document.querySelector('.returnGiftDetailMountClassJs')}
                         value={this.state.rule.type}
                         onChange={(val) => {
                             const { rule } = this.state;

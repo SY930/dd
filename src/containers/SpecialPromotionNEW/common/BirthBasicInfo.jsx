@@ -266,7 +266,12 @@ class PromotionBasicInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select size="default" value={this.state.sendMsg} onChange={this.handleSendMsgChange}>
+                    <Select size="default"
+                            value={this.state.sendMsg}
+                            onChange={this.handleSendMsgChange}
+                            className="birthBasicMountClassJs"
+                            getPopupContainer={() => document.querySelector('.birthBasicMountClassJs')}
+                    >
                         {
                             SEND_MSG.map((item) => {
                                 return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)

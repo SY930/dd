@@ -167,24 +167,16 @@ class SpecialDetailInfo extends React.Component {
                     <SpecialDishesTable
                         onChange={this.dishesChange}
                     />
-                    {/*<div>
-                        <Select onChange={this.handleIsLimitedChange} value={isLimited}>
-                            <Option key="0" value={0}>不加价</Option>
-                            <Option key="1" value={1}>加价</Option>
-                        </Select>
-                    </div>*/}
-                    {/*<FormItem
-                        className={styles.FormItemStyle}
-                        label='单笔订单同一菜品最多使用数量限制'
-                        labelCol={{ span: 7 }}
-                        wrapperCol={{ span: 13 }}
-                    >*/}
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>{'单笔订单同一菜品最多使用数量限制'}</div>
                         <div style={{width: '300px'}}>
 
                             <Col  span={this.state.isLimited == 0 ? 24 : 8}>
-                                <Select onChange={this.handleIsLimitedChange} value={String(this.state.isLimited)}>
+                                <Select onChange={this.handleIsLimitedChange}
+                                        value={String(this.state.isLimited)}
+                                        className={`specialDetailMountClassJs`}
+                                        getPopupContainer={() => document.querySelector('.specialDetailMountClassJs')}
+                                >
                                     <Option key="0" value={'0'}>不限制</Option>
                                     <Option key="1" value={'1'}>限制</Option>
                                 </Select>
