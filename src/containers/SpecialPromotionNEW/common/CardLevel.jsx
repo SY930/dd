@@ -224,6 +224,8 @@ class CardLevel extends React.Component {
                     showSearch={true}
                     onChange={this.handleDefaultCardTypeChange}
                     value={defaultCardType}
+                    className="cardLevelMountClassJs"
+                    getPopupContainer={() => document.querySelector('.cardLevelMountClassJs')}
                 >
                     {
                         DefaultCardTypes.map(cate => <Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Option>)
