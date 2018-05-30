@@ -190,7 +190,7 @@ class GiftDetailModal extends Component {
                             <Col span={4}>
                                 <div
                                     className="gift-image"
-                                    style={{ backgroundImage: `url("/asserts/img/${giftType}.jpg")` }}
+                                    style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
                                 >
                                     {giftLogo(giftType)}
                                     <p>{data.giftName}</p>
