@@ -64,6 +64,7 @@ class GiftType extends React.Component {
                 case '20':
                 case '80':
                 case '100':
+                case '21':
                 case '91':
                 case '110':
                 case '111':

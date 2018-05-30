@@ -372,6 +372,7 @@ class GiftDetailTable extends Component {
                 case '20':
                 case '80':
                 case '100':
+                case '21':
                 case '91':
                 case '110':
                 case '111':
@@ -389,6 +390,7 @@ class GiftDetailTable extends Component {
             switch (v) {
                 case '10':
                 case '20':
+                case '21':
                 case '80':
                 case '30':
                 case '40':
