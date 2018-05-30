@@ -36,6 +36,7 @@ class StepTwo extends React.Component {
         };
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.getWechatAccountsList = this.getWechatAccountsList.bind(this);
     }
 
     componentDidMount() {
@@ -50,10 +51,14 @@ class StepTwo extends React.Component {
         }
     }
 
+    getWechatAccountsList() {
+        this.props.queryWechatMpInfo();
+    }
+
     componentWillReceiveProps(nextProps) {
         let { allAccounts, isLoading, selectedIDs} = this.state;
         if (this.props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList'])) {
-            selectedIDs = nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']);
+            selectedIDs = nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']).toJS();
         }
         if (this.props.mpListLoading !== nextProps.mpListLoading) {
             isLoading = nextProps.mpListLoading;
@@ -69,13 +74,19 @@ class StepTwo extends React.Component {
     }
 
     renderWeiXinAccountsFormItem() {
-        const availableAccounts = this.state.allAccounts.map(account => );
+        const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
+        const availableAccounts = this.state.allAccounts.map(account => {
+            if (disabledIDs.find(id => id === account.mpID)) {
+                return {...account, disabled: true}
+            }
+            return account;
+        });
         let options;
         if (!this.state.isLoading) {
             if (availableAccounts.length > 0) {
                 options = availableAccounts.map((account, idx) => {
                     return (
-                        <Option value={account.mpID} key={account.mpID}>{account.mpName}</Option>
+                        <Option value={account.mpID} key={account.mpID} disabled={!!account.disabled}>{account.mpName}</Option>
                     );
                 });
                 options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~ emmmm
@@ -86,7 +97,7 @@ class StepTwo extends React.Component {
             options = (<Option value={'0'} disabled={true}>数据加载中....</Option>);
         }
 
-        const _brandList = {
+        const opts = {
             multiple: true,
             allowClear: true,
             showSearch: false,
@@ -94,7 +105,7 @@ class StepTwo extends React.Component {
             placeholder: '集团下全部微信公众号',
             onChange: this.handleSelectionChange,
             // defaultValue: this.state.brands,
-            value: this.state.selectedAccounts,
+            value: this.state.selectedIDs,
         };
         return (
             <Form.Item
@@ -110,7 +121,7 @@ class StepTwo extends React.Component {
                 className={styles.FormItemStyle}
             >
 
-                <Select {..._brandList} size="default">
+                <Select {...opts} size="default">
                     {options}
                 </Select>
                 {
@@ -124,7 +135,7 @@ class StepTwo extends React.Component {
                 {
                     !this.state.isLoading && !this.state.allAccounts.length &&
                     <Tooltip title="未查询到可绑定的微信公众号">
-                        <Icon   onClick={this.getWeiXinAccountsList}
+                        <Icon   onClick={this.getWechatAccountsList}
                                 type={'exclamation-circle'}
                                 style={{cursor: 'pointer'}}
                                 className={styles.cardLevelTreeIcon}
@@ -154,14 +165,18 @@ class StepTwo extends React.Component {
             message.warning('未查询到该集团下可绑定的微信公众号');
             return false;
         }
-        const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
-        let mpIDlist;
-        if (isAll) {
-            mpIDlist = this.state.allAccounts.filter(accounts => !accounts.disabled).map(accounts => accounts.mpID);
-        }else {
-            mpIDlist = this.state.selectedIDs;
+        if (!this.state.selectedIDs.length) {
+            message.warning('请至少选择一个微信公众号');
+            return false;
         }
-        this.props.setSpecialBasicInfo({mpIDlist});
+        const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
+        let mpIDList;
+        if (isAll) {
+            mpIDList = this.state.allAccounts.filter(accounts => !accounts.disabled).map(accounts => accounts.mpID);
+        }else {
+            mpIDList = this.state.selectedIDs;
+        }
+        this.props.setSpecialBasicInfo({mpIDList});
         return flag;
     }
 
