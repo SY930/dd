@@ -20,35 +20,22 @@ import {
 import {isEqual, uniq, isEmpty} from 'lodash';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import {queryWechatMpInfo} from "../../GiftNew/_action";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const mock = [
-    {
-    value: '10',
-    label: 'XX公众号1'
-    },
-    {
-    value: '11',
-    label: 'XX公众号2'
-    },
-    {
-    value: '12',
-    label: 'XX公众号3'
-    },
-];
 
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: false,
-            selectedAccounts: [],
-            availableAccounts: [],
+            isLoading: props.mpListLoading,
+            selectedIDs: [],                // 本活动已选公众号, 编辑时不会为空[]      a: String[]
+            occupiedIDs: [],                // 所选日期段内已被绑定公众号            b: String[]     在c中的映射集合应为disabled; 除非编辑时a b 有交集,则交集内元素不为disabled
+            allAccounts: props.mpList.toJS(),      // 集团内所有公众号                  c: [{mpName: String, mpID: String}]
         };
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.getWeiXinAccountsList = this.getWeiXinAccountsList.bind(this);
     }
 
     componentDidMount() {
@@ -58,50 +45,40 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        this.getWeiXinAccountsList([]);
-        this.loadSelections();
-
-        // {groupID: this.props.user.accountInfo.groupID}
-    }
-
-    loadSelections(props = this.props) {
-        const selections = props.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']);
-        this.setState({selectedAccounts: selections ? selections.split(',') : []})
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts'])) {
-            this.loadSelections(nextProps);
+        if (!this.state.allAccounts.length) {
+            this.props.queryWechatMpInfo();
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState) ||
-            this.props.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'weixinAccounts']);
-    }
-
-    getWeiXinAccountsList(list) {
-        this.setState({isLoading: true});
-        new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(list instanceof Array ? [] : mock);
-            }, 5000)
-        }).then(res => {
-            this.setState({availableAccounts: res, isLoading: false});
+    componentWillReceiveProps(nextProps) {
+        let { allAccounts, isLoading, selectedIDs} = this.state;
+        if (this.props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList'])) {
+            selectedIDs = nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']);
+        }
+        if (this.props.mpListLoading !== nextProps.mpListLoading) {
+            isLoading = nextProps.mpListLoading;
+        }
+        if (this.props.mpList !== nextProps.mpList) {
+            allAccounts = nextProps.mpList.toJS();
+        }
+        this.setState({
+            selectedIDs,
+            isLoading,
+            allAccounts
         })
     }
 
     renderWeiXinAccountsFormItem() {
-        const availableAccounts = this.state.availableAccounts;
+        const availableAccounts = this.state.allAccounts.map(account => );
         let options;
         if (!this.state.isLoading) {
             if (availableAccounts.length > 0) {
                 options = availableAccounts.map((account, idx) => {
                     return (
-                        <Option value={account.value} key={account.value}>{account.label}</Option>
+                        <Option value={account.mpID} key={account.mpID}>{account.mpName}</Option>
                     );
                 });
-                options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~
+                options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~ emmmm
             } else {
                 options = (<Option value={'0'} disabled={true}>未查询到可绑定的微信公众号</Option>);
             }
@@ -145,7 +122,7 @@ class StepTwo extends React.Component {
                     />
                 }
                 {
-                    !this.state.isLoading && !this.state.availableAccounts.length &&
+                    !this.state.isLoading && !this.state.allAccounts.length &&
                     <Tooltip title="未查询到可绑定的微信公众号">
                         <Icon   onClick={this.getWeiXinAccountsList}
                                 type={'exclamation-circle'}
@@ -160,9 +137,9 @@ class StepTwo extends React.Component {
 
     handleSelectionChange(value) {
         if (value.includes('-1')) {
-            this.setState({selectedAccounts: ['-1']});
+            this.setState({selectedIDs: ['-1']});
         } else {
-            this.setState({selectedAccounts: value});
+            this.setState({selectedIDs: value});
         }
 
     }
@@ -173,18 +150,18 @@ class StepTwo extends React.Component {
             message.warning('正在查询集团下可用微信公众号, 请稍候');
             return false;
         }
-        if (!this.state.availableAccounts.length) {
+        if (!this.state.allAccounts.length) {
             message.warning('未查询到该集团下可绑定的微信公众号');
             return false;
         }
-        const isAll = this.state.selectedAccounts[0] === '-1'; // 前端虚拟的全部选项
-        let weixinAccounts;
+        const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
+        let mpIDlist;
         if (isAll) {
-            weixinAccounts = this.state.availableAccounts.map(accounts => accounts.value).join(',');
+            mpIDlist = this.state.allAccounts.filter(accounts => !accounts.disabled).map(accounts => accounts.mpID);
         }else {
-            weixinAccounts = this.state.selectedAccounts.join(',')
+            mpIDlist = this.state.selectedIDs;
         }
-        this.props.setSpecialBasicInfo({weixinAccounts});
+        this.props.setSpecialBasicInfo({mpIDlist});
         return flag;
     }
 
@@ -200,7 +177,8 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.toJS(),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
-
+        mpList: state.sale_giftInfoNew.get('mpList'), // 微信公众号list
+        mpListLoading: state.sale_giftInfoNew.get('mpListLoading'), // 微信公众号list loading status
     };
 };
 
@@ -208,6 +186,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
+        queryWechatMpInfo: (opts) => {
+            dispatch(queryWechatMpInfo())
         }
     };
 };

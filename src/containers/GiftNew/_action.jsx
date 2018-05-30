@@ -20,7 +20,9 @@ export const GIFT_NEW_GET_SHARED_GIFTS = 'gift new:: get shared gifts';
 export const GIFT_NEW_EMPTY_GET_SHARED_GIFTS = 'gift new:: empty get shared gifts';
 export const GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO = 'gift new :: get quota card shop by batchNo';
 export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
-export const GIFT_NEW_QUERY_WECHAT_MPINFO = 'gift new :: query wechat mpinfo';
+export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
+export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
+export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -388,13 +390,23 @@ export const queryCouponShopList = (opts) => {
 // 公众号
 export const queryWechatMpInfo = () => {
     return (dispatch) => {
+        dispatch({
+            type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
+            payload: undefined,
+        });
         return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' })
             .then((mpList) => {
                 dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPINFO,
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
                     payload: mpList || [],
-                })
+                });
                 return Promise.resolve(mpList)
+            }, err => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+                    payload: undefined,
+                });
+                console.log(err)
             })
             .catch((error) => {
                 console.log(error)
