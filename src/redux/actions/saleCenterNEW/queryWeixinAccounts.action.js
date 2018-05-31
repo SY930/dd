@@ -1,4 +1,6 @@
 import { Observable} from 'rxjs/Observable';
+import {axiosData} from "../../../helpers/util";
+
 
 export const QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_START = 'sale center: query occupied wei xin accounts start';
 export const QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_SUCCESS = 'sale center: query occupied wei xin accounts success';
@@ -12,10 +14,12 @@ export const queryOccupiedWeiXinAccountsStart = (opts) => {
 };
 export const queryOccupiedWeiXinAccountsEpic = action$ =>
     action$.ofType(QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_START)
-           .switchMap(action => Observable.fromPromise(new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        reject(1);
-                    }, 5000)
-               })).map(i => ({type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_SUCCESS, payload: i}))
-                .catch(err => {console.log(err);return Observable.of({type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_FAIL, payload: undefined})})
+           .switchMap(action => Observable.fromPromise(
+               axiosData('/specialPromotion/queryAvailableMpInfo.ajax', action.payload, {}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+               ).map(responseJSON => ({type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_SUCCESS,
+                                       payload: {
+                                            mpIDList: responseJSON.mpIDList || [],
+                                           noMpIDAvailable: !!responseJSON.noMpIDAvailable
+                                       }})
+               ).catch(err => {console.log(err);return Observable.of({type: QUERY_OCCUPIED_WEI_XIN_ACCOUNTS_FAIL, payload: undefined})})
            );

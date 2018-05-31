@@ -30,8 +30,9 @@ class StepTwo extends React.Component {
         super(props);
         this.state = {
             isLoading: props.mpListLoading,
-            selectedIDs: [],                // 本活动已选公众号, 编辑时不会为空[]      a: String[]
-            occupiedIDs: [],                // 所选日期段内已被绑定公众号            b: String[]     在c中的映射集合应为disabled; 除非编辑时a b 有交集,则交集内元素不为disabled
+            selectedIDs: props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']).toJS(),                // 本活动已选公众号, 编辑时不会为空[]      a: String[]
+            occupiedIDs: props.occupiedIDs.toJS(),                // 所选日期段内已被绑定公众号            b: String[]     在c中的映射集合应为disabled; 除非编辑时a b 有交集,则交集内元素不为disabled
+            isAllOccupied: props.isAllOccupied,
             allAccounts: props.mpList.toJS(),      // 集团内所有公众号                  c: [{mpName: String, mpID: String}]
         };
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
@@ -56,7 +57,7 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let { allAccounts, isLoading, selectedIDs} = this.state;
+        let { allAccounts, isLoading, selectedIDs, occupiedIDs, isAllOccupied} = this.state;
         if (this.props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList'])) {
             selectedIDs = nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']).toJS();
         }
@@ -66,21 +67,36 @@ class StepTwo extends React.Component {
         if (this.props.mpList !== nextProps.mpList) {
             allAccounts = nextProps.mpList.toJS();
         }
+        if (this.props.isAllOccupied !== nextProps.isAllOccupied) {
+            isAllOccupied = nextProps.isAllOccupied;
+        }
+        if (this.props.occupiedIDs !== nextProps.occupiedIDs) {
+            occupiedIDs = nextProps.occupiedIDs.toJS();
+        }
         this.setState({
             selectedIDs,
             isLoading,
+            isAllOccupied,
+            occupiedIDs,
             allAccounts
         })
     }
 
     renderWeiXinAccountsFormItem() {
-        const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
-        const availableAccounts = this.state.allAccounts.map(account => {
-            if (disabledIDs.find(id => id === account.mpID)) {
-                return {...account, disabled: true}
-            }
-            return account;
-        });
+        let availableAccounts;
+
+        if (this.state.isAllOccupied) {
+            availableAccounts = this.state.allAccounts.map(account => ({...account, disabled: true}));
+        } else {
+            const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
+            availableAccounts = this.state.allAccounts.map(account => {
+                if (disabledIDs.find(id => id === account.mpID)) {
+                    return {...account, disabled: true}
+                }
+                return account;
+            });
+        }
+
         let options;
         if (!this.state.isLoading) {
             if (availableAccounts.length > 0) {
@@ -89,6 +105,7 @@ class StepTwo extends React.Component {
                         <Option value={account.mpID} key={account.mpID} disabled={!!account.disabled}>{account.mpName}</Option>
                     );
                 });
+                !this.state.isAllOccupied && !this.state.occupiedIDs.length &&
                 options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~ emmmm
             } else {
                 options = (<Option value={'0'} disabled={true}>未查询到可绑定的微信公众号</Option>);
@@ -142,6 +159,14 @@ class StepTwo extends React.Component {
                             />
                     </Tooltip>
                 }
+                {
+                    !this.state.isLoading && this.state.allAccounts.length && (this.state.isAllOccupied || this.state.occupiedIDs.length) &&
+                    <Tooltip title="当前所选日期段内,有公众号已设置关注送礼活动">
+                        <Icon type={'exclamation-circle'}
+                                className={styles.cardLevelTreeIcon}
+                            />
+                    </Tooltip>
+                }
             </Form.Item>
         );
     }
@@ -156,7 +181,6 @@ class StepTwo extends React.Component {
     }
 
     handleSubmit() {
-        let flag = true;
         if (this.state.isLoading) {
             message.warning('正在查询集团下可用微信公众号, 请稍候');
             return false;
@@ -172,12 +196,14 @@ class StepTwo extends React.Component {
         const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
         let mpIDList;
         if (isAll) {
-            mpIDList = this.state.allAccounts.filter(accounts => !accounts.disabled).map(accounts => accounts.mpID);
+            const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
+            const availableAccounts = this.state.allAccounts.filter(account => !disabledIDs.find(id => id === account.mpID));
+            mpIDList = availableAccounts.map(accounts => accounts.mpID);
         }else {
             mpIDList = this.state.selectedIDs;
         }
         this.props.setSpecialBasicInfo({mpIDList});
-        return flag;
+        return true;
     }
 
     render() {
@@ -192,6 +218,8 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.toJS(),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
+        occupiedIDs: state.queryWeixinAccounts.get('occupiedIDs'),
+        isAllOccupied: state.queryWeixinAccounts.get('isAllOccupied'),
         mpList: state.sale_giftInfoNew.get('mpList'), // 微信公众号list
         mpListLoading: state.sale_giftInfoNew.get('mpListLoading'), // 微信公众号list loading status
     };

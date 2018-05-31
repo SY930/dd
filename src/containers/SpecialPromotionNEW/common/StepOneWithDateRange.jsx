@@ -40,6 +40,8 @@ class StepOneWithDateRange extends React.Component {
             getExcludeEventList: [],
             lastConsumeIntervalDaysStatus: 'success',
             tipDisplay: 'none',
+            isLoadingWeChatOccupiedInfo: props.occupiedWeChatInfo.get('isLoading'),
+            isAllWeChatIDOccupied: props.occupiedWeChatInfo.get('isAllOccupied'),
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -126,6 +128,13 @@ class StepOneWithDateRange extends React.Component {
                 });
             }
         }
+        if (this.props.occupiedWeChatInfo !== nextProps.occupiedWeChatInfo) {
+            const isLoadingWeChatOccupiedInfo = nextProps.occupiedWeChatInfo.get('isLoading');
+            const isAllWeChatIDOccupied = nextProps.occupiedWeChatInfo.get('isAllOccupied');
+            this.setState({isLoadingWeChatOccupiedInfo, isAllWeChatIDOccupied}, () => {
+                isAllWeChatIDOccupied && this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段')
+            });
+        }
     }
 
     handleSubmit() {
@@ -143,6 +152,11 @@ class StepOneWithDateRange extends React.Component {
         if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
             nextFlag = false;
             this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
+        }
+        // 关注送礼
+        if (this.state.isAllWeChatIDOccupied) {
+            nextFlag = false;
+            this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段')
         }
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
@@ -233,7 +247,7 @@ class StepOneWithDateRange extends React.Component {
                 })
             }
             if (this.props.type === '31') {
-                this.props.queryWeixinAccounts({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined });
+                this.props.queryOccupiedWeixinAccounts({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined });
             }
         }
         this.setState({
@@ -604,6 +618,13 @@ class StepOneWithDateRange extends React.Component {
                                                 }}
                                             /> : null
 
+                                    }{
+                                        (this.state.isLoadingWeChatOccupiedInfo &&
+                                            <Icon
+                                                type="loading"
+                                                className={styles.cardLevelTreeIcon}
+                                                style={{color: 'inherit'}}
+                                            />)
                                     }
                                 </FormItem>
                                 {
@@ -627,12 +648,12 @@ class StepOneWithDateRange extends React.Component {
                         {getFieldDecorator('description', {
                             rules: [{
                                 required: true,
-                                message: '0---200个字符',
+                                message: '1---200个字符',
                                 pattern: /^[\s\S]{1,200}$/,
                             }],
                             initialValue: this.state.description,
                         })(
-                            <Input type="textarea" placeholder="请输入活动说明,0---200个字符" onChange={this.handleDescriptionChange} />
+                            <Input type="textarea" placeholder="请输入活动说明,1---200个字符" onChange={this.handleDescriptionChange} />
                         )}
                     </FormItem>
                 </div>
@@ -647,6 +668,7 @@ const mapStateToProps = (state) => {
     return {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         saleCenter: state.sale_saleCenter_NEW,
+        occupiedWeChatInfo: state.queryWeixinAccounts,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
     }
@@ -672,7 +694,7 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetShopOfEventByDate: (opts) => {
             return dispatch(saleCenterGetShopOfEventByDate(opts));
         },
-        queryWeixinAccounts: (opts) => {
+        queryOccupiedWeixinAccounts: (opts) => {
             dispatch(queryOccupiedWeiXinAccountsStart(opts));
         }
     }
