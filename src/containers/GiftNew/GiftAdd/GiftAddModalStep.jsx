@@ -266,7 +266,7 @@ class GiftAddModalStep extends React.Component {
                 break;
 
             case 'TrdTemplate':
-                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '活动券') {
+                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
                     if (value) {
                         newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
                     } else {
@@ -290,6 +290,7 @@ class GiftAddModalStep extends React.Component {
             values: {},
             firstKeys: FIRST_KEYS,
             secondKeys: SECOND_KEYS,
+            foodNameListStatus: 'success'
         });
         this.props.saleCenterResetDetailInfo({});
         this.props.onCancel();
@@ -300,9 +301,9 @@ class GiftAddModalStep extends React.Component {
         this.props.onCancel();
     }
     validateFoodList = (basicValues) => {
-        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
+        if (this.state.values.hasOwnProperty('foodNameList') && (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
             || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
+            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0))) {
             message.warning('请至少选择一个菜品');
             this.setState({ foodNameListStatus: 'error' });
             return false;
@@ -318,7 +319,7 @@ class GiftAddModalStep extends React.Component {
                     return
                 }
             }
-            if (this.props.gift.value == '20') {
+            if (this.props.gift.value == '20' || this.props.gift.value == '21') {
                 if (this.validateFoodList(basicValues) === false) {
                     return false;
                 }
@@ -513,7 +514,7 @@ class GiftAddModalStep extends React.Component {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
-            params.isFoodCatNameList = values.isFoodCatNameList
+            params.isFoodCatNameList = values.isFoodCatNameList;
             this.setState({
                 finishLoading: true,
             });
@@ -1010,6 +1011,13 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
+        let giftValueLabel = '可抵扣金额';
+        if (value == '10' || value == '91') {
+            giftValueLabel = '礼品价值';
+        }
+        if (value == '21') {
+            giftValueLabel = '兑换金额';
+        }
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1018,7 +1026,7 @@ class GiftAddModalStep extends React.Component {
                 render: () => describe,
             },
             giftValue: {
-                label: value == '10' || value == '91' ? '礼品价值' : '可抵扣金额',
+                label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',

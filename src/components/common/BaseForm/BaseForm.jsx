@@ -203,10 +203,10 @@ class BaseForm extends React.Component {
                 case 'combo': {
                     // fix dropdown menu position issue
                     const comboClassName = `${key}_${getUUID()}`;
-                    const fixPopupProps = item.fixPopup ? {
+                    const fixPopupProps = {
                         className: comboClassName,
                         getPopupContainer: () => document.querySelector(`.${comboClassName}`),
-                    } : {};
+                    };
                     children = this.decorateFormField(key, {}, {
                         ...item,
                         props: {
@@ -218,8 +218,6 @@ class BaseForm extends React.Component {
                             multiple={!!item.multiple}
                             placeholder={`请选择${item.label}`}
                             notFoundContent={'未找到匹配项'}
-                            className="baseFormMountClassJs"
-                            getPopupContainer={() => document.querySelector('.baseFormMountClassJs')}
                             dropdownMatchSelectWidth={false}
                             filterOption={(value, option) => option.props.children.indexOf(value) > -1}
                         >

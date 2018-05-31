@@ -293,7 +293,7 @@ class FoodBox extends React.Component {
         };
         return (
             <div>
-                <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem required={true} label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
                             label={'适用菜品分类'}
@@ -446,7 +446,7 @@ class FoodBox extends React.Component {
         };
         return (
             <div>
-                <FormItem label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem required={true} label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
                             label={'适用菜品'}
