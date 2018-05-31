@@ -247,7 +247,7 @@ class StepOneWithDateRange extends React.Component {
                 })
             }
             if (this.props.type === '31') {
-                this.props.queryOccupiedWeixinAccounts({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined });
+                this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: '31', itemID: opts.itemID });
             }
         }
         this.setState({
