@@ -283,7 +283,15 @@ class GiftAddModal extends React.Component {
                             const giftValue = getFieldValue('giftValue');
                             Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                         },
-                        message: '工本费只能小于或等于礼品价值',
+                        message: '工本费不能高于礼品价值',
+                    }, {
+                        validator: (rule, v, cb) => {
+                            const { getFieldValue } = this.baseForm;
+                            const giftValue = getFieldValue('giftValue');
+                            const price = getFieldValue('price');
+                            Number(v || 0) + Number(price || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                        },
+                        message: '礼品价值扣除工本费后的数额应大于或等于售价',
                     }],
             },
             price: {
@@ -298,9 +306,17 @@ class GiftAddModal extends React.Component {
                     validator: (rule, v, cb) => {
                         const { getFieldValue } = this.baseForm;
                         const giftValue = getFieldValue('giftValue');
-                        parseFloat(v) <= parseFloat(giftValue) ? cb() : cb(rule.message);
+                        Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                     },
-                    message: '建议售价只能小于或等于礼品价值',
+                    message: '建议售价不能高于礼品价值',
+                }, {
+                    validator: (rule, v, cb) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftValue = getFieldValue('giftValue');
+                        const giftCost = getFieldValue('giftCost');
+                        Number(v || 0) + Number(giftCost || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                    },
+                    message: '建议售价只能小于或等于礼品价值扣除工本费后的数额',
                 }],
             },
             giftRemark: {
