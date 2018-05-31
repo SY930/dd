@@ -307,14 +307,9 @@ export const emptyGetSharedGifts = () => {
 export const CrmBatchSellGiftCards = (opts) => {
     return (dispatch) => {
         // return fetchData('crmBatchSellGiftCards', { ...opts }, null, {
-        return axiosData('/coupon/couponQuotaService_batchSellQuotaCards.ajax', { ...opts }, null, {
+        return axiosData('/coupon/couponQuotaService_batchSellQuotaCards.ajax', { ...opts }, {needThrow: true}, {
             path: '',
-        })
-            .then((data) => {
-                return Promise.resolve(data);
-            }).catch(err => {
-                // empty catch
-            });
+        }).then(data => Promise.resolve(data)).catch(err => Promise.reject(err));
     }
 };
 

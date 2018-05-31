@@ -687,7 +687,7 @@ export function axiosData(api, params, opts, {
             if (code !== '000') {
                 const {redirect, msg} = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {
-                    return Promise.reject();
+                    return Promise.reject(msg);
                 }
                 Modal.error({
                     title: '啊哦！好像有问题呦~~',

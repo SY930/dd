@@ -226,6 +226,13 @@ class QuotaCardBatchSold extends React.Component {
                         batchSoldFormData: { price: data.price },
                     })
                 });
+            }, errorMsg => {
+                message.warning(errorMsg, 2, () => {
+                    this.batchSoldForm && this.batchSoldForm.resetFields();
+                    this.setState({
+                        batchSoldFormData: { price: data.price },
+                    })
+                });
             });
         });
     }
