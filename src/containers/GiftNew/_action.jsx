@@ -394,7 +394,7 @@ export const queryWechatMpInfo = () => {
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
             payload: undefined,
         });
-        return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList' })
+        return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList', throttle: false })
             .then((mpList) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,

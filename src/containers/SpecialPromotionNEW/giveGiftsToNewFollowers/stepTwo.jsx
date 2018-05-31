@@ -142,30 +142,30 @@ class StepTwo extends React.Component {
                     {options}
                 </Select>
                 {
-                    this.state.isLoading &&
+                    this.state.isLoading ?
                     <Icon
                         type={'loading'}
                         style={{color:'inherit'}}
                         className={styles.cardLevelTreeIcon}
-                    />
+                    /> : null
                 }
                 {
-                    !this.state.isLoading && !this.state.allAccounts.length &&
+                    !this.state.isLoading && !this.state.allAccounts.length ?
                     <Tooltip title="未查询到可绑定的微信公众号">
                         <Icon   onClick={this.getWechatAccountsList}
                                 type={'exclamation-circle'}
                                 style={{cursor: 'pointer'}}
                                 className={styles.cardLevelTreeIcon}
                             />
-                    </Tooltip>
+                    </Tooltip> : null
                 }
                 {
-                    !this.state.isLoading && this.state.allAccounts.length && (this.state.isAllOccupied || this.state.occupiedIDs.length) &&
+                    !this.state.isLoading && this.state.allAccounts.length && (this.state.isAllOccupied || this.state.occupiedIDs.length) ?
                     <Tooltip title="当前所选日期段内,有公众号已设置关注送礼活动">
                         <Icon type={'exclamation-circle'}
                                 className={styles.cardLevelTreeIcon}
                             />
-                    </Tooltip>
+                    </Tooltip> : null
                 }
             </Form.Item>
         );
