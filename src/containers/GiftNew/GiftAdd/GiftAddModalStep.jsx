@@ -290,6 +290,7 @@ class GiftAddModalStep extends React.Component {
             values: {},
             firstKeys: FIRST_KEYS,
             secondKeys: SECOND_KEYS,
+            finishLoading: false,
             foodNameListStatus: 'success'
         });
         this.props.saleCenterResetDetailInfo({});
@@ -536,6 +537,11 @@ class GiftAddModalStep extends React.Component {
                     FetchGiftList(listParams);
                 }
                 this.props.saleCenterResetDetailInfo({});
+            }).catch(err => {
+                this.setState({
+                    finishLoading: false,
+                });
+                message.error('出错了, 请稍后或刷新重试', 3);
             });
         });
     }

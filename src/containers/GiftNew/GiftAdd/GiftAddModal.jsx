@@ -124,6 +124,11 @@ class GiftAddModal extends React.Component {
                     const listParams = params.toJS();
                     FetchGiftList(listParams);
                 }
+            }).catch(err => {
+                this.setState({
+                    finishLoading: false,
+                });
+                message.error('出错了, 请稍后或刷新重试', 3);
             });
         });
     }
@@ -132,6 +137,7 @@ class GiftAddModal extends React.Component {
         this.setState({
             current: 0,
             values: {},
+            finishLoading: false,
             imageUrl: '',
         });
         this.props.onCancel();

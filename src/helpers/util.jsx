@@ -697,7 +697,6 @@ export function axiosData(api, params, opts, {
                 return Promise.reject({ code, message, response: json });
             }
             if (!path) {
-                console.log(json);
                 return Promise.resolve(json);
             }
             else {
