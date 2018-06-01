@@ -84,11 +84,13 @@ class StepTwo extends React.Component {
 
     renderWeiXinAccountsFormItem() {
         let availableAccounts;
-
+        let selectedIDs = this.state.selectedIDs;
         if (this.state.isAllOccupied) {
+            selectedIDs = [];
             availableAccounts = this.state.allAccounts.map(account => ({...account, disabled: true}));
         } else {
-            const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
+            const disabledIDs = this.state.occupiedIDs;
+            selectedIDs = selectedIDs.filter(id => !disabledIDs.includes(id));
             availableAccounts = this.state.allAccounts.map(account => {
                 if (disabledIDs.find(id => id === account.mpID)) {
                     return {...account, disabled: true}
@@ -122,7 +124,7 @@ class StepTwo extends React.Component {
             placeholder: '集团下全部微信公众号',
             onChange: this.handleSelectionChange,
             // defaultValue: this.state.brands,
-            value: this.state.selectedIDs,
+            value: selectedIDs,
         };
         return (
             <Form.Item
@@ -196,11 +198,10 @@ class StepTwo extends React.Component {
         const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
         let mpIDList;
         if (isAll) {
-            const disabledIDs = this.state.occupiedIDs.filter(id => !this.state.selectedIDs.includes(id));
-            const availableAccounts = this.state.allAccounts.filter(account => !disabledIDs.find(id => id === account.mpID));
+            const availableAccounts = this.state.allAccounts.filter(account => !this.state.occupiedIDs.find(id => id === account.mpID));
             mpIDList = availableAccounts.map(accounts => accounts.mpID);
         }else {
-            mpIDList = this.state.selectedIDs;
+            mpIDList = this.state.selectedIDs.filter(id => !this.state.occupiedIDs.includes(id));
         }
         this.props.setSpecialBasicInfo({mpIDList});
         return true;

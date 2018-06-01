@@ -1287,6 +1287,7 @@ class GiftAddModalStep extends React.Component {
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
             },
         };
+
         let formData;
         // if (type == 'edit') {
         formData = data === undefined ? dates : values;
@@ -1294,6 +1295,11 @@ class GiftAddModalStep extends React.Component {
         if (type === 'edit') {
             formData = dates;
             formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];
+        }
+        if (this.props.gift.value == '20') {
+            formItems.moneyLimitType.label = '账单金额';
+        } else {
+            formItems.moneyLimitType.label = '金额限制';
         }
         formItems.giftName = type === 'add'
             ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }

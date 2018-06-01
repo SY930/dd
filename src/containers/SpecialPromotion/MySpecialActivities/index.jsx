@@ -49,6 +49,7 @@ import { mySpecialActivities } from '../../../redux/reducer/saleCenter/mySpecial
 import { specialPromotion } from '../../../redux/reducer/saleCenter/specialPromotion.reducer';
 // import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
 import { steps } from '../../../redux/modules/steps';
+import {resetOccupiedWeChatInfo} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 
 const mapStateToProps = (state)=>{
     return {
@@ -91,7 +92,8 @@ const mapDispatchToProps = (dispatch)=>{
             dispatch(fetchSpecialDetailAC(opts))
         },
         saleCenterResetDetailInfo:(opts)=>{
-            dispatch(saleCenterResetDetailInfoAC(opts))
+            dispatch(saleCenterResetDetailInfoAC(opts));
+            dispatch(resetOccupiedWeChatInfo());
         },
     };
 };

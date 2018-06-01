@@ -27,6 +27,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -48,6 +49,7 @@ function mapDispatchToProps(dispatch) {
         },
         saleCenterResetDetailInfo: (opts) => {
             dispatch(saleCenterResetDetailInfoAC(opts));
+            dispatch(resetOccupiedWeChatInfo());
         },
         saleCenterCheckExist: (opts) => {
             dispatch(saleCenterCheckExist(opts));
