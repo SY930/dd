@@ -191,6 +191,7 @@ class StepOneWithDateRange extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
+
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -205,8 +206,11 @@ class StepOneWithDateRange extends React.Component {
             nextFlag = false;
             this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
         }
+
         // 关注送礼
-        nextFlag = !this.checkIfAllOccupied();
+        if (this.props.type == '31') {
+            this.checkIfAllOccupied() && (nextFlag = false);
+        }
 
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
