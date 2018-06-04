@@ -284,7 +284,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     value={{ number: this.state.freeAmount }}
                     defaultValue={{ number: this.state.freeAmount }}
                     onChange={this.handleFreeAmountChange}
-                    modal="int"
+                    modal="float"
                 />
             </FormItem>
         )
