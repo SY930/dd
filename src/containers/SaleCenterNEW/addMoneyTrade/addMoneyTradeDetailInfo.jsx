@@ -162,7 +162,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         if (dishes.length == 0) {
             dishsSelectionFlag = false;
         }
-        this.setState({ freeAmountFlag, stageAmountFlag, dishsSelectionFlag });
+        this.setState({ freeAmountFlag, stageAmountFlag, stageCountFlag, dishsSelectionFlag });
 
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
             const rule = {
