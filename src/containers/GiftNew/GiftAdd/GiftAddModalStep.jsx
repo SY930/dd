@@ -1284,6 +1284,8 @@ class GiftAddModalStep extends React.Component {
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
             },
         };
+        // 菜品券金额限制暂时不可用每满选项
+        formItems.moneyLimitType.options[1].disabled = this.props.gift.value == '21';
 
         let formData;
         // if (type == 'edit') {
