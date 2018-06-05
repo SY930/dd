@@ -4,7 +4,7 @@ import styles from '../../components/basic/ProgressBar/ProgressBar.less';
 import style from '../SaleCenterNEW/ActivityPage.less';
 import ownStyle from './Validator.less';
 import { connect } from 'react-redux';
-import { Steps, Button, Form, Select, Upload, Icon, message, Col } from 'antd';
+import { Steps, Button, Form, Select, Upload, Icon, message, Col, Row, Modal, Tooltip, Spin } from 'antd';
 import { axiosData } from '../../helpers/util';
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
@@ -29,26 +29,45 @@ class ThreeStepsValidator extends React.Component {
             isBusyTime: false, // 忙时不允许发起校验请求
             isLoading: false, // 校验请求loading
             adjustmentMethod: '1',
-            fileList: []
+            fileList: [],
+            isHistoryModalVisible: false,
+            isHistoryLoading: false,
+            historyList: [],
+            validateStatus: 'success'
         };
+        this.busyTime = [11, 12, 13,18, 19, 20];
+        this.busyTimeEndPoint = [14, 21];
         this.intervalId = null;
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleReset = this.handleReset.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
         this.steps = null;
-        this.importID = null;
+        this.importInfoStr = null;
     }
 
     componentDidMount() {
         this.intervalId = window.setInterval(() => {
             this.setState({
-                isBusy: false
+                isBusyTime: this.isBusyTime()
             })
         }, 500);
-        this.importID = localStorage.getItem('_crm_import_id');
-        if (this.importID) {
-            this.setState({current: 1});
+        this.queryValidationHistory()
+
+    }
+
+    isBusyTime() {
+        const currentHour = moment().hours();
+        if (this.busyTime.includes(currentHour)) {
+            return true;
+        } else if (this.busyTimeEndPoint.includes(currentHour)) {
+            const minutes = moment().minutes();
+            if (minutes === 0) {
+                return true
+            }
         }
+        return false;
     }
 
     componentWillUnmount() {
@@ -63,10 +82,67 @@ class ThreeStepsValidator extends React.Component {
         this.setState({adjustmentMethod: value});
     }
 
+    queryValidationHistory() {
+        let lastImportInfo;
+        try {
+            this.importInfoStr = localStorage.getItem('_crm_import_info');
+            if (this.importInfoStr) {
+                lastImportInfo = JSON.parse(this.importInfoStr);
+                this.setState({current: 1});
+            }
+        } catch (e) {
+            this.importInfoStr = null;
+            lastImportInfo = null;
+            this.setState({current: 0})
+        }
+        this.setState({isHistoryLoading: true});
+        axiosData('crmimport/crmImportService_queryCrmImportList.ajax', {}, {}, {path: 'data.crmImportResultList'}, 'HTTP_SERVICE_URL_CRM')
+            .then(res => {
+                if (lastImportInfo) {
+                    const {fileListLength, importID, dataType, adjustmentMethod} = lastImportInfo;
+                    let isSuccess = true;
+                    let validateStatus = 'success';
+                    const resultCount = (res || []).reduce((accumulator, current) => {
+                        if (current.importID === importID) {
+                            accumulator++;
+                            isSuccess = isSuccess && current.result === 0;
+                        }
+                        return accumulator;
+                    }, 0);
+                    if (resultCount === fileListLength && isSuccess) {
+                        validateStatus = 'success';
+                    } else if (resultCount === fileListLength && !isSuccess) {
+                        validateStatus = 'error';
+                    } else if (resultCount < fileListLength) {
+                        validateStatus = null;
+                    }
+
+                    if (validateStatus) {
+                        this.setState({current: 2, dataType, adjustmentMethod, validateStatus});
+                    } else {
+                        this.setState({current: 1});
+                    }
+                }
+                this.setState({isHistoryLoading: false, historyList: res || []});
+            }, err => {
+                this.setState({isHistoryLoading: false});
+                message.error('出错了, 请稍后或刷新重试');
+                console.log(err);
+            });
+    }
+
+    handleModalClose() {
+        this.setState({isHistoryModalVisible: false})
+    }
+
     handleSubmit() {
         // 文件list为空
         if (this.state.fileList.length === 0) {
             message.warning('请至少上传一个excel文件');
+            return;
+        }
+        if (this.state.fileList.length > 99) {
+            message.warning('一次最多可验证99个文件');
             return;
         }
         const fileList = this.state.fileList;
@@ -94,20 +170,28 @@ class ThreeStepsValidator extends React.Component {
             groupName: this.props.user.accountInfo.groupName,
             sourceFilePath: fileLocationStr,
             importID,
+            operator: this.props.user.accountInfo.userName,
             crmVersion: '21' // 会员系统版本: 10(老系统) 21(多卡类型会员系统)
         };
-        /*axiosData('crmImport/crmImportService_doImport.ajax', reqParams, {}, undefined, 'HTTP_SERVICE_URL_SHOPCENTER')
+        axiosData('crmimport/crmImportService_doImportValidate.ajax', reqParams, {}, undefined, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
-                console.log(res);
+                const crmImportInfo = {
+                    importID,
+                    groupID: this.props.user.accountInfo.groupID,
+                    fileListLength: this.state.fileList.length,
+                    dataType: this.state.dataType,
+                    adjustmentMethod: this.state.adjustmentMethod
+                };
+                localStorage.setItem('_crm_import_info', JSON.stringify(crmImportInfo));
+                this.setState({current: 1});
             }, err => {
-                console.log(err);
-            });*/
-        localStorage.setItem('_crm_import_id', importID);
-        this.setState({current: 1});
+                message.error(`未能成功发起校验请求, 错误原因: ${err}`);
+            });
+
     }
 
     generateImportID() {
-        return `${this.props.user.accountInfo.groupID}_${this.state.fileList.length}_${Date.now()}`;
+        return `${Date.now()}`;
     }
 
     renderUploadButton() {
@@ -144,9 +228,47 @@ class ThreeStepsValidator extends React.Component {
         )
     }
 
-
-
     render() {
+        return (<Row className="layoutsContainer">
+            <Col span={24} className="layoutsHeader">
+                <div className="layoutsTool">
+                    <div className="layoutsToolLeft">
+                        <h1>会员数据变动校验</h1>
+                    </div>
+                    <div className="layoutsToolRight">
+
+                        <Button onClick={() => this.setState({isHistoryModalVisible: true})}  type="ghost" style={{width: '120px'}} loading={this.state.isHistoryLoading}>
+                            校验记录
+                        </Button>
+                    </div>
+                </div>
+            </Col>
+            <Col span={24} className="layoutsLineBlock"></Col>
+            <Col span={24} className="layoutsContent">
+                {this.renderValidator()}
+            </Col>
+        </Row>);
+    }
+
+    renderHistoryModal() {
+        return (<Modal
+            // key={modalKey}
+            title={`校验记录`}
+            visible={this.state.isHistoryModalVisible}
+            maskClosable={false}
+            onCancel={this.handleModalClose}
+            footer={<Button onClick={this.handleModalClose}>关闭</Button>}
+        >
+            123123123123123123
+        </Modal>);
+    }
+
+    handleReset() {
+        localStorage.removeItem('_crm_import_info');
+        this.setState({current: 0});
+    }
+
+    renderValidator() {
         const steps = [
             {
                 title: '变动类型',
@@ -251,7 +373,7 @@ class ThreeStepsValidator extends React.Component {
                                 labelCol={{ span: 11 }}
                                 wrapperCol={{ span: 13 }}
                             >
-                                <p>{'数据校验无误'}</p>
+                                {this.state.validateStatus === 'success' ? <p>{'数据校验无误'} <Icon type="check-circle" style={{color: '#1ab495'}} /></p> : <p>{'数据校验有误'} <Icon style={{color: 'orange'}} type="check-circle" /></p>}
                             </FormItem>
                         </Form>
                     </div>
@@ -259,6 +381,7 @@ class ThreeStepsValidator extends React.Component {
             },
         ];
         return (
+        <Spin size="large" spinning={this.state.isHistoryLoading}>
             <div className={`${styles.ProgressBar} ${ownStyle.progressWrapper}`}>
                 <Steps current={this.state.current} className="clearfix">
                     {steps.map(item => <Step key={item.title} title={item.title} />)}
@@ -272,15 +395,32 @@ class ThreeStepsValidator extends React.Component {
                 })}
 
                 {this.state.current === 0 && (<div className="progressButton">
-                    <Button
-                        disabled={this.state.isBusyTime}
+                        {!this.state.isBusyTime && (<Button
                         loading={this.state.isLoading}
                         type="primary"
                         onClick={this.handleSubmit}
-                    >确定
+                        >确定
+                        </Button>)}
+                        {this.state.isBusyTime && (
+                        <Tooltip title="业务高峰期暂不允许发起校验请求, 请您谅解~">
+                            <Button
+                                disabled
+                                type="primary"
+                            >确定
+                            </Button>
+                        </Tooltip>)}
+                </div>)}
+                {this.state.current === 2 && (<div className="progressButton">
+                    <Button
+
+                        type="primary"
+                        onClick={this.handleReset}
+                    >我知道了
                     </Button>
                 </div>)}
+                {this.renderHistoryModal()}
             </div>
+        </Spin>
         );
     }
 }
