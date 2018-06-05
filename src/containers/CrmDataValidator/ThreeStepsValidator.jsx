@@ -35,7 +35,7 @@ class ThreeStepsValidator extends React.Component {
             historyList: [],
             validateStatus: 'success'
         };
-        this.busyTime = [11, 12, 13,18, 19, 20];
+        this.busyTime = [11, 12, 13, 18, 19, 20];
         this.busyTimeEndPoint = [14, 21];
         this.intervalId = null;
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
@@ -105,7 +105,7 @@ class ThreeStepsValidator extends React.Component {
                     const resultCount = (res || []).reduce((accumulator, current) => {
                         if (current.importID === importID) {
                             accumulator++;
-                            isSuccess = isSuccess && current.result === 0;
+                            isSuccess = isSuccess && (current.result === 1 && !current.errorFilePath);
                         }
                         return accumulator;
                     }, 0);
