@@ -186,12 +186,14 @@ export const fetchPromotionDetail = (opts) => {
                 }
                 opts.fail && opts.fail(result.message);
                 return dispatch(fetchPromotionDetailFail(result.code));
-            })
-            .catch((err) => {
+            }, (err) => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchPromotionDetailTimeout());
                 }
                 return dispatch(fetchPromotionDetailFail(err));
+            })
+            .catch(err => {
+                // empty catch for possible render error
             })
     }
 }

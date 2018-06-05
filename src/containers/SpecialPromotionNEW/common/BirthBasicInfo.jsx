@@ -186,7 +186,7 @@ class PromotionBasicInfo extends React.Component {
             >
                 <p>{lab}</p>
                 {
-                    categorys.find((v) => { return v.key === this.props.type }).tip ?
+                    item && item.tip ?
                         <Icon
                             type="question-circle-o"
                             className={styles.question}
@@ -266,7 +266,11 @@ class PromotionBasicInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select size="default" value={this.state.sendMsg} onChange={this.handleSendMsgChange}>
+                    <Select size="default"
+                            value={this.state.sendMsg}
+                            onChange={this.handleSendMsgChange}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
                         {
                             SEND_MSG.map((item) => {
                                 return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)

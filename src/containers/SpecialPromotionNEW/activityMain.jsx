@@ -27,6 +27,7 @@ import NewWakeUpReturnGift from './wakeUpReturnGift/NewWakeUpReturnGift'; // 唤
 import NewOnLineReturnGift from './onLineReturnGift/NewOnLineReturnGift'; // 线上送礼
 import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
+import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper'; // 左侧展示信息
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -93,19 +94,12 @@ class ActivityMain extends React.Component {
             NewUpGradeReturnGift, // 升级送礼
             NewAddUpReturnGift, // 累计消费送礼
             NewOnLineReturnGift, // 线上送礼
-            NewColorsEggCat, // 彩蛋猫
-        ];
-        const _vipStash = [
+            // NewColorsEggCat, 彩蛋猫活动下线 key 70
             NewWakeUpReturnGift, // 唤醒送礼
             NewColorsEggCat, // 评价送礼，复用彩蛋猫
+            GiveGiftsToNewFollowers, // 关注送礼 ket TBD
         ];
-        let pagesArr;
-        // if (HUALALA.ENVIRONMENT !== 'production-release') {
-        pagesArr = _pages.concat(_vipStash);
-        // } else {
-        //     pagesArr = _pages;
-        // }
-        const pages = pagesArr.map((promotion, index) => {
+        const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
                 callbacktwo: (arg) => {
                     this.props.callbackthree(arg);

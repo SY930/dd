@@ -64,10 +64,20 @@ class SpecialDishesTable extends React.Component {
 
     componentDidMount() {
         // 从redux中获取特价菜列表
-        const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        let _priceLst;
+        try {
+            _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        } catch (e) {
+            _priceLst = []
+        }
+        let foodCategoryCollection;
         // 获取菜品信息
-        let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
-        // foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+        try {
+            foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        } catch (e) {
+            foodCategoryCollection = []
+        }
+
         this.setState({
             foodCategoryCollection,
             priceLst: _priceLst,

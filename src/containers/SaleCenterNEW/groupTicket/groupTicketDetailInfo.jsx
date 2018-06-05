@@ -284,7 +284,12 @@ class GroupTicketDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select size="default" onChange={this.onCostIncomeChange} value={this.state.costIncome} defaultValue={'1'}>
+                    <Select size="default"
+                            onChange={this.onCostIncomeChange}
+                            value={this.state.costIncome}
+                            defaultValue={'1'}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
                         <Option value="0">否</Option>
                         <Option value="1">是</Option>
                     </Select>
@@ -294,6 +299,8 @@ class GroupTicketDetailInfo extends React.Component {
                     <Select
                         size="default"
                         value={`${this.state.stageType}`}
+                        className="groupTicketDetailMountClassJs"
+                        getPopupContainer={() => document.querySelector('.groupTicketDetailMountClassJs')}
                         onChange={(value) => {
                             let { stageType } = this.state;
                             stageType = value;
@@ -313,12 +320,14 @@ class GroupTicketDetailInfo extends React.Component {
                             modal="float"
                         />
                     </span>
-                    <span className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}>最多使用团购券</span>
+                    <span id="customLabel" className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}
+                          style={{width: this.state.stageType == 2 ? '22%' : '30%' }}
+                    >{this.state.stageType == 2 ? '最多使用团购券':'可使用一张, 最多使用'}</span>
                     <FormItem
                         className={styles.priceInLine}
-                        style={{ marginTop: -20 }}
+                        style={{ marginTop: -20, width: this.state.stageType == 2 ? '28%' : '20%' }}
                         validateStatus={this.state.giftMaxUseNum ? 'success' : 'error'}
-                        help={this.state.giftMaxUseNum ? null : '请输入券面金额'}
+                        help={this.state.giftMaxUseNum ? null : '必须大于0'}
                     >
                         <PriceInput
                             addonBefore={''}

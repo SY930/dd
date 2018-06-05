@@ -460,6 +460,7 @@ class AddGifts extends React.Component {
                                     `${this.state.infos[index].giftEffectiveTime.value}`
                             }
                             onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                            getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 (info.effectType == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)

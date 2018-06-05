@@ -69,6 +69,12 @@ export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
     key: 'WECHAT',
     value: '2',
 },
+    {
+    idx: 3,
+    name: '饮食通',
+    key: 'YST',
+    value: '3',
+},
 ]);
 
 // TODO: remove the bottom definition,
@@ -109,6 +115,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
 {
     label: '菜品优惠券',
     value: '20',
+},
+    {
+    label: '菜品兑换券',
+    value: '21',
 },
 {
     label: '实物礼品券',
@@ -644,19 +654,19 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         example: '',
         key: '23',
     },
-    {
+    /*{
         idx: 12,
         title: '彩蛋猫送礼',
         color: '#84aac6',
         text: '玩游戏送礼，在娱乐中让用户增加对品牌的好感。',
         example: '',
         key: '70',
-    },
+    },*/
     ]
 
     const extral = [
         {
-            idx: 13,
+            idx: 12,
             title: '唤醒送礼',
             color: '#84aac6',
             text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
@@ -664,13 +674,21 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '63',
         },
         {
-            idx: 14,
+            idx: 13,
             title: '评价送礼',
             color: '#84aac6',
             tags: ['新微信'],
             text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
             example: '',
             key: '64',
+        },
+        {
+            idx: 14,
+            title: '关注送礼',
+            color: '#84aac6',
+            text: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数',
+            example: '',
+            key: '31',
         },
     ];
     // if (HUALALA.ENVIRONMENT != 'production-release') {
@@ -870,7 +888,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
     }
     return {
         brandIDLst: _source.brands.join(','),
-        channelLst: _source.channel == 1 ? 'POS' : _source.channel == 0 ? '' : 'WECHAT',
+        channelLst: _source.channel == 1 ? 'POS' : _source.channel == 0 ? '' : _source.channel == 2 ? 'WECHAT' : _source.channel == 3 ? 'YST' : '',
         defaultRun: _source.auto == '1' ? 'YES' : 'NO',
         orderTypeLst: _source.orderType.join(','),
         shopIDLst: _source.shopsInfo
@@ -1003,7 +1021,7 @@ export const specialPromotionBasicDataAdapter = function (source, dir) {
 
 // find the idx according the promotinKey, user can use the idx to get the related Component.
 export const getPromotionIdx = function (promotionKey) {
-    console.log('promotion key:', promotionKey);
+    // console.log('promotion key:', promotionKey);
     if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }
@@ -1019,18 +1037,11 @@ export const getPromotionIdx = function (promotionKey) {
 };
 
 export const getSpecialPromotionIdx = function (promotionKey) {
-    if (!(promotionKey instanceof String || typeof promotionKey === 'string')) {
-        throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
+    const promotionKeyStr = String(promotionKey);
+    const _promotionInfo = CHARACTERISTIC_CATEGORIES.find(promotionInfo => promotionInfo.key === promotionKeyStr);
+    if (_promotionInfo) {
+        return _promotionInfo.idx;
     }
-
-    const _promotionInfo = CHARACTERISTIC_CATEGORIES.filter((promotionInfo) => {
-        return promotionInfo.key === promotionKey;
-    });
-
-    if (_promotionInfo.length && _promotionInfo.length === 1) {
-        return _promotionInfo[0].idx;
-    }
-    throw new Error(`There is not promotion with the specified promotionKey ${promotionKey}`);
 };
 
 

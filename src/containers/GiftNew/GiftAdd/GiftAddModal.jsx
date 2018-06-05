@@ -28,8 +28,8 @@ class GiftAddModal extends React.Component {
             imageUrl: '',
             transferType: 0,
             isUpdate: true,
-        },
-            this.baseForm = null;
+        };
+        this.baseForm = null;
     }
     componentWillMount() {
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
@@ -77,17 +77,21 @@ class GiftAddModal extends React.Component {
         const { groupTypes, imageUrl, transferType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
-            if (value === '30') {
+            /*if (value === '30') {
                 if (imageUrl === '' || imageUrl === undefined) {
                     message.error('请上传礼品图样!', 3);
                     return;
                 }
-            }
+            }*/ // 礼品图片现在可以不传
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
             params.giftImagePath = imageUrl;
             params.transferType = transferType;
+            // 定额卡工本费
+            if (value == '90') {
+                params.giftCost = `${Number(params.giftCost || 0)}`;
+            }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 if (values.brandID === '-1') {
@@ -120,6 +124,11 @@ class GiftAddModal extends React.Component {
                     const listParams = params.toJS();
                     FetchGiftList(listParams);
                 }
+            }).catch(err => {
+                this.setState({
+                    finishLoading: false,
+                });
+                message.error('出错了, 请稍后或刷新重试', 3);
             });
         });
     }
@@ -128,6 +137,7 @@ class GiftAddModal extends React.Component {
         this.setState({
             current: 0,
             values: {},
+            finishLoading: false,
             imageUrl: '',
         });
         this.props.onCancel();
@@ -145,7 +155,7 @@ class GiftAddModal extends React.Component {
                         })(<Select
                             className="giftName"
                             placeholder={'请选择品牌名称'}
-                            getPopupContainer={() => document.querySelector('.giftName')}
+                            getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 groupTypes.map((t, i) => {
@@ -265,6 +275,31 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => this.handleGiftName(decorator),
             },
+            giftCost: {
+                type: 'text',
+                label: '卡片工本费',
+                disabled: type !== 'add',
+                placeholder: '请输入卡片工本费金额',
+                surfix: '元',
+                rules: [
+                    { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于或等于0的值，整数不超过9位，小数不超过2位' },
+                    {
+                        validator: (rule, v, cb) => {
+                            const { getFieldValue } = this.baseForm;
+                            const giftValue = getFieldValue('giftValue');
+                            Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                        },
+                        message: '工本费不能高于礼品价值',
+                    }, {
+                        validator: (rule, v, cb) => {
+                            const { getFieldValue } = this.baseForm;
+                            const giftValue = getFieldValue('giftValue');
+                            const price = getFieldValue('price');
+                            Number(v || 0) + Number(price || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                        },
+                        message: '礼品价值扣除工本费后的数额应大于或等于售价',
+                    }],
+            },
             price: {
                 type: 'text',
                 label: '建议售价',
@@ -277,9 +312,17 @@ class GiftAddModal extends React.Component {
                     validator: (rule, v, cb) => {
                         const { getFieldValue } = this.baseForm;
                         const giftValue = getFieldValue('giftValue');
-                        parseFloat(v) <= parseFloat(giftValue) ? cb() : cb(rule.message);
+                        Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                     },
-                    message: '建议售价只能小于或等于礼品价值',
+                    message: '建议售价不能高于礼品价值',
+                }, {
+                    validator: (rule, v, cb) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftValue = getFieldValue('giftValue');
+                        const giftCost = getFieldValue('giftCost');
+                        Number(v || 0) + Number(giftCost || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                    },
+                    message: '建议售价只能小于或等于礼品价值扣除工本费后的数额',
                 }],
             },
             giftRemark: {
@@ -317,7 +360,7 @@ class GiftAddModal extends React.Component {
             '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule'] }],
             '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
             '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
-            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'price', 'giftRemark', 'giftRule'] }],
+            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule'] }],
         };
         let formData = {};
         if (type == 'edit') {

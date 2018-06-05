@@ -15,6 +15,8 @@ import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+import {queryOccupiedWeiXinAccountsStart} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
+import {queryWechatMpInfo} from "../../GiftNew/_action";
 
 const Immutable = require('immutable');
 const moment = require('moment');
@@ -39,6 +41,12 @@ class StepOneWithDateRange extends React.Component {
             getExcludeEventList: [],
             lastConsumeIntervalDaysStatus: 'success',
             tipDisplay: 'none',
+            isLoadingWeChatOccupiedInfo: props.occupiedWeChatInfo.get('isLoading'),
+            occupiedWeChatIDs: props.occupiedWeChatInfo.get('occupiedIDs').toJS(),
+            isAllWeChatIDOccupied: props.occupiedWeChatInfo.get('isAllOccupied'),
+            selectedIDs: props.specialPromotion.getIn(['$eventInfo', 'mpIDList']).toJS(),
+            allWeChatIDList: props.allWeChatIDList,
+            allWeChatIDListLoading: props.allWeChatIDListLoading,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,6 +58,7 @@ class StepOneWithDateRange extends React.Component {
         this.handlesmsGateChange = this.handlesmsGateChange.bind(this);
         this.onTimePickerChange = this.onTimePickerChange.bind(this);
         this.setErrors = this.setErrors.bind(this);
+        this.throttledCheckWeChatID = _.throttle(this.checkIfAllOccupied.bind(this), 500, {leading: false, trailing: true});
     }
 
     componentDidMount() {
@@ -70,6 +79,13 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if (this.props.type === '31' && !this.state.allWeChatIDListLoading && !this.state.allWeChatIDList.length) {
+            this.props.queryWechatMpInfo();
+        }
+        if (this.props.type === '31' && this.props.specialPromotion.get('$eventInfo').size > 30) {
+            const itemID = specialPromotion.itemID;
+            this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
+        }
         if (specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
             specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {
@@ -106,8 +122,10 @@ class StepOneWithDateRange extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextState) {
         // 是否更新
+        let selectedIDs = this.state.selectedIDs;
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            selectedIDs = specialPromotion.mpIDList;
             if (specialPromotion.getExcludeEventList && specialPromotion.getExcludeEventList.length > 0) {
                 this.setState({
                     getExcludeEventList: specialPromotion.getExcludeEventList || [],
@@ -125,10 +143,55 @@ class StepOneWithDateRange extends React.Component {
                 });
             }
         }
+        if (this.props.type == '31') {
+            let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
+            let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
+            let occupiedWeChatIDs = this.state.occupiedWeChatIDs;
+            let allWeChatIDListLoading = this.state.allWeChatIDListLoading;
+            let allWeChatIDList = this.state.allWeChatIDList;
+            if (this.props.allWeChatIDListLoading !== nextProps.allWeChatIDListLoading) {
+                allWeChatIDListLoading = nextProps.allWeChatIDListLoading;
+                this.setState({
+                    allWeChatIDListLoading
+                })
+            }
+            if (this.props.allWeChatIDList !== nextProps.allWeChatIDList) {
+                allWeChatIDList = nextProps.allWeChatIDList;
+                this.setState({
+                    allWeChatIDList
+                })
+            }
+            if (this.props.occupiedWeChatInfo !== nextProps.occupiedWeChatInfo) {
+                isLoadingWeChatOccupiedInfo = nextProps.occupiedWeChatInfo.get('isLoading');
+                isAllWeChatIDOccupied = nextProps.occupiedWeChatInfo.get('isAllOccupied');
+                occupiedWeChatIDs = nextProps.occupiedWeChatInfo.get('occupiedIDs');
+                this.setState({
+                    isLoadingWeChatOccupiedInfo,
+                    isAllWeChatIDOccupied,
+                    occupiedWeChatIDs,
+                }, this.throttledCheckWeChatID);
+            }
+
+        }
+
+    }
+
+    checkIfAllOccupied() {
+        const {
+            isAllWeChatIDOccupied,
+            allWeChatIDList,
+            occupiedWeChatIDs,
+        } = this.state;
+        if (isAllWeChatIDOccupied || (allWeChatIDList.length > 0 && allWeChatIDList.every(id => occupiedWeChatIDs.includes(id))) ) {
+            this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段');
+            return true;
+        }
+        return false;
     }
 
     handleSubmit() {
         let nextFlag = true;
+
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -143,6 +206,12 @@ class StepOneWithDateRange extends React.Component {
             nextFlag = false;
             this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
         }
+
+        // 关注送礼
+        if (this.props.type == '31') {
+            this.checkIfAllOccupied() && (nextFlag = false);
+        }
+
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
             this.setErrors('rangePicker', '相同时段内，只允许一个唤醒送礼活动进行，您已有唤醒送礼活动正在进行，请重选时段')
@@ -231,7 +300,9 @@ class StepOneWithDateRange extends React.Component {
                     })
                 })
             }
-
+            if (this.props.type === '31') {
+                this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: '31', itemID: opts.itemID });
+            }
         }
         this.setState({
             dateRange: date,
@@ -389,14 +460,15 @@ class StepOneWithDateRange extends React.Component {
         if (startTime != '' && startTime != 0) {
             sendTimeProps.initialValue = moment(startTime, 'YYYYMMDD');
         }
-        if (timeString != '' && timeString != 0) {
+        if (timeString != '' && timeString !== 0) {
             timeStringInitialValue = moment(timeString, 'HHmm');
         } else {
             timeStringInitialValue = timeString;
         }
+        const promotionTypeConfig = categorys.find(v => v.key == this.props.type);
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{categorys.find((v) => { return v.key == this.props.type }).tip}</p>
+                <p>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -421,7 +493,7 @@ class StepOneWithDateRange extends React.Component {
                 >
                     <p>{lab}</p>
                     {
-                        categorys.find((v) => { return v.key == this.props.type }).tip ?
+                        promotionTypeConfig && promotionTypeConfig.tip ?
                             <Icon
                                 type="question-circle-o"
                                 className={styles.question}
@@ -491,7 +563,9 @@ class StepOneWithDateRange extends React.Component {
                                                 placeholder="请选择时间"
                                             />
                                         )}
-                                        <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
+                                        {
+                                            this.props.type == '50' && <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
+                                        }
                                     </FormItem>
                                 </Col>
                             </Row> : null
@@ -535,7 +609,11 @@ class StepOneWithDateRange extends React.Component {
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
                             >
-                                <Select size="default" value={`${this.state.smsGate}`} onChange={this.handlesmsGateChange}>
+                                <Select size="default"
+                                        value={`${this.state.smsGate}`}
+                                        onChange={this.handlesmsGateChange}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
                                     {
                                         SEND_MSG.map((item) => {
                                             return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
@@ -593,6 +671,13 @@ class StepOneWithDateRange extends React.Component {
                                                 }}
                                             /> : null
 
+                                    }{
+                                        (this.state.isLoadingWeChatOccupiedInfo &&
+                                            <Icon
+                                                type="loading"
+                                                className={styles.cardLevelTreeIcon}
+                                                style={{color: 'inherit'}}
+                                            />)
                                     }
                                 </FormItem>
                                 {
@@ -616,12 +701,12 @@ class StepOneWithDateRange extends React.Component {
                         {getFieldDecorator('description', {
                             rules: [{
                                 required: true,
-                                message: '0---200个字符',
+                                message: '1---200个字符',
                                 pattern: /^[\s\S]{1,200}$/,
                             }],
                             initialValue: this.state.description,
                         })(
-                            <Input type="textarea" placeholder="请输入活动说明,0---200个字符" onChange={this.handleDescriptionChange} />
+                            <Input type="textarea" placeholder="请输入活动说明,1---200个字符" onChange={this.handleDescriptionChange} />
                         )}
                     </FormItem>
                 </div>
@@ -636,6 +721,9 @@ const mapStateToProps = (state) => {
     return {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         saleCenter: state.sale_saleCenter_NEW,
+        occupiedWeChatInfo: state.queryWeixinAccounts,
+        allWeChatIDListLoading: state.sale_giftInfoNew.get('mpListLoading'),
+        allWeChatIDList: state.sale_giftInfoNew.get('mpList').toJS().map(item => item.mpID),
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
     }
@@ -661,6 +749,12 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterGetShopOfEventByDate: (opts) => {
             return dispatch(saleCenterGetShopOfEventByDate(opts));
         },
+        queryOccupiedWeixinAccounts: (opts) => {
+            dispatch(queryOccupiedWeiXinAccountsStart(opts));
+        },
+        queryWechatMpInfo: (opts) => {
+            dispatch(queryWechatMpInfo())
+        }
     }
 };
 

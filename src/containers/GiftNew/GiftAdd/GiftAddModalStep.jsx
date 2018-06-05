@@ -266,7 +266,7 @@ class GiftAddModalStep extends React.Component {
                 break;
 
             case 'TrdTemplate':
-                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '活动券') {
+                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
                     if (value) {
                         newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
                     } else {
@@ -290,6 +290,8 @@ class GiftAddModalStep extends React.Component {
             values: {},
             firstKeys: FIRST_KEYS,
             secondKeys: SECOND_KEYS,
+            finishLoading: false,
+            foodNameListStatus: 'success'
         });
         this.props.saleCenterResetDetailInfo({});
         this.props.onCancel();
@@ -299,18 +301,18 @@ class GiftAddModalStep extends React.Component {
         this.props.saleCenterResetDetailInfo({});
         this.props.onCancel();
     }
-    handleNext = (cb) => {
-        const validateFoodList = (basicValues, _cb) => {
-            if (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
-                || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-                || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)) {
-                message.warning('请至少选择一个菜品');
-                this.setState({ foodNameListStatus: 'error' });
-                return false;
-            }
-            this.setState({ foodNameListStatus: 'success' })
-            _cb && _cb();
+    validateFoodList = (basicValues) => {
+        if (this.state.values.hasOwnProperty('foodNameList') && (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
+            || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
+            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0))) {
+            message.warning('请至少选择一个菜品');
+            this.setState({ foodNameListStatus: 'error' });
+            return false;
         }
+        this.setState({ foodNameListStatus: 'success' });
+        return true;
+    }
+    handleNext = (cb) => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
             if (basicValues.TrdTemplate) {
                 const { TrdTemplateStatus } = basicValues.TrdTemplate;
@@ -318,13 +320,13 @@ class GiftAddModalStep extends React.Component {
                     return
                 }
             }
-            if (this.props.gift.value == '20') {
-                validateFoodList(basicValues, cb);
-                if (error) return
-            } else {
-                if (error) return
-                cb();
+            if (this.props.gift.value == '20' || this.props.gift.value == '21') {
+                if (this.validateFoodList(basicValues) === false) {
+                    return false;
+                }
             }
+            if (error) return false;
+            cb();
         })
     }
     handlePrev = (cb) => {
@@ -513,7 +515,7 @@ class GiftAddModalStep extends React.Component {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
-            params.isFoodCatNameList = values.isFoodCatNameList
+            params.isFoodCatNameList = values.isFoodCatNameList;
             this.setState({
                 finishLoading: true,
             });
@@ -535,6 +537,11 @@ class GiftAddModalStep extends React.Component {
                     FetchGiftList(listParams);
                 }
                 this.props.saleCenterResetDetailInfo({});
+            }).catch(err => {
+                this.setState({
+                    finishLoading: false,
+                });
+                message.error('出错了, 请稍后或刷新重试', 3);
             });
         });
     }
@@ -550,9 +557,8 @@ class GiftAddModalStep extends React.Component {
                             rule: [{ required: true, message: '请选择品牌' }],
                             // initialValue: '-1',
                         })(<Select
-                            className="giftNameStep"
                             placeholder={'请选择品牌名称'}
-                            getPopupContainer={() => document.querySelector('.giftNameStep')}
+                            getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 groupTypes.map((t, i) => {
@@ -589,7 +595,8 @@ class GiftAddModalStep extends React.Component {
                         {decorator({
                             key: 'discountType',
                             initialValue: discountType || 0,
-                        })(<Select className="giftNameStep">
+                        })(<Select getPopupContainer={(node) => node.parentNode}
+                        >
                             {
                                 [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -649,7 +656,7 @@ class GiftAddModalStep extends React.Component {
                         {decorator({
                             key: 'isDiscountOffMax',
                             initialValue: isDiscountOffMax || 0,
-                        })(<Select className="giftNameStep">
+                        })(<Select getPopupContainer={(node) => node.parentNode}>
                             {
                                 [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -711,7 +718,7 @@ class GiftAddModalStep extends React.Component {
                             key: 'giveFoodCount',
                             rules: [{ required: true, message: '不能为空' }, {
                                 validator: (rule, v, cb) => {
-                                    this.secondForm.validateFields(['stageAmount'], { force: true })
+                                    this.secondForm.validateFieldsAndScroll(['stageAmount'], { force: true })
                                     if (!/^\+?\d{0,8}$/.test(Number(v))) {
                                         cb(rule.message);
                                     }
@@ -743,7 +750,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'ismaxGiveCountPerBill',
                                 initialValue: ismaxGiveCountPerBill || 0,
-                            })(<Select className="giftNameStep">
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -781,7 +788,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'ismaxGiveCountPerFoodPerBill',
                                 initialValue: ismaxGiveCountPerFoodPerBill || 0,
-                            })(<Select className="giftNameStep">
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -818,7 +825,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'BOGOdiscountWay',
                                 initialValue: BOGOdiscountWay || 1,
-                            })(<Select className="giftNameStep">
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '高价单品优先', value: 1 }, { label: '低价单品优先', value: 2 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -1004,6 +1011,13 @@ class GiftAddModalStep extends React.Component {
         } else {
             dates.numberOfTimeType = '0'
         }
+        let giftValueLabel = '可抵扣金额';
+        if (value == '10' || value == '91') {
+            giftValueLabel = '礼品价值';
+        }
+        if (value == '21') {
+            giftValueLabel = '兑换金额';
+        }
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1012,7 +1026,7 @@ class GiftAddModalStep extends React.Component {
                 render: () => describe,
             },
             giftValue: {
-                label: value == '10' || value == '91' ? '礼品价值' : '可抵扣金额',
+                label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
@@ -1062,7 +1076,7 @@ class GiftAddModalStep extends React.Component {
                                     {decorator({
                                         key: 'numberOfTimeType',
                                         initialValue: this.props.type === 'edit' ? `${this.props.gift.data.numberOfTimeType}` : '0',
-                                    })(<Select>
+                                    })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="0">不限制</Option>
                                         <Option value="1">限制</Option>
                                     </Select>)}
@@ -1097,7 +1111,7 @@ class GiftAddModalStep extends React.Component {
                                 {decorator({
                                     key: 'moneyTopLimitType',
                                     initialValue: this.props.type === 'edit' ? `${this.props.gift.data.moneyTopLimitType}` : '0',
-                                })(<Select>
+                                })(<Select getPopupContainer={(node) => node.parentNode}>
                                     <Option value="0">不限制</Option>
                                     <Option value="1">限制</Option>
                                 </Select>)}
@@ -1191,7 +1205,7 @@ class GiftAddModalStep extends React.Component {
                                     {decorator({
                                         key: 'transferLimitType',
                                         initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
-                                    })(<Select>
+                                    })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="-1">可转赠</Option>
                                         <Option value="0">不可转赠</Option>
                                     </Select>)}
@@ -1270,13 +1284,21 @@ class GiftAddModalStep extends React.Component {
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
             },
         };
-        let formData = {};
+        // 菜品券金额限制暂时不可用每满选项
+        formItems.moneyLimitType.options[1].disabled = this.props.gift.value == '21';
+
+        let formData;
         // if (type == 'edit') {
         formData = data === undefined ? dates : values;
         // }
         if (type === 'edit') {
             formData = dates;
             formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];
+        }
+        if (this.props.gift.value == '20') {
+            formItems.moneyLimitType.label = '账单金额';
+        } else {
+            formItems.moneyLimitType.label = '金额限制';
         }
         formItems.giftName = type === 'add'
             ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }
@@ -1315,7 +1337,7 @@ class GiftAddModalStep extends React.Component {
                 />),
         }];
         return (
-            <Modal
+        visible && <Modal
                 // key={modalKey}
                 title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
                 className={styles.foodModal}
@@ -1327,24 +1349,20 @@ class GiftAddModalStep extends React.Component {
             // afterClose={this.afterClose}
             // wrapClassName="progressBarModal"
             >
-                {
-                    visible ?
-                        <div className={styles.customProgressBar}>
-                            <CustomProgressBar
-                                style={{ height: '200px' }}
-                                steps={steps}
-                                callback={(arg) => {
-                                    // this.props.callbacktwo(arg);
-                                }}
-                                onNext={this.handleNext}
-                                onFinish={this.handleFinish}
-                                onPrev={this.handlePrev}
-                                onCancel={this.handleCancel}
-                                loading={this.state.finishLoading}
-                            />
-                        </div>
-                        : null
-                }
+                <div className={styles.customProgressBar}>
+                    <CustomProgressBar
+                        style={{ height: '200px' }}
+                        steps={steps}
+                        callback={(arg) => {
+                            // this.props.callbacktwo(arg);
+                        }}
+                        onNext={this.handleNext}
+                        onFinish={this.handleFinish}
+                        onPrev={this.handlePrev}
+                        onCancel={this.handleCancel}
+                        loading={this.state.finishLoading}
+                    />
+                </div>
             </Modal>
         )
     }

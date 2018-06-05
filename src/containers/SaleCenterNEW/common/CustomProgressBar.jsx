@@ -43,6 +43,9 @@ class CustomProgressBar extends React.Component {
             this.setState({ isUpdate: nextProps.myActivities.get('isUpdate') })
         }
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.loading !== this.props.loading || this.state.current !== nextState.current;
+    }
     next(current) {
         const onNext = this.props.onNext;
         if (typeof onNext === 'function') {
@@ -93,13 +96,9 @@ class CustomProgressBar extends React.Component {
         const onFinish = this.props.onFinish;
         if (typeof onFinish === 'function') {
             onFinish(() => {
-                this.setState({
-                    current: 0,
-                }, () => {
-                    if (this.props.callback && typeof this.props.callback === 'function') {
-                        this.props.callback(3);
-                    }
-                });
+                if (this.props.callback && typeof this.props.callback === 'function') {
+                    this.props.callback(3);
+                }
             }, current);
         }
     }

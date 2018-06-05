@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Row, Col, message } from 'antd';
+import {throttle } from 'lodash';
 import { checkPermission } from '../../../helpers/util';
 import { CrmLogo } from './CrmOperation';
 import GiftCfg from '../../../constants/Gift';
@@ -28,6 +29,7 @@ class GiftType extends React.Component {
             gift: { describe: '', value: '', data: { groupID: this.props.user.accountInfo.groupID } },
             visible: false,
         }
+        this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentWillMount() {
         this.props.queryWechatMpInfo();
@@ -36,9 +38,12 @@ class GiftType extends React.Component {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
-    onWindowResize = () => {
+    onWindowResize() {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
         this.setState({ contentHeight });
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
     }
     handleAdd(g) {
         this.setState({ visible: true, gift: { ...this.state.gift, ...g } });
@@ -59,6 +64,7 @@ class GiftType extends React.Component {
                 case '20':
                 case '80':
                 case '100':
+                case '21':
                 case '91':
                 case '110':
                 case '111':
@@ -92,6 +98,10 @@ class GiftType extends React.Component {
                                             onClick={() => {
                                                 if (!checkPermission("marketing.lipinxin.create")) {
                                                     message.warn('您没有新建活动的权限，请联系管理员');
+                                                    return;
+                                                }
+                                                if (gift.value === '110' || gift.value === '111') {
+                                                    message.success('敬请期待~');
                                                     return;
                                                 }
                                                 this.props.toggleIsUpdate(true)

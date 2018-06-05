@@ -361,7 +361,11 @@ class StepTwo extends React.Component {
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
-            <Select onChange={this.handleOptionChange} value={this.state.consumeType} disabled={userCount > 0}>
+            <Select onChange={this.handleOptionChange}
+                    value={this.state.consumeType}
+                    disabled={userCount > 0}
+                    getPopupContainer={(node) => node.parentNode}
+            >
                 <Option key="0">累计金额每满</Option>
                 <Option key="1">累计次数每满</Option>
             </Select>

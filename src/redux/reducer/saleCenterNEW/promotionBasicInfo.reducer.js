@@ -141,7 +141,6 @@ export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_SHOPS_ALL_SET:
             return $$state.set('shopsAllSet', action.payload);
-
         default:
             return $$state;
     }

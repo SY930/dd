@@ -132,7 +132,9 @@ class ExcludeCardTable extends React.Component {
             className: 'TableTxtCenter',
             render: (text, record, index) => {
                 return (
-                    <div key={'eventDate'}><h5 className={styles.cardName} key={'eventDate'}>{`${record.eventStartDate || '--'}/${record.eventEndDate || '--'}`}</h5></div>
+                    <div key={'eventDate'}><h5 className={styles.cardName} key={'eventDate'}>
+                        {record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ? '永久' : `${record.eventStartDate || '--'}/${record.eventEndDate || '--'}`}
+                        </h5></div>
                 )
             },
         }, {

@@ -91,7 +91,7 @@ class AddUpGiveDetailInfo extends React.Component {
     handleSubmit = (cbFn) => {
         let nextFlag = true;
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFieldsAndScroll((err, values) => {
             const { rule, priceLst } = this.state;
             const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
             const _rule = {
@@ -266,7 +266,10 @@ class AddUpGiveDetailInfo extends React.Component {
                                 })(
                                     <Input
                                         // className={styles.inputAddonSelect}不生效
-                                        addonBefore={<Select value={this.state.rule.stageType} onChange={this.handleStageTypeChange}>
+                                        addonBefore={<Select value={this.state.rule.stageType}
+                                                             onChange={this.handleStageTypeChange}
+                                                             getPopupContainer={(node) => node.parentNode}
+                                        >
                                             <Option key="1">每累计</Option>
                                             <Option key="2">累计</Option>
                                         </Select>}

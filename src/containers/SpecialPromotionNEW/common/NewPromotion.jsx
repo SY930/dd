@@ -31,16 +31,24 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
-        if (specialPromotion.$eventInfo && specialPromotion.$eventInfo.settleUnitID) {
+        const smsGate = specialPromotion.$eventInfo.smsGate;
+        // console.log('going to final finish', specialPromotion.$eventInfo);
+        if (specialPromotion.$eventInfo.eventWay == '50'
+            || (smsGate == '1' || smsGate == '3' || smsGate == '4')
+            && specialPromotion.$eventInfo.settleUnitID) {
             // console.log('eventInfo: ', specialPromotion.$eventInfo);
             const settleUnitID = specialPromotion.$eventInfo.settleUnitID;
-            const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
-            if (!selectedEntity.smsCount) {
-                message.warning('所选结算账户可用短信条数为0，无法创建活动');
-                this.setState({
-                    loading: false,
-                });
-                return;
+            if (settleUnitID != '0') {
+                const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
+
+                if (!selectedEntity.smsCount) {
+                    message.warning('所选结算账户可用短信条数为0，无法创建活动');
+                    //console.log(settleUnitID);
+                    this.setState({
+                        loading: false,
+                    });
+                    return;
+                }
             }
         }
         const opts = {
@@ -122,6 +130,7 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
+        // console.log('going to 1 finish');
         let flag = true;
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();

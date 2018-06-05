@@ -295,7 +295,8 @@ class DiscountDetailInfo extends React.Component {
                                     <Select
                                         size="default"
                                         placeholder="请选择活动类别"
-                                        className={styles.linkSelectorRight}
+                                        className={`${styles.linkSelectorRight} discountDetailMountClassJs`}
+                                        getPopupContainer={(node) => node.parentNode}
                                         value={this.state.ruleType}
                                         onChange={(val) => {
                                             let { ruleType, maxCount, isDishVisibleIndex } = this.state;

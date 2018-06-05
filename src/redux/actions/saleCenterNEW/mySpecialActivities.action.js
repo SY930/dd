@@ -17,9 +17,12 @@ import {
     fetchData,
     generateXWWWFormUrlencodedParams,
     axiosData,
+    parseResponseJson,
+    doRedirect
 } from '../../../helpers/util';
 
 import 'rxjs';
+import { Modal } from 'antd';
 import Rx from 'rxjs/Rx';
 import _ from 'lodash';
 
@@ -60,7 +63,7 @@ export const SALE_CENTER_FETCH_USER_INFO_CANCEL = 'sale center: fetch user info 
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK = 'sale center: fetch user info delete new';
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch user info delete Fail new';
 
-export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new'
+export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new';
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
@@ -77,7 +80,7 @@ export const fetchSpecialPromotionList = (opts) => {
             body: JSON.stringify(opts.data),
             credentials: 'include',
             headers: {
-                'Accept': '*/*',
+                'Accept': 'application/json; charset=UTF-8',
                 'Content-Type': 'application/json; charset=UTF-8',
             },
         })
@@ -96,17 +99,27 @@ export const fetchSpecialPromotionList = (opts) => {
                 throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
             })
             .then((response) => {
-                if (response.code === '000') {
+                const { redirect, success, code, msg } = parseResponseJson(response, '000');
+                if (!success && redirect) {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `${msg}`,
+                    });
+                    redirect && window.setTimeout(() => doRedirect(), 1500);
+                } else if (response.code === '000') {
                     return dispatch(fetchPromotionListFullfilled(response));
+                }else {
+                    opts.fail && opts.fail(response.message);
+                    return dispatch(fetchPromotionListFail(response.code));
                 }
-                opts.fail && opts.fail(response.message);
-                // action.payload.fail && action.payload.fail(response.message);
-                return dispatch(fetchPromotionListFail(response.code));
-            })
-            .catch((err) => {
+            }, (err) => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchPromotionListTimeout());
                 }
+                return dispatch(fetchPromotionListFail(err));
+            })
+            .catch(err => {
+
             })
     }
 }
@@ -319,12 +332,20 @@ export const fetchSpecialPromotionDetailAC = opts => {
                 const result = res.reduce((curr, val) => {
                     return { ...curr, ...val };
                 }, {});
-                if (result.eventInfo.code === '000' && result.userInfo.code === '000' && result.cardInfo.code === '000') {
+                if (parseResponseJson(result.eventInfo, '000').redirect || parseResponseJson(result.userInfo, '000').redirect
+                    || parseResponseJson(result.cardInfo, '000').redirect) {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `会话失效,请重新登录`,
+                    });
+                    window.setTimeout(() => doRedirect(), 1500);
+                }else if (result.eventInfo.code === '000' && result.userInfo.code === '000' && result.cardInfo.code === '000') {
                     opts.success && opts.success(result.eventInfo);
                     return dispatch(fetchSpecialPromotionDetailFullfilled(result));
+                }else {
+                    opts.fail && opts.fail();
+                    return dispatch(fetchSpecialPromotionDetailFail(result));
                 }
-                opts.fail && opts.fail();
-                return dispatch(fetchSpecialPromotionDetailFail(result));
             })
             .catch((err) => {
                 opts.fail();
@@ -364,18 +385,28 @@ export const fetchSpecialDetailAC = opts => {
                 throw new Error(`fetchSpecialPromotionDetailAC cause problem with msg ${error}`);
             })
             .then((result) => {
-                if (result.code === '000') {
+                const { redirect, success, code, msg } = parseResponseJson(result, '000');
+                if (!success && redirect) {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `${msg}`,
+                    });
+                    redirect && window.setTimeout(() => doRedirect(), 1500);
+                } else if (result.code === '000') {
                     opts.success && opts.success(result);
                     return dispatch(fetchSpecialDetailFullfilled(result));
+                }else {
+                    opts.fail && opts.fail();
+                    return dispatch(fetchSpecialDetailFail(result));
                 }
-                opts.fail && opts.fail();
-                return dispatch(fetchSpecialDetailFail(result));
-            })
-            .catch((err) => {
+            }, (err) => { // add REAL backend error handler @author: wuhao
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialDetailTimeout());
                 }
                 return dispatch(fetchSpecialDetailFail(err));
+            })
+            .catch(err => {
+                // empty catch for possible render error
             })
     }
 }
@@ -418,11 +449,14 @@ export const fetchSpecialUserList = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialUserListFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialUserListTimeout());
                 }
+                return dispatch(fetchSpecialUserListFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }
@@ -481,11 +515,14 @@ export const fetchShopCardLevel = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialCardLevelFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialCardLevelTimeout());
                 }
+                return dispatch(fetchSpecialCardLevelFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }

@@ -11,6 +11,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { throttle } from 'lodash';
 import { Modal, Row, Col, message } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
@@ -26,6 +27,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -47,6 +49,7 @@ function mapDispatchToProps(dispatch) {
         },
         saleCenterResetDetailInfo: (opts) => {
             dispatch(saleCenterResetDetailInfoAC(opts));
+            dispatch(resetOccupiedWeChatInfo());
         },
         saleCenterCheckExist: (opts) => {
             dispatch(saleCenterCheckExist(opts));
@@ -70,12 +73,11 @@ class NewActivity extends React.Component {
         this.renderActivityButtons = this._renderActivityButtons.bind(this);
         this.onButtonClicked = this._onButtonClicked.bind(this);
         this.renderModal = this._renderModal.bind(this);
-        this.onWindowResize = this.onWindowResize.bind(this);
+        this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
 
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
-        // TODO: uncomment the bottom
         if (!modal1Visible) {
             this.props.saleCenterResetDetailInfo();
         }
@@ -85,15 +87,14 @@ class NewActivity extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        this.setState({ contentHeight })
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        this.setState({ contentHeight });
     }
-    componentWillReceiveProps(nextProps) {
-
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
     }
 
     render() {
-        const contentHeight = this.state.contentHeight - 170;
         return (
             <Row className="layoutsContainer">
                 <Col span={24} className="layoutsHeader">
@@ -104,10 +105,12 @@ class NewActivity extends React.Component {
                     </div>
                 </Col>
                 <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent" style={{ overflowY: 'auto', height: contentHeight }}>
-                    {this.renderActivityButtons()}
-                    {this.renderModal()}
+                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
+                    <ul>
+                        {this.renderActivityButtons()}
+                    </ul>
                 </Col>
+                {this.state.modal1Visible ? this.renderModal(): null}
             </Row>
 
         );
@@ -135,12 +138,7 @@ class NewActivity extends React.Component {
                 </Authority>
             </li>)
         }).toJS();
-        return (
-            <div>
-                {logos}
-            </div>
-
-        );
+        return logos;
     }
 
     _renderModal() {
@@ -159,18 +157,16 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                {this.state.modal1Visible ? (
-                    <ActivityMain
-                        index={this.state.index}
-                        steps={this.props.steps}
-                        isNew={true}
-                        callbackthree={(arg) => {
-                            if (arg == 3) {
-                                this.setModal1Visible(false);
-                            }
-                        }}
-                    />)
-                    : null}
+                <ActivityMain
+                    index={this.state.index}
+                    steps={this.props.steps}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.setModal1Visible(false);
+                        }
+                    }}
+                />
             </Modal>
         );
     }
@@ -220,10 +216,10 @@ class NewActivity extends React.Component {
                 fail: () => {
                     message.error('检查失败!');
                 },
-            })
-        } else {
-            this.setModal1Visible(true);
+            });
+            return;
         }
+        this.setModal1Visible(true);
     }
 }
 

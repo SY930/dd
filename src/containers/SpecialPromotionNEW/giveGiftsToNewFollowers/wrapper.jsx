@@ -10,33 +10,39 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import NewPromotion from '../common/NewPromotion';
-import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import PromotionBasicInfo from '../common/BirthBasicInfo';
-import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
-import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
-// import SendMsgInfo from '../common/SendMsgInfo';
-import StepTwo from './stepTwo';
+import StepTwo from './stepTwo'; // 活动范围
+import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'; // 选择礼品
 
-class NewBirthdayGift extends NewPromotion {
+import NewPromotion from '../common/NewPromotion';
+import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
+import StepOneWithDateRange from '../common/StepOneWithDateRange';
+import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+
+class GiveGiftsToNewFollowersWrapper extends NewPromotion {
     constructor(props) {
         super(props);
-        this.steps = [
+    }
 
+    render() {
+        if (this.props.component === undefined) {
+            throw new Error('component is required');
+        }
+        const steps = [
             {
                 title: '基本信息',
-                content: (<PromotionBasicInfo
-                    type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-                    getSubmitFn={(handles) => {
-                        this.handles[0] = handles;
-                    }}
-                />),
+                content: (
+                    <StepOneWithDateRange
+                        type={`${this.props.specialPromotion.$eventInfo.eventWay || 70}`}
+                        getSubmitFn={(handles) => {
+                            this.handles[0] = handles;
+                        }}
+                    />
+                ),
             },
             {
                 title: '活动范围',
                 content: (
                     <StepTwo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
@@ -59,12 +65,10 @@ class NewBirthdayGift extends NewPromotion {
                 ),
             },
         ];
-    }
-    render() {
         return (
             <CustomProgressBar
                 loading={this.state.loading}
-                steps={this.steps}
+                steps={steps}
                 callback={(arg) => {
                     this.props.callbacktwo(arg);
                 }}
@@ -95,4 +99,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewBirthdayGift);
+export default connect(mapStateToProps, mapDispatchToProps)(GiveGiftsToNewFollowersWrapper);

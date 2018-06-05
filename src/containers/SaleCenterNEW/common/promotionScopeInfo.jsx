@@ -323,7 +323,10 @@ class PromotionScopeInfo extends React.Component {
                 hasFeedback={true}
                 className={styles.FormItemStyle}
             >
-                <Select {..._brandList} size="default">
+                <Select {..._brandList}
+                        size="default"
+                        getPopupContainer={(node) => node.parentNode}
+                >
                     {options}
                 </Select>
 
@@ -362,6 +365,7 @@ class PromotionScopeInfo extends React.Component {
                         size="default"
                         onChange={this.handleScenarioChange}
                         value={this.state.channel}
+                        getPopupContainer={(node) => node.parentNode}
                         defaultValue={'0'}
                     >
                         {SCENARIOS.map((scenario, index) => {
@@ -379,6 +383,7 @@ class PromotionScopeInfo extends React.Component {
                         size="default"
                         onChange={this.handleAutoModeChange}
                         defaultValue={'0'}
+                        getPopupContainer={(node) => node.parentNode}
                         value={this.state.auto}
                         disabled={this.state.channel == '2'}
                     >
@@ -464,6 +469,7 @@ class PromotionScopeInfo extends React.Component {
                             size="default"
                             onChange={this.handleVoucherVerifyChange}
                             value={this.state.voucherVerify}
+                            getPopupContainer={(node) => node.parentNode}
                             defaultValue={this.state.voucherVerify}
                         >
                             <Option value="0">否</Option>
@@ -479,6 +485,7 @@ class PromotionScopeInfo extends React.Component {
                                         size="default"
                                         onChange={this.handleVoucherVerifyChannelChange}
                                         value={this.state.voucherVerifyChannel}
+                                        getPopupContainer={(node) => node.parentNode}
                                         defaultValue={this.state.voucherVerifyChannel}
                                     >
                                         <Option value="1">美团点评</Option>
@@ -499,6 +506,7 @@ class PromotionScopeInfo extends React.Component {
                             size="default"
                             onChange={this.onPointsChange}
                             value={this.state.points}
+                            getPopupContainer={(node) => node.parentNode}
                             defaultValue={'1'}
                         >
                             <Option value="0">否</Option>
@@ -511,6 +519,7 @@ class PromotionScopeInfo extends React.Component {
                             size="default"
                             onChange={this.onEvidenceChange}
                             value={this.state.evidence}
+                            getPopupContainer={(node) => node.parentNode}
                             defaultValue={'0'}
                         >
                             <Option value="0">否</Option>

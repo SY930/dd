@@ -70,6 +70,7 @@ class StepTwo extends React.Component {
     }
 
     handleSubmit() {
+        // console.log('going to 2 finish');
         let flag = true;
         let groupMembers = {};
         this.state.cardInfo.map((info, index) => {
@@ -185,8 +186,8 @@ class StepTwo extends React.Component {
         }
 
         // 初始化店铺信息
-        if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
-            JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
+        if (nextProps.promotionScopeInfo.getIn(['refs', 'data']) !=
+            this.props.promotionScopeInfo.getIn(['refs', 'data'])) {
             const $shops = Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops'])) ?
                 nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']).toJS() :
                 nextProps.promotionScopeInfo.getIn(['refs', 'data', 'shops']);
@@ -397,6 +398,7 @@ class StepTwo extends React.Component {
                         <Select
                             style={{ width: '100%' }}
                             placeholder="请选择会员群体"
+                            getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
                             <Option key={'0'}>全部会员</Option>

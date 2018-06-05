@@ -322,7 +322,11 @@ class BuyAFreeDetailInfo extends React.Component {
                                 <PriceInput
                                     addonBefore={
                                         idx == 0 ? (
-                                            <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                            <Select size="default"
+                                                    onChange={this.ruleTypeChange}
+                                                    value={this.state.ruleType}
+                                                    getPopupContainer={(node) => node.parentNode}
+                                            >
                                                 {
                                                     RULE_TYPE.map((item) => {
                                                         return (<Option key={item.key} value={item.key}>{item.value}</Option>)

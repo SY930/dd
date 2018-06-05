@@ -191,6 +191,7 @@ class SeniorDateSetting extends React.Component {
                 <Select
                     style={{ marginBottom: 10 }}
                     defaultValue={selectType}
+                    getPopupContainer={(node) => node.parentNode}
                     value={selectType}
                     onSelect={this.onSelect}
                 >

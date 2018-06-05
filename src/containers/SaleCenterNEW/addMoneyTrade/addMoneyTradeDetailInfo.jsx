@@ -162,7 +162,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         if (dishes.length == 0) {
             dishsSelectionFlag = false;
         }
-        this.setState({ freeAmountFlag, stageAmountFlag, dishsSelectionFlag });
+        this.setState({ freeAmountFlag, stageAmountFlag, stageCountFlag, dishsSelectionFlag });
 
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
             const rule = {
@@ -209,6 +209,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
             return true
         }
+        const errElement = document.querySelector('.ant-form-explain');
+        errElement && errElement.scrollIntoView(false);
         return false
     };
 
@@ -282,7 +284,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     value={{ number: this.state.freeAmount }}
                     defaultValue={{ number: this.state.freeAmount }}
                     onChange={this.handleFreeAmountChange}
-                    modal="int"
+                    modal="float"
                 />
             </FormItem>
         )
@@ -362,7 +364,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     >
                         <PriceInput
                             addonBefore={
-                                <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                <Select size="default"
+                                        onChange={this.ruleTypeChange}
+                                        value={this.state.ruleType}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
                                     <Option key="0" value="0">任意消费满</Option>
                                     <Option key="2" value="2">任意消费每满</Option>
                                     <Option key="1" value="1">活动菜品消费满</Option>
@@ -383,11 +389,15 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         help={this.state.stageCountFlag ? null : '请输入菜品数量'}>
                         <PriceInput
                             addonBefore={
-                                <Select size="default" onChange={this.ruleTypeChange} value={this.state.ruleType}>
+                                <Select size="default"
+                                        onChange={this.ruleTypeChange}
+                                        value={this.state.ruleType}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
                                     <Option key="0" value="0">任意菜品数量满</Option>
                                     <Option key="2" value="2">任意菜品数量每满</Option>
-                                    <Option key="1" value="1">同一菜品数量满</Option>
-                                    <Option key="3" value="3">同一菜品数量每满</Option>
+                                    <Option key="1" value="1">活动菜品数量满</Option>
+                                    <Option key="3" value="3">活动菜品数量每满</Option>
                                 </Select>
                             }
                             addonAfter={'份'}
