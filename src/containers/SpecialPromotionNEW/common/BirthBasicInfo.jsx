@@ -269,8 +269,7 @@ class PromotionBasicInfo extends React.Component {
                     <Select size="default"
                             value={this.state.sendMsg}
                             onChange={this.handleSendMsgChange}
-                            className="birthBasicMountClassJs"
-                            getPopupContainer={() => document.querySelector('.birthBasicMountClassJs')}
+                            getPopupContainer={(node) => node.parentNode}
                     >
                         {
                             SEND_MSG.map((item) => {

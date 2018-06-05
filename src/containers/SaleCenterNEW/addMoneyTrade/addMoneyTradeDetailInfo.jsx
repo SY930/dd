@@ -367,8 +367,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                 <Select size="default"
                                         onChange={this.ruleTypeChange}
                                         value={this.state.ruleType}
-                                        className="addMoneyTradeMountClassJs"
-                                        getPopupContainer={() => document.querySelector('.addMoneyTradeMountClassJs')}
+                                        getPopupContainer={(node) => node.parentNode}
                                 >
                                     <Option key="0" value="0">任意消费满</Option>
                                     <Option key="2" value="2">任意消费每满</Option>
@@ -393,8 +392,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                 <Select size="default"
                                         onChange={this.ruleTypeChange}
                                         value={this.state.ruleType}
-                                        className="addMoneyTradeMountClassJs"
-                                        getPopupContainer={() => document.querySelector('.addMoneyTradeMountClassJs')}
+                                        getPopupContainer={(node) => node.parentNode}
                                 >
                                     <Option key="0" value="0">任意菜品数量满</Option>
                                     <Option key="2" value="2">任意菜品数量每满</Option>

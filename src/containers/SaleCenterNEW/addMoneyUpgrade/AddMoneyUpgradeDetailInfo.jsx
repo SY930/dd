@@ -381,8 +381,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 <Col span={isAddMoney == 0 ? 24 : 4}>
                     <Select onChange={this.isAddMoneyChange}
                             value={isAddMoney}
-                            className="addMoneyMountClassJs"
-                            getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                            getPopupContainer={(node) => node.parentNode}
                     >
                         <Option key="0" value={0}>不加价</Option>
                         <Option key="1" value={1}>加价</Option>
@@ -435,8 +434,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     <Col span={mostNewLimit == 0 ? 24 : 8}>
                         <Select onChange={this.mostNewLimitChange}
                                 value={mostNewLimit}
-                                className="addMoneyMountClassJs"
-                                getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                                getPopupContainer={(node) => node.parentNode}
                         >
                             <Option key="0" value={0}>不限制</Option>
                             <Option key="1" value={1}>限制</Option>
@@ -470,8 +468,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     <Col span={singleNewLimit == 0 ? 24 : 8}>
                         <Select onChange={this.singleNewLimitChange}
                                 value={singleNewLimit}
-                                className="addMoneyMountClassJs"
-                                getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                                getPopupContainer={(node) => node.parentNode}
                         >
                             <Option key="0" value={0}>不限制</Option>
                             <Option key="1" value={1}>限制</Option>
@@ -526,8 +523,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         <Col span={countType == 0 ? 24 : 4}>
                             <Select onChange={this.countTypeChange}
                                     value={countType}
-                                    className="addMoneyMountClassJs"
-                                    getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                                    getPopupContainer={(node) => node.parentNode}
                             >
                                 <Option key="0" value={0}>不限制</Option>
                                 <Option key="1" value={1}>按金额</Option>
@@ -541,8 +537,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                         addonBefore={
                                             <Select size="default"
                                                 defaultValue={0}
-                                                className="addMoneyMountClassJs"
-                                                getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                                                    getPopupContainer={(node) => node.parentNode}
                                                 onChange={this.subjectTypeChange}
                                                 value={subjectType}
                                             >
@@ -567,8 +562,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                         addonBefore={
                                             <Select size="default"
                                                 defaultValue={0}
-                                                className="addMoneyMountClassJs"
-                                                getPopupContainer={() => document.querySelector('.addMoneyMountClassJs')}
+                                                    getPopupContainer={(node) => node.parentNode}
                                                 onChange={this.stageConditionChange}
                                                 value={stageCondition}
                                             >

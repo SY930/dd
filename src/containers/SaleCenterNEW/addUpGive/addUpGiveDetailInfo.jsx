@@ -268,8 +268,7 @@ class AddUpGiveDetailInfo extends React.Component {
                                         // className={styles.inputAddonSelect}不生效
                                         addonBefore={<Select value={this.state.rule.stageType}
                                                              onChange={this.handleStageTypeChange}
-                                                             className={`addUpGiveDetailMountClassJs`}
-                                                             getPopupContainer={() => document.querySelector('.addUpGiveDetailMountClassJs')}
+                                                             getPopupContainer={(node) => node.parentNode}
                                         >
                                             <Option key="1">每累计</Option>
                                             <Option key="2">累计</Option>

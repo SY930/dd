@@ -544,8 +544,7 @@ class PromotionBasicInfo extends React.Component {
                 <Select
                     size="default"
                     placeholder="请选择周期"
-                    className={`promotionBasicInfoMountClassJs`}
-                    getPopupContainer={() => document.querySelector('.promotionBasicInfoMountClassJs')}
+                    getPopupContainer={(node) => node.parentNode}
                     defaultValue={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
@@ -982,8 +981,7 @@ class PromotionBasicInfo extends React.Component {
                     <Select
                         showSearch={true}
                         placeholder="请选择活动类别"
-                        className={`promotionBasicInfoMountClassJs`}
-                        getPopupContainer={() => document.querySelector('.promotionBasicInfoMountClassJs')}
+                        getPopupContainer={(node) => node.parentNode}
                         size="default"
                         value={this.state.category}
                         onChange={this.handleCategoryChange}
@@ -1052,8 +1050,7 @@ class PromotionBasicInfo extends React.Component {
                     <Select
                         {...tagList}
                         onChange={this.handleTagsChange}
-                        className={`promotionBasicInfoMountClassJs`}
-                        getPopupContainer={() => document.querySelector('.promotionBasicInfoMountClassJs')}
+                        getPopupContainer={(node) => node.parentNode}
                         value={this.state.tags}
                         size="default"
                         placeholder="汉字、字母、数字组成"

@@ -325,8 +325,7 @@ class BuyAFreeDetailInfo extends React.Component {
                                             <Select size="default"
                                                     onChange={this.ruleTypeChange}
                                                     value={this.state.ruleType}
-                                                    className={`buyFreeDetailMountClassJs`}
-                                                    getPopupContainer={() => document.querySelector('.buyFreeDetailMountClassJs')}
+                                                    getPopupContainer={(node) => node.parentNode}
                                             >
                                                 {
                                                     RULE_TYPE.map((item) => {

@@ -288,8 +288,7 @@ class GroupTicketDetailInfo extends React.Component {
                             onChange={this.onCostIncomeChange}
                             value={this.state.costIncome}
                             defaultValue={'1'}
-                            className="groupTicketDetailMountClassJs"
-                            getPopupContainer={() => document.querySelector('.groupTicketDetailMountClassJs')}
+                            getPopupContainer={(node) => node.parentNode}
                     >
                         <Option value="0">否</Option>
                         <Option value="1">是</Option>

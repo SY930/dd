@@ -319,8 +319,7 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={6}>
                         <Select size="default"
                                 onChange={this.handleSelectChange}
-                                className={`specialPromotionDetailMountClassJs`}
-                                getPopupContainer={() => document.querySelector('.specialPromotionDetailMountClassJs')}
+                                getPopupContainer={(node) => node.parentNode}
                         >
                             {this.renderOptions()}
                         </Select>

@@ -358,7 +358,7 @@ class FullGiveDetailInfo extends React.Component {
                         placeholder="请选择活动类别"
                         defaultValue={this.state.ruleType}
                         className={`${styles.linkSelectorRight} fullGiveDetailMountClassJs`}
-                        getPopupContainer={() => document.querySelector('.fullGiveDetailMountClassJs')}
+                        getPopupContainer={(node) => node.parentNode}
                         value={this.state.ruleType}
                         onChange={(val) => {
                             let { ruleType } = this.state;

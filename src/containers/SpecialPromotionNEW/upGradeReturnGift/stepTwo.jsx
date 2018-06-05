@@ -364,8 +364,7 @@ class StepTwo extends React.Component {
             <Select onChange={this.handleOptionChange}
                     value={this.state.consumeType}
                     disabled={userCount > 0}
-                    className={`upgradeReturnGiftSecondStepMountClassJs`}
-                    getPopupContainer={() => document.querySelector('.upgradeReturnGiftSecondStepMountClassJs')}
+                    getPopupContainer={(node) => node.parentNode}
             >
                 <Option key="0">累计金额每满</Option>
                 <Option key="1">累计次数每满</Option>

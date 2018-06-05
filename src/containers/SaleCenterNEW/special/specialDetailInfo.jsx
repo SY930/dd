@@ -174,8 +174,7 @@ class SpecialDetailInfo extends React.Component {
                             <Col  span={this.state.isLimited == 0 ? 24 : 8}>
                                 <Select onChange={this.handleIsLimitedChange}
                                         value={String(this.state.isLimited)}
-                                        className={`specialDetailMountClassJs`}
-                                        getPopupContainer={() => document.querySelector('.specialDetailMountClassJs')}
+                                        getPopupContainer={(node) => node.parentNode}
                                 >
                                     <Option key="0" value={'0'}>不限制</Option>
                                     <Option key="1" value={'1'}>限制</Option>

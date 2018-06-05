@@ -52,8 +52,7 @@ export default class PromotionNameSelect extends React.Component {
                 combobox={true}
                 style={{ width: 160 }}
                 onSearch={this.searchProName}
-                className={`promotionNameSelectMountClassJs`}
-                getPopupContainer={() => document.querySelector('.promotionNameSelectMountClassJs')}
+                getPopupContainer={(node) => node.parentNode}
                 onSelect={(promotionName) => {
                     this.setState({ promotionName })
                     this.props.onChange({ promotionName })

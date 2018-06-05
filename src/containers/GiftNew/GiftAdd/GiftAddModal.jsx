@@ -155,7 +155,7 @@ class GiftAddModal extends React.Component {
                         })(<Select
                             className="giftName"
                             placeholder={'请选择品牌名称'}
-                            getPopupContainer={() => document.querySelector('.giftName')}
+                            getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 groupTypes.map((t, i) => {

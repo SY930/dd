@@ -558,8 +558,7 @@ class GiftAddModalStep extends React.Component {
                             // initialValue: '-1',
                         })(<Select
                             placeholder={'请选择品牌名称'}
-                            className="giftNameStep"
-                            getPopupContainer={() => document.querySelector('.giftNameStep')}
+                            getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 groupTypes.map((t, i) => {
@@ -596,8 +595,7 @@ class GiftAddModalStep extends React.Component {
                         {decorator({
                             key: 'discountType',
                             initialValue: discountType || 0,
-                        })(<Select className="giftNameStep"
-                                   getPopupContainer={() => document.querySelector('.giftNameStep')}
+                        })(<Select getPopupContainer={(node) => node.parentNode}
                         >
                             {
                                 [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t) => {
@@ -658,8 +656,7 @@ class GiftAddModalStep extends React.Component {
                         {decorator({
                             key: 'isDiscountOffMax',
                             initialValue: isDiscountOffMax || 0,
-                        })(<Select className="giftNameStep"
-                                   getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                        })(<Select getPopupContainer={(node) => node.parentNode}>
                             {
                                 [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                     return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -753,8 +750,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'ismaxGiveCountPerBill',
                                 initialValue: ismaxGiveCountPerBill || 0,
-                            })(<Select className="giftNameStep"
-                                       getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -792,8 +788,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'ismaxGiveCountPerFoodPerBill',
                                 initialValue: ismaxGiveCountPerFoodPerBill || 0,
-                            })(<Select className="giftNameStep"
-                                       getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '不限制', value: 0 }, { label: '限制', value: 1 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -830,8 +825,7 @@ class GiftAddModalStep extends React.Component {
                             {decorator({
                                 key: 'BOGOdiscountWay',
                                 initialValue: BOGOdiscountWay || 1,
-                            })(<Select className="giftNameStep"
-                                       getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                            })(<Select getPopupContainer={(node) => node.parentNode}>
                                 {
                                     [{ label: '高价单品优先', value: 1 }, { label: '低价单品优先', value: 2 }].map((t) => {
                                         return <Option key={t.label} value={t.value}>{t.label}</Option>
@@ -1082,8 +1076,7 @@ class GiftAddModalStep extends React.Component {
                                     {decorator({
                                         key: 'numberOfTimeType',
                                         initialValue: this.props.type === 'edit' ? `${this.props.gift.data.numberOfTimeType}` : '0',
-                                    })(<Select className="giftNameStep"
-                                               getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                                    })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="0">不限制</Option>
                                         <Option value="1">限制</Option>
                                     </Select>)}
@@ -1118,8 +1111,7 @@ class GiftAddModalStep extends React.Component {
                                 {decorator({
                                     key: 'moneyTopLimitType',
                                     initialValue: this.props.type === 'edit' ? `${this.props.gift.data.moneyTopLimitType}` : '0',
-                                })(<Select className="giftNameStep"
-                                           getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                                })(<Select getPopupContainer={(node) => node.parentNode}>
                                     <Option value="0">不限制</Option>
                                     <Option value="1">限制</Option>
                                 </Select>)}
@@ -1213,8 +1205,7 @@ class GiftAddModalStep extends React.Component {
                                     {decorator({
                                         key: 'transferLimitType',
                                         initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
-                                    })(<Select className="giftNameStep"
-                                               getPopupContainer={() => document.querySelector('.giftNameStep')}>
+                                    })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="-1">可转赠</Option>
                                         <Option value="0">不可转赠</Option>
                                     </Select>)}

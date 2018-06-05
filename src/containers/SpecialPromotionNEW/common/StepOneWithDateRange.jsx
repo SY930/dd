@@ -612,8 +612,7 @@ class StepOneWithDateRange extends React.Component {
                                 <Select size="default"
                                         value={`${this.state.smsGate}`}
                                         onChange={this.handlesmsGateChange}
-                                        className="dateRangeMountClassJs"
-                                        getPopupContainer={() => document.querySelector('.dateRangeMountClassJs')}
+                                        getPopupContainer={(node) => node.parentNode}
                                 >
                                     {
                                         SEND_MSG.map((item) => {

@@ -352,8 +352,7 @@ class StepTwo extends React.Component {
                         <Select
                             style={{ width: '100%' }}
                             placeholder="请选择会员群体"
-                            className={`sendGiftsSecondStepMountClassJs`}
-                            getPopupContainer={() => document.querySelector('.sendGiftsSecondStepMountClassJs')}
+                            getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
                             <Option key={'0'}>全部会员</Option>

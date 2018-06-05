@@ -120,8 +120,7 @@ class SendMsgInfo extends React.Component {
                     >
                         <Select onChange={this.handleOptionChange}
                                 value={settleUnitID}
-                                className="settleUnitIDJs"
-                                getPopupContainer={() => document.querySelector('.settleUnitIDJs')}
+                                getPopupContainer={(node) => node.parentNode}
                         >
                             {(specialPromotion.accountInfoList || []).map((accountInfo) => {
                                 return (<Option key={accountInfo.settleUnitID}>{accountInfo.settleUnitName}</Option>)

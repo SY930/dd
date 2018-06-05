@@ -217,8 +217,7 @@ class TrdTemplate extends React.Component {
                                     <Select value={channelID}
                                             onChange={this.handleTrdChannelSelect}
                                             disabled={edit}
-                                            className="trdTemplateMountClassJs"
-                                            getPopupContainer={() => document.querySelector('.trdTemplateMountClassJs')}
+                                            getPopupContainer={(node) => node.parentNode}
                                     >
                                         {
                                             GiftCfg.trdChannelIDs.map(trdChannel => {
@@ -238,7 +237,7 @@ class TrdTemplate extends React.Component {
                                             <Select value={mpID}
                                                     onChange={this.handleMpSelect}
                                                     disabled={edit}
-                                                    getPopupContainer={() => document.querySelector('.trdTemplateMountClassJs')}
+                                                    getPopupContainer={(node) => node.parentNode}
                                             >
                                                 {
                                                     mpList.map(mp => {
@@ -257,7 +256,7 @@ class TrdTemplate extends React.Component {
                                     <Select onChange={this.handleTrdTemplate}
                                             value={trdGiftItemID}
                                             disabled={edit}
-                                            getPopupContainer={() => document.querySelector('.trdTemplateMountClassJs')}
+                                            getPopupContainer={(node) => node.parentNode}
                                     >
                                         {
                                             trdTemplateInfoList.map(template => {
