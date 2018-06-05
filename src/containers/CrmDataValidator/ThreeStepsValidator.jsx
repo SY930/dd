@@ -33,6 +33,7 @@ class ThreeStepsValidator extends React.Component {
             isHistoryModalVisible: false,
             isHistoryLoading: false,
             historyList: [],
+            importID: '',
             validateStatus: 'success'
         };
         this.busyTime = [11, 12, 13, 18, 19, 20];
@@ -42,6 +43,7 @@ class ThreeStepsValidator extends React.Component {
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReset = this.handleReset.bind(this);
+        this.queryValidationHistory = this.queryValidationHistory.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.steps = null;
         this.importInfoStr = null;
@@ -118,9 +120,9 @@ class ThreeStepsValidator extends React.Component {
                     }
 
                     if (validateStatus) {
-                        this.setState({current: 2, dataType, adjustmentMethod, validateStatus});
+                        this.setState({current: 2, dataType, adjustmentMethod, validateStatus, importID});
                     } else {
-                        this.setState({current: 1});
+                        this.setState({current: 1, importID});
                     }
                 }
                 this.setState({isHistoryLoading: false, historyList: res || []});
@@ -155,7 +157,7 @@ class ThreeStepsValidator extends React.Component {
         try {
             const fileLocationUrlArr = fileList.map(file => file.response.data.url);
             if (fileLocationUrlArr.every(url => !!url)) {
-                fileLocationStr = fileLocationUrlArr.join(',');
+                fileLocationStr = fileLocationUrlArr.map(url => `http://res.hualala.com/url`).join(',');
             } else {
                 message.warning('有部分文件未能上传成功,请重新上传或刷新重试');
                 return;
@@ -173,7 +175,13 @@ class ThreeStepsValidator extends React.Component {
             operator: this.props.user.accountInfo.userName,
             crmVersion: '21' // 会员系统版本: 10(老系统) 21(多卡类型会员系统)
         };
-        axiosData('crmimport/crmImportService_doImportValidate.ajax', reqParams, {}, undefined, 'HTTP_SERVICE_URL_CRM')
+        let url;
+        if (this.state.dataType == '1') {
+            url = 'crmimport/crmImportService_doImportValidate.ajax';
+        } else {
+            url = 'crmImport/cardTypeValidateService_validateCardType.ajax';
+        }
+        axiosData(url, reqParams, {}, undefined, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
                 const crmImportInfo = {
                     importID,
@@ -212,11 +220,6 @@ class ThreeStepsValidator extends React.Component {
                     return true;
                 });
                 this.setState({ fileList });
-                /*if (status === 'done') {
-                    message.success(`${info.file.name} 上传成功`);
-                } else if (status === 'error') {
-                    message.error(`${info.file.name} 上传失败`);
-                }*/
             },
         };
         return (
@@ -327,9 +330,12 @@ class ThreeStepsValidator extends React.Component {
                                     <div className={ownStyle.uploaderContainer}>
                                         {this.renderUploadButton()}
                                     </div>
-                                    <a href="http://res.tiaofangzi.com/group2/M01/58/FA/wKgVT1mjzfaZPYBaAAAwLLmM7jg77.xlsx"
+                                    {this.state.dataType === '1' &&<a href="http://res.tiaofangzi.com/group2/M01/58/FA/wKgVT1mjzfaZPYBaAAAwLLmM7jg77.xlsx"
                                        className={ownStyle.downloadLink}
-                                       download="数据导入模板.xlsx">下载数据导入模板</a>
+                                       download="数据导入模板.xlsx">下载数据导入模板</a>}
+                                   {this.state.dataType === '2' &&<a href="http://res.hualala.com/group3/M02/14/E0/wKgVwlsWCpHqGJf8AAAvndWAF_o23.xlsx "
+                                       className={ownStyle.downloadLink}
+                                       download="下载卡类别变更模板.xlsx">下载卡类别变更模板</a>}
                                 </div>
 
 
@@ -342,7 +348,9 @@ class ThreeStepsValidator extends React.Component {
                 title: '审核进度',
                 content: (
                     <div className="layoutsContent">
-                        <div style={{width: '200px', margin: '0 auto', textAlign: 'center'}}>{`数据正在审核,请稍后查看`}</div>
+                        <div style={{width: '200px', fontWeight: 'bold', margin: '50px auto', textAlign: 'center'}}>
+                            {`数据正在审核,请稍后查看`}
+                        </div>
                     </div>
                 ),
             },
@@ -360,20 +368,32 @@ class ThreeStepsValidator extends React.Component {
                                 <p>{`${this.props.user.accountInfo.groupShortName}(ID: ${this.props.user.accountInfo.groupID})`}</p>
                             </FormItem>
                             <FormItem
-                                label="集团名称"
+                                label="变动类型"
                                 className={style.FormItemStyle}
                                 labelCol={{ span: 11 }}
                                 wrapperCol={{ span: 13 }}
                             >
-                                <p>{`${this.props.user.accountInfo.groupShortName}(ID: ${this.props.user.accountInfo.groupID})`}</p>
+                                {this.state.dataType === '1' && <p>{`会员数据导入`}</p>}
+                                {this.state.dataType === '2' && this.state.adjustmentMethod === '1' && <p>{`卡类别调整 (根据等级调整)`}</p>}
+                                {this.state.dataType === '2' && this.state.adjustmentMethod === '2' && <p>{`卡类别调整 (根据入会店铺调整)`}</p>}
+                                {this.state.dataType === '2' && this.state.adjustmentMethod === '3' && <p>{`卡类别调整 (根据卡号调整)`}</p>}
                             </FormItem>
+                            {this.state.importID && <FormItem
+                                label="校验ID"
+                                className={style.FormItemStyle}
+                                labelCol={{ span: 11 }}
+                                wrapperCol={{ span: 13 }}
+                            >
+                                {this.state.importID}
+                            </FormItem>}
                             <FormItem
                                 label="校验状态"
                                 className={style.FormItemStyle}
                                 labelCol={{ span: 11 }}
                                 wrapperCol={{ span: 13 }}
                             >
-                                {this.state.validateStatus === 'success' ? <p>{'数据校验无误'} <Icon type="check-circle" style={{color: '#1ab495'}} /></p> : <p>{'数据校验有误'} <Icon style={{color: 'orange'}} type="check-circle" /></p>}
+                                {this.state.validateStatus === 'success' ? <p>{'数据校验无误'} <Icon type="check-circle" style={{color: '#1ab495'}} /></p> : <p>{'数据校验有误'} <Icon style={{color: 'orange'}} type="close-circle" /></p>}
+                                &nbsp;&nbsp;<a onClick={e => {e.preventDefault();this.setState({isHistoryModalVisible: true})}}>查看校验记录</a>
                             </FormItem>
                         </Form>
                     </div>
@@ -381,8 +401,9 @@ class ThreeStepsValidator extends React.Component {
             },
         ];
         return (
-        <Spin size="large" spinning={this.state.isHistoryLoading}>
+
             <div className={`${styles.ProgressBar} ${ownStyle.progressWrapper}`}>
+                <Spin size="large" spinning={this.state.isHistoryLoading}>
                 <Steps current={this.state.current} className="clearfix">
                     {steps.map(item => <Step key={item.title} title={item.title} />)}
                 </Steps>
@@ -405,22 +426,31 @@ class ThreeStepsValidator extends React.Component {
                         <Tooltip title="业务高峰期暂不允许发起校验请求, 请您谅解~">
                             <Button
                                 disabled
-                                type="primary"
+                                type="secondary"
                             >确定
                             </Button>
                         </Tooltip>)}
+                </div>)}
+                {this.state.current === 1 && (<div className="progressButton">
+                    <Button
+
+                        type="primary"
+                        onClick={this.handleReset}
+                    >刷新
+                    </Button>
                 </div>)}
                 {this.state.current === 2 && (<div className="progressButton">
                     <Button
 
                         type="primary"
-                        onClick={this.handleReset}
+                        onClick={this.queryValidationHistory}
                     >我知道了
                     </Button>
                 </div>)}
                 {this.renderHistoryModal()}
+                </Spin>
             </div>
-        </Spin>
+
         );
     }
 }
