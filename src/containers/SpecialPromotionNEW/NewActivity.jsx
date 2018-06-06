@@ -185,6 +185,10 @@ class NewActivity extends React.Component {
         this.setState({
             index,
         });
+        if (activity.get('key') === '31') {
+            message.success('活动将于近期上线, 敬请期待~');
+            return;
+        }
         this.props.setPromotionType({
             eventWay: activity.get('key'),
         });
