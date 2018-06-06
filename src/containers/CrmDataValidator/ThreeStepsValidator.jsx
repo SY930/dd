@@ -4,7 +4,7 @@ import styles from '../../components/basic/ProgressBar/ProgressBar.less';
 import style from '../SaleCenterNEW/ActivityPage.less';
 import ownStyle from './Validator.less';
 import { connect } from 'react-redux';
-import { Steps, Button, Form, Select, Upload, Icon, message, Col, Row, Modal, Tooltip, Spin } from 'antd';
+import { Steps, Button, Form, Select, Upload, Icon, message, Col, Row, Modal, Tooltip, Spin, Table } from 'antd';
 import { axiosData } from '../../helpers/util';
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
@@ -47,6 +47,69 @@ class ThreeStepsValidator extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this);
         this.steps = null;
         this.importInfoStr = null;
+        this.columns = [{
+            title: '序号',
+            dataIndex: 'indexNo',
+            className: 'TableTxtCenter',
+            width: 50,
+            // fixed:'left',
+            key: 'key',
+        }, {
+            title: '校验类型',
+            dataIndex: 'importType',
+            key: 'importType',
+            className: 'TableTxtCenter',
+            // fixed: 'left',
+            width: 100,
+            render: (type) => {
+                if (type == 1) return '会员数据导入校验';
+                if (type == 2) return '卡类别调整校验 (根据等级)';
+                if (type == 3) return '卡类别调整校验 (根据入会店铺)';
+                if (type == 4) return '卡类别调整校验 (根据卡号)';
+                return '--'
+            }
+        }, {
+            title: '校验ID',
+            dataIndex: 'importID',
+            key: 'importID',
+            className: 'TableTxtCenter',
+            // fixed: 'left',
+            width: 100,
+        }, {
+            title: '校验发起人',
+            dataIndex: 'operator',
+            key: 'operator',
+            className: 'TableTxtCenter',
+            width: 50,
+            render: (name) => name || '未知'
+        }, {
+            title: '校验结果',
+            dataIndex: 'result',
+            key: 'result',
+            className: 'TableTxtCenter',
+            width: 50,
+            render: (result, entity) => {
+                if (result == 0) return '校验失败';
+                if (result == 1 && entity.errorFilePath) return '校验完成, 未通过';
+                if (result == 1 && !entity.errorFilePath) return '校验成功';
+            }
+        }, {
+            title: '原文件',
+            dataIndex: 'sourceFilePath',
+            key: 'sourceFilePath',
+            className: 'TableTxtCenter',
+            width: 50,
+            render: (path) => <a href={path}>下载</a>
+        },
+        {
+            title: '错误文件',
+            dataIndex: 'errorFilePath',
+            key: 'errorFilePath',
+            className: 'TableTxtCenter',
+            width: 50,
+            render: (path) => path ? <a href={path}>下载错误文件</a> : '无'
+        },
+        ]
     }
 
     componentDidMount() {
@@ -85,11 +148,15 @@ class ThreeStepsValidator extends React.Component {
     }
 
     queryValidationHistory() {
+        this.setState({isHistoryLoading: true});
         let lastImportInfo;
         try {
             this.importInfoStr = localStorage.getItem('_crm_import_info');
             if (this.importInfoStr) {
                 lastImportInfo = JSON.parse(this.importInfoStr);
+                if (lastImportInfo.groupID !== this.props.user.accountInfo.groupID) {
+                    throw new Error('different group');
+                }
                 this.setState({current: 1});
             }
         } catch (e) {
@@ -97,7 +164,6 @@ class ThreeStepsValidator extends React.Component {
             lastImportInfo = null;
             this.setState({current: 0})
         }
-        this.setState({isHistoryLoading: true});
         axiosData('crmimport/crmImportService_queryCrmImportList.ajax', {}, {}, {path: 'data.crmImportResultList'}, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
                 if (lastImportInfo) {
@@ -125,7 +191,7 @@ class ThreeStepsValidator extends React.Component {
                         this.setState({current: 1, importID});
                     }
                 }
-                this.setState({isHistoryLoading: false, historyList: res || []});
+                this.setState({isHistoryLoading: false, historyList: (res || []).map((item, index) => ({...item, indexNo: index+1})) || []});
             }, err => {
                 this.setState({isHistoryLoading: false});
                 message.error('出错了, 请稍后或刷新重试');
@@ -157,7 +223,7 @@ class ThreeStepsValidator extends React.Component {
         try {
             const fileLocationUrlArr = fileList.map(file => file.response.data.url);
             if (fileLocationUrlArr.every(url => !!url)) {
-                fileLocationStr = fileLocationUrlArr.map(url => `http://res.hualala.com/url`).join(',');
+                fileLocationStr = fileLocationUrlArr.map(url => `http://res.hualala.com/${url}`).join(',');
             } else {
                 message.warning('有部分文件未能上传成功,请重新上传或刷新重试');
                 return;
@@ -172,6 +238,7 @@ class ThreeStepsValidator extends React.Component {
             groupName: this.props.user.accountInfo.groupName,
             sourceFilePath: fileLocationStr,
             importID,
+            importType: this.state.dataType == '1' ? '1' : String(Number(this.state.adjustmentMethod) + 1),
             operator: this.props.user.accountInfo.userName,
             crmVersion: '21' // 会员系统版本: 10(老系统) 21(多卡类型会员系统)
         };
@@ -179,7 +246,7 @@ class ThreeStepsValidator extends React.Component {
         if (this.state.dataType == '1') {
             url = 'crmimport/crmImportService_doImportValidate.ajax';
         } else {
-            url = 'crmImport/cardTypeValidateService_validateCardType.ajax';
+            url = 'crmimport/cardTypeValidateService_validateCardType.ajax';
         }
         axiosData(url, reqParams, {}, undefined, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
@@ -193,7 +260,7 @@ class ThreeStepsValidator extends React.Component {
                 localStorage.setItem('_crm_import_info', JSON.stringify(crmImportInfo));
                 this.setState({current: 1});
             }, err => {
-                message.error(`未能成功发起校验请求, 错误原因: ${err}`);
+                console.log(err);
             });
 
     }
@@ -235,8 +302,11 @@ class ThreeStepsValidator extends React.Component {
         return (<Row className="layoutsContainer">
             <Col span={24} className="layoutsHeader">
                 <div className="layoutsTool">
-                    <div className="layoutsToolLeft">
+                    <div className={`layoutsToolLeft ${ownStyle.flexContainer}`}>
                         <h1>会员数据变动校验</h1>
+                        <div className={`${ownStyle.flexContainer} ${ownStyle.customTip}`}>
+                            <span style={{color: 'orange', lineHeight: '16px', fontSize: '16px', paddingBottom: '3px'}}>&nbsp;&nbsp;&nbsp;&nbsp;不可校验时段: 11:00 - 14:00, 18:00 - 21: 00</span>
+                        </div>
                     </div>
                     <div className="layoutsToolRight">
 
@@ -257,13 +327,45 @@ class ThreeStepsValidator extends React.Component {
         return (<Modal
             // key={modalKey}
             title={`校验记录`}
+            width="924px"
+            style={{minHeight: '400px'}}
             visible={this.state.isHistoryModalVisible}
             maskClosable={false}
             onCancel={this.handleModalClose}
             footer={<Button onClick={this.handleModalClose}>关闭</Button>}
         >
-            123123123123123123
+            {this.renderHistoryTable()}
         </Modal>);
+    }
+
+    renderHistoryTable() {
+
+        return (
+            <Table
+                bordered={true}
+                title={() => (
+                    <span style={{fontSize: '16px'}}>
+                        {`${this.props.user.accountInfo.groupShortName}(ID: ${this.props.user.accountInfo.groupID}) 会员数据变动校验记录  `}
+                        <Tooltip title="一次校验请求如果包含多个文件, 则会在历史记录中记录多条, 这些条目由校验ID关联; 单条记录只表示单个文件的验证情况">
+                            <Icon type="info-circle" />
+                        </Tooltip>
+                    </span>
+                )}
+                columns={this.columns.map(c => (c.render ? ({
+                    ...c,
+                    render: c.render.bind(this),
+                }) : c))}
+                dataSource={this.state.historyList}
+                pagination={{
+                    showSizeChanger: true,
+                    total: this.state.historyList.length,
+                    showQuickJumper: true,
+                    showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                }}
+                loading={this.state.isHistoryLoading}
+                scroll={{ x: 800 }}
+            />
+        );
     }
 
     handleReset() {
@@ -435,7 +537,7 @@ class ThreeStepsValidator extends React.Component {
                     <Button
 
                         type="primary"
-                        onClick={this.handleReset}
+                        onClick={this.queryValidationHistory}
                     >刷新
                     </Button>
                 </div>)}
@@ -443,7 +545,7 @@ class ThreeStepsValidator extends React.Component {
                     <Button
 
                         type="primary"
-                        onClick={this.queryValidationHistory}
+                        onClick={this.handleReset}
                     >我知道了
                     </Button>
                 </div>)}
