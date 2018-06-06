@@ -327,8 +327,8 @@ class ThreeStepsValidator extends React.Component {
         return (<Modal
             // key={modalKey}
             title={`校验记录`}
-            width="924px"
-            style={{minHeight: '400px'}}
+            width="950px"
+            bodyStyle={{height: '800px'}}
             visible={this.state.isHistoryModalVisible}
             maskClosable={false}
             onCancel={this.handleModalClose}
@@ -363,7 +363,7 @@ class ThreeStepsValidator extends React.Component {
                     showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                 }}
                 loading={this.state.isHistoryLoading}
-                scroll={{ x: 800 }}
+                scroll={{ x: 800, y: 320 }}
             />
         );
     }
