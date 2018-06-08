@@ -47,6 +47,13 @@ const PROMOTION_OPTIONS = Object.freeze([
     },
 ]);
 
+const PROMOTION_OPTIONS_DISH_ONLY = Object.freeze([
+    {
+        value: 0,
+        name: '按单品选择',
+    },
+]);
+
 class FoodBox extends React.Component {
     constructor(props) {
         super(props);
@@ -156,7 +163,7 @@ class FoodBox extends React.Component {
                                         });
                                 })
                         });
-                    this.props.onChange && this.props.onChange({
+                    !this.props.dishOnly && this.props.onChange && this.props.onChange({
                         dishes: Array.from(foodSelections),
                         categoryOrDish: '0',
                     });
@@ -177,7 +184,10 @@ class FoodBox extends React.Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
-        const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        if (this.props.dishOnly) {
+            foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+        }
         if (this.props.catOrFoodValue) {
             const _scopeLst2 = this.props.catOrFoodValue;
             this.setState({
@@ -193,13 +203,36 @@ class FoodBox extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
-            const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
+            let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
+            if (nextProps.dishOnly) {
+                foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+            }
             this.setState({
                 foodCategoryCollection,
             }, () => {
                 this.initialData(this.state.scopeLst, this.state.foodCategoryCollection);
             });
         }
+    }
+
+    // 过滤套餐
+    filterGroup(foodCategoryCollection) {
+        if (foodCategoryCollection) {
+            return foodCategoryCollection.map((city) => {
+                return {
+                    ...city,
+                    foodCategoryName: city.foodCategoryName.map((category) => {
+                        return {
+                            ...category,
+                            foods: category.foods.filter((food) => {
+                                return food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1'
+                            }),
+                        }
+                    }),
+                }
+            });
+        }
+        return []
     }
 
     handleCategoryOrDishChange(e) {
@@ -243,7 +276,7 @@ class FoodBox extends React.Component {
                     value={this.state.categoryOrDish}
                     onChange={this.handleCategoryOrDishChange}
                 >
-                    {PROMOTION_OPTIONS.map((type) => {
+                    {(this.props.dishOnly ? PROMOTION_OPTIONS_DISH_ONLY: PROMOTION_OPTIONS).map((type) => {
                         return (<Radio key={type.name} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
@@ -446,10 +479,10 @@ class FoodBox extends React.Component {
         };
         return (
             <div>
-                <FormItem required={true} label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem required={true} label={this.props.boxLabel || '适用菜品'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
-                            label={'适用菜品'}
+                            label={this.props.boxLabel || '适用菜品'}
                             itemName="foodName+unit"
                             itemID="itemID"
                             data={this.state.foodSelections}
@@ -892,7 +925,7 @@ class FoodBox extends React.Component {
     render() {
         return (
             <div>
-                {this.renderPromotionRange()}
+                {!this.props.dishOnly && this.renderPromotionRange()}
                 {
                     this.state.categoryOrDish == '0' ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
