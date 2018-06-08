@@ -165,7 +165,10 @@ class SpecialDishesTable extends React.Component {
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
         ) {
-            const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            let priceLst = [];
+            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            }
             this.setState({
                 priceLst,
             }, () => {

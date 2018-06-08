@@ -107,7 +107,13 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         // const stage = _rule.stage ? _rule.stage[0] : {}
         const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
         const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
-        const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        if (Immutable.List.isList(priceLst)) {
+            priceLst = priceLst.toJS();
+        } else {
+            priceLst = [];
+        }
+
         let subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         if (subjectType == 1) {
             subjectType = scope.length > 0 ? 3 : 1

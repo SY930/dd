@@ -69,23 +69,19 @@ class NDiscountDetailInfo extends React.Component {
         });
         this.initRule();
         const display = !this.props.isNew;
-        const priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() || [];
+        const priceLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
         this.setState({priceLst, display});
     }
-
-    /*shouldComponentUpdate(nextProps, nextState) {
-        return (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) || (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']))
-    }*/
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-            const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-            this.setState({
-                priceLst
-            });
+            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+                this.setState({
+                    priceLst
+                });
+            }
         }
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
