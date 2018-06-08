@@ -36,8 +36,8 @@ class ThreeStepsValidator extends React.Component {
             importID: '',
             validateStatus: 'success'
         };
-        this.busyTime = [11, 12, 13, 18, 19, 20];
-        this.busyTimeEndPoint = [14, 21];
+        this.busyTime = [11, 12, 13, 18, 19, 20]; // 11, 12, 13, 18, 19, 20
+        this.busyTimeEndPoint = [14, 21]; //14, 21
         this.intervalId = null;
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -60,7 +60,7 @@ class ThreeStepsValidator extends React.Component {
             key: 'importType',
             className: 'TableTxtCenter',
             // fixed: 'left',
-            width: 100,
+            width: 200,
             render: (type) => {
                 if (type == 1) return '会员数据导入校验';
                 if (type == 2) return '卡类别调整校验 (根据等级)';
@@ -74,23 +74,24 @@ class ThreeStepsValidator extends React.Component {
             key: 'importID',
             className: 'TableTxtCenter',
             // fixed: 'left',
-            width: 100,
+            width: 150,
         }, {
             title: '校验发起人',
             dataIndex: 'operator',
             key: 'operator',
             className: 'TableTxtCenter',
-            width: 50,
+            width: 100,
             render: (name) => name || '未知'
         }, {
             title: '校验结果',
             dataIndex: 'result',
             key: 'result',
             className: 'TableTxtCenter',
-            width: 50,
+            width: 150,
             render: (result, entity) => {
-                if (result == 0) return '校验失败';
-                if (result == 1 && entity.errorFilePath) return '校验完成, 未通过';
+                if (!result || result == '0') return '校验进行中';
+                if (result == 2) return '校验失败';
+                if (result == 1 && entity.errorFilePath) return '校验完成, 有错误';
                 if (result == 1 && !entity.errorFilePath) return '校验成功';
             }
         }, {
@@ -98,16 +99,16 @@ class ThreeStepsValidator extends React.Component {
             dataIndex: 'sourceFilePath',
             key: 'sourceFilePath',
             className: 'TableTxtCenter',
-            width: 50,
+            width: 100,
             render: (path) => <a href={path}>下载</a>
         },
         {
-            title: '错误文件',
+            title: '错误信息',
             dataIndex: 'errorFilePath',
             key: 'errorFilePath',
             className: 'TableTxtCenter',
-            width: 50,
-            render: (path) => path ? <a href={path}>下载错误文件</a> : '无'
+            // width: 150,
+            render: (path) => path ? <a download target="_blank" href={path}>查看错误信息</a> : '无'
         },
         ]
     }
@@ -126,11 +127,8 @@ class ThreeStepsValidator extends React.Component {
         const currentHour = moment().hours();
         if (this.busyTime.includes(currentHour)) {
             return true;
-        } else if (this.busyTimeEndPoint.includes(currentHour)) {
-            const minutes = moment().minutes();
-            if (minutes === 0) {
-                return true
-            }
+        } else if (this.busyTimeEndPoint.includes(currentHour) && moment().minutes() === 0) {
+            return true
         }
         return false;
     }
@@ -158,37 +156,44 @@ class ThreeStepsValidator extends React.Component {
                     throw new Error('different group');
                 }
                 this.setState({current: 1});
+            } else {
+                this.setState({current: 0});
             }
+
         } catch (e) {
             this.importInfoStr = null;
             lastImportInfo = null;
-            this.setState({current: 0})
+            this.setState({current: 0});
         }
         axiosData('crmimport/crmImportService_queryCrmImportList.ajax', {}, {}, {path: 'data.crmImportResultList'}, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
                 if (lastImportInfo) {
                     const {fileListLength, importID, dataType, adjustmentMethod} = lastImportInfo;
                     let isSuccess = true;
+                    let isPending = false;
                     let validateStatus = 'success';
                     const resultCount = (res || []).reduce((accumulator, current) => {
-                        if (current.importID === importID) {
+                        if (String(current.importID) === String(importID)) {
                             accumulator++;
                             isSuccess = isSuccess && (current.result === 1 && !current.errorFilePath);
+                            isPending = isPending || (!current.result || current.result == '0');
                         }
                         return accumulator;
                     }, 0);
                     if (resultCount === fileListLength && isSuccess) {
                         validateStatus = 'success';
+                    } else if (resultCount === fileListLength && isPending) {
+                        validateStatus = 'pending';
+                    } else if (resultCount < fileListLength) {
+                        validateStatus = 'pending';
                     } else if (resultCount === fileListLength && !isSuccess) {
                         validateStatus = 'error';
-                    } else if (resultCount < fileListLength) {
-                        validateStatus = null;
                     }
-
-                    if (validateStatus) {
+                    console.log('validateStatus', validateStatus, 'resultCount', resultCount);
+                    if (validateStatus !== 'pending') {
                         this.setState({current: 2, dataType, adjustmentMethod, validateStatus, importID});
                     } else {
-                        this.setState({current: 1, importID});
+                        this.setState({current: 1, dataType, adjustmentMethod, validateStatus, importID});
                     }
                 }
                 this.setState({isHistoryLoading: false, historyList: (res || []).map((item, index) => ({...item, indexNo: index+1})) || []});
@@ -258,7 +263,11 @@ class ThreeStepsValidator extends React.Component {
                     adjustmentMethod: this.state.adjustmentMethod
                 };
                 localStorage.setItem('_crm_import_info', JSON.stringify(crmImportInfo));
-                this.setState({current: 1});
+                this.setState({current: 1}, () => {
+                    setTimeout(() => {
+                        this.queryValidationHistory();
+                    }, 1500)
+                });
             }, err => {
                 console.log(err);
             });
@@ -327,7 +336,7 @@ class ThreeStepsValidator extends React.Component {
         return (<Modal
             // key={modalKey}
             title={`校验记录`}
-            width="950px"
+            width="1050px"
             bodyStyle={{height: '800px'}}
             visible={this.state.isHistoryModalVisible}
             maskClosable={false}
@@ -345,8 +354,8 @@ class ThreeStepsValidator extends React.Component {
                 bordered={true}
                 title={() => (
                     <span style={{fontSize: '16px'}}>
-                        {`${this.props.user.accountInfo.groupShortName}(ID: ${this.props.user.accountInfo.groupID}) 会员数据变动校验记录  `}
-                        <Tooltip title="一次校验请求如果包含多个文件, 则会在历史记录中记录多条, 这些条目由校验ID关联; 单条记录只表示单个文件的验证情况">
+                        {`${this.props.user.accountInfo.groupShortName} (ID: ${this.props.user.accountInfo.groupID}) 会员数据变动校验记录  `}
+                        <Tooltip title={<div style={{width: '250px'}}>一次校验请求如果包含多个文件, 则会在历史记录中记录多条, 这些条目由校验ID关联; 单条记录只表示单个文件的验证情况</div>}>
                             <Icon type="info-circle" />
                         </Tooltip>
                     </span>
@@ -363,7 +372,7 @@ class ThreeStepsValidator extends React.Component {
                     showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                 }}
                 loading={this.state.isHistoryLoading}
-                scroll={{ x: 800, y: 320 }}
+                scroll={{y: 320 }}
             />
         );
     }
@@ -432,12 +441,18 @@ class ThreeStepsValidator extends React.Component {
                                     <div className={ownStyle.uploaderContainer}>
                                         {this.renderUploadButton()}
                                     </div>
-                                    {this.state.dataType === '1' &&<a href="http://res.tiaofangzi.com/group2/M01/58/FA/wKgVT1mjzfaZPYBaAAAwLLmM7jg77.xlsx"
+                                    {this.state.dataType === '1' &&<a target="_blank" href="http://res.tiaofangzi.com/group2/M01/58/FA/wKgVT1mjzfaZPYBaAAAwLLmM7jg77.xlsx"
                                        className={ownStyle.downloadLink}
                                        download="数据导入模板.xlsx">下载数据导入模板</a>}
-                                   {this.state.dataType === '2' &&<a href="http://res.hualala.com/group3/M02/14/E0/wKgVwlsWCpHqGJf8AAAvndWAF_o23.xlsx "
+                                   {this.state.dataType === '2' &&<a target="_blank" href="http://res.hualala.com/group3/M02/14/E0/wKgVwlsWCpHqGJf8AAAvndWAF_o23.xlsx "
                                        className={ownStyle.downloadLink}
                                        download="下载卡类别变更模板.xlsx">下载卡类别变更模板</a>}
+                                   &nbsp;&nbsp;
+                                    <p>
+                                    <Tooltip title={<div style={{width: '250px'}}>请不要随意变动模板结构（例如删除列/sheet，调整列/sheet顺序等），否则会导致验证失败</div>}>
+                                        <Icon type="info-circle" />
+                                    </Tooltip>
+                                    </p>
                                 </div>
 
 
@@ -486,7 +501,7 @@ class ThreeStepsValidator extends React.Component {
                                 labelCol={{ span: 11 }}
                                 wrapperCol={{ span: 13 }}
                             >
-                                {this.state.importID}
+                                <p>{this.state.importID}</p>
                             </FormItem>}
                             <FormItem
                                 label="校验状态"
@@ -535,8 +550,8 @@ class ThreeStepsValidator extends React.Component {
                 </div>)}
                 {this.state.current === 1 && (<div className="progressButton">
                     <Button
-
-                        type="primary"
+                        type="ghost"
+                        icon="reload"
                         onClick={this.queryValidationHistory}
                     >刷新
                     </Button>
