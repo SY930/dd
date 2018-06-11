@@ -173,22 +173,13 @@ class StepTwo extends React.Component {
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (!isEqual(previousSchema, nextShopSchema)) {
             this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-                // dynamicShopSchema: nextShopSchema
             });
-            // 评价送礼 type==='64' specific
-            /*if (this.props.type == '64') {
-                const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
-                if (!isEmpty(nextOccupiedShops)) {
-                    this.filterAvailableShops(nextOccupiedShops, nextShopSchema);
-                }
-            }*/
-        } else {
-            if (this.props.type == '64') {
-                const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
-                const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
-                if (!isEqual(currentOccupiedShops, nextOccupiedShops)) {
-                    this.filterAvailableShops(nextOccupiedShops, nextShopSchema);
-                }
+        }
+        if (this.props.type == '64') {
+            const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
+            const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
+            if (!isEqual(currentOccupiedShops, nextOccupiedShops)) {
+                this.setState({occupiedShopIDs: nextOccupiedShops || []});
             }
         }
 
