@@ -321,7 +321,16 @@ class StepTwo extends React.Component {
                 smsTemplate: this.state.message,
             };
         if (this.props.type == '62' && this.state.cardLevelRangeType == '5') {
-            opts.cardGroupID = this.state.groupMembersID;
+            if (!this.state.groupMembersID) {
+                this.props.form.setFields({
+                    setgroupMembersID: {
+                        errors: [new Error('请选择会员群体')],
+                    },
+                });
+                return false;
+            } else {
+                opts.cardGroupID = this.state.groupMembersID;
+            }
         }
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;

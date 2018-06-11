@@ -59,7 +59,16 @@ class StepTwo extends React.Component {
             cardLevelRangeType: this.state.cardLevelRangeType,
         };
         if (this.props.type == '51' && this.state.cardLevelRangeType == 5) {
-            opts.cardGroupID = this.state.groupMembersID;
+            if (!this.state.groupMembersID) {
+                this.props.form.setFields({
+                    setgroupMembersID: {
+                        errors: [new Error('请选择会员群体')],
+                    },
+                });
+                return false;
+            } else {
+                opts.cardGroupID = this.state.groupMembersID;
+            }
         }
         if (smsGate === '1' || smsGate === '3' || smsGate === '4') {
             opts.settleUnitID = this.state.settleUnitID;
