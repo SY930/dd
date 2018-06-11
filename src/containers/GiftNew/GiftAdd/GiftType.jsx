@@ -100,7 +100,7 @@ class GiftType extends React.Component {
                                                     message.warn('您没有新建活动的权限，请联系管理员');
                                                     return;
                                                 }
-                                                if (HUALALA.ENVIRONMENT === 'production-release' && gift.value === '110' || gift.value === '111') {
+                                                if (HUALALA.ENVIRONMENT === 'production-release' && (gift.value === '110' || gift.value === '111')) {
                                                     message.success('敬请期待~');
                                                     return;
                                                 }
