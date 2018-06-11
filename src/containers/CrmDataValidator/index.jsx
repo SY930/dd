@@ -1,10 +1,10 @@
 import React from 'react';
 import registerPage from '../../index';
-import { NEW_SPECIAL } from '../../constants/entryCodes';
+import { CRM_DATA_VALIDATOR } from '../../constants/entryCodes';
 import ThreeStepsValidator from "./ThreeStepsValidator";
 import { Row, Col, Button } from 'antd';
 
-@registerPage([NEW_SPECIAL], {
+@registerPage([CRM_DATA_VALIDATOR], {
 })
 class CrmDataValidator extends React.Component {
     constructor(props) {

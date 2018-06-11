@@ -379,7 +379,7 @@ class ThreeStepsValidator extends React.Component {
 
     handleReset() {
         localStorage.removeItem('_crm_import_info');
-        this.setState({current: 0});
+        this.setState({current: 0, fileList: []});
     }
 
     renderValidator() {
