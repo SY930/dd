@@ -97,7 +97,7 @@ class ActivityMain extends React.Component {
             // NewColorsEggCat, 彩蛋猫活动下线 key 70
             NewWakeUpReturnGift, // 唤醒送礼
             NewColorsEggCat, // 评价送礼，复用彩蛋猫
-            GiveGiftsToNewFollowers, // 关注送礼 ket TBD
+            GiveGiftsToNewFollowers, // 关注送礼 ket 31
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {

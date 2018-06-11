@@ -127,7 +127,7 @@ class EditBoxForDishes extends React.Component {
             nextProps.type !== 'FOOD_PAY_MORE_THEN_UPGRADE' && nextProps.type !== 'RECOMMEND_FOOD'
         ) {
             let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-            _priceLst = _priceLst ? _priceLst.toJS() : [];
+            _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
             this.setState({
                 priceLst:  _priceLst,
             }, () => {

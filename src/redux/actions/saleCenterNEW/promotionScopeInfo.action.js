@@ -119,10 +119,12 @@ export const getPromotionShopSchema = (params) => {
                 message.error(`店铺、品牌信息获取失败 ${responseJSON.resultmsg}`);
                 dispatch(getPromotionShopSchemaFailed());
             }
-        }).catch((error) => {
+        }, (error) => {
             message.error(`网络连接异常，请稍后重试`);
             console.log('错误：', error);
             dispatch(getPromotionShopSchemaFailed());
+        }).catch((error) => {
+            console.log('错误：', error);
         });
     };
 };
