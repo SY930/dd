@@ -145,12 +145,13 @@ export class NDiscount extends React.Component {
                             <Option value="2">第2份当前菜品折扣</Option>
                             <Option value="1">第2份指定菜品折扣</Option>
                         </Select>}
-                        addonAfter={'%'}
+                        addonAfter={'折'}
                         modal="float"
-                        placeholder="输入不大于100的数字, 88%表示88折"
+                        discountMode={true}
+                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
                         onChange={(value) => {
                             const { data } = this.state;
-                            if (value.number == null || value.number == '' || value.number > 100) {
+                            if (value.number == null || value.number == '' || value.number > 10) {
                                 data[k].validateFlag = false;
                             } else {
                                 data[k].validateFlag = true;
@@ -164,12 +165,13 @@ export class NDiscount extends React.Component {
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={`第${k + 2}份当前菜品折扣`}
-                        addonAfter={'%'}
+                        addonAfter={'折'}
+                        discountMode={true}
                         modal="float"
-                        placeholder="输入不大于100的数字, 88%表示88折"
+                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
                         onChange={(value) => {
                             const { data } = this.state;
-                            if (value.number == null || value.number == '' || value.number > 100) {
+                            if (value.number == null || value.number == '' || value.number > 10) {
                                 data[k].validateFlag = false;
                             } else {
                                 data[k].validateFlag = true;

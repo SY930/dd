@@ -42,7 +42,11 @@ class PriceInput extends React.Component {
             valueNum;
         // const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
         if (this.state.modal === 'float') {
-            reg = /^-?([0-9]*)(\.[0-9]{0,2})?$/;
+            if (this.props.discountMode) {
+                reg = /^-?([0-9]*)(\.[0-9]{0,3})?$/;
+            } else {
+                reg = /^-?([0-9]*)(\.[0-9]{0,2})?$/;
+            }
             valueNum = this.state.number;
             if (!isNaN(value) && reg.test(value)) {
                 valueNum = value;

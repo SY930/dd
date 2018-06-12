@@ -101,7 +101,7 @@ class NDiscountDetailInfo extends React.Component {
         if (_rule.stage) {
             _rule.stage.map((rule, index) => {
                 dis[index] = {
-                    value: (rule.discountRate * 10).toFixed(2),
+                    value: Number((rule.discountRate * 1).toFixed(3)).toString(), // Number.prototype.toFixed()
                     validateFlag: true,
                 }
             });
@@ -134,7 +134,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: (nDis.value * 1000) / 10000,
+                        discountRate: nDis.value,
                     }
                 }),
             };
@@ -152,7 +152,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: (nDis.value * 1000) / 10000,
+                        discountRate: nDis.value,
                     }
                 }),
             };
