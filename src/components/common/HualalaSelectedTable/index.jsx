@@ -27,7 +27,6 @@ export default class HualalaSelectedTable extends React.Component {
         };
 
         this.onClear = this.onClear.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
 
