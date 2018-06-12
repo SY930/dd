@@ -221,7 +221,7 @@ class NDiscountDetailInfo extends React.Component {
                     />
                     {this.state.stageType === '1' && <FoodBox categoryOrDish={0}
                                                               dishOnly={true}
-                                                              boxLabel="第2份菜品"
+                                                              boxLabel="第二份菜品"
                                                               noExclude={true}
                                                               onChange={this.handleDishesChange}
                                                               catOrFoodValue={_priceLst}

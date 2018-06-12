@@ -142,8 +142,8 @@ export class NDiscount extends React.Component {
                 >
                     {k === 0 && <PriceInput
                         addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange}>
-                            <Option value="2">第2份当前菜品折扣</Option>
-                            <Option value="1">第2份指定菜品折扣</Option>
+                            <Option value="2">第2份当前菜品打</Option>
+                            <Option value="1">第2份指定菜品打</Option>
                         </Select>}
                         addonAfter={'折'}
                         modal="float"
@@ -164,7 +164,7 @@ export class NDiscount extends React.Component {
                         value={{ number: this.state.data[k].value }}
                     />}
                     {k > 0 &&<PriceInput
-                        addonBefore={`第${k + 2}份当前菜品折扣`}
+                        addonBefore={`第${k + 2}份当前菜品打`}
                         addonAfter={'折'}
                         discountMode={true}
                         modal="float"
