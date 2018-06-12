@@ -5,7 +5,7 @@ import { connect } from 'react-redux'; import { Tree } from 'antd';
 const TreeNode = Tree.TreeNode;
 
 import styles from '../ActivityPage.less';
-
+const Immutable = require('immutable');
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
 }
@@ -204,7 +204,8 @@ class EditBoxForPromotion extends React.Component {
         if (this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']) !=
             nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree'])
         ) {
-            const promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
+            let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']);
+            promotionCollection = Immutable.List.isList(promotionCollection) ? promotionCollection.toJS() : [];
             this.setState({
                 promotionCollection: filterFlag ?
                     promotionCollection.map((promotionCategery) => {
@@ -222,7 +223,8 @@ class EditBoxForPromotion extends React.Component {
         }
 
         // 去掉自己，自己不能共享自己
-        let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
+        let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']);
+        promotionCollection = Immutable.List.isList(promotionCollection) ? promotionCollection.toJS() : [];
         let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
             SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'promotionIDStr']);
@@ -245,7 +247,8 @@ class EditBoxForPromotion extends React.Component {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) !==
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions'])
         ) {
-            const _mutexPromotions = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS();
+            let _mutexPromotions = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']);
+            _mutexPromotions = Immutable.List.isList(_mutexPromotions) ? _mutexPromotions.toJS() : [];
             this.setState({
                 mutexPromotions: _mutexPromotions,
             }, () => {

@@ -292,8 +292,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
                 action.payload.rule.blackList = $$state.get('$promotionDetail').toJS().blackList || false;
             }
             const $payload = Immutable.fromJS(action.payload);
-            const _state = $$state.mergeIn(['$promotionDetail'], $payload);
-            return _state;
+            return $$state.mergeIn(['$promotionDetail'], $payload);
 
         case SALE_CENTER_FETCH_FOOD_CATEGORY:
             return $$state;
