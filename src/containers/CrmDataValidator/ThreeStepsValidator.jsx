@@ -165,6 +165,7 @@ class ThreeStepsValidator extends React.Component {
             lastImportInfo = null;
             this.setState({current: 0});
         }
+        // auth code:  crm.dataverification.dv
         axiosData('crmimport/crmImportService_queryCrmImportList.ajax', {}, {}, {path: 'data.crmImportResultList'}, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
                 if (lastImportInfo) {
