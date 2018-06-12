@@ -124,6 +124,9 @@ class ThreeStepsValidator extends React.Component {
     }
 
     isBusyTime() {
+        if (HUALALA.ENVIRONMENT !== 'production-release') {
+            return false;
+        }
         const currentHour = moment().hours();
         if (this.busyTime.includes(currentHour)) {
             return true;
