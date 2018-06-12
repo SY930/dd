@@ -259,7 +259,7 @@ class DiscountDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <p> 可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣率</p>
+                    <p> 可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣</p>
                 </FormItem>
                 {this.renderRulesComponent()}
             </div>
@@ -342,7 +342,7 @@ class DiscountDetailInfo extends React.Component {
                                 }
                                 endPlaceHolder="例如9.5折,8折"
                                 discountMode={true}
-                                relation={'折扣率'}
+                                relation={'折扣'}
                                 addonAfterUnit={'折'}
                                 disabled={this.state.ruleType == '0'}
                                 value={
