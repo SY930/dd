@@ -47,7 +47,7 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        if (!this.state.allAccounts.length) {
+        if (!this.state.allAccounts.length && !this.state.isLoading) {
             this.props.queryWechatMpInfo();
         }
     }
@@ -126,6 +126,8 @@ class StepTwo extends React.Component {
             // defaultValue: this.state.brands,
             value: selectedIDs,
         };
+        const isSomeAccountsOccupied = this.state.isAllOccupied || !!this.state.occupiedIDs.length;
+        const occupiedTips = '当前所选日期段内,有公众号已设置关注送礼活动';
         return (
             <Form.Item
                 label="微信公众号"
@@ -153,7 +155,7 @@ class StepTwo extends React.Component {
                 }
                 {
                     !this.state.isLoading && !this.state.allAccounts.length ?
-                    <Tooltip title="未查询到可绑定的微信公众号">
+                    <Tooltip title="未查询到可绑定的微信公众号, 点击重试">
                         <Icon   onClick={this.getWechatAccountsList}
                                 type={'exclamation-circle'}
                                 style={{cursor: 'pointer'}}
@@ -161,11 +163,24 @@ class StepTwo extends React.Component {
                             />
                     </Tooltip> : null
                 }
-                {
-                    !this.state.isLoading && this.state.allAccounts.length && (this.state.isAllOccupied || this.state.occupiedIDs.length) ?
-                    <Tooltip title="当前所选日期段内,有公众号已设置关注送礼活动">
+                {   // 正常情况
+                    !this.state.isLoading && this.state.allAccounts.length && this.state.selectedIDs.every(id => this.state.allAccounts.some(account => String(account.mpID) === String(id)))
+                        && isSomeAccountsOccupied ?
+                    <Tooltip title={occupiedTips}>
                         <Icon type={'exclamation-circle'}
                                 className={styles.cardLevelTreeIcon}
+                            />
+                    </Tooltip> : null
+                }
+                {   // 部分已选公众号现在已不再集团公众号列表内
+                    !this.state.isLoading && this.state.allAccounts.length && this.state.selectedIDs.some(id => this.state.allAccounts.every(account => String(account.mpID) !== String(id))) ?
+                        <Tooltip title={
+                            <div style={{width: '250px'}}>{`该活动之前绑定的一个或几个公众号已不在集团公众号列表中,  ${isSomeAccountsOccupied ? `${occupiedTips},  ` : ''}点击重新查询集团公众号列表`}</div>
+                        }>
+                        <Icon type={'exclamation-circle'}
+                              onClick={this.getWechatAccountsList}
+                              style={{cursor: 'pointer'}}
+                              className={styles.cardLevelTreeIcon}
                             />
                     </Tooltip> : null
                 }

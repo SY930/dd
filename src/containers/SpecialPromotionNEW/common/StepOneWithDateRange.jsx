@@ -180,11 +180,14 @@ class StepOneWithDateRange extends React.Component {
         const {
             isAllWeChatIDOccupied,
             allWeChatIDList,
+            selectedIDs,
             occupiedWeChatIDs,
         } = this.state;
         if (isAllWeChatIDOccupied || (allWeChatIDList.length > 0 && allWeChatIDList.every(id => occupiedWeChatIDs.includes(id))) ) {
-            this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段');
-            return true;
+            if (!selectedIDs.length || selectedIDs.every(id => allWeChatIDList.includes(id))) {
+                this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段');
+                return true;
+            }
         }
         return false;
     }
