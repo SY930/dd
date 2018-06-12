@@ -84,6 +84,7 @@ class CustomRangeInput extends React.Component {
                     <PriceInput
                         disabled={this.props.disabled}
                         addonBefore={this.state.addonBefore}
+                        placeholder={this.props.startPlaceHolder}
                         addonAfter={this.state.addonAfter}
                         onChange={this.onStartChange}
                         value={{ number: this.state.start }}
@@ -97,6 +98,8 @@ class CustomRangeInput extends React.Component {
 
                 <Col span={7}>
                     <PriceInput
+                        discountMode={this.props.discountMode}
+                        placeholder={this.props.endPlaceHolder}
                         addonAfter={this.state.addonAfterUnit}
                         onChange={this.onEndChange}
                         value={{ number: this.state.end }}

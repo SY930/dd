@@ -78,12 +78,6 @@ export default class HualalaSelectedTable extends React.Component {
         ReactDOM.findDOMNode(this[`_input${e.target.id}`]).select();
     }
 
-    handleChange(e, record, index) {
-        record.newPrice = e.target.value;
-        record.salePercent = `${Math.ceil((e.target.value / record.price) * 100)}%`;
-        this.forceUpdate();
-    }
-
     onClear() {
         this.props.onClear && this.props.onClear();
     }
@@ -173,7 +167,7 @@ export default class HualalaSelectedTable extends React.Component {
                 key: 'salePercent',
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return record.newPrice == -1 || record.price == 0 ? '100%' : `${(record.newPrice / record.price * 100).toFixed(2)}%`
+                    return record.newPrice == -1 || record.price == 0 ? '不打折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
             }];
         const data = this.state.data;

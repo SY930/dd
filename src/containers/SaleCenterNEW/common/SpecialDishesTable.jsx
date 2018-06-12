@@ -479,13 +479,13 @@ class SpecialDishesTable extends React.Component {
                 className: 'TableTxtRight',
             },
             {
-                title: '打折比例(%)',
+                title: '折扣',
                 dataIndex: 'salePercent',
                 key: 'salePercent',
                 width: 90,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0.00%' : `${(Number(record.newPrice) / record.price * 100).toFixed(2)}%`
+                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
             },
             {
