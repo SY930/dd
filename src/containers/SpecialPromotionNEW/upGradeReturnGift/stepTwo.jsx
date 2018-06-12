@@ -51,10 +51,13 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
+        const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         this.state = {
             message: '',
             cardLevelIDList: [],
-            cardLevelRangeType: '0',
+            groupMembersList: [],
+            groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
+            cardLevelRangeType: cardLevelRangeType === undefined ? '5' : cardLevelRangeType,
             giveStatus: 'success',
             consumeType: '0',
             numberValue: {
@@ -70,6 +73,7 @@ class StepTwo extends React.Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleNumberChange = this.handleNumberChange.bind(this);
         this.handleOptionChange = this.handleOptionChange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
@@ -84,6 +88,13 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        const user = this.props.user;
+        const opts = {
+            _groupID: user.accountInfo.groupID, // 集团id
+            pageNo: 1,
+            pageSize: 1000,
+        };
+        this.props.queryGroupMembersList(opts);
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         this.setState({occupiedShopIDs: currentOccupiedShops || []});
@@ -175,12 +186,31 @@ class StepTwo extends React.Component {
             this.setState({shopSchema: nextShopSchema, // 后台请求来的值
             });
         }
+        // 获取会员等级信息
+        if (nextProps.mySpecialActivities.$groupMembers) {
+            if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
+                this.setState({
+                    groupMembersList: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
+                })
+            } else {
+                this.setState({
+                    groupMembersList: [],
+                })
+            }
+        }
         if (this.props.type == '70' || this.props.type == '64') {
             if (this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'shopIDList'])) {
                 const specialPromotion = nextProps.specialPromotion.get('$eventInfo');
                 const selections = specialPromotion.shopIDList || [];
                 this.setState({selections});
             }
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
+            const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+            this.setState({cardLevelRangeType: type === undefined ? '5' : type});
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])) {
+            this.setState({cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])});
         }
         if (this.props.type == '64') {
             const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
@@ -222,6 +252,11 @@ class StepTwo extends React.Component {
             })
         }
     }
+    // 会员群体Option
+    renderOptions() {
+        return  this.state.groupMembersList.map((groupMembers, index) => <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>);
+
+    }
     handleOptionChange(value) {
         // console.log(value);
         this.setState({
@@ -238,7 +273,7 @@ class StepTwo extends React.Component {
         // console.log(value);
         const consumeType = this.state.consumeType;
         if (consumeType == '0') { // 消费累计金额每满"
-            if (value.number < 0) {
+            if (value.number < 0 || value.number === '') {
                 this.setState({ giveStatus: 'error' })
             } else {
                 this.setState({
@@ -285,11 +320,23 @@ class StepTwo extends React.Component {
                 cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
                 smsTemplate: this.state.message,
             };
+        if (this.props.type == '62' && this.state.cardLevelRangeType == '5') {
+            if (!this.state.groupMembersID) {
+                this.props.form.setFields({
+                    setgroupMembersID: {
+                        errors: [new Error('请选择会员群体')],
+                    },
+                });
+                return false;
+            } else {
+                opts.cardGroupID = this.state.groupMembersID;
+            }
+        }
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
             consumeType == '0' ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
-            if ((consumeType == '0' && numberValue.number < 0) || (consumeType == '1' && numberValue.number < 3)) {
+            if ((consumeType == '0' && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 3)) {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
@@ -353,6 +400,9 @@ class StepTwo extends React.Component {
             </div>
         );
     }
+    handleSelectChange(value) {
+        this.setState({groupMembersID: value});
+    }
     render() {
         const sendFlag = true;
         const tip = this.state.consumeType == '0' ? '累计金额不得少于0元' : '累计次数不得少于3次'
@@ -398,12 +448,38 @@ class StepTwo extends React.Component {
                                 }
                             </FormItem>
 
-                            <CardLevel
+                            {this.state.cardLevelRangeType == '5' ?
+                                <FormItem
+                                    label="会员群体"
+                                    className={styles.FormItemStyle}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                >
+                                    {this.props.form.getFieldDecorator('setgroupMembersID', {
+                                        rules: [{
+                                            required: true,
+                                            message: '请选择会员群体',
+                                        }],
+                                        initialValue: this.state.groupMembersID,
+                                    })(
+                                        <Select
+                                            style={{ width: '100%' }}
+                                            placeholder="请选择会员群体"
+                                            getPopupContainer={(node) => node.parentNode}
+                                            onChange={this.handleSelectChange}
+                                        >
+                                            <Option key={'0'}>全部会员</Option>
+                                            {this.renderOptions()}
+                                        </Select>
+                                    )
+                                    }
+                                </FormItem>:
+                                <CardLevel
                                 onChange={this.onCardLevelChange}
                                 catOrCard={'cat'}
                                 type={this.props.type}
                                 form={this.props.form}
-                            />
+                            />}
                         </div> : (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
