@@ -79,9 +79,6 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        if (this.props.type === '31' && !this.state.allWeChatIDListLoading && !this.state.allWeChatIDList.length) {
-            this.props.queryWechatMpInfo();
-        }
         if (this.props.type === '31' && this.props.specialPromotion.get('$eventInfo').size > 30) {
             const itemID = specialPromotion.itemID;
             this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
