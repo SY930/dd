@@ -225,7 +225,7 @@ class NDiscountDetailInfo extends React.Component {
                                                               noExclude={true}
                                                               onChange={this.handleDishesChange}
                                                               catOrFoodValue={_priceLst}
-                                                              autoFetch={true} />}
+                                                              disabledFetch={true} />}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>

@@ -182,8 +182,10 @@ class FoodBox extends React.Component {
         var opts = {
             _groupID: this.props.user.toJS().accountInfo.groupID,
         };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        if (!this.props.disabledFetch) {
+            this.props.fetchFoodCategoryInfo({ ...opts });
+            this.props.fetchFoodMenuInfo({ ...opts });
+        }
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.dishOnly) {
             foodCategoryCollection = this.filterGroup(foodCategoryCollection);
