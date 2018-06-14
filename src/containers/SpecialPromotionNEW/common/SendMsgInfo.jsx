@@ -150,7 +150,7 @@ class SendMsgInfo extends React.Component {
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
                         })(
-                            <Input rows={4} type="textarea" placeholder="请输入短信模板" onChange={this.handleDescriptionChange} />
+                            <Input rows={4} type="textarea" placeholder="请输入短信模板" />
                         )}
 
                     </FormItem>
