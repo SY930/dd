@@ -134,7 +134,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: nDis.value,
+                        discountRate: Number(nDis.value),
                     }
                 }),
             };
@@ -152,7 +152,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: nDis.value,
+                        discountRate: Number(nDis.value),
                     }
                 }),
             };
