@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { isEqual } from 'lodash';
-import { Modal, Button, Form, Input, Row, Col } from 'antd';
+import { Button, Form, Input, Row, Col } from 'antd';
 const FormItem = Form.Item;
 
 class MessageTemplateEditPanel extends React.Component {
@@ -35,11 +35,11 @@ class MessageTemplateEditPanel extends React.Component {
             message: '',
             loading: false,
         });
-        this.props.form.resetFields();
         this.props.cancel && this.props.cancel();
+        this.props.form.resetFields();
     }
 
-    /* 新建/编辑 保存*/
+    /** 新建/编辑 保存*/
     save() {
         let flag = true;
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
@@ -50,18 +50,16 @@ class MessageTemplateEditPanel extends React.Component {
         if (!flag) return;
         const { message } = this.state;
         const strippedMessage = message.replace(/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g, '');
-        if (strippedMessage.search(/[\[\]【】]/) > -1) {
+        if (/[\[\]【】]/.test(strippedMessage)) { // 剔除模板字段(例如[会员姓名])后依然有"【】" "[]"符号, 不允许保存
             this.props.form.setFields({
                 message: {
                     errors: [new Error('请不要输入"【】" "[]"符号, 或打乱模板字段结构')]
                 }
             });
-            console.log('err: ', strippedMessage)
         } else { // 验证通过
             console.log('验证通过, 即将保存');
+
         }
-
-
     }
 
     handleMsgChange(e) {

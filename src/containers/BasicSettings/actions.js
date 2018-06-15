@@ -147,7 +147,7 @@ export const createMessageTemplate = (opts) => {
 export const deleteMessageTemplate = (opts) => {
     return (dispatch) => {
         dispatch(deleteMessageTemplateStart());
-        return axiosData('/sms/smsTemplateService_delete.ajax', { ...opts }, null, {
+        return axiosData('/sms/smsTemplateService_delete.ajax', { ...opts }, {needThrow: true}, {
             path: 'data',
         })
             .then((records) => {
@@ -155,7 +155,7 @@ export const deleteMessageTemplate = (opts) => {
                 return Promise.resolve();
             }, (err) => { // network error catch
                 dispatch(deleteMessageTemplateFail());
-                return Promise.reject();
+                return Promise.reject(err);
             });
     }
 };

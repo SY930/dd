@@ -1,6 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styles from '../SaleCenterNEW/ActivityPage.less';
-import { Modal, Button } from 'antd';
+import { Modal, Button, message } from 'antd';
+import {deleteMessageTemplate} from "./actions";
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -14,10 +16,10 @@ class MessageDisplayBox extends React.Component {
         confirm({
             title: '确定要删除该短信模板吗?',
             content: '点击 `确定` 来删除',
-            onOk() {
-                return new Promise((resolve, reject) => {
-                    setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-                }).catch(() => console.log('Oops errors!'));
+            onOk: () => {
+                return this.props.deleteMessageTemplate({modifyBy: this.props.user.accountInfo.userName})
+                                .then(() => message.success(`删除成功`))
+                                .catch(err => message.error(`删除失败: ${err}`));
             },
             onCancel() {},
         });
@@ -45,4 +47,16 @@ class MessageDisplayBox extends React.Component {
     }
 }
 
-export default MessageDisplayBox;
+function mapDispatchToProps(dispatch) {
+    return {
+        deleteMessageTemplate: opts => dispatch(deleteMessageTemplate(opts)),
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        user: state.user.toJS(),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessageDisplayBox);
