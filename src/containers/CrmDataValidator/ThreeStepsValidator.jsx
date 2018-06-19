@@ -145,21 +145,21 @@ class ThreeStepsValidator extends React.Component {
             className: 'TableTxtCenter',
             width: 150,
             render: (path) => path ? <a download target="_blank" href={path}>查看错误信息</a> : '无'
-        },{
+        },/*{
             title: '操作',
             dataIndex: 'itemID',
             key: 'itemID',
             className: 'TableTxtCenter',
             width: 150,
-            render: (itemID) => (
+            render: (itemID, entity) => (
                 <Popconfirm title="确定要删除本条记录?" onConfirm={() => {
                     // 删除
-                    this.emptyValidationHistory(itemID)
+                    this.emptyValidationHistory(entity)
                 }} okText="确定" cancelText="取消">
                     <a href="#" >删除本条记录</a>
                 </Popconfirm>
             )
-        },
+        },*/
         ]
     }
 
@@ -348,15 +348,21 @@ class ThreeStepsValidator extends React.Component {
 
     }
 
-    emptyValidationHistory(itemID) {
+    emptyValidationHistory(entity) {
         // 清空历史
-        const reqParams = itemID ? {} : {itemID};
+        const reqParams = entity ? {itemID: entity.itemID} : {};
         return axiosData('crmimport/crmImportService_delCrmImportHistory.ajax', reqParams, {needThrow: true}, undefined, 'HTTP_SERVICE_URL_CRM')
             .then(res => {
                 this.queryValidationHistory();
-                message.success(itemID ? `删除成功` : `校验记录已清除`);
+                if (!entity || String(entity.importID) === String(this.state.importID)) {
+                    localStorage.removeItem('_crm_import_info');
+                    if (this.state.current !== 0) {
+                        this.setState({current: 0, fileList: []});
+                    }
+                }
+                message.success(entity ? `删除成功` : `校验记录已清除`);
             }, err => {
-                message.error(itemID ? `删除失败: ${err}` : `清空失败: ${err}`);
+                message.error(entity ? `删除失败: ${err}` : `清空失败: ${err}`);
             });
     }
 
@@ -430,13 +436,6 @@ class ThreeStepsValidator extends React.Component {
             footer={
                 <div>
                     <Button type="ghost" onClick={this.handleModalClose}>关闭</Button>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Button
-                        type="ghost"
-                        icon="reload"
-                        onClick={this.queryValidationHistory}
-                    >刷新
-                    </Button>
                 </div>
             }
         >
@@ -451,7 +450,7 @@ class ThreeStepsValidator extends React.Component {
     renderHistoryTable() {
         let filteredList = this.state.historyList;
         if (this.state.importID && this.state.displayCurrentImportOnly) {
-            filteredList = filteredList.filter(record => this.state.importID === record.importID)
+            filteredList = filteredList.filter(record => String(this.state.importID) === String(record.importID))
         }
         return (
             <Table
@@ -470,11 +469,18 @@ class ThreeStepsValidator extends React.Component {
                             checked={this.state.displayCurrentImportOnly}
                             onChange={this.handleCheckBoxChange}
                         >只看本次校验记录</Checkbox>}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <Button
+                            type="ghost"
+                            icon="reload"
+                            onClick={this.queryValidationHistory}
+                        >刷新
+                        </Button>
                         <Button
                             style={{position: 'absolute', right: '8px'}}
                             type="ghost"
                             icon="delete"
-                            onClick={this.emptyValidationHistory}
+                            onClick={this.confirmClearAll}
                         >清空历史
                         </Button>
                     </div>
@@ -677,7 +683,7 @@ class ThreeStepsValidator extends React.Component {
                 {this.state.current === 1 && (<div className="progressButton">
                     <Button
                         type="ghost"
-                        onClick={this.handleReset}
+                        onClick={this.confirmReset}
                     >取消等待
                     </Button>
                     <Button
