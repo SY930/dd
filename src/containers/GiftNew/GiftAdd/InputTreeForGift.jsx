@@ -193,7 +193,7 @@ class InputTreeForGift extends React.Component {
                         />
                         <HualalaSelected
                             itemName="giftName"
-                            selectdTitle={'已选共用券分类'}
+                            selectdTitle={'已选共用券'}
                             value={this.state.foodSelections}
                             onChange={(value) => {
                                 this.handleFoodSelectedChange(value)
