@@ -357,7 +357,7 @@ class ThreeStepsValidator extends React.Component {
                 if (!entity || String(entity.importID) === String(this.state.importID)) {
                     localStorage.removeItem('_crm_import_info');
                     if (this.state.current !== 0) {
-                        this.setState({current: 0, fileList: []});
+                        this.setState({current: 0, importID: '', fileList: []});
                     }
                 }
                 message.success(entity ? `删除成功` : `校验记录已清除`);
@@ -504,7 +504,7 @@ class ThreeStepsValidator extends React.Component {
 
     handleReset() {
         localStorage.removeItem('_crm_import_info');
-        this.setState({current: 0, fileList: []});
+        this.setState({current: 0, importID: '', fileList: []});
     }
 
     renderValidator() {
