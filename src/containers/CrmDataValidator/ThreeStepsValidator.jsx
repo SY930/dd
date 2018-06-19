@@ -465,7 +465,7 @@ class ThreeStepsValidator extends React.Component {
                                 type="info-circle"
                             />
                         </Tooltip>
-                        {<Checkbox
+                        {!!this.state.importID && <Checkbox
                             style={{marginLeft: '16px'}}
                             checked={this.state.displayCurrentImportOnly}
                             onChange={this.handleCheckBoxChange}
