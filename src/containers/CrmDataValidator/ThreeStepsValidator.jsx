@@ -4,13 +4,31 @@ import styles from '../../components/basic/ProgressBar/ProgressBar.less';
 import style from '../SaleCenterNEW/ActivityPage.less';
 import ownStyle from './Validator.less';
 import { connect } from 'react-redux';
-import { Steps, Button, Form, Select, Upload, Icon, message, Col, Row, Modal, Tooltip, Spin, Table } from 'antd';
+import { isEqual } from 'lodash';
+
+import {
+    Steps,
+    Button,
+    Form,
+    Select,
+    Upload,
+    Icon,
+    message,
+    Col,
+    Row,
+    Modal,
+    Tooltip,
+    Spin,
+    Table,
+    Popconfirm,
+    Checkbox,
+} from 'antd';
 import { axiosData } from '../../helpers/util';
 const Option = Select.Option;
-const OptGroup = Select.OptGroup;
 
 const Step = Steps.Step;
 const FormItem = Form.Item;
+const confirm = Modal.confirm;
 
 const mapStateToProps = state => {
      return {
@@ -26,6 +44,7 @@ class ThreeStepsValidator extends React.Component {
         this.state = {
             current: 0,
             dataType: '1',
+            displayCurrentImportOnly: false,
             isBusyTime: false, // 忙时不允许发起校验请求
             isLoading: false, // 校验请求loading
             adjustmentMethod: '1',
@@ -41,7 +60,11 @@ class ThreeStepsValidator extends React.Component {
         this.intervalId = null;
         this.handleAdjustmentMethodChange = this.handleAdjustmentMethodChange.bind(this);
         this.handleTypeChange = this.handleTypeChange.bind(this);
+        this.confirmClearAll = this.confirmClearAll.bind(this);
+        this.confirmReset = this.confirmReset.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
+        this.emptyValidationHistory = this.emptyValidationHistory.bind(this);
         this.handleReset = this.handleReset.bind(this);
         this.queryValidationHistory = this.queryValidationHistory.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
@@ -66,6 +89,19 @@ class ThreeStepsValidator extends React.Component {
                 if (type == 2) return '卡类别调整校验 (根据等级)';
                 if (type == 3) return '卡类别调整校验 (根据入会店铺)';
                 if (type == 4) return '卡类别调整校验 (根据卡号)';
+                return '--'
+            }
+        },  {
+            title: '校验日期',
+            dataIndex: 'createStamp',
+            key: 'createStamp',
+            className: 'TableTxtCenter',
+            // fixed: 'left',
+            width: 200,
+            render: (createStamp) => {
+                if (createStamp) {
+                    return <span title={moment(new Date(createStamp)).format('YYYY-MM-DD HH:mm:ss')}>{moment(new Date(createStamp)).format('YYYY-MM-DD HH:mm:ss')}</span>;
+                }
                 return '--'
             }
         }, {
@@ -107,8 +143,22 @@ class ThreeStepsValidator extends React.Component {
             dataIndex: 'errorFilePath',
             key: 'errorFilePath',
             className: 'TableTxtCenter',
-            // width: 150,
+            width: 150,
             render: (path) => path ? <a download target="_blank" href={path}>查看错误信息</a> : '无'
+        },{
+            title: '操作',
+            dataIndex: 'itemID',
+            key: 'itemID',
+            className: 'TableTxtCenter',
+            width: 150,
+            render: (itemID) => (
+                <Popconfirm title="确定要删除本条记录?" onConfirm={() => {
+                    // 删除
+                    this.emptyValidationHistory(itemID)
+                }} okText="确定" cancelText="取消">
+                    <a href="#" >删除本条记录</a>
+                </Popconfirm>
+            )
         },
         ]
     }
@@ -138,6 +188,26 @@ class ThreeStepsValidator extends React.Component {
 
     componentWillUnmount() {
         window.clearInterval(this.intervalId);
+    }
+
+    confirmClearAll() {
+        confirm({
+            title: '确定要清空所有校验记录吗 ?',
+            content: '点击确定以继续',
+            onOk: this.emptyValidationHistory,
+            onCancel() {
+            },
+        });
+    }
+
+    confirmReset() {
+        confirm({
+            title: '确定要取消等待吗?',
+            content: '取消等待不会取消本次的校验请求, 您依然可以从校验历史记录中查看到关于此次校验的详细信息',
+            onOk: this.handleReset,
+            onCancel() {
+            },
+        });
     }
 
     handleTypeChange(value) {
@@ -193,7 +263,7 @@ class ThreeStepsValidator extends React.Component {
                     } else if (resultCount === fileListLength && !isSuccess) {
                         validateStatus = 'error';
                     }
-                    console.log('validateStatus', validateStatus, 'resultCount', resultCount);
+                    // console.log('validateStatus', validateStatus, 'resultCount', resultCount);
                     if (validateStatus !== 'pending') {
                         this.setState({current: 2, dataType, adjustmentMethod, validateStatus, importID});
                     } else {
@@ -204,7 +274,7 @@ class ThreeStepsValidator extends React.Component {
             }, err => {
                 this.setState({isHistoryLoading: false});
                 message.error('出错了, 请稍后或刷新重试');
-                console.log(err);
+                // console.log(err);
             });
     }
 
@@ -228,11 +298,11 @@ class ThreeStepsValidator extends React.Component {
             message.warning('还有文件正在上传中');
             return;
         }
-        let fileLocationStr;
+        let fileLocationStrArray;
         try {
             const fileLocationUrlArr = fileList.map(file => file.response.data.url);
             if (fileLocationUrlArr.every(url => !!url)) {
-                fileLocationStr = fileLocationUrlArr.map(url => `http://res.hualala.com/${url}`).join(',');
+                fileLocationStrArray = fileLocationUrlArr.map(url => `http://res.hualala.com/${url}`);
             } else {
                 message.warning('有部分文件未能上传成功,请重新上传或刷新重试');
                 return;
@@ -245,7 +315,7 @@ class ThreeStepsValidator extends React.Component {
         const reqParams = {
             groupID: this.props.user.accountInfo.groupID,
             groupName: this.props.user.accountInfo.groupName,
-            sourceFilePath: fileLocationStr,
+            sourceFilePaths: fileLocationStrArray,
             importID,
             importType: this.state.dataType == '1' ? '1' : String(Number(this.state.adjustmentMethod) + 1),
             operator: this.props.user.accountInfo.userName,
@@ -267,15 +337,27 @@ class ThreeStepsValidator extends React.Component {
                     adjustmentMethod: this.state.adjustmentMethod
                 };
                 localStorage.setItem('_crm_import_info', JSON.stringify(crmImportInfo));
-                this.setState({current: 1}, () => {
+                this.setState({current: 1, importID}/*, () => {
                     setTimeout(() => {
                         this.queryValidationHistory();
                     }, 1500)
-                });
+                }*/);
             }, err => {
                 console.log(err);
             });
 
+    }
+
+    emptyValidationHistory(itemID) {
+        // 清空历史
+        const reqParams = itemID ? {} : {itemID};
+        return axiosData('crmimport/crmImportService_delCrmImportHistory.ajax', reqParams, {needThrow: true}, undefined, 'HTTP_SERVICE_URL_CRM')
+            .then(res => {
+                this.queryValidationHistory();
+                message.success(itemID ? `删除成功` : `校验记录已清除`);
+            }, err => {
+                message.error(itemID ? `删除失败: ${err}` : `清空失败: ${err}`);
+            });
     }
 
     generateImportID() {
@@ -323,7 +405,7 @@ class ThreeStepsValidator extends React.Component {
                     </div>
                     <div className="layoutsToolRight">
 
-                        <Button onClick={() => this.setState({isHistoryModalVisible: true})}  type="ghost" style={{width: '120px'}} loading={this.state.isHistoryLoading}>
+                        <Button onClick={() => this.setState({isHistoryModalVisible: true})}  type="ghost" style={{width: '120px'}}>
                             校验记录
                         </Button>
                     </div>
@@ -340,43 +422,76 @@ class ThreeStepsValidator extends React.Component {
         return (<Modal
             // key={modalKey}
             title={`校验记录`}
-            width="1050px"
+            width="1450px"
             bodyStyle={{height: '800px'}}
             visible={this.state.isHistoryModalVisible}
             maskClosable={false}
             onCancel={this.handleModalClose}
-            footer={<Button onClick={this.handleModalClose}>关闭</Button>}
+            footer={
+                <div>
+                    <Button type="ghost" onClick={this.handleModalClose}>关闭</Button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Button
+                        type="ghost"
+                        icon="reload"
+                        onClick={this.queryValidationHistory}
+                    >刷新
+                    </Button>
+                </div>
+            }
         >
             {this.renderHistoryTable()}
         </Modal>);
     }
 
-    renderHistoryTable() {
+    handleCheckBoxChange(e) {
+        this.setState({displayCurrentImportOnly: e.target.checked});
+    }
 
+    renderHistoryTable() {
+        let filteredList = this.state.historyList;
+        if (this.state.importID && this.state.displayCurrentImportOnly) {
+            filteredList = filteredList.filter(record => this.state.importID === record.importID)
+        }
         return (
             <Table
                 bordered={true}
                 title={() => (
-                    <span style={{fontSize: '16px'}}>
+                    <div style={{fontSize: '16px'}}>
                         {`${this.props.user.accountInfo.groupShortName} (ID: ${this.props.user.accountInfo.groupID}) 会员数据变动校验记录  `}
                         <Tooltip title={<div style={{width: '250px'}}>一次校验请求如果包含多个文件, 则会在历史记录中记录多条, 这些条目由校验ID关联; 单条记录只表示单个文件的验证情况</div>}>
-                            <Icon type="info-circle" />
+                            <Icon
+                                style={{fontSize: '14px'}}
+                                type="info-circle"
+                            />
                         </Tooltip>
-                    </span>
+                        {<Checkbox
+                            style={{marginLeft: '16px'}}
+                            checked={this.state.displayCurrentImportOnly}
+                            onChange={this.handleCheckBoxChange}
+                        >只看本次校验记录</Checkbox>}
+                        <Button
+                            style={{position: 'absolute', right: '8px'}}
+                            type="ghost"
+                            icon="delete"
+                            onClick={this.emptyValidationHistory}
+                        >清空历史
+                        </Button>
+                    </div>
                 )}
                 columns={this.columns.map(c => (c.render ? ({
                     ...c,
                     render: c.render.bind(this),
                 }) : c))}
-                dataSource={this.state.historyList}
+                dataSource={filteredList}
                 pagination={{
                     showSizeChanger: true,
-                    total: this.state.historyList.length,
+                    total: filteredList.length,
                     showQuickJumper: true,
                     showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                 }}
                 loading={this.state.isHistoryLoading}
-                scroll={{y: 320 }}
+                scroll={{x: 1000, y: 320 }}
             />
         );
     }
@@ -454,7 +569,7 @@ class ThreeStepsValidator extends React.Component {
                                    &nbsp;&nbsp;
                                     <p>
                                     <Tooltip title={<div style={{width: '250px'}}>请不要随意变动模板结构（例如删除列/sheet，调整列/sheet顺序等），否则会导致验证失败</div>}>
-                                        <Icon type="info-circle" />
+                                        <Icon style={{fontSize: '14px'}} type="info-circle" />
                                     </Tooltip>
                                     </p>
                                 </div>
@@ -469,8 +584,15 @@ class ThreeStepsValidator extends React.Component {
                 title: '审核进度',
                 content: (
                     <div className="layoutsContent">
-                        <div style={{width: '200px', fontWeight: 'bold', margin: '50px auto', textAlign: 'center'}}>
+                        <div style={{width: '500px', fontSize: '16px', margin: '50px auto', textAlign: 'center'}}>
                             {`数据正在审核,请稍后查看`}
+                            <br/>
+                            { this.state.importID !== '' && (
+                                <span>
+                                    {`您此次的校验请求ID为:  ${this.state.importID}  `}
+                                    <Tooltip title={<div style={{width: '250px'}}>根据此ID可在校验记录中查看详细的校验情况&nbsp;&nbsp;</div>}><Icon type="info-circle" /></Tooltip>
+                                </span>)
+                            }
                         </div>
                     </div>
                 ),
@@ -540,7 +662,7 @@ class ThreeStepsValidator extends React.Component {
                         {!this.state.isBusyTime && (<Button
                         loading={this.state.isLoading}
                         type="primary"
-                        onClick={this.handleSubmit}
+                        onClick={this.handleSubmit} //
                         >确定
                         </Button>)}
                         {this.state.isBusyTime && (
@@ -555,6 +677,12 @@ class ThreeStepsValidator extends React.Component {
                 {this.state.current === 1 && (<div className="progressButton">
                     <Button
                         type="ghost"
+                        onClick={this.handleReset}
+                    >取消等待
+                    </Button>
+                    <Button
+                        style={{marginLeft: '16px'}}
+                        type="primary"
                         icon="reload"
                         onClick={this.queryValidationHistory}
                     >刷新
