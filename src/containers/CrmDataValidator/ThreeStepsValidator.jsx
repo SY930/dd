@@ -337,11 +337,11 @@ class ThreeStepsValidator extends React.Component {
                     adjustmentMethod: this.state.adjustmentMethod
                 };
                 localStorage.setItem('_crm_import_info', JSON.stringify(crmImportInfo));
-                this.setState({current: 1, importID}/*, () => {
+                this.setState({current: 1, importID}, () => {
                     setTimeout(() => {
                         this.queryValidationHistory();
                     }, 1500)
-                }*/);
+                });
             }, err => {
                 console.log(err);
             });
