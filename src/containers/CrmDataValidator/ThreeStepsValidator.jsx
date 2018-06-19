@@ -145,7 +145,7 @@ class ThreeStepsValidator extends React.Component {
             className: 'TableTxtCenter',
             width: 150,
             render: (path) => path ? <a download target="_blank" href={path}>查看错误信息</a> : '无'
-        },/*{
+        },{
             title: '操作',
             dataIndex: 'itemID',
             key: 'itemID',
@@ -159,7 +159,7 @@ class ThreeStepsValidator extends React.Component {
                     <a href="#" >删除本条记录</a>
                 </Popconfirm>
             )
-        },*/
+        },
         ]
     }
 
