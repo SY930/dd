@@ -182,7 +182,7 @@ export const fetchFoodMenuInfoAC = (params = {}) => {
         // });
         const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
         return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-            console.log(res.records.filter(item => item.foodName.includes('味全')));
+            // console.log(res.records.filter(item => item.foodName.includes('味全')));
             dispatch(fetchFoodMenuSuccess(res))
         }).catch(e => {
             dispatch(fetchFoodMenuFailed(e));
