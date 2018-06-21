@@ -198,7 +198,7 @@ class NDiscountDetailInfo extends React.Component {
             foodUnitCode: food.foodKey,
             foodName: food.foodName,
             foodUnitName: food.unit,
-            price: food.price}));
+            price: food.prePrice==-1?food.price:food.prePrice}));
         this.setState({priceLst})
     }
 
