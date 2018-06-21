@@ -1076,3 +1076,13 @@ export const SEND_MSG = Object.freeze([{
     label: '微信推送不成功则发送短信',
     value: '3',
 },]);
+
+// 是否发信息
+export const NOTIFICATION_FLAG = Object.freeze([{
+    label: '不发送',
+    value: '0',
+}, {
+    label: '仅推送微信',
+    value: '2',
+},
+]);

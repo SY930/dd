@@ -10,7 +10,7 @@ import {
     saleCenterGetExcludeEventList,
     saleCenterGetShopOfEventByDate,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types';
+import { SEND_MSG, NOTIFICATION_FLAG } from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
@@ -616,6 +616,28 @@ class StepOneWithDateRange extends React.Component {
                                 >
                                     {
                                         SEND_MSG.map((item) => {
+                                            return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
+                                        })
+                                    }
+                                </Select>
+
+                            </FormItem> : null
+                    }{
+                        this.props.type == '21' || this.props.type == '20' || this.props.type == '30' || this.props.type == '22' || this.props.type == '60'
+                            || this.props.type == '23' || this.props.type == '64' || this.props.type == '31' ?
+                            <FormItem
+                                label="是否发送消息"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Select size="default"
+                                        value={`${this.state.smsGate}`}
+                                        onChange={this.handlesmsGateChange}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    {
+                                        NOTIFICATION_FLAG.map((item) => {
                                             return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
                                         })
                                     }
