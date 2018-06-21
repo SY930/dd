@@ -1082,7 +1082,7 @@ export const NOTIFICATION_FLAG = Object.freeze([{
     label: '不发送',
     value: '0',
 }, {
-    label: '仅推送微信',
+    label: '推送微信消息',
     value: '2',
 },
 ]);
