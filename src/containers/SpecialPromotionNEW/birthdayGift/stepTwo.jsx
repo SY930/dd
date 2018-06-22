@@ -31,7 +31,7 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         let cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-        if (!cardLevelRangeType) {
+        if (cardLevelRangeType === undefined) {
             cardLevelRangeType = this.props.type == '51' ? '5' : '0';
         }
         this.state = {
@@ -128,7 +128,7 @@ class StepTwo extends React.Component {
             }
             if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
                 const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-                this.setState({cardLevelRangeType: type === undefined ? '5' : type});
+                this.setState({cardLevelRangeType: type === undefined ? nextProps.props.type == '51' ? '5' : '0' : type});
             }
             if (this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])) {
                 this.setState({cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])});
