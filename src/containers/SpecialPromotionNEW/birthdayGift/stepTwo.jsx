@@ -30,14 +30,17 @@ const Immutable = require('immutable');
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
-        const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        let cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        if (!cardLevelRangeType) {
+            cardLevelRangeType = this.props.type == '51' ? '5' : '0';
+        }
         this.state = {
             message: '',
             settleUnitID: '',
             cardLevelIDList: [],
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             groupMembersList: [],
-            cardLevelRangeType: cardLevelRangeType === undefined ? '5' : cardLevelRangeType,
+            cardLevelRangeType: cardLevelRangeType,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -146,7 +149,7 @@ class StepTwo extends React.Component {
         const sendFlag = info.smsGate === '1' || info.smsGate === '3' || info.smsGate === '4';
         return (
             <div>
-                {this.state.cardLevelRangeType == '5' ?
+                {this.props.type == '51' && this.state.cardLevelRangeType == 5 ?
                     <FormItem
                         label="会员群体"
                         className={styles.FormItemStyle}
@@ -171,7 +174,8 @@ class StepTwo extends React.Component {
                             </Select>
                         )
                         }
-                    </FormItem>:
+                    </FormItem>
+                    :
                     <CardLevel
                         onChange={this.onCardLevelChange}
                         catOrCard="cat"
