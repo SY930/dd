@@ -273,8 +273,7 @@ class ThreeStepsValidator extends React.Component {
                 this.setState({isHistoryLoading: false, historyList: (res || []).map((item, index) => ({...item, indexNo: index+1})) || []});
             }, err => {
                 this.setState({isHistoryLoading: false});
-                message.error('出错了, 请稍后或刷新重试');
-                // console.log(err);
+                console.log(err);
             });
     }
 

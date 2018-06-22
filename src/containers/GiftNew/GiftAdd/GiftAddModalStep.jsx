@@ -404,7 +404,7 @@ class GiftAddModalStep extends React.Component {
                     }
                 })
                 if (couponTrdChannelStockNums.length == 0) {
-                    message.error('必须至少选择一种投放渠道');
+                    message.warning('必须至少选择一种投放渠道');
                     return;
                 } else {
                     params.issueChannel = issueChannel.join(',');
@@ -534,7 +534,7 @@ class GiftAddModalStep extends React.Component {
                 this.setState({
                     finishLoading: false,
                 });
-                message.error('出错了, 请稍后或刷新重试', 3);
+                console.log(err)
             });
         });
     }

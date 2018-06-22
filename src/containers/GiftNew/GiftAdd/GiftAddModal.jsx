@@ -128,7 +128,7 @@ class GiftAddModal extends React.Component {
                 this.setState({
                     finishLoading: false,
                 });
-                message.error('出错了, 请稍后或刷新重试', 3);
+                console.log(err);
             });
         });
     }
