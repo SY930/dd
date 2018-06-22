@@ -386,7 +386,7 @@ class GiftAddModal extends React.Component {
                     onClick={() => this.handleOk()}>确定</Button>]}
                 key={`${describe}-${type}`}
             >
-                <div className={styles.giftAddModal}>
+                {visible && <div className={styles.giftAddModal}>
                     <BaseForm
                         getForm={form => this.baseForm = form}
                         formItems={formItems}
@@ -395,7 +395,7 @@ class GiftAddModal extends React.Component {
                         onChange={(key, value) => this.handleFormChange(key, value)}
                         key={`${describe}-${type}`}
                     />
-                </div>
+                </div>}
             </Modal>
         )
     }

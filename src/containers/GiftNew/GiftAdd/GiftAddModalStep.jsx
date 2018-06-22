@@ -20,7 +20,6 @@ import {
     FetchGiftSort,
 } from '../_action';
 import {
-    saleCenterResetDetailInfoAC,
     fetchAllPromotionListAC,
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -33,7 +32,6 @@ import ShopSelector from "../../../components/common/ShopSelector";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-// const TreeNode = TreeSelect.TreeNode;
 
 class GiftAddModalStep extends React.Component {
     constructor(props) {
@@ -285,6 +283,7 @@ class GiftAddModalStep extends React.Component {
     }
 
     handleCancel = (cb) => {
+        this.props.onCancel();
         this.setState({
             current: 0,
             values: {},
@@ -293,14 +292,9 @@ class GiftAddModalStep extends React.Component {
             finishLoading: false,
             foodNameListStatus: 'success'
         });
-        this.props.saleCenterResetDetailInfo({});
-        this.props.onCancel();
         cb && cb();
     }
-    handleCCCCancel = () => {
-        this.props.saleCenterResetDetailInfo({});
-        this.props.onCancel();
-    }
+
     validateFoodList = (basicValues) => {
         if (this.state.values.hasOwnProperty('foodNameList') && (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
             || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
@@ -536,7 +530,6 @@ class GiftAddModalStep extends React.Component {
                     const listParams = params.toJS();
                     FetchGiftList(listParams);
                 }
-                this.props.saleCenterResetDetailInfo({});
             }).catch(err => {
                 this.setState({
                     finishLoading: false,
@@ -1337,7 +1330,7 @@ class GiftAddModalStep extends React.Component {
                 />),
         }];
         return (
-        visible && <Modal
+            <Modal
                 // key={modalKey}
                 title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
                 className={styles.foodModal}
@@ -1349,7 +1342,7 @@ class GiftAddModalStep extends React.Component {
             // afterClose={this.afterClose}
             // wrapClassName="progressBarModal"
             >
-                <div className={styles.customProgressBar}>
+                {visible && <div className={styles.customProgressBar}>
                     <CustomProgressBar
                         style={{ height: '200px' }}
                         steps={steps}
@@ -1362,7 +1355,7 @@ class GiftAddModalStep extends React.Component {
                         onCancel={this.handleCancel}
                         loading={this.state.finishLoading}
                     />
-                </div>
+                </div>}
             </Modal>
         )
     }
@@ -1386,7 +1379,6 @@ function mapDispatchToProps(dispatch) {
         getPromotionShopSchema: (opts) => {
             dispatch(getPromotionShopSchema(opts));
         },
-        saleCenterResetDetailInfo: opts => dispatch(saleCenterResetDetailInfoAC(opts)),
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
     };
