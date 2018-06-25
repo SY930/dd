@@ -30,9 +30,9 @@ const Immutable = require('immutable');
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
-        let cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        let cardLevelRangeType = props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         if (cardLevelRangeType === undefined) {
-            cardLevelRangeType = this.props.type == '51' ? '5' : '0';
+            cardLevelRangeType = props.type == '51' ? '5' : '0';
         }
         this.state = {
             message: '',
@@ -125,10 +125,6 @@ class StepTwo extends React.Component {
                         groupMembersList: [],
                     })
                 }
-            }
-            if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
-                const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-                this.setState({cardLevelRangeType: type === undefined ? nextProps.props.type == '51' ? '5' : '0' : type});
             }
             if (this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])) {
                 this.setState({cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])});
