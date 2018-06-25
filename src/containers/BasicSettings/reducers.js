@@ -27,7 +27,7 @@ export function messageTemplateState(state = initialState, action) {
             return state.set('messageTemplateListLoading', false);
         case GET_SMS_TEMPLATE_LIST_SUCCESS:
             return state.set('messageTemplateList', Immutable.fromJS(action.payload.list))
-                .set('loading', false);
+                .set('messageTemplateListLoading', false);
         default:
             return state
     }

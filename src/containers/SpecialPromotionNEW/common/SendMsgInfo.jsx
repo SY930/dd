@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import MsgSelector from "./MsgSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -81,12 +82,12 @@ class SendMsgInfo extends React.Component {
             this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
         })
     }
-    handleMsgChange(e) {
+    handleMsgChange(message) {
         this.props.form.setFieldsValue({
-            message: e.target.value,
+            message: message,
         });
         this.setState({
-            message: e.target.value,
+            message: message,
         }, () => {
             this.props.onChange && this.props.onChange(this.state.message);
         });
@@ -111,7 +112,7 @@ class SendMsgInfo extends React.Component {
         const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
         if (this.props.sendFlag) {
             return (
-                <Form>
+                <div>
                     <FormItem
                         label="短信结算账户"
                         className={styles.FormItemStyle}
@@ -137,7 +138,7 @@ class SendMsgInfo extends React.Component {
                     </FormItem>
 
                     <FormItem
-                        label="短信模板"
+                        label="选择短信模板"
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
@@ -150,11 +151,11 @@ class SendMsgInfo extends React.Component {
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
                         })(
-                            <Input rows={4} type="textarea" placeholder="请输入短信模板" />
+                            <MsgSelector selected={this.props.value}/>
                         )}
 
                     </FormItem>
-                    <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
+                    {/*<FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
                         <Button onClick={this.addMessageInfo}>会员姓名</Button>
                         <Button onClick={this.addMessageInfo}>先生/女士</Button>
                         <Button onClick={this.addMessageInfo}>卡名称</Button>
@@ -179,8 +180,8 @@ class SendMsgInfo extends React.Component {
                             </Col>
 
                         </Row>
-                    </FormItem>
-                </Form>
+                    </FormItem>*/}
+                </div>
             );
         }
         return (

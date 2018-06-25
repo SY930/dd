@@ -112,6 +112,10 @@ class MessageTemplatesPage extends React.Component {
     }
 
     render() {
+        const messageTemplateList = this.state.messageTemplateList;
+        const pendingTemplates = messageTemplateList.filter(item => item.auditStatus == 1);
+        const verifiedTemplates = messageTemplateList.filter(item => item.auditStatus == 2);
+        const illegalTemplates = messageTemplateList.filter(item => item.auditStatus == 3);
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
         <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer">
@@ -130,9 +134,9 @@ class MessageTemplatesPage extends React.Component {
                         }>新建</Button>
                 </div>
                 <div style={{height: this.state.contentHeight}} className={styles.scrollableMessageContainer}>
-                    <MessageGroup title="待审核" messages={mock1} edit={this.editTemplate}  />
-                    <MessageGroup title="审核通过" messages={mock2} edit={this.editTemplate}/>
-                    <MessageGroup title="审核未通过" messages={mock} edit={this.editTemplate}/>
+                    <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}  />
+                    <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>
+                    <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>
                 </div>
             </div>
         </div>

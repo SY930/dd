@@ -690,11 +690,9 @@ class MyActivities extends React.Component {
                         className={styles.jumpToCreate}
                         onClick={
                             () => {
-                                // const menuID = this.props.user.menuList.find(tab => tab.entryCode === '').menuID;
-                                console.log(this.props.user.menuList);
                                 jumpPage({ menuID: 'set_message_templates' })
                             }
-                        }>新建</Button>
+                        }>短信</Button>
                 </div>
             </div>
         );

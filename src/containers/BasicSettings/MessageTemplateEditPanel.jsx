@@ -1,7 +1,9 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { isEqual } from 'lodash';
-import { Button, Form, Input, Row, Col } from 'antd';
+import { Button, Form, Input, Row, Col, message as messageService } from 'antd';
+import {createMessageTemplate, updateMessageTemplate} from "./actions";
 const FormItem = Form.Item;
 
 class MessageTemplateEditPanel extends React.Component {
@@ -57,7 +59,29 @@ class MessageTemplateEditPanel extends React.Component {
                 }
             });
         } else { // 验证通过
-            console.log('验证通过, 即将保存');
+            this.setState({loading: true});
+            if (this.props.templateEntity) {
+                this.props.updateMessageTemplate({template: message, modifyBy: this.props.user.accountInfo.userName, itemID: this.props.templateEntity.itemID})
+                    .then(() => {
+                        messageService.success('修改成功');
+                        this.setState({loading: false}, () => {
+                            this.props.cancel && this.props.cancel()
+                        })
+                    }, err => {
+                        this.setState({loading: false})
+                    })
+            } else {
+                this.props.createMessageTemplate({template: message, createBy: this.props.user.accountInfo.userName})
+                    .then(() => {
+                        messageService.success('创建成功');
+                        this.setState({loading: false}, () => {
+                            this.props.cancel && this.props.cancel()
+                        })
+                    }, err => {
+                        this.setState({loading: false})
+                    })
+            }
+
 
         }
     }
@@ -148,4 +172,17 @@ class MessageTemplateEditPanel extends React.Component {
     }
 }
 
-export default Form.create()(MessageTemplateEditPanel);
+function mapDispatchToProps(dispatch) {
+    return {
+        updateMessageTemplate: opts => dispatch(updateMessageTemplate(opts)),
+        createMessageTemplate: opts => dispatch(createMessageTemplate(opts)),
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        user: state.user.toJS(),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(MessageTemplateEditPanel));
