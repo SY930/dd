@@ -15,24 +15,6 @@ import MessageTemplateEditPanel from './MessageTemplateEditPanel'
 import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
 
-const mock1 = new Array(11).fill({
-    "itemID":852009824290938880,
-    "groupID":1155,
-    "template":"尊敬的[先生/女士]，您的[卡名称][卡等级]有异动，请发骚抱怨。",
-    "auditStatus":1,
-    "createBy":"贾志",
-    "modifyBy":"贾志"
-});
-const mock2 = new Array(4).fill({
-    "itemID":852009824290938880,
-    "groupID":1155,
-    "template":"尊敬的[先生/女士]，您的[卡名称][卡等级]有异动，请发骚抱怨。",
-    "auditStatus":1,
-    "createBy":"贾志",
-    "modifyBy":"贾志"
-});
-const mock = [];
-
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
 })

@@ -144,43 +144,13 @@ class SendMsgInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('message', {
-                            rules: [
-                                { required: true, message: '请输入短信模板' },
-                                { max: 500, message: '最多500个字符' },
-                            ],
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
                         })(
-                            <MsgSelector selected={this.props.value}/>
+                            <MsgSelector selectedMessage={this.state.message}/>
                         )}
 
                     </FormItem>
-                    {/*<FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
-                        <Button onClick={this.addMessageInfo}>会员姓名</Button>
-                        <Button onClick={this.addMessageInfo}>先生/女士</Button>
-                        <Button onClick={this.addMessageInfo}>卡名称</Button>
-                        <Button onClick={this.addMessageInfo}>卡号后四位</Button>
-                        <Row>
-                            <Col span={2}> <span className={styles.titleHeight}>规则:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>
-                                    {'请不要输入"【】" "[]"符号'}
-                                </p>
-                                <p className={styles.blockP}>
-                                    预计字数：{(this.state.message || '').length}字，67字为一条，最多500字（含标点空格）
-                                </p>
-                                <p className={styles.blockP}>
-                                    短信费用0.08元/条
-                                </p>
-                            </Col>
-                            <Col span={2} ><span className={styles.titleHeight}>注:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>{'1.  统计字数中含"回复TD退订【互联网餐厅】"'}</p>
-                                <p className={styles.blockP}>{'2.  字数以最终发出短信内容为准'}</p>
-                            </Col>
-
-                        </Row>
-                    </FormItem>*/}
                 </div>
             );
         }
