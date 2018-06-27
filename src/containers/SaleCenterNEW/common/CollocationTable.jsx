@@ -751,7 +751,7 @@ class CollocationTable extends React.Component {
                 className: 'TableTxtLeft',
                 // colSpan:0,
                 render: (text, record, index) => {
-                    return `${record.price || ''}元/${record.unit || '份'}`;
+                    return `${record.prePrice==-1?record.price:record.prePrice || ''}元/${record.unit || '份'}`;
                 },
             },
             {

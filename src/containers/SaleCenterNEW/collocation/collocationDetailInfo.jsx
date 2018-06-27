@@ -92,7 +92,7 @@ class CollocationDetailInfo extends React.Component {
                         foodUnitCode: free.foodKey,
                         foodName: free.foodName,
                         foodUnitName: free.unit,
-                        price: parseFloat(free.price),
+                        price: parseFloat(free.prePrice==-1?free.price:free.prePrice || 0),
                         stageNo: groupIdx,
                         num: group.freeCountInfo[free.itemID] >= 1 ? group.freeCountInfo[free.itemID] : 1,
                     })
