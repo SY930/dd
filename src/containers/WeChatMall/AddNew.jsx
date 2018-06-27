@@ -184,7 +184,7 @@ class NewActivity extends React.Component {
                 onOk={this.clear}
                 onCancel={this.clear}
             >
-                <ActivityMain
+                {/*<ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
                     isNew={true}
@@ -193,7 +193,7 @@ class NewActivity extends React.Component {
                             this.setModal1Visible(false)
                         }
                     }}
-                />
+                />*/}
             </Modal>
         );
     }
@@ -210,9 +210,9 @@ class NewActivity extends React.Component {
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
-        this.props.setPromotionType({
+        /*this.props.setPromotionType({
             promotionType: activity.get('key'),
-        });
+        });*/
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,
