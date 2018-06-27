@@ -548,6 +548,20 @@ export const ACTIVITY_CATEGORIES = (function () {
     return basic;
 }());
 
+export const WECHAT_MALL_ACTIVITIES = (function () {
+    const activities = [{
+        idx: 0,
+        title: '商城秒杀',
+        color: '#84aac6',
+        text: '在微信商城可设置商品限时限量购的秒杀活动',
+        example: '',
+        tags: ['微信商城'],
+        key: 'MIAO_SHA', // sorry 我懒得去想秒杀的英文
+    },
+    ];
+    return activities;
+}());
+
 export const CHARACTERISTIC_CATEGORIES = (function () {
     const basic = [{
         idx: 0,
