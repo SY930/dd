@@ -458,7 +458,7 @@ class CollocationTable extends React.Component {
         // update currentSelections according the selections
         const foodCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(food => food.itemID == storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -494,7 +494,7 @@ class CollocationTable extends React.Component {
 
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
-                if (value.includes(shopEntity.itemID)) {
+                if (value.includes(Number(shopEntity.itemID)) || value.includes(String(shopEntity.itemID))) {
                     // TODO: 添加
                     shopEntity.newPrice = shopEntity.newPrice || shopEntity.price;
                     foodSelections.add(shopEntity);
@@ -537,7 +537,7 @@ class CollocationTable extends React.Component {
         const foodCurrentSelections = [];
 
         storeOptions.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if ((Array.from(this.state.foodSelections).findIndex(food => food.itemID === storeEntity.itemID) > -1)) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
