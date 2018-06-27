@@ -557,6 +557,7 @@ export const WECHAT_MALL_ACTIVITIES = (function () {
         example: '',
         tags: ['微信商城'],
         key: 'MIAO_SHA', // sorry 我懒得去想秒杀的英文
+        tip: '同一时间一个商城的秒杀活动只能有一个，即不允许同一时间一个商城存在两个都处于启用状态的秒杀活动',
     },
     ];
     return activities;

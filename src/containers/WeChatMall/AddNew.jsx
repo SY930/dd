@@ -18,7 +18,7 @@ import { checkPermission } from '../../helpers/util';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo';
-import ActivityMain from '../SpecialPromotionNEW/activityMain';
+import ActivityMain from './WeChatMaLLActivityMain';
 import Authority from './../../components/common/Authority';
 import {
     saleCenterResetBasicInfoAC,
@@ -153,8 +153,6 @@ class NewActivity extends React.Component {
                         key={`NewActivity${index}`}
                         style={{
                             listStyle: 'none',
-                            display: (this.props.user.shopID > 0) ?
-                                'none' : 'block',
                         }}
                     >
                         <Authority rightCode="marketing.jichuyingxiaoxin.create">
@@ -184,16 +182,17 @@ class NewActivity extends React.Component {
                 onOk={this.clear}
                 onCancel={this.clear}
             >
-                {/*<ActivityMain
+                <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
+                    eventWay="MIAO_SHA" // 暂时写死 以后有新活动再改
                     isNew={true}
                     callbackthree={(arg) => {
                         if (arg == 3) {
                             this.setModal1Visible(false)
                         }
                     }}
-                />*/}
+                />
             </Modal>
         );
     }
