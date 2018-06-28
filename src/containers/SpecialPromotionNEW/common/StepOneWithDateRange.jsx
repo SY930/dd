@@ -623,7 +623,7 @@ class StepOneWithDateRange extends React.Component {
 
                             </FormItem> : null
                     }{
-                        this.props.type == '21' || this.props.type == '20' || this.props.type == '30' || this.props.type == '22' || this.props.type == '60'
+                        this.props.type == '21' || this.props.type == '20' || this.props.type == '30' || this.props.type == '60'
                             || this.props.type == '23' || this.props.type == '64' || this.props.type == '31' ?
                             <FormItem
                                 label="是否发送消息"
