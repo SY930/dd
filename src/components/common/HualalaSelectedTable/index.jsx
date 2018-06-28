@@ -23,6 +23,7 @@ export default class HualalaSelectedTable extends React.Component {
         this.state = {
             data: [],
             filterPrice: 'newPrice',
+            priceOrPoint: 'price', // 商城秒杀filter
             filterDropdownVisible: false,
         };
 
@@ -81,6 +82,22 @@ export default class HualalaSelectedTable extends React.Component {
         this.props.onClear && this.props.onClear();
     }
 
+    handleMValueChange(val, entity) {
+        if (this.state.priceOrPoint === 'price') {
+            entity.mPrice = val.number;
+        } else {
+            entity.mPoint = val.number;
+        }
+    }
+
+    handleTotalAmountChange(val, entity) {
+        entity.totalAmount = val.number;
+    }
+
+    handleLimitAmountChange(val, entity) {
+        entity.limitAmount = val.number;
+    }
+
     render() {
         const columns = [
             {
@@ -106,6 +123,98 @@ export default class HualalaSelectedTable extends React.Component {
                 width: 80,
                 className: 'TableTxtLeft',
             },
+            ];
+        const specificColumns = this.props.isWeChatMall ? [
+            {
+                title: `秒杀价${this.state.priceOrPoint === 'price' ? '(元)' : '(分)'}`,
+                width: 85,
+                dataIndex: 'newPrice',
+                key: 'filterPrice',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    // TODO: fix the dispaly bug later
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="float"
+                                value={{ number: this.state.priceOrPoint === 'price' ? record.mPrice : record.mPoint}}
+                                index={index}
+                                onChange={(val) => { this.handleMValueChange(val, record) }}
+                            />
+                        </span>
+                    );
+                },
+                filterDropdown: (
+                    <div className="custom-filter-dropdown">
+                        <Select
+                            style={{ width: 86, left: -63 }}
+                            value={this.state.priceOrPoint}
+                            onChange={v => {
+                                const newData = this.state.data.map(food => {
+                                    food.newPrice = food[v];
+                                    return food
+                                });
+                                this.setState({ priceOrPoint: v, data: newData })
+                            }}
+                        >
+                            <Option key='price'>按价格</Option>
+                            <Option key='point'>按积分</Option>
+                        </Select>
+                    </div>
+                ),
+                filterDropdownVisible: this.state.filterDropdownVisible,
+                onFilterDropdownVisibleChange: visible => this.setState({ filterDropdownVisible: visible }),
+            },
+            {
+                title: '售价 (元)',
+                dataIndex: 'prePrice1',
+                key: 'prePrice1',
+                width: 80,
+                className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return record.prePrice == -1 ? record.price : record.prePrice
+                },
+            },
+            {
+                title: '库存量',
+                dataIndex: 'prePrice2',
+                key: 'prePrice2',
+                width: 80,
+                className: 'TableTxtRight',
+                render: (text, record, index) => (
+                    <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="int"
+                                value={{ number: record.totalAmount}}
+                                index={index}
+                                onChange={(val) => { this.handleTotalAmountChange(val, record) }}
+                            />
+                        </span>
+                ),
+            },
+            {
+                title: '每人限购数量',
+                dataIndex: 'prePrice3',
+                key: 'prePrice3',
+                className: 'TableTxtRight',
+                render: (text, record, index) => (
+                    <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="int"
+                                value={{ number: record.limitAmount}}
+                                index={index}
+                                onChange={(val) => { this.handleLimitAmountChange(val, record) }}
+                            />
+                        </span>
+                ),
+            },
+        ] : [
             {
                 title: '特价 (元)',
                 width: 85,
@@ -168,7 +277,9 @@ export default class HualalaSelectedTable extends React.Component {
                 render: (text, record, index) => {
                     return record.newPrice == -1 || record.price == 0 ? '不打折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
-            }];
+            }
+        ];
+        columns.push(...specificColumns);
         const data = this.state.data;
         return (
             <div className={styles.treeSelectFooter}>

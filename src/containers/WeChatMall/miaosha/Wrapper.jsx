@@ -53,21 +53,16 @@ class NewBirthdayGift extends React.Component {
                     />
                 ),
             },
-            /*{
+            {
                 title: '活动内容',
                 content: (
                     <DetailInfo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
-                        onChange={(rule) => {
-                            this.setState({ rule });
-                        }}
-                        isNew={this.props.isNew}
                     />
                 ),
-            },*/
+            },
         ];
     }
 
@@ -77,19 +72,45 @@ class NewBirthdayGift extends React.Component {
 
 
     handleNext(cb, index) {
-
+        let flag = true;
+        if (undefined !== this.handles[index].next && typeof this.handles[index].next === 'function') {
+            flag = this.handles[index].next();
+        }
+        if (flag) {
+            cb();
+        }
     }
 
     handlePrev(cb, index) {
-
+        let flag = true;
+        if (undefined !== this.handles[index].prev && typeof this.handles[index].prev === 'function') {
+            flag = this.handles[index].prev();
+        }
+        if (flag) {
+            cb();
+        }
     }
 
     handleCancel(cb, index) {
-
+        this.props.callbacktwo(3);
     }
 
     handleFinish(cb, index) {
-
+        let flag = true;
+        if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
+            flag = this.handles[index].finish();
+        }
+        if (flag) {
+            this.setState({
+                loading: true,
+            });
+            setTimeout(() => {
+                this.onFinish(() => {
+                    cb();
+                    this.props.callbacktwo(3);
+                });
+            }, 0);
+        }
     }
 
     render() {

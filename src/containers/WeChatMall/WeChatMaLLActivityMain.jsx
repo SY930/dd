@@ -30,7 +30,7 @@ class ActivityMain extends React.Component {
 
     renderSideBar() {
         switch (this.state.current) {
-            case 1:
+            /*case 1:
                 return (
                     <div style={{ margin: '110px 4px 10px 10px' }}>
                         <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
@@ -42,7 +42,7 @@ class ActivityMain extends React.Component {
                         <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
                         <ActivitySidebar listsTitle={'2 | 活动范围'} key="2" />
                     </div>
-                );
+                );*/
             default:
                 return (
                     <div className={styles.promotionTip}>

@@ -13,7 +13,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import registerPage from '../../index';
-import { Modal, Row, Col, message } from 'antd';
+import { jumpPage } from '@hualala/platform-base'
+import {
+    Modal,
+    Row,
+    Col,
+    message,
+    Button,
+} from 'antd';
 import { checkPermission } from '../../helpers/util';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 
@@ -35,7 +42,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
-import {WECHAT_MALL_CREATE} from "../../constants/entryCodes";
+import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -124,6 +131,20 @@ class NewActivity extends React.Component {
                     <div className="layoutsTool">
                         <div className="layoutsToolLeft">
                             <h1>新建商城活动</h1>
+                            <Button
+                                type="ghost"
+                                icon="rollback"
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '150px',
+                                }}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === WECHAT_MALL_LIST).menuID
+                                        menuID && jumpPage({ menuID })
+                                    }
+                                }>返回列表</Button>
                         </div>
                     </div>
                 </Col>

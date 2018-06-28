@@ -202,8 +202,9 @@ class SpecialDishesTable extends React.Component {
                 <div className={styles.proAll}>
                     <div className={styles.proRight}>
                         <div className={styles.projectIco}>
-                            <Checkbox style={{ marginLeft:2,position:'relative',top:-5 }} onChange={this.onOnlyVipChange}>{`    只显示有会员价的菜品`}</Checkbox>
-                            <HualalaTreeSelect level1Title={'全部菜品'}>
+
+                            {!this.props.isWeChatMall && <Checkbox style={{ marginLeft:2,position:'relative',top:-5 }} onChange={this.onOnlyVipChange}>{`    只显示有会员价的菜品`}</Checkbox>}
+                            <HualalaTreeSelect level1Title={this.props.isWeChatMall ? '全部商品': '全部菜品'}>
                                 <HualalaSearchInput onChange={(value) => {
                                     this.handleFoodSearchInputChange(value)
                                 }}
@@ -225,8 +226,9 @@ class SpecialDishesTable extends React.Component {
                                     }}
                                 />
                                 <HualalaSelectedTable
+                                    isWeChatMall={this.props.isWeChatMall}
                                     itemName="foodName+unit"
-                                    selectdTitle={'已选菜品'}
+                                    selectdTitle={this.props.isWeChatMall ? '已选商品': '已选菜品'}
                                     value={this.state.foodSelections}
                                     onChange={(value) => { this.handleFoodSelectedChange(value) }}
                                     onClear={() => this.clear('food')}
@@ -367,6 +369,7 @@ class SpecialDishesTable extends React.Component {
             visible: false,
         });
         const data = Array.from(this.state.foodSelections);
+        console.log(data);
         this.props.onChange && this.props.onChange(data);
     };
 
@@ -377,13 +380,13 @@ class SpecialDishesTable extends React.Component {
     // 删除一行数据
     handleDel = (text, record, index) => {
         confirm({
-            title: '删除特价菜',
+            title: this.props.isWeChatMall ? '移除商品' : '移除特价菜',
             content: (
                 <div>
-                    您将删除
+                    您将移除
                     【<span>{record.foodName}</span>】
                     <br />
-                    <span>删除是不可恢复操作，请慎重考虑~</span>
+                    <span>保存后操作生效，请慎重考虑~</span>
                 </div>
             ),
             footer: null,
@@ -445,7 +448,7 @@ class SpecialDishesTable extends React.Component {
                 },
             },
             {
-                title: '菜品',
+                title: this.props.isWeChatMall ? '商品' : '菜品',
                 dataIndex: 'foodName',
                 key: 'foodName',
                 fixed: 'left',
@@ -458,6 +461,9 @@ class SpecialDishesTable extends React.Component {
                 key: 'unit',
                 width: 50,
                 className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             {
                 title: '编码',
@@ -509,11 +515,11 @@ class SpecialDishesTable extends React.Component {
             <FormItem className={styles.FormItemStyle}>
                 <Row>
                     <Col span={2}>
-                        <span className={styles.gTitle}>选择菜品</span>
+                        <span className={styles.gTitle}>{this.props.isWeChatMall ? '选择商品' : '选择菜品'}</span>
                     </Col>
                     <Col span={4} offset={18}>
                         <a className={styles.gTitleLink} onClick={this.selectDishes}>
-                            批量添加菜品
+                            {this.props.isWeChatMall ? '批量添加商品' : '批量添加菜品'}
                         </a>
                     </Col>
                 </Row>
@@ -527,11 +533,7 @@ class SpecialDishesTable extends React.Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     width="922px"
-                    title={`        选择特价菜品`}
-                    // title={[
-                    //     <span key="t1" style={{ marginRight: 20 }}>选择特价菜品</span>,
-                    //     <Checkbox key="t2" style={{ fontSize: 14 }} onChange={this.onOnlyVipChange}>只显示有会员价的菜品</Checkbox>
-                    // ]}
+                    title={`        ${this.props.isWeChatMall ? '选择特价商品' : '选择特价菜品'}`}
                 >
                     <div style={{ width: '100%' }}>
                         {this.renderDishesSelectionBox()}

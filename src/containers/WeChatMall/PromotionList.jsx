@@ -8,10 +8,11 @@ import {
     Spin,
 } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
+import Authority from '../../components/common/Authority'
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
 import {Iconlist} from "../../components/basic/IconsFont/IconsFont";
-import { WECHAT_MALL_LIST } from '../../constants/entryCodes';
+import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from '../../constants/entryCodes';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -48,6 +49,8 @@ import {
 } from '../../redux/actions/saleCenterNEW/types';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import {throttle, isEqual} from 'lodash'
+import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
+import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -57,24 +60,26 @@ const mapStateToProps = (state) => {
     return {
         myActivities: state.sale_myActivities_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        // 查询标签
+        fetchPromotionTags: (opts) => {
+            dispatch(fetchPromotionTagsAC(opts));
+        },
     };
 };
 @registerPage([WECHAT_MALL_LIST], {
+    sale_myActivities_NEW,
+    sale_promotionBasicInfo_NEW,
 })
 @connect(mapStateToProps, mapDispatchToProps)
-class MyActivitiesShop extends React.Component {
+export class WeChatMallPromotionList extends React.Component {
     constructor(props) {
         super(props);
-        this.tableRef = null;
-        this.setTableRef = el => this.tableRef = el;
-        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -89,7 +94,7 @@ class MyActivitiesShop extends React.Component {
             modalTitle: '更新活动信息',
             isNew: false,
             selectedShop: null,
-            loading: true,
+            loading: false,
             // 以下是用于查询的条件
             promotionType: '',
             editPromotionType: '',
@@ -108,31 +113,18 @@ class MyActivitiesShop extends React.Component {
         };
 
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
-        this.checkDetailInfo = this.checkDetailInfo.bind(this);
-        this.renderModals = this.renderModals.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
         this.toggleExpandState = this.toggleExpandState.bind(this);
         this.renderModifyRecordInfoModal = this.renderModifyRecordInfoModal.bind(this);
         this.onDateQualificationChange = this.onDateQualificationChange.bind(this);
-        this.renderShopsInTreeSelectMode = this.renderShopsInTreeSelectMode.bind(this);
         this.onTreeSelect = this.onTreeSelect.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
         this.showNothing = this.showNothing.bind(this);
         this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
-        this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
-    changeSortOrder(record, direction) {
-        const params = {promotionID: record.promotionIDStr, shopID: this.props.user.shopID, rankingType: direction};
-        axiosData('/promotionV1/updatePromotionRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
-        }).catch(err => {
-            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
-        })
-    }
+
     componentDidMount() {
         const {
             fetchPromotionTags,
@@ -194,11 +186,6 @@ class MyActivitiesShop extends React.Component {
     handleDismissUpdateModal() {
         this.setState({
             updateModalVisible: false,
-        }, () => {
-            this.props.saleCenterResetBasicInfo();
-            this.props.saleCenterResetScopeInfo();
-            this.props.saleCenterResetDetailInfo();
-            this.props.cancelFetchPromotionDetail();
         });
     }
 
@@ -220,18 +207,14 @@ class MyActivitiesShop extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState) || this.props.myActivities.getIn(['$promotionDetailInfo', 'status']) !== nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
-    }
-
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
+        /*if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("shop.dianpu.promotion")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
-        }
-        if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
+        }*/
+        /*if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
             const _promoitonList = nextProps.myActivities.get('$promotionList').toJS();
             switch (_promoitonList.status) {
                 case 'timeout':
@@ -247,12 +230,6 @@ class MyActivitiesShop extends React.Component {
                     });
                     break;
                 case 'success':
-                    const _envIsVip = HUALALA.ENVIRONMENT == 'production-release';
-                    // let data = _envIsVip ? _promoitonList.data.filter((activity) => {
-                    //     //隐藏基础营销组合减免，买三免一（这两个活动先实现活动共享后再实现）
-                    //     return activity.promotionType != 'BILL_COMBINE_FREE' && activity.promotionType != 'FOOD_BUY_THEN_FREE' &&
-                    //         activity.promotionType != 'BILL_CUMULATION_FREE' && activity.promotionType != 'FOOD_CUMULATION_GIVE'
-                    // }) : _promoitonList.data;
                     const data = _promoitonList.data;
                     this.setState({
                         loading: false,
@@ -269,7 +246,7 @@ class MyActivitiesShop extends React.Component {
                     });
                     break;
             }
-        }
+        }*/
     }
 
     getParams = () => {
@@ -282,7 +259,6 @@ class MyActivitiesShop extends React.Component {
             promotionTags,
             promotionBrands,
             promotionOrder,
-            // promotionShop,
             promotionName,
         } = this.state;
         const opt = {};
@@ -337,7 +313,7 @@ class MyActivitiesShop extends React.Component {
             ..._opt,
         };
         opt.cb = this.showNothing;
-        this.props.query(opt);
+        // this.props.query(opt);
     }
 
     showNothing(data) {
@@ -396,79 +372,6 @@ class MyActivitiesShop extends React.Component {
         })
     };
 
-    successFn = (responseJSON) => {
-        const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
-        const _serverToRedux = false;
-        if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
-            message.error('没有查询到相应数据');
-            return null;
-        }
-        if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
-            const opts = {
-                _groupID: this.props.user.accountInfo.groupID,
-                shopID: responseJSON.promotionInfo.master.shopIDLst,
-            };
-            this.props.fetchFoodCategoryInfo({ ...opts });
-            this.props.fetchFoodMenuInfo({ ...opts });
-        }
-        // 把查询到的活动信息存到redux
-        this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
-        this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
-        this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
-
-        this.setState({
-            promotionInfo: responseJSON.promotionInfo,
-            selectedRecord: responseJSON.promotionInfo, // arguments[1],
-            modalTitle: '更新活动信息',
-            isNew: false,
-            index: _promotionIdx,
-        });
-    };
-
-    failFn = () => {
-        message.error('啊哦,好像出了点问题~');
-    };
-
-    handleUpdateOpe() {
-        const _record = arguments[1];
-        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
-            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
-            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
-        }
-        this.props.fetchPromotionDetail_NEW({
-            data: {
-                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID,
-            },
-            success: this.successFn,
-            fail: this.failFn,
-        });
-        if (_record ) {
-            this.setState({
-                updateModalVisible: true,
-                editPromotionType: _record.promotionType,
-                currentPromotionID: _record.promotionIDStr,
-            });
-        }
-    }
-
-    // Row Actions: 查看
-    checkDetailInfo() {
-        const _record = arguments[1];
-        this.props.fetchPromotionDetail_NEW({
-            data: {
-                promotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID, // promotionID 会自动转换int类型,出现数据溢出,新加字符串类型的promotionIDStr替换
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID,
-            },
-            fail: this.failFn,
-        });
-        this.setState({
-            visible: true,
-            currentPromotionID: _record ? _record.promotionIDStr : this.state.currentPromotionID,
-        });
-    }
     /**
      * Render promotion update Modal
      * wrapped normally.
@@ -476,38 +379,7 @@ class MyActivitiesShop extends React.Component {
      */
 
     renderContentOfThisModal() {
-        const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const handleUpdateOpe = this.handleUpdateOpe;
-        const _state = this.state;
-        if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
-            return (
-                <div className={styles.spinFather}>
-                    <Spin size="large" />
-                </div>
-            )
-        }
-        if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
-            return (
-                <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={handleUpdateOpe}>重试</a>
-                </div>
-            );
-        }
-
-        if (promotionDetailInfo.status === 'success') {
-            return (<ActivityMain
-                isNew={_state.isNew}
-                index={_state.index}
-                steps={_state.steps}
-                callbackthree={(arg) => {
-                    if (arg == 3) {
-                        this.setState({
-                            updateModalVisible: false,
-                        });
-                    }
-                }}
-            />);
-        }
+        return <div>123</div>;
     }
 
     renderModifyRecordInfoModal() {
@@ -524,40 +396,7 @@ class MyActivitiesShop extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.renderContentOfThisModal()}
-            </Modal>
-        );
-    }
-
-    renderModals() {
-        const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const checkDetailInfo = this.checkDetailInfo;
-        let renderContentOfTheModal;
-        if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
-            renderContentOfTheModal = (
-                <div className={styles.spinFather}>
-                    <Spin size="large" />
-                </div>)
-        }
-        if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
-            renderContentOfTheModal = (
-                <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
-                </div>
-            );
-        }
-        if (promotionDetailInfo.status === 'success') {
-            renderContentOfTheModal = (<PromotionDetail record={promotionDetailInfo.data.promotionInfo} />);
-        }
-
-        return (
-            <Modal
-                title="活动详情"
-                visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>关闭</Button>}
-                closable={false}
-            >
-                {renderContentOfTheModal}
+                {/*{this.renderContentOfThisModal()}*/}
             </Modal>
         );
     }
@@ -567,15 +406,14 @@ class MyActivitiesShop extends React.Component {
         return (
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
+                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>商城活动信息</span>
                     <Button
                         type="ghost"
                         icon="plus"
                         className={styles.jumpToCreate}
                         onClick={
                             () => {
-                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
-                                jumpPage({ menuID })
+                                jumpPage({ menuID: WECHAT_MALL_CREATE })
                             }
                         }>新建</Button>
                 </div>
@@ -583,33 +421,7 @@ class MyActivitiesShop extends React.Component {
         );
     }
 
-    renderShopsInTreeSelectMode() {
-        const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData'])) ?
-            this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']).toJS() :
-            this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']);
-
-        const tProps = this.state.selectedShop != null ?
-            {
-                treeData,
-                value: this.state.selectedShop,
-                onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '请选择店铺',
-                allowClear: true,
-            } : {
-                treeData,
-                value: undefined,
-                onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '请选择店铺',
-                allowClear: true,
-            };
-        return (
-            <TreeSelect {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} />
-        );
-    }
-
     renderFilterBar() {
-        const opt = this.getParams()
-
         return (
             <div>
                 <div className="layoutsSearch">
@@ -620,35 +432,6 @@ class MyActivitiesShop extends React.Component {
                         <li>
                             <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
                         </li>
-
-                        {/*<li>
-                            <h5>活动类型</h5>
-                        </li>*/}
-                        {/*<li>
-                            <Select
-                                style={{ width: '160px' }}
-                                showSearch={true}
-                                placeholder="请选择类型"
-                                defaultValue="全部"
-                                onChange={(value) => {
-                                    this.setState({
-                                        promotionType: value === 'ALL' ? null : value,
-                                    });
-                                }}
-                            >
-                                {
-                                    [{
-                                        value: 'ALL',
-                                        title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== 'RECOMMEND_FOOD')
-                                        .map((activity, index) => {
-                                            return (
-                                                <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
-                                            );
-                                        })
-                                }
-                            </Select>
-                        </li>*/}
 
                         <li>
                             <h5>使用状态</h5>
@@ -671,18 +454,6 @@ class MyActivitiesShop extends React.Component {
                         </li>
 
                         <li>
-                            <h5>活动名称</h5>
-                        </li>
-                        <li>
-                            <PromotionNameSelect
-                                getParams={{ ...opt, promotionName: undefined }}
-                                onChange={(promotionName) => {
-                                    this.setState(promotionName)
-                                }}
-                            />
-                        </li>
-
-                        <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
                             </Authority>
@@ -700,26 +471,12 @@ class MyActivitiesShop extends React.Component {
     }
 
     renderAdvancedFilter() {
-        let categories = [],
-            tags = [],
-            brands = [];
-        const $categories = this.props.promotionBasicInfo.getIn(['$categoryList', 'data']);
-        if (Immutable.List.isList($categories)) {
-            categories = $categories.toJS();
-        }
+        let tags = [];
 
         const $tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']);
         if (Immutable.List.isList($tags)) {
             tags = $tags.toJS();
         }
-
-        const $brands = this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']);
-        if (Immutable.List.isList($brands)) {
-            brands = $brands.toJS();
-        }
-        // let categories = this.props.promotionBasicInfo.getIn(['$categoryList', 'data']).toJS(),
-        //     tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']).toJS(),
-        //     brands = this.props.promotionScopeInfo.getIn(["refs", "data", "brands"]).toJS();
 
         if (this.state.expand) {
             return (
@@ -747,30 +504,6 @@ class MyActivitiesShop extends React.Component {
                             </Select>
                         </li>
 
-                        {/*<li>
-                            <h5>统计类别</h5>
-                        </li>*/}
-                        {/*<li>
-                            <Select
-                                placeholder="请选择统计类别"
-                                onChange={(value) => {
-                                    this.setState({
-                                        promotionCategory: value,
-                                    });
-                                }}
-                                allowClear={true}
-                                style={{ width: 120 }}
-                            >
-                                {
-                                    categories.map((category, index) => {
-                                        return (
-                                            <Option key={`${index}`} value={`${category.name}`}>{category.name}</Option>
-                                        );
-                                    })
-                                }
-                            </Select>
-                        </li>*/}
-
                         <li>
                             <h5>标签</h5>
                         </li>
@@ -794,54 +527,6 @@ class MyActivitiesShop extends React.Component {
                                 }
                             </Select>
                         </li>
-
-                        {/* <li>
-                         <h5>品牌</h5>
-                         </li>
-                         <li>
-                         <Select
-                         style={{ width: 100 }}
-                         allowClear={true}
-                         placeholder="请选择品牌"
-                         onChange={(brands) => {
-                         this.setState({
-                         promotionBrands: brands,
-                         });
-                         }}
-                         >
-                         {
-                         brands.map((brand, index) => {
-                         return (
-                         <Option key={`${index}`} value={`${brand.brandID}`}>{brand.brandName}</Option>
-                         );
-                         })
-                         }
-                         </Select>
-                         </li> */}
-
-                        {/*<li>
-                            <h5>适用业务</h5>
-                        </li>*/}
-                        {/*<li>
-                            <Select
-                                style={{ width: 120 }}
-                                onChange={(value) => {
-                                    this.setState({
-                                        promotionOrder: value,
-                                    });
-                                }}
-                                allowClear={true}
-                                placeholder="请选择适用业务"
-                            >
-                                {
-                                    SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST.map((order) => {
-                                        return (
-                                            <Option key={`${order.value}`} value={`${order.value}`}>{order.label}</Option>
-                                        );
-                                    })
-                                }
-                            </Select>
-                        </li>*/}
                     </ul>
                 </div>
             );
@@ -880,9 +565,6 @@ class MyActivitiesShop extends React.Component {
                             <a
                                 href="#"
                                 onClick={() => {
-                                    { /* this.checkDetailInfo(text, record, index); */ }
-                                    this.props.toggleIsUpdate(false)
-                                    this.handleUpdateOpe(text, record, index);
                                 }}
                             >
                                 查看
@@ -891,8 +573,6 @@ class MyActivitiesShop extends React.Component {
                                 href="#"
                                 disabled={isGroupPro}
                                 onClick={() => {
-                                    this.props.toggleIsUpdate(true)
-                                    this.handleUpdateOpe(text, record, index);
                                 }}
                             >编辑</a>
                     </span>
@@ -900,25 +580,6 @@ class MyActivitiesShop extends React.Component {
                     );
                 },
             },
-            /*{
-                title: '排序',
-                dataIndex: 'sortOrder',
-                key: 'sortOrder',
-                width: 120,
-                // fixed:'left',
-                render: (text, record, index) => {
-                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
-                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-                    return (
-                        <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
-                        </span>
-                    )
-                },
-            },*/
 
             {
                 title: '活动名称',
@@ -1008,7 +669,6 @@ class MyActivitiesShop extends React.Component {
         return (
             <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
                 <Table
-                    ref={this.setTableRef}
                     scroll={{ x: 1600, y: this.state.tableHeight }}
                     bordered={true}
                     columns={columns}
@@ -1032,7 +692,7 @@ class MyActivitiesShop extends React.Component {
                                 ...this.getParams(),
                             };
                             opt.cb = this.showNothing;
-                            this.props.query(opt);
+                            // this.props.query(opt);
                         },
                     }}
                 />
@@ -1056,11 +716,10 @@ class MyActivitiesShop extends React.Component {
                         {this.renderTables()}
                     </div>
                 </div>
-                {/*{this.renderModals()}*/}
                 {this.renderModifyRecordInfoModal(0)}
             </div>
         );
     }
 }
-export default MyActivitiesShop;
+export default WeChatMallPromotionList;
 
