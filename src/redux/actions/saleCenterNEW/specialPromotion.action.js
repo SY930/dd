@@ -199,7 +199,6 @@ export const saleCenterGetExcludeEventList = (opts) => {
             return Promise.reject(new Error(response.statusText))
         }).then((responseJSON) => {
             if (responseJSON.code === '000') {
-                console.log(responseJSON)
                 dispatch({
                     type: SALE_CENTER_GET_EXCLUDE_EVENT_LIST,
                     payload: responseJSON,
@@ -378,7 +377,6 @@ export const saleCenterGetShopOfEventByDate = opts => {
             data: opts,
         })
             .then((responseJSON) => {
-                console.log(responseJSON)
                 if (responseJSON.code === '000') {
                     // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
                     dispatch(fetchFilterShopsSuccess({
