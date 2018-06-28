@@ -284,7 +284,7 @@ class SpecialDishesTable extends React.Component {
     handleFoodGroupSelect(value) {
         if (value instanceof Array) {
             // get the selections
-            const { foodSelections, foodOptions, priceLst } = this.state;
+            const { foodSelections, foodOptions } = this.state;
             const selectIds = Array.from(foodSelections).map(select => select.itemID)
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
