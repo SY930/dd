@@ -108,7 +108,7 @@ class InputTreeForGift extends React.Component {
 
     proGiftData = (giftTypes = []) => {
         const { type, giftItemID } = this.props;
-        const _giftTypes = _.filter(giftTypes, giftItem => (giftItem.giftType == 10 || giftItem.giftType == 20));
+        const _giftTypes = _.filter(giftTypes, giftItem => (giftItem.giftType == 10 || giftItem.giftType == 20 || giftItem.giftType == 21));
         let treeData = [],
             gifts = [],
             _treeData = [];

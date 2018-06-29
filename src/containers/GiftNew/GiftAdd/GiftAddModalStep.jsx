@@ -1009,7 +1009,7 @@ class GiftAddModalStep extends React.Component {
             giftValueLabel = '礼品价值';
         }
         if (value == '21') {
-            giftValueLabel = '兑换金额';
+            giftValueLabel = '券售价';
         }
         const formItems = {
             ...FORMITEMS,
