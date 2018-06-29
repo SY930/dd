@@ -365,12 +365,34 @@ class SpecialDishesTable extends React.Component {
     };
 
     handleOk = () => {
-        this.setState({
-            visible: false,
-        });
-        const data = Array.from(this.state.foodSelections);
-        console.log(data);
-        this.props.onChange && this.props.onChange(data);
+        if (!this.props.isWeChatMall) {
+            this.setState({
+                visible: false,
+            });
+            const data = Array.from(this.state.foodSelections);
+            this.props.onChange && this.props.onChange(data);
+        } else {
+            const data = Array.from(this.state.foodSelections);
+            if (data.some(food => {
+                if ((food.mPrice === undefined || food.mPrice == -1) && (food.mPoint === undefined || food.mPoint == -1)) {// 秒杀价没填
+                    message.warning('秒杀价为不得为空');
+                    return true;
+                }
+                if (food.limitAmount === undefined || food.totalAmount === undefined || Number(food.limitAmount) > Number(food.totalAmount)) {// 库存 限购没填或限购大于库存
+                    message.warning('库存及限购数量不得为空, 限购数量不能大于库存量');
+                    return true;
+                }
+                return false;
+                })) {
+                return Promise.reject();
+            }
+            else {
+                this.setState({
+                    visible: false,
+                });
+                this.props.onChange && this.props.onChange(data);
+            }
+        }
     };
 
     handleCancel = () => {
@@ -454,6 +476,9 @@ class SpecialDishesTable extends React.Component {
                 fixed: 'left',
                 width: 100,
                 className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             {
                 title: '单位',
@@ -470,13 +495,54 @@ class SpecialDishesTable extends React.Component {
                 dataIndex: 'foodCode',
                 key: 'foodCode',
                 className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             {
                 title: '分类',
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
+
+        ];
+        const specificColumns = this.props.isWeChatMall ? [
+            {
+                title: '秒杀价(元)',
+                dataIndex: 'mPrice',
+                key: 'mPrice',
+                width: 80,
+                className: 'TableTxtRight',
+            },
+            {
+                title: '售价 (元)',
+                dataIndex: 'prePrice',
+                key: 'prePrice',
+                width: 90,
+                className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return record.prePrice == -1 ? record.price : record.prePrice
+                },
+            },
+            {
+                title: '库存量',
+                width: 80,
+                dataIndex: 'totalAmount',
+                key: 'totalAmount',
+                className: 'TableTxtRight',
+            },
+            {
+                title: '限购数',
+                dataIndex: 'limitAmount',
+                key: 'limitAmount',
+                className: 'TableTxtRight',
+            },
+
+        ] : [
             {
                 title: '原价格(元)',
                 dataIndex: 'price',
@@ -505,6 +571,7 @@ class SpecialDishesTable extends React.Component {
                 },
             },
         ];
+        columns.push(...specificColumns);
 
 
         const data = Array.from(this.state.foodSelections);

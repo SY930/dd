@@ -101,12 +101,15 @@ export default class HualalaSelectedTable extends React.Component {
     render() {
         const columns = [
             {
-                title: '菜品',
+                title: this.props.isWeChatMall ? '商品' : '菜品',
                 dataIndex: 'displayName',
                 key: 'displayName',
                 fixed: 'left',
                 width: 150,
                 className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             {
                 title: '编码',
@@ -115,6 +118,9 @@ export default class HualalaSelectedTable extends React.Component {
                 fixed: 'left',
                 width: 90,
                 className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             {
                 title: '分类',
@@ -122,6 +128,9 @@ export default class HualalaSelectedTable extends React.Component {
                 key: 'foodCategoryName',
                 width: 80,
                 className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
             },
             ];
         const specificColumns = this.props.isWeChatMall ? [
