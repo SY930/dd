@@ -622,9 +622,9 @@ class AddGifts extends React.Component {
         _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            if (_value > 10 && (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70')) {
+            if (_value > 50 && (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70')) {
                 _infos[index].giftCount.validateStatus = 'error';
-                _infos[index].giftCount.msg = '礼品个数必须在1到10之间';
+                _infos[index].giftCount.msg = '礼品个数必须在1到50之间';
             } else {
                 _infos[index].giftCount.validateStatus = 'success';
                 _infos[index].giftCount.msg = null;

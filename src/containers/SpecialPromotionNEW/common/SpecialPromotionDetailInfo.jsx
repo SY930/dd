@@ -296,11 +296,11 @@ class SpecialDetailInfo extends React.Component {
         }
         function checkgiftCount(giftCount) {
             const _value = parseFloat(giftCount.value);
-            if (_value > 0 && _value < 11) {
+            if (_value > 0 && _value < 51) {
                 return giftCount;
             }
             return {
-                msg: '礼品个数必须在1到10之间',
+                msg: '礼品个数必须在1到50之间',
                 validateStatus: 'error',
                 value: '',
             }
