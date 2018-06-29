@@ -592,7 +592,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: 250,
+                width: this.props.user.accountInfo.groupID == '1155' ? 300 : 250,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
@@ -693,6 +693,17 @@ class MySpecialActivities extends React.Component {
                             >
                                 活动跟踪</a>
                         </Authority>
+                        {this.props.user.accountInfo.groupID == '1155' && <a
+                                href="#"
+                                className={Number(record.eventWay) === 53 && record.isActive == 1 ?null : styles.textDisabled }
+                                onClick={() => {
+                                    if (Number(record.eventWay) === 53 && record.isActive == 1 ) {
+                                        console.log('立即执行');
+                                    }
+                                }}
+                            >
+                                立即执行</a>
+                        }
                     </span>
                     );
                 },
@@ -732,7 +743,7 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'eventName',
                 key: 'eventName',
                 // fixed:'left',
-                width: 200,
+                width: this.props.user.accountInfo.groupID == '1155' ? 150 : 200,
                 render: text => <span title={text}>{text}</span>,
             },
             // {
