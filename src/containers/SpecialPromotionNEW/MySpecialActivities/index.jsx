@@ -65,7 +65,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
-const TEMP_GROUP_ID = 1155;
+const TEMP_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? 1415 : 1155;
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -545,6 +545,12 @@ class MySpecialActivities extends React.Component {
             pageSizes: pageSize,
         })
     };
+
+    /**
+     * 列表排序
+     * @param record
+     * @param direction
+     */
     changeSortOrder(record, direction) {
         const params = {itemID: record.itemID, rankingType: direction};
         axiosData('/specialPromotion/updateEventRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
@@ -553,6 +559,20 @@ class MySpecialActivities extends React.Component {
             }
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
+    }
+
+    /**
+     * 立即执行
+     * @param eventID: record.itemID
+     */
+    activateNow(eventID) {
+        axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 立即执行失败, 请稍后再试!');
         })
     }
 
@@ -696,10 +716,10 @@ class MySpecialActivities extends React.Component {
                         </Authority>
                         {this.props.user.accountInfo.groupID == TEMP_GROUP_ID && <a
                                 href="#"
-                                className={Number(record.eventWay) === 53 && record.isActive == 1 ?null : styles.textDisabled }
+                                className={Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ?null : styles.textDisabled }
                                 onClick={() => {
-                                    if (Number(record.eventWay) === 53 && record.isActive == 1 ) {
-                                        console.log('立即执行');
+                                    if (Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ) {
+                                        this.activateNow(record.itemID)
                                     }
                                 }}
                             >
