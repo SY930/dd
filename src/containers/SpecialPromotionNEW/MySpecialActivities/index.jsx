@@ -65,6 +65,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
+const TEMP_GROUP_ID = 1155;
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -592,7 +593,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: this.props.user.accountInfo.groupID == '1415' ? 300 : 250,
+                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 300 : 250,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
@@ -693,7 +694,7 @@ class MySpecialActivities extends React.Component {
                             >
                                 活动跟踪</a>
                         </Authority>
-                        {this.props.user.accountInfo.groupID == '1155' && <a
+                        {this.props.user.accountInfo.groupID == TEMP_GROUP_ID && <a
                                 href="#"
                                 className={Number(record.eventWay) === 53 && record.isActive == 1 ?null : styles.textDisabled }
                                 onClick={() => {
@@ -743,7 +744,7 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'eventName',
                 key: 'eventName',
                 // fixed:'left',
-                width: this.props.user.accountInfo.groupID == '1155' ? 150 : 200,
+                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 150 : 200,
                 render: text => <span title={text}>{text}</span>,
             },
             // {
