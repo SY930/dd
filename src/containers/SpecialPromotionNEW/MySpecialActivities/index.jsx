@@ -592,7 +592,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: this.props.user.accountInfo.groupID == '1155' ? 300 : 250,
+                width: this.props.user.accountInfo.groupID == '1415' ? 300 : 250,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
