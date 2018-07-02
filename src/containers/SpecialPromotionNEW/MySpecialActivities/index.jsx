@@ -250,7 +250,7 @@ class MySpecialActivities extends React.Component {
                 pageSize: this.state.pageSizes,
                 pageNo: 1,
             },
-            fail: (msg) => { message.success(msg) },
+            fail: (msg) => { message.error(msg) },
         });
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
