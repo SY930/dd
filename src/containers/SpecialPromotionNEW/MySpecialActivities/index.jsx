@@ -65,7 +65,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
-const TEMP_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? 1415 : 1155;
+const TEMP_GROUP_ID = 1415;// HUALALA.ENVIRONMENT === 'production-release' ? 1415 : 1155;
 
 const mapDispatchToProps = (dispatch) => {
     return {
