@@ -29,7 +29,7 @@ class DetailInfo extends React.Component {
         super(props);
         this.state = {
             userType: props.data.userType === undefined ? 2 : Number(props.data.userType) , // 0非会员 1会员 2全部
-            goodsList : []
+            goodsList : props.data.goodsList || [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -56,8 +56,8 @@ class DetailInfo extends React.Component {
         const goodsList = val.map(item => ({
             specType: item.unit,
             name: item.foodName,
-            price: item.mPrice === undefined ? -1 : item.mPrice,
-            point: item.mPoint === undefined ? -1 : item.mPoint,
+            price: item.mPrice === undefined ? -1 : Number(item.mPrice),
+            point: item.mPoint === undefined ? -1 : Number(item.mPoint),
             storage: item.totalAmount,
             purchaseLimit: item.limitAmount,
         }));
@@ -83,6 +83,7 @@ class DetailInfo extends React.Component {
                     <SpecialDishesTable
                         isWeChatMall={true} // 商城活动 实在太累了所以做了sloppy复用 sorry  -_-!
                         onChange={this.handleDishesChange}
+                        goodsList={this.state.goodsList}
                     />
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>{'活动适用用户'}</div>

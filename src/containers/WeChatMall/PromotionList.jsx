@@ -126,11 +126,8 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     componentDidMount() {
-        const {
-            fetchPromotionTags,
-        } = this.props;
         this.handleQuery();
-        fetchPromotionTags({
+        this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
             phraseType: 'TAG_NAME',
@@ -208,45 +205,7 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        /*if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
-            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("shop.dianpu.promotion")) {
-                this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
-            }
-        }*/
-        /*if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
-            const _promoitonList = nextProps.myActivities.get('$promotionList').toJS();
-            switch (_promoitonList.status) {
-                case 'timeout':
-                    message.error('请求超时');
-                    this.setState({
-                        loading: false,
-                    });
-                    break;
-                case 'fail':
-                    message.error('请求失败');
-                    this.setState({
-                        loading: false,
-                    });
-                    break;
-                case 'success':
-                    const data = _promoitonList.data;
-                    this.setState({
-                        loading: false,
-                        dataSource: data.map((activity, index) => {
-                            activity.index = index + 1;
-                            activity.key = `${index}`;
-                            activity.validDate = {
-                                start: activity.startDate,
-                                end: activity.endDate,
-                            };
-                            return activity;
-                        }),
-                        total: _promoitonList.total,
-                    });
-                    break;
-            }
-        }*/
+
     }
 
     getParams = () => {
@@ -305,15 +264,29 @@ export class WeChatMallPromotionList extends React.Component {
                 this.setState({ queryDisabled: false })
             }, 500)
         });
-        const _opt = this.getParams()
+        const _opt = {}; // this.getParams();
         const opt = {
             pageSize: this.state.pageSizes,
             pageNo,
-            usageMode: -1,
             ..._opt,
         };
         opt.cb = this.showNothing;
-        // this.props.query(opt);
+        this.queryEvents(opt);
+    }
+
+    queryEvents(opts) {
+        axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', {...opts, shopID: this.props.user.shopID}, null, {path: 'data.extraEventList'})
+            .then((list = []) => {
+                this.setState({
+                    loading: false,
+                    dataSource: list,
+                });
+            }, err => {
+                this.setState({
+                    loading: false,
+                });
+                console.log('oops: ', err);
+            })
     }
 
     showNothing(data) {
@@ -689,10 +662,9 @@ export class WeChatMallPromotionList extends React.Component {
                             const opt = {
                                 pageSize,
                                 pageNo: page,
-                                ...this.getParams(),
+                                // ...this.getParams(),
                             };
-                            opt.cb = this.showNothing;
-                            // this.props.query(opt);
+                            this.queryEvents(opt);
                         },
                     }}
                 />

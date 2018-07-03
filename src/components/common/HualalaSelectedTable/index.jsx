@@ -23,7 +23,7 @@ export default class HualalaSelectedTable extends React.Component {
         this.state = {
             data: [],
             filterPrice: 'newPrice',
-            priceOrPoint: 'price', // 商城秒杀filter
+            priceOrPoint: props.priceOrPoint, // 商城秒杀filter
             filterDropdownVisible: false,
         };
 
@@ -167,11 +167,13 @@ export default class HualalaSelectedTable extends React.Component {
                                     food.newPrice = food[v];
                                     return food
                                 });
-                                this.setState({ priceOrPoint: v, data: newData })
+                                this.setState({ priceOrPoint: v, data: newData }, () => {
+                                    this.props.onPriceOrPointChange && this.props.onPriceOrPointChange(v)
+                                })
                             }}
                         >
-                            <Option key='price'>按价格</Option>
-                            <Option key='point'>按积分</Option>
+                            <Option key='price' value="price">按价格</Option>
+                            <Option key='point' value="point">按积分</Option>
                         </Select>
                     </div>
                 ),

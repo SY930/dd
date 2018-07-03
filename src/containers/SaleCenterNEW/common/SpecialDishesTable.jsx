@@ -50,6 +50,7 @@ class SpecialDishesTable extends React.Component {
             priceLst: [],
             filterPrice: 'newPrice',
             onlyVip: false,
+            priceOrPoint: 'price'
         };
 
         this.handleFoodTreeNodeChange = this.handleFoodTreeNodeChange.bind(this);
@@ -57,6 +58,7 @@ class SpecialDishesTable extends React.Component {
         this.handleFoodSelectedChange = this.handleFoodSelectedChange.bind(this);
         this.handleFoodSearchInputChange = this.handleFoodSearchInputChange.bind(this);
         this.clear = this.clear.bind(this);
+        this.handlePriceOrPointChange = this.handlePriceOrPointChange.bind(this);
         this.sortData = this.sortData.bind(this);
         this.filterGroup = this.filterGroup.bind(this);
         this.onOnlyVipChange = this.onOnlyVipChange.bind(this)
@@ -65,10 +67,19 @@ class SpecialDishesTable extends React.Component {
     componentDidMount() {
         // 从redux中获取特价菜列表
         let _priceLst;
-        try {
-            _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-        } catch (e) {
-            _priceLst = []
+        if (this.props.isWeChatMall) {
+            _priceLst = this.props.goodsList;
+            if (_priceLst.length) {
+                this.setState({
+                    priceOrPoint: _priceLst[0].price == -1 ? 'point' : 'price',
+                });
+            }
+        } else {
+            try {
+                _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            } catch (e) {
+                _priceLst = []
+            }
         }
         let foodCategoryCollection;
         // 获取菜品信息
@@ -110,10 +121,21 @@ class SpecialDishesTable extends React.Component {
                             .forEach((category) => {
                                 category.foods
                                     .find((item) => {
-                                        if (item.itemID == food.foodUnitID) {
-                                            item.newPrice = food.price;
-                                            !selectIds.includes(item.itemID) && foodSelections.add(item);
+                                        if (this.props.isWeChatMall) {
+                                            if (item.foodName + item.unit == food.name + food.specType) {
+                                                item.mPrice = food.price;
+                                                item.mPoint = food.point;
+                                                item.totalAmount = food.storage;
+                                                item.limitAmount = food.purchaseLimit;
+                                                !selectIds.includes(item.itemID) && foodSelections.add(item);
+                                            }
+                                        } else {
+                                            if (item.itemID == food.foodUnitID) {
+                                                item.newPrice = food.price;
+                                                !selectIds.includes(item.itemID) && foodSelections.add(item);
+                                            }
                                         }
+
                                     });
                             })
                     });
@@ -159,21 +181,24 @@ class SpecialDishesTable extends React.Component {
                 this.sortData(this.state.foodCategoryCollection, this.state.priceLst);
             });
         }
-
-        // promotionDetail priceLst 特价菜列表发生改变
-        if (
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
-        ) {
-            let priceLst = [];
-            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
-                priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        if (this.props.isWeChatMall) {
+            // TODO: 微信商城priceLst变动
+        }else {
+            // promotionDetail priceLst 特价菜列表发生改变
+            if (
+                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
+                this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
+            ) {
+                let priceLst = [];
+                if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                    priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+                }
+                this.setState({
+                    priceLst,
+                }, () => {
+                    this.sortData(this.state.foodCategoryCollection, this.state.priceLst)
+                })
             }
-            this.setState({
-                priceLst,
-            }, () => {
-                this.sortData(this.state.foodCategoryCollection, this.state.priceLst)
-            })
         }
     }
 
@@ -228,9 +253,10 @@ class SpecialDishesTable extends React.Component {
                                 <HualalaSelectedTable
                                     isWeChatMall={this.props.isWeChatMall}
                                     itemName="foodName+unit"
+                                    priceOrPoint={this.state.priceOrPoint}
                                     selectdTitle={this.props.isWeChatMall ? '已选商品': '已选菜品'}
                                     value={this.state.foodSelections}
-                                    onChange={(value) => { this.handleFoodSelectedChange(value) }}
+                                    onPriceOrPointChange={this.handlePriceOrPointChange}
                                     onClear={() => this.clear('food')}
                                     filterPriceChange={(v) => this.setState({ filterPrice: v })}
                                     filterPrice={this.state.filterPrice}
@@ -241,6 +267,10 @@ class SpecialDishesTable extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    handlePriceOrPointChange(value) {
+        this.setState({priceOrPoint: value})
     }
 
     handleFoodSearchInputChange(value) {
@@ -382,6 +412,14 @@ class SpecialDishesTable extends React.Component {
                     message.warning('库存及限购数量不得为空, 限购数量不能大于库存量');
                     return true;
                 }
+                if (this.state.priceOrPoint === 'price' && (food.mPrice === undefined || food.mPrice == -1)) {
+                    message.warning('秒杀价为不得为空');
+                    return true;
+                }
+                if (this.state.priceOrPoint === 'point' && (food.mPoint === undefined || food.mPoint == -1)) {
+                    message.warning('秒杀价为不得为空');
+                    return true;
+                }
                 return false;
                 })) {
             }
@@ -511,8 +549,8 @@ class SpecialDishesTable extends React.Component {
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
-                title: '秒杀价(元)',
-                dataIndex: 'mPrice',
+                title: `秒杀价(${this.state.priceOrPoint === 'price' ? '元' : '分'})`,
+                dataIndex: `${this.state.priceOrPoint === 'price' ? 'mPrice' : 'mPoint'}`,
                 key: 'mPrice',
                 width: 80,
                 className: 'TableTxtRight',

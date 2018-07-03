@@ -52,7 +52,7 @@ const moment = require('moment');
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
-const AddCategorys = Form.create()(class AddCategory extends React.Component {
+export const AddCategorys = Form.create()(class AddCategory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

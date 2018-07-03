@@ -6,16 +6,16 @@ import {
     Icon,
     Button,
     DatePicker,
+    message,
 } from 'antd';
 import { connect } from 'react-redux';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
-    saleCenterSetSpecialBasicInfoAC,
-    saleCenterGetExcludeCardLevelIds,
-    saleCenterQueryFsmGroupSettleUnit,
-} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+    fetchPromotionTagsAC,
+    saleCenterAddPhrase, saleCenterDeletePhrase
+} from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
+import {AddCategorys} from "../../SaleCenterNEW/common/promotionBasicInfo";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,12 +29,13 @@ class BasicInfo extends React.Component {
             description: props.data.description,
             startTime: props.data.startTime,
             endTime: props.data.endTime,
-            // tag: props.data.tag,
+            tags: props.data.tag ? props.data.tag.split(',') : [],
             name: props.data.name,
             tipDisplay: 'none',
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDeletePhrase = this.handleDeletePhrase.bind(this);
         this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
         this.renderPromotionType = this.renderPromotionType.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -48,14 +49,49 @@ class BasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        const { promotionBasicInfo, fetchPromotionTags } = this.props;
+        fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+            phraseType: 'TAG_NAME',
+        });
+
+        if (promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
+            this.setState({
+                tagList: promotionBasicInfo.getIn(['$tagList', 'data']) ? promotionBasicInfo.getIn(['$tagList', 'data']).toJS() : [],
+                tagName: promotionBasicInfo.getIn(['$tagList', 'data']) ? promotionBasicInfo.getIn(['$tagList', 'data'])
+                    .map((tags) => {
+                        return {
+                            value: tags.get('name'),
+                        }
+                    })
+                    .toJS() : [],
+            })
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-
+        if (nextProps.promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
+            this.setState({
+                tagList: nextProps.promotionBasicInfo.getIn(['$tagList', 'data']) ? nextProps.promotionBasicInfo.getIn(['$tagList', 'data']).toJS() : [],
+                tagName: nextProps.promotionBasicInfo.getIn(['$tagList', 'data']) ? nextProps.promotionBasicInfo.getIn(['$tagList', 'data'])
+                    .map((tags) => {
+                        return {
+                            value: tags.get('name'),
+                        }
+                    })
+                    .toJS() : [],
+            });
+        }
     }
 
     handleSubmit() {
         let nextFlag = true;
+        this.props.form.setFields({
+            rangePicker: {
+                errors: [new Error('所选时间段已有其它秒杀活动正在生效')]
+            },
+        });
         this.props.form.validateFieldsAndScroll((err1) => {
             if (err1) {
                 nextFlag = false;
@@ -63,8 +99,9 @@ class BasicInfo extends React.Component {
         });
         // 存到wrapper
         if (nextFlag) {
-            const {tipDisplay, ...usefulData} = this.state;
-            this.props.onChange && this.props.onChange(usefulData);
+            const {tipDisplay, tagList, tagName, tags, ...usefulData} = this.state;
+            const tag = tags.join(',');
+            this.props.onChange && this.props.onChange({...usefulData, tag});
         }
         return nextFlag;
     }
@@ -132,10 +169,98 @@ class BasicInfo extends React.Component {
             </FormItem>
         )
     }
+
+    handleDeletePhrase(phraseType, name, itemID) {
+        this.props.deletePhrase({
+            data: {
+                groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                phraseType,
+                name,
+                itemID,
+            },
+            success: () => {
+                const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
+                this.props[type]({
+                    groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    phraseType,
+                });
+                message.success('删除成功');
+            },
+        });
+        if (phraseType == 'CATEGORY_NAME' && this.state.category == name) {
+            // 手动删除已选添加类别（而不是加载时），清空已选类别
+            this.setState({ category: '' })
+        }
+        if (phraseType == 'TAG_NAME' && this.state.tags.includes(name)) {
+            // 手动删除已选添加标签（而不是加载时），清空已选
+            const set = new Set(this.state.tags);
+            set.delete(name);
+            this.setState({ tags: Array.from(set) })
+        }
+    }
+
+    rendertags() {
+        if (this.state.tagName === undefined) {
+            return (<Option value={'0'} key={'0'} disabled={true}>数据加载中...</Option >);
+        } else if (typeof this.state.tagName === 'object' && this.state.tagName.length == 0) {
+            return (<Option value={'0'} key={'0'} disabled={true}>暂无标签,输入新建</Option >);
+        }
+        return this.state.tagName
+            .map((tag, index) => {
+                return (<Option value={tag.value} key={`${index}`}>{tag.value}</Option >)
+            })
+    }
+
+    handleTagsChange = (value) => {
+        const _value = value.map((val, index) => {
+            return val.replace(/[^\u4E00-\u9FA5A-Za-z0-9\s\.]/g, '');
+        })
+        this.setState({
+            tags: _value,
+        }, () => { this.handleAutoAddTags() });
+    };
+
+    handleAutoAddTags() {
+        const excludeTags = [];
+        const tagNameArr = (this.state.tagList || []).map((tagObj) => {
+            return tagObj.name
+        });
+        this.state.tags.map((tag) => {
+            if (!tagNameArr.includes(tag)) {
+                excludeTags.push(tag)
+            }
+        });
+        if (excludeTags.length > 0) {
+            this.props.addPhrase({
+                data: {
+                    groupID: this.props.user.accountInfo.groupID,
+                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                    phraseType: 'TAG_NAME',
+                    nameList: excludeTags,
+                },
+                success: () => {
+                    this.props.fetchPromotionTags({
+                        groupID: this.props.user.accountInfo.groupID,
+                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
+                        phraseType: 'TAG_NAME',
+                    });
+                },
+            })
+        }
+    }
+
     render() {
         const { getFieldDecorator } = this.props.form;
+        const tagList = {
+            placeholder: '请选择活动标签',
+            tags: true,
+            allowClear: true,
+            className: styles.linkSelectorRight,
+        };
         return (
-            <Form>
+            <Form className={styles.FormStyle}>
                 {this.renderPromotionType()}
                 <FormItem
                     label="活动名称"
@@ -179,6 +304,36 @@ class BasicInfo extends React.Component {
                         />
                     )}
                 </FormItem>
+                <FormItem label="活动标签"
+                          className={styles.FormItemStyle}
+                          labelCol={{ span: 4 }}
+                          wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        {...tagList}
+                        onChange={this.handleTagsChange}
+                        getPopupContainer={(node) => node.parentNode}
+                        value={this.state.tags}
+                        size="default"
+                        placeholder="汉字、字母、数字组成"
+                    >
+                        {this.rendertags()}
+                    </Select>
+                    <AddCategorys
+                        catOrtag={'tag'}
+                        categoryName={this.state.tagName}
+                        addPhrase={this.props.addPhrase}
+                        fetchPromotionTags={this.props.fetchPromotionTags}
+                        user={this.props.user}
+                        callback={(arg) => {
+                            this.setState({
+                                tagName: arg,
+                            })
+                        }}
+                        list={this.state.tagList || []}
+                        onTagClose={this.handleDeletePhrase}
+                    />
+                </FormItem>
 
                 <FormItem
                     label="活动说明"
@@ -206,20 +361,21 @@ class BasicInfo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         saleCenter: state.sale_saleCenter_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         user: state.user.toJS(),
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setSpecialBasicInfo: (opts) => {
-            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        fetchPromotionTags: (opts) => {
+            dispatch(fetchPromotionTagsAC(opts));
         },
-        saleCenterGetExcludeCardLevelIds: (opts) => {
-            dispatch(saleCenterGetExcludeCardLevelIds(opts));
+        addPhrase: (opts) => {
+            dispatch(saleCenterAddPhrase(opts))
         },
-        saleCenterQueryFsmGroupSettleUnit: (opts) => {
-            dispatch(saleCenterQueryFsmGroupSettleUnit(opts));
+        deletePhrase: (opts) => {
+            dispatch(saleCenterDeletePhrase(opts));
         },
     }
 };
