@@ -384,7 +384,6 @@ class SpecialDishesTable extends React.Component {
                 }
                 return false;
                 })) {
-                return Promise.reject();
             }
             else {
                 this.setState({

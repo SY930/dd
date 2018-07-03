@@ -24,12 +24,12 @@ const Immutable = require('immutable');
 const RadioGroup = Radio.Group;
 
 
-class RangeInfo extends React.Component {
+class DetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            range: 0, // 0 不限制, 1 仅会员, 2 仅非会员
-            data : []
+            userType: props.data.userType === undefined ? 2 : Number(props.data.userType) , // 0非会员 1会员 2全部
+            goodsList : []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,39 +38,37 @@ class RangeInfo extends React.Component {
     }
 
     handleSubmit() {
-        let flag = true;
-        this.props.form.validateFieldsAndScroll((err1) => {
-            if (err1) {
-                flag = false;
-            }
-        });
-        return flag;
+        if (!this.state.goodsList.length) {
+            message.warning('请至少设置一个商品');
+            return false;
+        } else {
+            this.props.onChange && this.props.onChange(this.state);
+            return true;
+        }
     }
     componentDidMount() {
         this.props.getSubmitFn({
-            prev: undefined,
-            next: this.handleSubmit,
-            finish: undefined,
-            cancel: undefined,
+            finish: this.handleSubmit,
         });
     }
 
     handleDishesChange(val) {
-        val.forEach(item => {
-            if (Number(item.newPrice) === 0) {
-                item.newPrice = 0;
-            } else if (item.newPrice === -1) {
-                item.newPrice = item.price
-            }
-        });
+        const goodsList = val.map(item => ({
+            specType: item.unit,
+            name: item.foodName,
+            price: item.mPrice === undefined ? -1 : item.mPrice,
+            point: item.mPoint === undefined ? -1 : item.mPoint,
+            storage: item.totalAmount,
+            purchaseLimit: item.limitAmount,
+        }));
         this.setState({
-            data: val,
+            goodsList,
         })
     }
 
     handleRangeChange(value) {
         this.setState({
-            range: Number(value)
+            userType: Number(value)
         })
     }
 
@@ -91,12 +89,12 @@ class RangeInfo extends React.Component {
                         <div style={{width: '300px'}}>
                             <Col  span={24}>
                                 <Select onChange={this.handleRangeChange}
-                                        value={String(this.state.range)}
+                                        value={String(this.state.userType)}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
-                                    <Option key="0" value={'0'}>不限制</Option>
+                                    <Option key="2" value={'2'}>不限制</Option>
                                     <Option key="1" value={'1'}>仅会员</Option>
-                                    <Option key="2" value={'2'}>仅非会员</Option>
+                                    <Option key="0" value={'0'}>仅非会员</Option>
                                 </Select>
                             </Col>
                         </div>
@@ -116,4 +114,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(RangeInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(DetailInfo);

@@ -206,7 +206,7 @@ class NewActivity extends React.Component {
                 <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
-                    eventWay="MIAO_SHA" // 暂时写死 以后有新活动再改
+                    eventWay="7010" // 暂时写死 以后有新活动再改
                     isNew={true}
                     callbackthree={(arg) => {
                         if (arg == 3) {

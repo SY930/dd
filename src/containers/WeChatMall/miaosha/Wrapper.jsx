@@ -13,35 +13,39 @@ import { connect } from 'react-redux';
 import BasicInfo from './BasicInfo';
 import RangeInfo from './RangeInfo';
 import DetailInfo from './DetailInfo';
+import {message} from 'antd';
 // import NewPromotion from '../common/NewPromotion';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 // import PromotionBasicInfo from '../common/BirthBasicInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
-// import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
+import {axiosData} from "../../../helpers/util";
 
-// import StepTwo from './stepTwo';
-
-class NewBirthdayGift extends React.Component {
+class Wrapper extends React.Component {
     constructor(props) {
         super(props);
         this.handles = []; // store the callback
         this.state = {
             loading: false,
+            data: {}
         };
         this.onFinish = this.onFinish.bind(this);
         this.handleNext = this.handleNext.bind(this);
         this.handlePrev = this.handlePrev.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFinish = this.handleFinish.bind(this);
+        this.handleDataChange = this.handleDataChange.bind(this);
         this.steps = [
 
             {
                 title: '基本信息',
-                content: (<BasicInfo
-                    getSubmitFn={(handles) => {
-                        this.handles[0] = handles;
-                    }}
-                />),
+                content: (
+                    <BasicInfo
+                        getSubmitFn={(handles) => {
+                            this.handles[0] = handles;
+                        }}
+                        data={this.state.data}
+                        onChange={this.handleDataChange}
+                    />),
             },
             {
                 title: '活动范围',
@@ -50,6 +54,8 @@ class NewBirthdayGift extends React.Component {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        data={this.state.data}
+                        onChange={this.handleDataChange}
                     />
                 ),
             },
@@ -60,6 +66,8 @@ class NewBirthdayGift extends React.Component {
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
+                        data={this.state.data}
+                        onChange={this.handleDataChange}
                     />
                 ),
             },
@@ -67,7 +75,28 @@ class NewBirthdayGift extends React.Component {
     }
 
     onFinish(cb) {
+        axiosData('/promotion/extra/extraEventService_addExtraEvent.ajax', {...this.state.data, shopID: this.props.user.shopID}, null, {})
+            .then(() => {
+                this.setState({
+                    loading: false,
+                });
+                message.success('活动创建完成');
+                cb && cb();
+            }, err => {
+                this.setState({
+                    loading: false,
+                });
+                console.log('oops: ', err);
+            })
+    }
 
+    /**
+     * @param data: 传递给后端的字段map
+     */
+    handleDataChange(data) {
+        this.setState({data: {...this.state.data, ...data}}, () => {
+            console.log(this.state.data)
+        });
     }
 
 
@@ -148,4 +177,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewBirthdayGift);
+export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);

@@ -85,8 +85,10 @@ export default class HualalaSelectedTable extends React.Component {
     handleMValueChange(val, entity) {
         if (this.state.priceOrPoint === 'price') {
             entity.mPrice = val.number;
+            entity.mPoint = undefined;
         } else {
             entity.mPoint = val.number;
+            entity.mPrice = undefined;
         }
     }
 

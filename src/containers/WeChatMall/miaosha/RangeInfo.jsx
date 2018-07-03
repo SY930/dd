@@ -38,22 +38,23 @@ const RADIO_OPTIONS = Object.freeze([
 class RangeInfo extends React.Component {
     constructor(props) {
         super(props);
+        const advancedAnnouncingTimeInHour = props.data.advancedAnnouncingTime;
         this.state = {
-            reservation: undefined,
-            imgUrl: '',
-            warmUpTime: undefined,
+            reservationTime: props.data.reservationTime,
+            bannerUrl: props.data.bannerUrl,
+            advancedAnnouncingTime: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? advancedAnnouncingTimeInHour / 24 : advancedAnnouncingTimeInHour : undefined,
             dayOrHour: '小时',
             tipDisplay: 'none',
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleImgUrlChange = this.handleImgUrlChange.bind(this);
         this.onReservationChange = this.onReservationChange.bind(this);
         this.handleWarmUpTimeChange = this.handleWarmUpTimeChange.bind(this);
         this.handleDayOrHourChange = this.handleDayOrHourChange.bind(this);
     }
 
     handleSubmit() {
+        console.log(this.state);
         let flag = true;
         this.props.form.validateFieldsAndScroll((err1) => {
             if (err1) {
@@ -63,11 +64,21 @@ class RangeInfo extends React.Component {
         if (!flag) {
             return false;
         }
-        if (!this.state.imgUrl) {
+        if (!this.state.bannerUrl) {
             message.warning('请上传合适的宣传图');
             flag = false;
         }
-
+        if (flag) {
+            let {bannerUrl, dayOrHour, advancedAnnouncingTime, reservationTime} = this.state;
+            if (dayOrHour === '天') {
+                advancedAnnouncingTime *= 24;
+            }
+            this.props.onChange && this.props.onChange({
+                bannerUrl,
+                reservationTime,
+                advancedAnnouncingTime,
+            })
+        }
         return flag;
     }
     componentDidMount() {
@@ -84,15 +95,11 @@ class RangeInfo extends React.Component {
     }
 
     onReservationChange(value) {
-        this.setState({reservation: value.number});
-    }
-
-    handleImgUrlChange(value) {
-        console.log(value);
+        this.setState({reservationTime: value.number});
     }
 
     handleWarmUpTimeChange(value) {
-        this.setState({warmUpTime: value.number});
+        this.setState({advancedAnnouncingTime: value.number});
     }
 
     handleDayOrHourChange(event) {
@@ -149,12 +156,12 @@ class RangeInfo extends React.Component {
                             },
                             {
                                 validator: (rule, v, cb) => {
-                                    Number(v ? v.number : 0) >= 3 &&  Number(v ? v.number : 0) <= 120 ? cb() : cb(rule.message);
+                                    Number(v && v.number ? v.number : 0) >= 3 &&  Number(v && v.number ? v.number : 0) <= 120 ? cb() : cb(rule.message);
                                 },
                                 message: '预留时间为3 ~ 120 分钟',
                             },
                         ],
-                        initialValue: this.state.reservation,
+                        initialValue: this.state.reservationTime,
                         onChange: this.onReservationChange,
                     })(
                         <PriceInput
@@ -191,12 +198,12 @@ class RangeInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('warmUpTime', {
+                    {getFieldDecorator('advancedAnnouncingTime', {
                         rules: [{
                             required: true,
                             message: '不得为空',
                         }],
-                        initialValue: this.state.warmUpTime,
+                        initialValue: this.state.advancedAnnouncingTime,
                         onChange: this.handleWarmUpTimeChange
                     })(
                         <PriceInput
@@ -242,7 +249,7 @@ class RangeInfo extends React.Component {
                 if (status === 'done') {
                     message.success(`${info.file.name} 上传成功`);
                     this.setState({
-                        imgUrl: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
+                        bannerUrl: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
                     })
                 } else if (status === 'error') {
                     message.error(`${info.file.name} 上传失败`);
@@ -255,8 +262,8 @@ class RangeInfo extends React.Component {
                     <FormItem style={{ height: 200 }}>
                         <Upload {...props}>
                             {
-                                this.state.imgUrl ?
-                                    <img src={this.state.imgUrl} alt="" className={styles1.avatar} /> :
+                                this.state.bannerUrl ?
+                                    <img src={this.state.bannerUrl} alt="" className={styles1.avatar} /> :
                                     <Icon type="plus" className={styles1.avatarUploaderTrigger} />
                             }
                         </Upload>

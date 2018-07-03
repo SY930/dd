@@ -7,7 +7,7 @@ import {
     Button,
     DatePicker,
 } from 'antd';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -20,14 +20,17 @@ import {
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const moment = require('moment');
 
 class BasicInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            description: null,
-            rangeString: '',
-            name: '',
+            description: props.data.description,
+            startTime: props.data.startTime,
+            endTime: props.data.endTime,
+            // tag: props.data.tag,
+            name: props.data.name,
             tipDisplay: 'none',
         };
 
@@ -47,7 +50,6 @@ class BasicInfo extends React.Component {
         });
     }
 
-
     componentWillReceiveProps(nextProps) {
 
     }
@@ -59,6 +61,11 @@ class BasicInfo extends React.Component {
                 nextFlag = false;
             }
         });
+        // 存到wrapper
+        if (nextFlag) {
+            const {tipDisplay, ...usefulData} = this.state;
+            this.props.onChange && this.props.onChange(usefulData);
+        }
         return nextFlag;
     }
 
@@ -67,9 +74,16 @@ class BasicInfo extends React.Component {
             description: e.target.value,
         });
     }
+
     handleDateRangeChange(value, dateString) { // value: Selected Time, dateString: Formatted Selected Time
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
+        if (value.length > 1) {
+            const startTime = value[0].format('YYYYMMDDHHmm');
+            const endTime = value[1].format('YYYYMMDDHHmm');
+            this.setState({
+                startTime,
+                endTime,
+            })
+        }
     }
 
     handleNameChange(e) {
@@ -154,14 +168,14 @@ class BasicInfo extends React.Component {
                             message: '请选择活动起止时间',
                         }],
                         onChange: this.handleDateRangeChange,
-                        initialValue: this.state.dateRange,
+                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, 'YYYYMMDDHHmm'), moment(this.state.endTime, 'YYYYMMDDHHmm')] : [],
                     })(
                         <RangePicker
-                        showTime={{ format: 'HH:mm' }}
-                        className={styles.ActivityDateDayleft}
-                        style={{ width: '100%' }}
-                        format="YYYY-MM-DD HH:mm"
-                        placeholder={['开始时间', '结束时间']}
+                            showTime={{ format: 'HH:mm' }}
+                            className={styles.ActivityDateDayleft}
+                            style={{ width: '100%' }}
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder={['开始时间', '结束时间']}
                         />
                     )}
                 </FormItem>
