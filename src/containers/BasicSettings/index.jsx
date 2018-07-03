@@ -35,7 +35,10 @@ class MessageTemplatesPage extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getMessageTemplateList();
+        this.props.getMessageTemplateList({
+            pageNo : 1,
+            pageSize : 10
+        });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
