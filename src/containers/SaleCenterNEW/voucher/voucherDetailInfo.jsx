@@ -308,6 +308,7 @@ class VoucherDetailInfo extends React.Component {
                     <Select
                         size="default"
                         value={`${this.state.stageType}`}
+                        getPopupContainer={(node) => node.parentNode}
                         onChange={(value) => {
                             let { stageType } = this.state;
                             stageType = value;

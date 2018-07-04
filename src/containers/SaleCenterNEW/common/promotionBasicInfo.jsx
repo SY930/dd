@@ -307,7 +307,7 @@ class PromotionBasicInfo extends React.Component {
 
         const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
         if ((this.props.user.shopID > 0 && maintenanceLevel == 'SHOP_LEVEL') || (!this.props.user.shopID && maintenanceLevel == 'GROUP_LEVEL')) {
-            // 判断分类列表是否包含已选统计分类,不包含则手动添加分类 
+            // 判断分类列表是否包含已选统计分类,不包含则手动添加分类
             this.handleAutoAddCat();
             // 判断标签列表是否包含已选,不包含则手动添加
             this.handleAutoAddTags();
@@ -544,6 +544,7 @@ class PromotionBasicInfo extends React.Component {
                 <Select
                     size="default"
                     placeholder="请选择周期"
+                    getPopupContainer={(node) => node.parentNode}
                     defaultValue={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
@@ -980,6 +981,7 @@ class PromotionBasicInfo extends React.Component {
                     <Select
                         showSearch={true}
                         placeholder="请选择活动类别"
+                        getPopupContainer={(node) => node.parentNode}
                         size="default"
                         value={this.state.category}
                         onChange={this.handleCategoryChange}
@@ -1048,6 +1050,7 @@ class PromotionBasicInfo extends React.Component {
                     <Select
                         {...tagList}
                         onChange={this.handleTagsChange}
+                        getPopupContainer={(node) => node.parentNode}
                         value={this.state.tags}
                         size="default"
                         placeholder="汉字、字母、数字组成"

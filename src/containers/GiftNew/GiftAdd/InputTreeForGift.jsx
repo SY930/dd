@@ -108,7 +108,7 @@ class InputTreeForGift extends React.Component {
 
     proGiftData = (giftTypes = []) => {
         const { type, giftItemID } = this.props;
-        const _giftTypes = _.filter(giftTypes, giftItem => (giftItem.giftType == 10 || giftItem.giftType == 20));
+        const _giftTypes = _.filter(giftTypes, giftItem => (giftItem.giftType == 10 || giftItem.giftType == 20 || giftItem.giftType == 21));
         let treeData = [],
             gifts = [],
             _treeData = [];
@@ -193,7 +193,7 @@ class InputTreeForGift extends React.Component {
                         />
                         <HualalaSelected
                             itemName="giftName"
-                            selectdTitle={'已选共用券分类'}
+                            selectdTitle={'已选共用券'}
                             value={this.state.foodSelections}
                             onChange={(value) => {
                                 this.handleFoodSelectedChange(value)

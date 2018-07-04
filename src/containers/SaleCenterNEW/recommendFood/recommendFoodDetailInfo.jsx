@@ -15,7 +15,7 @@ import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxFo
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+const Immutable = require('immutable');
 
 import {
     saleCenterSetPromotionDetailAC,
@@ -96,8 +96,8 @@ class RecommendFoodDetailInfo extends React.Component {
         let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
         let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        _priceLst = _priceLst ? _priceLst.toJS() : [];
-        _scopeLst = _scopeLst ? _scopeLst.toJS() : [];
+        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
+        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
         rule = rule ? rule.toJS() : {};
         let { stageType = '1', recommendNum = '', recommendTopNum = '' } = rule;
         let { display } = this.state;
@@ -122,8 +122,18 @@ class RecommendFoodDetailInfo extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.get('$promotionDetail') != this.props.promotionDetailInfo.get('$promotionDetail')) {
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-            const _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
+            let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+            let _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+            if (Immutable.List.isList(_priceLst)) {
+                _priceLst = _priceLst.toJS();
+            } else {
+                _priceLst = [];
+            }
+            if (Immutable.List.isList(_scopeLst)) {
+                _scopeLst = _scopeLst.toJS();
+            } else {
+                _scopeLst = [];
+            }
             const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
             const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })
             this.setState({

@@ -10,22 +10,8 @@
 
 
 import { combineEpics } from 'redux-observable';
-import { promotionDetailEpic, addPromotionEpic } from '../actions/saleCenter/promotion.action';
-import { promotionListEpic } from '../actions/saleCenter/myActivities.action';
-import { promotionListEpic_NEW } from '../actions/saleCenterNEW/myActivities.action';
-import { addSpecialPromotionEpic, updateSpecialPromotionEpic, specialPromotionGroupMemberEpic } from '../actions/saleCenter/specialPromotion.action';
-import { specialPromotionListEpic, specialPromotionDetailEpic, specialPromotionUserInfoEpic, specialDetailEpic, specialPromotionCardLevelEpic } from '../actions/saleCenter/mySpecialActivities.action';
-
-export const rootEpic = combineEpics(
-    promotionDetailEpic,
-    promotionListEpic, promotionListEpic_NEW,
-    specialPromotionListEpic,
-    addSpecialPromotionEpic,
-    addPromotionEpic,
-    specialPromotionDetailEpic,
-    specialPromotionUserInfoEpic,
-    specialDetailEpic,
-    updateSpecialPromotionEpic,
-    specialPromotionCardLevelEpic,
-    specialPromotionGroupMemberEpic,
+import {queryOccupiedWeiXinAccountsEpic} from "../actions/saleCenterNEW/queryWeixinAccounts.action";
+const rootEpic = combineEpics(
+    queryOccupiedWeiXinAccountsEpic
 );
+export default rootEpic;

@@ -113,7 +113,7 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).text || ''}</div>
+                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).text || '': ''}</div>
                         <div>{this.props.promotionType ? ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).example || '' : ''}</div>
                     </div>
                 );

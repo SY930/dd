@@ -63,7 +63,7 @@ export const SALE_CENTER_FETCH_USER_INFO_CANCEL = 'sale center: fetch user info 
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK = 'sale center: fetch user info delete new';
 export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch user info delete Fail new';
 
-export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new'
+export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new';
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
@@ -112,11 +112,14 @@ export const fetchSpecialPromotionList = (opts) => {
                     opts.fail && opts.fail(response.message);
                     return dispatch(fetchPromotionListFail(response.code));
                 }
-            })
-            .catch((err) => {
+            }, (err) => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchPromotionListTimeout());
                 }
+                return dispatch(fetchPromotionListFail(err));
+            })
+            .catch(err => {
+
             })
     }
 }
@@ -396,12 +399,14 @@ export const fetchSpecialDetailAC = opts => {
                     opts.fail && opts.fail();
                     return dispatch(fetchSpecialDetailFail(result));
                 }
-            })
-            .catch((err) => {
+            }, (err) => { // add REAL backend error handler @author: wuhao
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialDetailTimeout());
                 }
-                console.log('something is wrong:', err);
+                return dispatch(fetchSpecialDetailFail(err));
+            })
+            .catch(err => {
+                // empty catch for possible render error
             })
     }
 }
@@ -444,11 +449,14 @@ export const fetchSpecialUserList = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialUserListFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialUserListTimeout());
                 }
+                return dispatch(fetchSpecialUserListFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }
@@ -507,11 +515,14 @@ export const fetchShopCardLevel = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialCardLevelFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialCardLevelTimeout());
                 }
+                return dispatch(fetchSpecialCardLevelFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 }

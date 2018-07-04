@@ -284,7 +284,12 @@ class GroupTicketDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <Select size="default" onChange={this.onCostIncomeChange} value={this.state.costIncome} defaultValue={'1'}>
+                    <Select size="default"
+                            onChange={this.onCostIncomeChange}
+                            value={this.state.costIncome}
+                            defaultValue={'1'}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
                         <Option value="0">否</Option>
                         <Option value="1">是</Option>
                     </Select>
@@ -294,6 +299,8 @@ class GroupTicketDetailInfo extends React.Component {
                     <Select
                         size="default"
                         value={`${this.state.stageType}`}
+                        className="groupTicketDetailMountClassJs"
+                        getPopupContainer={() => document.querySelector('.groupTicketDetailMountClassJs')}
                         onChange={(value) => {
                             let { stageType } = this.state;
                             stageType = value;

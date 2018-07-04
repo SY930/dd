@@ -81,7 +81,7 @@ class ShopSelector extends Component {
         const options = this.props.options || this.state.options || [];
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {
-            const shopInfo = options.find(shop => shop.value === shopID);
+            const shopInfo = options.find(shop => String(shop.value) === String(shopID));
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);

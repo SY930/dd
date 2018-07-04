@@ -203,10 +203,10 @@ class BaseForm extends React.Component {
                 case 'combo': {
                     // fix dropdown menu position issue
                     const comboClassName = `${key}_${getUUID()}`;
-                    const fixPopupProps = item.fixPopup ? {
+                    const fixPopupProps = {
                         className: comboClassName,
                         getPopupContainer: () => document.querySelector(`.${comboClassName}`),
-                    } : {};
+                    };
                     children = this.decorateFormField(key, {}, {
                         ...item,
                         props: {

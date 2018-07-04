@@ -98,7 +98,7 @@ class ReturnGift extends React.Component {
                 1: '0',
                 2: '0',
             },
-            giftTreeData: [],
+            giftInfo: [],
             defaultValue: null,
             data: {
                 0: {
@@ -162,31 +162,15 @@ class ReturnGift extends React.Component {
                 infos: nextProps.value || [JSON.parse(JSON.stringify(defaultData))],
             });
         }
-
-
-        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
-            // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
+        if (this.props.promotionDetailInfo.getIn(['$giftInfo', 'data']) !==  nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType != '100');
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType < 90);
             } catch (err) {
                 giftInfo = [];
             }
-            const filterOffLine = this.props.filterOffLine;// 支持到店属性
-            const _giftInfo = [];
-            giftInfo.map((giftTypes) => {
-                if (giftTypes.giftType == '10' || giftTypes.giftType == '20' || giftTypes.giftType == '30') { // 只有电子代金券和菜品券,shi实物券有支持到店属性
-                    _giftInfo.push({
-                        giftType: giftTypes.giftType,
-                        crmGifts: giftTypes.crmGifts.filter((gift) => {
-                            return gift.giftType == '30' ? true : gift.isOfflineCanUsing // 为true表示支持到店
-                        }),
-                    })
-                }
-            });
             this.setState({
-                giftTreeData: this.proGiftTreeData(filterOffLine ? _giftInfo : giftInfo),
-                giftsForTree: filterOffLine ? _giftInfo : giftInfo.filter(giftTypes => giftTypes.giftType < 90),
+                giftInfo
             });
         }
     }
@@ -239,13 +223,30 @@ class ReturnGift extends React.Component {
 
 
     renderItems() {
+        const filterOffLine = this.props.filterOffLine;// 支持到店属性
+        let _giftInfo = [];
+        const giftInfo = this.state.giftInfo;
+        if (filterOffLine) {
+            giftInfo.forEach((giftTypes) => {
+                if (giftTypes.giftType == '10' || giftTypes.giftType == '20' || giftTypes.giftType == '21' || giftTypes.giftType == '30') { // 只有电子代金券和菜品券,shi实物券有支持到店属性
+                    _giftInfo.push({
+                        giftType: giftTypes.giftType,
+                        crmGifts: giftTypes.crmGifts.filter((gift) => {
+                            return gift.giftType == '30' ? true : gift.isOfflineCanUsing // 为true表示支持到店
+                        }),
+                    })
+                }
+            });
+        } else {
+            _giftInfo = giftInfo;
+        }
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const toggle = !disArr[index];
             disArr.map((v, i) => disArr[i] = false)
             disArr[index] = toggle;
             this.setState({ disArr })
-        }
+        };
         return this.state.infos.map((info, index) => {
             return (
                 <div className={styles.addGrade} key={index}>
@@ -294,20 +295,10 @@ class ReturnGift extends React.Component {
                             wrapperCol={{ span: 16 }}
                             help={info.giftInfo.msg}
                         >
-                            {/* <TreeSelect className={styles.selectTree}
-                                        treeData={this.state.giftTreeData}
-                                        placeholder="请选择礼品"
-                                         size='default'
-                                        dropdownStyle={{ maxHeight: 400, overflowY: 'scroll' }}
-                                        onChange={(value)=>{
-                                            this.handleGiftChange(value, index);
-                                        }}
-                                        value={this.getGiftValue(index)}
-                            /> */}
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
-                                data={_.sortBy((this.state.giftsForTree || []).filter((cat) => {
+                                data={_.sortBy((_giftInfo).filter((cat) => {
                                     return cat.giftType && cat.giftType != 90
                                 }), 'giftType')}
                                 onChange={(value) => {
@@ -390,7 +381,8 @@ class ReturnGift extends React.Component {
                     >
                         <Select
                             size="default"
-                            className={styles.noRadius}
+                            className={`${styles.noRadius} returnGiftMount1ClassJs`}
+                            getPopupContainer={(node) => node.parentNode}
                             value={
                                 typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
                                     '0' :

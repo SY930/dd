@@ -42,7 +42,11 @@ class PriceInput extends React.Component {
             valueNum;
         // const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
         if (this.state.modal === 'float') {
-            reg = /^-?([0-9]*)(\.[0-9]{0,2})?$/;
+            if (this.props.discountMode) {
+                reg = /^-?([0-9]*)(\.[0-9]{0,3})?$/;
+            } else {
+                reg = /^-?([0-9]*)(\.[0-9]{0,2})?$/;
+            }
             valueNum = this.state.number;
             if (!isNaN(value) && reg.test(value)) {
                 valueNum = value;
@@ -98,10 +102,12 @@ class PriceInput extends React.Component {
 
     render() {
         const { size, disabled } = this.props;
+        const props = Object.assign({}, this.props);
+        delete props.modal; // 将modal 属性传递下去会产生warning
         const state = this.state;
         return (
             <Input
-                {...this.props}
+                {...props}
                 type="text"
                 size={size}
                 value={state.number}

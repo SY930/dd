@@ -16,9 +16,10 @@ const SpecialPromotionCfg = {
         // 下线 { value: '70', label: '彩蛋猫送礼' },
         { value: '63', label: '唤醒送礼' },
         { value: '64', label: '评价送礼' },
-        { value: '24', label: '有奖竞答' },
+        { value: '31', label: '关注送礼' },
+        /*{ value: '24', label: '有奖竞答' }, 又被搞了!
         { value: '40', label: '营销红包' },
-        { value: '41', label: '消费红包' },
+        { value: '41', label: '消费红包' },*/
     ],
     /* 营销活动开关 */
     EventIsActive: [

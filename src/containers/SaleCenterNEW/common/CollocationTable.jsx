@@ -181,8 +181,10 @@ class CollocationTable extends React.Component {
                             category.foods
                                 .find((item) => {
                                     if (item.itemID == scope.targetID) {
-                                        data[scope.stageNo].foods.push(item);
-                                        data[scope.stageNo].foodsCountInfo[item.itemID] = scope.num;
+                                        if (data[scope.stageNo].foods.findIndex(food => food.foodKey === item.foodKey) === -1 ) {
+                                            data[scope.stageNo].foods.push(item);
+                                            data[scope.stageNo].foodsCountInfo[item.itemID] = scope.num;
+                                        }
                                     }
                                 });
                         })
@@ -330,9 +332,9 @@ class CollocationTable extends React.Component {
         this.setState({
             data,
             visible: false,
-            foodOptions: [],
-            foodSelections: new Set(),
-            foodCurrentSelections: [],
+            // foodOptions: [],
+            // foodSelections: new Set(),
+            // foodCurrentSelections: [],
         }, () => {
             this.props.onChange && this.props.onChange(this.state.data);
         });
@@ -458,7 +460,7 @@ class CollocationTable extends React.Component {
         // update currentSelections according the selections
         const foodCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(food => food.itemID == storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -491,20 +493,19 @@ class CollocationTable extends React.Component {
             // get the selections
             const foodSelections = this.state.foodSelections;
             const foodOptions = this.state.foodOptions;
-
+            const selectIds = Array.from(foodSelections).map(select => select.itemID)
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
-                if (value.includes(shopEntity.itemID)) {
+                if (value.includes(Number(shopEntity.itemID)) || value.includes(String(shopEntity.itemID))) {
                     // TODO: 添加
                     shopEntity.newPrice = shopEntity.newPrice || shopEntity.price;
-                    foodSelections.add(shopEntity);
+                    !selectIds.includes(shopEntity.itemID) && foodSelections.add(shopEntity);
                 } else {
                     shopEntity.newPrice = null;
                     // 重置
-                    foodSelections.delete(shopEntity)
+                    foodSelections.delete(Array.from(foodSelections).find(select => select.itemID == shopEntity.itemID))
                 }
             });
-
             this.setState({
                 foodCurrentSelections: value,
                 foodSelections,
@@ -537,7 +538,7 @@ class CollocationTable extends React.Component {
         const foodCurrentSelections = [];
 
         storeOptions.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if ((Array.from(this.state.foodSelections).findIndex(food => food.itemID === storeEntity.itemID) > -1)) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -751,7 +752,7 @@ class CollocationTable extends React.Component {
                 className: 'TableTxtLeft',
                 // colSpan:0,
                 render: (text, record, index) => {
-                    return `${record.price || ''}元/${record.unit || '份'}`;
+                    return `${record.prePrice==-1?record.price:record.prePrice || ''}元/${record.unit || '份'}`;
                 },
             },
             {

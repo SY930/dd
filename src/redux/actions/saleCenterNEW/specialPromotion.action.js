@@ -31,7 +31,7 @@ export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_OK = 'sale center: update spec
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_FAIL = 'sale center: update special promotion fail new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_TIMEOUT = 'sale center: update special promotion time out new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_CANCEL = 'sale center: update special promotion cancel new';
-export const SALE_CENTER_RESET_SPECIAL_PROMOTION = 'sale center: update special promotion cancel new';
+export const SALE_CENTER_RESET_SPECIAL_PROMOTION = 'sale center: update special promotion reset new';
 
 
 export const SALE_CENTER_FETCH_GROUP_MEMBER_START = 'sale center: fetch group member start new';
@@ -199,7 +199,6 @@ export const saleCenterGetExcludeEventList = (opts) => {
             return Promise.reject(new Error(response.statusText))
         }).then((responseJSON) => {
             if (responseJSON.code === '000') {
-                console.log(responseJSON)
                 dispatch({
                     type: SALE_CENTER_GET_EXCLUDE_EVENT_LIST,
                     payload: responseJSON,
@@ -252,14 +251,14 @@ export const addSpecialPromotion = opts => {
                     }
                 );
                 return dispatch(addSpecialPromotionFail(response.code));
-            })
-            .catch((err) => {
-                setTimeout(() => {
-                    opts.fail && opts.fail('网络超时，请稍后再试');
-                }, 0);
+            }, err => {
                 if (err.name === 'TimeoutError') {
+                    opts.fail && opts.fail('网络超时，请稍后再试');
                     return dispatch(addSpecialPromotionTimeout());
                 }
+                return dispatch(addSpecialPromotionFail(err));
+            })
+            .catch((err) => {
             })
     }
 }
@@ -356,11 +355,14 @@ export const fetchSpecialGroupMember = opts => {
                 }
                 opts.fail && opts.fail(response.message);
                 return dispatch(fetchSpecialGroupMemberFail(response.code));
-            })
-            .catch((err) => {
+            }, err => {
                 if (err.name === 'TimeoutError') {
                     return dispatch(fetchSpecialGroupMemberTimeout());
                 }
+                return dispatch(fetchSpecialGroupMemberFail(err));
+            })
+            .catch((err) => {
+
             })
     }
 };
@@ -375,7 +377,6 @@ export const saleCenterGetShopOfEventByDate = opts => {
             data: opts,
         })
             .then((responseJSON) => {
-                console.log(responseJSON)
                 if (responseJSON.code === '000') {
                     // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
                     dispatch(fetchFilterShopsSuccess({
