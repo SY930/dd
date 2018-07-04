@@ -105,6 +105,11 @@ class NewActivity extends React.Component {
     }
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
+        if (!modal1Visible) {
+            this.props.saleCenterResetBasicInfo();
+            this.props.saleCenterResetScopeInfo();
+            this.props.saleCenterResetDetailInfo();
+        }
     }
 
     clear() {
@@ -180,8 +185,8 @@ class NewActivity extends React.Component {
                 }}
                 width="924px"
                 visible={this.state.modal1Visible}
-                onOk={this.clear}
-                onCancel={this.clear}
+                onOk={() => this.setModal1Visible(false)}
+                onCancel={() => this.setModal1Visible(false)}
             >
                 <ActivityMain
                     index={this.state.index}
