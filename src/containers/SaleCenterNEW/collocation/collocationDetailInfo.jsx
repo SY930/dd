@@ -25,6 +25,7 @@ import CollocationTable from '../common/CollocationTable'; // 表格
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const Immutable = require('immutable');
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
@@ -52,10 +53,11 @@ class CollocationDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-        let { display } = this.state;
-        display = !this.props.isNew;
+        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
+        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
+        const display = !this.props.isNew;
         this.setState({
             display,
             priceLst: _priceLst,
@@ -63,9 +65,13 @@ class CollocationDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('$promotionDetail') != this.props.promotionDetailInfo.get('$promotionDetail')) {
-            const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-            const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
+        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !== this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ||
+            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']) !== this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])
+        ) {
+            let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+            _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
+            let _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+            _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
             this.setState({
                 priceLst: _priceLst,
                 scopeLst: _scopeLst,
@@ -86,7 +92,7 @@ class CollocationDetailInfo extends React.Component {
                         foodUnitCode: free.foodKey,
                         foodName: free.foodName,
                         foodUnitName: free.unit,
-                        price: parseFloat(free.price),
+                        price: parseFloat(free.prePrice==-1?free.price:free.prePrice || 0),
                         stageNo: groupIdx,
                         num: group.freeCountInfo[free.itemID] >= 1 ? group.freeCountInfo[free.itemID] : 1,
                     })

@@ -118,7 +118,10 @@ class SendMsgInfo extends React.Component {
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        <Select onChange={this.handleOptionChange} value={settleUnitID}>
+                        <Select onChange={this.handleOptionChange}
+                                value={settleUnitID}
+                                getPopupContainer={(node) => node.parentNode}
+                        >
                             {(specialPromotion.accountInfoList || []).map((accountInfo) => {
                                 return (<Option key={accountInfo.settleUnitID}>{accountInfo.settleUnitName}</Option>)
                             })}
@@ -169,7 +172,7 @@ class SendMsgInfo extends React.Component {
                                     预计字数：{(this.state.message || '').length}字，67字为一条，最多500字（含标点空格）
                                 </p>
                                 <p className={styles.blockP}>
-                                    短信费用0.08元/条
+                                    短信条数将由您选择的扣费账户短信余额中扣除，请注意保证余额充足
                                 </p>
                             </Col>
                             <Col span={2} ><span className={styles.titleHeight}>注:</span></Col>

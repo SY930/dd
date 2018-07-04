@@ -24,7 +24,7 @@ import { mySpecialActivities } from '../../redux/reducer/saleCenter/mySpecialAct
 import { steps } from '../../redux/modules/steps';
 
 
-@registerPage([OLD_NEW_SALE_CENTER], {
+/*@registerPage([OLD_NEW_SALE_CENTER], {
     sale_old_promotionBasicInfo: promotionBasicInfo,
     sale_old_promotionDetailInfo: promotionDetailInfo,
     sale_old_promotionScopeInfo: promotionScopeInfo,
@@ -33,7 +33,7 @@ import { steps } from '../../redux/modules/steps';
     sale_old_saleCenter: saleCenter,
     sale_old_mySpecialActivities: mySpecialActivities,
     sale_old_steps: steps,
-})
+})*/
 class SaleCenter extends React.Component {
     constructor(props) {
         super(props);

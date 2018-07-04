@@ -111,8 +111,6 @@ class HualalaGroupSelectS extends React.Component {
     render() {
         let selected = this.state.selected;
         if (this.state.checkAll) {
-            selected = [];
-
             selected = this.state.options.map((options) => {
                 return options.value
             });

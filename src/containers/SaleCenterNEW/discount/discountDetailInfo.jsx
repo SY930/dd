@@ -108,7 +108,7 @@ class DiscountDetailInfo extends React.Component {
                 // _rule.stage若不存在，则是下单即折扣end: _rule.discountRate*10
                 return {
                     start: stageInfo.stageAmount,
-                    end: (stageInfo.discountRate * 10).toFixed(2),
+                    end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
                     validationStatus: 'success',
                     helpMsg: null,
                 }
@@ -116,9 +116,9 @@ class DiscountDetailInfo extends React.Component {
                 validationStatus: 'success',
                 helpMsg: null,
                 start: null,
-                end: (_rule.discountRate * 10).toFixed(2),
+                end: Number((_rule.discountRate * 1).toFixed(3)).toString(),
             }],
-            discount: _rule.discountRate ? `${(_rule.discountRate * 10).toFixed(2)}` : '',
+            discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
         });
     }
@@ -142,7 +142,7 @@ class DiscountDetailInfo extends React.Component {
                 ruleInfo: _rule.stage ? _rule.stage.map((stageInfo) => {
                     return {
                         start: stageInfo.stageAmount,
-                        end: (stageInfo.discountRate * 10).toFixed(2),
+                        end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
                         validationStatus: 'success',
                         helpMsg: null,
                     }
@@ -152,7 +152,7 @@ class DiscountDetailInfo extends React.Component {
                     start: null,
                     end: this.state.discount,
                 }],
-                discount: _rule.discountRate ? `${(_rule.discountRate * 10).toFixed(2)}` : '',
+                discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
                 targetScope: _categoryOrDish,
             });
         }
@@ -178,7 +178,7 @@ class DiscountDetailInfo extends React.Component {
             rule = {
                 stageType: this.state.ruleType,
                 targetScope: this.state.targetScope,
-                discountRate: this.state.discount * 1000 / 10000,
+                discountRate: this.state.discount,
             };
             this.props.setPromotionDetail({
                 rule,
@@ -190,7 +190,7 @@ class DiscountDetailInfo extends React.Component {
                     return {
                         targetScope: this.state.targetScope,
                         stageAmount: ruleInfo.start,
-                        discountRate: ruleInfo.end * 1000 / 10000,
+                        discountRate: ruleInfo.end,
                     }
                 }),
             }
@@ -218,7 +218,7 @@ class DiscountDetailInfo extends React.Component {
         let _validationStatus,
             _helpMsg;
         // TODO:刚输入的时候就报错
-        if (parseFloat(_end) <= 100 || (_start == null && _end != null) || (_start != null && _end == null)) {
+        if (parseFloat(_end) <= 10 || (_start == null && _end != null) || (_start != null && _end == null)) {
             _validationStatus = 'success';
             _helpMsg = null
         } else {
@@ -239,7 +239,7 @@ class DiscountDetailInfo extends React.Component {
 
     onDiscountChange(value) {
         let { discount, discountFlag } = this.state;
-        if (value == null || value > 100) {
+        if (value == null || value > 10) {
             discountFlag = false;
             discount = value;
         } else {
@@ -259,7 +259,7 @@ class DiscountDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <p> 可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣率</p>
+                    <p> 可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣</p>
                 </FormItem>
                 {this.renderRulesComponent()}
             </div>
@@ -295,7 +295,8 @@ class DiscountDetailInfo extends React.Component {
                                     <Select
                                         size="default"
                                         placeholder="请选择活动类别"
-                                        className={styles.linkSelectorRight}
+                                        className={`${styles.linkSelectorRight} discountDetailMountClassJs`}
+                                        getPopupContainer={(node) => node.parentNode}
                                         value={this.state.ruleType}
                                         onChange={(val) => {
                                             let { ruleType, maxCount, isDishVisibleIndex } = this.state;
@@ -339,14 +340,15 @@ class DiscountDetailInfo extends React.Component {
                                         }
                                     </Select>
                                 }
-                                relation={'折扣率'}
-                                addonAfterUnit={'%'}
+                                endPlaceHolder="例如9.5折,8折"
+                                discountMode={true}
+                                relation={'折扣'}
+                                addonAfterUnit={'折'}
                                 disabled={this.state.ruleType == '0'}
                                 value={
                                     _value
                                 }
                                 onChange={(value) => {
-                                    const _index = index;
                                     this.onCustomRangeInputChange(value, index);
                                 }
                                 }

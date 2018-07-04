@@ -65,13 +65,22 @@ export const COLUMNS = [
             return <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType))}</span>
         },
     }, {
+        title: '礼品ID',
+        dataIndex: 'giftItemID',
+        key: 'giftItemID',
+        render: (value) => {
+            return <span title={value}>{value}</span>
+        },
+        // fixed: 'left',
+        width: 150,
+    },  {
         title: '礼品名称',
         dataIndex: 'giftName',
         key: 'giftName',
         // fixed: 'left',
         width: 150,
     }, {
-        title: '礼品金额',
+        title: '礼品金额 (元)',
         dataIndex: 'giftValue',
         key: 'giftValue',
         width: 100,

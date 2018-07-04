@@ -116,6 +116,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
     label: '菜品优惠券',
     value: '20',
 },
+    {
+    label: '菜品兑换券',
+    value: '21',
+},
 {
     label: '实物礼品券',
     value: '30',
@@ -678,6 +682,14 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '64',
         },
+        {
+            idx: 14,
+            title: '关注送礼',
+            color: '#84aac6',
+            text: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数',
+            example: '',
+            key: '31',
+        },
     ];
     // if (HUALALA.ENVIRONMENT != 'production-release') {
     return basic.concat(extral);
@@ -1064,3 +1076,13 @@ export const SEND_MSG = Object.freeze([{
     label: '微信推送不成功则发送短信',
     value: '3',
 },]);
+
+// 是否发信息
+export const NOTIFICATION_FLAG = Object.freeze([{
+    label: '不发送',
+    value: '0',
+}, {
+    label: '推送微信消息',
+    value: '2',
+},
+]);

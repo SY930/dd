@@ -72,7 +72,7 @@ class QuatoCardDetailModal extends Component {
         const { visible, data } = this.props;
         const infoItem = [
             { col: { span: 8 }, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftValue: '卡面值', price: '建议售价' } },
-            { col: { span: 16 }, labelCol: { span: 4 }, itemCol: { span: 20 }, keys: { giftRule: '礼品规则', giftRemark: '使用说明' } },
+            { col: { span: 16 }, labelCol: { span: 4 }, itemCol: { span: 20 }, keys: { giftCost: '工本费用', giftRule: '礼品规则', giftRemark: '使用说明' } },
         ];
         const value = data.giftType;
         return (
@@ -148,7 +148,10 @@ class InfoDisplay extends Component {
                         return (<Col {...col} key={idx}>
                             {
                                 _.keys(itm.keys).map((key, idx) => {
-                                    const value = infoData[key] === undefined ? '' : infoData[key];
+                                    let value = infoData[key] === undefined ? '' : infoData[key];
+                                    if (key === 'giftCost') { // 工本费兼容旧数据
+                                        value = infoData[key] || 0;
+                                    }
                                     return (<Row key={idx} className="info-display">
                                         <Col {...labelCol}>{`${itm.keys[key]} :`}</Col>
                                         <Col {...itemCol}>{value}</Col>

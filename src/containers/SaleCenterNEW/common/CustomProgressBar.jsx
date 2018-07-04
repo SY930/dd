@@ -96,13 +96,9 @@ class CustomProgressBar extends React.Component {
         const onFinish = this.props.onFinish;
         if (typeof onFinish === 'function') {
             onFinish(() => {
-                this.setState({
-                    current: 0,
-                }, () => {
-                    if (this.props.callback && typeof this.props.callback === 'function') {
-                        this.props.callback(3);
-                    }
-                });
+                if (this.props.callback && typeof this.props.callback === 'function') {
+                    this.props.callback(3);
+                }
             }, current);
         }
     }

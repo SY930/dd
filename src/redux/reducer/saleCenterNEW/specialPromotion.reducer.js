@@ -37,6 +37,7 @@ const $initialState = Immutable.fromJS({
         eventStartDate: '',
         eventEndDate: '',
         startTime: '',
+        mpIDList: [],
         excludeEventCardLevelIdModelList: [],
         allCardLevelCheck: false,
         accountInfoList: [], // 短信结算主体

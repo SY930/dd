@@ -15,3 +15,5 @@ export const OLD_NEW_GIFT = '16'; // 创建礼品
 
 export const SALE_CENTER_PAGE_SHOP = 'shop.dianpu.promotion'; // 门店-基础营销信息新
 export const NEW_SALE_CENTER_SHOP = 'shop.dianpu.creatpromotion'; // 门店-创建基础营销
+
+export const CRM_DATA_VALIDATOR = 'crm.data_verification.crmdv';

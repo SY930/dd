@@ -317,7 +317,10 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
                     <Col span={3}>会员等级</Col>
                     <Col span={6}>
-                        <Select size="default" onChange={this.handleSelectChange}>
+                        <Select size="default"
+                                onChange={this.handleSelectChange}
+                                getPopupContainer={(node) => node.parentNode}
+                        >
                             {this.renderOptions()}
                         </Select>
                     </Col>

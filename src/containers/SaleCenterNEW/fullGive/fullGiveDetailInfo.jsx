@@ -135,7 +135,7 @@ class FullGiveDetailInfo extends React.Component {
             data,
             ruleType,
             display,
-            priceLst: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
+            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
             foodMenuList: this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records ?
                 this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records : [],
         }, () => {
@@ -152,13 +152,15 @@ class FullGiveDetailInfo extends React.Component {
             });
         }
 
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !=
+        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-            this.setState({
-                priceLst: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
-            }, () => {
-                this.sortData(this.state.priceLst, this.state.foodMenuList)
-            });
+            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                this.setState({
+                    priceLst: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
+                }, () => {
+                    this.sortData(this.state.priceLst, this.state.foodMenuList)
+                });
+            }
         }
     }
 
@@ -356,8 +358,9 @@ class FullGiveDetailInfo extends React.Component {
 
                     <Select
                         placeholder="请选择活动类别"
-                        className={styles.linkSelectorRight}
                         defaultValue={this.state.ruleType}
+                        className={`${styles.linkSelectorRight} fullGiveDetailMountClassJs`}
+                        getPopupContainer={(node) => node.parentNode}
                         value={this.state.ruleType}
                         onChange={(val) => {
                             let { ruleType } = this.state;

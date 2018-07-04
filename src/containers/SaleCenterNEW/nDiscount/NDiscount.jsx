@@ -15,12 +15,13 @@
  * 陈双   2016/12/5
  */
 import React from 'react';
-import { Row, Col, Form, TimePicker, Input, Icon, InputNumber } from 'antd';
+import { Row, Col, Form, TimePicker, Input, Icon, InputNumber, Select } from 'antd';
 import style from './NDiscount.less';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-
+const InputGroup = Input.Group;
+const Option = Select.Option;
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/components.less')
 }
@@ -38,8 +39,10 @@ export class NDiscount extends React.Component {
                     validateFlag: true,
                 },
             },
+            stageType: String(props.stageType)
         };
         this.renderHandleIcon = this.renderHandleIcon.bind(this);
+        this.handleStageTypeChange = this.handleStageTypeChange.bind(this);
     }
 
     remove = (k) => {
@@ -83,6 +86,9 @@ export class NDiscount extends React.Component {
             this.setState({ data: nextProps.value });
             this.uuid = Object.keys(nextProps.value).length - 1;
         }
+        if (this.props.stageType != nextProps.stageType) {
+            this.setState({ stageType: String(nextProps.stageType) });
+        }
     }
     renderHandleIcon(index) {
         if (index == 0 && index == this.uuid) {
@@ -100,6 +106,16 @@ export class NDiscount extends React.Component {
         return null
     }
 
+    handleStageTypeChange(value) {
+        const data = Object.assign({}, {0: this.state.data['0']});
+        if (value === '1') {
+            this.props.onChange && this.props.onChange({data, stageType: '1'});
+            this.uuid = 0;
+        } else {
+            this.props.onChange && this.props.onChange({data, stageType: '2'})
+        }
+    }
+
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
@@ -110,10 +126,10 @@ export class NDiscount extends React.Component {
         const formItemLayoutWithOutLabel = {
             wrapperCol: { span: 17, offset: 4 },
         };
-        getFieldDecorator('keys', { initialValue: Object.keys(this.props.value) });
+        getFieldDecorator('keys', { initialValue: Object.keys(this.state.data) });
 
-        const keys = getFieldValue('keys');
-        const formItemInside = keys.map((k, index) => {
+        /*const keys = getFieldValue('keys');*/
+        const formItemInside = Object.keys(this.state.data).map((k, index) => {
             k = parseInt(k);
             return (
                 <FormItem
@@ -124,13 +140,18 @@ export class NDiscount extends React.Component {
                     validateStatus={this.state.data[k].validateFlag ? 'success' : 'error'}
                     help={this.state.data[k].validateFlag ? null : '请输入正确的折扣率'}
                 >
-                    <PriceInput
-                        addonBefore={`选择第${k + 2}件打折`}
-                        addonAfter={'%'}
+                    {k === 0 && <PriceInput
+                        addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange}>
+                            <Option value="2">第2份当前菜品打</Option>
+                            <Option value="1">第2份指定菜品打</Option>
+                        </Select>}
+                        addonAfter={'折'}
                         modal="float"
+                        discountMode={true}
+                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
                         onChange={(value) => {
                             const { data } = this.state;
-                            if (value.number == null || value.number == '' || value.number > 100) {
+                            if (value.number == null || value.number == '' || value.number > 10) {
                                 data[k].validateFlag = false;
                             } else {
                                 data[k].validateFlag = true;
@@ -141,9 +162,29 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                    />
+                    />}
+                    {k > 0 &&<PriceInput
+                        addonBefore={`第${k + 2}份当前菜品打`}
+                        addonAfter={'折'}
+                        discountMode={true}
+                        modal="float"
+                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
+                        onChange={(value) => {
+                            const { data } = this.state;
+                            if (value.number == null || value.number == '' || value.number > 10) {
+                                data[k].validateFlag = false;
+                            } else {
+                                data[k].validateFlag = true;
+                            }
+
+                            data[k].value = value.number;
+                            this.setState({ data });
+                            this.props.onChange && this.props.onChange(data);
+                        }}
+                        value={{ number: this.state.data[k].value }}
+                    />}
                     <div className={style.iconsStyle}>
-                        {this.renderHandleIcon(k)}
+                        {this.state.stageType == '2' && this.renderHandleIcon(k)}
                     </div>
                 </FormItem>);
         });

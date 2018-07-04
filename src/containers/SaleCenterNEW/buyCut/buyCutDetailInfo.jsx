@@ -60,20 +60,26 @@ class BuyCutDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+        let { display } = this.state;
+        display = !this.props.isNew;
+        this.setState({
+            display,
+        });
+        this.initRule();
+    }
 
-        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+    initRule(props = this.props) {
+        let _rule = props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
-        let { display } = this.state;
-        display = !this.props.isNew;
+
         this.setState({
-            display,
             stageAmount: _rule.stageAmount,
             freeAmount: _rule.freeAmount || '',
-            discountRate: _rule.discountRate ? (_rule.discountRate * 10).toFixed(2) : '',
+            discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             cutWay: _rule.freeAmount ? '0' : '1',
         });
     }
@@ -82,6 +88,10 @@ class BuyCutDetailInfo extends React.Component {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
+        }
+        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
+            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
+            this.initRule(nextProps);
         }
     }
 
@@ -93,7 +103,7 @@ class BuyCutDetailInfo extends React.Component {
         if (freeAmount == null || freeAmount == '') {
             freeAmountFlag = false;
         }
-        if (discountRate == null || discountRate == '' || parseFloat(discountRate) > 100) {
+        if (discountRate == null || discountRate == '' || parseFloat(discountRate) > 10) {
             discountRateFlag = false;
         }
         this.setState({ freeAmountFlag, discountRateFlag, stageAmountFlag });
@@ -120,7 +130,7 @@ class BuyCutDetailInfo extends React.Component {
                     stageType: 0,
                     targetScope,
                     stageAmount,
-                    discountRate: parseFloat((discountRate * 1000) / 10000),
+                    discountRate: parseFloat(discountRate),
                 },
             });
             return true;
@@ -166,7 +176,7 @@ class BuyCutDetailInfo extends React.Component {
     // 折扣率change
     onDiscountRateChange(value) {
         let { discountRate, discountRateFlag } = this.state;
-        if (value.number == null || value.number == '' || parseFloat(value.number) > 100) {
+        if (value.number == null || value.number == '' || parseFloat(value.number) > 10) {
             discountRateFlag = false;
             discountRate = value.number;
         } else {
@@ -223,11 +233,14 @@ class BuyCutDetailInfo extends React.Component {
             wrapperCol={{ span: 17, offset: 4 }}
             required={true}
             validateStatus={this.state.discountRateFlag ? 'success' : 'error'}
+            help={!this.state.discountRateFlag ? '不得为空, 不大于10' : null}
         >
 
             <PriceInput
-                addonBefore={'打折扣率'}
-                addonAfter={'%'}
+                addonBefore={'打'}
+                addonAfter={'折'}
+                placeholder="输入不大于10的数字(例如9.5折, 8折)"
+                discountMode={true}
                 value={{ number: this.state.discountRate }}
                 defaultValue={{ number: this.state.discountRate }}
                 onChange={this.onDiscountRateChange}

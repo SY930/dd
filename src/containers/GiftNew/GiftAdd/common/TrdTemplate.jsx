@@ -176,7 +176,7 @@ class TrdTemplate extends React.Component {
             loading: true,
         }, () => {
             this.propsChange() // 向父传递
-            this.queryTrdTemplate(value, 10) // 带着微信号查模板  
+            this.queryTrdTemplate(value, 10) // 带着微信号查模板
         })
     }
     // 三方模板选择
@@ -214,7 +214,11 @@ class TrdTemplate extends React.Component {
                                     validateStatus={channelIDStatus ? 'success' : 'error'}
                                     help={channelIDStatus ? null : '不得为空'}
                                 >
-                                    <Select value={channelID} onChange={this.handleTrdChannelSelect} disabled={edit}>
+                                    <Select value={channelID}
+                                            onChange={this.handleTrdChannelSelect}
+                                            disabled={edit}
+                                            getPopupContainer={(node) => node.parentNode}
+                                    >
                                         {
                                             GiftCfg.trdChannelIDs.map(trdChannel => {
                                                 return <Option value={trdChannel.value}>{trdChannel.label}</Option>
@@ -230,7 +234,11 @@ class TrdTemplate extends React.Component {
                                             validateStatus={mpIDStatus ? 'success' : 'error'}
                                             help={mpIDStatus ? null : '不得为空'}
                                         >
-                                            <Select value={mpID} onChange={this.handleMpSelect} disabled={edit}>
+                                            <Select value={mpID}
+                                                    onChange={this.handleMpSelect}
+                                                    disabled={edit}
+                                                    getPopupContainer={(node) => node.parentNode}
+                                            >
                                                 {
                                                     mpList.map(mp => {
                                                         return <Option value={mp.mpID}>{mp.mpName}</Option>
@@ -245,7 +253,11 @@ class TrdTemplate extends React.Component {
                                     validateStatus={trdGiftItemIDStatus ? 'success' : 'error'}
                                     help={trdGiftItemIDStatus ? null : '不得为空'}
                                 >
-                                    <Select onChange={this.handleTrdTemplate} value={trdGiftItemID} disabled={edit}>
+                                    <Select onChange={this.handleTrdTemplate}
+                                            value={trdGiftItemID}
+                                            disabled={edit}
+                                            getPopupContainer={(node) => node.parentNode}
+                                    >
                                         {
                                             trdTemplateInfoList.map(template => {
                                                 return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>

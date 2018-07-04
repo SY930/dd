@@ -64,10 +64,20 @@ class SpecialDishesTable extends React.Component {
 
     componentDidMount() {
         // 从redux中获取特价菜列表
-        const _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        let _priceLst;
+        try {
+            _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        } catch (e) {
+            _priceLst = []
+        }
+        let foodCategoryCollection;
         // 获取菜品信息
-        let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
-        // foodCategoryCollection = this.filterGroup(foodCategoryCollection);
+        try {
+            foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
+        } catch (e) {
+            foodCategoryCollection = []
+        }
+
         this.setState({
             foodCategoryCollection,
             priceLst: _priceLst,
@@ -155,7 +165,10 @@ class SpecialDishesTable extends React.Component {
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])
         ) {
-            const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            let priceLst = [];
+            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            }
             this.setState({
                 priceLst,
             }, () => {
@@ -271,7 +284,7 @@ class SpecialDishesTable extends React.Component {
     handleFoodGroupSelect(value) {
         if (value instanceof Array) {
             // get the selections
-            const { foodSelections, foodOptions, priceLst } = this.state;
+            const { foodSelections, foodOptions } = this.state;
             const selectIds = Array.from(foodSelections).map(select => select.itemID)
             // 进行过滤， 并添加新属性
             foodOptions.forEach((shopEntity) => {
@@ -466,13 +479,13 @@ class SpecialDishesTable extends React.Component {
                 className: 'TableTxtRight',
             },
             {
-                title: '打折比例(%)',
+                title: '折扣',
                 dataIndex: 'salePercent',
                 key: 'salePercent',
                 width: 90,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0.00%' : `${(Number(record.newPrice) / record.price * 100).toFixed(2)}%`
+                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
             },
             {

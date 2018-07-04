@@ -52,6 +52,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/sa
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
+import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -64,6 +65,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
+const TEMP_GROUP_ID = 1415;// HUALALA.ENVIRONMENT === 'production-release' ? 1415 : 1155;
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -112,6 +114,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_promotionDetailInfo_NEW,
     sale_promotionScopeInfo_NEW,
     sale_fullCut_NEW,
+    queryWeixinAccounts,
     sale_myActivities_NEW,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
@@ -162,6 +165,7 @@ class MySpecialActivities extends React.Component {
 
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
+        this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         // disable selected activity
 
 
@@ -227,9 +231,11 @@ class MySpecialActivities extends React.Component {
     handleDismissUpdateModal() {
         this.setState({
             updateModalVisible: false,
+        }, () => {
+            this.props.saleCenterResetDetailInfo();
+            this.showNothing = this.showNothing.bind(this);
         });
-        this.props.saleCenterResetDetailInfo();
-        this.showNothing = this.showNothing.bind(this);
+
     }
 
     componentDidMount() {
@@ -245,7 +251,7 @@ class MySpecialActivities extends React.Component {
                 pageSize: this.state.pageSizes,
                 pageNo: 1,
             },
-            fail: (msg) => { message.success(msg) },
+            fail: (msg) => { message.error(msg) },
         });
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
@@ -342,8 +348,8 @@ class MySpecialActivities extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState)
-    }
+    return !isEqual(this.state, nextState)
+}
 
     render() {
         return (
@@ -451,18 +457,10 @@ class MySpecialActivities extends React.Component {
 
     renderFilterBar() {
         const opts = [];
-        let count;
-        if (HUALALA.ENVIRONMENT !== 'production-release') {
-            count = 15;
-        } else {
-            count = 15;
-        }
         Cfg.eventWay.forEach((item, index) => {
-            if (index <= count) {
-                opts.push(
-                    <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
-                );
-            }
+            opts.push(
+                <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+            );
         });
         return (
             <div>
@@ -547,6 +545,12 @@ class MySpecialActivities extends React.Component {
             pageSizes: pageSize,
         })
     };
+
+    /**
+     * 列表排序
+     * @param record
+     * @param direction
+     */
     changeSortOrder(record, direction) {
         const params = {itemID: record.itemID, rankingType: direction};
         axiosData('/specialPromotion/updateEventRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
@@ -555,6 +559,20 @@ class MySpecialActivities extends React.Component {
             }
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+        })
+    }
+
+    /**
+     * 立即执行
+     * @param eventID: record.itemID
+     */
+    activateNow(eventID) {
+        axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
+            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+            }
+        }).catch(err => {
+            message.warning(err || 'sorry, 立即执行失败, 请稍后再试!');
         })
     }
 
@@ -595,7 +613,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: 250,
+                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 300 : 250,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
@@ -609,6 +627,10 @@ class MySpecialActivities extends React.Component {
                             onClick={() => {
                                 if (Number(record.eventWay) === 70) {
                                     message.warning('该活动已下线');
+                                    return;
+                                }
+                                if (Number(record.eventWay) === 31) {
+                                    message.warning('活动将于近期上线, 敬请期待~');
                                     return;
                                 }
                                 record.isActive == '-1' || statusState ? null :
@@ -626,6 +648,10 @@ class MySpecialActivities extends React.Component {
                                     } else {
                                         if (Number(record.eventWay) === 70) {
                                             message.warning('该活动已下线');
+                                            return;
+                                        }
+                                        if (Number(record.eventWay) === 31) {
+                                            message.warning('活动将于近期上线, 敬请期待~');
                                             return;
                                         }
                                         this.props.toggleIsUpdate(true)
@@ -688,6 +714,17 @@ class MySpecialActivities extends React.Component {
                             >
                                 活动跟踪</a>
                         </Authority>
+                        {this.props.user.accountInfo.groupID == TEMP_GROUP_ID && <a
+                                href="#"
+                                className={Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ?null : styles.textDisabled }
+                                onClick={() => {
+                                    if (Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ) {
+                                        this.activateNow(record.itemID)
+                                    }
+                                }}
+                            >
+                                立即执行</a>
+                        }
                     </span>
                     );
                 },
@@ -727,7 +764,7 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'eventName',
                 key: 'eventName',
                 // fixed:'left',
-                width: 200,
+                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 150 : 200,
                 render: text => <span title={text}>{text}</span>,
             },
             // {
@@ -902,15 +939,42 @@ class MySpecialActivities extends React.Component {
             onCancel: () => { },
         });
     }
-
-    // 编辑
-    handleUpdateOpe() {
-        let _record = arguments[1];
-        const _promotionIdx = getSpecialPromotionIdx(`${_record ? _record.eventWay : this.state.editEventWay}`);
+    successFn = (response) => {
+        const _serverToRedux = false;
+        const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
         if (_promotionIdx === undefined) {
             message.warning('出错了, 请刷新重试');
             return;
         }
+        if (response === undefined || response.data === undefined) {
+            message.error('没有查询到相应数据');
+            return null;
+        }
+        this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
+        this.setState({
+            modalTitle: '更新活动信息',
+            isNew: false,
+            index: _promotionIdx,
+        });
+    };
+
+    failFn = () => {
+        message.error('啊哦,好像出了点问题~');
+    };
+
+
+    // 编辑
+    handleUpdateOpe() {
+        let _record = arguments[1];
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
+                groupID: user.accountInfo.groupID,
+            },
+            success: this.successFn,
+            fail: this.failFn,
+        });
         if (_record) {
             this.setState({
                 updateModalVisible: true,
@@ -918,36 +982,6 @@ class MySpecialActivities extends React.Component {
                 currentItemID: _record.itemID ? _record.itemID : this.state.currentItemID,
             });
         }
-        // Set promotion information to the PromotionBasic and promotionScope redux
-
-        const user = this.props.user;
-
-
-        const successFn = (response) => {
-            const _serverToRedux = false;
-            if (response === undefined || response.data === undefined) {
-                message.error('没有查询到相应数据');
-                return null;
-            }
-            this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
-            this.setState({
-                modalTitle: '更新活动信息',
-                isNew: false,
-                index: _promotionIdx,
-            });
-        };
-
-        const failFn = () => {
-            message.error('错误');
-        };
-        this.props.fetchSpecialDetail({
-            data: {
-                itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
-                groupID: user.accountInfo.groupID,
-            },
-            success: successFn,
-            fail: failFn,
-        });
     }
     /**
      * Render promotion update Modal
@@ -965,18 +999,9 @@ class MySpecialActivities extends React.Component {
                 width="924px"
                 height="569px"
                 maskClosable={false}
-                onCancel={() => {
-                    this.setState({
-                        updateModalVisible: false,
-                    });
-                    this.props.saleCenterResetDetailInfo();
-                }}
+                onCancel={this.handleDismissUpdateModal}
             >
-                {
-                    this.state.updateModalVisible ?
-                        this.renderContentOfThisModal()
-                        : null
-                }
+                {this.renderContentOfThisModal()}
             </Modal>
         );
     }
@@ -1015,23 +1040,17 @@ class MySpecialActivities extends React.Component {
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
-        this.setState({
-            visible: true,
-            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
-        });
-
         const user = this.props.user;
-
-        const failFn = () => {
-            message.error('查询详情失败');
-        };
-
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
             },
-            fail: failFn,
+            fail: this.failFn,
+        });
+        this.setState({
+            visible: true,
+            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
         });
     }
     // 关闭详情页
@@ -1044,24 +1063,24 @@ class MySpecialActivities extends React.Component {
     renderModals() {
         const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
         const checkDetailInfo = this.checkDetailInfo;
-        function renderContentOfTheModal(cancelFetchSpecialPromotionDetail) {
-            if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
-                return (
-                    <div className={styles.spinFather}>
-                        <Spin size="large" />
-                    </div>)
-            }
-            if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
-                return (
-                    <div className={styles.spinFather}>
-                        查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
-                    </div>
-                );
-            }
-            if (mySpecialActivities.status === 'success') {
-                return (<SpecialPromotionDetail record={mySpecialActivities.data} />);
-            }
+        let renderContentOfTheModal;
+        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+            renderContentOfTheModal = (
+                <div className={styles.spinFather}>
+                    <Spin size="large" />
+                </div>)
         }
+        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+            renderContentOfTheModal = (
+                <div className={styles.spinFather}>
+                    查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
+                </div>
+            );
+        }
+        if (mySpecialActivities.status === 'success') {
+            renderContentOfTheModal = (<SpecialPromotionDetail record={mySpecialActivities.data} />);
+        }
+
         return (
             <Modal
                 title="活动详情"
@@ -1070,11 +1089,7 @@ class MySpecialActivities extends React.Component {
                 closable={false}
                 width="750px"
             >
-                {
-                    this.state.visible ?
-                        renderContentOfTheModal(this.props.cancelFetchSpecialPromotionDetail)
-                        : null
-                }
+                {renderContentOfTheModal}
             </Modal>
         );
     }

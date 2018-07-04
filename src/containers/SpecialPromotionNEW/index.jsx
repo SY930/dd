@@ -24,6 +24,7 @@ import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../r
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../redux/reducer/saleCenterNEW/crmCardType.reducer';
 import { steps as sale_steps } from '../../redux/modules/steps';
+import {queryWeixinAccounts} from "../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 
 @registerPage([NEW_SPECIAL], {
     sale_promotionBasicInfo_NEW,
@@ -32,6 +33,7 @@ import { steps as sale_steps } from '../../redux/modules/steps';
     sale_shopSchema_New,
     sale_fullCut_NEW,
     sale_myActivities_NEW,
+    queryWeixinAccounts,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
     sale_mySpecialActivities_NEW,

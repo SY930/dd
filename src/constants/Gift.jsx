@@ -4,6 +4,7 @@ const GiftCfg = {
     giftType: [
         { name: '电子代金券', describe: '抵扣一定面值的券，可通过特色营销发放', value: '10', color: '#84aac6', tags: ['SaaS2.0', '新微信', '微信'] },
         { name: '菜品优惠券', describe: '满足条件抵扣实际菜品，关联基础营销使用', value: '20', color: '#c49b79', tags: ['SaaS2.0', '新微信', '微信'] },
+        { name: '菜品兑换券', describe: '用户支付一定的金额可以兑换到相同的菜品', value: '21', color: '#c49b79', tags: ['SaaS2.0'] },
         { name: '实物礼品券', describe: '顾客获取后，线下展示券密码验证核销使用', value: '30', color: '#e5be6c', tags: ['SaaS2.0', '新微信'] },
         { name: '会员充值券', describe: '会员获取后，可直接充值到卡赠送余额中', value: '40', color: '#9dc568', tags: ['SaaS2.0'] },
         { name: '会员积分券', describe: '会员获取后，可直接充值到卡积分余额中', value: '42', color: '#84aac6', tags: ['SaaS2.0'] },
@@ -18,6 +19,7 @@ const GiftCfg = {
         { label: '全部', value: '' },
         { label: '电子代金券', value: '10' },
         { label: '菜品优惠券', value: '20' },
+        { label: '菜品兑换券', value: '21' },
         { label: '实物礼品券', value: '30' },
         { label: '会员充值券', value: '40' },
         { label: '会员积分券', value: '42' },
@@ -63,8 +65,8 @@ const GiftCfg = {
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },
-        { label: '与部分券共用', value: '2', disabled: true },
-        { label: '不共用', value: '0', disabled: true },
+        { label: '与部分券共用', value: '2', disabled: HUALALA.ENVIRONMENT === 'production-release'},
+        { label: '不共用', value: '0', disabled: HUALALA.ENVIRONMENT === 'production-release'},
     ],
     moneyLimitType: [
         { label: '不限', value: '0' },

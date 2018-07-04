@@ -19,7 +19,7 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerInfoCheck: ['customerName', 'customerBirthday', 'customerSex'],
+            customerInfoCheck: ['customerName', 'customerMobile', 'customerBirthday', 'customerSex'],
             valueFlag: 'success',
         };
 
@@ -71,6 +71,7 @@ class StepTwo extends React.Component {
     render() {
         const options = [
             { label: '姓名', value: 'customerName' },
+            { label: '手机号', value: 'customerMobile' },
             { label: '生日', value: 'customerBirthday' },
             { label: '性别', value: 'customerSex' },
             { label: '常用地址', value: 'address' },

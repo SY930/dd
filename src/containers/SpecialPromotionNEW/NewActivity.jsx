@@ -27,6 +27,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -48,6 +49,7 @@ function mapDispatchToProps(dispatch) {
         },
         saleCenterResetDetailInfo: (opts) => {
             dispatch(saleCenterResetDetailInfoAC(opts));
+            dispatch(resetOccupiedWeChatInfo());
         },
         saleCenterCheckExist: (opts) => {
             dispatch(saleCenterCheckExist(opts));
@@ -76,7 +78,6 @@ class NewActivity extends React.Component {
 
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
-        // TODO: uncomment the bottom
         if (!modal1Visible) {
             this.props.saleCenterResetDetailInfo();
         }
@@ -109,7 +110,7 @@ class NewActivity extends React.Component {
                         {this.renderActivityButtons()}
                     </ul>
                 </Col>
-                {this.renderModal()}
+                {this.state.modal1Visible ? this.renderModal(): null}
             </Row>
 
         );
@@ -156,18 +157,16 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                {this.state.modal1Visible ? (
-                    <ActivityMain
-                        index={this.state.index}
-                        steps={this.props.steps}
-                        isNew={true}
-                        callbackthree={(arg) => {
-                            if (arg == 3) {
-                                this.setModal1Visible(false);
-                            }
-                        }}
-                    />)
-                    : null}
+                <ActivityMain
+                    index={this.state.index}
+                    steps={this.props.steps}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.setModal1Visible(false);
+                        }
+                    }}
+                />
             </Modal>
         );
     }
@@ -180,6 +179,10 @@ class NewActivity extends React.Component {
     _onButtonClicked(index, activity) {
         if (!checkPermission("marketing.teseyingxiaoxin.create")) {
             message.warn('您没有新建活动的权限，请联系管理员');
+            return;
+        }
+        if (activity.get('key') === '31') {
+            message.success('活动将于近期上线, 敬请期待~');
             return;
         }
         const { user } = this.props;
@@ -217,10 +220,10 @@ class NewActivity extends React.Component {
                 fail: () => {
                     message.error('检查失败!');
                 },
-            })
-        } else {
-            this.setModal1Visible(true);
+            });
+            return;
         }
+        this.setModal1Visible(true);
     }
 }
 
