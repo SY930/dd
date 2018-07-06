@@ -502,7 +502,7 @@ class SendCard extends React.Component {
                                     />查询</Button></Col>
                                     <Col span={6}>
                                         {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
-                                        <Button type="ghost" onClick={() => this.handleExport()}>
+                                        <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
                                             <Icon
                                                 type="export" />导出</Button>
                                         {/* </Authority> */}
@@ -525,7 +525,7 @@ class SendCard extends React.Component {
                                             />查询</Button></Col>
                                             <Col span={8} >
                                                 {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
-                                                <Button type="ghost" onClick={() => this.handleExport()}>
+                                                <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
                                                     />导出</Button>
@@ -551,6 +551,7 @@ class SendCard extends React.Component {
                                                     {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                                     <Button
                                                         type="ghost"
+                                                        disabled={total==0}
                                                         onClick={() => this.handleExport()}
                                                     ><Icon type="export" />导出</Button>
                                                     {/* </Authority> */}
