@@ -502,18 +502,22 @@ class SendCard extends React.Component {
                                     />查询</Button></Col>
                                     <Col span={6}>
                                         {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
-                                        <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
+                                        <Button type="ghost"
+                                                disabled={total==0}
+                                                onClick={() => this.handleExport()}
+                                                style={{borderRadius: '0'}}
+                                        >
                                             <Icon
                                                 type="export" />导出</Button>
                                         {/* </Authority> */}
                                     </Col>
-                                    <Col span={6}><Button type="ghost" onClick={() => this.handleDelete()}><Iconlist
+                                    <Col span={6}><Button style={{borderRadius: '0'}} type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                         className="send-gray"
                                         iconName={'作废'}
                                     />作废</Button></Col>
                                     <Col span={6}><Button
                                         type="ghost"
-                                        style={{ padding: '4px 10px' }}
+                                        style={{ padding: '4px 10px', borderRadius: '0 3px 3px 0' }}
                                         onClick={() => this.handleCancelDelete()}
                                     >取消作废</Button></Col>
                                 </Row>
