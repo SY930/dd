@@ -58,6 +58,7 @@ class DetailInfo extends React.Component {
             name: item.foodName,
             price: item.mPrice === undefined ? -1 : Number(item.mPrice),
             point: item.mPoint === undefined ? -1 : Number(item.mPoint),
+            foodItemID: item.itemID,
             storage: item.totalAmount,
             purchaseLimit: item.limitAmount,
         }));

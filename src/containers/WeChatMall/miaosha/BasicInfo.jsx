@@ -16,6 +16,7 @@ import {
     saleCenterAddPhrase, saleCenterDeletePhrase
 } from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import {AddCategorys} from "../../SaleCenterNEW/common/promotionBasicInfo";
+import {axiosData} from "../../../helpers/util";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -31,6 +32,7 @@ class BasicInfo extends React.Component {
             endTime: props.data.endTime,
             tags: props.data.tag ? props.data.tag.split(',') : [],
             name: props.data.name,
+            loading: false,
             tipDisplay: 'none',
         };
 
@@ -87,11 +89,9 @@ class BasicInfo extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
-        this.props.form.setFields({
-            rangePicker: {
-                errors: [new Error('所选时间段已有其它秒杀活动正在生效')]
-            },
-        });
+        if (this.props.form.getFieldError('rangePicker')) {
+            return false;
+        }
         this.props.form.validateFieldsAndScroll((err1) => {
             if (err1) {
                 nextFlag = false;
@@ -99,9 +99,9 @@ class BasicInfo extends React.Component {
         });
         // 存到wrapper
         if (nextFlag) {
-            const {tipDisplay, tagList, tagName, tags, ...usefulData} = this.state;
+            const {description, name, tags, endTime, startTime} = this.state;
             const tag = tags.join(',');
-            this.props.onChange && this.props.onChange({...usefulData, tag});
+            this.props.onChange && this.props.onChange({startTime, endTime, name, description, tag});
         }
         return nextFlag;
     }
@@ -119,8 +119,30 @@ class BasicInfo extends React.Component {
             this.setState({
                 startTime,
                 endTime,
-            })
+            }, this.queryExtraEventsByTime(startTime, endTime));
         }
+    }
+
+    queryExtraEventsByTime(startTime, endTime) {
+        this.setState({
+            loading: true,
+        });
+        axiosData('/promotion/extra/extraEventService_getExtraEventsByTime.ajax', {startTime, endTime, shopID: this.props.user.shopID, pageNo: 1, pageSize: 10}, null, {path: 'data.page'}).then(res => {
+            this.setState({
+                loading: false,
+            });
+            if (res && res.totalSize) {
+                this.props.form.setFields({
+                    rangePicker: {
+                        errors: [new Error('该商城在所选日期段内已有秒杀活动正在进行, 请重新选择日期')],
+                    },
+                })
+            }
+        }, err => {
+            this.setState({
+                loading: false,
+            });
+        })
     }
 
     handleNameChange(e) {

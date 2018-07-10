@@ -75,18 +75,19 @@ class Wrapper extends React.Component {
     }
 
     onFinish(cb) {
-        axiosData('/promotion/extra/extraEventService_addExtraEvent.ajax', {...this.state.data, shopID: this.props.user.shopID}, null, {})
+        // 为了便于查找接口信息 不用字符串模板来做url
+        const url = this.props.isUpdate ? '/promotion/extra/extraEventService_updateExtraEvent.ajax' : '/promotion/extra/extraEventService_addExtraEvent.ajax';
+        axiosData(url, {...this.state.data, extraEventType: 7010, shopID: this.props.user.shopID}, null, {})
             .then(() => {
                 this.setState({
                     loading: false,
                 });
-                message.success('活动创建完成');
+                message.success(`活动${this.props.isUpdate ? '更新' : '创建'}完成`);
                 cb && cb();
             }, err => {
                 this.setState({
                     loading: false,
                 });
-                console.log('oops: ', err);
             })
     }
 
