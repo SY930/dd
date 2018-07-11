@@ -201,10 +201,18 @@ class RangeInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('advancedAnnouncingTime', {
-                        rules: [{
-                            required: true,
-                            message: '不得为空',
-                        }],
+                        rules: [
+                            {
+                                required: true,
+                                message: '不得为空',
+                            },
+                            {
+                                validator: (rule, v, cb) => {
+                                    Number(v && v.number ? v.number : 0) > 0 ? cb() : cb(rule.message);
+                                },
+                                message: '必须大于0',
+                            },
+                        ],
                         initialValue: this.state.reservationTime ? {number: this.state.advancedAnnouncingTime} : undefined,
                         onChange: this.handleWarmUpTimeChange
                     })(
