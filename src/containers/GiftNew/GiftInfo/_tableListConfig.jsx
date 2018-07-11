@@ -78,6 +78,9 @@ export const COLUMNS = [
         dataIndex: 'giftName',
         key: 'giftName',
         // fixed: 'left',
+        render: (value) => {
+            return <span title={value}>{value}</span>
+        },
         width: 150,
     }, {
         title: '礼品金额 (元)',
@@ -127,11 +130,17 @@ export const COLUMNS = [
         dataIndex: 'giftRemark',
         key: 'giftRemark',
         width: 150,
+        render: (value) => {
+            return <span title={value}>{value}</span>
+        },
     }, {
         title: '创建人/修改人',
         dataIndex: 'operator',
         key: 'operator',
         width: 150,
+        render: (value) => {
+            return <span title={value}>{value}</span>
+        },
     }, {
         title: '创建时间/修改时间',
         dataIndex: 'operateTime',
