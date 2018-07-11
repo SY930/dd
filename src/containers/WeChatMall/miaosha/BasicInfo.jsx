@@ -119,7 +119,7 @@ class BasicInfo extends React.Component {
             this.setState({
                 startTime,
                 endTime,
-            }, this.queryExtraEventsByTime(startTime, endTime));
+            }); // this.queryExtraEventsByTime(startTime, endTime)
         }
     }
 
@@ -127,7 +127,11 @@ class BasicInfo extends React.Component {
         this.setState({
             loading: true,
         });
-        axiosData('/promotion/extra/extraEventService_getExtraEventsByTime.ajax', {startTime, endTime, shopID: this.props.user.shopID, pageNo: 1, pageSize: 10}, null, {path: 'data.page'}).then(res => {
+        const params = {startTime, endTime, shopID: this.props.user.shopID, pageNo: 1, pageSize: 10};
+        if (this.props.itemID) {
+            params.itemID = this.props.itemID;
+        }
+        axiosData('/promotion/extra/extraEventService_getExtraEventsByTime.ajax', params, null, {path: 'data.page'}).then(res => {
             this.setState({
                 loading: false,
             });

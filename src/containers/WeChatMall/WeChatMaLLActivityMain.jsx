@@ -68,6 +68,7 @@ class ActivityMain extends React.Component {
                 },
                 key: index,
                 isNew: this.props.isNew,
+                previousData: this.props.data,
                 promotionType: activityCategories[index].key,
                 component: promotion,
             });

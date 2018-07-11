@@ -24,9 +24,33 @@ class Wrapper extends React.Component {
     constructor(props) {
         super(props);
         this.handles = []; // store the callback
+        const {
+            startTime,
+            endTime,
+            name,
+            description,
+            tag,
+            bannerUrl,
+            reservationTime,
+            advancedAnnouncingTime,
+            userType,
+            goodsList
+        } = props.previousData || {};
         this.state = {
             loading: false,
-            data: {}
+            itemID: props.previousData ? props.previousData.itemID : undefined,
+            data: {
+                startTime,
+                endTime,
+                name,
+                description,
+                tag,
+                bannerUrl,
+                reservationTime,
+                advancedAnnouncingTime,
+                userType,
+                goodsList
+            }
         };
         this.onFinish = this.onFinish.bind(this);
         this.handleNext = this.handleNext.bind(this);
@@ -43,6 +67,7 @@ class Wrapper extends React.Component {
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
+                        itemID={this.state.itemID}
                         data={this.state.data}
                         onChange={this.handleDataChange}
                     />),
@@ -76,13 +101,17 @@ class Wrapper extends React.Component {
 
     onFinish(cb) {
         // 为了便于查找接口信息 不用字符串模板来做url
-        const url = this.props.isUpdate ? '/promotion/extra/extraEventService_updateExtraEvent.ajax' : '/promotion/extra/extraEventService_addExtraEvent.ajax';
-        axiosData(url, {...this.state.data, extraEventType: 7010, shopID: this.props.user.shopID}, null, {})
+        const url = this.props.previousData ? '/promotion/extra/extraEventService_updateExtraEvent.ajax' : '/promotion/extra/extraEventService_addExtraEvent.ajax';
+        const params = {...this.state.data, extraEventType: 7010, shopID: this.props.user.shopID};
+        if (this.props.previousData && this.props.previousData.itemID) {
+            params.itemID = this.props.previousData.itemID;
+        }
+        axiosData(url, params, null, {})
             .then(() => {
                 this.setState({
                     loading: false,
                 });
-                message.success(`活动${this.props.isUpdate ? '更新' : '创建'}完成`);
+                message.success(`活动${this.props.previousData ? '更新' : '创建'}完成`);
                 cb && cb();
             }, err => {
                 this.setState({

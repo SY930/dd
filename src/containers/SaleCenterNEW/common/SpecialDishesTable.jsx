@@ -122,7 +122,7 @@ class SpecialDishesTable extends React.Component {
                                 category.foods
                                     .find((item) => {
                                         if (this.props.isWeChatMall) {
-                                            if (item.foodName + item.unit == food.name + food.specType) {
+                                            if (item.itemID == food.foodItemID) {
                                                 item.mPrice = food.price;
                                                 item.mPoint = food.point;
                                                 item.totalAmount = food.storage;
@@ -549,11 +549,14 @@ class SpecialDishesTable extends React.Component {
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
-                title: `秒杀价(${this.state.priceOrPoint === 'price' ? '元' : '分'})`,
+                title: `秒杀价`,
                 dataIndex: `${this.state.priceOrPoint === 'price' ? 'mPrice' : 'mPoint'}`,
                 key: 'mPrice',
                 width: 80,
                 className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return `${text}${this.state.priceOrPoint === 'price' ? '元' : '分'}`
+                },
             },
             {
                 title: '售价 (元)',

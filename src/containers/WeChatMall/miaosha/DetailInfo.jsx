@@ -50,6 +50,7 @@ class DetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+        console.log('detailInfo: ', this.state);
     }
 
     handleDishesChange(val) {
@@ -59,6 +60,7 @@ class DetailInfo extends React.Component {
             price: item.mPrice === undefined ? -1 : Number(item.mPrice),
             point: item.mPoint === undefined ? -1 : Number(item.mPoint),
             foodItemID: item.itemID,
+            foodID: item.foodID,
             storage: item.totalAmount,
             purchaseLimit: item.limitAmount,
         }));

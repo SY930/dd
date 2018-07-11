@@ -43,7 +43,7 @@ class RangeInfo extends React.Component {
             reservationTime: props.data.reservationTime,
             bannerUrl: props.data.bannerUrl,
             advancedAnnouncingTime: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? advancedAnnouncingTimeInHour / 24 : advancedAnnouncingTimeInHour : undefined,
-            dayOrHour: '小时',
+            dayOrHour: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? '天' : '小时' : '小时',
             tipDisplay: 'none',
         };
 
@@ -54,7 +54,6 @@ class RangeInfo extends React.Component {
     }
 
     handleSubmit() {
-        console.log(this.state);
         let flag = true;
         this.props.form.validateFieldsAndScroll((err1) => {
             if (err1) {
@@ -88,6 +87,9 @@ class RangeInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        /*if (this.props.data.reservationTime) {
+            this.props.form.setFieldsValue('reservation', this.props.data.reservationTime)
+        }*/
     }
 
     componentWillReceiveProps(nextProps) {
@@ -161,7 +163,7 @@ class RangeInfo extends React.Component {
                                 message: '预留时间为3 ~ 120 分钟',
                             },
                         ],
-                        initialValue: this.state.reservationTime,
+                        initialValue: this.state.reservationTime ? {number: this.state.reservationTime} : undefined,
                         onChange: this.onReservationChange,
                     })(
                         <PriceInput
@@ -203,7 +205,7 @@ class RangeInfo extends React.Component {
                             required: true,
                             message: '不得为空',
                         }],
-                        initialValue: this.state.advancedAnnouncingTime,
+                        initialValue: this.state.reservationTime ? {number: this.state.advancedAnnouncingTime} : undefined,
                         onChange: this.handleWarmUpTimeChange
                     })(
                         <PriceInput
@@ -246,12 +248,12 @@ class RangeInfo extends React.Component {
             },
             onChange: (info) => {
                 const status = info.file.status;
-                if (status === 'done') {
+                if (status === 'done' && info.file.response && info.file.response.url) {
                     message.success(`${info.file.name} 上传成功`);
                     this.setState({
                         bannerUrl: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
                     })
-                } else if (status === 'error') {
+                } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
                     message.error(`${info.file.name} 上传失败`);
                 }
             },
