@@ -561,7 +561,7 @@ export class WeChatMallPromotionList extends React.Component {
                             </a>
                             <a
                                 href="#"
-                                disabled={isGroupPro}
+                                disabled={isGroupPro || record.status == 1}
                                 onClick={() => {
                                     this.handleEdit(record, true)
                                 }}
