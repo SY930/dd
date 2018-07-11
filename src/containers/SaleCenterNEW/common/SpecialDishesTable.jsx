@@ -518,7 +518,7 @@ class SpecialDishesTable extends React.Component {
                 },
             },
             {
-                title: '单位',
+                title: this.props.isWeChatMall ? '规格' : '单位',
                 dataIndex: 'unit',
                 key: 'unit',
                 width: 50,
