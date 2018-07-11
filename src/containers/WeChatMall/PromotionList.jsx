@@ -151,8 +151,11 @@ export class WeChatMallPromotionList extends React.Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
 
-    handleDisableClickEvent(record) { // toggle, 2 关闭 1开启, 2时点击启用status传1, 1时点击禁用status传2
-        const status = record.status == 1 ? 2 : 1;
+    handleDisableClickEvent(record) { // toggle, 2 关闭 1开启 3终止, 2时点击启用status传1, 1时点击禁用status传2, 3时只能查看
+        const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
+        const status = record.status == 1 ? isOngoing ? 3 : 2 : 1;
+        console.log('isOngoing:', isOngoing);
+        console.log('status:', status);
         axiosData('/promotion/extra/extraEventService_toggleExtraEvent.ajax', {itemID: record.itemID, shopID: this.props.user.shopID, status}, null, {path: 'data.extraEventList'})
             .then(() => {
                 message.success('使用状态修改成功');
@@ -420,9 +423,10 @@ export class WeChatMallPromotionList extends React.Component {
                                     });
                                 }}
                             >
-                                <Option value={TRIPLE_STATE.ALL}>全部</Option>
-                                <Option value={TRIPLE_STATE.OPTION1}>启用</Option>
-                                <Option value={TRIPLE_STATE.OPTION2}>未启用</Option>
+                                <Option value={'0'}>全部</Option>
+                                <Option value={'1'}>启用</Option>
+                                <Option value={'2'}>未启用</Option>
+                                <Option value={'3'}>已终止</Option>
                             </Select>
                         </li>
                         {/*<li>
@@ -542,12 +546,15 @@ export class WeChatMallPromotionList extends React.Component {
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const buttonText = (record.status == 1 ? '禁用' : '启用');
+                    const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
+                    const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
+                    const buttonText = (record.status == 1 ? isOngoing ? '终止' : '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
                     return (<span>
                         <a
                             href="#"
-                            onClick={() => {
+                            disabled={isExpired || record.status == 3}
+                            onClick={isExpired || record.status == 3 ? null : () => {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
                         >{buttonText}</a>
@@ -561,8 +568,8 @@ export class WeChatMallPromotionList extends React.Component {
                             </a>
                             <a
                                 href="#"
-                                disabled={isGroupPro || record.status == 1}
-                                onClick={() => {
+                                disabled={isGroupPro || record.status == 1 || isExpired || record.status == 3}
+                                onClick={isGroupPro || record.status == 1 || isExpired || record.status == 3 ? null : () => {
                                     this.handleEdit(record, true)
                                 }}
                             >编辑</a>
@@ -601,22 +608,29 @@ export class WeChatMallPromotionList extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 180,
+                width: 200,
                 render: (validDate, record) => {
                     return `${moment(record.startTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD HH:mm')} - ${moment(record.endTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD HH:mm')}`;
                 },
             },
 
-            /*{
+            {
                 title: '有效状态',
                 dataIndex: 'status',
                 key: 'valid',
                 className: 'TableTxtCenter',
-                width: 72,
-                render: (status) => {
-                    return status == '1' ? '未开始' : status == '2' ? '执行中' : '已结束';
+                width: 100,
+                render: (status, record) => {
+                    if (moment(record.endTime, 'YYYYMMDDHHmm') < Date.now()) {
+                        return '已过期';
+                    } else if (moment(record.startTime, 'YYYYMMDDHHmm') > Date.now()) {
+                        return '未开始';
+                    } else if (status == 1) {
+                        return '进行中';
+                    }
+                    return '有效期内'
                 },
-            },*/
+            },
 
             {
                 title: '创建人/修改人',
@@ -653,7 +667,7 @@ export class WeChatMallPromotionList extends React.Component {
                 key: 'isActive',
                 width: 100,
                 render: (status) => { // 2 关闭 1开启
-                    return (status == 1 ? '已启用' : '未启用');
+                    return (status == 1 ? '已启用' : status == 3 ? '已终止' : '未启用');
                 },
             },
         ];
