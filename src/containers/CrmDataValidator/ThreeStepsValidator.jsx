@@ -165,9 +165,12 @@ class ThreeStepsValidator extends React.Component {
 
     componentDidMount() {
         this.intervalId = window.setInterval(() => {
-            this.setState({
-                isBusyTime: this.isBusyTime()
-            })
+            const isBusyTime = this.isBusyTime();
+            if (isBusyTime !== this.state.isBusyTime) {
+                this.setState({
+                    isBusyTime
+                })
+            }
         }, 500);
         this.queryValidationHistory()
 
