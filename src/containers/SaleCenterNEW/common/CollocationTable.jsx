@@ -437,7 +437,7 @@ class CollocationTable extends React.Component {
     }
     // 输入框
     handleFoodSearchInputChange(value) {
-        const { foodCategoryCollection } = this.state;
+        const { foodCategoryCollection, foodSelections } = this.state;
         if (undefined === foodCategoryCollection) {
             return null;
         }

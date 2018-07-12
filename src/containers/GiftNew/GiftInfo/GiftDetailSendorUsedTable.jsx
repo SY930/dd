@@ -233,7 +233,6 @@ class GiftSendOrUsedCount extends React.Component {
         });
     }
     handleFormChange(k, v, f) {
-        console.log(k, v, f);
     }
     handleQuery(used) {
         this.queryForm.validateFieldsAndScroll((err, values) => {

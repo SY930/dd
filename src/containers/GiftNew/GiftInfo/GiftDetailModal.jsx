@@ -236,7 +236,7 @@ class GiftDetailModal extends Component {
                             <h3>使用统计</h3>
                         </Row>
                         <Row>
-                            <GiftDetailModalTabs data={data} />
+                            <GiftDetailModalTabs data={data} total={(this.props.sendTotalSize || 0) + (this.props.usedTotalSize || 0)} />
                         </Row>
                     </div>
                 </div>
