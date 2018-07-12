@@ -521,7 +521,8 @@ class SpecialDishesTable extends React.Component {
                 title: this.props.isWeChatMall ? '规格' : '单位',
                 dataIndex: 'unit',
                 key: 'unit',
-                width: 50,
+                fixed: 'left',
+                width: 100,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -531,6 +532,7 @@ class SpecialDishesTable extends React.Component {
                 title: '编码',
                 dataIndex: 'foodCode',
                 key: 'foodCode',
+                width: 100,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -540,7 +542,8 @@ class SpecialDishesTable extends React.Component {
                 title: '分类',
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
-                className: 'TableTxtLeft',
+                width: 100,
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
                 },
@@ -549,14 +552,11 @@ class SpecialDishesTable extends React.Component {
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
-                title: `秒杀价`,
+                title: `秒杀价 (${this.state.priceOrPoint === 'price' ? '元' : '积分'})`,
                 dataIndex: `${this.state.priceOrPoint === 'price' ? 'mPrice' : 'mPoint'}`,
                 key: 'mPrice',
-                width: 80,
+                width: 110,
                 className: 'TableTxtRight',
-                render: (text, record, index) => {
-                    return `${text}${this.state.priceOrPoint === 'price' ? '元' : '分'}`
-                },
             },
             {
                 title: '售价 (元)',
@@ -573,13 +573,13 @@ class SpecialDishesTable extends React.Component {
                 width: 80,
                 dataIndex: 'totalAmount',
                 key: 'totalAmount',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
             },
             {
                 title: '限购数',
                 dataIndex: 'limitAmount',
                 key: 'limitAmount',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
             },
 
         ] : [
@@ -595,7 +595,7 @@ class SpecialDishesTable extends React.Component {
                 dataIndex: 'salePercent',
                 key: 'salePercent',
                 width: 90,
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
@@ -632,7 +632,7 @@ class SpecialDishesTable extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Table bordered={true} dataSource={data} columns={columns} scroll={{ x: 660 }} pagination={{ size: 'small', pageSize: 10 }} />
+                        <Table bordered={true} dataSource={data} columns={columns} scroll={{ x: this.props.isWeChatMall ? 810 : 750 }} pagination={{ size: 'small', pageSize: 10 }} />
                     </Col>
                 </Row>
                 <Modal
