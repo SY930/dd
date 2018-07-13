@@ -113,6 +113,7 @@ class CardOperate extends React.Component {
                 params.endNO = params.startEnd_max;
             }
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum', 'useCardTypeID']);
+            console.log('_params: ', _params);
             axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
@@ -169,15 +170,20 @@ class CardOperate extends React.Component {
                         {
                             decorator({
                                 key: 'startEnd_min',
-                                rules: [{ required: true, message: '起始号不能为空' },
-                                { type: 'integer', message: '起始号必须为整数', transform: value => Number(value) },
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v === '') cb();
-                                        v > 0 && v < 999999 ? cb() : cb(rule.message);
+                                rules: [
+                                    { required: true, message: '起始号不能为空' },
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            if (v === '') cb();
+                                            v > 0 && v < 999999 ? cb() : cb(rule.message);
+                                        },
+                                        message: '起始号必须是1-999999之间的数字'
                                     },
-                                    message: '起始号必须是1-999999之间的值'
-                                }],
+                                    { validator: (rule, v, cb) => {
+                                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                                    },
+                                        message: '不能超过6位'},
+                                ],
                             })(<Input placeholder="起始号" />)
                         }
                     </FormItem>
@@ -188,15 +194,20 @@ class CardOperate extends React.Component {
                         {
                             decorator({
                                 key: 'startEnd_max',
-                                rules: [{ required: true, message: '终止号不能为空' },
-                                { type: 'integer', message: '终止号必须为整数', transform: value => Number(value) },
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v === '') cb();
-                                        v >= min && v < 999999 ? cb() : cb(rule.message);
+                                rules: [
+                                    { required: true, message: '终止号不能为空' },
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            if (v === '') cb();
+                                            v >= min && v < 999999 ? cb() : cb(rule.message);
+                                        },
+                                        message: '终止号必须是起始号到999999之间的数字'
                                     },
-                                    message: '终止号必须是起始号到999999之间的值'
-                                }],
+                                    { validator: (rule, v, cb) => {
+                                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                                    },
+                                        message: '不能超过6位'},
+                                ],
                             })(<Input placeholder="终止号" />)
                         }
                     </FormItem>
@@ -222,15 +233,20 @@ class CardOperate extends React.Component {
                 label: '批次号',
                 type: 'text',
                 placeholder: '请输入批次号',
-                rules: [{ required: true, message: '批次号不能为空' },
-                { type: 'integer', message: '批次号必须为整数', transform: value => Number(value) },
-                {
-                    validator: (rule, v, cb) => {
-                        if (v === '') cb();
-                        v > 0 && v < 999999 ? cb() : cb(rule.message);
+                rules: [
+                    { required: true, message: '批次号不能为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (v === '') cb();
+                            v > 0 && v < 999999 ? cb() : cb(rule.message);
+                        },
+                        message: '批次号必须是1-999999之间的整数'
                     },
-                    message: '批次号必须是1-999999之间的值'
-                }],
+                    { validator: (rule, v, cb) => {
+                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                    },
+                        message: '不能超过6位'},
+                ],
             },
             startEnd: {
                 label: '起止号',
