@@ -66,7 +66,7 @@ class GiftDetailModalTabs extends React.Component {
                     className="tabsStyles"
                     activeKey={this.state.activeKey}
                     onChange={activeKey => this.onChange(activeKey)}
-                    tabBarExtraContent={
+                    /*tabBarExtraContent={
                         <Button type="ghost"
                                 disabled={this.props.total <= 0}
                                 onClick={this.handleExport}
@@ -74,7 +74,7 @@ class GiftDetailModalTabs extends React.Component {
                         >
                         <Icon
                             type="export" />导出</Button>
-                    }
+                    }*/
                 >
                     {
                         tabs.map((tab) => {
