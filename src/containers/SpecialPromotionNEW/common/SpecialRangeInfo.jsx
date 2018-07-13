@@ -610,7 +610,7 @@ class SpecialRangeInfo extends React.Component {
                             form={this.props.form}
                         />
                 }
-                {/*{
+                {
                     this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
                         (<FormItem
                             label={'参加活动成为会员'}
@@ -623,7 +623,7 @@ class SpecialRangeInfo extends React.Component {
                                 <Radio value={0}>用户须填写注册信息</Radio>
                             </RadioGroup>
                         </FormItem>) : null
-                }*/}
+                }
                 {
                     this.props.type !== '23' ?
                         <FormItem
