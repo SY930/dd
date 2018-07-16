@@ -50,7 +50,7 @@ import {
     TRIPLE_STATE,
 } from '../../redux/actions/saleCenterNEW/types';
 import styles from '../SaleCenterNEW/ActivityPage.less';
-import {throttle, isEqual} from 'lodash'
+import {throttle, isEqual, debounce} from 'lodash'
 import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import Cfg from "../../constants/SpecialPromotionCfg";
@@ -131,7 +131,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.renderModifyRecordInfoModal = this.renderModifyRecordInfoModal.bind(this);
         this.onDateQualificationChange = this.onDateQualificationChange.bind(this);
         this.onTreeSelect = this.onTreeSelect.bind(this);
-        this.handleQuery = this.handleQuery.bind(this);
+        this.handleQuery = debounce(this.handleQuery.bind(this), 500);
         this.showNothing = this.showNothing.bind(this);
         this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
     }
@@ -154,8 +154,6 @@ export class WeChatMallPromotionList extends React.Component {
     handleDisableClickEvent(record) { // toggle, 2 关闭 1开启 3终止, 2时点击启用status传1, 1时点击禁用status传2, 3时只能查看
         const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
         const status = record.status == 1 ? isOngoing ? 3 : 2 : 1;
-        console.log('isOngoing:', isOngoing);
-        console.log('status:', status);
         axiosData('/promotion/extra/extraEventService_toggleExtraEvent.ajax', {itemID: record.itemID, shopID: this.props.user.shopID, status}, null, {path: 'data.extraEventList'})
             .then(() => {
                 message.success('使用状态修改成功');

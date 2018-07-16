@@ -30,7 +30,6 @@ class GiftDetailModalTabs extends React.Component {
         this.setState({
             exportVisible: true,
         });
-        console.log('itemID: ', this.props.data);
     }
 
     componentWillReceiveProps(nextProps) {

@@ -124,9 +124,7 @@ class Wrapper extends React.Component {
      * @param data: 传递给后端的字段map
      */
     handleDataChange(data) {
-        this.setState({data: {...this.state.data, ...data}}, () => {
-            console.log(this.state.data)
-        });
+        this.setState({data: {...this.state.data, ...data}});
     }
 
 

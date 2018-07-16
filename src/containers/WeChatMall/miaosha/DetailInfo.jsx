@@ -50,7 +50,6 @@ class DetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        console.log('detailInfo: ', this.state);
     }
 
     handleDishesChange(val) {
