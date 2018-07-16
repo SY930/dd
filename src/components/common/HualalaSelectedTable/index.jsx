@@ -83,21 +83,45 @@ export default class HualalaSelectedTable extends React.Component {
     }
 
     handleMValueChange(val, entity) {
-        if (this.state.priceOrPoint === 'price') {
-            entity.mPrice = val.number;
-            entity.mPoint = undefined;
-        } else {
-            entity.mPoint = val.number;
-            entity.mPrice = undefined;
+        const food = this.state.data.find(item => item.itemID === entity.itemID);
+        if (!food) {
+            return;
         }
+        if (val.number > 999999) {// 价格不大于999,999
+            val.number = 999999;
+        }
+        if (this.state.priceOrPoint === 'price') {
+            food.mPrice = val.number;
+            food.mPoint = undefined;
+        } else {
+            food.mPoint = val.number;
+            food.mPrice = undefined;
+        }
+        this.setState({data: this.state.data });
     }
 
     handleTotalAmountChange(val, entity) {
-        entity.totalAmount = val.number;
+        const food = this.state.data.find(item => item.itemID === entity.itemID);
+        if (!food) {
+            return;
+        }
+        if (val.number > 999) {// 数量不大于999
+            val.number = 999;
+        }
+        food.totalAmount = val.number;
+        this.setState({data: this.state.data });
     }
 
     handleLimitAmountChange(val, entity) {
-        entity.limitAmount = val.number;
+        const food = this.state.data.find(item => item.itemID === entity.itemID);
+        if (!food) {
+            return;
+        }
+        if (val.number > 999) {// 数量不大于999
+            val.number = 999;
+        }
+        food.limitAmount = val.number;
+        this.setState({data: this.state.data });
     }
 
     render() {
