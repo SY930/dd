@@ -175,7 +175,7 @@ class CardOperate extends React.Component {
                                     {
                                         validator: (rule, v, cb) => {
                                             if (v === '') cb();
-                                            v > 0 && v < 999999 ? cb() : cb(rule.message);
+                                            v > 0 && v <= 999999 ? cb() : cb(rule.message);
                                         },
                                         message: '起始号必须是1-999999之间的数字'
                                     },
@@ -199,7 +199,7 @@ class CardOperate extends React.Component {
                                     {
                                         validator: (rule, v, cb) => {
                                             if (v === '') cb();
-                                            v >= min && v < 999999 ? cb() : cb(rule.message);
+                                            v >= min && v <= 999999 ? cb() : cb(rule.message);
                                         },
                                         message: '终止号必须是起始号到999999之间的数字'
                                     },
@@ -238,7 +238,7 @@ class CardOperate extends React.Component {
                     {
                         validator: (rule, v, cb) => {
                             if (v === '') cb();
-                            v > 0 && v < 999999 ? cb() : cb(rule.message);
+                            v > 0 && v <= 999999 ? cb() : cb(rule.message);
                         },
                         message: '批次号必须是1-999999之间的整数'
                     },
