@@ -26,7 +26,6 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
-const dayOrHourSymbol = Symbol('dayOrHour');
 import {
     saleCenterSetPromotionDetailAC,
     fetchGiftListInfoAC,
@@ -35,7 +34,6 @@ import {
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
-    SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 
 
@@ -372,51 +370,11 @@ class ReturnGift extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        let arr;
-        if (info[dayOrHourSymbol] == 1 || !info[dayOrHourSymbol]) {
-            arr = SALE_CENTER_GIFT_EFFICT_TIME
-        }
-        if (info[dayOrHourSymbol] == 24 || !info[dayOrHourSymbol] && info.giftEffectiveTime.value >= 24) {
-            arr = SALE_CENTER_GIFT_EFFICT_DAY
-        }
         if (info.giftValidType === '0') {
             return (
                 <div>
                     <FormItem
-                        className={[styles.FormItemStyle].join(' ')}
-                    >
-                        <span className={styles.formLabel}>相对有效期:</span>
-                        <RadioGroup
-                            className={styles.radioMargin}
-                            value={
-                                info[dayOrHourSymbol] || (typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
-                                    '1' : this.state.infos[index].giftEffectiveTime.value >= 24 ? '24' : '1')
-                            }
-                            onChange={e => {
-                                const infos = this.state.infos;
-                                if (!infos[index][dayOrHourSymbol] ||  e.target.value !== infos[index][dayOrHourSymbol]) {
-                                    if (e.target.value == 1) {
-                                        infos[index].giftEffectiveTime.value = '0'
-                                    } else {
-                                        infos[index].giftEffectiveTime.value = '24'
-                                    }
-                                }
-                                this.setState({
-                                    infos,
-                                }, () => {
-                                    this.props.onChange && this.props.onChange(this.state.infos);
-                                })
-                            }}
-                        >
-                            {
-                                [{ value: '1', label: '按小时' }, { value: '24', label: '按天' }].map((item, index) => {
-                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
-                                })
-                            }
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        label="何时生效"
+                        label="相对有效期"
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -432,12 +390,11 @@ class ReturnGift extends React.Component {
                             }
                             onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
                         >
-                            { arr === SALE_CENTER_GIFT_EFFICT_DAY ?
-                            arr.map((item, index) => {
-                                    return (<Option value={`${24* (index+1)}`} key={index}>{item.label}</Option>);
-                                }) : arr.map((item, index) => {
-                                    return (<Option value={item.value} key={index}>{item.label}</Option>);
-                                })
+                            {
+                                SALE_CENTER_GIFT_EFFICT_TIME
+                                    .map((item, index) => {
+                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                    })
                             }
                         </Select>
                     </FormItem>
