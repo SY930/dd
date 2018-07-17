@@ -131,7 +131,7 @@ export default class HualalaSelectedTable extends React.Component {
                 dataIndex: 'displayName',
                 key: 'displayName',
                 fixed: 'left',
-                width: 150,
+                width: this.props.isWeChatMall ? 250 : 150,
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -142,7 +142,7 @@ export default class HualalaSelectedTable extends React.Component {
                 dataIndex: 'foodCode',
                 key: 'foodCode',
                 fixed: 'left',
-                width: 90,
+                width: this.props.isWeChatMall ? 120 : 90,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -152,8 +152,8 @@ export default class HualalaSelectedTable extends React.Component {
                 title: '分类',
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
-                width: 80,
-                className: 'TableTxtLeft',
+                width: this.props.isWeChatMall ? 120 : 80,
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
                 },
@@ -218,7 +218,7 @@ export default class HualalaSelectedTable extends React.Component {
                 title: '库存量',
                 dataIndex: 'prePrice2',
                 key: 'prePrice2',
-                width: 80,
+                width: 95,
                 className: 'TableTxtRight',
                 render: (text, record, index) => (
                     <span className={styles.rightAlign}>

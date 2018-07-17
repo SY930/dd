@@ -620,13 +620,11 @@ export class WeChatMallPromotionList extends React.Component {
                 width: 100,
                 render: (status, record) => {
                     if (moment(record.endTime, 'YYYYMMDDHHmm') < Date.now()) {
-                        return '已过期';
+                        return '已结束';
                     } else if (moment(record.startTime, 'YYYYMMDDHHmm') > Date.now()) {
                         return '未开始';
-                    } else if (status == 1) {
-                        return '进行中';
                     }
-                    return '有效期内'
+                    return '执行中'
                 },
             },
 
