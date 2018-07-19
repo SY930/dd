@@ -116,22 +116,25 @@ export default class ExportModal extends Component {
             })
     }
     getExportRecords = (key) => {
-        this.setState({ loading: true }, () => {
-            let data = {}
-            if (key) {
-                data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
-            }
-            if (this.props.newExport) {
-                data.exportQuotaType = '5';
-            }
-            axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
-                .then(data => {
-                    const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
-                    this.setState({
-                        dataSource: _Records,
-                        loading: false,
-                    })
+        this.setState({ loading: true });
+        let data = {}
+        if (key) {
+            data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
+        }
+        if (this.props.newExport) {
+            data.exportQuotaType = '5';
+        }
+        axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
+            .then(data => {
+                const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
+                this.setState({
+                    dataSource: _Records,
+                    loading: false,
                 })
+            }).catch(e => {
+            this.setState({
+                loading: false
+            })
         })
     }
 
