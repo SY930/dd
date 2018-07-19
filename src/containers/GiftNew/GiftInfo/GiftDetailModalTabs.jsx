@@ -87,6 +87,7 @@ class GiftDetailModalTabs extends React.Component {
                     !this.state.exportVisible ? null :
                         <ExportModal
                             giftItemID={data.giftItemID}
+                            giftName={data.giftName}
                             newExport // 除了礼品定额卡之外的导出, 复用组件
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
