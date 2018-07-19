@@ -246,11 +246,14 @@ export class WeChatMallPromotionList extends React.Component {
         if (this.state.status > 0) {
             params.status = this.state.status
         }
-        axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data.extraEventList'})
-            .then((list = []) => {
+        axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})
+            .then((data) => {
                 this.setState({
                     loading: false,
-                    dataSource: list.map((item, index) => ({...item, index: index + 1})),
+                    dataSource: (data.extraEventList || []).map((item, index) => ({...item, index: index + 1})),
+                    pageNo: data.page.pageNo || 1,
+                    pageSizes: data.page.pageSize || 30,
+                    total: data.page.totalSize || 0,
                 });
             }, err => {
                 this.setState({
