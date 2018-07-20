@@ -188,7 +188,7 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                <ActivityMain
+                { this.state.modal1Visible && <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
                     isNew={true}
@@ -197,7 +197,7 @@ class NewActivity extends React.Component {
                             this.setModal1Visible(false)
                         }
                     }}
-                />
+                />}
             </Modal>
         );
     }

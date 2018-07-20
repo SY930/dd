@@ -630,7 +630,7 @@ class MyActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.renderContentOfThisModal()}
+                {this.state.updateModalVisible && this.renderContentOfThisModal()}
             </Modal>
         );
     }
