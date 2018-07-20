@@ -2,7 +2,15 @@ import React from 'react';
 import {connect} from 'react-redux';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { isEqual } from 'lodash';
-import { Button, Form, Input, Row, Col, message as messageService } from 'antd';
+import {
+    Button,
+    Form,
+    Input,
+    Row,
+    Col,
+    message as messageService,
+    Alert,
+} from 'antd';
 import {createMessageTemplate, updateMessageTemplate} from "./actions";
 const FormItem = Form.Item;
 
@@ -108,6 +116,12 @@ class MessageTemplateEditPanel extends React.Component {
     render() {
         return (
             <div>
+                <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
+                    <Button onClick={this.addMessageInfo}>会员姓名</Button>
+                    <Button onClick={this.addMessageInfo}>先生/女士</Button>
+                    <Button onClick={this.addMessageInfo}>卡名称</Button>
+                    <Button onClick={this.addMessageInfo}>卡号后四位</Button>
+                </FormItem>
                 <Form>
                     <FormItem
                         label="短信模板"
@@ -127,33 +141,24 @@ class MessageTemplateEditPanel extends React.Component {
                         )}
 
                     </FormItem>
-                    <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
-                        <Button onClick={this.addMessageInfo}>会员姓名</Button>
-                        <Button onClick={this.addMessageInfo}>先生/女士</Button>
-                        <Button onClick={this.addMessageInfo}>卡名称</Button>
-                        <Button onClick={this.addMessageInfo}>卡号后四位</Button>
-                        <Row>
-                            <Col span={2}> <span className={styles.titleHeight}>规则:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>
-                                    {'请不要输入"【】" "[]"符号'}
-                                </p>
-                                <p className={styles.blockP}>
-                                    预计字数：{(this.state.message || '').length}字，67字为一条，最多500字（含标点空格）
-                                </p>
-                                <p className={styles.blockP}>
-                                    短信费用0.08元/条
-                                </p>
-                            </Col>
-                            <Col span={2} ><span className={styles.titleHeight}>注:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>{'1.  统计字数中含"回复TD退订【互联网餐厅】"'}</p>
-                                <p className={styles.blockP}>{'2.  字数以最终发出短信内容为准'}</p>
-                            </Col>
-
-                        </Row>
-                    </FormItem>
                 </Form>
+                <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
+                    <Row>
+                        <Col offset={1} span={22}>
+                            <p className={styles.blockP}>
+                                预计字数：{(this.state.message || '').length}字，{Math.ceil((this.state.message || '').length/67)}条短信, 67字为一条，最多500字（含标点空格）
+                            </p>
+                            <p className={styles.blockP}>
+                                短信条数将由您选择的扣费账户短信余额中扣除, 请注意保证余额充足
+                            </p>
+                        </Col>
+                    </Row>
+                </FormItem>
+                <Row>
+                    <Col span={17} offset={4}>
+                        <Alert showIcon message={`注: 请不要输入"【】" "[]"符号, 统计字数中含"回复TD退订【互联网餐厅】"; 字数以最终发出短信内容为准`} type="warning" />
+                    </Col>
+                </Row>
                 <div style={{textAlign: 'center'}}>
                     <Button type="ghost"
                             onClick={this.cancel}>关闭
