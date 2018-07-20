@@ -183,7 +183,7 @@ class DiscountDetailInfo extends React.Component {
             this.props.setPromotionDetail({
                 rule,
             });
-        } else if (ruleValidation && this.state.ruleType == '1' || this.state.ruleType == '2') {
+        } else if (ruleValidation && (this.state.ruleType == '1' || this.state.ruleType == '2')) {
             rule = {
                 stageType: '2',
                 stage: this.state.ruleInfo.map((ruleInfo) => {
