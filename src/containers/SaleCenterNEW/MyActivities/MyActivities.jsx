@@ -21,7 +21,7 @@ import {throttle, isEqual} from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
+import { SALE_CENTER_PAGE, NEW_SALE_CENTER } from '../../../constants/entryCodes';
 
 import {
     initializationOfMyActivities,
@@ -680,8 +680,7 @@ class MyActivities extends React.Component {
                         className={styles.jumpToCreate}
                         onClick={
                             () => {
-                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID
-                                jumpPage({ menuID })
+                                jumpPage({ menuID: NEW_SALE_CENTER })
                             }
                         }>新建</Button>
                 </div>

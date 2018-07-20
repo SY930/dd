@@ -12,7 +12,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
-import { Modal, Row, Col, message } from 'antd';
+import { Modal, Row, Col, message, Button } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
 if (process.env.__CLIENT__ === true) {
@@ -37,6 +37,8 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import { jumpPage } from '@hualala/platform-base'
+import {SALE_CENTER_PAGE} from "../../constants/entryCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -123,6 +125,20 @@ class NewActivity extends React.Component {
                     <div className="layoutsTool">
                         <div className="layoutsToolLeft">
                             <h1>新建基础营销</h1>
+                            <Button
+                                type="ghost"
+                                icon="rollback"
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '150px',
+                                }}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === SALE_CENTER_PAGE).menuID
+                                        menuID && jumpPage({ menuID })
+                                    }
+                                }>返回列表</Button>
                         </div>
                     </div>
                 </Col>
