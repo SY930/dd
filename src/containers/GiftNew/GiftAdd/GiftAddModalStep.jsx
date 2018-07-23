@@ -239,19 +239,17 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
+                console.log('wo hao qi a ~~~', value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
                     values.isFoodCatNameList = data.isFoodCatNameList;
                     // values.foodNameList = [];
                     break;
                 }
+                console.log('wo hao qi a 2 ~~~', value);
                 if (value) {
                     const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
-                    const _foodCategory = foodCategory && foodCategory.map((cat) => {
-                        return cat.foodCategoryName
-                    })
-                    const _dishes = dishes && dishes.map((dish) => {
-                        return dish.foodName + dish.unit || dish.foodNameWithUnit
-                    })
+                    const _foodCategory = foodCategory.map(cat => cat.foodCategoryName)
+                    const _dishes = dishes.map(dish => dish.foodName + dish.unit || dish.foodNameWithUnit)
                     values.isFoodCatNameList = categoryOrDish;
                     values.foodNameList = categoryOrDish == '1' ? _foodCategory : _dishes;
                 } else {
@@ -512,6 +510,7 @@ class GiftAddModalStep extends React.Component {
             this.setState({
                 finishLoading: true,
             });
+            console.log('我服了', values,  params.foodNameList);
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
