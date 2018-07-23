@@ -52,7 +52,7 @@ const moment = require('moment');
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
-const AddCategorys = Form.create()(class AddCategory extends React.Component {
+export const AddCategorys = Form.create()(class AddCategory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -1118,7 +1118,7 @@ class PromotionBasicInfo extends React.Component {
                     {getFieldDecorator('description', {
                         rules: [{
                             message: '不多于200个字符',
-                            pattern: /.{1,200}/,
+                            pattern: /^.{1,200}$/,
                         }],
                         initialValue: this.state.description,
                     })(

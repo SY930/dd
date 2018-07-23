@@ -1,26 +1,31 @@
 /**
-* @Author: Xiao Feng Wang  <xf>
-* @Date:   2017-03-28T09:30:53+08:00
-* @Email:  wangxiaofeng@hualala.com
-* @Filename: NewActivity.jsx
+ * @Author: Xiao Feng Wang  <xf>
+ * @Date:   2017-03-28T09:30:53+08:00
+ * @Email:  wangxiaofeng@hualala.com
+ * @Filename: NewActivity.jsx
  * @Last modified by:   chenshuang
  * @Last modified time: 2017-04-05T15:22:34+08:00
-* @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
-*/
+ * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
+ */
 
 
 import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
-import { Modal, Row, Col, message } from 'antd';
+import registerPage from '../../index';
+import { jumpPage } from '@hualala/platform-base'
+import {
+    Modal,
+    Row,
+    Col,
+    message,
+    Button,
+} from 'antd';
 import { checkPermission } from '../../helpers/util';
+import { saleCenter_NEW as sale_saleCenter_NEW } from '../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 
-if (process.env.__CLIENT__ === true) {
-    require('../../components/common/components.less');
-}
-
-import { ActivityLogo } from './ActivityLogo/ActivityLogo';
-import ActivityMain from './activityMain';
+import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo';
+import ActivityMain from './WeChatMaLLActivityMain';
 import Authority from './../../components/common/Authority';
 import {
     saleCenterResetBasicInfoAC,
@@ -37,6 +42,7 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -71,6 +77,14 @@ function mapDispatchToProps(dispatch) {
         },
     };
 }
+@registerPage([WECHAT_MALL_CREATE], {
+    // sale_promotionBasicInfo_NEW,
+    // sale_promotionDetailInfo_NEW,
+    // sale_promotionScopeInfo_NEW,
+    // sale_fullCut_NEW,
+    // sale_myActivities_NEW,
+    sale_saleCenter_NEW,
+})
 @connect(mapStateToProps, mapDispatchToProps)
 class NewActivity extends React.Component {
     constructor(props) {
@@ -94,7 +108,6 @@ class NewActivity extends React.Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState))
-        // return true
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
@@ -105,11 +118,6 @@ class NewActivity extends React.Component {
     }
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
-        if (!modal1Visible) {
-            this.props.saleCenterResetBasicInfo();
-            this.props.saleCenterResetScopeInfo();
-            this.props.saleCenterResetDetailInfo();
-        }
     }
 
     clear() {
@@ -122,7 +130,21 @@ class NewActivity extends React.Component {
                 <Col span={24} className="layoutsHeader">
                     <div className="layoutsTool">
                         <div className="layoutsToolLeft">
-                            <h1>新建基础营销</h1>
+                            <h1>新建商城活动</h1>
+                            <Button
+                                type="ghost"
+                                icon="rollback"
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '150px',
+                                }}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === WECHAT_MALL_LIST).menuID
+                                        menuID && jumpPage({ menuID })
+                                    }
+                                }>返回列表</Button>
                         </div>
                     </div>
                 </Col>
@@ -142,36 +164,29 @@ class NewActivity extends React.Component {
     _renderActivityButtons() {
         const saleCenter = this.props.saleCenter;
         return (
-
-
-                    saleCenter.get('activityCategories').map((activity, index) => {
-                        return (
-                            <li
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true);
-                                    this.onButtonClicked(index, activity);
-                                }}
-                                key={`NewActivity${index}`}
-                                style={{
-                                    listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ?
-                                        'none' : 'block',
-                                }}
-                            >
-                                <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
-                                </Authority>
-                            </li>
-                        );
-                    }).toJS()
-
-
-
+            saleCenter.get('weChatMallPromotions').map((activity, index) => {
+                return (
+                    <li
+                        onClick={() => {
+                            this.props.toggleIsUpdate(true);
+                            this.onButtonClicked(index, activity);
+                        }}
+                        key={`NewActivity${index}`}
+                        style={{
+                            listStyle: 'none',
+                        }}
+                    >
+                        <Authority rightCode="marketing.jichuyingxiaoxin.create">
+                            <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                        </Authority>
+                    </li>
+                );
+            }).toJS()
         );
     }
 
     _renderModal() {
-        const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.index].title;
+        const promotionType = this.props.saleCenter.get('weChatMallPromotions').toJS()[this.state.index].title;
 
         return (
             <Modal
@@ -185,12 +200,13 @@ class NewActivity extends React.Component {
                 }}
                 width="924px"
                 visible={this.state.modal1Visible}
-                onOk={() => this.setModal1Visible(false)}
-                onCancel={() => this.setModal1Visible(false)}
+                onOk={this.clear}
+                onCancel={this.clear}
             >
                 <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
+                    eventWay="7010" // 暂时写死 以后有新活动再改
                     isNew={true}
                     callbackthree={(arg) => {
                         if (arg == 3) {
@@ -214,9 +230,9 @@ class NewActivity extends React.Component {
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
-        this.props.setPromotionType({
+        /*this.props.setPromotionType({
             promotionType: activity.get('key'),
-        });
+        });*/
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,

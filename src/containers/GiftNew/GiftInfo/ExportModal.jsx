@@ -35,12 +35,12 @@ const COLUMNS = [{
 }, {
     title: '时间',
     dataIndex: 'createStamp',
-    className: 'TableTxtRight',
+    className: 'TableTxtCenter',
     width: 80,
 }, {
     title: '状态',
     dataIndex: 'exportStatus',
-    className: 'TableTxtLeft',
+    className: 'TableTxtCenter',
     width: 40,
     render: (text, record, index) => {
         return <span>{mapValueToLabel(ExportStatus, String(text))}</span>
@@ -48,7 +48,7 @@ const COLUMNS = [{
 }, {
     title: '操作',
     dataIndex: 'payType',
-    className: 'TableTxtLeft',
+    className: 'TableTxtCenter',
     width: 40,
     render(text, record) {
         return (
