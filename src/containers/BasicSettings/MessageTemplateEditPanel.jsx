@@ -152,7 +152,7 @@ class MessageTemplateEditPanel extends React.Component {
                     <Row>
                         <Col offset={1} span={22}>
                             <p className={styles.blockP}>
-                                预计字数：{(this.state.message || '').length}字，{Math.ceil((this.state.message || '').length/67)}条短信, 67字为一条，最多500字（含标点空格）
+                                预计字数：{(this.state.message || '').length}字, 67字为一条，最多500字（含标点空格）
                             </p>
                             <p className={styles.blockP}>
                                 短信条数将由您选择的扣费账户短信余额中扣除, 请注意保证余额充足
