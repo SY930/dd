@@ -2,7 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { Modal, Button, message } from 'antd';
-import {deleteMessageTemplate} from "./actions";
+import {
+    deleteMessageTemplate,
+    getMessageTemplateList,
+} from "./actions";
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -18,7 +21,10 @@ class MessageDisplayBox extends React.Component {
             content: '点击 `确定` 来删除',
             onOk: () => {
                 return this.props.deleteMessageTemplate({modifyBy: this.props.user.accountInfo.userName})
-                                .then(() => message.success(`删除成功`))
+                                .then(() => {
+                                    message.success(`删除成功`);
+                                    this.props.getMessageTemplateList();
+                                })
                                 .catch(err => message.error(`删除失败: ${err}`));
             },
             onCancel() {},
@@ -50,6 +56,7 @@ class MessageDisplayBox extends React.Component {
 function mapDispatchToProps(dispatch) {
     return {
         deleteMessageTemplate: opts => dispatch(deleteMessageTemplate(opts)),
+        getMessageTemplateList: opts => dispatch(getMessageTemplateList(opts)),
     };
 }
 

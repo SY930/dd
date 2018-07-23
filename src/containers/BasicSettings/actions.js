@@ -100,9 +100,7 @@ export const getMessageTemplateList = (opts) => {
         })
             .then((records) => {
                 dispatch(getMessageTemplateListSuccess({
-                    payload: {
-                        list: records || [],
-                    },
+                    list: records || [],
                 }));
             }, (err) => { // network error catch
                 dispatch(getMessageTemplateListFail());
@@ -147,7 +145,7 @@ export const createMessageTemplate = (opts) => {
 export const deleteMessageTemplate = (opts) => {
     return (dispatch) => {
         dispatch(deleteMessageTemplateStart());
-        return axiosData('/sms/smsTemplateService_delete.ajax', { ...opts }, {needThrow: true}, {
+        return axiosData('/sms/smsTemplateService_deleteSmsTemplate.ajax', { ...opts }, {needThrow: true}, {
             path: 'data',
         })
             .then((records) => {

@@ -2,11 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import registerPage from '../../index';
+import imgSrc from '../../assets/empty_ph.png';
 import {
     Row,
     Button,
     Col,
-    Modal
+    Modal,
+    Spin,
 } from 'antd';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { SET_MSG_TEMPLATE } from '../../constants/entryCodes';
@@ -118,11 +120,25 @@ class MessageTemplatesPage extends React.Component {
                             }
                         }>新建</Button>
                 </div>
-                <div style={{height: this.state.contentHeight}} className={styles.scrollableMessageContainer}>
-                    <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}  />
-                    <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>
-                    <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>
-                </div>
+                <Spin spinning={this.state.loading} delay={500}>
+                    {
+                        !pendingTemplates.length && !verifiedTemplates.length && !illegalTemplates.length ?
+                            <div style={{
+                                height: this.state.contentHeight,
+                                paddingTop: '100px',
+                            }}>
+                                <div className={styles.centerFlexContainer}>
+                                    <img src={imgSrc} width="249px" height="107px" alt=" "/> 您还没有短信模板, 快去新建吧 ~
+                                </div>
+                            </div>
+                            :
+                            <div style={{height: this.state.contentHeight}} className={styles.scrollableMessageContainer}>
+                                <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}/>
+                                <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>
+                                <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>
+                            </div>
+                    }
+                </Spin>
             </div>
         </div>
         );

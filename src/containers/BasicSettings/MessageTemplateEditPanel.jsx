@@ -11,7 +11,11 @@ import {
     message as messageService,
     Alert,
 } from 'antd';
-import {createMessageTemplate, updateMessageTemplate} from "./actions";
+import {
+    createMessageTemplate,
+    updateMessageTemplate,
+    getMessageTemplateList,
+} from "./actions";
 const FormItem = Form.Item;
 
 class MessageTemplateEditPanel extends React.Component {
@@ -72,6 +76,7 @@ class MessageTemplateEditPanel extends React.Component {
                 this.props.updateMessageTemplate({template: message, modifyBy: this.props.user.accountInfo.userName, itemID: this.props.templateEntity.itemID})
                     .then(() => {
                         messageService.success('修改成功');
+                        this.props.getMessageTemplateList();
                         this.setState({loading: false}, () => {
                             this.props.cancel && this.props.cancel()
                         })
@@ -82,6 +87,7 @@ class MessageTemplateEditPanel extends React.Component {
                 this.props.createMessageTemplate({template: message, createBy: this.props.user.accountInfo.userName})
                     .then(() => {
                         messageService.success('创建成功');
+                        this.props.getMessageTemplateList();
                         this.setState({loading: false}, () => {
                             this.props.cancel && this.props.cancel()
                         })
@@ -181,6 +187,7 @@ function mapDispatchToProps(dispatch) {
     return {
         updateMessageTemplate: opts => dispatch(updateMessageTemplate(opts)),
         createMessageTemplate: opts => dispatch(createMessageTemplate(opts)),
+        getMessageTemplateList: opts => dispatch(getMessageTemplateList(opts)),
     };
 }
 
