@@ -118,6 +118,10 @@ export const saleCenterCheckExist = (opts) => {
 
 // 获得排除卡id集合 getExcludeCardLevelIds
 export const saleCenterGetExcludeCardLevelIds = (opts) => {
+    if (!opts.eventWay) {
+        console.error('there is no eventWay!', opts);
+        return (dispatch) => {};
+    }
     return (dispatch) => {
         fetch('/api/specialPromotion/getExcludeCardLevelIds_NEW', {
             method: 'POST',
