@@ -19,6 +19,6 @@ export const NEW_SALE_CENTER_SHOP = 'shop.dianpu.creatpromotion'; // 门店-创�
 export const CRM_DATA_VALIDATOR = 'crm.data_verification.crmdv'; // admin视角 数据导入前校验
 
 
-export const SET_MSG_TEMPLATE = 'set_message_templates'; // 短信模板
+export const SET_MSG_TEMPLATE = '10000888'; // 短信模板
 export const WECHAT_MALL_CREATE = 'wechat_mall_create'; // 门店视角 CREATE
 export const WECHAT_MALL_LIST = 'crm.shop.promotion'; // 门店视角 LIST
