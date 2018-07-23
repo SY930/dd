@@ -847,6 +847,7 @@ class GiftAddModalStep extends React.Component {
                     {decorator({
                         rules: [{ required: true, message: '可共用礼品券不能为空' }],
                     })(<InputTreeForGift
+                        key="inputTreeForGift"
                         type={this.props.type}
                         giftItemID={giftItemID}
                         thisGiftItem={this.props.gift.data.giftItemID ? this.props.gift.data : null}
@@ -963,6 +964,7 @@ class GiftAddModalStep extends React.Component {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            key="foodsboxs"
                             scopeLst={data.couponFoodScopeList}
                             foodSelectType={data.foodSelectType}
                             isExcludeFood={data.isExcludeFood ? '1' : '0'}
