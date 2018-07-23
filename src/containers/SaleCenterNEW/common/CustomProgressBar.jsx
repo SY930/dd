@@ -127,6 +127,7 @@ class CustomProgressBar extends React.Component {
 
                 <div className="progressButton">
                     <Button
+                        className="cancelBtnJs"
                         type="ghost"
                         onClick={() => this.cancel(current)}
                     >取消

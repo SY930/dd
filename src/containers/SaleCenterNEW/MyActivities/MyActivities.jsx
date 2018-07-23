@@ -683,6 +683,15 @@ class MyActivities extends React.Component {
                                 jumpPage({ menuID: NEW_SALE_CENTER })
                             }
                         }>新建</Button>
+                    <Button
+                        type="ghost"
+                        icon="plus"
+                        className={styles.jumpToCreate}
+                        onClick={
+                            () => {
+                                jumpPage({ menuID: 'set_message_templates' })
+                            }
+                        }>短信</Button>
                 </div>
             </div>
         );

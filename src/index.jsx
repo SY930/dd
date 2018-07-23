@@ -1,4 +1,4 @@
-import registerPackage, {registerLocalPage} from '@hualala/platform-base';
+﻿import registerPackage, {registerLocalPage} from '@hualala/platform-base';
 import {mountEpics} from '@hualala/platform-base';
 import rootEpic from './redux/modules';
 

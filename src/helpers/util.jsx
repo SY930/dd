@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+﻿import fetch from 'isomorphic-fetch';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
 import { Modal } from 'antd';
@@ -687,7 +687,7 @@ export function axiosData(api, params, opts, {
             if (code !== '000') {
                 const {redirect, msg} = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {
-                    return Promise.reject(msg);
+                    return Promise.reject(msg || '出了点问题, 请稍后或刷新重试');
                 }
                 Modal.error({
                     title: '啊哦！好像有问题呦~~',
