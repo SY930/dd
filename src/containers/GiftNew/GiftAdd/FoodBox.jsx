@@ -203,7 +203,6 @@ class FoodBox extends React.Component {
 
     // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        console.log('为什么啊', nextProps);
         if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
