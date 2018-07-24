@@ -1343,7 +1343,7 @@ class GiftAddModalStep extends React.Component {
             // afterClose={this.afterClose}
             // wrapClassName="progressBarModal"
             >
-                {visible && <div className={styles.customProgressBar}>
+                {visible ? <div className={styles.customProgressBar}>
                     <CustomProgressBar
                         style={{ height: '200px' }}
                         steps={steps}
@@ -1356,7 +1356,7 @@ class GiftAddModalStep extends React.Component {
                         onCancel={this.handleCancel}
                         loading={this.state.finishLoading}
                     />
-                </div>}
+                </div> : null }
             </Modal>
         )
     }

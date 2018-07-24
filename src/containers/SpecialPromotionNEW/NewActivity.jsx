@@ -126,7 +126,7 @@ class NewActivity extends React.Component {
                         {this.renderActivityButtons()}
                     </ul>
                 </Col>
-                {this.state.modal1Visible ? this.renderModal(): null}
+                {this.renderModal()}
             </Row>
 
         );
@@ -173,7 +173,7 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                {this.state.modal1Visible && <ActivityMain
+                {this.state.modal1Visible ? <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
                     isNew={true}
@@ -182,7 +182,7 @@ class NewActivity extends React.Component {
                             this.setModal1Visible(false);
                         }
                     }}
-                />}
+                /> : null}
             </Modal>
         );
     }

@@ -233,9 +233,7 @@ class MySpecialActivities extends React.Component {
             updateModalVisible: false,
         }, () => {
             this.props.saleCenterResetDetailInfo();
-            this.showNothing = this.showNothing.bind(this);
         });
-
     }
 
     componentDidMount() {
@@ -348,8 +346,8 @@ class MySpecialActivities extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState)
-}
+        return !isEqual(this.state, nextState)
+    }
 
     render() {
         return (
@@ -1000,7 +998,7 @@ class MySpecialActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.state.updateModalVisible && this.renderContentOfThisModal()}
+                {this.state.updateModalVisible ? this.renderContentOfThisModal() : null}
             </Modal>
         );
     }

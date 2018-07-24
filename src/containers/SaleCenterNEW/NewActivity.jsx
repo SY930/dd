@@ -147,7 +147,7 @@ class NewActivity extends React.Component {
                     <ul>
                         {this.renderActivityButtons()}
                     </ul>
-                    {this.state.modal1Visible ? this.renderModal() : null}
+                    {this.renderModal()}
                 </Col>
             </Row>
 
@@ -188,10 +188,8 @@ class NewActivity extends React.Component {
 
     _renderModal() {
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.index].title;
-
         return (
             <Modal
-
                 wrapClassName="progressBarModal"
                 title={`创建${promotionType}活动`}
                 maskClosable={false}
