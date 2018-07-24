@@ -61,12 +61,13 @@ class MessageSelector extends React.Component {
         this.props.onChange && this.props.onChange(message);
     }
 
-    jumpAway(e) {
+    jumpAway = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
+        menuID && jumpPage({menuID});
         const cancelBtn = document.querySelector('.cancelBtnJs');
         cancelBtn && cancelBtn.click();
-        jumpPage({menuID: SET_MSG_TEMPLATE});
     }
 
     render() {
@@ -90,7 +91,6 @@ class MessageSelector extends React.Component {
                             当前没有审核通过的的短信模板，<a onClick={this.jumpAway}>去设置</a>
                         </div>
                     </div>
-
                 }
                 {
                     !!messageTemplateList.length &&
@@ -109,6 +109,7 @@ function mapStateToProps(state) {
     return {
         loading: state.messageTemplateState.get('messageTemplateListLoading'),
         messageTemplateList: state.messageTemplateState.get('messageTemplateList'),
+        user: state.user.toJS(),
     }
 }
 
