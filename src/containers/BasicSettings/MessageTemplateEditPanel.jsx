@@ -26,11 +26,13 @@ class MessageTemplateEditPanel extends React.Component {
             message: props.templateEntity ? props.templateEntity.template : '' ,
             pristineMessage: props.templateEntity ? props.templateEntity.template : '' ,
             loading: false,
+            showPreview: false,
         };
         this.handleMsgChange = this.handleMsgChange.bind(this);
         this.addMessageInfo = this.addMessageInfo.bind(this);
         this.save = this.save.bind(this);
         this.cancel = this.cancel.bind(this);
+        this.togglePreview = this.togglePreview.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,6 +53,12 @@ class MessageTemplateEditPanel extends React.Component {
         });
         this.props.cancel && this.props.cancel();
         this.props.form.resetFields();
+    }
+
+    togglePreview() {
+        this.setState((prevState, props) => ({
+            showPreview: !prevState.showPreview
+        }));
     }
 
     /** 新建/编辑 保存*/
@@ -120,9 +128,10 @@ class MessageTemplateEditPanel extends React.Component {
     }
 
     render() {
+        const previewMessage = this.state.message.replace(/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g, 'XX').concat('回复TD退订【互联网餐厅】');
         return (
             <div>
-                <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
+                <FormItem style={{padding: '0'}} label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
                     <Button onClick={this.addMessageInfo}>会员姓名</Button>
                     <Button onClick={this.addMessageInfo}>先生/女士</Button>
                     <Button onClick={this.addMessageInfo}>卡名称</Button>
@@ -149,20 +158,31 @@ class MessageTemplateEditPanel extends React.Component {
                     </FormItem>
                 </Form>
                 <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
-                    <Row>
-                        <Col offset={1} span={22}>
-                            <p className={styles.blockP}>
-                                预计字数：{(this.state.message || '').length}字, 67字为一条，最多500字（含标点空格）
-                            </p>
-                            <p className={styles.blockP}>
-                                短信条数将由您选择的扣费账户短信余额中扣除, 请注意保证余额充足
-                            </p>
-                        </Col>
-                    </Row>
+                    <p className={styles.smsRulesBox}>
+                        预计字数：{(this.state.message || '').length + 13}字,&nbsp;&nbsp;67字为一条，最多500字（含标点空格）
+                        <br/>
+                        短信条数将由您选择的扣费账户短信余额中扣除, 请注意保证余额充足
+                    </p>
                 </FormItem>
                 <Row>
                     <Col span={17} offset={4}>
                         <Alert showIcon message={`注: 请不要输入"【】" "[]"符号, 统计字数中含"回复TD退订【互联网餐厅】"; 字数以最终发出短信内容为准`} type="warning" />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={17} offset={4}>
+                        <Button
+                            type="ghost"
+                            onClick={this.togglePreview}
+                        >
+                            短信预览
+                        </Button>
+                        {
+                            this.state.showPreview &&
+                                <p className={styles.smsPreview}>
+                                    {previewMessage}
+                                </p>
+                        }
                     </Col>
                 </Row>
                 <div style={{textAlign: 'center'}}>

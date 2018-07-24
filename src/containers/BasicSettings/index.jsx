@@ -50,6 +50,12 @@ class MessageTemplatesPage extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === SET_MSG_TEMPLATE) {
+            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
+            if (tabArr.includes(SET_MSG_TEMPLATE)) {
+                this.props.getMessageTemplateList({}); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
         let { loading, messageTemplateList } = this.state;
         if (this.props.loading !== nextProps.loading) {
             loading = nextProps.loading;
@@ -122,13 +128,13 @@ class MessageTemplatesPage extends React.Component {
                 </div>
                 <Spin spinning={this.state.loading} delay={500}>
                     {
-                        !pendingTemplates.length && !verifiedTemplates.length && !illegalTemplates.length ?
+                        !messageTemplateList.length ?
                             <div style={{
                                 height: this.state.contentHeight,
                                 paddingTop: '100px',
                             }}>
                                 <div className={styles.centerFlexContainer}>
-                                    <img src={imgSrc} width="249px" height="107px" alt=" "/> 您还没有短信模板, 快去新建吧 ~
+                                    <img src={imgSrc} width="163px" height="75px" alt=" "/> 您还没有短信模板, 快去新建吧 ~
                                 </div>
                             </div>
                             :
@@ -176,6 +182,7 @@ function mapStateToProps(state) {
     return {
         loading: state.messageTemplateState.get('messageTemplateListLoading'),
         messageTemplateList: state.messageTemplateState.get('messageTemplateList'),
+        user: state.user.toJS(),
     }
 }
 
