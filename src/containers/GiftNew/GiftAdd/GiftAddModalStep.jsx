@@ -162,7 +162,9 @@ class GiftAddModalStep extends React.Component {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        values[key] = value;
+        if (key !== 'foodNameList' || !Object.prototype.hasOwnProperty.call(values, 'foodNameList')) {
+            values[key] = value;
+        }
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -241,7 +243,6 @@ class GiftAddModalStep extends React.Component {
             case 'foodNameList':
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
                     values.isFoodCatNameList = data.isFoodCatNameList;
-                    // values.foodNameList = [];
                     break;
                 }
                 if (value) {
@@ -896,7 +897,10 @@ class GiftAddModalStep extends React.Component {
         const formItemLayout = { labelCol: { span: 1 }, wrapperCol: { span: 23 } };
         let _scopeLst = [];
         if (this.props.type === 'edit') {
-            const { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            if (this.state.values.foodNameList) {
+                foodNameList = this.state.values.foodNameList;
+            }
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
                 return isFoodCatNameList == '1' ? {
