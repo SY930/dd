@@ -49,6 +49,7 @@ class MessageTemplateEditPanel extends React.Component {
     cancel() {
         this.setState({
             message: '',
+            showPreview: false,
             loading: false,
         });
         this.props.cancel && this.props.cancel();
