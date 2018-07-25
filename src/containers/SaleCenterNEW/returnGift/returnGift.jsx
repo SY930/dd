@@ -607,12 +607,12 @@ class ReturnGift extends React.Component {
         _infos[index].giftNum.value = value.number;
 
         const _value = parseInt(value.number);
-        if (_value > 0) {
+        if (_value > 0 && _value < 51) {
             _infos[index].giftNum.validateStatus = 'success';
             _infos[index].giftNum.msg = null;
         } else {
             _infos[index].giftNum.validateStatus = 'error';
-            _infos[index].giftNum.msg = '返券数量必须大于等于1';
+            _infos[index].giftNum.msg = '返券数量必须大于0, 小于等于50';
         }
         this.setState({
             infos: _infos,
