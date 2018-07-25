@@ -103,7 +103,12 @@ class MessageTemplatesPage extends React.Component {
             {this.renderEditModal()}
             <div className="layoutsTool">
                 <div className="layoutsToolLeft" style={{height: '90px', lineHeight: '90px'}}>
-                    <span style={{lineHeight: '90px'}} className={styles.customHeader}>短信模板</span>
+                    <span style={{
+                        lineHeight: '90px',
+                        marginLeft: '50px',
+                        display: 'inline-block',
+                        fontSize: '36px',
+                    }}>短信模板</span>
                     <Authority rightCode="crm.sale.smsTemplate.create">
                         <Button
                             type="ghost"
