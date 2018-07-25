@@ -149,6 +149,10 @@ class SendMsgInfo extends React.Component {
                         {getFieldDecorator('message', {
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
+                            rules: [{
+                                required: true,
+                                message: '必须选择一条短信模板',
+                            }],
                         })(
                             <MsgSelector selectedMessage={this.state.message}/>
                         )}

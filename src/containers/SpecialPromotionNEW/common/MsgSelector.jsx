@@ -54,6 +54,11 @@ class MessageSelector extends React.Component {
         this.setState({
             loading,
             messageTemplateList
+        }, () => {
+            // 新建活动时  有可选短信模板的情况下默认选中第一个
+            if (!nextProps.selectedMessage && messageTemplateList.length) {
+                nextProps.onChange && nextProps.onChange(messageTemplateList[0]);
+            }
         })
     }
 
