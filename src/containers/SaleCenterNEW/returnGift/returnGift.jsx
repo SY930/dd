@@ -26,7 +26,7 @@ const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
-const dayOrHourSymbol = Symbol('dayOrHour');
+
 import {
     saleCenterSetPromotionDetailAC,
     fetchGiftListInfoAC,
@@ -351,7 +351,7 @@ class ReturnGift extends React.Component {
                             <span className={styles.formLabel}>生效方式</span>
                             <RadioGroup
                                 className={styles.radioMargin}
-                                value={info.giftValidType}
+                                value={info.giftValidType > 1 ? '0' : info.giftValidType}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
                             >
                                 {
@@ -372,14 +372,13 @@ class ReturnGift extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        let arr;
-        if (info[dayOrHourSymbol] == 1 || !info[dayOrHourSymbol]) {
-            arr = SALE_CENTER_GIFT_EFFICT_TIME
-        }
-        if (info[dayOrHourSymbol] == 24 || !info[dayOrHourSymbol] && info.giftEffectiveTime.value >= 24) {
-            arr = SALE_CENTER_GIFT_EFFICT_DAY
-        }
-        if (info.giftValidType === '0') {
+        if (info.giftValidType === '0' || info.giftValidType === '2') {
+            let arr;
+            if (info.giftValidType === '0') {
+                arr = SALE_CENTER_GIFT_EFFICT_TIME;
+            } else {
+                arr = SALE_CENTER_GIFT_EFFICT_DAY
+            }
             return (
                 <div>
                     <FormItem
@@ -388,18 +387,15 @@ class ReturnGift extends React.Component {
                         <span className={styles.formLabel}>相对有效期:</span>
                         <RadioGroup
                             className={styles.radioMargin}
-                            value={
-                                info[dayOrHourSymbol] || (typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
-                                    '1' : this.state.infos[index].giftEffectiveTime.value >= 24 ? '24' : '1')
-                            }
+                            value={info.giftValidType}
                             onChange={e => {
                                 const infos = this.state.infos;
-                                if (!infos[index][dayOrHourSymbol] ||  e.target.value !== infos[index][dayOrHourSymbol]) {
-                                    if (e.target.value == 1) {
-                                        infos[index].giftEffectiveTime.value = '0'
-                                    } else {
-                                        infos[index].giftEffectiveTime.value = '24'
-                                    }
+                                if (e.target.value == 2 && infos[index].giftValidType != 2) {
+                                    infos[index].giftEffectiveTime.value = '1';
+                                    infos[index].giftValidType = '2';
+                                } else if (e.target.value == 0 && infos[index].giftValidType != 0){
+                                    infos[index].giftEffectiveTime.value = '0';
+                                    infos[index].giftValidType = '0';
                                 }
                                 this.setState({
                                     infos,
@@ -409,7 +405,7 @@ class ReturnGift extends React.Component {
                             }}
                         >
                             {
-                                [{ value: '1', label: '按小时' }, { value: '24', label: '按天' }].map((item, index) => {
+                                [{ value: '0', label: '按小时' }, { value: '2', label: '按天' }].map((item, index) => {
                                     return <Radio value={item.value} key={index}>{item.label}</Radio>
                                 })
                             }
@@ -432,13 +428,7 @@ class ReturnGift extends React.Component {
                             }
                             onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
                         >
-                            { arr === SALE_CENTER_GIFT_EFFICT_DAY ?
-                            arr.map((item, index) => {
-                                    return (<Option value={`${24* (index+1)}`} key={index}>{item.label}</Option>);
-                                }) : arr.map((item, index) => {
-                                    return (<Option value={item.value} key={index}>{item.label}</Option>);
-                                })
-                            }
+                            { arr.map((item, index) => (<Option value={item.value} key={index}>{item.label}</Option>)) }
                         </Select>
                     </FormItem>
 
@@ -541,6 +531,7 @@ class ReturnGift extends React.Component {
         _infos[index].giftValidType = e.target.value;
         if (e.target.value == '0') {
             _infos[index].giftEffectiveTime.validateStatus = 'success';
+            _infos[index].giftEffectiveTime.value = '0';
             _infos[index].giftEffectiveTime.msg = null;
             _infos[index].giftValidDays.validateStatus = _infos[index].giftValidDays.value > 0 ? 'success' : 'error';
             _infos[index].giftValidDays.msg = _infos[index].giftValidDays.value > 0 ? null : '请输入有效时间';

@@ -175,8 +175,8 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[index].giftInfo.giftName = stage.giftName;
                     rule.data[index].giftInfo.giftItemID = stage.giftItemID;
                     rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                    rule.data[index].giftValidType = stage.giftStartTime ? '1' : '0';
-                    rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftEffectiveTime / 60;
+                    rule.data[index].giftValidType = stage.giftValidType;
+                    rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
                 })
             } else {
                 rule.data[0].stageAmount.value = _rule.stageAmount;
@@ -185,8 +185,8 @@ class ReturnGiftDetailInfo extends React.Component {
                 rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
                 rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
                 rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                rule.data[0].giftValidType = _rule.giftStartTime ? '1' : '0';
-                rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftEffectiveTime / 60;
+                rule.data[0].giftValidType = _rule.giftValidType;
+                rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
             }
             this.setState({
                 rule,
@@ -258,8 +258,8 @@ class ReturnGiftDetailInfo extends React.Component {
                         rule.data[index].giftInfo.giftName = stage.giftName;
                         rule.data[index].giftInfo.giftItemID = stage.giftItemID;
                         rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                        rule.data[index].giftValidType = stage.giftStartTime ? '1' : '0';
-                        rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftEffectiveTime / 60;
+                        rule.data[index].giftValidType = stage.giftValidType;
+                        rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] :  stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 :  stage.giftEffectiveTime;
                     })
                 } else {
                     rule.data[0].stageAmount.value = _rule.stageAmount;
@@ -268,8 +268,8 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
                     rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
                     rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                    rule.data[0].giftValidType = _rule.giftStartTime ? '1' : '0';
-                    rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftEffectiveTime / 60;
+                    rule.data[0].giftValidType = _rule.giftValidType;
+                    rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
                 }
                 this.setState({
                     rule,
@@ -291,6 +291,16 @@ class ReturnGiftDetailInfo extends React.Component {
                             giftValidType: item.giftValidType,
                             giftValidDays: item.giftValidDays.value,
                             giftEffectiveTime: (item.giftEffectiveTime.value || 0) * 60,
+                            giftNum: item.giftNum.value,
+                            giftName: item.giftInfo.giftName,
+                            giftItemID: item.giftInfo.giftItemID,
+                        }
+                    } else if (item.giftValidType == '2') {
+                        return {
+                            stageAmount: item.stageAmount.value,
+                            giftValidType: item.giftValidType,
+                            giftValidDays: item.giftValidDays.value,
+                            giftEffectiveTime: item.giftEffectiveTime.value,
                             giftNum: item.giftNum.value,
                             giftName: item.giftInfo.giftName,
                             giftItemID: item.giftInfo.giftItemID,
@@ -317,6 +327,20 @@ class ReturnGiftDetailInfo extends React.Component {
                 giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
                 giftValidDays: this.state.rule.data[0].giftValidDays.value,
                 giftEffectiveTime: (this.state.rule.data[0].giftEffectiveTime.value || 0) * 60,
+                giftNum: this.state.rule.data[0].giftNum.value,
+                giftName: this.state.rule.data[0].giftInfo.giftName,
+                giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
+                gainCodeMode: this.state.rule.gainCodeMode,
+                printCode: this.state.rule.printCode,
+            }
+        }else if (this.state.rule.data[0].giftValidType == '2') {
+            return {
+                stageType: this.state.rule.type,
+                giftValidType: this.state.rule.data[0].giftValidType,
+                stageAmount: this.state.rule.data[0].stageAmount.value,
+                giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
+                giftValidDays: this.state.rule.data[0].giftValidDays.value,
+                giftEffectiveTime: this.state.rule.data[0].giftEffectiveTime.value,
                 giftNum: this.state.rule.data[0].giftNum.value,
                 giftName: this.state.rule.data[0].giftInfo.giftName,
                 giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
