@@ -6,6 +6,7 @@ import {
     deleteMessageTemplate,
     getMessageTemplateList,
 } from "./actions";
+import Authority from "../../components/common/Authority/index";
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -33,22 +34,26 @@ class MessageDisplayBox extends React.Component {
 
     render() {
         return (
-            <div className={styles.messageDisplayBox} onClick={this.props.handleClick}>
-                <div className={styles.rightTopAction}>
-                    <div    className={styles.deleteButton}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                this.showConfirm();
-                            }}
-                    >
-                        &nbsp;删除&nbsp;
+            <Authority rightCode="crm.sale.smsTemplate.update">
+                <div className={styles.messageDisplayBox} onClick={this.props.handleClick}>
+                    <div className={styles.rightTopAction}>
+                        <Authority rightCode="crm.sale.smsTemplate.delete">
+                            <div    className={styles.deleteButton}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        this.showConfirm();
+                                    }}
+                            >
+                                &nbsp;删除&nbsp;
+                            </div>
+                        </Authority>
+                    </div>
+                    <div className={styles.messageContentWrapper}>
+                        {this.props.template}
                     </div>
                 </div>
-                <div className={styles.messageContentWrapper}>
-                    {this.props.template}
-                </div>
-            </div>
+            </Authority>
         )
     }
 }

@@ -16,6 +16,7 @@ import MessageDisplayBox from './MessageDisplayBox';
 import MessageTemplateEditPanel from './MessageTemplateEditPanel'
 import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
+import Authority from "../../components/common/Authority/index";
 
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
@@ -116,15 +117,17 @@ class MessageTemplatesPage extends React.Component {
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
                     <span style={{lineHeight: '80px'}} className={styles.customHeader}>短信模板</span>
-                    <Button
-                        type="ghost"
-                        icon="plus"
-                        className={styles.jumpToCreate}
-                        onClick={
-                            () => {
-                                this.editTemplate(null);
-                            }
-                        }>新建</Button>
+                    <Authority rightCode="crm.sale.smsTemplate.create">
+                        <Button
+                            type="ghost"
+                            icon="plus"
+                            className={styles.jumpToCreate}
+                            onClick={
+                                () => {
+                                    this.editTemplate(null);
+                                }
+                            }>新建</Button>
+                    </Authority>
                 </div>
                 <Spin spinning={this.state.loading} delay={500}>
                     {
