@@ -86,18 +86,14 @@ class MessageSelector extends React.Component {
                 })}
                 {
                     !messageTemplateList.length &&
-                    <div className={styles.leanBox} style={{border: '1px solid rgba(128, 128, 128, 0.5)'}} >
-                        <div style={{textAlign: 'center', margin: '41px 0'}}>
-                            当前没有审核通过的的短信模板，<a onClick={this.jumpAway}>去设置</a>
-                        </div>
+                    <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
+                        当前没有审核通过的的短信模板，<a onClick={this.jumpAway}>去设置</a>
                     </div>
                 }
                 {
                     !!messageTemplateList.length &&
-                    <div className={styles.leanBox} style={{border: '1px solid rgba(128, 128, 128, 0.5)'}}>
-                        <div style={{textAlign: 'center', margin: '41px 0'}}>
-                            没有更多审核通过的的短信模板了，<a onClick={this.jumpAway}>去设置</a>
-                        </div>
+                    <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
+                        没有更多审核通过的的短信模板了，<a onClick={this.jumpAway}>去设置</a>
                     </div>
                 }
             </div>

@@ -1640,8 +1640,9 @@
 }
 
 .customHeader {
+    margin-left: 50px;
     display: inline-block;
-    font-size: 30px;
+    font-size: 36px;
 }
 
 .headerWithBgColor {
@@ -1659,47 +1660,44 @@
     align-items: center;
     justify-content: center;
     font-size: 14px;
+    color: #787878;
 }
 
 .messageDisplayBox {
     cursor: pointer;
     position: relative;
-    background-color: #F3F3F3;
-    width: 300px;
-    height: 148px;
-    margin: 5px 10px 25px 30px;
-    padding: 1em;
+    width: 334px;
+    height: 150px;
+    color: #434343;
+    font-size: 12px;
+    margin: 5px 30px 26px 0;
+    padding: 20px 5px 20px 10px;
     overflow: hidden;
-    border-radius: 2px;
-    border: 1px solid grey;
+    border-radius: 6px;
+    border: 1px solid #E5E5E5;
     flex-grow: 0;
     flex-shrink: 0;
     .rightTopAction {
         z-index: 1;
-        padding: 4px;
         visibility: hidden;
-        color: #1ab495;
+        color: #10B793;
+        line-height: 1;
         position: absolute;
-        right: 0;
-        top:0;
-        background-color: rgba(243, 243, 243, 0.8);
+        right:  3px;
+        top:    3px;
     }
     &:hover {
         .rightTopAction {
             visibility: visible;
             .deleteButton {
-                padding: 4px;
-            }
-            .deleteButton:hover {
-                color: white;
-                background-color: #ff7a64;
             }
         }
-        border: 1px solid #1ab495;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        color: #333333;
+        border: 1px solid #10B793;
+        // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
     }
     & .messageContentWrapper {
-        height: 10.5em;
+        height: 100%;
         overflow: hidden;
         overflow-wrap: break-word;
         line-height: 1.5em;
@@ -1712,7 +1710,7 @@
             right: 0;
             width: 40%;
             height: 1.5em;
-            background: linear-gradient(to right, rgba(243, 243, 243, 0), rgba(243, 243, 243, 0.9) 70%);
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 70%);
         }
     }
 }
@@ -1720,30 +1718,39 @@
 .leanBox {
     margin-left: 0;
     width: 100%;
-    height: 100px;
+    height: 96px;
     position: relative;
+    border-radius: 0;
+    border: 1px solid #787878;
+    color: #434343;
     & .messageContentWrapper {
-        height: 6em;
+        height: 4.5em;
+    }
+    &:hover {
+        color: #333;
     }
 }
+
+.emptyMessageBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .isSelectedMessage {
+    color: #333;
     margin: 5px 10px 25px 0;
     width: 100%;
     position: relative;
-    min-height: 100px;
-    padding: 1em;
-    border-radius: 2px;
-    border: 1px solid rgba(128, 128, 128, 0.5);
-    &:hover {
-        .rightTopAction {
-            opacity: 0.7;
-        }
-    }
+    min-height: 96px;
+    padding: 20px 5px 20px 10px;
+    border-radius: 0;
+    border: 1px solid #1ab495;
     .rightTopAction {
         z-index: 1;
         padding: 4px;
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         color: white;
         border-radius: 3px;
         border-color: #1ab394;
@@ -1753,11 +1760,15 @@
         right: 3px;
         top:3px;
     }
+    & .messageContentWrapper {
+        line-height: 1.5em;
+    }
 }
 
 .messageGroupWrapper {
     width: 100%;
     flex-shrink: 0;
+    padding-left: 50px;
     .emptyMessageGroup {
         margin: 20px 0;
         width: 100%;

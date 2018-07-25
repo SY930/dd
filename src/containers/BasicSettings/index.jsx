@@ -27,7 +27,6 @@ class MessageTemplatesPage extends React.Component {
         super(props);
         this.state = {
             messageTemplateList: Immutable.List.isList(props.messageTemplateList) ? props.messageTemplateList.toJS() : [],
-            loading: props.loading,
             contentHeight: 800,
             editModalVisible: false,
             messageTemplateToEdit: null,
@@ -57,21 +56,17 @@ class MessageTemplatesPage extends React.Component {
                 this.props.getMessageTemplateList({}); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
-        let { loading, messageTemplateList } = this.state;
-        if (this.props.loading !== nextProps.loading) {
-            loading = nextProps.loading;
-        }
+        let { messageTemplateList } = this.state;
         if (this.props.messageTemplateList !== nextProps.messageTemplateList) {
             messageTemplateList = Immutable.List.isList(nextProps.messageTemplateList) ? nextProps.messageTemplateList.toJS() : [];
+            this.setState({
+                messageTemplateList
+            })
         }
-        this.setState({
-            loading,
-            messageTemplateList
-        })
     }
 
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 86;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 106;
         this.setState({ contentHeight });
     }
 
@@ -84,17 +79,10 @@ class MessageTemplatesPage extends React.Component {
 
     renderEditModal() {
         return (
-            <Modal
-                title="编辑短信模板"
-                visible={this.state.editModalVisible}
-                footer={false}
-                closable={false}
-                width="750px"
-            >
                 <MessageTemplateEditPanel
                     cancel={this.closeEditModal}
+                    visible={this.state.editModalVisible}
                     templateEntity={this.state.messageTemplateToEdit}/>
-            </Modal>
         );
     }
 
@@ -110,18 +98,25 @@ class MessageTemplatesPage extends React.Component {
         const pendingTemplates = messageTemplateList.filter(item => item.auditStatus == 1);
         const verifiedTemplates = messageTemplateList.filter(item => item.auditStatus == 2);
         const illegalTemplates = messageTemplateList.filter(item => item.auditStatus == 3);
-        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-        <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer">
+        <div className="layoutsContainer">
             {this.renderEditModal()}
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>短信模板</span>
+            <div className="layoutsTool">
+                <div className="layoutsToolLeft" style={{height: '90px', lineHeight: '90px'}}>
+                    <span style={{lineHeight: '90px'}} className={styles.customHeader}>短信模板</span>
                     <Authority rightCode="crm.sale.smsTemplate.create">
                         <Button
                             type="ghost"
                             icon="plus"
                             className={styles.jumpToCreate}
+                            style={{
+                                height: '30px',
+                                width: '90px',
+                                left: '224px',
+                                position: 'absolute',
+                                top: '30px'
+
+                            }}
                             onClick={
                                 () => {
                                     this.editTemplate(null);
@@ -129,22 +124,33 @@ class MessageTemplatesPage extends React.Component {
                             }>新建</Button>
                     </Authority>
                 </div>
-                <Spin spinning={this.state.loading} delay={500}>
+                <div className="layoutsLineBlock" style={{height: '16px'}}/>
+                <Spin spinning={this.props.loading}>
                     {
                         !messageTemplateList.length ?
                             <div style={{
                                 height: this.state.contentHeight,
-                                paddingTop: '100px',
+                                paddingTop: '185px',
                             }}>
                                 <div className={styles.centerFlexContainer}>
-                                    <img src={imgSrc} width="163px" height="75px" alt=" "/> 您还没有短信模板, 快去新建吧 ~
+                                    <div>
+                                        <img src={imgSrc} width="154px" height="66px" alt=" "/>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            marginLeft: '27px'
+                                        }}>
+                                            您还没有短信模板 , 快去新建吧 ~
+                                        </span>
+
+                                    </div>
+
                                 </div>
                             </div>
                             :
-                            <div style={{height: this.state.contentHeight}} className={styles.scrollableMessageContainer}>
-                                <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}/>
-                                <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>
-                                <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>
+                            <div style={{height: this.state.contentHeight, paddingTop: '20px', overflowY: 'auto'}}>
+                                {!!pendingTemplates.length && <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
+                                {!!verifiedTemplates.length && <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
+                                {!!illegalTemplates.length && <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
                             </div>
                     }
                 </Spin>
@@ -161,11 +167,12 @@ class MessageGroup extends React.Component {
         const {messages, title} = this.props;
         return (
             <div className={styles.messageGroupWrapper}>
-                <div style={{paddingLeft: '30px', fontSize: '20px', fontWeight:'500'}}>{title}</div>
+                <div style={{fontSize: '20px', color: '#333',}}>{title}</div>
                 <div className={styles.scrollableMessageContainer}>
                     {!!messages.length && messages.map((item, index) => {
                         return <MessageDisplayBox
                             template={item.template}
+                            id={item.itemID}
                             handleClick={() => this.props.edit(item)}
                             key={item.index}
                         />;

@@ -18,10 +18,23 @@ class MessageDisplayBox extends React.Component {
 
     showConfirm() {
         confirm({
-            title: '确定要删除该短信模板吗?',
-            content: '点击 `确定` 来删除',
+            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+            content:
+                    <div>
+                        <span style={{color: '#787878'}}>
+                            {`您将删除【${this.props.template ? this.props.template.substring(0, 6) + '...' : ''}】短信模板`}
+                        </span>
+                        <br/>
+                        <span style={{color: '#aeaeae'}}>
+                            删除数据是不可恢复操作, 请慎重考虑
+                        </span>
+                    </div>
+                     ,
             onOk: () => {
-                return this.props.deleteMessageTemplate({modifyBy: this.props.user.accountInfo.userName})
+                return this.props.deleteMessageTemplate({
+                                    modifyBy: this.props.user.accountInfo.userName,
+                                    itemID: this.props.id,
+                                })
                                 .then(() => {
                                     message.success(`删除成功`);
                                     this.props.getMessageTemplateList();
@@ -37,17 +50,22 @@ class MessageDisplayBox extends React.Component {
             <Authority rightCode="crm.sale.smsTemplate.update">
                 <div className={styles.messageDisplayBox} onClick={this.props.handleClick}>
                     <div className={styles.rightTopAction}>
-                        <Authority rightCode="crm.sale.smsTemplate.delete">
                             <div    className={styles.deleteButton}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        this.showConfirm();
                                     }}
                             >
-                                &nbsp;删除&nbsp;
+                                <Authority rightCode="crm.sale.smsTemplate.delete">
+                                    <span onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        this.showConfirm();
+                                    }}
+                                    >删除</span>
+                                </Authority>
                             </div>
-                        </Authority>
+
                     </div>
                     <div className={styles.messageContentWrapper}>
                         {this.props.template}

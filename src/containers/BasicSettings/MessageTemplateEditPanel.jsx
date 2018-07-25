@@ -8,6 +8,7 @@ import {
     Input,
     Row,
     Col,
+    Modal,
     message as messageService,
     Alert,
 } from 'antd';
@@ -86,9 +87,10 @@ class MessageTemplateEditPanel extends React.Component {
                     .then(() => {
                         messageService.success('修改成功');
                         this.props.getMessageTemplateList();
-                        this.setState({loading: false}, () => {
-                            this.props.cancel && this.props.cancel()
-                        })
+                        this.props.cancel && this.props.cancel();
+                        this.setState({
+                            loading: false,
+                        });
                     }, err => {
                         this.setState({loading: false})
                     })
@@ -97,9 +99,12 @@ class MessageTemplateEditPanel extends React.Component {
                     .then(() => {
                         messageService.success('创建成功');
                         this.props.getMessageTemplateList();
-                        this.setState({loading: false}, () => {
-                            this.props.cancel && this.props.cancel()
-                        })
+                        this.props.cancel && this.props.cancel();
+                        this.setState({
+                            loading: false,
+                            message: '',
+                            pristineMessage: '',
+                        });
                     }, err => {
                         this.setState({loading: false})
                     })
@@ -129,6 +134,34 @@ class MessageTemplateEditPanel extends React.Component {
     }
 
     render() {
+        return (
+                <Modal
+                    title="编辑短信模板"
+                    visible={this.props.visible}
+                    footer={
+                        <div style={{textAlign: 'center'}}>
+                            <Button type="ghost"
+                                    onClick={this.cancel}>关闭
+                            </Button>
+                            <Button
+                                disabled={this.state.message === this.state.pristineMessage}
+                                style={{marginLeft:8}}
+                                type="primary"
+                                loading={this.state.loading}
+                                onClick={this.save}>
+                                保存
+                            </Button>
+                        </div>
+                    }
+                    closable={false}
+                    width="750px"
+                >
+                    {this.props.visible && this.renderModalBody()}
+                </Modal>
+            )
+    }
+
+    renderModalBody() {
         const previewMessage = this.state.message.replace(/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g, 'XX').concat('回复TD退订【互联网餐厅】');
         return (
             <div>
@@ -186,19 +219,6 @@ class MessageTemplateEditPanel extends React.Component {
                         }
                     </Col>
                 </Row>
-                <div style={{textAlign: 'center'}}>
-                    <Button type="ghost"
-                            onClick={this.cancel}>关闭
-                    </Button>
-                    <Button
-                        disabled={this.state.message === this.state.pristineMessage}
-                        style={{marginLeft:8}}
-                        type="primary"
-                        loading={this.state.loading}
-                        onClick={this.save}>
-                        保存
-                    </Button>
-                </div>
             </div>
         )
     }
