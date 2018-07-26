@@ -32,10 +32,6 @@ class MessageSelector extends React.Component {
         if (!this.state.loading && !this.state.messageTemplateList.length) {
             this.props.getMessageTemplateList();
         }
-        // 新建活动时  有可选短信模板的情况下默认选中第一个
-        if (!this.props.selectedMessage && this.state.messageTemplateList.length) {
-            this.props.onChange && this.props.onChange(this.state.messageTemplateList[0]);
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -54,11 +50,6 @@ class MessageSelector extends React.Component {
         this.setState({
             loading,
             messageTemplateList
-        }, () => {
-            // 新建活动时  有可选短信模板的情况下默认选中第一个
-            if (!nextProps.selectedMessage && messageTemplateList.length) {
-                nextProps.onChange && nextProps.onChange(messageTemplateList[0]);
-            }
         })
     }
 
@@ -82,7 +73,7 @@ class MessageSelector extends React.Component {
             <div style={{maxHeight: '280px', overflowY: 'auto'}}>
                 {!!messageTemplateList.length &&  messageTemplateList.map((message, index) => {
                     return (
-                        <MessageDisplayBox  selected={this.props.selectedMessage ? message === this.props.selectedMessage : index === 0}
+                        <MessageDisplayBox  selected={message === this.props.selectedMessage}
                                             message={message}
                                             key={index}
                                             onClick={() => this.handleMsgSelect(message)}
