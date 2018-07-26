@@ -49,8 +49,8 @@ class SendMsgInfo extends React.Component {
         specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
         this.setState({
             message: this.props.value,
-            settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
-                (specialPromotion.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
+            settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
+                (specialPromotion.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
         }, () => {
             this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
         })
@@ -109,7 +109,7 @@ class SendMsgInfo extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
+        const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
         if (this.props.sendFlag) {
             return (
                 <div>
