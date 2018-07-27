@@ -192,7 +192,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS() : [];
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         // 当为第二份打折时，过滤套餐
-        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_DISCOUNT_WHEN') {
+        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
             foodCategoryCollection = this.filterGroup(foodCategoryCollection);
         }
         this.setState({
@@ -223,7 +223,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             // 当为第二份打折时，过滤套餐
-            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_DISCOUNT_WHEN') {
+            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
                 foodCategoryCollection = this.filterGroup(foodCategoryCollection);
             }
             this.setState({

@@ -745,7 +745,7 @@ class MyActivitiesShop extends React.Component {
                                     [{
                                         value: 'ALL',
                                         title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== 'RECOMMEND_FOOD')
+                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== '5010')
                                         .map((activity, index) => {
                                             return (
                                                 <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>

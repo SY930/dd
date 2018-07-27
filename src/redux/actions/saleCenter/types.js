@@ -226,7 +226,7 @@ export const ACTIVITY_CATEGORIES = (function(){
             color: '#c49b79',
             text: '会员消费满X元送积分,积分可兑换礼品或抵现',
             example: '例如:全部菜品9折,酒水不打折',
-            key: 'RETURN_POINT'
+            key: '3020'
         },
         {
             idx: 8,

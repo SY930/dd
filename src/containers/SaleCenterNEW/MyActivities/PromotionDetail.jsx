@@ -111,7 +111,7 @@ class PromotionDetail extends React.Component {
                     <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                     <Col span={18} style={{ textAlign: 'left' }}>
                         {
-                            record.master.promotionType == 'BILL_CUMULATION_FREE' || record.master.promotionType == 'FOOD_CUMULATION_GIVE' ?
+                            record.master.promotionType == '2070' || record.master.promotionType == '1080' ?
                                 CLIENT_CATEGORY_ADD_UP.find((pt) => {
                                     return pt.key === record.master.userType
                                 }).name : CLIENT_CATEGORY.find((pt) => {

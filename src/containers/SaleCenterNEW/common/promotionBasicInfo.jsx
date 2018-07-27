@@ -269,7 +269,7 @@ class PromotionBasicInfo extends React.Component {
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
-        if (promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD') {
+        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
             } else {
@@ -498,7 +498,7 @@ class PromotionBasicInfo extends React.Component {
             });
         }
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if (promotionType == 'RECOMMEND_FOOD' && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
+        if (promotionType == '5010' && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
@@ -800,14 +800,14 @@ class PromotionBasicInfo extends React.Component {
             dateRange: date,
         }, () => {
             const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-            if (promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD') {
+            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
                 if (this.state.dateRange[0] && this.state.dateRange[1]) {
                     this.setState({ rangePickerstatus: 'success' })
                 } else {
                     this.setState({ rangePickerstatus: 'error' })
                 }
             }
-            if (promotionType == 'RECOMMEND_FOOD' && this.state.dateRange[0] && this.state.dateRange[1]) {
+            if (promotionType == '5010' && this.state.dateRange[0] && this.state.dateRange[1]) {
                 const opts = {
                     data: {
                         groupID: this.props.user.accountInfo.groupID,
@@ -1074,7 +1074,7 @@ class PromotionBasicInfo extends React.Component {
                 </FormItem>
                 <div style={{ position: 'relative' }}>
                     {
-                        promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD' ?
+                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ?
                             <p style={{ position: 'absolute', top: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
                             : null
                     }
@@ -1088,7 +1088,7 @@ class PromotionBasicInfo extends React.Component {
                     >
                         <Row>
                             <Col span={21}>
-                                <RangePicker {...dateRangeProps} disabledDate={promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD' ? disabledDate : null} />
+                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ? disabledDate : null} />
                             </Col>
                             <Col offset={1} span={2}>
                                 <div className={styles.ActivityDateDay}>

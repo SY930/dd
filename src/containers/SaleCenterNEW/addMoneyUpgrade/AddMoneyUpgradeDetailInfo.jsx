@@ -365,7 +365,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
+                <EditBoxForDishes type='1090'
                     value={this.state.upGradeDishes}
                     onChange={(value) => {
                         this.onupGradeDishesChange(value);
@@ -417,7 +417,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='FOOD_PAY_MORE_THEN_UPGRADE'
+                <EditBoxForDishes type='1090'
                     value={this.state.dishes}
                     onChange={(value) => {
                         this.onAfterDishesChange(value);
