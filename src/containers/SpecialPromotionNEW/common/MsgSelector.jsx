@@ -70,7 +70,7 @@ class MessageSelector extends React.Component {
         const messageTemplateList = this.state.messageTemplateList;
         return (
 
-            <div style={{maxHeight: '280px', overflowY: 'auto'}}>
+            <div style={{maxHeight: '272px', overflowY: 'auto'}}>
                 {!!messageTemplateList.length &&  messageTemplateList.map((message, index) => {
                     return (
                         <MessageDisplayBox  selected={message === this.props.selectedMessage}
