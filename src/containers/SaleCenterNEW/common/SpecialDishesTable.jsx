@@ -406,7 +406,7 @@ class SpecialDishesTable extends React.Component {
             // == 是有意的, 因为有时会有null的情况
             if (data.some(food => {
                 if ((food.mPrice == undefined || food.mPrice == -1 || food.mPrice === '') && (food.mPoint == undefined || food.mPoint == -1 || food.mPoint === '')) {// 秒杀价没填
-                    message.warning('秒杀价为不得为空');
+                    message.warning('秒杀价不得为空');
                     return true;
                 }
                 if (food.limitAmount == undefined || food.limitAmount === '' || food.totalAmount === '' || food.totalAmount == undefined || Number(food.limitAmount) > Number(food.totalAmount)) {// 库存 限购没填或限购大于库存
@@ -414,11 +414,11 @@ class SpecialDishesTable extends React.Component {
                     return true;
                 }
                 if (this.state.priceOrPoint === 'price' && (food.mPrice == undefined || food.mPrice == -1 || food.mPrice === '')) {
-                    message.warning('秒杀价为不得为空');
+                    message.warning('秒杀价不得为空');
                     return true;
                 }
                 if (this.state.priceOrPoint === 'point' && (food.mPoint == undefined || food.mPoint == -1 || food.mPoint === '')) {
-                    message.warning('秒杀价为不得为空');
+                    message.warning('秒杀价不得为空');
                     return true;
                 }
                 return false;
