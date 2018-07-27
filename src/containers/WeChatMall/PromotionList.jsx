@@ -605,7 +605,7 @@ export class WeChatMallPromotionList extends React.Component {
             },*/
 
             {
-                title: '有效时间',
+                title: '活动时间',
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
