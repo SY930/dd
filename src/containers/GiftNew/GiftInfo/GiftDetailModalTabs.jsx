@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Button, Icon } from 'antd';
 import _ from 'lodash';
+import SendGiftPanel from '../components/SendGiftPanel'
 import GiftSendOrUsedCount from './GiftDetailSendorUsedTable';
 import {
     UpdateSendorUsedTabKey,
@@ -80,7 +81,14 @@ class GiftDetailModalTabs extends React.Component {
                             return (<TabPane tab={tab.tab} key={tab.key}>
                                 <GiftSendOrUsedCount data={data} _key={tab.key} />
                             </TabPane>)
-                        })
+                        }).concat(
+                            data.giftType == '10' || data.giftType == '20' || data.giftType == '21' || data.giftType == '30' ?
+                                <TabPane tab={'赠送'} key={'send_gift'}>
+                                    <SendGiftPanel data={data}/>
+                                </TabPane>
+                                :
+                                []
+                        )
                     }
                 </Tabs>
                 {
