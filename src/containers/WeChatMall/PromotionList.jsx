@@ -595,14 +595,14 @@ export class WeChatMallPromotionList extends React.Component {
                     return (<span title={text}>{text}</span>);
                 },
             },
-            {
+            /*{
                 title: '活动编码',
                 dataIndex: 'itemID',
                 key: 'itemID',
                 className: 'TableTxtCenter',
                 width: 140,
                 render: text => <span title={text}>{text}</span>,
-            },
+            },*/
 
             {
                 title: '有效时间',
