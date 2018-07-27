@@ -78,7 +78,7 @@ class GiftDetailModalTabs extends React.Component {
                     {
                         tabs.map((tab) => {
                             return (<TabPane tab={tab.tab} key={tab.key}>
-                                <GiftSendOrUsedCount data={data} _key={tab.key} />
+                                <GiftSendOrUsedCount key={tab.key} data={data} _key={tab.key} />
                             </TabPane>)
                         })
                     }
