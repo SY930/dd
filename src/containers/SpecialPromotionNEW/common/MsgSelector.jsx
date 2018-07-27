@@ -17,10 +17,6 @@ class MessageSelector extends React.Component {
         super(props);
         let messageTemplateList = Immutable.List.isList(props.messageTemplateList) ? props.messageTemplateList.toJS() : [];
         messageTemplateList = messageTemplateList.filter(templateEntity => templateEntity.auditStatus == 2).map(templateEntity => templateEntity.template);
-        if (props.selectedMessage) {
-            messageTemplateList.unshift(props.selectedMessage);
-        }
-        messageTemplateList = uniq(messageTemplateList);
         this.state = {
             messageTemplateList: messageTemplateList,
             loading: props.loading,
@@ -38,19 +34,17 @@ class MessageSelector extends React.Component {
         let { loading, messageTemplateList } = this.state;
         if (this.props.loading !== nextProps.loading) {
             loading = nextProps.loading;
+            this.setState({
+                loading,
+            })
         }
         if (this.props.messageTemplateList !== nextProps.messageTemplateList) {
             messageTemplateList = Immutable.List.isList(nextProps.messageTemplateList) ? nextProps.messageTemplateList.toJS() : [];
             messageTemplateList = messageTemplateList.filter(templateEntity => templateEntity.auditStatus == 2).map(templateEntity => templateEntity.template);
-            if (nextProps.selectedMessage) {
-                messageTemplateList.unshift(nextProps.selectedMessage)
-            }
-            messageTemplateList = uniq(messageTemplateList);
+            this.setState({
+                messageTemplateList
+            })
         }
-        this.setState({
-            loading,
-            messageTemplateList
-        })
     }
 
     handleMsgSelect(message) {
@@ -67,7 +61,9 @@ class MessageSelector extends React.Component {
     }
 
     render() {
-        const messageTemplateList = this.state.messageTemplateList;
+        let messageTemplateList = this.state.messageTemplateList.slice();
+        this.props.selectedMessage && messageTemplateList.unshift(this.props.selectedMessage);
+        messageTemplateList = uniq(messageTemplateList);
         return (
 
             <div style={{maxHeight: '272px', overflowY: 'auto'}}>
