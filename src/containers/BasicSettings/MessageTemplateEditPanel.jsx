@@ -200,7 +200,17 @@ class MessageTemplateEditPanel extends React.Component {
                 </FormItem>
                 <Row>
                     <Col span={17} offset={4}>
-                        <Alert showIcon message={`注: 请不要输入"【】" "[]"符号, 统计字数中含"回复TD退订【互联网餐厅】"; 字数以最终发出短信内容为准`} type="warning" />
+                        <Alert showIcon message={
+                            <div style={{
+                                marginLeft: '2em',
+                            }}>
+                                <div><span style={{
+                                    marginLeft: '-2em',
+                                }}>注：</span>请不要输入"【】" "[]"符号，统计字数中含"回复TD退订【互联网餐厅】"；</div>
+                                <div>输入链接后需要<span style={{color: 'red'}}>输入一个空格</span>，防止链接跟内容解析错误；</div>
+                                <div>字数以最终发出短信内容为准；</div>
+                            </div>
+                        } type="warning" />
                     </Col>
                 </Row>
                 <Row>
