@@ -553,20 +553,34 @@ class SpecialDishesTable extends React.Component {
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
-                title: `秒杀价 (${this.state.priceOrPoint === 'price' ? '元' : '积分'})`,
-                dataIndex: `${this.state.priceOrPoint === 'price' ? 'mPrice' : 'mPoint'}`,
+                title: `积分秒杀价 (分)`,
+                dataIndex: 'mPoint',
+                key: 'mPoint',
+                width: 110,
+                className: 'TableTxtRight',
+            },
+            {
+                title: `现金秒杀价 (元)`,
+                dataIndex: 'mPrice',
                 key: 'mPrice',
                 width: 110,
                 className: 'TableTxtRight',
             },
             {
-                title: '售价 (元)',
+                title: '积分/现金售价',
                 dataIndex: 'prePrice',
                 key: 'prePrice',
-                width: 90,
+                width: 120,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    return record.prePrice == -1 ? record.price : record.prePrice
+                    if (record.price >= 0 && record.point >= 0) {
+                        return `${record.point}积分+${record.price}元`
+                    } else if (record.price >= 0) {
+                        return `${record.price}元`
+                    } else if (record.point >= 0) {
+                        return `${record.point}积分`
+                    }
+                    return '--'
                 },
             },
             {
@@ -633,7 +647,7 @@ class SpecialDishesTable extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Table bordered={true} dataSource={data} columns={columns} scroll={{ x: this.props.isWeChatMall ? 810 : 750 }} pagination={{ size: 'small', pageSize: 10 }} />
+                        <Table bordered={true} dataSource={data} columns={columns} scroll={{ x: this.props.isWeChatMall ? 960 : 750 }} pagination={{ size: 'small', pageSize: 10 }} />
                     </Col>
                 </Row>
                 <Modal
