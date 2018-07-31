@@ -487,7 +487,7 @@ class SpecialDishesTable extends React.Component {
                 className: 'TableTxtCenter',
                 // 参数分别为当前行的值，当前行数据，行索引，return可以决定表格里最终存放的值
                 render: (text, record, index) => {
-                    return <span>{index + 1}</span>
+                    return <span>{record.key + 1}</span>
                 },
             },
             {
