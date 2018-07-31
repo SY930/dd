@@ -38,7 +38,10 @@ import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import { jumpPage } from '@hualala/platform-base'
-import {SALE_CENTER_PAGE} from "../../constants/entryCodes";
+import {
+    SALE_CENTER_PAGE,
+    SALE_CENTER_PAGE_SHOP,
+} from "../../constants/entryCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -135,7 +138,7 @@ class NewActivity extends React.Component {
                                 }}
                                 onClick={
                                     () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === SALE_CENTER_PAGE).menuID
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
                                         menuID && jumpPage({ menuID })
                                     }
                                 }>返回列表</Button>
