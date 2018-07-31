@@ -162,7 +162,7 @@ class GiftAddModalStep extends React.Component {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        if (key !== 'foodNameList' || !Object.prototype.hasOwnProperty.call(values, 'foodNameList')) {
+        if (key !== 'foodNameList') {
             values[key] = value;
         }
         switch (key) {
@@ -241,12 +241,18 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
+                // console.log(value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
-                    values.isFoodCatNameList = data.isFoodCatNameList;
+                    // values.isFoodCatNameList = data.isFoodCatNameList;
                     break;
                 }
                 if (value) {
                     const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
+                    if (foodCategory.length || dishes.length) {
+                        this.setState({ foodNameListStatus: 'success' });
+                    } else {
+                        this.setState({ foodNameListStatus: 'error' });
+                    }
                     const _foodCategory = foodCategory.map(cat => cat.foodCategoryName)
                     const _dishes = dishes.map(dish => dish.foodName + dish.unit || dish.foodNameWithUnit)
                     values.isFoodCatNameList = categoryOrDish;
@@ -292,9 +298,9 @@ class GiftAddModalStep extends React.Component {
     }
 
     validateFoodList = (basicValues) => {
-        if (this.state.values.hasOwnProperty('foodNameList') && (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
+        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length/* || !basicValues.foodNameList
             || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0))) {
+            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)*/) {
             message.warning('请至少选择一个菜品');
             this.setState({ foodNameListStatus: 'error' });
             return false;

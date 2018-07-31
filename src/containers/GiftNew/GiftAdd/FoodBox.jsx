@@ -648,7 +648,7 @@ class FoodBox extends React.Component {
 
         const foodCategoryCurrentSelections = [];
         storeOptions.forEach((storeEntity) => {
-            if (Array.from(foodCategorySelections).findIndex(item => item.foodCategoryID === storeEntity.foodCategoryID) > -1) {
+            if (Array.from(this.state.foodCategorySelections).findIndex(item => item.foodCategoryID === storeEntity.foodCategoryID) > -1) {
                 foodCategoryCurrentSelections.push(storeEntity.foodCategoryID)
             }
         });
