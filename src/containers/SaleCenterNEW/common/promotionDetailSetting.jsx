@@ -16,6 +16,7 @@ import styles from '../ActivityPage.less';
 
 import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 
 const Immutable = require('immutable');
 
@@ -317,6 +318,13 @@ class PromotionDetailSetting extends React.Component {
                         return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
+                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) === 'BILL_DISCOUNT' && <CloseableTip content={
+                    <div>
+                        <p>指定菜品：</p>
+                        <p>当未选择任何分类及菜品时，会根据基本档菜品库菜品是否设置了参与打折来执行。即：所有设置了参与打折的菜品都在活动参与范围</p>
+                        <p>当选择了适用菜品，则活动按照设置的菜品执行，不再受基本档菜品是否参与打折的设置影响</p>
+                    </div>
+                } />}
             </FormItem>
 
         );
