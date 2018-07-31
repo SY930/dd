@@ -129,6 +129,7 @@ class FoodBox extends React.Component {
                                     }
                                 });
                         });
+
                 }
                 if (scope.scopeType === 'FOOD_EXCLUDED') {
                     foodCategoryCollection
@@ -168,15 +169,21 @@ class FoodBox extends React.Component {
                 foodSelections,
                 excludeSelections,
             });
+            if (_scopeLst[0].scopeType === 'CATEGORY_INCLUDED') {
+                this.props.onChange && this.props.onChange({
+                    foodCategory: Array.from(foodCategorySelections),
+                    categoryOrDish: '1',
+                });
+            }
+            if (_scopeLst[0].scopeType === 'FOOD_INCLUDED') {
+                !this.props.dishOnly && this.props.onChange && this.props.onChange({
+                    dishes: Array.from(foodSelections),
+                    categoryOrDish: '0',
+                });
+            }
         }
-        this.props.onChange && this.props.onChange({
-            foodCategory: Array.from(foodCategorySelections),
-            categoryOrDish: '1',
-        });
-        !this.props.dishOnly && this.props.onChange && this.props.onChange({
-            dishes: Array.from(foodSelections),
-            categoryOrDish: '0',
-        });
+
+
     }
     componentDidMount() {
         var opts = {
@@ -203,8 +210,8 @@ class FoodBox extends React.Component {
 
     // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
-            this.props.promotionDetailInfo.get('foodCategoryCollection')) {
+        if ((nextProps.promotionDetailInfo.get('foodCategoryCollection') !== this.props.promotionDetailInfo.get('foodCategoryCollection'))
+            && !this.props.promotionDetailInfo.get('foodCategoryCollection').toJS().length) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             if (nextProps.dishOnly) {
                 foodCategoryCollection = this.filterGroup(foodCategoryCollection);

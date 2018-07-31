@@ -241,7 +241,7 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
-                // console.log(value);
+                console.log(value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
                     // values.isFoodCatNameList = data.isFoodCatNameList;
                     break;
