@@ -56,8 +56,8 @@ class DetailInfo extends React.Component {
         const goodsList = val.map(item => ({
             specType: item.unit,
             name: item.foodName,
-            price: item.mPrice === undefined ? -1 : Number(item.mPrice),
-            point: item.mPoint === undefined ? -1 : Number(item.mPoint),
+            price: item.mPrice === undefined ? 0 : Number(item.mPrice),
+            point: item.mPoint === undefined ? 0 : Number(item.mPoint),
             foodItemID: item.itemID,
             foodID: item.foodID,
             storage: item.totalAmount,

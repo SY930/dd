@@ -66,6 +66,22 @@ class HualalaGroupSelect extends React.Component {
         }
     }
 
+    /**
+     * 从微信商城商品中取到price 和 point
+     * @param price
+     * @param point
+     * @returns {string}
+     */
+    helper = ({price, xxxpoint: point}) => {
+        if (price >= 0 && point >= 0) {
+            return `${point}积分+${price}元`
+        } else if (price >= 0) {
+            return `${price}元`
+        } else if (point >= 0) {
+            return `${point}积分`
+        }
+    }
+
     componentDidMount() {
         if (this.props.options instanceof Array) {
             const options = this.props.options;
@@ -74,7 +90,8 @@ class HualalaGroupSelect extends React.Component {
                     return {
                         key: item[this.props.labelKey],
                         // label: item[this.props.labelKey] || `${item[this.props.labelKey]}+${item.unit}`,
-                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) (售价：${item.prePrice==-1?item.price:item.prePrice}元)`,
+                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) ( ${!this.props.isWeChatMall ?
+                            `售价：${item.prePrice==-1?item.price:item.prePrice}元` : `积分/现金售价：${this.helper(item)}`})`,
                         value: item[this.props.valueKey],
                     }
                 }),
@@ -91,7 +108,8 @@ class HualalaGroupSelect extends React.Component {
                 options: nextProps.options.map((item, index) => {
                     return {
                         key: `${index}`,
-                        label: item[nextProps.labelKey] || `${item.foodName}  (${item.unit}) (售价：${item.prePrice==-1?item.price:item.prePrice}元)`,
+                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) ( ${!this.props.isWeChatMall ?
+                            `售价：${item.prePrice==-1?item.price:item.prePrice}元` : `积分/现金售价：${this.helper(item)}`})`,
                         value: item[nextProps.valueKey],
                     }
                 }),
