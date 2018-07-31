@@ -129,10 +129,6 @@ class FoodBox extends React.Component {
                                     }
                                 });
                         });
-                    this.props.onChange && this.props.onChange({
-                        foodCategory: Array.from(foodCategorySelections),
-                        categoryOrDish: '1',
-                    });
                 }
                 if (scope.scopeType === 'FOOD_EXCLUDED') {
                     foodCategoryCollection
@@ -163,10 +159,6 @@ class FoodBox extends React.Component {
                                         });
                                 })
                         });
-                    !this.props.dishOnly && this.props.onChange && this.props.onChange({
-                        dishes: Array.from(foodSelections),
-                        categoryOrDish: '0',
-                    });
                 }
             });
 
@@ -177,6 +169,14 @@ class FoodBox extends React.Component {
                 excludeSelections,
             });
         }
+        this.props.onChange && this.props.onChange({
+            foodCategory: Array.from(foodCategorySelections),
+            categoryOrDish: '1',
+        });
+        !this.props.dishOnly && this.props.onChange && this.props.onChange({
+            dishes: Array.from(foodSelections),
+            categoryOrDish: '0',
+        });
     }
     componentDidMount() {
         var opts = {
