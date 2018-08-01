@@ -251,6 +251,7 @@ class FoodBox extends React.Component {
             this.setState({
                 categoryOrDish: e.target.value,
                 foodSelections,
+                foodCurrentSelections: []
             });
         } else {
             const { foodCategorySelections, excludeSelections } = this.state;
@@ -260,6 +261,8 @@ class FoodBox extends React.Component {
                 categoryOrDish: e.target.value,
                 foodCategorySelections,
                 excludeSelections,
+                foodCategoryCurrentSelections: [],
+                excludeCurrentSelections: []
             });
         }
         this.props.onChange && this.props.onChange({
