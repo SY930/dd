@@ -5,6 +5,8 @@ import {
     Input,
     Select,
     Radio,
+    Row,
+    Col,
 
 } from 'antd';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
@@ -42,13 +44,18 @@ class SendGiftPanel extends Component {
             smsGate: '0',           // 消息推送方式
             giftNo: 1,              // 礼品个数
             effectType: '1',        // 相对有效期
-            dayOrHour: '1',         // 按天 按小时
-            effectTime: '1',        // 何时生效
+            dayOrHour: '0',         // 按天 按小时
+            whenToEffect: '0',        // 何时生效
+            giftValidDays: 1,        // 有效天数
             cellNo: '',             // 用户手机号
             template: '',           // 所选短信模板
         };
         this.handleGiftNumChange = this.handleGiftNumChange.bind(this);
         this.handleEffectTypeChange = this.handleEffectTypeChange.bind(this);
+        this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
+        this.handleDayOrHourChange = this.handleDayOrHourChange.bind(this);
+        this.handleWhenToEffectChange = this.handleWhenToEffectChange.bind(this);
+        this.handleSmsGateChange = this.handleSmsGateChange.bind(this);
     }
 
     handleGiftNumChange(val) {
@@ -57,37 +64,80 @@ class SendGiftPanel extends Component {
         })
     }
 
+    handleWhenToEffectChange(val) {
+        this.setState({
+            whenToEffect: val,
+        })
+    }
+
+    handleSmsGateChange(val) {
+        this.setState({
+            smsGate: val,
+        })
+    }
+
+    handleGiftValidDaysChange(val) {
+        this.setState({
+            giftValidDays: val.number,
+        })
+    }
+
     handleEffectTypeChange(val) {
         this.setState({
-            effectType: val,
+            effectType: val.target.value,
+        })
+    }
+
+    handleDayOrHourChange(val) {
+        this.setState({
+            dayOrHour: val.target.value,
         })
     }
 
     renderCellNo() {
-        return <Input/>
+        return (<FormItem
+                    label="手机号"
+                    className={styles.FormItemStyle}
+                    style={{
+                        margin: '1em 0'
+                    }}
+                    labelCol={{ span: 3 }}
+                    wrapperCol={{ span: 21 }}
+                >
+                    <Input/>
+                </FormItem>);
     }
 
     renderGift() {
+        const { getFieldDecorator } = this.props.form;
         return (
             <Form className={styles.addGrade}>
                 <div className={styles.CategoryBody}>
-                    {/* 礼品个数 */}
                     <FormItem
                         className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
-                        validateStatus={validateStatus}
-                        help={help}
+                        required={true}
                     >
-                        <PriceInput
+                        {getFieldDecorator('giftNo', {
+                            value: { number: this.state.giftNo },
+                            onChange: this.handleGiftNumChange,
+                            rules: [
+                                { required: true, message: '礼品个数为必填项' },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v) cb();
+                                        v.number > 0 && v.number <= 50 ? cb() : cb(rule.message);
+                                    },
+                                    message: '礼品个数为1到50'
+                                },
+                            ]
+                        })(<PriceInput
                             addonBefore={'礼品个数:'}
-                            value={{ number: this.state.giftNo }}
-                            onChange={this.handleGiftNumChange}
                             addonAfter="个"
                             modal="int"
-                        />
+                        />)}
                     </FormItem>
-                    {/* ....... */}
                     <FormItem
                         className={styles.FormItemStyle}
                     >
@@ -111,7 +161,7 @@ class SendGiftPanel extends Component {
                         <RadioGroup
                             className={styles.radioMargin}
                             value={this.state.dayOrHour}
-                            onChange={this}
+                            onChange={this.handleDayOrHourChange}
                         >
                             {
                                 [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
@@ -128,8 +178,8 @@ class SendGiftPanel extends Component {
                     >
                         <Select
                             size="default"
-                            value={}
-                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                            value={this.state.whenToEffect}
+                            onChange={this.handleWhenToEffectChange}
                             getPopupContainer={(node) => node.parentNode}
                         >
                             {
@@ -146,16 +196,25 @@ class SendGiftPanel extends Component {
                         wrapperCol={{ span: 16 }}
                         label={'有效天数'}
                         required={true}
-                        validateStatus={info.giftValidDays.validateStatus}
-                        help={info.giftValidDays.msg}
                     >
-                        <PriceInput
+                        {getFieldDecorator('giftValidDays', {
+                            value: { number: this.state.giftValidDays },
+                            onChange: this.handleGiftValidDaysChange,
+                            rules: [
+                                { required: true, message: '有效天数为必填项' },
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v) cb();
+                                        v.number > 0 && v.number <= 9999 ? cb() : cb(rule.message);
+                                    },
+                                    message: '有效天数为1到9999'
+                                },
+                            ]
+                        })(<PriceInput
                             addonBefore=""
                             addonAfter="天"
                             modal="int"
-                            value={{ number: info.giftValidDays.value }}
-                            onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
-                        />
+                        />)}
                     </FormItem>
                 </div>
             </Form>
@@ -164,28 +223,32 @@ class SendGiftPanel extends Component {
 
     render() {
         return (
-            <div>
-                {this.renderCellNo()}
-                {this.renderGift()}
-                <FormItem
-                    label="是否发送消息"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Select size="default"
-                            value={`${this.state.smsGate}`}
-                            onChange={this.handlesmsGateChange}
-                            getPopupContainer={(node) => node.parentNode}
+            <Row>
+                <Col span={12} offset={6}>
+                    {this.renderCellNo()}
+                    {this.renderGift()}
+                    <FormItem
+                        label="是否发送消息"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 19 }}
                     >
-                        {
-                            SEND_MSG.map((item) => {
-                                return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
-                            })
-                        }
-                    </Select>
-                </FormItem>
-            </div>
+                        <Select size="default"
+                                value={`${this.state.smsGate}`}
+                                onChange={this.handleSmsGateChange}
+                                getPopupContainer={(node) => node.parentNode}
+                        >
+                            {
+                                SEND_MSG.map((item) => {
+                                    return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
+                                })
+                            }
+                        </Select>
+                    </FormItem>
+                </Col>
+            </Row>
         )
     }
 }
+
+export default Form.create()(SendGiftPanel);
