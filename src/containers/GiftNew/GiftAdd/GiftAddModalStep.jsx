@@ -162,7 +162,9 @@ class GiftAddModalStep extends React.Component {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        values[key] = value;
+        if (key !== 'foodNameList') {
+            values[key] = value;
+        }
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -239,19 +241,20 @@ class GiftAddModalStep extends React.Component {
                 })
                 break;
             case 'foodNameList':
+                console.log(value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
-                    values.isFoodCatNameList = data.isFoodCatNameList;
-                    // values.foodNameList = [];
+                    // values.isFoodCatNameList = data.isFoodCatNameList;
                     break;
                 }
                 if (value) {
                     const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
-                    const _foodCategory = foodCategory && foodCategory.map((cat) => {
-                        return cat.foodCategoryName
-                    })
-                    const _dishes = dishes && dishes.map((dish) => {
-                        return dish.foodName + dish.unit || dish.foodNameWithUnit
-                    })
+                    if (foodCategory.length || dishes.length) {
+                        this.setState({ foodNameListStatus: 'success' });
+                    } else {
+                        this.setState({ foodNameListStatus: 'error' });
+                    }
+                    const _foodCategory = foodCategory.map(cat => cat.foodCategoryName)
+                    const _dishes = dishes.map(dish => dish.foodName + dish.unit || dish.foodNameWithUnit)
                     values.isFoodCatNameList = categoryOrDish;
                     values.foodNameList = categoryOrDish == '1' ? _foodCategory : _dishes;
                 } else {
@@ -295,9 +298,9 @@ class GiftAddModalStep extends React.Component {
     }
 
     validateFoodList = (basicValues) => {
-        if (this.state.values.hasOwnProperty('foodNameList') && (!this.state.values.foodNameList || !this.state.values.foodNameList.length || !basicValues.foodNameList
+        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length/* || !basicValues.foodNameList
             || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0))) {
+            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)*/) {
             message.warning('请至少选择一个菜品');
             this.setState({ foodNameListStatus: 'error' });
             return false;
@@ -896,7 +899,10 @@ class GiftAddModalStep extends React.Component {
         const formItemLayout = { labelCol: { span: 1 }, wrapperCol: { span: 23 } };
         let _scopeLst = [];
         if (this.props.type === 'edit') {
-            const { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            if (this.state.values.foodNameList) {
+                foodNameList = this.state.values.foodNameList;
+            }
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
                 return isFoodCatNameList == '1' ? {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs, Button, Icon } from 'antd';
 import _ from 'lodash';
 import GiftSendOrUsedCount from './GiftDetailSendorUsedTable';
 import {
@@ -9,6 +9,7 @@ import {
     FetchSendorUsedList,
     UpdateSendorUsedParams,
 } from '../_action';
+import ExportModal from "./ExportModal";
 
 const TabPane = Tabs.TabPane;
 class GiftDetailModalTabs extends React.Component {
@@ -16,11 +17,19 @@ class GiftDetailModalTabs extends React.Component {
         super(props);
         this.state = {
             activeKey: 'send',
-        }
+            exportVisible: false,
+        };
+        this.handleExport = this.handleExport.bind(this);
     }
     componentDidMount() {
         // const { sendorUsedKey } = this.props;
         // this.setState({ activeKey: sendorUsedKey});
+    }
+
+    handleExport() {
+        this.setState({
+            exportVisible: true,
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -56,6 +65,15 @@ class GiftDetailModalTabs extends React.Component {
                     className="tabsStyles"
                     activeKey={this.state.activeKey}
                     onChange={activeKey => this.onChange(activeKey)}
+                    /*tabBarExtraContent={
+                        <Button type="ghost"
+                                disabled={this.props.total <= 0}
+                                onClick={this.handleExport}
+                                style={{top: '8px'}}
+                        >
+                        <Icon
+                            type="export" />导出</Button>
+                    }*/
                 >
                     {
                         tabs.map((tab) => {
@@ -65,6 +83,12 @@ class GiftDetailModalTabs extends React.Component {
                         })
                     }
                 </Tabs>
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </div>
         )
     }

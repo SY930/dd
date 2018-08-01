@@ -15,3 +15,6 @@ export { default as old_GiftAdd } from './Gift/GiftAdd/index';
 
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
 export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
+
+export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
+export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';

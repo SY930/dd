@@ -129,10 +129,7 @@ class FoodBox extends React.Component {
                                     }
                                 });
                         });
-                    this.props.onChange && this.props.onChange({
-                        foodCategory: Array.from(foodCategorySelections),
-                        categoryOrDish: '1',
-                    });
+
                 }
                 if (scope.scopeType === 'FOOD_EXCLUDED') {
                     foodCategoryCollection
@@ -163,10 +160,6 @@ class FoodBox extends React.Component {
                                         });
                                 })
                         });
-                    !this.props.dishOnly && this.props.onChange && this.props.onChange({
-                        dishes: Array.from(foodSelections),
-                        categoryOrDish: '0',
-                    });
                 }
             });
 
@@ -176,7 +169,21 @@ class FoodBox extends React.Component {
                 foodSelections,
                 excludeSelections,
             });
+            if (_scopeLst[0].scopeType === 'CATEGORY_INCLUDED') {
+                this.props.onChange && this.props.onChange({
+                    foodCategory: Array.from(foodCategorySelections),
+                    categoryOrDish: '1',
+                });
+            }
+            if (_scopeLst[0].scopeType === 'FOOD_INCLUDED') {
+                !this.props.dishOnly && this.props.onChange && this.props.onChange({
+                    dishes: Array.from(foodSelections),
+                    categoryOrDish: '0',
+                });
+            }
         }
+
+
     }
     componentDidMount() {
         var opts = {
@@ -203,8 +210,8 @@ class FoodBox extends React.Component {
 
     // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
-            this.props.promotionDetailInfo.get('foodCategoryCollection')) {
+        if ((nextProps.promotionDetailInfo.get('foodCategoryCollection') !== this.props.promotionDetailInfo.get('foodCategoryCollection'))
+            && !this.props.promotionDetailInfo.get('foodCategoryCollection').toJS().length) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             if (nextProps.dishOnly) {
                 foodCategoryCollection = this.filterGroup(foodCategoryCollection);
@@ -244,6 +251,7 @@ class FoodBox extends React.Component {
             this.setState({
                 categoryOrDish: e.target.value,
                 foodSelections,
+                foodCurrentSelections: []
             });
         } else {
             const { foodCategorySelections, excludeSelections } = this.state;
@@ -253,6 +261,8 @@ class FoodBox extends React.Component {
                 categoryOrDish: e.target.value,
                 foodCategorySelections,
                 excludeSelections,
+                foodCategoryCurrentSelections: [],
+                excludeCurrentSelections: []
             });
         }
         this.props.onChange && this.props.onChange({
@@ -531,7 +541,7 @@ class FoodBox extends React.Component {
 
     // 菜品分类
     handleFoodCategorySearchInputChange(value) {
-        const { foodCategoryCollection, foodCategorySelections } = this.state;
+        const { foodCategoryCollection, foodSelections } = this.state;
         if (undefined === foodCategoryCollection) {
             return null;
         }
@@ -552,7 +562,7 @@ class FoodBox extends React.Component {
         // update currentSelections according the selections
         const foodCategoryCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (foodCategorySelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(food => food.itemID == storeEntity.itemID) > -1) {
                 foodCategoryCurrentSelections.push(storeEntity.foodCategoryID)
             }
         });
@@ -567,7 +577,7 @@ class FoodBox extends React.Component {
         const foodCategorySelections = value;
         const foodCategoryCurrentSelections = [];
         this.state.foodCategoryOptions.forEach((storeEntity) => {
-            if (foodCategorySelections.has(storeEntity)) {
+            if (Array.from(foodCategorySelections).findIndex(item => item.foodCategoryID === storeEntity.foodCategoryID) > -1) {
                 foodCategoryCurrentSelections.push(storeEntity.foodCategoryID)
             }
         });
@@ -648,7 +658,7 @@ class FoodBox extends React.Component {
 
         const foodCategoryCurrentSelections = [];
         storeOptions.forEach((storeEntity) => {
-            if (this.state.foodCategorySelections.has(storeEntity)) {
+            if (Array.from(this.state.foodCategorySelections).findIndex(item => item.foodCategoryID === storeEntity.foodCategoryID) > -1) {
                 foodCategoryCurrentSelections.push(storeEntity.foodCategoryID)
             }
         });
@@ -691,7 +701,7 @@ class FoodBox extends React.Component {
         // update currentSelections according the selections
         const excludeCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (excludeSelections.has(storeEntity)) {
+            if (Array.from(excludeSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 excludeCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -706,7 +716,7 @@ class FoodBox extends React.Component {
         const excludeSelections = value;
         const excludeCurrentSelections = [];
         this.state.excludeOptions.forEach((storeEntity) => {
-            if (excludeSelections.has(storeEntity)) {
+            if (Array.from(excludeSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 excludeCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -783,7 +793,7 @@ class FoodBox extends React.Component {
         });
         const excludeCurrentSelections = [];
         storeOptions.forEach((storeEntity) => {
-            if (this.state.excludeSelections.has(storeEntity)) {
+            if (Array.from(this.state.excludeSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 excludeCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -817,7 +827,7 @@ class FoodBox extends React.Component {
         // update currentSelections according the selections
         const foodCurrentSelections = [];
         allMatchItem.forEach((storeEntity) => {
-            if (foodSelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -832,7 +842,7 @@ class FoodBox extends React.Component {
         const foodSelections = value;
         const foodCurrentSelections = [];
         this.state.foodOptions.forEach((storeEntity) => {
-            if (foodSelections.has(storeEntity)) {
+            if (Array.from(foodSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
@@ -908,7 +918,7 @@ class FoodBox extends React.Component {
         });
         const foodCurrentSelections = [];
         storeOptions.forEach((storeEntity) => {
-            if (this.state.foodSelections.has(storeEntity)) {
+            if (Array.from(this.state.foodSelections).findIndex(item => item.itemID === storeEntity.itemID) > -1) {
                 foodCurrentSelections.push(storeEntity.itemID)
             }
         });
