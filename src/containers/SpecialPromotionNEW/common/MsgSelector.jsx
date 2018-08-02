@@ -11,7 +11,7 @@ import {
 import {getMessageTemplateList} from "../../BasicSettings/actions";
 import {SET_MSG_TEMPLATE} from "../../../constants/entryCodes";
 
-class MessageSelector extends React.Component {
+class MsgSelector extends React.Component {
 
     constructor(props) {
         super(props);
@@ -131,4 +131,4 @@ function MessageDisplayBox(props) {
     )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MessageSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(MsgSelector);

@@ -179,67 +179,69 @@ class GiftDetailModal extends Component {
                 onCancel={() => this.handleCancel()}
                 maskClosable={false}
                 width={900}
-                footer={[<Button key="0" type="ghost" onClick={() => this.handleCancel()}>关闭</Button>]}
+                footer={[<Button key="0" className="cancelBtnJs" type="ghost" onClick={() => this.handleCancel()}>关闭</Button>]}
             >
-                <div className={styles.giftDetailModal}>
-                    <div>
-                        <Row>
-                            <h3>基本信息</h3>
-                        </Row>
-                        <Row style={{ margin: '0 10px' }}>
-                            <Col span={4}>
-                                <div
-                                    className="gift-image"
-                                    style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
-                                >
-                                    {giftLogo(giftType)}
-                                    <p>{data.giftName}</p>
-                                </div>
-                            </Col>
-                            <Col span={19} push={1}>
-                                <InfoDisplay infoItem={infoItem} infoData={data} />
-                                <Row className="info-rule">
-                                    <Col span={3}>使用规则 :</Col>
-                                    <Col span={21}>{giftRule.map((item, idx) => (<span
-                                        key={idx}
-                                    >{`${++idx}、${item}`}<br /></span>))}</Col>
-                                </Row>
-                            </Col>
-                        </Row>
+                {visible && (
+                    <div className={styles.giftDetailModal}>
+                        <div>
+                            <Row>
+                                <h3>基本信息</h3>
+                            </Row>
+                            <Row style={{ margin: '0 10px' }}>
+                                <Col span={4}>
+                                    <div
+                                        className="gift-image"
+                                        style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
+                                    >
+                                        {giftLogo(giftType)}
+                                        <p>{data.giftName}</p>
+                                    </div>
+                                </Col>
+                                <Col span={19} push={1}>
+                                    <InfoDisplay infoItem={infoItem} infoData={data} />
+                                    <Row className="info-rule">
+                                        <Col span={3}>使用规则 :</Col>
+                                        <Col span={21}>{giftRule.map((item, idx) => (<span
+                                            key={idx}
+                                        >{`${++idx}、${item}`}<br /></span>))}</Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </div>
+                        {/* <div>
+                         <Row>
+                         <h3>礼品统计</h3>
+                         </Row>
+                         <Row>
+                         <Table
+                         bordered
+                         columns={columns}
+                         dataSource={this.state.dataSource}
+                         pagination={false}
+                         loading={this.state.loading}
+                         className="gift-detail-modal-table"
+                         />
+                         </Row>
+                         </div> */}
+                        <div>
+                            <Row>
+                                <h3>查询明细的统计</h3>
+                                <Table
+                                    bordered={true}
+                                    columns={giftType === '91' ? totalColumns.slice(0, 1) : totalColumns}
+                                    dataSource={totalData}
+                                    pagination={false}
+                                />
+                            </Row>
+                            <Row>
+                                <h3>使用统计</h3>
+                            </Row>
+                            <Row>
+                                <GiftDetailModalTabs data={data} total={(this.props.sendTotalSize || 0) + (this.props.usedTotalSize || 0)} />
+                            </Row>
+                        </div>
                     </div>
-                    {/* <div>
-                     <Row>
-                     <h3>礼品统计</h3>
-                     </Row>
-                     <Row>
-                     <Table
-                     bordered
-                     columns={columns}
-                     dataSource={this.state.dataSource}
-                     pagination={false}
-                     loading={this.state.loading}
-                     className="gift-detail-modal-table"
-                     />
-                     </Row>
-                     </div> */}
-                    <div>
-                        <Row>
-                            <h3>查询明细的统计</h3>
-                            <Table
-                                bordered={true}
-                                columns={giftType === '91' ? totalColumns.slice(0, 1) : totalColumns}
-                                dataSource={totalData}
-                                pagination={false}
-                            />
-                        </Row>
-                        <Row>
-                            <h3>使用统计</h3>
-                        </Row>
-                        <Row>
-                            <GiftDetailModalTabs data={data} total={(this.props.sendTotalSize || 0) + (this.props.usedTotalSize || 0)} />
-                        </Row>
-                    </div>
-                </div>
+                )}
             </Modal>
         )
     }

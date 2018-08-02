@@ -15,6 +15,8 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../../redux/actions/saleCenterNEW/types";
 import {axiosData} from "../../../helpers/util";
 import SendMsgInfo from "../../SpecialPromotionNEW/common/SendMsgInfo";
+import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
+import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 
 
 const FormItem = Form.Item;
@@ -55,7 +57,7 @@ class SendGiftPanel extends Component {
             settleUnitID: '',
             availableSmsCount: 0,
             message: '',
-            loading: false
+            loading: false,
         };
         this.handleGiftNumChange = this.handleGiftNumChange.bind(this);
         this.handleEffectTypeChange = this.handleEffectTypeChange.bind(this);
@@ -66,20 +68,20 @@ class SendGiftPanel extends Component {
         this.handleCellNoChange = this.handleCellNoChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
+        this.handleMessageChange = this.handleMessageChange.bind(this);
     }
 
     handleSubmit() {
         let flag = true;
-        this.props.form.validateFieldsAndScroll(err => {
+        if (this.props.form.isFieldValidating('cellNo')) {
+            return messageService.warning('正在校验手机号');
+        }
+        this.props.form.validateFieldsAndScroll({scroll: {offsetBottom: 20}}, err => {
             if (err) flag = false;
         });
         const { settleUnitID, availableSmsCount, smsGate } = this.state;
         const sendFlag = smsGate === '1' || smsGate === '3';
         if (sendFlag) {
-            if (!settleUnitID) {
-                flag = false;
-                return messageService.warning('必须选择一个合适的结算账户');
-            }
             if (!availableSmsCount) {
                 flag = false;
                 return messageService.warning('可用短信条数必须大于0');
@@ -91,22 +93,23 @@ class SendGiftPanel extends Component {
     }
 
     handleSmgInfoChange(val) {
-        console.log(val);
-            if (val instanceof Object && val !== null) {
-                if (val.settleUnitID) {
-                    this.setState({
-                        settleUnitID: val.settleUnitID,
-                        availableSmsCount: val.smsCount,
-                    })
-                }
-            } else {
-                let message = val || '';
-                if (/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g.test(message)) {
-                    messageService.warning('请选择不含[会员姓名][先生/女士][卡名称][卡号后四位] 的模板');
-                    message = '';
-                }
-                this.setState({ message });
-            }
+        this.setState({
+            settleUnitID: val.settleUnitID,
+            availableSmsCount: val.smsCount,
+        }, () => {
+            this.props.form.setFieldsValue({ 'settleUnitID': val.settleUnitID });
+        })
+    }
+
+    handleMessageChange(val) {
+        let message = val || '';
+        if (/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g.test(message)) {
+            messageService.warning('请选择不含[会员姓名][先生/女士][卡名称][卡号后四位] 的模板');
+            message = '';
+        }
+        this.setState({ message }, () => {
+            this.props.form.setFieldsValue({ 'message': message });
+        });
     }
 
     handleGiftNumChange(val) {
@@ -161,6 +164,7 @@ class SendGiftPanel extends Component {
                     }}
                     labelCol={{ span: 4 }}
                     hasFeedback
+                    required
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('cellNo', {
@@ -176,6 +180,9 @@ class SendGiftPanel extends Component {
                                     if (cellNoString.length < 11 || cellNoString.length > 11) {
                                         cb('请输入11位手机号码')
                                     } else {
+                                        setTimeout(() => {
+                                            cb()
+                                        }, 10000)
                                         axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
                                             .then((res = {}) => {
                                                 if (res.customerID && res.customerID != '0') {
@@ -338,6 +345,46 @@ class SendGiftPanel extends Component {
         )
     }
 
+    renderSettleUnitID() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <FormItem
+                label="短信结算账户"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {getFieldDecorator('settleUnitID', {
+                    initialValue: this.state.settleUnitID,
+                    onChange: this.handleSmgInfoChange,
+                    rules: [
+                        { required: true, message: '短信结算账户不得为空' },
+                    ]
+                })(<SettleUnitIDSelector autoFetch />)}
+            </FormItem>
+        );
+    }
+
+    renderMsgSelector() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <FormItem
+                label="选择短信模板"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {getFieldDecorator('message', {
+                    initialValue: this.state.message,
+                    onChange: this.handleMessageChange,
+                    rules: [
+                        { required: true, message: '必须选择一条短信模板' },
+                    ]
+                })(<MsgSelector selectedMessage={this.state.message} />)}
+            </FormItem>
+        );
+    }
+
     render() {
         return (
             <Row>
@@ -363,16 +410,20 @@ class SendGiftPanel extends Component {
                 <Col offset={3} span={17}>
                     {this.renderSmsGate()}
                 </Col>
-                <Col offset={3} span={17} style={{marginBottom: '2em'}}>
+                <Col offset={3} span={17}>
                     {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
-                    <SendMsgInfo
-                        autoFetchSettleUnits
-                        sendFlag={true}
-                        form={this.props.form}
-                        value={this.state.message}
-                        settleUnitID={this.state.settleUnitID}
-                        onChange={this.handleSmgInfoChange}
-                    />
+                    <div>
+                        {this.renderSettleUnitID()}
+                    </div>
+                )}
+                </Col>
+                <Col offset={3} span={17} style={{
+                    marginBottom: '2em'
+                }}>
+                    {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
+                    <div>
+                        {this.renderMsgSelector()}
+                    </div>
                 )}
                 </Col>
             </Row>
