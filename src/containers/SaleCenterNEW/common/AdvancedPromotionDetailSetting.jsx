@@ -283,15 +283,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
     };
     renderExcludedPromotionBlackList() {
         const tip = (
-            <div style={{ display: this.state.display, height: 240, width: 460 }} className={styles.tip}>
+            <div style={{ display: this.state.display, height: 330, width: 460 }} className={styles.tip}>
                 <div><p style={{ marginBottom: 10 }}>共享名单方式</p></div>
-                <Row style={{ height: '30%' }}>
+                <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>白名单:</Col>
                     <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>不共享</span></Col>
                 </Row>
-                <Row style={{ height: '30%' }}>
+                <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>黑名单:</Col>
                     <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>不共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>共享</span></Col>
+                </Row>
+                <Row style={{ height: '72px' }}>
+                    <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>注意</span>:</Col>
+                    <Col span={20}>微信餐厅对满赠、买赠、第二份打折、搭赠、加价换购、加价升级换新这六个菜品类营销活动不受互斥规则限制，在微信餐厅上都按同享执行</Col>
                 </Row>
                 <div style={{ marginRight: 14 }}>
                     <div className={styles.tipBtn}>
