@@ -7,11 +7,14 @@ import {
     Radio,
     Row,
     Col,
+    message as messageService,
 
 } from 'antd';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../../redux/actions/saleCenterNEW/types";
+import {axiosData} from "../../../helpers/util";
+import SendMsgInfo from "../../SpecialPromotionNEW/common/SendMsgInfo";
 
 
 const FormItem = Form.Item;
@@ -49,6 +52,10 @@ class SendGiftPanel extends Component {
             giftValidDays: 1,        // 有效天数
             cellNo: '',             // 用户手机号
             template: '',           // 所选短信模板
+            settleUnitID: '',
+            availableSmsCount: 0,
+            message: '',
+            loading: false
         };
         this.handleGiftNumChange = this.handleGiftNumChange.bind(this);
         this.handleEffectTypeChange = this.handleEffectTypeChange.bind(this);
@@ -56,6 +63,50 @@ class SendGiftPanel extends Component {
         this.handleDayOrHourChange = this.handleDayOrHourChange.bind(this);
         this.handleWhenToEffectChange = this.handleWhenToEffectChange.bind(this);
         this.handleSmsGateChange = this.handleSmsGateChange.bind(this);
+        this.handleCellNoChange = this.handleCellNoChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
+    }
+
+    handleSubmit() {
+        let flag = true;
+        this.props.form.validateFieldsAndScroll(err => {
+            if (err) flag = false;
+        });
+        const { settleUnitID, availableSmsCount, smsGate } = this.state;
+        const sendFlag = smsGate === '1' || smsGate === '3';
+        if (sendFlag) {
+            if (!settleUnitID) {
+                flag = false;
+                return messageService.warning('必须选择一个合适的结算账户');
+            }
+            if (!availableSmsCount) {
+                flag = false;
+                return messageService.warning('可用短信条数必须大于0');
+            }
+        }
+        if (flag) {
+            console.log(this.state);
+        }
+    }
+
+    handleSmgInfoChange(val) {
+        console.log(val);
+            if (val instanceof Object && val !== null) {
+                if (val.settleUnitID) {
+                    this.setState({
+                        settleUnitID: val.settleUnitID,
+                        availableSmsCount: val.smsCount,
+                    })
+                }
+            } else {
+                let message = val || '';
+                if (/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g.test(message)) {
+                    messageService.warning('请选择不含[会员姓名][先生/女士][卡名称][卡号后四位] 的模板');
+                    message = '';
+                }
+                this.setState({ message });
+            }
     }
 
     handleGiftNumChange(val) {
@@ -88,6 +139,12 @@ class SendGiftPanel extends Component {
         })
     }
 
+    handleCellNoChange(val) {
+        this.setState({
+            cellNo: val.number,
+        })
+    }
+
     handleDayOrHourChange(val) {
         this.setState({
             dayOrHour: val.target.value,
@@ -95,23 +152,56 @@ class SendGiftPanel extends Component {
     }
 
     renderCellNo() {
+        const { getFieldDecorator } = this.props.form;
         return (<FormItem
                     label="手机号"
                     className={styles.FormItemStyle}
                     style={{
                         margin: '1em 0'
                     }}
-                    labelCol={{ span: 3 }}
-                    wrapperCol={{ span: 21 }}
+                    labelCol={{ span: 4 }}
+                    hasFeedback
+                    wrapperCol={{ span: 17 }}
                 >
-                    <Input/>
+                    {getFieldDecorator('cellNo', {
+                        value: { number: this.state.cellNo },
+                        onChange: this.handleCellNoChange,
+                        rules: [
+                            {
+                                validator: (rule, v, cb) => {
+                                    if (!v || !v.number) {
+                                        return cb('手机号为必填项');
+                                    }
+                                    const cellNoString = String(v.number);
+                                    if (cellNoString.length < 11 || cellNoString.length > 11) {
+                                        cb('请输入11位手机号码')
+                                    } else {
+                                        axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
+                                            .then((res = {}) => {
+                                                if (res.customerID && res.customerID != '0') {
+                                                    cb()
+                                                } else {
+                                                    cb('没有找到对应的用户')
+                                                }
+                                            })
+                                            .catch(e => cb('没有找到对应的用户'))
+                                    }
+                                },
+                            },
+                        ]
+                    })(<PriceInput modal="int"/>)}
                 </FormItem>);
     }
 
     renderGift() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Form className={styles.addGrade}>
+            <Form
+                style={{
+                    marginLeft: '-6px'
+                }}
+                className={styles.addGrade}
+            >
                 <div className={styles.CategoryBody}>
                     <FormItem
                         className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
@@ -126,7 +216,9 @@ class SendGiftPanel extends Component {
                                 { required: true, message: '礼品个数为必填项' },
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v) cb();
+                                        if (!v) {
+                                            return cb();
+                                        }
                                         v.number > 0 && v.number <= 50 ? cb() : cb(rule.message);
                                     },
                                     message: '礼品个数为1到50'
@@ -204,7 +296,9 @@ class SendGiftPanel extends Component {
                                 { required: true, message: '有效天数为必填项' },
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v) cb();
+                                        if (!v) {
+                                            return cb();
+                                        }
                                         v.number > 0 && v.number <= 9999 ? cb() : cb(rule.message);
                                     },
                                     message: '有效天数为1到9999'
@@ -221,30 +315,65 @@ class SendGiftPanel extends Component {
         )
     }
 
+    renderSmsGate() {
+        return (
+            <FormItem
+                label="是否发送消息"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <Select size="default"
+                        value={`${this.state.smsGate}`}
+                        onChange={this.handleSmsGateChange}
+                        getPopupContainer={(node) => node.parentNode}
+                >
+                    {
+                        SEND_MSG.map((item) => {
+                            return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
+                        })
+                    }
+                </Select>
+            </FormItem>
+        )
+    }
+
     render() {
         return (
             <Row>
-                <Col span={12} offset={6}>
+                <Col offset={3} span={17}>
                     {this.renderCellNo()}
-                    {this.renderGift()}
-                    <FormItem
-                        label="是否发送消息"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 19 }}
+                </Col>
+                <Col span={4} style={{
+                    display: 'flex',
+                    height: '68px',
+                    alignItems: 'center',
+                }}>
+                    <Button
+                        type="primary"
+                        loading={this.state.loading}
+                        onClick={this.handleSubmit}
                     >
-                        <Select size="default"
-                                value={`${this.state.smsGate}`}
-                                onChange={this.handleSmsGateChange}
-                                getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                SEND_MSG.map((item) => {
-                                    return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
-                                })
-                            }
-                        </Select>
-                    </FormItem>
+                        发送
+                    </Button>
+                </Col>
+                <Col span={12} offset={6}>
+                    {this.renderGift()}
+                </Col>
+                <Col offset={3} span={17}>
+                    {this.renderSmsGate()}
+                </Col>
+                <Col offset={3} span={17} style={{marginBottom: '2em'}}>
+                    {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
+                    <SendMsgInfo
+                        autoFetchSettleUnits
+                        sendFlag={true}
+                        form={this.props.form}
+                        value={this.state.message}
+                        settleUnitID={this.state.settleUnitID}
+                        onChange={this.handleSmgInfoChange}
+                    />
+                )}
                 </Col>
             </Row>
         )
