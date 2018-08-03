@@ -1,4 +1,4 @@
-import { fetchData } from '../../../helpers/util';
+import {axiosData, fetchData} from '../../../helpers/util';
 
 export const SALE_CENTER_FETCH_PROMOTION_CATEGORIES_START = 'sale center: fetch promotion categories start new';
 export const SALE_CENTER_FETCH_PROMOTION_CATEGORIES_SUCCESS = 'sale center: fetch promotion categories success new';
@@ -176,31 +176,17 @@ export const fetchFilterShopsSuccess = (opts) => {
 
 export const fetchFilterShops = (opts) => {
     return (dispatch) => {
-        fetch('/api/promotion/filterShops_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
-            if (responseJSON.code === '000') {
-                dispatch(fetchFilterShopsSuccess(responseJSON));
-            } else {
-                opts.fail && opts.fail('店铺信息获取出错');
-            }
-        }).catch((error) => {
+        axiosData(
+            '/promotion/docPromotionService_query.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            dispatch(fetchFilterShopsSuccess(responseJSON))
+        }, (error) => {
             opts.fail && opts.fail('店铺信息获取出错');
-        });
+        })
     };
 };
 export const shopsAllSet = (opts) => {
