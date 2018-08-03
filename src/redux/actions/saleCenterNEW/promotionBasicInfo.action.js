@@ -177,7 +177,7 @@ export const fetchFilterShopsSuccess = (opts) => {
 export const fetchFilterShops = (opts) => {
     return (dispatch) => {
         axiosData(
-            '/promotion/docPromotionService_query.ajax',
+            '/promotion/docPromotionService_queryShopListByType.ajax',
             opts.data,
             {},
             {path: 'data'},
