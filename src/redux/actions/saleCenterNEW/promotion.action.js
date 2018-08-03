@@ -48,7 +48,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
 
         axiosData(
             '/promotion/docPromotionService_add.ajax',
-            opts,
+            opts.data,
             {},
             {path: 'data'},
             'HTTP_SERVICE_URL_SHOPCENTER'
