@@ -508,7 +508,7 @@ class MyActivitiesShop extends React.Component {
             message.error('没有查询到相应数据');
             return null;
         }
-        if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
+        if (responseJSON.promotionInfo.master.maintenanceLevel == '1') { // shop
             const opts = {
                 _groupID: this.props.user.accountInfo.groupID,
                 shopID: responseJSON.promotionInfo.master.shopIDLst,
@@ -536,7 +536,7 @@ class MyActivitiesShop extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
-        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        if ( _record && _record.maintenanceLevel != '1') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
@@ -974,7 +974,7 @@ class MyActivitiesShop extends React.Component {
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
+                    const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
                             href="#"

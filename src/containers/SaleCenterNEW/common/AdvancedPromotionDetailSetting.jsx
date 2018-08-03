@@ -46,7 +46,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             mutexPromotions: [],
             mutexSubjects: [],
             selectedRole: [],
-            userSetting: 'ALL_USER',
+            userSetting: '0',
             subjectType: '0',
             blackListRadio: '0',
             display: 'none',
@@ -92,14 +92,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
         } else {
             userSettingOPtios = CLIENT_CATEGORY
         }
-        if ((promotionType === '2070' || promotionType === '1080') && userSetting === 'ALL_USER') {
-            userSetting = 'CUSTOMER_ONLY';
+        if ((promotionType == '2070' || promotionType == '1080') && userSetting == '0') {
+            userSetting = '1';
         }
         if (promotionType == '3010' && this.props.stashSome) {
-            userSetting = 'CUSTOMER_ONLY';
+            userSetting = '1';
         }
         if (promotionType == '3020') {
-            userSetting = 'CUSTOMER_ONLY';
+            userSetting = '1';
         }
 
         const cardScopeList = $promotionDetail.get('cardScopeList');
@@ -145,7 +145,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         }
         if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
-                userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
+                userSetting: nextProps.stashSome ? '1' : '0',
                 userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
                 cardScopeType: 0,
                 cardScopeIDs: [],
@@ -503,7 +503,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
-                {promotionType !== '5010' && (this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE') ? this.renderCardLeval() : null}
+                {promotionType !== '5010' && (this.state.userSetting == '1' || this.state.userSetting == '3' || this.state.userSetting == '4') ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)

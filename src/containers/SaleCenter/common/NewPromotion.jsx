@@ -46,8 +46,8 @@ class NewPromotion extends React.Component{
         const detailInfo = promotionDetailInfo.get("$promotionDetail").toJS();
 
 
-        let userType = detailInfo.userSetting=='0' ?  'ALL_USER':(detailInfo.userSetting == '1' ? 'CUSTOMER_ONLY' : 'CUSTOMER_EXCLUDED') ;
-        let subjectType = detailInfo.subjectType=='0' ? 'ALL_SUBJECT' : 'REAL_INCOME';
+        let userType = detailInfo.userSetting=='0' ?  '0':(detailInfo.userSetting == '1' ? '1' : '2') ;
+        let subjectType = detailInfo.subjectType=='0' ? '0' : '1';
         let sharedPromotionIDLst =typeof detailInfo.mutexPromotions=='object'?detailInfo.mutexPromotions.join(','):detailInfo.mutexPromotions;
         let excludedSubjectLst = typeof detailInfo.mutexSubjects=='object'?detailInfo.mutexSubjects.join(','):detailInfo.mutexSubjects;
         let roleIDLst = typeof detailInfo.role =='object'?detailInfo.role.join(','):detailInfo.role;

@@ -36,9 +36,9 @@ const ButtonGroup = Button.Group;
 let Immutable = require('immutable');
 
 const client = [
-    {key:'ALL_USER',value:'0', name:'不限制'},
-    {key:'CUSTOMER_ONLY',value:'1', name:'仅会员'},
-    {key:'CUSTOMER_EXCLUDED',value:'2', name:'非会员'}
+    {key:'0',value:'0', name:'不限制'},
+    {key:'1',value:'1', name:'仅会员'},
+    {key:'2',value:'2', name:'非会员'}
 ];
 
 class CompositeDetailInfo extends React.Component{
@@ -162,7 +162,7 @@ class CompositeDetailInfo extends React.Component{
                 };
             }
             data[scope.stageNo].count = scope.num;
-            data[scope.stageNo].flag = scope.scopeType === 'FOOD_INCLUDED' ? 1 : 0;
+            data[scope.stageNo].flag = scope.scopeType == '2' ? 1 : 0;
             data[scope.stageNo].scopeLst.push(scope);
         })
         this.setState({data})
@@ -406,7 +406,7 @@ class CompositeDetailInfo extends React.Component{
         if (val.foodCategory !== null) {
             val.foodCategory.map((item)=>{
                 data[idx].scopeLst.push({
-                    scopeType: "CATEGORY_INCLUDED",
+                    scopeType: "1",
                     targetID: item.foodCategoryID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName
@@ -417,7 +417,7 @@ class CompositeDetailInfo extends React.Component{
         if(val.excludeDishes !== null){
             val.excludeDishes.map((item)=>{
                 data[idx].scopeLst.push({
-                    scopeType: "FOOD_EXCLUDED",
+                    scopeType: "4",
                     targetID: item.itemID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
@@ -429,7 +429,7 @@ class CompositeDetailInfo extends React.Component{
         if(val.dishes !== null) {
             val.dishes.map((item)=> {
                 data[idx].scopeLst.push({
-                    scopeType: "FOOD_INCLUDED",
+                    scopeType: "2",
                     targetID: item.itemID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,

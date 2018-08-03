@@ -45,12 +45,12 @@ class PromotionDetail extends React.Component {
 
     renderCategoryOrDish(record) {
         if (record.scopeLst !== undefined) {
-            if (this.renderCategory(record.scopeLst, 'FOOD_INCLUDED').length > 0) {
+            if (this.renderCategory(record.scopeLst, '2').length > 0) {
                 return (
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>适用菜品</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'FOOD_INCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '2') : '不限制'}</Col>
                     </Row>);
             }
             return (
@@ -58,12 +58,12 @@ class PromotionDetail extends React.Component {
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>适用菜品分类</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'CATEGORY_INCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '1') : '不限制'}</Col>
                     </Row>
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>排除菜品</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'FOOD_EXCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '4') : '不限制'}</Col>
                     </Row>
 
 

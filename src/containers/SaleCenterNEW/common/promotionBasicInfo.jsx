@@ -306,7 +306,7 @@ class PromotionBasicInfo extends React.Component {
         }
 
         const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
-        if ((this.props.user.shopID > 0 && maintenanceLevel == 'SHOP_LEVEL') || (!this.props.user.shopID && maintenanceLevel == 'GROUP_LEVEL')) {
+        if ((this.props.user.shopID > 0 && maintenanceLevel == '1') || (!this.props.user.shopID && maintenanceLevel == '0')) {
             // 判断分类列表是否包含已选统计分类,不包含则手动添加分类
             this.handleAutoAddCat();
             // 判断标签列表是否包含已选,不包含则手动添加

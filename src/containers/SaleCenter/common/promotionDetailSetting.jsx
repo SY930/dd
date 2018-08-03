@@ -102,7 +102,7 @@ class PromotionDetailSetting extends React.Component {
         if(_scopeLst.length>0) {
             let categoryOrDish = 0;
             _scopeLst.map((scope)=> {
-                if(scope.scopeType == 'CATEGORY_INCLUDED'){
+                if(scope.scopeType == '1'){
                     foodCategoryCollection
                         .forEach((categoryGroup)=>{
                             categoryGroup.foodCategoryName
@@ -115,7 +115,7 @@ class PromotionDetailSetting extends React.Component {
                         });
 
 
-                }else if(scope.scopeType == 'FOOD_EXCLUDED'){
+                }else if(scope.scopeType == '4'){
                     foodCategoryCollection
                         .forEach((categoryGroup)=>{
                             categoryGroup.foodCategoryName

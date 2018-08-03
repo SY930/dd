@@ -550,7 +550,7 @@ export class WeChatMallPromotionList extends React.Component {
                     const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
                     const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
                     const buttonText = (record.status == 1 ? isOngoing ? '终止' : '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
+                    const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
                             href="#"

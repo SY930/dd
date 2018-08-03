@@ -40,9 +40,9 @@ import {
 
 
 const client = [
-    { key: 'ALL_USER', value: '0', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: '1', name: '仅会员' },
-    { key: 'CUSTOMER_EXCLUDED', value: '2', name: '非会员' },
+    { key: '0', value: '0', name: '不限制' },
+    { key: '1', value: '1', name: '仅会员' },
+    { key: '2', value: '2', name: '非会员' },
 ];
 
 class AddMoneyUpgradeDetailInfo extends React.Component {
@@ -105,8 +105,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         // 根据ruleJson填充页面
         // const stage = _rule.stage ? _rule.stage[0] : {}
-        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE") || [];
-        const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
+        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "5") || [];
+        const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
         let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
         if (Immutable.List.isList(priceLst)) {
             priceLst = priceLst.toJS();
@@ -156,9 +156,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             const $promotionDetail = nextProps.promotionDetailInfo.getIn(['$promotionDetail']);
             const _priceLst = $promotionDetail.getIn(['priceLst']) ?
                 $promotionDetail.getIn(['priceLst']).toJS() : [];
-            let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType === "FOOD_UPGRADE");
+            let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType == "5");
             _upGradeDishes = _upGradeDishes.length > 0 ? _upGradeDishes : $promotionDetail.getIn(['upGradeDishes']).toJS();
-            const scope = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType !== "FOOD_UPGRADE") || [];
+            const scope = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
             let subjectType = $promotionDetail.getIn(['subjectType']);
 
             if (subjectType == 1) {
@@ -281,7 +281,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 dishes: [],
                 foodCategory: [],
                 excludeDishes: [],
-                scopeLst: scopeLst.filter(scope => scope.scopeType == "FOOD_UPGRADE") || [],
+                scopeLst: scopeLst.filter(scope => scope.scopeType == "5") || [],
             }
             : null
         let text = '';

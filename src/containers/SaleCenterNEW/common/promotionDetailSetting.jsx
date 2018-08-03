@@ -102,7 +102,7 @@ class PromotionDetailSetting extends React.Component {
         if (_scopeLst.length > 0) {
             let categoryOrDish = 0;
             _scopeLst.map((scope) => {
-                if (scope.scopeType == 'CATEGORY_INCLUDED') {
+                if (scope.scopeType == '1') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -114,7 +114,7 @@ class PromotionDetailSetting extends React.Component {
                                 });
                         });
                 }
-                if (scope.scopeType == 'FOOD_EXCLUDED') {
+                if (scope.scopeType == '4') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -129,7 +129,7 @@ class PromotionDetailSetting extends React.Component {
                                 })
                         });
                 }
-                if (scope.scopeType == 'FOOD_INCLUDED') {
+                if (scope.scopeType == '2') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -212,7 +212,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.onChange && this.props.onChange({
                 foodCategory: _scopeLst2,
                 dishes: _scopeLst2,
-                categoryOrDish: _scopeLst2[0] ? (_scopeLst2[0].scopeType == 'CATEGORY_INCLUDED' ? '0' : '1') : '0',
+                categoryOrDish: _scopeLst2[0] ? (_scopeLst2[0].scopeType == '1' ? '0' : '1') : '0',
             })
         }
     }

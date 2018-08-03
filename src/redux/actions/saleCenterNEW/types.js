@@ -17,25 +17,25 @@ export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
     MONTHLY: '2',
 });
 export const CLIENT_CATEGORY = [
-    { key: 'ALL_USER', value: 'ALL_USER', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '仅会员' },
-    { key: 'CUSTOMER_EXCLUDED', value: 'CUSTOMER_EXCLUDED', name: '非会员' },
+    { key: '0', value: '0', name: '不限制' },
+    { key: '1', value: '1', name: '仅会员' },
+    { key: '2', value: '2', name: '非会员' },
 ];
 export const CLIENT_CATEGORY_RETURN_GIFT = [
-    { key: 'ALL_USER', value: 'ALL_USER', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
+    { key: '0', value: '0', name: '不限制' },
+    { key: '1', value: '1', name: '全部会员' },
 ];
 export const CLIENT_CATEGORY_RETURN_POINT = [
-    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
+    { key: '1', value: '1', name: '全部会员' },
 ];
 export const CLIENT_CATEGORY_ADD_UP = [
-    { key: 'CUSTOMER_ONLY', value: 'CUSTOMER_ONLY', name: '全部会员' },
-    { key: 'CUSTOMER_SHOP_ACTIVATE', value: 'CUSTOMER_SHOP_ACTIVATE', name: '仅本店入会的会员' },
+    { key: '1', value: '1', name: '全部会员' },
+    { key: '3', value: '3', name: '仅本店入会的会员' },
     // { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
 ];
 export const PAYMENTS_OPTIONS = Object.freeze([
-    { key: 'ALL_SUBJECT', value: '0', name: '不限制' },
-    { key: 'REAL_INCOME', value: '1', name: '仅实收' },
+    { key: '0', value: '0', name: '不限制' },
+    { key: '1', value: '1', name: '仅实收' },
 ]);
 export const CYCLE_TYPE = Object.freeze([{
     value: '0',
@@ -948,7 +948,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             dishes: [], // selected dish
             userSetting: source.master.userType,
             // userSetting: source.master.userType =='ALL_USER'?'0':source.master.userType =='CUSTOMER_ONLY'?'1':'2', // user setting
-            subjectType: source.master.subjectType == 'ALL_SUBJECT' ? '0' : '1', // 支付限制
+            subjectType: source.master.subjectType == '0' ? '0' : '1', // 支付限制
             // mutexPromotions: arrayTransformAdapter(source.master.sharedPromotionIDLst), // 不能同时进行的活动ID
             mutexPromotions: source.shareLst, // 不能同时进行的活动ID
             mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
@@ -972,7 +972,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.foodCategory !== null) {
             (source.foodCategory || []).map((item) => {
                 scope.push({
-                    scopeType: 'CATEGORY_INCLUDED',
+                    scopeType: '1',
                     targetID: item.foodCategoryID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName,
@@ -983,7 +983,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.excludeDishes !== null) {
             (source.excludeDishes || []).map((item) => {
                 scope.push({
-                    scopeType: 'FOOD_EXCLUDED',
+                    scopeType: '4',
                     targetID: item.itemID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
@@ -995,7 +995,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.dishes !== null) {
             (source.dishes || []).map((item) => {
                 scope.push({
-                    scopeType: 'FOOD_INCLUDED',
+                    scopeType: '2',
                     targetID: item.itemID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
@@ -1006,7 +1006,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.upGradeDishes !== null) {
             (source.upGradeDishes || []).map((item) => {
                 scope.push({
-                    scopeType: 'FOOD_UPGRADE',
+                    scopeType: '5',
                     targetID: item.itemID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,

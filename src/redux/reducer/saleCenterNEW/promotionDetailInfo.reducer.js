@@ -100,7 +100,7 @@ const $initialState = Immutable.fromJS({
         foodCategory: [],
         excludeDishes: [], // excluded dish
         dishes: [], // selected dish
-        userSetting: 'ALL_USER', // user setting
+        userSetting: '0', // user setting
         subjectType: '0', // 支付限制
         mutexPromotions: [], // 不能同时进行的活动ID
         mutexSubjects: [], // 不能同时进行的结算方式key

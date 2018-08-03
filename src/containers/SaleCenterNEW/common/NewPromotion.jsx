@@ -51,7 +51,7 @@ class NewPromotion extends React.Component {
         // userType = basicInfo.promotionType == 'RETURN_GIFT' && detailInfo.rule.gainCodeMode == '0' ? 'CUSTOMER_ONLY' : userType;
         // userType = (basicInfo.promotionType == 'BILL_CUMULATION_FREE' || basicInfo.promotionType == 'FOOD_CUMULATION_GIVE')
         //     && userType == 'ALL_USER' ? 'CUSTOMER_ONLY' : userType;// 累计减免赠送
-        const subjectType = detailInfo.subjectType == '0' ? 'ALL_SUBJECT' : 'REAL_INCOME';
+        const subjectType = detailInfo.subjectType == '0' ? '0' : '1';
         const sharedPromotionIDLst = detailInfo.mutexPromotions || [];
         const excludedSubjectLst = typeof detailInfo.mutexSubjects === 'object' ? detailInfo.mutexSubjects.join(',') : detailInfo.mutexSubjects;
         const roleIDLst = typeof detailInfo.role === 'object' ? detailInfo.role.join(',') : detailInfo.role;
@@ -65,7 +65,7 @@ class NewPromotion extends React.Component {
         const opts = {
             groupID: this.props.user.toJS().accountInfo.groupID,
             // shopID: this.props.user.toJS().shopID ? this.props.user.toJS().shopID : '0',
-            maintenanceLevel: this.props.user.toJS().shopID ? 'SHOP_LEVEL' : 'GROUP_LEVEL',
+            maintenanceLevel: this.props.user.toJS().shopID ? '1' : '0',
             ...basicInfo,
             ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
@@ -93,7 +93,7 @@ class NewPromotion extends React.Component {
         });
         // console.log(categoryNames, singleFoods);
         const scopeLst = opts.scopeLst.filter((cat) => {
-            if (cat.scopeType === 'CATEGORY_INCLUDED') {
+            if (cat.scopeType == '1') {
                 return categoryNames.includes(cat.targetID)
             }
             return cat
