@@ -8,13 +8,11 @@ import {
     Row,
     Col,
     message as messageService,
-
 } from 'antd';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../../redux/actions/saleCenterNEW/types";
 import {axiosData} from "../../../helpers/util";
-import SendMsgInfo from "../../SpecialPromotionNEW/common/SendMsgInfo";
 import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 
@@ -180,9 +178,6 @@ class SendGiftPanel extends Component {
                                     if (cellNoString.length < 11 || cellNoString.length > 11) {
                                         cb('请输入11位手机号码')
                                     } else {
-                                        setTimeout(() => {
-                                            cb()
-                                        }, 10000)
                                         axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
                                             .then((res = {}) => {
                                                 if (res.customerID && res.customerID != '0') {
@@ -335,11 +330,7 @@ class SendGiftPanel extends Component {
                         onChange={this.handleSmsGateChange}
                         getPopupContainer={(node) => node.parentNode}
                 >
-                    {
-                        SEND_MSG.map((item) => {
-                            return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
-                        })
-                    }
+                    {SEND_MSG.map(item => (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>))}
                 </Select>
             </FormItem>
         )

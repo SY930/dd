@@ -11,6 +11,7 @@ import {
     UpdateSendorUsedParams,
 } from '../_action';
 import ExportModal from "./ExportModal";
+import GenerateBatchGifts from "../components/GenerateBatchGifts";
 
 const TabPane = Tabs.TabPane;
 class GiftDetailModalTabs extends React.Component {
@@ -83,9 +84,19 @@ class GiftDetailModalTabs extends React.Component {
                             </TabPane>)
                         }).concat(
                             data.giftType == '10' || data.giftType == '20' || data.giftType == '21' || data.giftType == '30' ?
-                                <TabPane tab={'赠送'} key={'send_gift'}>
-                                    <SendGiftPanel data={data}/>
-                                </TabPane>
+                                [
+                                    (
+                                        <TabPane tab={'赠送'} key={'send_gift'}>
+                                            <SendGiftPanel data={data}/>
+                                        </TabPane>
+                                    ),
+                                    (
+                                        <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
+                                            <GenerateBatchGifts data={data} />
+                                        </TabPane>
+                                    )
+
+                                ]
                                 :
                                 []
                         )
