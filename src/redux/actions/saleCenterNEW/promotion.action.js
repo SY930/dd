@@ -49,7 +49,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
         axiosData(
             '/promotion/docPromotionService_add.ajax',
             opts.data,
-            {},
+            {needThrow: true},
             {path: 'data'},
             'HTTP_SERVICE_URL_SHOPCENTER'
         ).then((responseJSON) => {
@@ -58,7 +58,17 @@ export const saleCenterAddNewActivityAC = (opts) => {
             }, 0);
             dispatch(addPromotionSuccess(responseJSON))
         }).catch((error) => {
-            dispatch(addPromotionFail(error.code))
+            if (error.code === '1211200003') {
+                setTimeout(() => {
+                    opts.sameCode && opts.sameCode();
+                }, 0);
+                dispatch(addPromotionFail(error.code));
+            } else {
+                setTimeout(() => {
+                    opts.fail && opts.fail(error.message);
+                }, 0);
+                dispatch(addPromotionFail(error.code));
+            }
         });
     }
 }
