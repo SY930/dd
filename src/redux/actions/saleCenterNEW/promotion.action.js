@@ -106,49 +106,19 @@ export const fetchPromotionDetail = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_DETAIL,
         })
-        // fetch('http://rap2api.taobao.org/app/mock/8221/POST/detail', {
-        fetch('/api/promotion/detail_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.text();
-                    }
-                } else {
-                    return Promise.reject(new Error(response.statusText));
-                }
-            })
-            .catch((error) => {
-                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-            })
-            .then((response) => {
-                const promotionID = /"promotionID":(\d+),/.exec(response)[1];
-                const result = JSON.parse(response);
-                result.data = { promotionInfo: result.promotionInfo };
-                result.data.promotionInfo.master.promotionID = promotionID;
-                if (result.code === '000') {
-                    if (opts.success !== undefined && typeof opts.success === 'function') {
-                        opts.success(result.data);
-                    }
-                    return dispatch(fetchPromotionDetailFullfilled(result.data))
-                }
-                opts.fail && opts.fail(result.message);
-                return dispatch(fetchPromotionDetailFail(result.code));
-            }, (err) => {
-                if (err.name === 'TimeoutError') {
-                    return dispatch(fetchPromotionDetailTimeout());
-                }
-                return dispatch(fetchPromotionDetailFail(err));
-            })
-            .catch(err => {
-                // empty catch for possible render error
-            })
+
+        axiosData(
+            '/promotion/docPromotionService_queryDetail.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((result) => {
+            let res = {...result};
+            res.data = { promotionInfo: result.promotionInfo };
+            return dispatch(fetchPromotionDetailFullfilled(res.data))
+        }).catch((error) => {
+            dispatch(fetchPromotionDetailFail(error.code))
+        });
     }
 }

@@ -304,17 +304,6 @@ export const getLists = (opts) => {
     }
 };
 
-export const getDetails = (opts) => {
-    return (dispatch) => {
-        fetchData('getMyDetail_NEW', opts, null, {
-            path: 'data',
-        })
-            .then((records) => {
-                dispatch(getDetailsSuccess(records));
-            });
-    }
-};
-
 export const fullCutAddNewActivityAC = (opts) => {
     console.log("------------fullCut.................")
     return (dispatch) => {
