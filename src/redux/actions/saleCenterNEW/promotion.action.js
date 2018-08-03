@@ -63,57 +63,32 @@ export const saleCenterAddNewActivityAC = (opts) => {
     }
 }
 
-export const saleCenterUpdateNewActivityAC = (opts) => {
+export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_UPDATE_PROMOTION_START,
         });
-        const urlConf = getSpecifiedUrlConfig('updatePromotion_NEW', opts.data);
 
-        fetch(urlConf.url, {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            // TODO: 讲新添加的数据推送到我的列表当中, 如果有初始化的情况下。
-            if (responseJSON.code == '000') {
-                setTimeout(() => {
-                    opts.success && opts.success();
-                }, 0);
-                dispatch({
-                    type: SALE_CENTER_UPDATE_PROMOTION_SUCCESS,
-                    payload: responseJSON,
-                });
-            } else {
-                setTimeout(() => {
-                    opts.fail && opts.fail();
-                }, 0);
-                dispatch({
-                    type: SALE_CENTER_UPDATE_PROMOTION_FAILED,
-                    payload: error,
-                })
-            }
-        }).catch((error) => {
+        axiosData(
+            '/promotion/docPromotionService_update.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             setTimeout(() => {
-                opts.fail && opts.fail();
+                opts.success && opts.success();
             }, 0);
+            dispatch({
+                type: SALE_CENTER_UPDATE_PROMOTION_SUCCESS,
+                payload: responseJSON,
+            });
+        }).catch((error) => {
             dispatch({
                 type: SALE_CENTER_UPDATE_PROMOTION_FAILED,
                 payload: error,
             })
-        })
+        });
     }
 }
 
