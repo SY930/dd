@@ -143,29 +143,18 @@ export const toggleSelectedActivityStateAC = (opts) => {
         isActive: opts.record.isActive == 'ACTIVE' ? 'NOT_ACTIVE' : 'ACTIVE',
     };
     return (dispatch) => {
-        fetch('/api/promotion/setActive_NEW', {
-            method: 'POST',
-            body: JSON.stringify(params),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
+
+        axiosData(
+            '/promotion/docPromotionService_setActive.ajax',
+            params,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             dispatch(toggleSelectedActivityStateSuccess(opts.record));
 
             opts.cb && opts.cb();
-        }).catch((error) => {
-            // dispatch(fetchPromotionTagsFailed())
-        });
+        }).catch((error) => {});
     };
 };
 
