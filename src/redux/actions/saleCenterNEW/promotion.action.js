@@ -12,6 +12,7 @@ import {
     getSpecifiedUrlConfig,
     generateXWWWFormUrlencodedParams,
 } from '../../../helpers/apiConfig';
+import {axiosData} from "../../../helpers/util";
 
 export const SALE_CENTER_ADD_PROMOTION_START_NEWNEW = 'sale center:: add new promotion start new new';
 export const SALE_CENTER_ADD_PROMOTION_SUCCESS = 'sale center:: add new promotion success new';
@@ -44,42 +45,21 @@ export const saleCenterAddNewActivityAC = (opts) => {
             type: SALE_CENTER_ADD_PROMOTION_START_NEWNEW,
             payload: opts.data,
         });
-        fetch('/api/promotion/add_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json();
-                    }
-                    return response.text();
-                }
-                return Promise.reject(new Error(response.statusText));
-            })
-            .then((response) => {
-                if (response.code === '000') {
-                    setTimeout(() => {
-                        opts.success && opts.success();
-                    }, 0);
-                    return dispatch(addPromotionSuccess(response));
-                } else if (response.code === '1211200003') {
-                    setTimeout(() => {
-                        opts.sameCode && opts.sameCode();
-                    }, 0);
-                    return dispatch(addPromotionFail(response.code));
-                }
-                setTimeout(() => {
-                    opts.fail && opts.fail(response.msg);
-                }
-                );
-                return dispatch(addPromotionFail(response.code));
-            })
+
+        axiosData(
+            '/promotion/docPromotionService_add.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            setTimeout(() => {
+                opts.success && opts.success();
+            }, 0);
+            dispatch(addPromotionSuccess(responseJSON))
+        }).catch((error) => {
+            dispatch(addPromotionFail(error.code))
+        });
     }
 }
 
