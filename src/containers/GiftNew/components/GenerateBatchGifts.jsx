@@ -516,8 +516,8 @@ class GenerateBatchGifts extends Component {
                         rules: [
                             { required: true, message: '不能为空' },
                             {
-                                message: '汉字、字母、数字组成，不多于50个字符',
-                                pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,50}$/,
+                                message: '汉字、字母、数字组成，不多于20个字符',
+                                pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
                             },
                         ],
                     })(
