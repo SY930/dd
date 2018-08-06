@@ -30,7 +30,7 @@ class CloseableTip extends Component {
 
     renderTipPanel() {
         return (
-            <div style={{ display: this.state.visible ? 'block' : 'none', height: 'auto', width: '470px' }} className={styles.tip}>
+            <div style={{ display: this.state.visible ? 'block' : 'none', height: 'auto', width: this.props.width || '470px' }} className={styles.tip}>
                 {this.props.content || <p/>}
                 <div>
                     <div className={styles.tipBtn}>

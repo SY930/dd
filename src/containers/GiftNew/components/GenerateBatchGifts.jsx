@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+import CloseableTip from "../../../components/common/CloseableTip/index";
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -459,16 +460,31 @@ class GenerateBatchGifts extends Component {
                     wrapperCol={{ span: 14 }}
                 >
                     <Row>
-                        <Col span={20}>
+                        <Col span={19}>
                             <RangePicker value={this.state.validDateRange} onChange={this.handleValidDateRangeChange} />
                         </Col>
                         <Col offset={1} span={3}>
                             <div className={styles.ActivityDateDay}>
                                 <span>{this.getDateCount()}</span>
                             </div>
-
                         </Col>
                     </Row>
+                    {/*这里用了点小hack, 强行移位tip, 组件做的不够好*/}
+                    <CloseableTip
+                        style={{
+                            position: 'absolute',
+                            right: '6px',
+                            top: '3px'
+                        }}
+                        width="100%"
+                        content={
+                            <div>
+                                <p>有效期</p>
+                                <br/>
+                                <p>有效期<span style={{fontWeight: 'bold'}}>不填</span>代表<span style={{fontWeight: 'bold'}}>永久</span>有效</p>
+                            </div>
+                        }
+                    />
                 </FormItem>
                 <FormItem
                     label="生成方式"
