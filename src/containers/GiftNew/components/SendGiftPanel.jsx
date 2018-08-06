@@ -146,9 +146,15 @@ class SendGiftPanel extends Component {
         })
     }
 
-    handleDayOrHourChange(val) {
+    handleDayOrHourChange(event) {
+        const dayOrHour = event.target.value;
+        let whenToEffect = '1';
+        if ( dayOrHour === '0') {
+            whenToEffect = '0';
+        }
         this.setState({
-            dayOrHour: val.target.value,
+            dayOrHour,
+            whenToEffect
         })
     }
 
