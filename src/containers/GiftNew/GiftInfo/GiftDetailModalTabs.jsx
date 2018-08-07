@@ -92,7 +92,7 @@ class GiftDetailModalTabs extends React.Component {
                                     ),
                                     (
                                         <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
-                                            <GenerateBatchGifts data={data} />
+                                            <GenerateBatchGifts giftItemID={data.giftItemID} />
                                         </TabPane>
                                     )
 

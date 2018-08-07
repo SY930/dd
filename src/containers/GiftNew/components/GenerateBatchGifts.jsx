@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import moment from 'moment';
 import {
     Table,
     Button,
@@ -16,6 +16,7 @@ import {
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import CloseableTip from "../../../components/common/CloseableTip/index";
+import {axiosData} from "../../../helpers/util";
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -36,7 +37,7 @@ class GenerateBatchGifts extends Component {
             giftCount: undefined, // 张数
             startNo: undefined,
             endNo: undefined,
-            description: undefined,
+            description: '',
             includeRandomCode: false, // 券码是否包含随机码 true: 包含, false: 不包含
         };
         this.handleQuery = this.handleQuery.bind(this);
@@ -69,9 +70,9 @@ class GenerateBatchGifts extends Component {
         });
     }
 
-    handleDescriptionChange(val) {
+    handleDescriptionChange(event) {
         this.setState({
-            description: val,
+            description: event.target.value,
         });
     }
 
@@ -131,14 +132,66 @@ class GenerateBatchGifts extends Component {
         }
     }
 
+    mapStateToRequestParams() {
+        const params = {giftItemID: this.props.giftItemID};
+        // 映射state到后端字段
+        let {
+            includeRandomCode: pwdEndByRand,
+            startNo: startNO,
+            endNo: endNO,
+            giftCount: giftNum,
+            autoGenerating: generatePwdType, // 生成方式  1：系统自动生成随机的唯一密码 2：按照指定的规则生成 默认为自动生成
+            description,
+            validDateRange: [EGiftEffectTime, validUntilDate] // EGiftEffectTime 属于后端typo; [0] 为券有效期起始时间, [1] 为券有效期终止时间
+        } = this.state;
+        if (generatePwdType === '1') {// 系统自动生成
+            params.giftNum = giftNum;
+        } else {
+            params.startNO = startNO;
+            params.endNO = endNO;
+            params.giftNum = endNO - startNO + 1; // 按规则生成的券张数是由终止码-起始码+1算出来的, 其实传给后端没什么用, 但是后端要传...
+            params.pwdEndByRand = pwdEndByRand ? 1 : 2; // 是否包含随机码1 是 2 否
+        }
+        if (EGiftEffectTime && validUntilDate) {
+            EGiftEffectTime = EGiftEffectTime.format('YYYYMMDD'); // 格式化成字符串
+            validUntilDate = validUntilDate.format('YYYYMMDD'); // 格式化成字符串
+        } else {
+            EGiftEffectTime = moment().format('YYYYMMDD'); // 不填为永久, 实现上为今天 + 100 年
+            validUntilDate = moment().add(100, 'year').format('YYYYMMDD');
+        }
+        params.description = description;
+        params.EGiftEffectTime = EGiftEffectTime;
+        params.validUntilDate = validUntilDate;
+        params.generatePwdType = generatePwdType;
+        return params;
+    }
+
     handleModalOk() {
         let flag = true;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 flag = false;
             }
-        })
-        console.log('flag', flag);
+        });
+        if (flag) {
+            this.setState({
+                confirmLoading: true,
+            });
+            const params = this.mapStateToRequestParams();
+            axiosData('xxx', params, {}, {path: 'data'}, )
+                .then(res => {
+                    this.setState({
+                        confirmLoading: false,
+                        modalVisible: false,
+                    });
+                })
+                .catch(err => {
+                    this.setState({
+                        confirmLoading: false,
+                    });
+                })
+        }
+
     }
 
     showModal() {
