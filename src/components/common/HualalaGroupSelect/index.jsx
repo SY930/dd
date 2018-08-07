@@ -72,7 +72,7 @@ class HualalaGroupSelect extends React.Component {
      * @param point
      * @returns {string}
      */
-    helper = ({price, xxxpoint: point}) => {
+    helper = ({price, foodScore: point}) => {
         if (price >= 0 && point >= 0) {
             return `${point}积分+${price}元`
         } else if (price >= 0) {

@@ -549,12 +549,12 @@ class SpecialDishesTable extends React.Component {
                 width: 120,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
-                    if (record.price >= 0 && record.xxxpoint >= 0) {
-                        return `${record.xxxpoint}积分+${record.price}元`
+                    if (record.price >= 0 && record.foodScore >= 0) {
+                        return `${record.foodScore}积分+${record.price}元`
                     } else if (record.price >= 0) {
                         return `${record.price}元`
-                    } else if (record.xxxpoint >= 0) {
-                        return `${record.xxxpoint}积分`
+                    } else if (record.foodScore >= 0) {
+                        return `${record.foodScore}积分`
                     }
                     return '--'
                 },
