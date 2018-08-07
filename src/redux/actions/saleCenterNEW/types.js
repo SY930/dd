@@ -447,7 +447,7 @@ export const ACTIVITY_CATEGORIES = (function () {
     },
     {
         idx: 8,
-        title: '团购券',
+        title: '团购活动',
         color: '#e5be6c',
         text: '对接美团点评团购券,并拆分券实收和优惠金额',
         example: '例如:全部菜品9折,酒水不打折',
