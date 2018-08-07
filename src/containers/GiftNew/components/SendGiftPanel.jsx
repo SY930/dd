@@ -206,7 +206,8 @@ class SendGiftPanel extends Component {
         return (
             <Form
                 style={{
-                    marginLeft: '-6px'
+                    marginLeft: '-6px',
+                    width: '428px'
                 }}
                 className={styles.addGrade}
             >
@@ -388,19 +389,6 @@ class SendGiftPanel extends Component {
                 <Col offset={3} span={17}>
                     {this.renderCellNo()}
                 </Col>
-                <Col span={4} style={{
-                    display: 'flex',
-                    height: '68px',
-                    alignItems: 'center',
-                }}>
-                    <Button
-                        type="primary"
-                        loading={this.state.loading}
-                        onClick={this.handleSubmit}
-                    >
-                        发送
-                    </Button>
-                </Col>
                 <Col span={12} offset={6}>
                     {this.renderGift()}
                 </Col>
@@ -414,14 +402,26 @@ class SendGiftPanel extends Component {
                     </div>
                 )}
                 </Col>
-                <Col offset={3} span={17} style={{
-                    marginBottom: '2em'
-                }}>
+                <Col offset={3} span={17}>
                     {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
                     <div>
                         {this.renderMsgSelector()}
                     </div>
                 )}
+                </Col>
+                <Col  offset={3} span={15} style={{
+                    textAlign: 'right'
+                }}>
+                    <Button
+                        type="primary"
+                        loading={this.state.loading}
+                        onClick={this.handleSubmit}
+                        style={{
+                            marginRight: '3px'
+                        }}
+                    >
+                        发送
+                    </Button>
                 </Col>
             </Row>
         )

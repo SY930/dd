@@ -62,8 +62,8 @@ class MsgSelector extends React.Component {
 
     render() {
         let messageTemplateList = this.state.messageTemplateList.slice();
-        this.props.selectedMessage && messageTemplateList.unshift(this.props.selectedMessage);
         messageTemplateList = uniq(messageTemplateList);
+        (this.props.selectedMessage && !messageTemplateList.includes(this.props.selectedMessage)) && messageTemplateList.unshift(this.props.selectedMessage);
         return (
 
             <div style={{maxHeight: '272px', overflowY: 'auto'}}>

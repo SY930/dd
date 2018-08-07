@@ -90,7 +90,7 @@ class GiftDetailModalTabs extends React.Component {
                                 [
                                     (
                                         <TabPane tab={'赠送'} key={'send_gift'}>
-                                            <SendGiftPanel data={data}/>
+                                            <SendGiftPanel giftItemID={data.giftItemID}/>
                                         </TabPane>
                                     ),
                                     (

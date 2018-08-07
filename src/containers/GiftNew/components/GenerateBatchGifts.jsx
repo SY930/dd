@@ -33,7 +33,8 @@ class GenerateBatchGifts extends Component {
             autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
             modalVisible: false,
             confirmLoading: false,
-            validDateRange: [],
+            validDateRange: [], // 列表查询时的日期选择
+            queryDateRange: [], // 制券时选择的有效日期
             giftCount: undefined, // 张数
             startNo: undefined,
             endNo: undefined,
@@ -46,6 +47,7 @@ class GenerateBatchGifts extends Component {
         this.handleAutoGeneratingChange = this.handleAutoGeneratingChange.bind(this);
         this.handleModalOk = this.handleModalOk.bind(this);
         this.handleValidDateRangeChange = this.handleValidDateRangeChange.bind(this);
+        this.handleQueryDateRangeChange = this.handleQueryDateRangeChange.bind(this);
         this.handleGiftCountChange = this.handleGiftCountChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleStartNoChange = this.handleStartNoChange.bind(this);
@@ -57,11 +59,25 @@ class GenerateBatchGifts extends Component {
         this.setState({
            loading: true,
         });
-        setTimeout(() => {
-            this.setState({
-                loading: false,
-            });
-        }, 2000)
+        const params = {
+            giftItemID: this.props.giftItemID,
+        };
+        if (this.state.queryDateRange[0] && this.state.queryDateRange[1]) {// Moment[]
+            params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
+            params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
+        }
+        axiosData('xxx', params, {}, {path: 'data'}, )
+            .then(res => {
+                this.setState({
+                    historyList: res,
+                    loading: false,
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false,
+                });
+            })
     }
 
     handleAutoGeneratingChange(event) {
@@ -85,6 +101,12 @@ class GenerateBatchGifts extends Component {
     handleValidDateRangeChange(val) {
         this.setState({
             validDateRange: val,
+        });
+    }
+
+    handleQueryDateRangeChange(val) {
+        this.setState({
+            queryDateRange: val,
         });
     }
 
@@ -210,7 +232,12 @@ class GenerateBatchGifts extends Component {
         return (
             <div className={styles.generateBatchGiftsHeader}>
                 <div>
-                    制券时间：<RangePicker style={{ width: 200 }} />
+                    制券时间：
+                    <RangePicker
+                        style={{ width: 240 }}
+                        value={this.state.queryDateRange}
+                        onChange={this.handleQueryDateRangeChange}
+                    />
                 </div>
                 <div>
                     <Button
@@ -249,10 +276,8 @@ class GenerateBatchGifts extends Component {
                 title: '张数',
                 className: 'TableTxtCenter',
                 width: 50,
+                dataIndex: 'totalCount',
                 key: 'num',
-                render: (text, record, index) => {
-                    return '123000';
-                },
             },
             {
                 title: '有效期起',
@@ -260,7 +285,7 @@ class GenerateBatchGifts extends Component {
                 width: 80,
                 key: 'key1',
                 render: (text, record, index) => {
-                    return '2018/06/04';
+                    return moment(record.effectTime, 'YYYYMMDD').format('YYYY/MM/DD');
                 },
             },
             {
@@ -269,16 +294,16 @@ class GenerateBatchGifts extends Component {
                 width: 80,
                 key: 'key2',
                 render: (text, record, index) => {
-                    return '2018/06/04';
+                    return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY/MM/DD');
                 },
             },
             {
                 title: '备注',
                 className: 'TableTxtCenter',
+                dataIndex: 'remark',
                 width: 120,
                 key: 'key3',
-                render: (text, record, index) => {
-                    text = '1231231231231231123123123123123123123123123123123123123123';
+                render: text => {
                     return <span title={text}>{text}</span> ;
                 },
             },
@@ -286,6 +311,7 @@ class GenerateBatchGifts extends Component {
                 title: '操作员',
                 className: 'TableTxtCenter',
                 width: 60,
+                dataIndex: 'createBy',
                 key: 'key4',
                 render: (text, record, index) => {
                     return 'wuhao123123123';
@@ -295,6 +321,7 @@ class GenerateBatchGifts extends Component {
                 title: '制券时间',
                 className: 'TableTxtCenter',
                 width: 120,
+                dataIndex: 'createStamp',
                 key: 'key5',
                 render: (text, record, index) => {
                     return '2018-06-04 14:54:20';
