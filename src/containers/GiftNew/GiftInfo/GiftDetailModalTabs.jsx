@@ -68,13 +68,16 @@ class GiftDetailModalTabs extends React.Component {
                     activeKey={this.state.activeKey}
                     onChange={activeKey => this.onChange(activeKey)}
                     tabBarExtraContent={
+                        this.state.activeKey === 'send' || this.state.activeKey === 'used' ?
                         <Button type="ghost"
                                 disabled={this.props.total <= 0}
                                 onClick={this.handleExport}
                                 style={{top: '8px'}}
                         >
-                        <Icon
-                            type="export" />导出</Button>
+                            <Icon type="export" />导出
+                        </Button>
+                        :
+                        null
                     }
                 >
                     {
