@@ -216,7 +216,7 @@ class MyActivitiesShop extends React.Component {
     }
     changeSortOrder(record, direction) {
         const params = {promotionID: record.promotionIDStr, shopID: this.props.user.shopID, rankingType: direction};
-        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_SHOPCENTER').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -408,7 +408,7 @@ class MyActivitiesShop extends React.Component {
             opt.orderType = promotionOrder;
         }
         if (promotionState !== '' && promotionState != '0') {
-            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
+            opt.isActive = promotionState == '1' ? '1' : '0';
         }
         if (promotionValid !== '' && promotionValid != '0') {
             opt.status = promotionValid;
@@ -973,7 +973,7 @@ class MyActivitiesShop extends React.Component {
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
+                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
@@ -1123,7 +1123,7 @@ class MyActivitiesShop extends React.Component {
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return (isActive === 'ACTIVE' ? '启用' : '禁用');
+                    return (isActive == '1' ? '启用' : '禁用');
                 },
             },
         ];

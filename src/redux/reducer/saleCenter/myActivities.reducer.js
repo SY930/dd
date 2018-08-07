@@ -134,7 +134,7 @@ export const  myActivities = ($$state = $initialState, action) => {
                     .map(($promotion) => {
                         if (action.payload.promotionID == $promotion.get("promotionID")) {
                             if ($promotion.get("isActive") == "ACTIVE") {
-                                return $promotion.set("isActive", "NOT_ACTIVE");
+                                return $promotion.set("isActive", "0");
                             }
                             else {
                                 return  $promotion.set("isActive", "ACTIVE");

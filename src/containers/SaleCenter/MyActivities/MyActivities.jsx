@@ -395,7 +395,7 @@ class MyActivities extends React.Component {
             opt.shopID = promotionShop;
         }
         if(promotionState!=''&&promotionState!='0'){
-            opt.isActive = promotionState == '1'?'ACTIVE':'NOT_ACTIVE';
+            opt.isActive = promotionState == '1'?'1':'0';
         }
         if(promotionValid!=''&&promotionValid!='0'){
             opt.status = promotionValid;
@@ -1097,7 +1097,7 @@ class MyActivities extends React.Component {
                                    opt.shopID = promotionShop;
                                }
                                if(promotionState!=''&&promotionState!='0'){
-                                   opt.isActive = promotionState == '1'?'ACTIVE':'NOT_ACTIVE';
+                                   opt.isActive = promotionState == '1'?'1':'0';
                                }
                                if(promotionValid!=''&&promotionValid!='0'){
                                    opt.status = promotionValid;
