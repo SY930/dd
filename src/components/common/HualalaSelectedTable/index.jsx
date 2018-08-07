@@ -23,7 +23,6 @@ export default class HualalaSelectedTable extends React.Component {
         this.state = {
             data: [],
             filterPrice: 'newPrice',
-            priceOrPoint: props.priceOrPoint, // 商城秒杀filter
             filterDropdownVisible: false,
         };
 
@@ -82,7 +81,7 @@ export default class HualalaSelectedTable extends React.Component {
         this.props.onClear && this.props.onClear();
     }
 
-    handleMValueChange(val, entity) {
+    handleMValueChange(val, entity, priceOrPoint) {
         const food = this.state.data.find(item => item.itemID === entity.itemID);
         if (!food) {
             return;
@@ -90,12 +89,10 @@ export default class HualalaSelectedTable extends React.Component {
         if (val.number > 999999) {// 价格不大于999,999
             val.number = 999999;
         }
-        if (this.state.priceOrPoint === 'price') {
+        if (priceOrPoint === 'price') {
             food.mPrice = val.number;
-            food.mPoint = undefined;
         } else {
             food.mPoint = val.number;
-            food.mPrice = undefined;
         }
         this.setState({data: this.state.data });
     }
@@ -125,13 +122,13 @@ export default class HualalaSelectedTable extends React.Component {
     }
 
     render() {
-        const columns = [
+        let columns = [
             {
-                title: this.props.isWeChatMall ? '商品' : '菜品',
+                title: '菜品',
                 dataIndex: 'displayName',
                 key: 'displayName',
                 fixed: 'left',
-                width: this.props.isWeChatMall ? 250 : 150,
+                width: 150,
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -142,7 +139,7 @@ export default class HualalaSelectedTable extends React.Component {
                 dataIndex: 'foodCode',
                 key: 'foodCode',
                 fixed: 'left',
-                width: this.props.isWeChatMall ? 120 : 90,
+                width: 90,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -152,106 +149,12 @@ export default class HualalaSelectedTable extends React.Component {
                 title: '分类',
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
-                width: this.props.isWeChatMall ? 120 : 80,
+                width: 80,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
                 },
             },
-            ];
-        const specificColumns = this.props.isWeChatMall ? [
-            {
-                title: `秒杀价${this.state.priceOrPoint === 'price' ? '(元)' : '(分)'}`,
-                width: 85,
-                dataIndex: 'newPrice',
-                key: 'filterPrice',
-                className: 'noPadding',
-                render: (text, record, index) => {
-                    // TODO: fix the dispaly bug later
-                    return (
-                        <span className={styles.rightAlign}>
-                            <PriceInputIcon
-                                key={`table${index}`}
-                                type="text"
-                                modal="float"
-                                value={{ number: this.state.priceOrPoint === 'price' ? record.mPrice : record.mPoint}}
-                                index={index}
-                                onChange={(val) => { this.handleMValueChange(val, record) }}
-                            />
-                        </span>
-                    );
-                },
-                filterDropdown: (
-                    <div className="custom-filter-dropdown">
-                        <Select
-                            style={{ width: 86, left: -63 }}
-                            value={this.state.priceOrPoint}
-                            onChange={v => {
-                                const newData = this.state.data.map(food => {
-                                    food.newPrice = food[v];
-                                    return food
-                                });
-                                this.setState({ priceOrPoint: v, data: newData }, () => {
-                                    this.props.onPriceOrPointChange && this.props.onPriceOrPointChange(v)
-                                })
-                            }}
-                        >
-                            <Option key='price' value="price">按价格</Option>
-                            <Option key='point' value="point">按积分</Option>
-                        </Select>
-                    </div>
-                ),
-                filterDropdownVisible: this.state.filterDropdownVisible,
-                onFilterDropdownVisibleChange: visible => this.setState({ filterDropdownVisible: visible }),
-            },
-            {
-                title: '售价 (元)',
-                dataIndex: 'prePrice1',
-                key: 'prePrice1',
-                width: 80,
-                className: 'TableTxtRight',
-                render: (text, record, index) => {
-                    return record.prePrice == -1 ? record.price : record.prePrice
-                },
-            },
-            {
-                title: '库存量',
-                dataIndex: 'prePrice2',
-                key: 'prePrice2',
-                width: 95,
-                className: 'TableTxtRight',
-                render: (text, record, index) => (
-                    <span className={styles.rightAlign}>
-                            <PriceInputIcon
-                                key={`table${index}`}
-                                type="text"
-                                modal="int"
-                                value={{ number: record.totalAmount}}
-                                index={index}
-                                onChange={(val) => { this.handleTotalAmountChange(val, record) }}
-                            />
-                        </span>
-                ),
-            },
-            {
-                title: '每人限购数量',
-                dataIndex: 'prePrice3',
-                key: 'prePrice3',
-                className: 'TableTxtRight',
-                render: (text, record, index) => (
-                    <span className={styles.rightAlign}>
-                            <PriceInputIcon
-                                key={`table${index}`}
-                                type="text"
-                                modal="int"
-                                value={{ number: record.limitAmount}}
-                                index={index}
-                                onChange={(val) => { this.handleLimitAmountChange(val, record) }}
-                            />
-                        </span>
-                ),
-            },
-        ] : [
             {
                 title: '特价 (元)',
                 width: 85,
@@ -259,7 +162,6 @@ export default class HualalaSelectedTable extends React.Component {
                 key: 'filterPrice',
                 className: 'noPadding',
                 render: (text, record, index) => {
-                    // TODO: fix the dispaly bug later
                     return (
                         <span className={styles.rightAlign}>
                             <PriceInputIcon
@@ -315,8 +217,126 @@ export default class HualalaSelectedTable extends React.Component {
                     return record.newPrice == -1 || record.price == 0 ? '不打折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(3))}折` : '不打折'
                 },
             }
+            ];
+        const specificColumns = [
+            {
+                title: '商品',
+                dataIndex: 'displayName',
+                key: 'displayName',
+                fixed: 'left',
+                width: 240,
+                className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
+            },
+            {
+                title: '分类',
+                dataIndex: 'foodCategoryName',
+                key: 'foodCategoryName',
+                width: 120,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
+            },
+            {
+                title: `积分秒杀价 (分)`,
+                width: 100,
+                dataIndex: 'newPrice',
+                key: 'filterPrice',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="float"
+                                value={{ number: record.mPoint}}
+                                index={index}
+                                onChange={(val) => { this.handleMValueChange(val, record, 'point') }}
+                            />
+                        </span>
+                    );
+                },
+            },{
+                title: `现金秒杀价 (元)`,
+                width: 100,
+                dataIndex: 'newPrice',
+                key: 'filterPrice1',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="float"
+                                value={{ number: record.mPrice}}
+                                index={index}
+                                onChange={(val) => { this.handleMValueChange(val, record, 'price') }}
+                            />
+                        </span>
+                    );
+                },
+            },
+            {
+                title: '积分/现金售价',
+                dataIndex: 'prePrice1',
+                key: 'prePrice1',
+                width: 100,
+                className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    if (record.price >= 0 && record.foodScore >= 0) {
+                        return `${record.foodScore}积分+${record.price}元`
+                    } else if (record.price >= 0) {
+                        return `${record.price}元`
+                    } else if (record.foodScore >= 0) {
+                        return `${record.foodScore}积分`
+                    }
+                    return '--'
+                },
+            },
+            {
+                title: '库存量',
+                dataIndex: 'prePrice2',
+                key: 'prePrice2',
+                width: 95,
+                className: 'TableTxtRight',
+                render: (text, record, index) => (
+                    <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="int"
+                                value={{ number: record.totalAmount}}
+                                index={index}
+                                onChange={(val) => { this.handleTotalAmountChange(val, record) }}
+                            />
+                        </span>
+                ),
+            },
+            {
+                title: '每人限购数量',
+                dataIndex: 'prePrice3',
+                key: 'prePrice3',
+                className: 'TableTxtRight',
+                render: (text, record, index) => (
+                    <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                key={`table${index}`}
+                                type="text"
+                                modal="int"
+                                value={{ number: record.limitAmount}}
+                                index={index}
+                                onChange={(val) => { this.handleLimitAmountChange(val, record) }}
+                            />
+                        </span>
+                ),
+            },
         ];
-        columns.push(...specificColumns);
+        this.props.isWeChatMall && (columns = specificColumns);
         const data = this.state.data;
         return (
             <div className={styles.treeSelectFooter}>
