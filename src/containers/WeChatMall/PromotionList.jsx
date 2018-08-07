@@ -211,12 +211,26 @@ export class WeChatMallPromotionList extends React.Component {
 
     getParams = () => {
         const {
-
+            promotionDateRange,
+            promotionTags,
+            promotionName,
+            status,
         } = this.state;
         const opt = {
-
         };
-
+        if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
+            opt.appointedStartTime = promotionDateRange[0].format('YYYYMMDDHHmm');
+            opt.appointedEndTime = promotionDateRange[1].format('YYYYMMDDHHmm');
+        }
+        if (promotionTags !== '' && promotionTags != '0') {
+            opt.tag = promotionTags;
+        }
+        if (promotionName !== '' && promotionName !== undefined) {
+            opt.name = promotionName;
+        }
+        if (status > 0) {
+            opt.status = status
+        }
         return opt
     }
 
@@ -231,7 +245,7 @@ export class WeChatMallPromotionList extends React.Component {
                 this.setState({ queryDisabled: false })
             }, 500)
         });
-        const _opt = {}; // this.getParams();
+        const _opt = this.getParams();
         const opt = {
             pageSize: this.state.pageSizes,
             pageNo,
@@ -243,9 +257,7 @@ export class WeChatMallPromotionList extends React.Component {
 
     queryEvents(opts) {
         const params = {...opts, shopID: this.props.user.shopID, };
-        if (this.state.status > 0) {
-            params.status = this.state.status
-        }
+
         axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})
             .then((data) => {
                 this.setState({
@@ -277,6 +289,7 @@ export class WeChatMallPromotionList extends React.Component {
 
     // date qualification
     onDateQualificationChange(value) {
+        console.log(value);
         this.setState({
             promotionDateRange: value,
         });
@@ -387,29 +400,29 @@ export class WeChatMallPromotionList extends React.Component {
                 <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
             );
         });
+        let tags = [];
+
+        const $tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']);
+        if (Immutable.List.isList($tags)) {
+            tags = $tags.toJS();
+        }
         return (
             <div>
                 <div className="layoutsSearch">
                     <ul>
                         <li>
-                            <h5>活动类型</h5>
+                            <h5>活动时间</h5>
                         </li>
                         <li>
-                            <Select
-                                style={{ width: 160 }}
-                                showSearch={true}
-                                placeholder="请选择活动类型"
-                                defaultValue="全部"
-                                onChange={(value) => {
-                                    this.setState({
-                                        eventWay: value === 'ALL' ? null : value,
-                                    });
-                                }}
-                            >
-                                {opts}
-                            </Select>
+                            <RangePicker
+                                style={{ width: 260 }}
+                                showTime={{ format: 'HH:mm' }}
+                                className={styles.ActivityDateDayleft}
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['开始时间', '结束时间']}
+                                onChange={this.onDateQualificationChange}
+                            />
                         </li>
-
                         <li>
                             <h5>使用状态</h5>
                         </li>
@@ -430,11 +443,28 @@ export class WeChatMallPromotionList extends React.Component {
                                 <Option value={'3'}>已终止</Option>
                             </Select>
                         </li>
-                        {/*<li>
-                            <h5>活动时间</h5>
+                        <li>
+                            <h5>标签</h5>
                         </li>
                         <li>
-                            <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
+                            <Select
+                                style={{ width: 120 }}
+                                allowClear={true}
+                                placeholder="请选择标签"
+                                onChange={(tags) => {
+                                    this.setState({
+                                        promotionTags: tags || '',
+                                    });
+                                }}
+                            >
+                                {
+                                    tags.map((tag, index) => {
+                                        return (
+                                            <Option key={`${index}`} value={`${tag.name}`}>{tag.name}</Option>
+                                        );
+                                    })
+                                }
+                            </Select>
                         </li>
 
 
@@ -446,11 +476,11 @@ export class WeChatMallPromotionList extends React.Component {
                                 placeholder="请输入活动名称"
                                 onChange={(e) => {
                                     this.setState({
-                                        eventName: e.target.value,
+                                        promotionName: e.target.value,
                                     });
                                 }}
                             />
-                        </li>*/}
+                        </li>
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
@@ -489,35 +519,10 @@ export class WeChatMallPromotionList extends React.Component {
                                     });
                                 }}
                             >
-
                                 <Option key="0" value={'0'}>全部</Option>
                                 <Option key="1" value={'1'}>未开始</Option>
                                 <Option key="2" value={'2'}>执行中</Option>
                                 <Option key="3" value={'3'}>已结束</Option>
-                            </Select>
-                        </li>
-
-                        <li>
-                            <h5>标签</h5>
-                        </li>
-                        <li>
-                            <Select
-                                style={{ width: 120 }}
-                                allowClear={true}
-                                placeholder="请选择标签"
-                                onChange={(tags) => {
-                                    this.setState({
-                                        promotionTags: tags || '',
-                                    });
-                                }}
-                            >
-                                {
-                                    tags.map((tag, index) => {
-                                        return (
-                                            <Option key={`${index}`} value={`${tag.name}`}>{tag.name}</Option>
-                                        );
-                                    })
-                                }
                             </Select>
                         </li>
                     </ul>
