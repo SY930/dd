@@ -12,6 +12,7 @@ import {
     Form,
     Row,
     Col,
+    message,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
@@ -25,7 +26,7 @@ class GenerateBatchGifts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            historyList: new Array(10).fill({}),
+            historyList: [],
             loading: false,
             pageSizes: 10,
             pageNo: 1,
@@ -55,6 +56,10 @@ class GenerateBatchGifts extends Component {
         this.handleIncludeRandomCode = this.handleIncludeRandomCode.bind(this);
     }
 
+    componentDidMount(){
+        this.handleQuery()
+    }
+
     handleQuery() {
         this.setState({
            loading: true,
@@ -66,7 +71,7 @@ class GenerateBatchGifts extends Component {
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
             params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
         }
-        axiosData('xxx', params, {}, {path: 'data'}, )
+        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', params, {}, {path: 'data.giftBatchResList'}, )
             .then(res => {
                 this.setState({
                     historyList: res,
@@ -145,6 +150,16 @@ class GenerateBatchGifts extends Component {
         });
     }
 
+    handleExport(record) {
+        const { itemID } = record;
+        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', {itemID, giftItemID: this.props.giftItemID}, {}, {path: 'data'}, )
+            .then(res => {
+                this.handleQuery()
+            })
+            .catch(err => {
+            })
+    }
+
     getDateCount() {
         const { validDateRange } = this.state;
         if (!validDateRange[0] || !validDateRange[1]) {
@@ -163,7 +178,7 @@ class GenerateBatchGifts extends Component {
             endNo: endNO,
             giftCount: giftNum,
             autoGenerating: generatePwdType, // 生成方式  1：系统自动生成随机的唯一密码 2：按照指定的规则生成 默认为自动生成
-            description,
+            description: remark,
             validDateRange: [EGiftEffectTime, validUntilDate] // EGiftEffectTime 属于后端typo; [0] 为券有效期起始时间, [1] 为券有效期终止时间
         } = this.state;
         if (generatePwdType === '1') {// 系统自动生成
@@ -181,7 +196,7 @@ class GenerateBatchGifts extends Component {
             EGiftEffectTime = moment().format('YYYYMMDD'); // 不填为永久, 实现上为今天 + 100 年
             validUntilDate = moment().add(100, 'year').format('YYYYMMDD');
         }
-        params.description = description;
+        params.remark = remark;
         params.EGiftEffectTime = EGiftEffectTime;
         params.validUntilDate = validUntilDate;
         params.generatePwdType = generatePwdType;
@@ -200,17 +215,21 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            axiosData('xxx', params, {}, {path: 'data'}, )
+            axiosData('/coupon/couponEntityService_banchGenGiftCode.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
                         modalVisible: false,
+                    }, () => {
+                        this.handleQuery()
                     });
+                    // message.success('请求成功');
                 })
                 .catch(err => {
                     this.setState({
                         confirmLoading: false,
                     });
+                    this.props.form.resetFields()
                 })
         }
 
@@ -276,8 +295,11 @@ class GenerateBatchGifts extends Component {
                 title: '张数',
                 className: 'TableTxtCenter',
                 width: 50,
-                dataIndex: 'totalCount',
+                dataIndex: 'totalNum',
                 key: 'num',
+                render: (text, record, index) => {
+                    return text == undefined ? '--' : text;
+                },
             },
             {
                 title: '有效期起',
@@ -313,9 +335,6 @@ class GenerateBatchGifts extends Component {
                 width: 60,
                 dataIndex: 'createBy',
                 key: 'key4',
-                render: (text, record, index) => {
-                    return 'wuhao123123123';
-                },
             },
             {
                 title: '制券时间',
@@ -324,16 +343,26 @@ class GenerateBatchGifts extends Component {
                 dataIndex: 'createStamp',
                 key: 'key5',
                 render: (text, record, index) => {
-                    return '2018-06-04 14:54:20';
+                    return moment(new Date(text)).format('YYYY-MM-DD HH:mm:ss')
                 },
             },
             {
                 title: '状态',
                 className: 'TableTxtCenter',
                 width: 50,
+                dataIndex: 'status',
                 key: 'key6',
-                render: (text, record, index) => {
-                    return '已完成';
+                render: (status, record, index) => {
+                    switch (status) {
+                        case 1: return '新建';
+                        case 2: return '准备';
+                        case 3: return '正在生成券码';
+                        case 4: return '券码生成完毕';
+                        case 5: return '正在导出';
+                        case 6: return '已导出';
+                        case 7: return '导出失败';
+                        default: return '--'
+                    }
                 },
             },
             {
@@ -341,8 +370,20 @@ class GenerateBatchGifts extends Component {
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'key7',
+                dataIndex: 'downLoadUrl',
                 render: (text, record, index) => {
-                    return '导出';
+                    if (record.status == 6) {
+                        return <a download target="_blank" href={text}>下载</a>
+                    } else if (record.status == 4 || record.status == 7) {
+                        return (
+                            <a
+                                onClick={() => {
+                                    this.handleExport(record)
+                                }}
+                            >导出</a>
+                        )
+                    }
+                    return '--'
                 },
             },
         ];
