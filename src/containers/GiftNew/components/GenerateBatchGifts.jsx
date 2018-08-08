@@ -71,10 +71,12 @@ class GenerateBatchGifts extends Component {
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
             params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
         }
-        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', params, {}, {path: 'data.giftBatchResList'}, )
+        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', {...params, pageNo: this.state.pageNo}, {}, {path: 'data'}, )
             .then(res => {
                 this.setState({
-                    historyList: res,
+                    historyList: res.giftBatchResList || [],
+                    total: res.totalSize || 0,
+                    pageNo: res.pageNo || 1,
                     loading: false,
                 });
             })
@@ -403,13 +405,9 @@ class GenerateBatchGifts extends Component {
                     onChange: (page, pageSize) => {
                         this.setState({
                             pageNo: page,
+                        }, () => {
+                            this.handleQuery()
                         })
-                        const opt = {
-                            pageSize,
-                            pageNo: page,
-                            // ...this.getParams(),
-                        };
-                        this.queryEvents(opt);
                     },
                 }}
             />
