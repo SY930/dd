@@ -126,6 +126,13 @@ export const fetchPromotionDetail = (opts) => {
         ).then((result) => {
             let res = {...result};
             res.data = { promotionInfo: result.promotionInfo };
+            try {
+                if (opts.success !== undefined && typeof opts.success === 'function') {
+                    opts.success(res.data);
+                }
+            } catch (e) {
+                console.log('error', e);
+            }
             return dispatch(fetchPromotionDetailFullfilled(res.data))
         }).catch((error) => {
             dispatch(fetchPromotionDetailFail(error.code))
