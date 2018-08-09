@@ -230,7 +230,7 @@ class MyActivities extends React.Component {
         if(!promotionBasicInfo.getIn(["$categoryList", "initialized"])) {
             fetchPromotionCategories({
                 _groupID: this.props.user.accountInfo.groupID,
-                phraseType:'CATEGORY_NAME'
+                phraseType:'0'
             });
         }
 
@@ -238,7 +238,7 @@ class MyActivities extends React.Component {
         if(!promotionBasicInfo.getIn(["$tagList", "initialized"])){
             fetchPromotionTags({
                 _groupID: this.props.user.accountInfo.groupID,
-                phraseType:'TAG_NAME'
+                phraseType:'1'
             });
         }
 
@@ -395,7 +395,7 @@ class MyActivities extends React.Component {
             opt.shopID = promotionShop;
         }
         if(promotionState!=''&&promotionState!='0'){
-            opt.isActive = promotionState == '1'?'ACTIVE':'NOT_ACTIVE';
+            opt.isActive = promotionState == '1'?'1':'0';
         }
         if(promotionValid!=''&&promotionValid!='0'){
             opt.status = promotionValid;
@@ -1097,7 +1097,7 @@ class MyActivities extends React.Component {
                                    opt.shopID = promotionShop;
                                }
                                if(promotionState!=''&&promotionState!='0'){
-                                   opt.isActive = promotionState == '1'?'ACTIVE':'NOT_ACTIVE';
+                                   opt.isActive = promotionState == '1'?'1':'0';
                                }
                                if(promotionValid!=''&&promotionValid!='0'){
                                    opt.status = promotionValid;

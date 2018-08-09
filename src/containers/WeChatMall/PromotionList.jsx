@@ -141,7 +141,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
@@ -555,7 +555,7 @@ export class WeChatMallPromotionList extends React.Component {
                     const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
                     const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
                     const buttonText = (record.status == 1 ? isOngoing ? '终止' : '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
+                    const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
                             href="#"

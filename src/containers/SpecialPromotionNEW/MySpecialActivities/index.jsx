@@ -921,7 +921,7 @@ class MySpecialActivities extends React.Component {
                     <span>删除是不可恢复操作，请慎重考虑~</span>
                 </div>
             ),
-            footer: '删除数据时不可恢复操作,请慎重考虑',
+            footer: '删除数据是不可恢复操作,请慎重考虑',
             onOk: () => {
                 this.props.deleteSelectedRecord({
                     ...record,

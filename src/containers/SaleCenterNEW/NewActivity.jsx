@@ -173,7 +173,7 @@ class NewActivity extends React.Component {
                                 key={`NewActivity${index}`}
                                 style={{
                                     listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ?
+                                    display: (this.props.user.shopID > 0 && activity.get('key') === '5010') ?
                                         'none' : 'block',
                                 }}
                             >

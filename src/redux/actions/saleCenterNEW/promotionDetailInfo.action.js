@@ -224,27 +224,14 @@ export const fetchPromotionListAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_LIST,
         });
-
-        const config = getSpecifiedUrlConfig('getPromotionList_NEW', opts);
-
-        fetch(config.url, {
-            method: config.method,
-            body: config.params,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            dispatch(fetchPromotionListSuccess(responseJSON.data))
+        axiosData(
+            '/promotion/docPromotionService_query.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            dispatch(fetchPromotionListSuccess(responseJSON))
         }).catch((error) => {
             dispatch(fetchPromotionListFailed(error))
         });
@@ -270,29 +257,17 @@ export const fetchAllPromotionListAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_ALL_PROMOTION_LIST,
         });
-        const config = getSpecifiedUrlConfig('getPromotionList_NEW', opts);
-        fetch(config.url, {
-            method: config.method,
-            body: JSON.stringify({ ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 }),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json();
-                    }
-                    return response.text();
-                }
-                return Promise.reject(new Error(response.statusText))
-            }).then((responseJSON) => {
-                dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
-            }).catch((error) => {
-                dispatch(fetchAllPromotionListFailed(error))
-            });
+        axiosData(
+            '/promotion/docPromotionService_query.ajax',
+            { ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 },
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
+        }).catch((error) => {
+            dispatch(fetchAllPromotionListFailed(error))
+        });
     }
 };
 

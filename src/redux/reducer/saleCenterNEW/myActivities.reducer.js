@@ -130,11 +130,11 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
                 const filteredPromotionList = $$state.getIn(['$promotionList', 'data'])
                     .map(($promotion) => {
                         if (action.payload.promotionID == $promotion.get('promotionID')) {
-                            if ($promotion.get('isActive') == 'ACTIVE') {
-                                return $promotion.set('isActive', 'NOT_ACTIVE');
+                            if ($promotion.get('isActive') == '1') {
+                                return $promotion.set('isActive', '0');
                             }
 
-                            return $promotion.set('isActive', 'ACTIVE');
+                            return $promotion.set('isActive', '1');
                         }
                         return $promotion;
                     });

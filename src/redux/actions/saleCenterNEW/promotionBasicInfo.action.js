@@ -1,4 +1,4 @@
-import { fetchData } from '../../../helpers/util';
+import {axiosData, fetchData} from '../../../helpers/util';
 
 export const SALE_CENTER_FETCH_PROMOTION_CATEGORIES_START = 'sale center: fetch promotion categories start new';
 export const SALE_CENTER_FETCH_PROMOTION_CATEGORIES_SUCCESS = 'sale center: fetch promotion categories success new';
@@ -31,25 +31,13 @@ export const fetchPromotionCategoriesAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_CATEGORIES_START,
         });
-        // let params = generateXWWWFormUrlencodedParams(opts);
-
-        fetch('/api/promotion/listPhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             dispatch(fetchPromotionCategoriesSuccess(responseJSON));
         }).catch((error) => {
             dispatch(fetchPromotionCategoriesFailed(error));
@@ -76,24 +64,13 @@ export const fetchPromotionTagsAC = (opts) => {
             type: SALE_CENTER_FETCH_PROMOTION_TAGS_START,
         });
         // let params = generateXWWWFormUrlencodedParams(opts);
-
-        fetch('/api/promotion/listPhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return new Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             dispatch(fetchPromotionTagsSuccess(responseJSON));
         }).catch((error) => {
             dispatch(fetchPromotionTagsFailed(error));
@@ -117,20 +94,24 @@ const addTagSuccess = (payload) => {
 
 export const saleCenterAddPhrase = (opts) => {
     return (dispatch) => {
-        fetchData('addPhrase_NEW', opts.data, null, {
-            path: '',
+        axiosData(
+            '/promotion/phrasePromotionService_add.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        )
+        .then((records) => {
+            if (opts.data.phraseType == '0') {
+                dispatch(addCategorySuccess(records));
+            } else {
+                dispatch(addTagSuccess(records));
+            }
+            opts.success && opts.success();
         })
-            .then((records) => {
-                if (opts.phraseType === 'CATEGORY_NAME') {
-                    dispatch(addCategorySuccess(records));
-                } else {
-                    dispatch(addTagSuccess(records));
-                }
-                opts.success && opts.success();
-            })
-            .catch((err) => {
-                opts.fail && opts.fail();
-            });
+        .catch((err) => {
+            opts.fail && opts.fail();
+        });
     };
 };
 
@@ -149,21 +130,19 @@ export const saleCenterResetBasicInfoAC = (opts) => {
 };
 export const saleCenterDeletePhrase = (opts) => {
     return (dispatch) => {
-        fetch('/api/promotion/deletePhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
+        axiosData(
+            '/promotion/phrasePromotionService_delete.ajax',
+            opts.data,
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        )
+        .then((res) => {
+            opts.success && opts.success();
         })
-            .then((res) => {
-                opts.success && opts.success();
-            })
-            .catch((err) => {
-                console.log(err)
-            });
+        .catch((err) => {
+            console.log(err)
+        });
     };
 };
 
@@ -176,31 +155,17 @@ export const fetchFilterShopsSuccess = (opts) => {
 
 export const fetchFilterShops = (opts) => {
     return (dispatch) => {
-        fetch('/api/promotion/filterShops_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
-            if (responseJSON.code === '000') {
-                dispatch(fetchFilterShopsSuccess(responseJSON));
-            } else {
-                opts.fail && opts.fail('店铺信息获取出错');
-            }
-        }).catch((error) => {
+        axiosData(
+            '/promotion/docPromotionService_queryShopListByType.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            dispatch(fetchFilterShopsSuccess(responseJSON))
+        }, (error) => {
             opts.fail && opts.fail('店铺信息获取出错');
-        });
+        })
     };
 };
 export const shopsAllSet = (opts) => {

@@ -70,7 +70,7 @@ class AddUpGiveDetailInfo extends React.Component {
         let rule = this.props.promotionDetailInfo.toJS().$promotionDetail.rule;
         let priceLst = this.props.promotionDetailInfo.toJS().$promotionDetail.priceLst;
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
+        const count = promotionType == '1080' ? 'giveFoodCount' : 'freeAmount';
         if (rule === null || rule === undefined) {
             return;
         }
@@ -93,7 +93,7 @@ class AddUpGiveDetailInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         this.props.form.validateFieldsAndScroll((err, values) => {
             const { rule, priceLst } = this.state;
-            const count = promotionType == 'FOOD_CUMULATION_GIVE' ? 'giveFoodCount' : 'freeAmount';
+            const count = promotionType == '1080' ? 'giveFoodCount' : 'freeAmount';
             const _rule = {
                 stageType: rule.stageType,
                 [count]: rule.giveFoodCount,
@@ -301,14 +301,14 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('giveFoodCount', {
                                     rules: [{
                                         required: true,
-                                        message: `0~100000之间${promotionType == 'FOOD_CUMULATION_GIVE' ? '整数' : ',可两位小数'}`,
-                                        pattern: promotionType == 'FOOD_CUMULATION_GIVE' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
+                                        message: `0~100000之间${promotionType == '1080' ? '整数' : ',可两位小数'}`,
+                                        pattern: promotionType == '1080' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
                                     }],
                                     initialValue: this.state.rule.giveFoodCount,
                                 })(
                                     <Input
-                                        addonBefore={promotionType == 'FOOD_CUMULATION_GIVE' ? '赠送' : '减免'}
-                                        addonAfter={promotionType == 'FOOD_CUMULATION_GIVE' ? '份' : '元'}
+                                        addonBefore={promotionType == '1080' ? '赠送' : '减免'}
+                                        addonAfter={promotionType == '1080' ? '份' : '元'}
                                         onChange={(val) => { this.handleFoodCountChange(val) }}
                                     />
                                 )
@@ -317,7 +317,7 @@ class AddUpGiveDetailInfo extends React.Component {
                     </Form>
                 </FormItem>
                 <div >
-                    {promotionType == 'FOOD_CUMULATION_GIVE' ? this.renderDishsSelectionBox() : null}
+                    {promotionType == '1080' ? this.renderDishsSelectionBox() : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </div>

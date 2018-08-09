@@ -46,7 +46,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             mutexPromotions: [],
             mutexSubjects: [],
             selectedRole: [],
-            userSetting: 'ALL_USER',
+            userSetting: '0',
             subjectType: '0',
             blackListRadio: '0',
             display: 'none',
@@ -83,23 +83,23 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         let userSettingOPtios = []
-        if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
+        if (promotionType === '2070' || promotionType === '1080') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
-        } else if (promotionType === 'RETURN_GIFT') {
+        } else if (promotionType == '3010') {
             userSettingOPtios = this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
-        } else if (promotionType === 'RETURN_POINT') {
+        } else if (promotionType == '3020') {
             userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
         } else {
             userSettingOPtios = CLIENT_CATEGORY
         }
-        if ((promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') && userSetting === 'ALL_USER') {
-            userSetting = 'CUSTOMER_ONLY';
+        if ((promotionType == '2070' || promotionType == '1080') && userSetting == '0') {
+            userSetting = '1';
         }
-        if (promotionType === 'RETURN_GIFT' && this.props.stashSome) {
-            userSetting = 'CUSTOMER_ONLY';
+        if (promotionType == '3010' && this.props.stashSome) {
+            userSetting = '1';
         }
-        if (promotionType === 'RETURN_POINT') {
-            userSetting = 'CUSTOMER_ONLY';
+        if (promotionType == '3020') {
+            userSetting = '1';
         }
 
         const cardScopeList = $promotionDetail.get('cardScopeList');
@@ -143,9 +143,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 cardInfo: _groupCardTypeList.toJS(),
             })
         }
-        if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
+        if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
-                userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
+                userSetting: nextProps.stashSome ? '1' : '0',
                 userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
                 cardScopeType: 0,
                 cardScopeIDs: [],
@@ -498,12 +498,12 @@ class AdvancedPromotionDetailSetting extends React.Component {
     render() {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const _stash = promotionType === 'RETURN_GIFT' || promotionType === 'RETURN_POINT';
+        const _stash = promotionType == '3010' || promotionType == '3020';
         const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo');
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
-                {promotionType !== 'RECOMMEND_FOOD' && (this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE') ? this.renderCardLeval() : null}
+                {promotionType !== '5010' && (this.state.userSetting == '1' || this.state.userSetting == '3' || this.state.userSetting == '4') ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)

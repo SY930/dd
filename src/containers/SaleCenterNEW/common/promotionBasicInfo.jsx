@@ -82,7 +82,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME',
+                    phraseType: this.props.catOrtag == 'cat' ? '0' : '1',
                     // name:this.state.newCategory,
                     nameList: [this.state.newCategory],
                 },
@@ -91,13 +91,13 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                         this.props.fetchPromotionCategories({
                             groupID: this.props.user.accountInfo.groupID,
                             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                            phraseType: 'CATEGORY_NAME',
+                            phraseType: '0',
                         });
                     } else {
                         this.props.fetchPromotionTags({
                             groupID: this.props.user.accountInfo.groupID,
                             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                            phraseType: 'TAG_NAME',
+                            phraseType: '1',
                         });
                     }
                     this.props.callback && this.props.callback(options);
@@ -176,7 +176,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                                                         closable={true}
                                                         onClose={(e) => {
                                                             {/* console.log(cat.name); */ }
-                                                            const catOrtag = this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME'
+                                                            const catOrtag = this.props.catOrtag == 'cat' ? '0' : '1'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
                                                     >
@@ -269,7 +269,7 @@ class PromotionBasicInfo extends React.Component {
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
-        if (promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD') {
+        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
             } else {
@@ -306,7 +306,7 @@ class PromotionBasicInfo extends React.Component {
         }
 
         const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
-        if ((this.props.user.shopID > 0 && maintenanceLevel == 'SHOP_LEVEL') || (!this.props.user.shopID && maintenanceLevel == 'GROUP_LEVEL')) {
+        if ((this.props.user.shopID > 0 && maintenanceLevel == '1') || (!this.props.user.shopID && maintenanceLevel == '0')) {
             // 判断分类列表是否包含已选统计分类,不包含则手动添加分类
             this.handleAutoAddCat();
             // 判断标签列表是否包含已选,不包含则手动添加
@@ -323,14 +323,14 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: 'CATEGORY_NAME',
+                    phraseType: '0',
                     nameList: [this.state.category],
                 },
                 success: () => {
                     this.props.fetchPromotionCategories({
                         groupID: this.props.user.accountInfo.groupID,
                         shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: 'CATEGORY_NAME',
+                        phraseType: '0',
                     });
                 },
             })
@@ -351,14 +351,14 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: 'TAG_NAME',
+                    phraseType: '1',
                     nameList: excludeTags,
                 },
                 success: () => {
                     this.props.fetchPromotionTags({
                         groupID: this.props.user.accountInfo.groupID,
                         shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: 'TAG_NAME',
+                        phraseType: '1',
                     });
                 },
             })
@@ -382,13 +382,13 @@ class PromotionBasicInfo extends React.Component {
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: 'CATEGORY_NAME',
+            phraseType: '0',
         });
 
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
 
         if (promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
@@ -498,7 +498,7 @@ class PromotionBasicInfo extends React.Component {
             });
         }
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if (promotionType == 'RECOMMEND_FOOD' && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
+        if (promotionType == '5010' && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
@@ -800,14 +800,14 @@ class PromotionBasicInfo extends React.Component {
             dateRange: date,
         }, () => {
             const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-            if (promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD') {
+            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
                 if (this.state.dateRange[0] && this.state.dateRange[1]) {
                     this.setState({ rangePickerstatus: 'success' })
                 } else {
                     this.setState({ rangePickerstatus: 'error' })
                 }
             }
-            if (promotionType == 'RECOMMEND_FOOD' && this.state.dateRange[0] && this.state.dateRange[1]) {
+            if (promotionType == '5010' && this.state.dateRange[0] && this.state.dateRange[1]) {
                 const opts = {
                     data: {
                         groupID: this.props.user.accountInfo.groupID,
@@ -912,7 +912,7 @@ class PromotionBasicInfo extends React.Component {
                 itemID,
             },
             success: () => {
-                const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
+                const type = phraseType == '0' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
                 this.props[type]({
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
@@ -921,11 +921,11 @@ class PromotionBasicInfo extends React.Component {
                 message.success('删除成功');
             },
         });
-        if (phraseType == 'CATEGORY_NAME' && this.state.category == name) {
+        if (phraseType == '0' && this.state.category == name) {
             // 手动删除已选添加类别（而不是加载时），清空已选类别
             this.setState({ category: '' })
         }
-        if (phraseType == 'TAG_NAME' && this.state.tags.includes(name)) {
+        if (phraseType == '1' && this.state.tags.includes(name)) {
             // 手动删除已选添加标签（而不是加载时），清空已选
             const set = new Set(this.state.tags);
             set.delete(name)
@@ -1074,7 +1074,7 @@ class PromotionBasicInfo extends React.Component {
                 </FormItem>
                 <div style={{ position: 'relative' }}>
                     {
-                        promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD' ?
+                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ?
                             <p style={{ position: 'absolute', top: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
                             : null
                     }
@@ -1088,7 +1088,7 @@ class PromotionBasicInfo extends React.Component {
                     >
                         <Row>
                             <Col span={21}>
-                                <RangePicker {...dateRangeProps} disabledDate={promotionType == 'FOOD_CUMULATION_GIVE' || promotionType == 'BILL_CUMULATION_FREE' || promotionType == 'RECOMMEND_FOOD' ? disabledDate : null} />
+                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ? disabledDate : null} />
                             </Col>
                             <Col offset={1} span={2}>
                                 <div className={styles.ActivityDateDay}>

@@ -114,7 +114,7 @@ function genPostParams(type, params = {}) {
  * 从 Redux Store 中获取登录账户的信息
  * @return {Object} 账户信息
  */
-function getAccountInfo() {
+export function getAccountInfo() {
     // if (!process.env.__CLIENT__) return {};
     const state = getStore().getState();
     return state.user.get('accountInfo').toJS();

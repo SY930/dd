@@ -907,11 +907,11 @@ class GiftAddModalStep extends React.Component {
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
                 return isFoodCatNameList == '1' ? {
-                    'scopeType': 'CATEGORY_INCLUDED',
+                    'scopeType': '1',
                     'foodCategoryName': name,
                 } :
                     {
-                        'scopeType': 'FOOD_INCLUDED',
+                        'scopeType': '2',
                         'foodNameWithUnit': name,
                     }
             })

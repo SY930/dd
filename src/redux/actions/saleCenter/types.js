@@ -17,13 +17,13 @@ export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
     MONTHLY: '2',
 });
 export const CLIENT_CATEGORY = Object.freeze([
-    {key:'ALL_USER',value:'0', name:'不限制'},
-    {key:'CUSTOMER_ONLY',value:'1', name:'仅会员'},
-    {key:'CUSTOMER_EXCLUDED',value:'2', name:'非会员'}
+    {key:'0',value:'0', name:'不限制'},
+    {key:'1',value:'1', name:'仅会员'},
+    {key:'2',value:'2', name:'非会员'}
 ]);
 export const PAYMENTS_OPTIONS = Object.freeze([
-    {key:'ALL_SUBJECT',value:'0',name:'不限制'},
-    {key:'REAL_INCOME',value:'1',name:'仅实收'}
+    {key:'0',value:'0',name:'不限制'},
+    {key:'1',value:'1',name:'仅实收'}
 ]);
 export const CYCLE_TYPE = Object.freeze([
     {
@@ -226,7 +226,7 @@ export const ACTIVITY_CATEGORIES = (function(){
             color: '#c49b79',
             text: '会员消费满X元送积分,积分可兑换礼品或抵现',
             example: '例如:全部菜品9折,酒水不打折',
-            key: 'RETURN_POINT'
+            key: '3020'
         },
         {
             idx: 8,
@@ -586,8 +586,8 @@ export const promotionDetailInfoAdapter = function(source, dir){
             foodCategory: [],
             excludeDishes: [], // excluded dish
             dishes: [], // selected dish
-            userSetting: source.master.userType =='ALL_USER'?'0':source.master.userType =='CUSTOMER_ONLY'?'1':'2', // user setting
-            subjectType: source.master.subjectType =='ALL_SUBJECT'?'0':'1', // 支付限制
+            userSetting: source.master.userType =='0'?'0':source.master.userType =='1'?'1':'2', // user setting
+            subjectType: source.master.subjectType =='0'?'0':'1', // 支付限制
             mutexPromotions: arrayTransformAdapter(source.master.sharedPromotionIDLst), // 不能同时进行的活动ID
             mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
             role: arrayTransformAdapter(source.master.roleIDLst),
@@ -605,7 +605,7 @@ export const promotionDetailInfoAdapter = function(source, dir){
             if (source.foodCategory !== null) {
                 source.foodCategory.map((item)=>{
                     scope.push({
-                        scopeType: "CATEGORY_INCLUDED",
+                        scopeType: "1",
                         targetID: item.foodCategoryID,
                         targetCode: item.foodCategoryKey,
                         targetName: item.foodCategoryName
@@ -616,7 +616,7 @@ export const promotionDetailInfoAdapter = function(source, dir){
             if(source.excludeDishes !== null){
                 source.excludeDishes.map((item)=>{
                     scope.push({
-                        scopeType: "FOOD_EXCLUDED",
+                        scopeType: "4",
                         targetID: item.itemID,
                         targetCode: item.foodKey,
                         targetName: item.foodName,
@@ -628,7 +628,7 @@ export const promotionDetailInfoAdapter = function(source, dir){
             if(source.dishes !== null) {
                 source.dishes.map((item)=> {
                     scope.push({
-                        scopeType: "FOOD_INCLUDED",
+                        scopeType: "2",
                         targetID: item.itemID,
                         targetCode: item.foodKey,
                         targetName: item.foodName,

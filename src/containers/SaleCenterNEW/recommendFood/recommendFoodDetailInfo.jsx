@@ -175,7 +175,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     });
                     group.foods.forEach((food) => {
                         scopeLst.push({
-                            scopeType: 'FOOD_INCLUDED',
+                            scopeType: '2',
                             targetID: food.itemID,
                             targetCode: food.foodKey,
                             targetName: food.foodName,

@@ -12,6 +12,7 @@ import {
     getSpecifiedUrlConfig,
     generateXWWWFormUrlencodedParams,
 } from '../../../helpers/apiConfig';
+import {axiosData, getAccountInfo} from "../../../helpers/util";
 
 export const SALE_CENTER_ADD_PROMOTION_START_NEWNEW = 'sale center:: add new promotion start new new';
 export const SALE_CENTER_ADD_PROMOTION_SUCCESS = 'sale center:: add new promotion success new';
@@ -44,96 +45,76 @@ export const saleCenterAddNewActivityAC = (opts) => {
             type: SALE_CENTER_ADD_PROMOTION_START_NEWNEW,
             payload: opts.data,
         });
-        fetch('/api/promotion/add_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json();
-                    }
-                    return response.text();
-                }
-                return Promise.reject(new Error(response.statusText));
-            })
-            .then((response) => {
-                if (response.code === '000') {
-                    setTimeout(() => {
-                        opts.success && opts.success();
-                    }, 0);
-                    return dispatch(addPromotionSuccess(response));
-                } else if (response.code === '1211200003') {
-                    setTimeout(() => {
-                        opts.sameCode && opts.sameCode();
-                    }, 0);
-                    return dispatch(addPromotionFail(response.code));
-                }
+        const userName = getAccountInfo().userName
+        const params = {
+            ...opts.data.promotionInfo.master,
+            priceLst: opts.data.promotionInfo.priceLst,
+            timeLst: opts.data.promotionInfo.timeLst,
+            scopeLst: opts.data.promotionInfo.scopeLst,
+            shareLst: opts.data.promotionInfo.shareLst,
+            cardScopeList: opts.data.promotionInfo.cardScopeList,
+            createBy: userName,
+        };
+        axiosData(
+            '/promotion/docPromotionService_add.ajax',
+            params,
+            {needThrow: true},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
+            setTimeout(() => {
+                opts.success && opts.success();
+            }, 0);
+            dispatch(addPromotionSuccess(responseJSON))
+        }).catch((error) => {
+            if (error.code === '1211200003' || error === '1211200003') {
                 setTimeout(() => {
-                    opts.fail && opts.fail(response.msg);
-                }
-                );
-                return dispatch(addPromotionFail(response.code));
-            })
+                    opts.sameCode && opts.sameCode();
+                }, 0);
+                dispatch(addPromotionFail(error.code));
+            } else {
+                setTimeout(() => {
+                    opts.fail && opts.fail(error.message);
+                }, 0);
+                dispatch(addPromotionFail(error.code));
+            }
+        });
     }
 }
 
-export const saleCenterUpdateNewActivityAC = (opts) => {
+export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_UPDATE_PROMOTION_START,
         });
-        const urlConf = getSpecifiedUrlConfig('updatePromotion_NEW', opts.data);
-
-        fetch(urlConf.url, {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
-            // TODO: 讲新添加的数据推送到我的列表当中, 如果有初始化的情况下。
-            if (responseJSON.code == '000') {
-                setTimeout(() => {
-                    opts.success && opts.success();
-                }, 0);
-                dispatch({
-                    type: SALE_CENTER_UPDATE_PROMOTION_SUCCESS,
-                    payload: responseJSON,
-                });
-            } else {
-                setTimeout(() => {
-                    opts.fail && opts.fail();
-                }, 0);
-                dispatch({
-                    type: SALE_CENTER_UPDATE_PROMOTION_FAILED,
-                    payload: error,
-                })
-            }
-        }).catch((error) => {
+        const params = {
+            ...opts.data.promotionInfo.master,
+            priceLst: opts.data.promotionInfo.priceLst,
+            timeLst: opts.data.promotionInfo.timeLst,
+            scopeLst: opts.data.promotionInfo.scopeLst,
+            shareLst: opts.data.promotionInfo.shareLst,
+            cardScopeList: opts.data.promotionInfo.cardScopeList,
+        };
+        axiosData(
+            '/promotion/docPromotionService_update.ajax',
+            params,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             setTimeout(() => {
-                opts.fail && opts.fail();
+                opts.success && opts.success();
             }, 0);
+            dispatch({
+                type: SALE_CENTER_UPDATE_PROMOTION_SUCCESS,
+                payload: responseJSON,
+            });
+        }).catch((error) => {
             dispatch({
                 type: SALE_CENTER_UPDATE_PROMOTION_FAILED,
                 payload: error,
             })
-        })
+        });
     }
 }
 
@@ -151,49 +132,26 @@ export const fetchPromotionDetail = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_DETAIL,
         })
-        // fetch('http://rap2api.taobao.org/app/mock/8221/POST/detail', {
-        fetch('/api/promotion/detail_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.text();
-                    }
-                } else {
-                    return Promise.reject(new Error(response.statusText));
+
+        axiosData(
+            '/promotion/docPromotionService_queryDetail.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((result) => {
+            let res = {...result};
+            res.data = { promotionInfo: result.promotionInfo };
+            try {
+                if (opts.success !== undefined && typeof opts.success === 'function') {
+                    opts.success(res.data);
                 }
-            })
-            .catch((error) => {
-                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-            })
-            .then((response) => {
-                const promotionID = /"promotionID":(\d+),/.exec(response)[1];
-                const result = JSON.parse(response);
-                result.data = { promotionInfo: result.promotionInfo };
-                result.data.promotionInfo.master.promotionID = promotionID;
-                if (result.code === '000') {
-                    if (opts.success !== undefined && typeof opts.success === 'function') {
-                        opts.success(result.data);
-                    }
-                    return dispatch(fetchPromotionDetailFullfilled(result.data))
-                }
-                opts.fail && opts.fail(result.message);
-                return dispatch(fetchPromotionDetailFail(result.code));
-            }, (err) => {
-                if (err.name === 'TimeoutError') {
-                    return dispatch(fetchPromotionDetailTimeout());
-                }
-                return dispatch(fetchPromotionDetailFail(err));
-            })
-            .catch(err => {
-                // empty catch for possible render error
-            })
+            } catch (e) {
+                console.log('error', e);
+            }
+            return dispatch(fetchPromotionDetailFullfilled(res.data))
+        }).catch((error) => {
+            dispatch(fetchPromotionDetailFail(error.code))
+        });
     }
 }
