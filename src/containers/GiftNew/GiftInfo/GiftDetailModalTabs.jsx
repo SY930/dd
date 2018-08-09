@@ -70,7 +70,11 @@ class GiftDetailModalTabs extends React.Component {
                     tabBarExtraContent={
                         this.state.activeKey === 'send' || this.state.activeKey === 'used' ?
                         <Button type="ghost"
-                                disabled={this.props.total <= 0}
+                                title={this.state.activeKey === 'send' ? '导出发出信息' : '导出使用信息'}
+                                disabled={
+                                    (this.state.activeKey === 'send' && this.props.sendCount <= 0) ||
+                                    (this.state.activeKey === 'used' && this.props.usedCount <= 0)
+                                }
                                 onClick={this.handleExport}
                                 style={{top: '8px'}}
                         >
@@ -110,6 +114,7 @@ class GiftDetailModalTabs extends React.Component {
                         <ExportModal
                             giftItemID={data.giftItemID}
                             giftName={data.giftName}
+                            activeKey={this.state.activeKey}
                             newExport // 除了礼品定额卡之外的导出, 复用组件
                             handleClose={() => this.setState({ exportVisible: false })}
                         />

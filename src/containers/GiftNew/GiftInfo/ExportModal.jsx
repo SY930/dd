@@ -89,7 +89,11 @@ export default class ExportModal extends Component {
             this.exportRecords(this.props.giftItemID, this.props._key)
         } else if (this.props.newExport) {
             const {giftItemID, giftName } = this.props;
-            axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', {giftItemID, giftName}, null, { path: 'data' })
+            const params = {giftItemID, giftName};
+            if (this.props.activeKey === 'used') {
+                params.giftStatus = '2'
+            }
+            axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', params, null, { path: 'data' })
                 .then(_records => {
                     this.getExportRecords('5')
                 })
