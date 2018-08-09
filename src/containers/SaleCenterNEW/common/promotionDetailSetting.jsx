@@ -318,7 +318,7 @@ class PromotionDetailSetting extends React.Component {
                         return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
-                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) === 'BILL_DISCOUNT' && <CloseableTip content={
+                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' && <CloseableTip content={
                     <div>
                         <p>指定菜品：</p>
                         <p>当未选择任何分类及菜品时，会根据基本档菜品库菜品是否设置了参与打折来执行。即：所有设置了参与打折的菜品都在活动参与范围</p>
