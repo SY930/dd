@@ -12,7 +12,7 @@ import {
     getSpecifiedUrlConfig,
     generateXWWWFormUrlencodedParams,
 } from '../../../helpers/apiConfig';
-import {axiosData} from "../../../helpers/util";
+import {axiosData, getAccountInfo} from "../../../helpers/util";
 
 export const SALE_CENTER_ADD_PROMOTION_START_NEWNEW = 'sale center:: add new promotion start new new';
 export const SALE_CENTER_ADD_PROMOTION_SUCCESS = 'sale center:: add new promotion success new';
@@ -45,10 +45,19 @@ export const saleCenterAddNewActivityAC = (opts) => {
             type: SALE_CENTER_ADD_PROMOTION_START_NEWNEW,
             payload: opts.data,
         });
-
+        const userName = getAccountInfo().userName
+        const params = {
+            ...opts.data.promotionInfo.master,
+            priceLst: opts.data.promotionInfo.priceLst,
+            timeLst: opts.data.promotionInfo.timeLst,
+            scopeLst: opts.data.promotionInfo.scopeLst,
+            shareLst: opts.data.promotionInfo.shareLst,
+            cardScopeList: opts.data.promotionInfo.cardScopeList,
+            createBy: userName,
+        };
         axiosData(
             '/promotion/docPromotionService_add.ajax',
-            opts.data,
+            params,
             {needThrow: true},
             {path: 'data'},
             'HTTP_SERVICE_URL_SHOPCENTER'
@@ -58,7 +67,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
             }, 0);
             dispatch(addPromotionSuccess(responseJSON))
         }).catch((error) => {
-            if (error.code === '1211200003') {
+            if (error.code === '1211200003' || error === '1211200003') {
                 setTimeout(() => {
                     opts.sameCode && opts.sameCode();
                 }, 0);
@@ -78,10 +87,17 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
         dispatch({
             type: SALE_CENTER_UPDATE_PROMOTION_START,
         });
-
+        const params = {
+            ...opts.data.promotionInfo.master,
+            priceLst: opts.data.promotionInfo.priceLst,
+            timeLst: opts.data.promotionInfo.timeLst,
+            scopeLst: opts.data.promotionInfo.scopeLst,
+            shareLst: opts.data.promotionInfo.shareLst,
+            cardScopeList: opts.data.promotionInfo.cardScopeList,
+        };
         axiosData(
             '/promotion/docPromotionService_update.ajax',
-            opts.data,
+            params,
             {},
             {path: 'data'},
             'HTTP_SERVICE_URL_SHOPCENTER'

@@ -951,7 +951,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             subjectType: source.master.subjectType == '0' ? '0' : '1', // 支付限制
             // mutexPromotions: arrayTransformAdapter(source.master.sharedPromotionIDLst), // 不能同时进行的活动ID
             mutexPromotions: source.shareLst, // 不能同时进行的活动ID
-            mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
+            // mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
             role: arrayTransformAdapter(source.master.roleIDLst),
             priceLst,
             scopeLst,

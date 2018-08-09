@@ -539,6 +539,7 @@ class MyActivities extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
+        console.log('arrayTransformAdapter: ', _record.promotionType);
         if ( _record && _record.maintenanceLevel !== '1') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
