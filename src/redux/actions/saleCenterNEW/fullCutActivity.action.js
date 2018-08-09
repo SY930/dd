@@ -9,6 +9,7 @@
 
 
 import {
+    axiosData,
     // toJSON,
     // genAction,
     // genFetchOptions,
@@ -238,9 +239,13 @@ export const getShopByParamAC = (opts) => {
 
 export const addPhrase = (opts) => {
     return (dispatch) => {
-        fetchData('addPhrase_NEW', opts, null, {
-            path: 'data',
-        })
+        axiosData(
+            '/promotion/phrasePromotionService_add.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        )
             .then((records) => {
                 if (opts.phraseType == '0') {
                     dispatch(addCategorySuccess(records));

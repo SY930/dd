@@ -94,20 +94,24 @@ const addTagSuccess = (payload) => {
 
 export const saleCenterAddPhrase = (opts) => {
     return (dispatch) => {
-        fetchData('addPhrase_NEW', opts.data, null, {
-            path: '',
+        axiosData(
+            '/promotion/phrasePromotionService_add.ajax',
+            opts.data,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        )
+        .then((records) => {
+            if (opts.data.phraseType == '0') {
+                dispatch(addCategorySuccess(records));
+            } else {
+                dispatch(addTagSuccess(records));
+            }
+            opts.success && opts.success();
         })
-            .then((records) => {
-                if (opts.phraseType === '0') {
-                    dispatch(addCategorySuccess(records));
-                } else {
-                    dispatch(addTagSuccess(records));
-                }
-                opts.success && opts.success();
-            })
-            .catch((err) => {
-                opts.fail && opts.fail();
-            });
+        .catch((err) => {
+            opts.fail && opts.fail();
+        });
     };
 };
 
