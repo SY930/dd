@@ -31,25 +31,13 @@ export const fetchPromotionCategoriesAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_CATEGORIES_START,
         });
-        // let params = generateXWWWFormUrlencodedParams(opts);
-
-        fetch('/api/promotion/listPhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             dispatch(fetchPromotionCategoriesSuccess(responseJSON));
         }).catch((error) => {
             dispatch(fetchPromotionCategoriesFailed(error));
@@ -76,24 +64,13 @@ export const fetchPromotionTagsAC = (opts) => {
             type: SALE_CENTER_FETCH_PROMOTION_TAGS_START,
         });
         // let params = generateXWWWFormUrlencodedParams(opts);
-
-        fetch('/api/promotion/listPhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return new Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
+        axiosData(
+            '/promotion/phrasePromotionService_query.ajax',
+            opts,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        ).then((responseJSON) => {
             dispatch(fetchPromotionTagsSuccess(responseJSON));
         }).catch((error) => {
             dispatch(fetchPromotionTagsFailed(error));
