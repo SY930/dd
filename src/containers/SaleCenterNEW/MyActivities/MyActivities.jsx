@@ -228,12 +228,12 @@ class MyActivities extends React.Component {
         this.handleQuery();
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'CATEGORY_NAME',
+            phraseType: '0',
         });
 
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
 
         fetchPromotionScopeInfo({

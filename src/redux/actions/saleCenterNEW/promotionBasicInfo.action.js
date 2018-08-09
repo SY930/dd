@@ -121,7 +121,7 @@ export const saleCenterAddPhrase = (opts) => {
             path: '',
         })
             .then((records) => {
-                if (opts.phraseType === 'CATEGORY_NAME') {
+                if (opts.phraseType === '0') {
                     dispatch(addCategorySuccess(records));
                 } else {
                     dispatch(addTagSuccess(records));

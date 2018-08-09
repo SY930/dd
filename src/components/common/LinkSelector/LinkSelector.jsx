@@ -85,7 +85,7 @@ export default class LinkSelector extends React.Component {
       });
       this.props.addCategory({
           _groupID: 5,
-          phraseType: 'CATEGORY_NAME',
+          phraseType: '0',
           name: this.state.value,
       });
       this.setState({
@@ -127,7 +127,7 @@ export default class LinkSelector extends React.Component {
                   onSelect={(value) => {
                       this.props.addTag({
                           _groupID: 5,
-                          phraseType: 'TAG_NAME',
+                          phraseType: '1',
                           name: value,
                       });
                   }}

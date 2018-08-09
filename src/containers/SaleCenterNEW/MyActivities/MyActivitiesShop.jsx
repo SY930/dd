@@ -237,12 +237,12 @@ class MyActivitiesShop extends React.Component {
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
-            phraseType: 'CATEGORY_NAME',
+            phraseType: '0',
         });
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,

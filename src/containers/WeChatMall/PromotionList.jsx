@@ -141,7 +141,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);

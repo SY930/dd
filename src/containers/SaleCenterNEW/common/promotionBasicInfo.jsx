@@ -82,7 +82,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME',
+                    phraseType: this.props.catOrtag == 'cat' ? '0' : '1',
                     // name:this.state.newCategory,
                     nameList: [this.state.newCategory],
                 },
@@ -91,13 +91,13 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                         this.props.fetchPromotionCategories({
                             groupID: this.props.user.accountInfo.groupID,
                             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                            phraseType: 'CATEGORY_NAME',
+                            phraseType: '0',
                         });
                     } else {
                         this.props.fetchPromotionTags({
                             groupID: this.props.user.accountInfo.groupID,
                             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                            phraseType: 'TAG_NAME',
+                            phraseType: '1',
                         });
                     }
                     this.props.callback && this.props.callback(options);
@@ -176,7 +176,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                                                         closable={true}
                                                         onClose={(e) => {
                                                             {/* console.log(cat.name); */ }
-                                                            const catOrtag = this.props.catOrtag == 'cat' ? 'CATEGORY_NAME' : 'TAG_NAME'
+                                                            const catOrtag = this.props.catOrtag == 'cat' ? '0' : '1'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
                                                     >
@@ -323,14 +323,14 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: 'CATEGORY_NAME',
+                    phraseType: '0',
                     nameList: [this.state.category],
                 },
                 success: () => {
                     this.props.fetchPromotionCategories({
                         groupID: this.props.user.accountInfo.groupID,
                         shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: 'CATEGORY_NAME',
+                        phraseType: '0',
                     });
                 },
             })
@@ -351,14 +351,14 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: 'TAG_NAME',
+                    phraseType: '1',
                     nameList: excludeTags,
                 },
                 success: () => {
                     this.props.fetchPromotionTags({
                         groupID: this.props.user.accountInfo.groupID,
                         shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: 'TAG_NAME',
+                        phraseType: '1',
                     });
                 },
             })
@@ -382,13 +382,13 @@ class PromotionBasicInfo extends React.Component {
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: 'CATEGORY_NAME',
+            phraseType: '0',
         });
 
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
 
         if (promotionBasicInfo.getIn(['$categoryList', 'initialized'])) {
@@ -912,7 +912,7 @@ class PromotionBasicInfo extends React.Component {
                 itemID,
             },
             success: () => {
-                const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
+                const type = phraseType == '0' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
                 this.props[type]({
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
@@ -921,11 +921,11 @@ class PromotionBasicInfo extends React.Component {
                 message.success('删除成功');
             },
         });
-        if (phraseType == 'CATEGORY_NAME' && this.state.category == name) {
+        if (phraseType == '0' && this.state.category == name) {
             // 手动删除已选添加类别（而不是加载时），清空已选类别
             this.setState({ category: '' })
         }
-        if (phraseType == 'TAG_NAME' && this.state.tags.includes(name)) {
+        if (phraseType == '1' && this.state.tags.includes(name)) {
             // 手动删除已选添加标签（而不是加载时），清空已选
             const set = new Set(this.state.tags);
             set.delete(name)
