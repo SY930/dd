@@ -18,13 +18,13 @@ class SettleUnitIDSelector extends Component {
     }
 
     handleOptionChange(value) {
-        const accountInfoList = this.props.accountInfoList;
+        const accountInfoList = this.props.accountInfoList || [];
         const index = accountInfoList.findIndex(account => String(account.settleUnitID) === String(value));
         index > -1 && (this.props.onChange && this.props.onChange(accountInfoList[index]));
     }
 
     render() {
-        const accountInfoList = this.props.accountInfoList;
+        const accountInfoList = this.props.accountInfoList || [];
         const { value: settleUnitID } = this.props;
         const index = accountInfoList.findIndex(account => String(account.settleUnitID) === String(settleUnitID));
         return (

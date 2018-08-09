@@ -7,8 +7,10 @@ import {
     Radio,
     Row,
     Col,
+    DatePicker,
     message as messageService,
 } from 'antd';
+import moment from 'moment';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../../redux/actions/saleCenterNEW/types";
@@ -20,6 +22,7 @@ import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const RangePicker = DatePicker.RangePicker;
 const SEND_MSG = [
     {
         label:'不发送',
@@ -51,9 +54,9 @@ class SendGiftPanel extends Component {
             whenToEffect: '0',        // 何时生效
             giftValidDays: 1,        // 有效天数
             cellNo: '',             // 用户手机号
-            template: '',           // 所选短信模板
             settleUnitID: '',
             availableSmsCount: 0,
+            giftValidRange: [],
             message: '',
             loading: false,
         };
@@ -67,6 +70,7 @@ class SendGiftPanel extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
+        this.handleGiftValidRangeChange = this.handleGiftValidRangeChange.bind(this);
     }
 
     handleSubmit() {
@@ -77,6 +81,9 @@ class SendGiftPanel extends Component {
         this.props.form.validateFieldsAndScroll({scroll: {offsetBottom: 20}}, err => {
             if (err) flag = false;
         });
+        if (!flag) {
+            return;
+        }
         const { settleUnitID, availableSmsCount, smsGate } = this.state;
         const sendFlag = smsGate === '1' || smsGate === '3';
         if (sendFlag) {
@@ -86,8 +93,58 @@ class SendGiftPanel extends Component {
             }
         }
         if (flag) {
-            console.log(this.state);
+            const params = this.mapStateToRequestParams();
+            axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
+                .then(res => {
+                    this.setState({
+                        loading: false,
+                    });
+                    messageService.success('发送成功');
+                })
+                .catch(err => {
+                    this.setState({
+                        loading: false,
+                    })
+                })
         }
+    }
+
+    mapStateToRequestParams() {
+        let params = {
+            giftItemID: this.props.giftItemID,
+            cardID: 0,      // 这两个字段是后端让传的, 在前端无意义
+            cardTypeID: 0,  // 这两个字段是后端让传的, 在前端无意义
+        };
+        const {
+            smsGate,
+            message: smsTemplate,
+            settleUnitID,
+            cellNo: customerMobile,
+            giftNo: giftNum,
+            giftValidRange: [effectTime, validUntilDate],
+            giftValidDays: validUntilDays,
+            dayOrHour,
+            effectType,
+            whenToEffect: effectGiftTimeHours,
+        } = this.state;
+        if (effectType === '1') {// 相对有效期
+            if (dayOrHour === '0') {// 按小时
+                params.effectType = '1'
+            } else {// 按天
+                params.effectType = '3'
+            }
+            params.effectGiftTimeHours = effectGiftTimeHours;
+        } else {
+            params.effectType = '2'
+            params.effectTime = effectTime.format('YYYYMMDD')
+            params.validUntilDate = validUntilDate.format('YYYYMMDD')
+        }
+        if (smsGate == 1 || smsGate == 3) {
+            params.smsTemplate = smsTemplate;
+            params.settleUnitID = settleUnitID;
+        }
+        params = {...params, validUntilDays, giftNum, customerMobile, smsGate};
+        return params;
     }
 
     handleSmgInfoChange(val) {
@@ -113,6 +170,12 @@ class SendGiftPanel extends Component {
     handleGiftNumChange(val) {
         this.setState({
             giftNo: val.number,
+        })
+    }
+
+    handleGiftValidRangeChange(val) {
+        this.setState({
+            giftValidRange: val,
         })
     }
 
@@ -255,70 +318,93 @@ class SendGiftPanel extends Component {
                             }
                         </RadioGroup>
                     </FormItem>
-                    <FormItem
-                        className={[styles.FormItemStyle].join(' ')}
-                    >
-                        <span className={styles.formLabel}>相对有效期:</span>
-                        <RadioGroup
-                            className={styles.radioMargin}
-                            value={this.state.dayOrHour}
-                            onChange={this.handleDayOrHourChange}
-                        >
-                            {
-                                [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
-                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
-                                })
-                            }
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        label="何时生效"
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                    >
-                        <Select
-                            size="default"
-                            value={this.state.whenToEffect}
-                            onChange={this.handleWhenToEffectChange}
-                            getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                (String(this.state.dayOrHour) === '0' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
-                                    .map((item, index) => {
-                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
-                                    })
-                            }
-                        </Select>
-                    </FormItem>
-                    <FormItem
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        label={'有效天数'}
-                        required={true}
-                    >
-                        {getFieldDecorator('giftValidDays', {
-                            value: { number: this.state.giftValidDays },
-                            onChange: this.handleGiftValidDaysChange,
-                            rules: [
-                                { required: true, message: '有效天数为必填项' },
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (!v) {
-                                            return cb();
+                    {
+                        this.state.effectType === '1' && (
+                            <div>
+                                <FormItem
+                                    className={[styles.FormItemStyle].join(' ')}
+                                >
+                                    <span className={styles.formLabel}>相对有效期:</span>
+                                    <RadioGroup
+                                        className={styles.radioMargin}
+                                        value={this.state.dayOrHour}
+                                        onChange={this.handleDayOrHourChange}
+                                    >
+                                        {
+                                            [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
+                                                return <Radio value={item.value} key={index}>{item.label}</Radio>
+                                            })
                                         }
-                                        v.number > 0 && v.number <= 9999 ? cb() : cb(rule.message);
-                                    },
-                                    message: '有效天数为1到9999'
-                                },
-                            ]
-                        })(<PriceInput
-                            addonBefore=""
-                            addonAfter="天"
-                            modal="int"
-                        />)}
-                    </FormItem>
+                                    </RadioGroup>
+                                </FormItem>
+                                <FormItem
+                                    label="何时生效"
+                                    className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                                    labelCol={{ span: 8 }}
+                                    wrapperCol={{ span: 16 }}
+                                >
+                                    <Select
+                                        size="default"
+                                        value={this.state.whenToEffect}
+                                        onChange={this.handleWhenToEffectChange}
+                                        getPopupContainer={(node) => node.parentNode}
+                                    >
+                                        {
+                                            (String(this.state.dayOrHour) === '0' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
+                                                .map((item, index) => {
+                                                    return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                                })
+                                        }
+                                    </Select>
+                                </FormItem>
+                                <FormItem
+                                    className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle].join(' ')}
+                                    labelCol={{ span: 8 }}
+                                    wrapperCol={{ span: 16 }}
+                                    label={'有效天数'}
+                                >
+                                    {getFieldDecorator('giftValidDays', {
+                                        value: { number: this.state.giftValidDays },
+                                        onChange: this.handleGiftValidDaysChange,
+                                        rules: [
+                                            { required: true, message: '有效天数为必填项' },
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    if (!v) {
+                                                        return cb();
+                                                    }
+                                                    v.number > 0 && v.number <= 9999 ? cb() : cb(rule.message);
+                                                },
+                                                message: '有效天数为1到9999'
+                                            },
+                                        ]
+                                    })(<PriceInput
+                                        addonBefore=""
+                                        addonAfter="天"
+                                        modal="int"
+                                    />)}
+                                </FormItem>
+                            </div>
+                        )
+                    }
+                    {
+                        this.state.effectType === '2' && (
+                            <FormItem
+                                label="固定有效期"
+                                className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                                labelCol={{ span: 8 }}
+                                wrapperCol={{ span: 16 }}
+                            >{getFieldDecorator('giftValidRange', {
+                                onChange: this.handleGiftValidRangeChange,
+                                rules: [
+                                    { required: true, message: '请输入有效时间' },
+                                ]
+                            })(<RangePicker format="YYYY-MM-DD" disabledDate={
+                                (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                            } />)}
+                            </FormItem>
+                        )
+                    }
                 </div>
             </Form>
         )
