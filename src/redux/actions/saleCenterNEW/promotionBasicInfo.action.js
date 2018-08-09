@@ -130,21 +130,19 @@ export const saleCenterResetBasicInfoAC = (opts) => {
 };
 export const saleCenterDeletePhrase = (opts) => {
     return (dispatch) => {
-        fetch('/api/promotion/deletePhrase_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
+        axiosData(
+            '/promotion/phrasePromotionService_delete.ajax',
+            opts.data,
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_SHOPCENTER'
+        )
+        .then((res) => {
+            opts.success && opts.success();
         })
-            .then((res) => {
-                opts.success && opts.success();
-            })
-            .catch((err) => {
-                console.log(err)
-            });
+        .catch((err) => {
+            console.log(err)
+        });
     };
 };
 
