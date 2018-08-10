@@ -16,7 +16,7 @@
 import {
     axiosData,
     fetchData,
-    generateXWWWFormUrlencodedParams,
+    generateXWWWFormUrlencodedParams, getAccountInfo,
 } from '../../../helpers/util';
 
 import 'rxjs';
@@ -152,7 +152,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
 
         axiosData(
             '/promotion/docPromotionService_setActive.ajax',
-            params,
+            {...params, modifiedBy: getAccountInfo().userName},
             {},
             {path: 'data'},
             'HTTP_SERVICE_URL_SHOPCENTER'
