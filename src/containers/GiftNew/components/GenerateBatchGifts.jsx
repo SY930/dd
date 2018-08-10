@@ -143,6 +143,13 @@ class GenerateBatchGifts extends Component {
                         errors: ['张数不能超过10000'],
                     }
                 })
+            } else {
+                this.props.form.setFields({
+                    endNo: {
+                        value: endNoValue,
+                        // errors: [],
+                    }
+                })
             }
         });
     }
