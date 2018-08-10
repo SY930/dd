@@ -352,7 +352,7 @@ class GenerateBatchGifts extends Component {
                 title: '备注',
                 className: 'TableTxtCenter',
                 dataIndex: 'remark',
-                width: 100,
+                width: 90,
                 key: 'key3',
                 render: text => {
                     return <span title={text}>{text}</span> ;
@@ -378,20 +378,23 @@ class GenerateBatchGifts extends Component {
             {
                 title: '状态',
                 className: 'TableTxtCenter',
-                width: 70,
+                width: 80,
                 dataIndex: 'status',
                 key: 'key6',
                 render: (status, record, index) => {
-                    switch (status) {
-                        case 1: return '新建';
-                        case 2: return '准备';
-                        case 3: return '正在生成券码';
-                        case 4: return '券码生成完毕';
-                        case 5: return '正在导出';
-                        case 6: return '已导出';
-                        case 7: return '导出失败';
-                        default: return '--'
-                    }
+                    const text = ((stat) => {
+                        switch (stat) {
+                            case 1: return '新建';
+                            case 2: return '准备';
+                            case 3: return '正在生成券码';
+                            case 4: return '券码生成完毕';
+                            case 5: return '正在导出';
+                            case 6: return '已导出';
+                            case 7: return '导出失败';
+                            default: return '--'
+                        }
+                    })(status);
+                    return <span title={text}>{text}</span> ;
                 },
             },
             {
