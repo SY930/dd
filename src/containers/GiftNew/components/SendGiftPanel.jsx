@@ -102,7 +102,8 @@ class SendGiftPanel extends Component {
                         validatingStatus: null,
                         cellNo: ''
                     }, () => {
-                        this.props.form.resetFields(['cellNo'])
+                        this.props.form.resetFields(['cellNo']);
+                        this.props.form.setFieldsValue({cellNo: {number: ''}});
                     });
                     messageService.success('发送成功');
                 })
@@ -237,46 +238,29 @@ class SendGiftPanel extends Component {
                     labelCol={{ span: 4 }}
                     hasFeedback
                     required
-                    validateStatus={this.state.validatingStatus}
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('cellNo', {
-                        initialValue: { number: undefined },
                         onChange: this.handleCellNoChange,
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
                                     if (!v || !v.number) {
-                                        this.setState({
-                                            validatingStatus: 'error'
-                                        });
                                         return cb('手机号为必填项');
                                     }
                                     const cellNoString = String(v.number);
                                     if (cellNoString.length < 11 || cellNoString.length > 11) {
-                                        this.setState({
-                                            validatingStatus: 'error'
-                                        });
                                         cb('请输入11位手机号码')
                                     } else {
                                         axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
                                             .then((res = {}) => {
                                                 if (res.customerID && res.customerID != '0') {
-                                                    this.setState({
-                                                        validatingStatus: 'success'
-                                                    });
                                                     cb()
                                                 } else {
-                                                    this.setState({
-                                                        validatingStatus: 'error'
-                                                    });
                                                     cb('没有找到对应的用户')
                                                 }
                                             })
                                             .catch(e => {
-                                                this.setState({
-                                                    validatingStatus: 'error'
-                                                });
                                                 cb('没有找到对应的用户')
                                             })
                                     }
