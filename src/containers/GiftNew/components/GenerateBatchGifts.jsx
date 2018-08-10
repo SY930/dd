@@ -31,11 +31,12 @@ class GenerateBatchGifts extends Component {
             pageSizes: 10,
             pageNo: 1,
             total: 0,
-            autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
-            modalVisible: false,
+            queryDateRange: [], // 列表查询时的日期选择
             confirmLoading: false,
-            validDateRange: [], // 列表查询时的日期选择
-            queryDateRange: [], // 制券时选择的有效日期
+            modalVisible: false,
+
+            autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
+            validDateRange: [], // 制券时选择的有效日期
             giftCount: undefined, // 张数
             startNo: undefined,
             endNo: undefined,
@@ -222,8 +223,16 @@ class GenerateBatchGifts extends Component {
                     this.setState({
                         confirmLoading: false,
                         modalVisible: false,
+                        autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
+                        validDateRange: [], // 制券时选择的有效日期
+                        giftCount: undefined, // 张数
+                        startNo: undefined,
+                        endNo: undefined,
+                        description: '',
+                        includeRandomCode: false,
                     }, () => {
-                        this.handleQuery()
+                        this.handleQuery();
+                        this.props.form.resetFields();
                     });
                     // message.success('请求成功');
                 })
@@ -300,7 +309,7 @@ class GenerateBatchGifts extends Component {
                 dataIndex: 'totalNum',
                 key: 'num',
                 render: (text, record, index) => {
-                    return text == undefined ? '--' : text;
+                    return record.status == 6 ? Number(text || 0) : text == undefined ? '--' : text;
                 },
             },
             {
@@ -325,7 +334,7 @@ class GenerateBatchGifts extends Component {
                 title: '备注',
                 className: 'TableTxtCenter',
                 dataIndex: 'remark',
-                width: 120,
+                width: 100,
                 key: 'key3',
                 render: text => {
                     return <span title={text}>{text}</span> ;
@@ -351,7 +360,7 @@ class GenerateBatchGifts extends Component {
             {
                 title: '状态',
                 className: 'TableTxtCenter',
-                width: 50,
+                width: 70,
                 dataIndex: 'status',
                 key: 'key6',
                 render: (status, record, index) => {
@@ -374,7 +383,7 @@ class GenerateBatchGifts extends Component {
                 key: 'key7',
                 dataIndex: 'downLoadUrl',
                 render: (text, record, index) => {
-                    if (record.status == 6) {
+                    if (record.status == 6 && text) {
                         return <a download target="_blank" href={text}>下载</a>
                     } else if (record.status == 4 || record.status == 7) {
                         return (
