@@ -234,21 +234,16 @@ export class WeChatMallPromotionList extends React.Component {
         return opt
     }
 
-    handleQuery(thisPageNo) {
-        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
-        this.setState({
-            loading: true,
-            queryDisabled: true,
-            pageNo,
-        }, () => {
-            setTimeout(() => {
-                this.setState({ queryDisabled: false })
-            }, 500)
-        });
+    handleQuery(pageNo, pageSize) {
+        if (!this.state.loading) {
+            this.setState({
+                loading: true,
+            });
+        }
         const _opt = this.getParams();
         const opt = {
-            pageSize: this.state.pageSizes,
-            pageNo,
+            pageSize: pageSize || this.state.pageSizes,
+            pageNo: pageNo || this.state.pageNo,
             ..._opt,
         };
         opt.cb = this.showNothing;
@@ -327,7 +322,11 @@ export class WeChatMallPromotionList extends React.Component {
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
-            pageSizes: pageSize,
+            /*pageSizes: pageSize,
+            pageNo: 1,*/
+            loading: true
+        }, () => {
+            this.handleQuery(1, pageSize)
         })
     };
 
@@ -483,7 +482,7 @@ export class WeChatMallPromotionList extends React.Component {
                         </li>
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.loading}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
                     </ul>
@@ -685,8 +684,8 @@ export class WeChatMallPromotionList extends React.Component {
                     dataSource={this.state.dataSource}
                     loading={
                         {
+                            delay: 500,
                             spinning: this.state.loading,
-                            delay: 500
                         }
                     }
                     pagination={{
@@ -695,18 +694,15 @@ export class WeChatMallPromotionList extends React.Component {
                         showQuickJumper: true,
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
-                        total: this.state.total ? this.state.total : 0,
+                        total: this.state.total || 0,
                         showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                         onChange: (page, pageSize) => {
                             this.setState({
-                                pageNo: page,
-                            })
-                            const opt = {
-                                pageSize,
-                                pageNo: page,
-                                // ...this.getParams(),
-                            };
-                            this.queryEvents(opt);
+                                /*pageNo: page,*/
+                                loading: true
+                            }, () => {
+                                this.handleQuery(page, this.state.pageSizes);
+                            });
                         },
                     }}
                 />
