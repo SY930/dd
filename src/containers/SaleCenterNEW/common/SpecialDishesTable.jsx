@@ -533,10 +533,10 @@ class SpecialDishesTable extends React.Component {
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
-                title: `积分秒杀价 (分)`,
+                title: `积分秒杀价(积分)`,
                 dataIndex: 'mPoint',
                 key: 'mPoint',
-                width: 110,
+                width: 120,
                 className: 'TableTxtRight',
             },
             {

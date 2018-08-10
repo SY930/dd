@@ -224,7 +224,7 @@ export default class HualalaSelectedTable extends React.Component {
                 dataIndex: 'displayName',
                 key: 'displayName',
                 fixed: 'left',
-                width: 240,
+                width: 220,
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -241,8 +241,8 @@ export default class HualalaSelectedTable extends React.Component {
                 },
             },
             {
-                title: `积分秒杀价 (分)`,
-                width: 100,
+                title: `积分秒杀价(积分)`,
+                width: 120,
                 dataIndex: 'newPrice',
                 key: 'filterPrice',
                 className: 'noPadding',
