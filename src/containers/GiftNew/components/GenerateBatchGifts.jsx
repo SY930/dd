@@ -262,6 +262,17 @@ class GenerateBatchGifts extends Component {
     hideModal() {
         this.setState({
             modalVisible: false,
+            confirmLoading: false,
+            autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
+            validDateRange: [], // 制券时选择的有效日期
+            giftCount: undefined, // 张数
+            startNo: undefined,
+            endNo: undefined,
+            description: '',
+            includeRandomCode: false,
+        }, () => {
+            this.handleQuery();
+            this.props.form.resetFields();
         });
     }
 
