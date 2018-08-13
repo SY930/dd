@@ -61,7 +61,7 @@ class GenerateBatchGifts extends Component {
         this.handleQuery()
     }
 
-    handleQuery() {
+    handleQuery(pageNo = this.state.pageNo) {
         this.setState({
            loading: true,
         });
@@ -72,12 +72,12 @@ class GenerateBatchGifts extends Component {
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
             params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
         }
-        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', {...params, pageNo: this.state.pageNo}, {}, {path: 'data'}, )
+        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', {...params, pageNo}, {}, {path: 'data'}, )
             .then(res => {
                 this.setState({
                     historyList: res.giftBatchResList || [],
-                    total: res.totalSize || 0,
-                    pageNo: res.pageNo || 1,
+                    total: (res.giftBatchResList || []).length ? (res.totalSize || 0) : 0,
+                    pageNo: (res.giftBatchResList || []).length ? (res.pageNo || 1) : 1,
                     loading: false,
                 });
             })
@@ -115,9 +115,6 @@ class GenerateBatchGifts extends Component {
     handleQueryDateRangeChange(val) {
         this.setState({
             queryDateRange: val,
-            pageNo: 1,
-        }, () => {
-            this.handleQuery()
         });
     }
 
@@ -294,7 +291,9 @@ class GenerateBatchGifts extends Component {
                     <Button
                         type="primary"
                         disabled={this.state.loading}
-                        onClick={this.handleQuery}
+                        onClick={() => {
+                            this.handleQuery(1)
+                        }}
                     >
                         <Icon type="search" />
                         查询
