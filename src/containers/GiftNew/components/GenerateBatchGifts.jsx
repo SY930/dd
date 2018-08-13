@@ -331,21 +331,13 @@ class GenerateBatchGifts extends Component {
                 },
             },
             {
-                title: '有效期起',
+                title: '制券时间',
                 className: 'TableTxtCenter',
-                width: 80,
-                key: 'key1',
+                width: 120,
+                dataIndex: 'createStamp',
+                key: 'key5',
                 render: (text, record, index) => {
-                    return moment(record.effectTime, 'YYYYMMDD').format('YYYY/MM/DD');
-                },
-            },
-            {
-                title: '有效期止',
-                className: 'TableTxtCenter',
-                width: 80,
-                key: 'key2',
-                render: (text, record, index) => {
-                    return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY/MM/DD');
+                    return moment(new Date(text)).format('YYYY-MM-DD HH:mm:ss')
                 },
             },
             {
@@ -366,13 +358,12 @@ class GenerateBatchGifts extends Component {
                 key: 'key4',
             },
             {
-                title: '制券时间',
+                title: '礼品有效期',
                 className: 'TableTxtCenter',
-                width: 120,
-                dataIndex: 'createStamp',
-                key: 'key5',
+                width: 160,
+                key: 'key1',
                 render: (text, record, index) => {
-                    return moment(new Date(text)).format('YYYY-MM-DD HH:mm:ss')
+                    return `${moment(record.effectTime, 'YYYYMMDD').format('YYYY/MM/DD')} ~ ${moment(record.validUntilDate, 'YYYYMMDD').format('YYYY/MM/DD')}`;
                 },
             },
             {
