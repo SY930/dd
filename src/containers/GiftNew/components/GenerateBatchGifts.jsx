@@ -477,7 +477,7 @@ class GenerateBatchGifts extends Component {
         return (
             <div>
                 <FormItem
-                    label="起止号"
+                    label="券码起止号"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 14 }}
@@ -583,7 +583,7 @@ class GenerateBatchGifts extends Component {
                 >
                     <Input
                         type="text"
-                        value={this.state.includeRandomCode ? '起止码 + 3位随机码' : '起止码'}
+                        value={this.state.includeRandomCode ? '起止号 + 3位随机码' : '起止号'}
                         disabled
                     />
                 </FormItem>
