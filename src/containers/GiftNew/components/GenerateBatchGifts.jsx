@@ -115,6 +115,9 @@ class GenerateBatchGifts extends Component {
     handleQueryDateRangeChange(val) {
         this.setState({
             queryDateRange: val,
+            pageNo: 1,
+        }, () => {
+            this.handleQuery()
         });
     }
 
