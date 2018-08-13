@@ -244,7 +244,7 @@ export const addPhrase = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         )
             .then((records) => {
                 if (opts.phraseType == '0') {

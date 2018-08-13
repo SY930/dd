@@ -36,7 +36,7 @@ export const fetchPromotionCategoriesAC = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchPromotionCategoriesSuccess(responseJSON));
         }).catch((error) => {
@@ -69,7 +69,7 @@ export const fetchPromotionTagsAC = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchPromotionTagsSuccess(responseJSON));
         }).catch((error) => {
@@ -99,7 +99,7 @@ export const saleCenterAddPhrase = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         )
         .then((records) => {
             if (opts.data.phraseType == '0') {
@@ -135,7 +135,7 @@ export const saleCenterDeletePhrase = (opts) => {
             opts.data,
             {},
             { path: 'data' },
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         )
         .then((res) => {
             opts.success && opts.success();
@@ -160,7 +160,7 @@ export const fetchFilterShops = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchFilterShopsSuccess(responseJSON))
         }, (error) => {

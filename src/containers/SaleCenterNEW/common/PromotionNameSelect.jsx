@@ -25,7 +25,7 @@ export default class PromotionNameSelect extends React.Component {
         }
     }
     getNameList = (opt) => {
-        axiosData('/promotion/docPromotionService_queryPromotionNameLst.ajax', opt, null, { path: 'data' }, 'HTTP_SERVICE_URL_SHOPCENTER')
+        axiosData('/promotion/docPromotionService_queryPromotionNameLst.ajax', opt, null, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((res) => {
                 this.setState({
                     allPromotionNameLst: res.promotionNameLst || [],

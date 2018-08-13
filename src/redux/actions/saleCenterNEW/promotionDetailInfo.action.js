@@ -229,7 +229,7 @@ export const fetchPromotionListAC = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchPromotionListSuccess(responseJSON))
         }).catch((error) => {
@@ -262,7 +262,7 @@ export const fetchAllPromotionListAC = (opts) => {
             { ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 },
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
         }).catch((error) => {

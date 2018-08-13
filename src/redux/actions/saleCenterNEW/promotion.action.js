@@ -60,7 +60,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
             params,
             {needThrow: true},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             setTimeout(() => {
                 opts.success && opts.success();
@@ -100,7 +100,7 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
             params,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             setTimeout(() => {
                 opts.success && opts.success();
@@ -138,7 +138,7 @@ export const fetchPromotionDetail = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_SHOPCENTER'
+            'HTTP_SERVICE_URL_CRM'
         ).then((result) => {
             let res = {...result};
             res.data = { promotionInfo: result.promotionInfo };
