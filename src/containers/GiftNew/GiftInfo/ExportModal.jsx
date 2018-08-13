@@ -95,7 +95,7 @@ export default class ExportModal extends Component {
             }
             axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', params, null, { path: 'data' })
                 .then(_records => {
-                    this.getExportRecords('5')
+                    this.getExportRecords(this.props._key);
                 })
         } else {
             this.getExportRecords()
@@ -126,7 +126,7 @@ export default class ExportModal extends Component {
             data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
         }
         if (this.props.newExport) {
-            data.exportQuotaType = '5';
+            data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
         }
         axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
             .then(data => {
