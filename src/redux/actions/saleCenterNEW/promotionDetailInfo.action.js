@@ -72,10 +72,17 @@ const fetchGiftListFailed = (opts) => {
     };
 };
 
-const fetchFoodCategorySuccess = (opts) => {
+const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
+    const uniqMap = new Map();
+    opts.records.forEach(cat => {
+        cat.foodCategoryID = cat.foodCategoryName; // 哎...
+        if (!uniqMap.has(cat.foodCategoryName)) {
+            uniqMap.set(cat.foodCategoryName, cat);
+        }
+    });
     return {
         type: SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS,
-        payload: opts,
+        payload: {records: Array.from(uniqMap.values())},
     }
 };
 
@@ -130,6 +137,7 @@ const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records:
     let records = opts ? opts.records : [];
     const uniqMap = new Map();
     records.forEach(food => { //
+        food.foodCategoryID = food.foodCategoryName; // 哎....
         if (uniqMap.has(`${food.foodName}${food.unit}`)) { // 产品层面决定 如果有名称+规格重复的菜品 保留售价高的那一个
             const previousFood = uniqMap.get(`${food.foodName}${food.unit}`);
             const previousPrice = previousFood.prePrice == -1 ? previousFood.price : previousFood.prePrice;
@@ -144,7 +152,6 @@ const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records:
     return {
         type: SALE_CENTER_FETCH_FOOD_MENU_SUCCESS,
         payload: {records: Array.from(uniqMap.values())},
-
     }
 };
 
