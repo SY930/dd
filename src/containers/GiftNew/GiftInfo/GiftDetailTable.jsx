@@ -33,6 +33,7 @@ import {
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
+import CreateGiftsPanel from "../components/CreateGiftsPanel";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -41,6 +42,7 @@ class GiftDetailTable extends Component {
         this.state = {
             visibleDetail: false,
             visibleEdit: false,
+            createModalVisible: false,
             data: {},
             dataSource: [],
             editGift: { describe: '', value: '' },
@@ -80,6 +82,7 @@ class GiftDetailTable extends Component {
                 )
             },
         });
+        this.handleCreateModalCancel = this.handleCreateModalCancel.bind(this);
     }
 
     componentDidMount() {
@@ -131,6 +134,13 @@ class GiftDetailTable extends Component {
             }
         }
     }
+
+    handleCreateModalCancel() {
+        this.setState({
+            createModalVisible: false,
+        })
+    }
+
     proGiftData = (data) => {
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
@@ -460,7 +470,9 @@ class GiftDetailTable extends Component {
                                 className={styles2.jumpToCreate}
                                 onClick={
                                     () => {
-                                        jumpPage({ menuID: NEW_GIFT })
+                                        this.setState({
+                                            createModalVisible: true
+                                        })
                                     }
                                 }
                             >新建</Button>
@@ -535,6 +547,16 @@ class GiftDetailTable extends Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
+                <Modal
+                    key="新建券"
+                    title="新建券"
+                    visible={this.state.createModalVisible}
+                    onCancel={() => this.handleCreateModalCancel()}
+                    maskClosable={true}
+                    width={900}
+                >
+                    <CreateGiftsPanel/>
+                </Modal>
             </div>
         )
     }

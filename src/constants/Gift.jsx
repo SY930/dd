@@ -2,18 +2,98 @@
 const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
 const GiftCfg = {
     giftType: [
-        { name: '电子代金券', describe: '抵扣一定面值的券，可通过特色营销发放', value: '10', color: '#84aac6', tags: ['SaaS2.0', '新微信', '微信'] },
-        { name: '菜品优惠券', describe: '满足条件抵扣实际菜品，关联基础营销使用', value: '20', color: '#c49b79', tags: ['SaaS2.0', '新微信', '微信'] },
-        { name: '菜品兑换券', describe: '用户支付一定的金额可以兑换到相同的菜品', value: '21', color: '#c49b79', tags: ['SaaS2.0'] },
-        { name: '实物礼品券', describe: '顾客获取后，线下展示券密码验证核销使用', value: '30', color: '#e5be6c', tags: ['SaaS2.0', '新微信'] },
-        { name: '会员充值券', describe: '会员获取后，可直接充值到卡赠送余额中', value: '40', color: '#9dc568', tags: ['SaaS2.0'] },
-        { name: '会员积分券', describe: '会员获取后，可直接充值到卡积分余额中', value: '42', color: '#84aac6', tags: ['SaaS2.0'] },
-        { name: '会员权益券', describe: '会员获取后，可享受折扣，会员价，插队等权益', value: '80', color: '#84aac6'},
-        { name: '礼品定额卡', describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值', value: '90', color: '#c49b79', tags: ['SaaS2.0'] },
-        { name: '活动券', describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码', value: '100', color: '#c49b79', tags: ['SaaS2.0']},
-        { name: '线上礼品卡', describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费', value: '91', color: '#84aac6', tags: ['微信小程序'] },
-        { name: '买赠券', describe: '购买x份某编码菜品，赠送本编码菜品y份', value: '110', color: '#c49b79' },
-        { name: '折扣券', describe: '指定菜品满x元，折扣率为y', value: '111', color: '#84aac6' },
+        {
+            name: '代金券',
+            describe: '抵扣一定面值的券，可通过特色营销发放',
+            value: '10',
+            color: '#84aac6',
+            category: 'primary',
+            tags: ['SaaS2.0', '新微信', '微信']
+        },
+        {
+            name: '菜品优惠券',
+            describe: '满足条件抵扣实际菜品，关联基础营销使用',
+            value: '20',
+            color: '#c49b79',
+            category: 'primary',
+            tags: ['SaaS2.0', '新微信', '微信']
+        },
+        {
+            name: '菜品兑换券',
+            describe: '用户支付一定的金额可以兑换到相同的菜品',
+            value: '21',
+            color: '#c49b79',
+            category: 'primary',
+            tags: ['SaaS2.0']
+        },
+        {
+            name: '会员充值券',
+            describe: '会员获取后，可直接充值到卡赠送余额中',
+            value: '40',
+            color: '#9dc568',
+            category: 'secondary',
+            tags: ['SaaS2.0']
+        },
+        {
+            name: '会员积分券',
+            describe: '会员获取后，可直接充值到卡积分余额中',
+            value: '42',
+            color: '#84aac6',
+            category: 'secondary',
+            tags: ['SaaS2.0']
+        },
+        {
+            name: '会员权益券',
+            describe: '会员获取后，可享受折扣，会员价，插队等权益',
+            value: '80',
+            category: 'secondary',
+            color: '#84aac6'
+        },
+        {
+            name: '礼品定额卡',
+            describe: '固定额度的实体卡，购买后成为会员卡或用于会员充值',
+            value: '90',
+            color: '#c49b79',
+            category: 'secondary',
+            tags: ['SaaS2.0']
+        },
+        {
+            name: '活动券',
+            describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码',
+            value: '100',
+            color: '#c49b79',
+            tags: ['SaaS2.0']
+        },
+        {
+            name: '线上礼品卡',
+            describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费',
+            value: '91',
+            color: '#84aac6',
+            category: 'secondary',
+            tags: ['微信小程序']
+        },
+        {
+            name: '折扣券',
+            describe: '指定菜品满x元，折扣率为y',
+            value: '111',
+            category: 'primary',
+            color: '#84aac6'
+        },
+        {
+            name: '买赠券',
+            describe: '购买x份某编码菜品，赠送本编码菜品y份',
+            value: '110',
+            category: 'primary',
+            color: '#c49b79'
+        },
+        {
+            name: '实物礼品券',
+            describe: '顾客获取后，线下展示券密码验证核销使用',
+            value: '30',
+            color: '#e5be6c',
+            category: 'secondary',
+            tags: ['SaaS2.0', '新微信']
+        },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
