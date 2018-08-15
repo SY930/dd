@@ -89,7 +89,7 @@ class SendGiftPanel extends Component {
             return;
         }
         const { settleUnitID, availableSmsCount, smsGate } = this.state;
-        const sendFlag = smsGate === '1' || smsGate === '3';
+        const sendFlag = smsGate === '1' || smsGate === '3' || smsGate === '4';
         if (sendFlag) {
             if (!availableSmsCount) {
                 flag = false;
@@ -148,7 +148,7 @@ class SendGiftPanel extends Component {
             params.effectTime = effectTime.format('YYYYMMDD')
             params.validUntilDate = validUntilDate.format('YYYYMMDD')
         }
-        if (smsGate == 1 || smsGate == 3) {
+        if (smsGate == 1 || smsGate == 3 || smsGate == 4) {
             params.smsTemplate = smsTemplate;
             params.settleUnitID = settleUnitID;
         }
@@ -492,14 +492,14 @@ class SendGiftPanel extends Component {
                     {this.renderSmsGate()}
                 </Col>
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
+                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
                     <div>
                         {this.renderSettleUnitID()}
                     </div>
                 )}
                 </Col>
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3') && (
+                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
                     <div>
                         {this.renderMsgSelector()}
                     </div>
