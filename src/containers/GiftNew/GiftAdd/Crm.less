@@ -381,3 +381,62 @@
         background-color: #18B495;
     }
 }
+
+.pageHeader {
+    height: 80px;
+    display: flex;
+    padding: 0 25px 0 40px;
+    align-items: center;
+    .pageHeaderTitle {
+        color: #434343;
+        font-size: 40px;
+        flex: none;
+    }
+    .pageHeaderDescription {
+        margin-left: 12px;
+        color: #AEAEAE;
+        font-size: 14px;
+        flex: none;
+    }
+    .placeholder {
+        flex: 1 1 auto;
+    }
+}
+
+.pageContent {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    height: 782px;
+    margin: 0 25px;
+    display: flex;
+    min-width: 1200px;
+    .phonePreviewContainer {
+        width: 500px;
+        height: 100%;
+        flex: none;
+        position: relative;
+        border-right: 1px solid #D7D7D7;
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left: none;
+            border-right-color: #D7D7D7;
+            right: -1px;
+            top: 200px;
+            &::after {
+                width: 0;
+                height: 0;
+                display: block;
+                position: absolute;
+                content: '';
+                top: -9px;
+                right: -10px;
+                border: 9px solid transparent;
+                border-left: none;
+                border-right-color: #FFFFFF;
+            }
+        }
+    }
+}

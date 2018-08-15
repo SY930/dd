@@ -2,8 +2,23 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import GiftCfg from '../../../constants/Gift';
+import {
+    message,
+} from 'antd';
+import {startCreateGift} from "../_action";
+
+const temparoryDisabledGifts = [ '110', '111'];
 
 class CreateGiftsPanel extends Component {
+
+    handleLogoClick = (gift = {}) => {
+        if (HUALALA.ENVIRONMENT === 'production-release' && temparoryDisabledGifts.includes(gift.value)) {
+            message.success('敬请期待~');
+            return;
+        }
+        this.props.onClose && this.props.onClose();
+        this.props.startCreate(gift);
+    }
 
     render() {
         const primaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'primary');
@@ -20,6 +35,9 @@ class CreateGiftsPanel extends Component {
                                 <ClickableGiftLogo
                                     key={gift.value}
                                     isPrimary={true}
+                                    onClick={() => {
+                                        this.handleLogoClick(gift)
+                                    }}
                                     index={index}
                                     data={gift}
                                 />
@@ -34,6 +52,9 @@ class CreateGiftsPanel extends Component {
                             secondaryGifts.map(gift => (
                                 <ClickableGiftLogo
                                     key={gift.value}
+                                    onClick={() => {
+                                        this.handleLogoClick(gift)
+                                    }}
                                     isPrimary={false}
                                     data={gift}
                                 />
@@ -48,7 +69,7 @@ class CreateGiftsPanel extends Component {
 
 function ClickableGiftLogo(props) {
     return (
-        <div className={props.isPrimary ? styles[`logoContainer_${props.index}`] : styles.logoContainer}>
+        <div onClick={props.onClick} className={props.isPrimary ? styles[`logoContainer_${props.index}`] : styles.logoContainer}>
             <div className={styles.headerWithDash}>
                 {props.data.name}
             </div>
@@ -58,7 +79,6 @@ function ClickableGiftLogo(props) {
                         <div key={tag}>{tag}</div>
                     ))
                 }
-
             </div>
         </div>
     );
@@ -66,7 +86,9 @@ function ClickableGiftLogo(props) {
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        startCreate: opts => {
+            dispatch(startCreateGift(opts))
+        }
     };
 }
 

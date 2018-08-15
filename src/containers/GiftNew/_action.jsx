@@ -23,6 +23,9 @@ export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
+export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
+export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
+export const GIFT_NEW_CANCEL_CREATE_EDIT_GIFT = 'gift new :: 取消新建或编辑礼品模板';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -406,5 +409,26 @@ export const queryWechatMpInfo = () => {
             .catch((error) => {
                 console.log(error)
             })
+    }
+};
+
+export const startCreateGift = (opt) => {
+    return {
+        type: GIFT_NEW_START_CREATE_GIFT,
+        payload: opt,
+    }
+};
+
+export const startEditGift = (opt) => {
+    return {
+        type: GIFT_NEW_START_EDIT_GIFT,
+        payload: opt,
+    }
+};
+
+export const cancelCreateOrEditGift = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+        payload: opt,
     }
 };

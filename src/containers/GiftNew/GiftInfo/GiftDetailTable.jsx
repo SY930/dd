@@ -551,7 +551,7 @@ class GiftDetailTable extends Component {
                     key="新建券"
                     title="新建券"
                     visible={this.state.createModalVisible}
-                    onCancel={() => this.handleCreateModalCancel()}
+                    onCancel={this.handleCreateModalCancel}
                     footer={false}
                     style={{
                         top: '10%'
@@ -559,7 +559,7 @@ class GiftDetailTable extends Component {
                     maskClosable={true}
                     width={910}
                 >
-                    <CreateGiftsPanel/>
+                    <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
                 </Modal>
             </div>
         )

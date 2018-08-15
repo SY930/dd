@@ -23,6 +23,9 @@ import {
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+    GIFT_NEW_START_CREATE_GIFT,
+    GIFT_NEW_START_EDIT_GIFT,
+    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
 } from './_action';
 
 const $initialState = Immutable.fromJS({
@@ -57,6 +60,8 @@ const $initialState = Immutable.fromJS({
     batchNoInfo: [],
     mpList: [],
     mpListLoading: false,
+    isCreatingOrEditing: false,
+    currentGiftType: null,
 });
 export function giftInfoNew($$state = $initialState, action) {
     switch (action.type) {
@@ -108,7 +113,12 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('mpList', Immutable.fromJS(action.payload)).set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
-
+        case GIFT_NEW_START_CREATE_GIFT:
+            return $$state.set('isCreatingOrEditing', true).set('currentGiftType', action.payload.value);
+        case GIFT_NEW_START_EDIT_GIFT:
+            return $$state.set('isCreatingOrEditing', true).set('currentGiftType', action.payload.value);
+        case GIFT_NEW_CANCEL_CREATE_EDIT_GIFT:
+            return $$state.set('isCreatingOrEditing', false).set('currentGiftType', null);
         default:
             return $$state
     }
