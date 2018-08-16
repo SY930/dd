@@ -411,11 +411,82 @@
     display: flex;
     min-width: 1200px;
     .phonePreviewContainer {
+        padding-top: 20px;
+        margin-left: 26px;
         width: 500px;
         height: 100%;
         flex: none;
         position: relative;
         border-right: 1px solid #D7D7D7;
+        .phonePreviewHeader {
+            display: block;
+            position: absolute;
+            top: 88px;
+            left: 85px;
+            width: 304px;
+        }
+        .phonePreviewContentWrapper {
+            position: absolute;
+            z-index: 12;
+            top: 141px;
+            width: 302px;
+            left: 86px;
+            height: 486px;
+            background-color: #F3F5F7;
+            padding: 15px 5px 5px 5px;
+            .greenButton {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 12px auto 0 auto;
+                width: 288px;
+                color: #FFFFFF;
+                font-size: 14px;
+                background-color: #26D644;
+                height: 36px;
+            }
+            .sectionHeader {
+                display: flex;
+                align-items: center;
+                color: #8D7457;
+                font-size: 12px;
+                padding-left: 8px;
+                width: 288px;
+                margin: 0 auto;
+                background-color: #FFFFFF;
+                height: 30px;
+            }
+            .descriptionSection {
+                padding: 10px 0 0 8px;
+                width: 288px;
+                max-height: 60px;
+                overflow-y: auto;
+                margin: 0 auto;
+                font-size: 11px;
+                margin-bottom: 10px;
+                overflow-wrap: break-word;
+            }
+            .ruleSection {
+                font-family: Microsoft Yahei;
+                padding: 10px 0 0 8px;
+                width: 288px;
+                max-height: 100px;
+                overflow-y: auto;
+                margin: 0 auto;
+                font-size: 11px;
+                margin-bottom: 16px;
+                & p {
+                    margin-left: 10px;
+                    margin-right: 16px;
+                    position: relative;
+                    &::before {
+                        content: '● ';
+                        margin-left: -10px;
+                        // position: absolute;
+                    }
+                }
+            }
+        }
         .arrow {
             position: absolute;
             width: 0;
