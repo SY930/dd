@@ -26,6 +26,7 @@ export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinf
 export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
 export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
 export const GIFT_NEW_CANCEL_CREATE_EDIT_GIFT = 'gift new :: 取消新建或编辑礼品模板';
+export const GIFT_NEW_CHANGE_FORM_KEY_VALUE = 'gift new :: 礼品字段变更';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -419,6 +420,7 @@ export const startCreateGift = (opt) => {
     }
 };
 
+// opts: {value: String,type: 'edit' | 'detail', data: Object}  查看和编辑都走此action, 故多传一个operationType
 export const startEditGift = (opt) => {
     return {
         type: GIFT_NEW_START_EDIT_GIFT,
@@ -429,6 +431,13 @@ export const startEditGift = (opt) => {
 export const cancelCreateOrEditGift = (opt) => {
     return {
         type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+        payload: opt,
+    }
+};
+
+export const changeGiftFormKeyValue = (opt) => {// opt: {key: String, value: primitive?}
+    return {
+        type: GIFT_NEW_CHANGE_FORM_KEY_VALUE,
         payload: opt,
     }
 };

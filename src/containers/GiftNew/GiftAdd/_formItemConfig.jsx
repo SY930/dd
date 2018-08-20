@@ -143,7 +143,7 @@ const FORMITEMS = {
 };
 
 const FIRST_KEYS = {
-    '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark',] },
+    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark',] },
     { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
     '菜品优惠券': [
         {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'foodNameList', 'giftRemark'],},
@@ -160,7 +160,7 @@ const FIRST_KEYS = {
     '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'price', 'giftRemark', 'TrdTemplate'] }],
 };
 const SECOND_KEYS = {
-    '电子代金券': [{
+    '代金券': [{
         col: { span: 24, pull: 2 },
         keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],

@@ -97,7 +97,7 @@ const GiftCfg = {
     ],
     giftTypeName: [
         { label: '全部', value: '' },
-        { label: '电子代金券', value: '10' },
+        { label: '代金券', value: '10' },
         { label: '菜品优惠券', value: '20' },
         { label: '菜品兑换券', value: '21' },
         { label: '实物礼品券', value: '30' },

@@ -6,10 +6,20 @@ import {
 import styles from '../GiftAdd/Crm.less';
 import {cancelCreateOrEditGift} from "../_action";
 import PhonePreview from "./PhonePreview";
+import FormWrapper from "./FormWrapper";
+import GiftCfg from "../../../constants/Gift";
 
 class GiftEditPage extends Component {
 
+    constructor(props) {
+        super(props);
+        this.formRef = null
+    }
+
     render() {
+        const { giftType, operationType } = this.props;
+        const giftName = (GiftCfg.giftType.find(item => item.value === giftType) || {}).name;
+        const giftDescribe = (GiftCfg.giftType.find(item => item.value === giftType) || {}).describe;
         return (
             <div style={{
                 backgroundColor: '#F3F3F3',
@@ -17,10 +27,10 @@ class GiftEditPage extends Component {
             }}>
                 <div className={styles.pageHeader} >
                     <div className={styles.pageHeaderTitle}>
-                        菜品兑换券
+                        {giftName}
                     </div>
                     <div className={styles.pageHeaderDescription}>
-                        用户支付一定的金额可以兑换到相同的菜品
+                        {giftDescribe}
                     </div>
                     <div className={styles.placeholder}/>
                     <Button
@@ -34,14 +44,22 @@ class GiftEditPage extends Component {
                     </Button>
                     <Button
                         type="primary"
-                        onClick={this.props.cancelCreateOrEdit}
+                        disabled={operationType === 'detail'}
+                        onClick={() => {
+                            this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
+                            && this.formRef.wrappedInstance.handleSubmit();
+                        }}
                     >
                         保存
                     </Button>
                 </div>
                 <div className={styles.pageContent}>
                     <PhonePreview/>
-                    {/*<FormWrapper/>*/}
+                    <FormWrapper
+                        ref={form => this.formRef = form}
+                        describe={giftDescribe}
+                        name={giftName}
+                    />
                 </div>
             </div>
         )
@@ -50,7 +68,8 @@ class GiftEditPage extends Component {
 
 function matStateToProps(state) {
     return {
-        giftType: state.sale_giftInfoNew.get('currentGiftType'),
+        giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
+        operationType: state.sale_editGiftInfoNew.get('operationType'),
     }
 }
 

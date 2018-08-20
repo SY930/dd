@@ -8,12 +8,34 @@ import bg1 from '../../../assets/bg1.png';
 class PhonePreview extends Component {
 
     render() {
+        const {
+            giftName,
+            giftValue
+        } = this.props;
+        const valueString = String(giftValue).substring(0, 4).endsWith('.') ? String(giftValue).substring(0, 5)
+            : String(giftValue).substring(0, 4);
         return (
             <div className={styles.phonePreviewContainer} >
                 <img src={phone}  alt="oops"/>
                 <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
                 <div className={styles.phonePreviewContentWrapper}>
                     <img src={bg} alt="oops"/>
+                    {
+                        !!giftValue &&
+                        (<div className={styles.giftValue}>
+                            &yen;{valueString}
+                        </div>)
+                    }
+
+                    <div className={styles.giftLimitValue}>
+                        满100元可用
+                    </div>
+                    {
+                        !!giftName &&
+                        (<div className={styles.giftName}>
+                            {giftName}
+                        </div>)
+                    }
                     <div className={styles.greenButton}>
                         查看全部券密码
                     </div>
@@ -47,7 +69,10 @@ class PhonePreview extends Component {
 }
 
 function mapStateToProps(state) {
-    return {}
+    return {
+        giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
+        giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
+    }
 }
 
 function mapDispatchToProps(dispatch) {

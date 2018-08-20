@@ -402,14 +402,43 @@
         flex: 1 1 auto;
     }
 }
+@newGiftPanelHeight: 782px;
 
 .pageContent {
     background-color: #FFFFFF;
     border-radius: 10px;
-    height: 782px;
+    height: @newGiftPanelHeight;
     margin: 0 25px;
     display: flex;
     min-width: 1200px;
+    .giftValue {
+        position: absolute;
+        color: #FFFFFF;
+        font-size: 25px;
+        font-weight: 600;
+        width: 80px;
+        top: 25px;
+        left: 11px;
+        text-align: center;
+    }
+    .giftLimitValue {
+        position: absolute;
+        color: #FFFFFF;
+        font-size: 11px;
+        width: 80px;
+        top: 58px;
+        left: 11px;
+        text-align: center;
+    }
+    .giftName {
+        position: absolute;
+        color: #333333;
+        font-size: 14px;
+        width: 195px;
+        top: 30px;
+        left: 100px;
+        overflow: hidden;
+    }
     .phonePreviewContainer {
         padding-top: 20px;
         margin-left: 26px;
@@ -509,5 +538,38 @@
                 border-right-color: #FFFFFF;
             }
         }
+    }
+}
+
+.formWrapper {
+    max-height: @newGiftPanelHeight;
+    padding: 10px 0;
+    width: 620px;
+    flex: none;
+}
+
+.formWrapperPlaceholder {
+    flex: 1;
+}
+
+.formWrapperContainer {
+    display: flex;
+    margin-right: 20px;
+    min-width: 620px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        display: block;
+        visibility: hidden;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #c3c3c3;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
     }
 }

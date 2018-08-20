@@ -305,7 +305,7 @@ class EditBoxForPromotion extends React.Component {
                                 {loop(_promotionCollection)}
                             </TreeNode>
                             <TreeNode key={'hualala'} title={'哗啦啦券'}>
-                                <TreeNode key={'vouchers'} title={'电子代金券'} />
+                                <TreeNode key={'vouchers'} title={'代金券'} />
                                 <TreeNode key={'coupons'} title={'菜品优惠券'} />
                                 <TreeNode key={'exchangeCoupons'} title={'菜品兑换券'} />
                             </TreeNode>

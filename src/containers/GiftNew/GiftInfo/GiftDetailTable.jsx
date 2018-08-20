@@ -25,7 +25,7 @@ import {
     FetchSharedGifts,
     emptyGetSharedGifts,
     queryCouponShopList,
-    queryWechatMpInfo,
+    queryWechatMpInfo, startEditGift,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -238,7 +238,7 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleEdit(rec) {
+    handleEdit(rec, operationType) {
         let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
         const selectShops = [];
         gift = _.cloneDeep(gift);
@@ -258,13 +258,17 @@ class GiftDetailTable extends Component {
         gift.data.shareType = gift.data.shareType === undefined ? '' : String(gift.data.shareType);
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
-        this.setState({ visibleEdit: true, editGift: gift });
         const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         // 请求获取promotionList--券活动
         gift.value == 100 ? this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
         }) : null;
+        this.props.startEditGift({
+            operationType,
+            value: gift.data.giftType,
+            data: gift.data
+        })
     }
 
     handleDelete(rec) {
@@ -320,32 +324,6 @@ class GiftDetailTable extends Component {
                     this.setState({ usedTotalSize: records.totalSize })
                 });
         }
-    }
-
-    handleOperate(rec) {
-        return (
-            <span>
-                <Authority rightCode="marketing.lipinxin.update">
-                    <a
-                        href="javaScript:;"
-                        onClick={() => {
-                            this.handleEdit(rec)
-                        }
-                        }
-                    >编辑</a>
-                </Authority>
-                {rec.sendTotalCount > 0 ?
-                    <a disabled={true}><span>删除</span></a>
-                    :
-                    <Authority rightCode="marketing.lipinxin.delete">
-                        <a onClick={() => this.handleDelete(rec)}><span>删除</span></a>
-                    </Authority>
-                }
-                <Authority rightCode="marketing.chakanlipinxin.query">
-                    <a href="javaScript:;" onClick={() => this.handleMore(rec)}>详情</a>
-                </Authority>
-            </span>
-        )
     }
 
     handlePageChange = (pageNo, pageSize) => {
@@ -577,6 +555,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
+        startEditGift: opts => dispatch(startEditGift(opts)),
         FetchSendorUsedList: opts => dispatch(FetchSendorUsedList(opts)),
         UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
         UpdateDetailModalVisible: opts => dispatch(UpdateDetailModalVisible(opts)),

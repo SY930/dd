@@ -17,7 +17,12 @@ class CreateGiftsPanel extends Component {
             return;
         }
         this.props.onClose && this.props.onClose();
-        this.props.startCreate(gift);
+        this.props.startCreate({
+            value: gift.value,
+            data: {
+                groupID: this.props.user.accountInfo.groupID
+            }
+        });
     }
 
     render() {
@@ -84,6 +89,12 @@ function ClickableGiftLogo(props) {
     );
 }
 
+const mapStateToProps = (state) => {
+    return {
+        user: state.user.toJS(),
+    };
+};
+
 function mapDispatchToProps(dispatch) {
     return {
         startCreate: opts => {
@@ -92,4 +103,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(null, mapDispatchToProps)(CreateGiftsPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGiftsPanel);

@@ -26,8 +26,7 @@ export const COLUMNS = [
                         <a
                             href="javaScript:;"
                             onClick={() => {
-                                this.props.toggleIsUpdate(true);
-                                this.handleEdit(record)
+                                this.handleEdit(record, 'edit')
                             }
                             }
                         >编辑</a>
@@ -35,8 +34,7 @@ export const COLUMNS = [
                     <a
                         href="javaScript:;"
                         onClick={() => {
-                            this.props.toggleIsUpdate(false)
-                            this.handleEdit(record)
+                            this.handleEdit(record, 'detail')
                         }
                         }
                     >查看</a>
