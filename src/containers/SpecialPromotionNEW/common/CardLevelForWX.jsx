@@ -19,6 +19,7 @@ import {
     Form,
     Radio,
     TreeSelect,
+    Select,
     Icon,
     Tag,
 } from 'antd';
@@ -35,6 +36,7 @@ import EditBoxForShops from './EditBoxForShops';
 // import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import ShopSelector from "../../../components/common/ShopSelector";
+import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 
 const FormItem = Form.Item;
 // const Option = Select.Option;
@@ -69,9 +71,9 @@ class CardLevelForWX extends React.Component {
         this.props.FetchCrmCardTypeLst({});
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        const cardLevelRangeType = thisEventInfo.cardLevelRangeType == '4' ? '0' : thisEventInfo.cardLevelRangeType;
+        const cardLevelRangeType = thisEventInfo.cardLevelRangeType == '4' ? '2' : thisEventInfo.cardLevelRangeType;
         this.setState({
-            cardLevelRangeType: cardLevelRangeType || '0',
+            cardLevelRangeType: cardLevelRangeType || '2',
             cardLevelIDList: thisEventInfo.cardLevelIDList || [],
             selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
         }, () => {
@@ -80,8 +82,8 @@ class CardLevelForWX extends React.Component {
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
+            this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
         })
-        this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
     }
 
     componentWillReceiveProps(nextProps) {
@@ -142,8 +144,8 @@ class CardLevelForWX extends React.Component {
             this.setState({ getExcludeCardLevelIds: arr })
         }
         const fun = () => {
-            this.setState({ cardLevelRangeType: '2', allCheckDisabel: true }, () => {
-                this.props.onChange({ cardLevelRangeType: '2' })
+            this.setState({ allCheckDisabel: true }, () => {
+                this.props.onChange({ cardLevelRangeType: this.state.cardLevelRangeType })
             })
         }
         // 禁用全部会员按钮
@@ -169,12 +171,38 @@ class CardLevelForWX extends React.Component {
 
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
+        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS() : [];
+        let questArr = [];
+        if (cardTypeIDs && cardTypeIDs.length) {
+            if (cardLevelRangeType == '5') {// 卡等级
+                cardTypeIDs.forEach(id => {
+                    const index = cardInfo.findIndex(cardType => {
+                        return (cardType.cardTypeLevelList || []).map(cardLevel => cardLevel.cardLevelID).includes(id)
+                    });
+                    if (index > -1) {
+                        questArr.push(cardInfo[index].cardTypeID)
+                    }
+                })
+            } else {// 卡类
+                questArr = cardTypeIDs;
+            }
+        } else {// 没选的情况下, 查所有能选的卡类下的适用店铺
+            if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+                cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
+            } else if (!!eventInfo.allCardLevelCheck) {
+                cardInfo = [];
+            }
+            questArr = cardInfo.map(cardType => cardType.cardTypeID)
+        }
+
         // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
         //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
-            cardTypeIds: cardTypeIDs.join(','),
-            queryCardType: cardTypeIDs.length === 0 ? 0 : 1,
+            cardTypeIds: questArr.join(','),
+            queryCardType: 1// questArr.length === 0 ? 0 : 1,
         }, null, { path: 'data.cardTypeShopList' })
             .then(cardTypeShopList => {
                 const shopsInfo = this.state.selections_shopsInfo.shopsInfo.map(shopID => String(shopID));
@@ -219,6 +247,7 @@ class CardLevelForWX extends React.Component {
         if (value.length === 0) {
             opts.canUseShops = []
             opts.selections_shopsInfo = { shopsInfo: [] }
+            this.queryCanuseShops([])
         } else {
             this.queryCanuseShops(value)
         }
@@ -232,13 +261,11 @@ class CardLevelForWX extends React.Component {
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
         };
-        if (e.target.value !== '0') {
-            opts.canUseShops = []
-            opts.selections_shopsInfo = { shopsInfo: [] }
-        } else {
-            this.queryCanuseShops([])
-        }
-        this.setState(opts)
+        opts.canUseShops = []
+        opts.selections_shopsInfo = { shopsInfo: [] }
+        this.setState(opts, () => {
+            this.queryCanuseShops()
+        });
         this.props.onChange && this.props.onChange({
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
@@ -280,78 +307,112 @@ class CardLevelForWX extends React.Component {
                         schemaData={this.getDynamicShopSchema()}
                     />
                 </Form.Item>
-                <div
+                {/*<div
                     className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
                     style={{ left: 110, width: '71%', height: '81%', top: 7 }}
-                />
+                />*/}
             </div>
         );
     }
+
     render() {
-        const { getFieldDecorator } = this.props.form;
-        const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
-        const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
-        if (!this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
-            cardInfo.forEach((cardType) => {
-                // 去掉互斥卡类别等级
-                if (!getExcludeCardLevelIds.includes(cardType.cardTypeID)) {
-                    treeData.push({
-                        label: cardType.cardTypeName,
-                        value: cardType.cardTypeID,
-                        key: cardType.cardTypeID,
-                    });
-                }
-            })
+        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS() : [];
+        if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+            cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
+        } else if (!!eventInfo.allCardLevelCheck) {
+            cardInfo = [];
         }
+        const boxData = new Set();
+        // cardScopeType=1 // @mock
+        this.state.cardLevelIDList.forEach((id) => {
+            // ['759692756909309952'].forEach((id) => { //  @mock
+            cardInfo.forEach((cat) => {
+                cat.cardTypeLevelList.forEach((level) => {
+                    if (level.cardLevelID === id) {
+                        boxData.add(level)
+                    }
+                })
+            })
+        });
         return (
             <Form className={styles.cardLevelTree}>
-                <FormItem label="会员范围" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem
+                    label="会员范围"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
                     <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                        <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>全部微信卡类别</Radio>
-                        <Radio key={'2'} value={'2'}>{'选择微信卡类别'}</Radio>
+                        {/*<Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>全部微信卡类别</Radio>*/}
+                        <Radio key={'2'} value={'2'}>{'线上卡类别'}</Radio>
+                        <Radio key={'5'} value={'5'}>{'线上卡等级'}</Radio>
                     </RadioGroup>
                 </FormItem>
+                <FormItem
+                    label={`适用${cardLevelRangeType == 2 ? '卡类' : '卡等级'}`}
+                    className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        cardLevelRangeType == 2
+                            ?
+                            (<Select
+                                size={'default'}
+                                multiple={true}
+                                showSearch={true}
+                                value={this.state.cardLevelIDList}
+                                className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                                getPopupContainer={(node) => node.parentNode}
+                                onChange={this.handleSelectChange}
+                            >
+                                {
+                                    cardInfo.map(type => <Select.Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Select.Option>)
+
+                                }
+                            </Select>)
+                            :
+                            (<BaseHualalaModal
+                                outLabel={'卡等级'} //   外侧选项+号下方文案
+                                outItemName="cardLevelName" //   外侧已选条目选项的label
+                                outItemID="cardLevelID" //   外侧已选条目选项的value
+                                innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                                leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                                innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
+                                treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                onChange={(value) => {
+                                    // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                    const _value = value.map(level => level.cardLevelID)
+                                    this.handleSelectChange(_value)
+                                }}
+                            />)
+                    }
+                    {
+                        !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
+                            <Icon
+                                type="exclamation-circle"
+                                style={{
+                                    left: '102%',
+                                    top: cardLevelRangeType == 2 ? '8px' : '28px'
+                                }}
+                                className={styles.cardLevelTreeIcon}
+                                onClick={() => {
+                                    this.setState({ tableDisplay: !this.state.tableDisplay })
+                                }}
+                            />
+                    }
+                </FormItem>
                 {
-                    this.state.cardLevelRangeType == '2' ?
-                        <FormItem
-                            label={'适用卡类别'}
-                            className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            {
-                                getFieldDecorator('treeSelect', {
-                                    rules: [{
-                                        type: 'array',
-                                        required: true,
-                                        message: '不得为空，请至少选择一种!',
-                                    }],
-                                    initialValue: this.state.cardLevelIDList,
-                                })(
-                                    <TreeSelect
-                                        style={{ width: '100%' }}
-                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                        placeholder={'请选择适用卡类别'}
-                                        allowClear={true}
-                                        multiple={true}
-                                        treeData={treeData}
-                                        onChange={this.handleSelectChange}
-                                    />
-                                )
-                            }
-                            {
-                                !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-                                    <Icon
-                                        type="exclamation-circle"
-                                        className={styles.cardLevelTreeIcon}
-                                        onClick={() => {
-                                            this.setState({ tableDisplay: !this.state.tableDisplay })
-                                        }}
-                                    />
-                            }
-                        </FormItem> : null
+                    this.state.cardLevelIDList.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length === 0 ? null :
@@ -370,7 +431,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         shopSchemaInfo: state.sale_shopSchema_New,
         crmCardTypeNew: state.sale_crmCardTypeNew,
