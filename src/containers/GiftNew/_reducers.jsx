@@ -23,6 +23,9 @@ import {
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+    GIFT_NEW_FETCH_SEND_TOTAL_OK,
+    GIFT_NEW_FETCH_USED_TOTAL_OK,
+    GIFT_NEW_RESET_SEND_USED_TOTAL,
 } from './_action';
 
 const $initialState = Immutable.fromJS({
@@ -50,6 +53,8 @@ const $initialState = Immutable.fromJS({
     sendorUsedPrams: {
 
     },
+    totalSendCount: 0,
+    totalUsedCount: 0,
     detailVisible: false,
     giftSort: [],
     sharedGifts: [],
@@ -102,6 +107,12 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('shopsByBatchNo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_QUOTA_CARD_BATCHNO:
             return $$state.set('batchNoInfo', Immutable.fromJS(action.payload.dataSource));
+        case GIFT_NEW_FETCH_SEND_TOTAL_OK:
+            return $$state.set('totalSendCount', action.payload.total || 0);
+        case GIFT_NEW_FETCH_USED_TOTAL_OK:
+            return $$state.set('totalUsedCount', action.payload.total || 0);
+        case GIFT_NEW_RESET_SEND_USED_TOTAL:
+            return $$state.set('totalUsedCount', 0).set('totalSendCount', 0);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:

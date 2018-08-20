@@ -55,9 +55,9 @@ class GiftDetailModalTabs extends React.Component {
     render() {
         const { data } = this.props;
         const tabs = data.giftType === '91' ?
-            [{ tab: '发送数', key: 'send' },
+            [{ tab: '发出数', key: 'send' },
             ]
-            : [{ tab: '发送数', key: 'send' },
+            : [{ tab: '发出数', key: 'send' },
             { tab: '使用数', key: 'used' },
                 // {tab:'赠送',key:'give'}
             ];

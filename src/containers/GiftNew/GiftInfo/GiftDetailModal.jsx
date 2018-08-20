@@ -8,7 +8,7 @@ import styles from './GiftInfo.less';
 import {
     UpdateSendorUsedTabKey,
     UpdateSendorUsedPage,
-    UpdateSendorUsedParams,
+    UpdateSendorUsedParams, resetSendOrTotalCount,
 } from '../_action';
 
 class GiftDetailModal extends Component {
@@ -56,7 +56,12 @@ class GiftDetailModal extends Component {
     handleCancel() {
         this.setState({ loading: true });
         this.props.onCancel();
-        const { UpdateSendorUsedTabKey, UpdateSendorUsedPage, UpdateSendorUsedParams } = this.props;
+        const {
+            UpdateSendorUsedTabKey,
+            UpdateSendorUsedPage,
+            UpdateSendorUsedParams,
+            resetSendOrTotalCount,
+        } = this.props;
         UpdateSendorUsedTabKey({ key: 'send' });
         UpdateSendorUsedPage({
             page: {
@@ -66,7 +71,8 @@ class GiftDetailModal extends Component {
         });
         UpdateSendorUsedParams({
             params: {},
-        })
+        });
+        resetSendOrTotalCount();
     }
 
     render() {
@@ -253,10 +259,13 @@ class GiftDetailModal extends Component {
 function mapStateToProps(state) {
     return {
         sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
+        sendTotalSize: state.sale_giftInfoNew.get('totalSendCount'),
+        usedTotalSize: state.sale_giftInfoNew.get('totalUsedCount'),
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
+        resetSendOrTotalCount: opts => dispatch(resetSendOrTotalCount(opts)),
         UpdateSendorUsedTabKey: opts => dispatch(UpdateSendorUsedTabKey(opts)),
         UpdateSendorUsedPage: opts => dispatch(UpdateSendorUsedPage(opts)),
         UpdateSendorUsedParams: opts => dispatch(UpdateSendorUsedParams(opts)),

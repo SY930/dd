@@ -11,6 +11,12 @@ export const GIFT_NEW_FETCH_LEVEL_OK = 'gift new ::  fetch level ok';
 export const GIFT_NEW_FETCH_SCHEMA_OK = 'gift new :: fetch schema ok';
 export const GIFT_NEW_FETCH_QUOTA_LIST_OK = 'gift new :: fetch quota list';
 export const GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK = 'gift new:: fetch send or used list';
+export const GIFT_NEW_FETCH_USED_TOTAL_OK = 'gift new:: 成功获取到发送数';
+export const GIFT_NEW_FETCH_SEND_TOTAL_OK = 'gift new:: 成功获取到使用数';
+
+export const GIFT_NEW_FETCH_USED_TOTAL_FAIL = 'gift new:: 未能成功获取到发送数';
+export const GIFT_NEW_FETCH_SEND_TOTAL_FAIL = 'gift new:: 未能获取到使用数';
+export const GIFT_NEW_RESET_SEND_USED_TOTAL = 'gift new:: 重置发出使用数为0';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY = 'gift new:: update send or used key';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_PAGE = 'gift new:: update send or used page';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_PARAMS = 'gift new:: update send or used params';
@@ -203,8 +209,67 @@ export const getSendorUsedListSuccessAC = (opt) => {
     }
 };
 
+export const getUsedTotalCountSuccessAC = (total) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_TOTAL_OK,
+        payload: {total},
+    }
+};
+
+export const getSendTotalCountSuccessAC = (total) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_TOTAL_OK,
+        payload: {total},
+    }
+};
+
+export const getUsedTotalCountFailAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_TOTAL_FAIL,
+        ...opt,
+    }
+};
+
+export const getSendTotalCountFailAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
+        ...opt,
+    }
+};
+
+export const resetSendOrTotalCount = (opt) => {
+    return {
+        type: GIFT_NEW_RESET_SEND_USED_TOTAL,
+        ...opt,
+    }
+};
+
 export const FetchSendorUsedList = (opts) => {
     return (dispatch) => {
+
+        const sendOrUsageCountParam = {
+            pageSize: 1,
+            pageNo: 0,
+            giftItemID: opts.params.giftItemID,
+        };
+        if ('giftStatus' in opts.params) {
+            sendOrUsageCountParam.giftStatus = opts.params.giftStatus;
+        }
+        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
+            .then(total => {
+                if (opts.params.giftStatus == 2) {
+                    dispatch(getUsedTotalCountSuccessAC(total))
+                } else {
+                    dispatch(getSendTotalCountSuccessAC(total))
+                }
+            })
+            .catch(error => {
+                if (opts.params.giftStatus == 2) {
+                    dispatch(getUsedTotalCountFailAC())
+                } else {
+                    dispatch(getSendTotalCountFailAC())
+                }
+            })
         return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
             path: 'data',
         })

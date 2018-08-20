@@ -293,22 +293,14 @@ class GiftDetailTable extends Component {
         const { FetchSendorUsedList } = this.props;
         const { giftType, giftItemID } = rec;
         if (giftType !== '90') {
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID } })
-                .then((records) => {
-                    this.setState({ sendTotalSize: records.totalSize })
-                });
-            const opts = { pageNo: 1, pageSize: 10, giftItemID }
-            if (giftType === '91') { // 线上礼品卡
-                opts.WXgiftCardStatus = '1'
-            } else {
-                opts.giftStatus = '2'
-            }
-            giftType !== '91' && axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
+            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID } });
+            giftType !== '91' && FetchSendorUsedList({ params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+            /*axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
                 path: 'data',
             })
                 .then((records) => {
                     this.setState({ usedTotalSize: records.totalSize })
-                });
+                });*/
         }
     }
 
@@ -402,8 +394,8 @@ class GiftDetailTable extends Component {
                 case '111':
                     return (<GiftDetailModal
                         {...detailProps}
-                        usedTotalSize={this.state.usedTotalSize || 0}
-                        sendTotalSize={this.state.sendTotalSize || 0}
+                        /*usedTotalSize={this.state.usedTotalSize || 0}
+                        sendTotalSize={this.state.sendTotalSize || 0}*/
                     />);
                 case '90':
                     return <QuatoCardDetailModal {...detailProps} />;
