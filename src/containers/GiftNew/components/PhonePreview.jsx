@@ -64,11 +64,12 @@ class PhonePreview extends PureComponent {
     }
 
     shopNameString() {
-        const {
-            shopNames : shopIDs = [],
+        let {
+            shopNames : shopIDs,
             groupName,
             shopSchema,
         } = this.props;
+        shopIDs = shopIDs ? shopIDs.toJS() : [];
         if (!shopIDs.length) {
             return `${groupName || ''}所有门店通用`;
         } else {
@@ -157,7 +158,7 @@ function mapStateToProps(state) {
         shareIDs: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shareIDs']), // 可共享券
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),
         isOfflineCanUsing: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isOfflineCanUsing']), // 是否可线下使用, 值为String: 'true' 'false'
-        shopNames: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shopNames']).toJS(),
+        shopNames: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shopNames']),
         shopSchema: state.sale_shopSchema_New.get('shopSchema'),
         supportOrderType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'supportOrderType']),
         moneyLimitType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moneyLimitType']),
