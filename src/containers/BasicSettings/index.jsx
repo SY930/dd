@@ -153,9 +153,9 @@ class MessageTemplatesPage extends React.Component {
                             </div>
                             :
                             <div style={{height: this.state.contentHeight, paddingTop: '20px', overflowY: 'auto'}}>
-                                {!!pendingTemplates.length && <MessageGroup title="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
-                                {!!verifiedTemplates.length && <MessageGroup title="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
-                                {!!illegalTemplates.length && <MessageGroup title="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
+                                {!!pendingTemplates.length && <MessageGroup title="待审核" key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
+                                {!!verifiedTemplates.length && <MessageGroup title="审核通过" key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
+                                {!!illegalTemplates.length && <MessageGroup title="审核未通过" key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
                             </div>
                     }
                 </Spin>
@@ -179,7 +179,7 @@ class MessageGroup extends React.Component {
                             template={item.template}
                             id={item.itemID}
                             handleClick={() => this.props.edit(item)}
-                            key={item.index}
+                            key={item.itemID}
                         />;
                     })}
                     {!messages.length &&
