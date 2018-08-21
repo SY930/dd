@@ -99,6 +99,9 @@ class PhonePreview extends PureComponent {
                 {showPreviewGifts.includes(giftType) && <div>
                     <img src={phone}  alt="oops"/>
                     <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
+                    <div className={styles.phonePreviewModifier}>
+                        我的优惠券
+                    </div>
                     <div className={styles.phonePreviewContentWrapper}>
                         <img src={bg} alt="oops"/>
                         {
