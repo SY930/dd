@@ -13,6 +13,7 @@ import {
     cancelCreateOrEditGift, changeGiftFormKeyValue,
     FetchGiftList,
 } from '../_action';
+import IsSync from "./common/IsSync";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -317,6 +318,12 @@ class GiftAddModal extends React.Component {
                     { max: 400, message: '最多400个字符' },
                 ],
             },
+            isSynch: {
+                label: ` `,
+                type: 'custom',
+                defaultValue: false,
+                render: decorator => decorator({})(<IsSync/>),
+            },
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
@@ -340,10 +347,10 @@ class GiftAddModal extends React.Component {
             },
         };
         const formKeys = {
-            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule'] }],
-            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
-            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule'] }],
-            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule'] }],
+            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule', 'isSynch'] }],
+            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
+            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
+            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
         };
         let formData = {};
         if (type == 'edit') {

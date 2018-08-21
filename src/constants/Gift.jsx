@@ -157,6 +157,10 @@ const GiftCfg = {
         { label: '按菜品', value: '0' },
         { label: '按分类', value: '1' },
     ],
+    isSynch: [ // 查券时是否优先读取券模板
+        { label: '不需要', value: false },
+        { label: '需要', value: true },
+    ],
     getWay: [
         { value: '', label: '全部' },
         { value: '10', label: '消费返券', include: true },

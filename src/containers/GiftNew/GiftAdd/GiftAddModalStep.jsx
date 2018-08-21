@@ -30,6 +30,7 @@ import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";
+import IsSync from "./common/IsSync";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -248,7 +249,6 @@ class GiftAddModalStep extends React.PureComponent {
                 })
                 break;
             case 'foodNameList':
-                console.log(value);
                 if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
                     // values.isFoodCatNameList = data.isFoodCatNameList;
                     break;
@@ -943,6 +943,7 @@ class GiftAddModalStep extends React.PureComponent {
                 </Col>
             </FormItem>)
     }
+
     renderGiftPromotion(decorator) {
         const { gift: { data }, type } = this.props;
         const promotionID = type === 'edit' ? (data.promotionID ? [{ sharedIDStr: data.promotionID }] : [])
@@ -1274,6 +1275,12 @@ class GiftAddModalStep extends React.PureComponent {
                 defaultValue: false,
                 //options: GiftCfg.isNeedCustomerInfo,
                 render: decorator => this.renderisNeedCustomerInfo(decorator),
+            },
+            isSynch: {
+                label: ` `,
+                type: 'custom',
+                defaultValue: false,
+                render: decorator => decorator({})(<IsSync/>),
             },
         };
         // 菜品券金额限制暂时不可用每满选项
