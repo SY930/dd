@@ -28,12 +28,12 @@ registerLocalPage([
         label: '新建特色营销',
         parent: [entryCodes.SPECIAL_PAGE],
     },
-    {
+    /*{
         key: entryCodes.NEW_GIFT,
         value: entryCodes.NEW_GIFT,
         label: '新建礼品',
         parent: [entryCodes.GIFT_PAGE],
-    },
+    },*/
 ]);
 
 export default registeEntryCode(entryCodes, completed => import('./containers').then(completed))

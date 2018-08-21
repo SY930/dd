@@ -3,11 +3,11 @@ import GiftCfg from '../../../constants/Gift';
 
 const FORMITEMS = {
     giftRemark: {
-        label: '礼品描述',
+        label: '活动详情',
         type: 'textarea',
-        placeholder: '请输入礼品描述',
+        placeholder: '请输入活动详情',
         rules: [
-            { required: true, message: '礼品描述不能为空' },
+            { required: true, message: '活动详情不能为空' },
             { max: 400, message: '最多400个字符' },
         ],
     },
@@ -143,7 +143,7 @@ const FORMITEMS = {
 };
 
 const FIRST_KEYS = {
-    '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark',] },
+    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark',] },
     { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
     '菜品优惠券': [
         {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'foodNameList', 'giftRemark'],},
@@ -160,7 +160,7 @@ const FIRST_KEYS = {
     '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'price', 'giftRemark', 'TrdTemplate'] }],
 };
 const SECOND_KEYS = {
-    '电子代金券': [{
+    '代金券': [{
         col: { span: 24, pull: 2 },
         keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames'],
     }],

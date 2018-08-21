@@ -1,4 +1,4 @@
-import Immutable, { List } from 'immutable';
+﻿import Immutable, { List } from 'immutable';
 import {
     GIFT_NEW_FETCH_LIST_BEGIN,
     GIFT_NEW_FETCH_LIST_OK,
@@ -26,8 +26,18 @@ import {
     GIFT_NEW_FETCH_SEND_TOTAL_OK,
     GIFT_NEW_FETCH_USED_TOTAL_OK,
     GIFT_NEW_RESET_SEND_USED_TOTAL,
+    GIFT_NEW_START_CREATE_GIFT,
+    GIFT_NEW_START_EDIT_GIFT,
+    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE,
 } from './_action';
 
+const $initialEditState = Immutable.fromJS({
+    isCreatingOrEditing: false,
+    currentGiftType: null,
+    operationType: 'add',
+    createOrEditFormData: {
+    }
+});
 const $initialState = Immutable.fromJS({
     loading: false,
     dataSource: [],
@@ -63,6 +73,37 @@ const $initialState = Immutable.fromJS({
     mpList: [],
     mpListLoading: false,
 });
+export function editGiftInfoNew($$state = $initialEditState, action) {
+    switch (action.type) {
+        case GIFT_NEW_START_CREATE_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', true)
+                .set('operationType', 'add')
+                .set('currentGiftType', action.payload.value)
+                .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                ;
+        case GIFT_NEW_START_EDIT_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', true)
+                .set('operationType', action.payload.operationType)
+                .set('currentGiftType', action.payload.value)
+                .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                ;
+        case GIFT_NEW_CANCEL_CREATE_EDIT_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', false)
+                .set('currentGiftType', null)
+                .set('operationType', 'add')
+                .set('createOrEditFormData', Immutable.fromJS({}))
+                ;
+        case GIFT_NEW_CHANGE_FORM_KEY_VALUE:
+            return $$state
+                .setIn(['createOrEditFormData', action.payload.key], Immutable.fromJS(action.payload.value))
+                ;
+        default:
+            return $$state
+    }
+}
 export function giftInfoNew($$state = $initialState, action) {
     switch (action.type) {
         case GIFT_NEW_FETCH_LIST_BEGIN:
@@ -119,7 +160,6 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('mpList', Immutable.fromJS(action.payload)).set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
-
         default:
             return $$state
     }

@@ -5,6 +5,7 @@ import { jumpPage } from '@hualala/platform-base'
 import { fetchData, axiosData } from '../../../helpers/util';
 import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
+import styles2 from './Crm.less';
 import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
@@ -18,6 +19,7 @@ import GiftCfg from '../../../constants/Gift';
 import {
     FetchGiftList,
     FetchGiftSort,
+    cancelCreateOrEditGift, changeGiftFormKeyValue
 } from '../_action';
 import {
     fetchAllPromotionListAC,
@@ -33,7 +35,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-class GiftAddModalStep extends React.Component {
+class GiftAddModalStep extends React.PureComponent {
     constructor(props) {
         super(props);
         const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
@@ -139,6 +141,7 @@ class GiftAddModalStep extends React.Component {
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
     }
+
     proSharedGifts = (sharedGifts = []) => {
         if (sharedGifts instanceof Array) {
             if (sharedGifts.length === 0) {
@@ -162,6 +165,10 @@ class GiftAddModalStep extends React.Component {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
+        if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+            this.props.changeGiftFormKeyValue({key, value});
+        }
+
         if (key !== 'foodNameList') {
             values[key] = value;
         }
@@ -266,7 +273,7 @@ class GiftAddModalStep extends React.Component {
                 break;
 
             case 'TrdTemplate':
-                if (describe === '电子代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
+                if (describe === '代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
                     if (value) {
                         newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
                     } else {
@@ -308,12 +315,12 @@ class GiftAddModalStep extends React.Component {
         this.setState({ foodNameListStatus: 'success' });
         return true;
     }
-    handleNext = (cb) => {
+    handleSubmit = () => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
             if (basicValues.TrdTemplate) {
                 const { TrdTemplateStatus } = basicValues.TrdTemplate;
                 if (!TrdTemplateStatus) {
-                    return
+                    return false
                 }
             }
             if (this.props.gift.value == '20' || this.props.gift.value == '21') {
@@ -322,7 +329,7 @@ class GiftAddModalStep extends React.Component {
                 }
             }
             if (error) return false;
-            cb();
+            this.handleFinish();
         })
     }
     handlePrev = (cb) => {
@@ -347,7 +354,7 @@ class GiftAddModalStep extends React.Component {
             }
         })
     }
-    handleFinish = (cb) => {
+    handleFinish = () => {
         const { values, groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
@@ -518,24 +525,9 @@ class GiftAddModalStep extends React.Component {
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
-                this.setState({
-                    finishLoading: false,
-                });
-                if (data) {
-                    message.success('成功', 3);
-                    this.handleCancel(cb);
-                    const menuID = this.props.menuList.toJS().find(tab => tab.entryCode === '1000076005').menuID
-                    jumpPage({ menuID })
-                }
-                if (type === 'edit') {
-                    const { params, FetchGiftList } = this.props;
-                    const listParams = params.toJS();
-                    FetchGiftList(listParams);
-                }
+                message.success('成功', 3);
+                this.props.cancelCreateOrEditGift()
             }).catch(err => {
-                this.setState({
-                    finishLoading: false,
-                });
                 console.log(err)
             });
         });
@@ -988,7 +980,7 @@ class GiftAddModalStep extends React.Component {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
-        if (dates.shopNames && dates.shopNames.length > 0) {
+        if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
         if (dates.discountRate < 1) {
@@ -1306,7 +1298,7 @@ class GiftAddModalStep extends React.Component {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-        const steps = [{
+       /* const steps = [{
             title: '基本信息',
             content: <BaseForm
                 getForm={(form) => {
@@ -1335,8 +1327,48 @@ class GiftAddModalStep extends React.Component {
                     }}
                     key={`${describe}-${type}2`}
                 />),
-        }];
+        }];*/
         return (
+            <div>
+                <div
+                    style={{
+                        margin: '20px 0 10px 94px'
+                    }}
+                    className={styles2.logoGroupHeader}
+                >基本信息</div>
+                <BaseForm
+                    getForm={(form) => {
+                        this.firstForm = form
+                    }}
+                    formItems={formItems}
+                    formData={formData}
+                    formKeys={firstKeys[describe]}
+                    onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
+                    getSubmitFn={(handles) => {
+                        this.handles[0] = handles;
+                    }}
+                    key={`${describe}-${type}1`}
+                />
+                <div
+                    style={{
+                        margin: '20px 0 10px 94px'
+                    }}
+                    className={styles2.logoGroupHeader
+                }>使用规则</div>
+                <BaseForm
+                    getForm={form => this.secondForm = form}
+                    formItems={formItems}
+                    formData={formData}
+                    formKeys={secondKeys[describe]}
+                    onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
+                    getSubmitFn={(handles) => {
+                        this.handles[1] = handles;
+                    }}
+                    key={`${describe}-${type}2`}
+                />
+            </div>
+        )
+        /*return (
             <Modal
                 // key={modalKey}
                 title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
@@ -1364,7 +1396,7 @@ class GiftAddModalStep extends React.Component {
                     />
                 </div> : null }
             </Modal>
-        )
+        )*/
     }
 }
 
@@ -1381,6 +1413,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
+        changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
         getPromotionShopSchema: (opts) => {
@@ -1393,7 +1427,9 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    {withRef: true}
 )(GiftAddModalStep)
 
 class MyProjectEditBox extends React.Component {

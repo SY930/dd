@@ -109,7 +109,7 @@ export const SALE_CENTER_ACTIVITY_ORDER_TYPE = Object.freeze({
 });
 
 export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
-    label: '电子代金券',
+    label: '代金券',
     value: '10',
 },
 {

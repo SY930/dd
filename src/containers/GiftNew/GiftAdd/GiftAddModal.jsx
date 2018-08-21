@@ -10,6 +10,7 @@ import BaseForm from '../../../components/common/BaseForm';
 import ENV from '../../../helpers/env';
 import GiftCfg from '../../../constants/Gift';
 import {
+    cancelCreateOrEditGift, changeGiftFormKeyValue,
     FetchGiftList,
 } from '../_action';
 
@@ -71,7 +72,7 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-
+        this.props.changeGiftFormKeyValue({key, value});
     }
     handleOk() {
         const { groupTypes, imageUrl, transferType } = this.state;
@@ -104,30 +105,12 @@ class GiftAddModal extends React.Component {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
-            this.setState({
-                finishLoading: true,
-            });
             const { accountInfo } = this.props;
             const { groupName } = accountInfo.toJS();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
-                this.setState({
-                    finishLoading: false,
-                });
-                if (data) {
-                    message.success('成功', 3)
-                    this.handleCancel();
-                    const menuID = this.props.menuList.toJS().find(tab => tab.entryCode === '1000076005').menuID
-                    jumpPage({ menuID })
-                }
-                if (type === 'edit') {
-                    const { params, FetchGiftList } = this.props;
-                    const listParams = params.toJS();
-                    FetchGiftList(listParams);
-                }
+                message.success('成功', 3);
+                this.props.cancelCreateOrEditGift()
             }).catch(err => {
-                this.setState({
-                    finishLoading: false,
-                });
                 console.log(err);
             });
         });
@@ -326,11 +309,11 @@ class GiftAddModal extends React.Component {
                 }],
             },
             giftRemark: {
-                label: '礼品描述',
+                label: '活动详情',
                 type: 'textarea',
-                placeholder: '请输入礼品描述',
+                placeholder: '请输入活动详情',
                 rules: [
-                    { required: true, message: '礼品描述不能为空' },
+                    { required: true, message: '活动详情不能为空' },
                     { max: 400, message: '最多400个字符' },
                 ],
             },
@@ -369,7 +352,7 @@ class GiftAddModal extends React.Component {
         formItems.giftName = type === 'add'
             ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }
             : { label: '礼品名称', type: 'text', disabled: true };
-        return (
+        /*return (
             <Modal
                 title={`${type === 'edit' ? '修改' : '创建'}${describe}`}
                 visible={visible}
@@ -386,17 +369,20 @@ class GiftAddModal extends React.Component {
                     onClick={() => this.handleOk()}>确定</Button>]}
                 key={`${describe}-${type}`}
             >
-                {visible && <div className={styles.giftAddModal}>
-                    <BaseForm
-                        getForm={form => this.baseForm = form}
-                        formItems={formItems}
-                        formData={formData}
-                        formKeys={formKeys[describe]}
-                        onChange={(key, value) => this.handleFormChange(key, value)}
-                        key={`${describe}-${type}`}
-                    />
-                </div>}
+                {visible && }
             </Modal>
+        )*/
+        return (
+            <div className={styles.giftAddModal}>
+                <BaseForm
+                    getForm={form => this.baseForm = form}
+                    formItems={formItems}
+                    formData={formData}
+                    formKeys={formKeys[describe]}
+                    onChange={(key, value) => this.handleFormChange(key, value)}
+                    key={`${describe}-${type}`}
+                />
+            </div>
         )
     }
 }
@@ -412,11 +398,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
+        cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
     };
 }
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
 )(GiftAddModal)
