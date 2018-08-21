@@ -14,10 +14,6 @@ class FormWrapper extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return false
-    }
-
     handleSubmit() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();

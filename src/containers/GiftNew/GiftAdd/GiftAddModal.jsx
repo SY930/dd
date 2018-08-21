@@ -10,7 +10,7 @@ import BaseForm from '../../../components/common/BaseForm';
 import ENV from '../../../helpers/env';
 import GiftCfg from '../../../constants/Gift';
 import {
-    cancelCreateOrEditGift,
+    cancelCreateOrEditGift, changeGiftFormKeyValue,
     FetchGiftList,
 } from '../_action';
 
@@ -72,7 +72,7 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-
+        this.props.changeGiftFormKeyValue({key, value});
     }
     handleOk() {
         const { groupTypes, imageUrl, transferType } = this.state;
@@ -309,11 +309,11 @@ class GiftAddModal extends React.Component {
                 }],
             },
             giftRemark: {
-                label: '礼品描述',
+                label: '活动详情',
                 type: 'textarea',
-                placeholder: '请输入礼品描述',
+                placeholder: '请输入活动详情',
                 rules: [
-                    { required: true, message: '礼品描述不能为空' },
+                    { required: true, message: '活动详情不能为空' },
                     { max: 400, message: '最多400个字符' },
                 ],
             },
@@ -398,6 +398,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
     };

@@ -35,7 +35,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-class GiftAddModalStep extends React.Component {
+class GiftAddModalStep extends React.PureComponent {
     constructor(props) {
         super(props);
         const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
@@ -142,10 +142,6 @@ class GiftAddModalStep extends React.Component {
         });
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return false
-    }
-
     proSharedGifts = (sharedGifts = []) => {
         if (sharedGifts instanceof Array) {
             if (sharedGifts.length === 0) {
@@ -169,10 +165,13 @@ class GiftAddModalStep extends React.Component {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
+        if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+            this.props.changeGiftFormKeyValue({key, value});
+        }
+
         if (key !== 'foodNameList') {
             values[key] = value;
         }
-        this.props.changeGiftFormKeyValue({key, value});
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -978,11 +977,10 @@ class GiftAddModalStep extends React.Component {
         )
     }
     render() {
-        console.log('changing~~');
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
-        if (dates.shopNames && dates.shopNames.length > 0) {
+        if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
         if (dates.discountRate < 1) {
@@ -1300,7 +1298,7 @@ class GiftAddModalStep extends React.Component {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-        const steps = [{
+       /* const steps = [{
             title: '基本信息',
             content: <BaseForm
                 getForm={(form) => {
@@ -1329,7 +1327,7 @@ class GiftAddModalStep extends React.Component {
                     }}
                     key={`${describe}-${type}2`}
                 />),
-        }];
+        }];*/
         return (
             <div>
                 <div
