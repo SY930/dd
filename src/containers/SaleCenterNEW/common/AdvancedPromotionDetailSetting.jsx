@@ -176,6 +176,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
 
     renderUserSetting() {
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        // let _stash = promotionType == 'RETURN_GIFT' || promotionType == 'RETURN_POINT';
         return (
             <FormItem
                 label={'活动适用用户'}
