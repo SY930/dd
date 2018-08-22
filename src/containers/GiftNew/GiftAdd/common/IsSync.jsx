@@ -51,7 +51,7 @@ class IsSync extends Component {
                         }
                     </RadioGroup>
                 </FormItem>}
-                {this.state.showOptions && <div style={{ margin: '8px 20px 0 0', width: '100%' }}>
+                {(this.state.showOptions && this.props.value ) && <div style={{ margin: '8px 20px 0 0', width: '100%' }}>
                         <span style={{color: 'orange'}}>请务必慎重操作</span>
                     </div>
                 }
