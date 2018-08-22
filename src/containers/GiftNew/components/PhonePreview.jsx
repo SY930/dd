@@ -40,7 +40,7 @@ class PhonePreview extends PureComponent {
         } else {
             const { usingTimeType } = this.props;
             const resultArr = [];
-            usingTimeType.forEach(item => {
+            usingTimeType.toJS().sort().forEach(item => {
                 resultArr.push(usingTimeTypeMap[item])
             });
             return resultArr.join('、');
