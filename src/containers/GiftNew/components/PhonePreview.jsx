@@ -109,13 +109,29 @@ class PhonePreview extends PureComponent {
             giftRemark = '',
             isOfflineCanUsing = 'true',
             supportOrderType = '2',
-
+            contentHeight,
+            scrollPercent
         } = this.props;
         return (
-            <div className={styles.phonePreviewContainer} >
+            <div
+                style={{
+                    height: contentHeight
+                }}
+                className={styles.phonePreviewContainer}
+            >
                 <div className={styles.arrow}/>
-                {showPreviewGifts.includes(giftType) && <div>
-                    <img src={phone}  alt="oops"/>
+                {showPreviewGifts.includes(giftType) && <div style={{
+                    position: 'relative',
+                    top: contentHeight < 740 ? -(740 - contentHeight) * scrollPercent : null
+                }}>
+                    <img
+                        src={phone}
+                        alt="oops"
+                        style={{
+                            position: 'relative',
+                            top: '20px'
+                        }}
+                    />
                     <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
                     <div className={styles.phonePreviewModifier}>
                         我的优惠券

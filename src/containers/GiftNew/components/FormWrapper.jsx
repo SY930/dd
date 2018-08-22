@@ -29,7 +29,9 @@ class FormWrapper extends Component {
             Comp = GiftAddModal;
         }
         return (
-            <div className={styles.formWrapperContainer}>
+            <div onScroll={(e) => {
+                this.props.onFormScroll(e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight));
+            }} className={styles.formWrapperContainer}>
                 <div className={styles.formWrapper}>
                     <Comp
                         type={type === 'detail' ? 'edit' : type}

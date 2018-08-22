@@ -14,12 +14,27 @@ class GiftEditPage extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            contentHeight: '782',
+            scrollPercent: 0,
+        };
         this.formRef = null;
         this.saving = this.saving.bind(this);
+        this.onWindowResize = this.onWindowResize.bind(this);
         this.lockedSaving = throttle(this.saving , 500, {trailing: false});
     }
 
+    componentDidMount() {
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
+    }
+    onWindowResize() {
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 95;
+        this.setState({ contentHeight });
+    }
+
     componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
         this.formRef = null;
     }
 
@@ -63,9 +78,20 @@ class GiftEditPage extends Component {
                         保存
                     </Button>
                 </div>
-                <div className={styles.pageContent}>
-                    <PhonePreview/>
+                <div
+                    className={styles.pageContent}
+                    style={{
+                        height: this.state.contentHeight
+                    }}
+                >
+                    <PhonePreview scrollPercent={this.state.scrollPercent} contentHeight={this.state.contentHeight}/>
                     <FormWrapper
+                        onFormScroll={(value) => {
+                            this.setState({
+                                scrollPercent: value
+                            })
+                        }}
+                        contentHeight={this.state.contentHeight}
                         ref={form => this.formRef = form}
                         describe={giftDescribe}
                         name={giftName}
