@@ -63,6 +63,24 @@ class PhonePreview extends PureComponent {
         }
     }
 
+    foodNameListString() {
+        const { foodNameList } = this.props;
+        let foodNameString = ' ';
+        if (typeof foodNameList === 'string') {
+            return foodNameString = foodNameList;
+        } else {
+            const foodNames = foodNameList ? foodNameList.toJS() : [];
+            if (foodNames instanceof Array) {
+                foodNameString = foodNames.join('，')
+            } else if (foodNames.categoryOrDish === '0') {
+                foodNameString = foodNames.dishes.map(food => food.foodName + food.unit).join('，');
+            } else if (foodNames.categoryOrDish === '1') {
+                foodNameString = foodNames.foodCategory.map(food => food.foodCategoryName).join('，');
+            }
+        }
+        return `本券仅用于“${foodNameString}”等菜品`;
+    }
+
     shopNameString() {
         let {
             shopNames : shopIDs,
@@ -132,6 +150,7 @@ class PhonePreview extends PureComponent {
                             <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
                             <p>{`本券适用于${supportOrderTypeMap[supportOrderType]}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
                             <p>{this.shareTypeString()}</p>
+                            {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
                         </div>
                         <div className={styles.sectionHeader}>
                             活动详情
@@ -162,6 +181,7 @@ function mapStateToProps(state) {
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),
         isOfflineCanUsing: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isOfflineCanUsing']), // 是否可线下使用, 值为String: 'true' 'false'
         shopNames: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shopNames']),
+        foodNameList: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodNameList']),
         shopSchema: state.sale_shopSchema_New.get('shopSchema'),
         supportOrderType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'supportOrderType']),
         moneyLimitType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moneyLimitType']),

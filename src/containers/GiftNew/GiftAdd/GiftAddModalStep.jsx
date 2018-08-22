@@ -1298,7 +1298,14 @@ class GiftAddModalStep extends React.PureComponent {
         // }
         if (type === 'edit') {
             formData = dates;
-            formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];
+            if (typeof(formData.foodNameList) === 'string') {
+                formData.foodNameList =  formData.foodNameList.split(',')
+            }
+            /*console.log('formData.foodNameList: ', formData.foodNameList);
+            if (formData.foodNameList && formData.foodNameList.categoryOrDish ) {
+                formData.foodNameList
+            }
+            formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];*/
         }
         if (this.props.gift.value == '20') {
             formItems.moneyLimitType.label = '账单金额';
