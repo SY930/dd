@@ -73,9 +73,15 @@ const fetchGiftListFailed = (opts) => {
 };
 
 const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
+    const categoryIdMap = new Map();
+    opts.records.forEach(cat => {
+        if (!categoryIdMap.has(cat.foodCategoryName) || cat.foodCategoryID > categoryIdMap.get(cat.foodCategoryName)) {
+            categoryIdMap.set(cat.foodCategoryName, cat.foodCategoryID);
+        }
+    });
     const uniqMap = new Map();
     opts.records.forEach(cat => {
-        cat.foodCategoryID = cat.foodCategoryName; // 哎...
+        cat.foodCategoryID = categoryIdMap.get(cat.foodCategoryName); // 哎...
         if (!uniqMap.has(cat.foodCategoryName)) {
             uniqMap.set(cat.foodCategoryName, cat);
         }
@@ -135,9 +141,15 @@ export const fetchFoodCategoryInfoAC = (opts) => {
 const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records: Food[] }
     // TODO: 这种去重操作不应该由前端进行, 而且返回的每个对象中属性过多, 如果日后出现性能问题, 建议基本档优化接口
     let records = opts ? opts.records : [];
+    const categoryIdMap = new Map();
+    records.forEach(food => {
+        if (!categoryIdMap.has(food.foodCategoryName) || food.foodCategoryID > categoryIdMap.get(food.foodCategoryName)) {
+            categoryIdMap.set(food.foodCategoryName, food.foodCategoryID);
+        }
+    });
     const uniqMap = new Map();
     records.forEach(food => { //
-        food.foodCategoryID = food.foodCategoryName; // 哎....
+        food.foodCategoryID = categoryIdMap.get(food.foodCategoryName); // 哎....
         if (uniqMap.has(`${food.foodName}${food.unit}`)) { // 产品层面决定 如果有名称+规格重复的菜品 保留售价高的那一个
             const previousFood = uniqMap.get(`${food.foodName}${food.unit}`);
             const previousPrice = previousFood.prePrice == -1 ? previousFood.price : previousFood.prePrice;
