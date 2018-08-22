@@ -251,7 +251,7 @@ const GiftCfg = {
         { value: '2', label: '未知' },
     ],
     trdChannelIDs: [
-        { label: '微信', value: 10 },
+        { label: '微信优惠券', value: 10 },
         { label: '饮食通', value: 2, disabled: releaseENV },
         { label: '雅座', value: 3, disabled: releaseENV },
         { label: '眉州', value: 4, disabled: releaseENV },
