@@ -17,6 +17,7 @@ const CARD_SUM_COLUMNS = [
         className: 'TableTxtCenter',
         width: 50,
         fixed: 'left',
+        render(value) { return ((this.state.pageNo || 1) - 1) * this.state.pageSize + value}  ,
     }, {
         title: '卡名称',
         dataIndex: 'giftName',
@@ -42,7 +43,7 @@ const CARD_SUM_COLUMNS = [
         key: 'giftPWD',
         className: 'TableTxtCenter',
         width: 110,
-        render: value => <PWDSafe value={value} />,
+        render: (value, record) => <PWDSafe key={`${record.cardNO}`} value={value} />,
     }, {
         title: '状态',
         dataIndex: 'giftStatus',

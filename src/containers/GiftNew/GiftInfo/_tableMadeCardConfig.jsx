@@ -9,6 +9,7 @@ const MADECARD_COLUMNS = [
         key: 'rowNum',
         width: 50,
         className: 'x-tc',
+        render(value) { return ((this.state.pageNo || 1) - 1) * this.state.pageSize + value}  ,
     }, {
         title: '卡名称',
         dataIndex: 'giftName',

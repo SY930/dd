@@ -186,7 +186,7 @@ class SendCard extends React.Component {
                             dataIndex: 'giftPWD',
                             key: 'giftPWD',
                             width: 110,
-                            render: value => <PWDSafe value={value} />,
+                            render: (value, record) => <PWDSafe key={record.cardNO} value={value} />,
                         }, {
                             title: '状态',
                             dataIndex: 'giftStatus',
@@ -445,6 +445,8 @@ class SendCard extends React.Component {
         const { params } = this.state;
         this.setState({
             loading: true,
+            selectedRowKeys: [],
+            selectedRows: []
         });
         this.getData({ ...params, pageNo, pageSize }).then(() => {
             this.setState({
