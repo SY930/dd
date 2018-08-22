@@ -19,7 +19,10 @@ import GiftCfg from '../../../constants/Gift';
 import {
     FetchGiftList,
     FetchGiftSort,
-    cancelCreateOrEditGift, changeGiftFormKeyValue
+    cancelCreateOrEditGift,
+    changeGiftFormKeyValue,
+    startSaving,
+    endSaving,
 } from '../_action';
 import {
     fetchAllPromotionListAC,
@@ -522,12 +525,15 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({
                 finishLoading: true,
             });
-            const { accountInfo } = this.props;
+            const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
+            startSaving();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
+                endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
             }).catch(err => {
+                endSaving();
                 console.log(err)
             });
         });
@@ -1424,6 +1430,8 @@ function mapDispatchToProps(dispatch) {
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         FetchGiftSort: opts => dispatch(FetchGiftSort(opts)),
+        startSaving: opts => dispatch(startSaving(opts)),
+        endSaving: opts => dispatch(endSaving(opts)),
         getPromotionShopSchema: (opts) => {
             dispatch(getPromotionShopSchema(opts));
         },

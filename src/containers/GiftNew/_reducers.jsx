@@ -28,6 +28,8 @@ import {
     GIFT_NEW_RESET_SEND_USED_TOTAL,
     GIFT_NEW_START_CREATE_GIFT,
     GIFT_NEW_START_EDIT_GIFT,
+    GIFT_NEW_CANCEL_START_SAVING_GIFT,
+    GIFT_NEW_CANCEL_END_SAVING_GIFT,
     GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE,
 } from './_action';
 
@@ -35,6 +37,7 @@ const $initialEditState = Immutable.fromJS({
     isCreatingOrEditing: false,
     currentGiftType: null,
     operationType: 'add',
+    loading: false,
     createOrEditFormData: {
     }
 });
@@ -96,6 +99,12 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('operationType', 'add')
                 .set('createOrEditFormData', Immutable.fromJS({}))
                 ;
+        case GIFT_NEW_CANCEL_START_SAVING_GIFT:
+            return $$state
+                .set('loading', true);
+        case GIFT_NEW_CANCEL_END_SAVING_GIFT:
+            return $$state
+                .set('loading', false);
         case GIFT_NEW_CHANGE_FORM_KEY_VALUE:
             return $$state
                 .setIn(['createOrEditFormData', action.payload.key], Immutable.fromJS(action.payload.value))

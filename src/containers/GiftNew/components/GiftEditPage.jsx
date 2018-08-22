@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { throttle } from 'lodash';
 import {
     Button,
 } from 'antd';
@@ -13,11 +14,22 @@ class GiftEditPage extends Component {
 
     constructor(props) {
         super(props);
-        this.formRef = null
+        this.formRef = null;
+        this.saving = this.saving.bind(this);
+        this.lockedSaving = throttle(this.saving , 500, {trailing: false});
+    }
+
+    componentWillUnmount() {
+        this.formRef = null;
+    }
+
+    saving() {
+        this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
+        && this.formRef.wrappedInstance.handleSubmit();
     }
 
     render() {
-        const { giftType, operationType } = this.props;
+        const { giftType, operationType, loading } = this.props;
         const giftName = (GiftCfg.giftType.find(item => item.value === giftType) || {}).name;
         const giftDescribe = (GiftCfg.giftType.find(item => item.value === giftType) || {}).describe;
         return (
@@ -45,10 +57,8 @@ class GiftEditPage extends Component {
                     <Button
                         type="primary"
                         disabled={operationType === 'detail'}
-                        onClick={() => {
-                            this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
-                            && this.formRef.wrappedInstance.handleSubmit();
-                        }}
+                        loading={loading}
+                        onClick={this.lockedSaving}
                     >
                         保存
                     </Button>
@@ -69,6 +79,7 @@ class GiftEditPage extends Component {
 function matStateToProps(state) {
     return {
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
+        loading: state.sale_editGiftInfoNew.get('loading'),
         operationType: state.sale_editGiftInfoNew.get('operationType'),
     }
 }

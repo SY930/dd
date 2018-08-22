@@ -32,6 +32,8 @@ export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinf
 export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
 export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
 export const GIFT_NEW_CANCEL_CREATE_EDIT_GIFT = 'gift new :: 取消新建或编辑礼品模板';
+export const GIFT_NEW_CANCEL_START_SAVING_GIFT = 'gift new :: 开始保存礼品模板(loading状态开始)';
+export const GIFT_NEW_CANCEL_END_SAVING_GIFT = 'gift new :: 保存礼品模板结束(loading状态结束)';
 export const GIFT_NEW_CHANGE_FORM_KEY_VALUE = 'gift new :: 礼品字段变更';
 
 const getGiftListBegin = (opt) => {
@@ -496,6 +498,20 @@ export const startEditGift = (opt) => {
 export const cancelCreateOrEditGift = (opt) => {
     return {
         type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+        payload: opt,
+    }
+};
+
+export const startSaving = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_START_SAVING_GIFT,
+        payload: opt,
+    }
+};
+
+export const endSaving = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_END_SAVING_GIFT,
         payload: opt,
     }
 };

@@ -10,8 +10,8 @@ import BaseForm from '../../../components/common/BaseForm';
 import ENV from '../../../helpers/env';
 import GiftCfg from '../../../constants/Gift';
 import {
-    cancelCreateOrEditGift, changeGiftFormKeyValue,
-    FetchGiftList,
+    cancelCreateOrEditGift, changeGiftFormKeyValue, endSaving,
+    FetchGiftList, startSaving,
 } from '../_action';
 import IsSync from "./common/IsSync";
 
@@ -75,7 +75,7 @@ class GiftAddModal extends React.Component {
     handleFormChange(key, value) {
         this.props.changeGiftFormKeyValue({key, value});
     }
-    handleOk() {
+    handleSubmit() {
         const { groupTypes, imageUrl, transferType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
@@ -106,13 +106,16 @@ class GiftAddModal extends React.Component {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
-            const { accountInfo } = this.props;
+            const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
+            startSaving();
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
+                endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
             }).catch(err => {
                 console.log(err);
+                endSaving()
             });
         });
     }
@@ -407,6 +410,8 @@ function mapDispatchToProps(dispatch) {
     return {
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
+        startSaving: opts => dispatch(startSaving(opts)),
+        endSaving: opts => dispatch(endSaving(opts)),
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
     };
 }
