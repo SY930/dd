@@ -140,8 +140,8 @@ const GiftCfg = {
         { label: '预定', value: '4' },
     ],
     isOfflineCanUsing: [
-        { label: '不支持', value: 'false' },
         { label: '支持', value: 'true' },
+        { label: '不支持', value: 'false' },
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },
