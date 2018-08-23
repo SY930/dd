@@ -122,7 +122,7 @@ class PhonePreview extends PureComponent {
                 <div className={styles.arrow}/>
                 {showPreviewGifts.includes(giftType) && <div style={{
                     position: 'relative',
-                    top: contentHeight < 740 ? -(740 - contentHeight) * scrollPercent : null
+                    transform: contentHeight < 740 ? `translateY(${-(740 - contentHeight) * scrollPercent}px)` : null
                 }}>
                     <img
                         src={phone}
