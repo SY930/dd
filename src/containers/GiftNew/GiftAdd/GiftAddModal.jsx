@@ -15,6 +15,8 @@ import {
 } from '../_action';
 import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
+import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
+import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,8 +25,12 @@ const RadioGroup = Radio.Group;
 class GiftAddModal extends React.Component {
     constructor(props) {
         super(props);
+        const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
+
         this.state = {
             groupTypes: [],
+            shopsData: [],
+            shopSchema, // 后台请求来的值
             giftImagePath: '',
             values: {},
             finishLoading: false,
@@ -37,7 +43,10 @@ class GiftAddModal extends React.Component {
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
-    componentWillMount() {
+    componentDidMount() {
+        const { getPromotionShopSchema} = this.props;
+
+        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
         fetchData('getShopBrand', { _groupID: groupID, groupID, isActive: 1 }, null, { path: 'data.records' }).then((data) => {
             if (!data) return;
@@ -68,6 +77,11 @@ class GiftAddModal extends React.Component {
                     imageUrl: giftImagePath,
                 })
             }
+        }
+
+        if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
+            this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
+            });
         }
         this.setState({
             transferType,
@@ -100,6 +114,21 @@ class GiftAddModal extends React.Component {
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
+            let shopNames = '', shopIDs = '';
+            try {
+                if (params.shopNames) {
+                    const shops = this.state.shopSchema.shops;
+                    const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
+                    selectedShopEntities.forEach((shop) => {
+                        shopNames += `${shop.content + ',' || ''}`;
+                        shopIDs += `${shop.id + ',' || ''}`;
+                    });
+                }
+            } catch (e) {
+                console.log('no shop info');
+            }
+            params.shopNames = shopNames || ',';
+            params.shopIDs = shopIDs || ',';
             params.giftImagePath = imageUrl;
             params.transferType = transferType;
             // 定额卡工本费
@@ -131,6 +160,13 @@ class GiftAddModal extends React.Component {
             });
         });
     }
+
+    handleShopSelectorChange(values) {
+        this.setState({
+            values: {...this.state.values, shopNames: values}
+        });
+    }
+
     handleCancel() {
         this.baseForm.resetFields();
         this.setState({
@@ -182,6 +218,26 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
+
+    renderShopNames(decorator) {
+        const { shopNames = [] } = this.state.values;
+        return (
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
+                <Col>
+                    {decorator({})(
+                        <ShopSelector
+                            onChange={
+                                this.handleShopSelectorChange
+                            }
+                            schemaData={this.state.shopSchema}
+                        />
+                    )}
+                </Col>
+                <p style={{ color: 'orange', display: shopNames.length > 0 ? 'none' : 'block' }}>未选择门店时默认所有门店通用</p>
+            </Row>
+        )
+    }
+
     renderGiftImagePath = (decorator) => {
         const props = {
             name: 'myFile',
@@ -257,6 +313,12 @@ class GiftAddModal extends React.Component {
                 label: '券是否可分享',
                 type: 'custom',
                 render: decorator => this.renderTransferType(decorator),
+            },
+            shopNames: {
+                type: 'custom',
+                label: '可使用店铺',
+                defaultValue: [],
+                render: decorator => this.renderShopNames(decorator),
             },
             giftValue: {
                 label: valueLabel,
@@ -362,7 +424,7 @@ class GiftAddModal extends React.Component {
             },
         };
         const formKeys = {
-            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'giftImagePath', 'giftRule', 'isSynch'] }],
+            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
             '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
             '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
             '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
@@ -370,6 +432,9 @@ class GiftAddModal extends React.Component {
         let formData = {};
         if (type == 'edit') {
             formData = data === undefined ? {} : data;
+        }
+        if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
+            formData.shopNames = data.shopNames.map(shop => shop.id);
         }
         formItems.giftName = type === 'add'
             ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }
@@ -413,6 +478,7 @@ function mapStateToProps(state) {
     return {
         params: state.sale_giftInfoNew.get('listParams'),
         accountInfo: state.user.get('accountInfo'),
+        shopSchema: state.sale_shopSchema_New,
         menuList: state.user.get('menuList'),
         myActivities: state.sale_myActivities_NEW,
     }
@@ -424,6 +490,9 @@ function mapDispatchToProps(dispatch) {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         startSaving: opts => dispatch(startSaving(opts)),
         endSaving: opts => dispatch(endSaving(opts)),
+        getPromotionShopSchema: (opts) => {
+            dispatch(getPromotionShopSchema(opts));
+        },
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
     };
 }

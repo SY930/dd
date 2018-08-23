@@ -139,10 +139,8 @@ class GiftAddModalStep extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         const { gift: { name, data, value }, type, sharedGifts } = nextProps;
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
-        const previousSchema = this.state.shopSchema;
-        const nextShopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
-        if (!_.isEqual(previousSchema, nextShopSchema)) {
-            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+        if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
+            this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
         this.setState({
@@ -878,16 +876,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderShopNames(decorator) {
         const { shopNames = [] } = this.state.values;
-        // const shopIdArray = shopNames.map(item => item.id);
-        /*const shopCfg = {
-            treeData: this.state.shopsData,
-            level1Title: '全部店铺',
-            level2Title: '店铺',
-            selectdTitle: '已选店铺',
-            levelsNames: 'province',
-            childrenNames: 'shops',
-            showItems: shopNames,
-        };*/
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col>
