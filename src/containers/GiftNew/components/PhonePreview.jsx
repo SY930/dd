@@ -162,12 +162,20 @@ class PhonePreview extends PureComponent {
                         <div className={styles.sectionHeader}>
                             使用规则
                         </div>
-                        <div className={styles.ruleSection}>
-                            <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                            <p>{`本券适用于${supportOrderTypeMap[supportOrderType]}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
-                            <p>{this.shareTypeString()}</p>
-                            {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
-                        </div>
+                        {giftType === '30' && (
+                            <div className={styles.ruleSection}>
+                                <p>顾客在获取实物礼品券后，礼品具体领取方式请联系商家，商家会在核对信息无误后进行赠送。</p>
+                            </div>
+                        )}
+                        {giftType !== '30' && (
+                            <div className={styles.ruleSection}>
+                                <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
+                                <p>{`本券适用于${supportOrderTypeMap[supportOrderType]}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
+                                <p>{this.shareTypeString()}</p>
+                                {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
+                            </div>
+                        )}
+
                         <div className={styles.sectionHeader}>
                             活动详情
                         </div>
