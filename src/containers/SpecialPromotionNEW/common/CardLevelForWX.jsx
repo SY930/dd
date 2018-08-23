@@ -207,7 +207,7 @@ class CardLevelForWX extends React.Component {
         //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
-            cardTypeIds: questArr.join(','),
+            cardTypeIds: uniq(questArr).join(','),
             queryCardType: 1// questArr.length === 0 ? 0 : 1,
         }, null, { path: 'data.cardTypeShopList' })
             .then(cardTypeShopList => {
