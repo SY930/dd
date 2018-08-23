@@ -34,6 +34,7 @@ import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
+import {debounce} from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -65,6 +66,9 @@ class GiftAddModalStep extends React.PureComponent {
         };
         this.firstForm = null;
         this.secondForm = null;
+        this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
 
     componentDidMount() {
@@ -170,7 +174,15 @@ class GiftAddModalStep extends React.PureComponent {
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
-            this.props.changeGiftFormKeyValue({key, value});
+            switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+                case 'giftName':    this.handleNameChangeDebounced({key, value});
+                                    break;
+                case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
+                                    break;
+                case 'giftValue':    this.handleValueChangeDebounced({key, value});
+                                    break;
+                default: this.props.changeGiftFormKeyValue({key, value});
+            }
         }
 
         if (key !== 'foodNameList') {

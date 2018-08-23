@@ -14,6 +14,7 @@ import {
     FetchGiftList, startSaving,
 } from '../_action';
 import IsSync from "./common/IsSync";
+import {debounce} from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -32,6 +33,9 @@ class GiftAddModal extends React.Component {
             isUpdate: true,
         };
         this.baseForm = null;
+        this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
     componentWillMount() {
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
@@ -73,7 +77,15 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-        this.props.changeGiftFormKeyValue({key, value});
+        switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+            case 'giftName':    this.handleNameChangeDebounced({key, value});
+                break;
+            case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
+                break;
+            case 'giftValue':    this.handleValueChangeDebounced({key, value});
+                break;
+            default: this.props.changeGiftFormKeyValue({key, value});
+        }
     }
     handleSubmit() {
         const { groupTypes, imageUrl, transferType } = this.state;
