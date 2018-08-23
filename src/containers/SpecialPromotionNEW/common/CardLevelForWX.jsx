@@ -169,6 +169,28 @@ class CardLevelForWX extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!isEqual(prevState.getExcludeCardLevelIds, this.state.getExcludeCardLevelIds)) {
+            this.clearAndRequeryAvailableShops()
+        }
+    }
+
+    clearAndRequeryAvailableShops() {
+        const opts = {
+            cardLevelRangeType: '2',
+            cardLevelIDList: [],
+        };
+        opts.canUseShops = []
+        opts.selections_shopsInfo = { shopsInfo: [] }
+        this.setState(opts, () => {
+            this.queryCanuseShops([])
+        });
+        this.props.onChange && this.props.onChange({
+            cardLevelRangeType: '2',
+            cardLevelIDList: [],
+        })
+    }
+
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -264,7 +286,7 @@ class CardLevelForWX extends React.Component {
         opts.canUseShops = []
         opts.selections_shopsInfo = { shopsInfo: [] }
         this.setState(opts, () => {
-            this.queryCanuseShops()
+            this.queryCanuseShops([])
         });
         this.props.onChange && this.props.onChange({
             cardLevelRangeType: e.target.value,
