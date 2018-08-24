@@ -260,10 +260,12 @@ class GiftDetailTable extends Component {
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
-        // 请求获取promotionList--券活动
-        gift.value == 100 ? this.props.fetchAllPromotionList({
+        if (gift.value == 100) { //
+            return message.success('该券即将下线, 请使用折扣券');
+        }
+        /*this.props.fetchAllPromotionList({// 请求获取promotionList--券活动
             groupID: this.props.user.accountInfo.groupID,
-        }) : null;
+        }) : null;*/
         this.props.startEditGift({
             operationType,
             value: gift.data.giftType,
