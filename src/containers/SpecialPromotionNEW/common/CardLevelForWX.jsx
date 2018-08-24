@@ -361,6 +361,7 @@ class CardLevelForWX extends React.Component {
                     label={`适用${cardLevelRangeType == 2 ? '卡类' : '卡等级'}`}
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                     labelCol={{ span: 4 }}
+                    required={eventInfo.allCardLevelCheck || excludeEvent.length > 0}
                     wrapperCol={{ span: 17 }}
                 >
                     {
@@ -418,7 +419,15 @@ class CardLevelForWX extends React.Component {
                     }
                 </FormItem>
                 {
-                    this.state.cardLevelIDList.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
+                    !eventInfo.allCardLevelCheck && excludeEvent.length == 0 && this.state.cardLevelIDList.length === 0 ? (
+                        <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
+                            不选择默认全选
+                        </p>
+                    ) : (eventInfo.allCardLevelCheck || excludeEvent.length > 0) && this.state.cardLevelIDList.length === 0  ? (
+                        <p style={{ color: 'red', marginLeft: 110, marginTop: '-5px' }}>
+                            有卡类被占用, 不得为空
+                        </p>
+                    ) : null
                 }
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length === 0 ? null :

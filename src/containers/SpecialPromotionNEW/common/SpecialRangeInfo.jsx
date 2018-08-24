@@ -242,6 +242,10 @@ class SpecialRangeInfo extends React.Component {
             nextFlag = false;
         }
         if (this.props.type === '23' && (this.state.cardLevelRangeType === '0' || !opts.cardLevelIDList.length) ) {
+            const excludeEvents = this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [];
+            if (excludeEvents.length && !opts.cardLevelIDList.length) {
+                return isPrev || false;
+            }
             opts.cardLevelRangeType = '4'; // 全部微信会员
         }
         if (this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30') {
