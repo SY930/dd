@@ -256,7 +256,7 @@ class CompositeDetailInfo extends React.Component {
         let groupCountFlag = true;
         conditions.forEach((condition) => {
             // 校验
-            if (condition.flag == '1' && (condition.discount == null || condition.discount == '')) {
+            if (condition.flag == '1' && (condition.discount == null || condition.discount == '' || condition.discount > 100)) {
                 condition.discountStatus = 'error';
                 nextFlag = false;
             }
@@ -433,7 +433,7 @@ class CompositeDetailInfo extends React.Component {
     handleDiscountChange(idx, val) {
         const { conditions } = this.state;
         conditions[idx].discount = val.number;
-        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null)) {
+        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null || val.number > 100)) {
             conditions[idx].discountStatus = 'error';
         } else {
             conditions[idx].discountStatus = 'success';
