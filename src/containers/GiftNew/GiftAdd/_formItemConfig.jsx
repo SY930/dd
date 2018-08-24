@@ -150,21 +150,21 @@ const FORMITEMS = {
 };
 
 const FIRST_KEYS = {
-    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark',] },
+    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType','giftName','selectBrands', 'giftValue', 'giftRemark',] },
     { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
     '菜品优惠券': [
-        {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'foodNameList', 'giftRemark'],},
+        {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'foodNameList', 'giftRemark'],},
         {col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo']
         }],
     '菜品兑换券': [
-        {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'foodNameList', 'giftRemark'],},
+        {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'foodNameList', 'giftRemark'],},
         {col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo']
     }],
-    '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
-    '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
-    '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'price', 'validityDays', 'giftRemark'] }],
-    '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'price', 'giftRemark', 'TrdTemplate'] }],
-    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'price', 'giftRemark', 'TrdTemplate'] }],
+    '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
+    '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
+    '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'price', 'validityDays', 'giftRemark'] }],
+    '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'price', 'giftRemark', 'TrdTemplate'] }],
+    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'price', 'giftRemark', 'TrdTemplate'] }],
 };
 const SECOND_KEYS = {
     '代金券': [{

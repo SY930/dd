@@ -17,6 +17,7 @@ import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
 import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import SelectBrands from "../components/SelectBrands";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -48,7 +49,7 @@ class GiftAddModal extends React.Component {
 
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
-        fetchData('getShopBrand', { _groupID: groupID, groupID, isActive: 1 }, null, { path: 'data.records' }).then((data) => {
+        /*fetchData('getShopBrand', { _groupID: groupID, groupID, isActive: 1 }, null, { path: 'data.records' }).then((data) => {
             if (!data) return;
             const groupTypes = [];
             data.map((d) => {
@@ -56,7 +57,7 @@ class GiftAddModal extends React.Component {
             });
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
-        });
+        });*/
         if (type == 'edit') {
             if (giftImagePath) {
                 this.setState({
@@ -147,6 +148,7 @@ class GiftAddModal extends React.Component {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
             }
+            params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -176,47 +178,6 @@ class GiftAddModal extends React.Component {
             imageUrl: '',
         });
         this.props.onCancel();
-    }
-    handleGiftName(decorator) {
-        const { groupTypes } = this.state;
-        return (
-            <Row>
-                <Col span={11}>
-                    <FormItem>
-                        {decorator({
-                            key: 'brandID',
-                            rule: [{ required: true, message: '请选择品牌' }],
-                            // initialValue: '-1',
-                        })(<Select
-                            className="giftName"
-                            placeholder={'请选择品牌名称'}
-                            getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                groupTypes.map((t, i) => {
-                                    return <Option key={t.label} value={t.value}>{t.label}</Option>
-                                })
-                            }
-                        </Select>)}
-                    </FormItem>
-                </Col>
-                <Col span={1} offset={1}>-</Col>
-                <Col span={11}>
-                    <FormItem style={{ marginBottom: 0 }}>
-                        {decorator({
-                            key: 'giftName',
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '汉字、字母、数字、小数点，50个字符以内',
-                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                                },
-                            ],
-                        })(<Input size="large" placeholder="请输入礼品名称" />)}
-                    </FormItem>
-                </Col>
-            </Row>
-        )
     }
 
     renderShopNames(decorator) {
@@ -332,9 +293,18 @@ class GiftAddModal extends React.Component {
                     { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }],
             },
             giftName: {
-                label: '礼品名称',
-                type: 'custom',
-                render: decorator => this.handleGiftName(decorator),
+                label: `礼品名称`,
+                type: 'text',
+                placeholder: '请输入礼品名称',
+                size: 'large',
+                rules: [
+                    { required: true, message: '礼品名称不能为空' },
+                    {
+                        message: '汉字、字母、数字、小数点，50个字符以内',
+                        pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
+                    },
+                ],
+                disabled: type !== 'add',
             },
             giftCost: {
                 type: 'text',
@@ -395,6 +365,11 @@ class GiftAddModal extends React.Component {
                     { max: 400, message: '最多400个字符' },
                 ],
             },
+            selectBrands: {
+                label: '所属品牌',
+                type: 'custom',
+                render: decorator => decorator({})(<SelectBrands/>),
+            },
             isSynch: {
                 label: ` `,
                 type: 'custom',
@@ -424,10 +399,10 @@ class GiftAddModal extends React.Component {
             },
         };
         const formKeys = {
-            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftValue', 'giftName', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
-            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
-            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark', 'giftRule', ] }],
-            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
+            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
+            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
+            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
+            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
         };
         let formData = {};
         if (type == 'edit') {
@@ -436,9 +411,6 @@ class GiftAddModal extends React.Component {
         if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
-        formItems.giftName = type === 'add'
-            ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }
-            : { label: '礼品名称', type: 'text', disabled: true };
         /*return (
             <Modal
                 title={`${type === 'edit' ? '修改' : '创建'}${describe}`}

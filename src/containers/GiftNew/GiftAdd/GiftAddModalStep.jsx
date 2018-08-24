@@ -35,6 +35,7 @@ import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
+import SelectBrands from "../components/SelectBrands";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -124,7 +125,7 @@ class GiftAddModalStep extends React.PureComponent {
             });
             this.setState({ shopsData: [...treeData] });
         });*/
-        fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
+        /*fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
             if (!data) return;
             const groupTypes = [];
             data.forEach((d) => {
@@ -132,7 +133,7 @@ class GiftAddModalStep extends React.PureComponent {
             });
             groupTypes.push({ value: '-1', label: '(空)' });
             this.setState({ groupTypes });
-        }).catch(() => undefined);
+        }).catch(() => undefined);*/
         FetchGiftSort({});
     }
 
@@ -532,6 +533,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
             params.isFoodCatNameList = values.isFoodCatNameList;
+            params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             this.setState({
                 finishLoading: true,
             });
@@ -549,46 +551,6 @@ class GiftAddModalStep extends React.PureComponent {
         });
     }
 
-    handleGiftName(decorator) {
-        const { groupTypes } = this.state;
-        return (
-            <Row style={{ marginTop: -6 }}>
-                <Col span={11}>
-                    <FormItem>
-                        {decorator({
-                            key: 'brandID',
-                            rule: [{ required: true, message: '请选择品牌' }],
-                            // initialValue: '-1',
-                        })(<Select
-                            placeholder={'请选择品牌名称'}
-                            getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                groupTypes.map((t, i) => {
-                                    return <Option key={t.label} value={t.value}>{t.label}</Option>
-                                })
-                            }
-                        </Select>)}
-                    </FormItem>
-                </Col>
-                <Col span={1} offset={1}>-</Col>
-                <Col span={11}>
-                    <FormItem style={{ marginBottom: 0 }}>
-                        {decorator({
-                            key: 'giftName',
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '汉字、字母、数字、小数点，50个字符以内',
-                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                                },
-                            ],
-                        })(<Input size="large" placeholder="请输入礼品名称" />)}
-                    </FormItem>
-                </Col>
-            </Row>
-        )
-    }
     renderDisCountStages(decorator) {
         const { discountType } = this.state.values
         return (
@@ -1024,6 +986,11 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: () => describe,
             },
+            selectBrands: {
+                label: '所属品牌',
+                type: 'custom',
+                render: decorator => decorator({})(<SelectBrands/>),
+            },
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
@@ -1041,9 +1008,18 @@ class GiftAddModalStep extends React.PureComponent {
                 }],
             },
             giftName: {
-                label: '礼品名称',
-                type: 'custom',
-                render: decorator => this.handleGiftName(decorator),
+                label: `礼品名称`,
+                type: 'text',
+                placeholder: '请输入礼品名称',
+                size: 'large',
+                rules: [
+                    { required: true, message: '礼品名称不能为空' },
+                    {
+                        message: '汉字、字母、数字、小数点，50个字符以内',
+                        pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
+                    },
+                ],
+                disabled: type !== 'add',
             },
             shopNames: {
                 type: 'custom',
@@ -1312,9 +1288,6 @@ class GiftAddModalStep extends React.PureComponent {
         } else {
             formItems.moneyLimitType.label = '金额限制';
         }
-        formItems.giftName = type === 'add'
-            ? { label: '礼品名称', type: 'custom', render: decorator => this.handleGiftName(decorator) }
-            : { label: '礼品名称', type: 'text', disabled: true };
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
