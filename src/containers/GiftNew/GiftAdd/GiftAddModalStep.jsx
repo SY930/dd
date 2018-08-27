@@ -172,7 +172,9 @@ class GiftAddModalStep extends React.PureComponent {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+        if (key === 'shareIDs') {
+            this.props.changeGiftFormKeyValue({key, value});
+        } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
             switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
@@ -999,12 +1001,12 @@ class GiftAddModalStep extends React.PureComponent {
                 surfix: '元',
                 rules: [{ required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` }, {
                     validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                        if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
                             cb(rule.message);
                         }
                         cb();
                     },
-                    message: '整数不超过8位，小数不超过2位',
+                    message: '整数不能超过5位, 小数不能超过2位',
                 }],
             },
             giftName: {
