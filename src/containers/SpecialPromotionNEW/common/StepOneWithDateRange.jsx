@@ -25,6 +25,14 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
+const fullOptionSmsGate = [ // 选项有5种
+    '53', '61', '62', '63', '70'
+];
+
+const simpleOptionSmsGate = [ // 选项有2种
+    '21', '20', '30', '60', '23', '64', '31'
+];
+
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +62,7 @@ class StepOneWithDateRange extends React.Component {
         this.getDateCount = this.getDateCount.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleMpIDChange = this.handleMpIDChange.bind(this);
         this.msgSendTime = this.msgSendTime.bind(this);
         this.handlesmsGateChange = this.handlesmsGateChange.bind(this);
         this.onTimePickerChange = this.onTimePickerChange.bind(this);
@@ -68,6 +77,7 @@ class StepOneWithDateRange extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        this.props.queryWechatMpInfo();
 
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
@@ -313,6 +323,12 @@ class StepOneWithDateRange extends React.Component {
     handleNameChange(e) {
         this.setState({
             name: e.target.value,
+        });
+    }
+
+    handleMpIDChange(v) {
+        this.setState({
+            mpID: v,
         });
     }
     // startTime change
@@ -601,8 +617,8 @@ class StepOneWithDateRange extends React.Component {
                                 )}
                             </FormItem> : null
                     }
-                    {
-                        this.props.type == '53' || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '70' ?
+                    {fullOptionSmsGate.includes(String(this.props.type))
+                         ?
                             <FormItem
                                 label="是否发送消息"
                                 className={styles.FormItemStyle}
@@ -622,9 +638,8 @@ class StepOneWithDateRange extends React.Component {
                                 </Select>
 
                             </FormItem> : null
-                    }{
-                        this.props.type == '21' || this.props.type == '20' || this.props.type == '30' || this.props.type == '60'
-                            || this.props.type == '23' || this.props.type == '64' || this.props.type == '31' ?
+                    }{simpleOptionSmsGate.includes(String(this.props.type))
+                         ?
                             <FormItem
                                 label="是否发送消息"
                                 className={styles.FormItemStyle}
@@ -643,6 +658,34 @@ class StepOneWithDateRange extends React.Component {
                                     }
                                 </Select>
 
+                            </FormItem> : null
+                    }{ [...simpleOptionSmsGate, ...fullOptionSmsGate].includes(String(this.props.type)) && this.state.smsGate >= 2
+                         ?
+                            <FormItem
+                                label="微信公众号选择"
+                                required
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >{getFieldDecorator('mpID', {
+                                rules: [{
+                                    required: true,
+                                    message: '请选择微信推送的公众号',
+                                }],
+                                initialValue: this.state.mpID,
+                                onChange: this.handleMpIDChange
+                            })(
+                                <Select size="default"
+                                        placeholder="请选择微信推送的公众号"
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    {
+                                        this.props.allWeChatAccountList.map((item) => {
+                                            return (<Option value={`${item.mpID}`} key={`${item.mpID}`}>{item.mpName}</Option>)
+                                        })
+                                    }
+                                </Select>
+                            )}
                             </FormItem> : null
                     }
                     {
@@ -746,6 +789,7 @@ const mapStateToProps = (state) => {
         occupiedWeChatInfo: state.queryWeixinAccounts,
         allWeChatIDListLoading: state.sale_giftInfoNew.get('mpListLoading'),
         allWeChatIDList: state.sale_giftInfoNew.get('mpList').toJS().map(item => item.mpID),
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS(),
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
     }
