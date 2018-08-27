@@ -21,7 +21,7 @@ import {throttle, isEqual} from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import { SALE_CENTER_PAGE } from '../../../constants/entryCodes';
+import { SALE_CENTER_PAGE, NEW_SALE_CENTER } from '../../../constants/entryCodes';
 
 import {
     initializationOfMyActivities,
@@ -228,12 +228,12 @@ class MyActivities extends React.Component {
         this.handleQuery();
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'CATEGORY_NAME',
+            phraseType: '0',
         });
 
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
 
         fetchPromotionScopeInfo({
@@ -401,7 +401,7 @@ class MyActivities extends React.Component {
             opt.shopID = promotionShop;
         }
         if (promotionState !== '' && promotionState != '0') {
-            opt.isActive = promotionState == '1' ? 'ACTIVE' : 'NOT_ACTIVE';
+            opt.isActive = promotionState == '1' ? '1' : '0';
         }
         if (promotionValid !== '' && promotionValid != '0') {
             opt.status = promotionValid;
@@ -488,7 +488,7 @@ class MyActivities extends React.Component {
 
     changeSortOrder(record, direction) {
         const params = {promotionID: record.promotionIDStr, rankingType: direction};
-        axiosData('/promotionV1/updatePromotionRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_CRM').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -511,7 +511,7 @@ class MyActivities extends React.Component {
             message.error('没有查询到相应数据');
             return null;
         }
-        if (responseJSON.promotionInfo.master.maintenanceLevel === 'SHOP_LEVEL') { // shop
+        if (responseJSON.promotionInfo.master.maintenanceLevel === '1') { // shop
             const opts = {
                 _groupID: this.props.user.accountInfo.groupID,
                 shopID: responseJSON.promotionInfo.master.shopIDLst,
@@ -539,7 +539,8 @@ class MyActivities extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
-        if ( _record && _record.maintenanceLevel !== 'SHOP_LEVEL') { // 集团
+        console.log('arrayTransformAdapter: ', _record.promotionType);
+        if ( _record && _record.maintenanceLevel !== '1') { // 集团
             this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
             this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
@@ -630,7 +631,7 @@ class MyActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.renderContentOfThisModal()}
+                { this.state.updateModalVisible && this.renderContentOfThisModal()}
             </Modal>
         );
     }
@@ -680,8 +681,7 @@ class MyActivities extends React.Component {
                         className={styles.jumpToCreate}
                         onClick={
                             () => {
-                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076002').menuID
-                                jumpPage({ menuID })
+                                jumpPage({ menuID: NEW_SALE_CENTER })
                             }
                         }>新建</Button>
                 </div>
@@ -979,8 +979,8 @@ class MyActivities extends React.Component {
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive === 'ACTIVE' ? '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
+                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
                             href="#"
@@ -1129,7 +1129,7 @@ class MyActivities extends React.Component {
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return (isActive === 'ACTIVE' ? '启用' : '禁用');
+                    return (isActive == '1' ? '启用' : '禁用');
                 },
             },
         ];

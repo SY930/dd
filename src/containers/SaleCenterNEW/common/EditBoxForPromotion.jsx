@@ -98,7 +98,7 @@ class EditBoxForPromotion extends React.Component {
         const user = this.props.user;
         // 请求获取promotionList--共享用
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
@@ -149,7 +149,7 @@ class EditBoxForPromotion extends React.Component {
                     return {
                         promotionType: promotionCategery.promotionType,
                         promotionName: promotionCategery.promotionName.filter((promotion) => {
-                            return promotion.maintenanceLevel == 'SHOP_LEVEL';
+                            return promotion.maintenanceLevel == '1';
                         }),
                     }
                 }) : _promotions,
@@ -163,7 +163,7 @@ class EditBoxForPromotion extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
-        const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+        const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
@@ -212,7 +212,7 @@ class EditBoxForPromotion extends React.Component {
                         return {
                             promotionType: promotionCategery.promotionType,
                             promotionName: promotionCategery.promotionName.filter((promotion) => {
-                                return promotion.maintenanceLevel == 'SHOP_LEVEL';
+                                return promotion.maintenanceLevel == '1';
                             }),
                         }
                     }) : promotionCollection,
@@ -232,7 +232,7 @@ class EditBoxForPromotion extends React.Component {
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
-                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.maintenanceLevel == 'SHOP_LEVEL'
+                    return filterFlag ? promotion.promotionIDStr != SelfPromotion && promotion.maintenanceLevel == '1'
                         : promotion.promotionIDStr != SelfPromotion;
                 })
                 const promotionType = promotionCategery.promotionType;
@@ -261,7 +261,7 @@ class EditBoxForPromotion extends React.Component {
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = this.state.promotionSelections;
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
 
         // 拼左侧树状结构
         const loop = (data) => {

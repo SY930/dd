@@ -78,13 +78,13 @@ const AddCategorys =Form.create()(class AddCategory extends React.Component{
             this.props.addPhrase({
                 data:{
                     _groupID: this.props.user.accountInfo.groupID,
-                    phraseType:'CATEGORY_NAME',
+                    phraseType:'0',
                     name:this.state.newCategory
                 },
                 success:()=>{
                     this.props.fetchPromotionCategories({
                         _groupID: this.props.user.accountInfo.groupID,
-                        phraseType:'CATEGORY_NAME'
+                        phraseType:'0'
                     });
                     this.props.callback && this.props.callback(options);
                     this.setState({
@@ -267,13 +267,13 @@ class PromotionBasicInfo extends React.Component{
         promotionBasicInfo.getIn(["$categoryList", "initialized"]) ||
         fetchPromotionCategories({
             _groupID: this.props.user.accountInfo.groupID,
-            phraseType:'CATEGORY_NAME'
+            phraseType:'0'
         });
 
         promotionBasicInfo.getIn(["$tagList", "initialized"]) ||
         fetchPromotionTags({
             _groupID: this.props.user.accountInfo.groupID,
-            phraseType:'TAG_NAME'
+            phraseType:'1'
         });
 
         if(promotionBasicInfo.getIn(["$categoryList", "initialized"])){
@@ -715,13 +715,13 @@ class PromotionBasicInfo extends React.Component{
         this.props.addPhrase({
             data:{
                 _groupID: this.props.user.accountInfo.groupID,
-                phraseType:'TAG_NAME',
+                phraseType:'1',
                 name:value[value.length-1]
             }
         });
         this.props.fetchPromotionTags({
             _groupID: this.props.user.accountInfo.groupID,
-            phraseType:'TAG_NAME'
+            phraseType:'1'
         })
     }
 

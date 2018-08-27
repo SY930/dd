@@ -45,12 +45,12 @@ class PromotionDetail extends React.Component {
 
     renderCategoryOrDish(record) {
         if (record.scopeLst !== undefined) {
-            if (this.renderCategory(record.scopeLst, 'FOOD_INCLUDED').length > 0) {
+            if (this.renderCategory(record.scopeLst, '2').length > 0) {
                 return (
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>适用菜品</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'FOOD_INCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '2') : '不限制'}</Col>
                     </Row>);
             }
             return (
@@ -58,12 +58,12 @@ class PromotionDetail extends React.Component {
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>适用菜品分类</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'CATEGORY_INCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '1') : '不限制'}</Col>
                     </Row>
                     <Row>
                         <Col span={4} style={{ textAlign: 'right' }}>排除菜品</Col>
                         <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, 'FOOD_EXCLUDED') : '不限制'}</Col>
+                        <Col span={18} style={{ textAlign: 'left' }}>{record.scopeLst ? this.renderCategory(record.scopeLst, '4') : '不限制'}</Col>
                     </Row>
 
 
@@ -111,7 +111,7 @@ class PromotionDetail extends React.Component {
                     <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                     <Col span={18} style={{ textAlign: 'left' }}>
                         {
-                            record.master.promotionType == 'BILL_CUMULATION_FREE' || record.master.promotionType == 'FOOD_CUMULATION_GIVE' ?
+                            record.master.promotionType == '2070' || record.master.promotionType == '1080' ?
                                 CLIENT_CATEGORY_ADD_UP.find((pt) => {
                                     return pt.key === record.master.userType
                                 }).name : CLIENT_CATEGORY.find((pt) => {

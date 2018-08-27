@@ -95,7 +95,7 @@ export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_FETCH_PROMOTION_CATEGORIES_SUCCESS:
             if (undefined === action.payload) { return $$state; }
             return $$state
-                .setIn(['$categoryList', 'data'], Immutable.fromJS(action.payload.phraseLst))
+                .setIn(['$categoryList', 'data'], Immutable.fromJS(action.payload.phraseList))
                 .setIn(['$categoryList', 'initialized'], true);
 
         case SALE_CENTER_FETCH_PROMOTION_CATEGORIES_FAILED:
@@ -108,10 +108,8 @@ export const promotionBasicInfo_NEW = ($$state = $initialState, action) => {
             if (undefined === action.payload) { return $$state; }
 
             return $$state
-                .setIn(['$tagList', 'data'], Immutable.fromJS(action.payload.phraseLst))
+                .setIn(['$tagList', 'data'], Immutable.fromJS(action.payload.phraseList))
                 .setIn(['$tagList', 'initialized'], true);
-
-
             break;
 
         case SALE_CENTER_FETCH_PROMOTION_TAGS_FAILED:

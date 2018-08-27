@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Row, Col, message } from 'antd';
+import { Row, Col, message, Button } from 'antd';
 import {throttle } from 'lodash';
 import { checkPermission } from '../../../helpers/util';
 import { CrmLogo } from './CrmOperation';
@@ -20,6 +20,8 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import { queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { jumpPage } from '@hualala/platform-base'
+import {GIFT_PAGE} from "../../../constants/entryCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftType extends React.Component {
@@ -83,6 +85,20 @@ class GiftType extends React.Component {
                         <Row className="layoutsTool">
                             <div className="layoutsToolLeft">
                                 <h1>新建礼品</h1>
+                                <Button
+                                    type="ghost"
+                                    icon="rollback"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '2px',
+                                        left: '100px',
+                                    }}
+                                    onClick={
+                                        () => {
+                                            const menuID = this.props.user.menuList.find(tab => tab.entryCode === GIFT_PAGE).menuID
+                                            menuID && jumpPage({ menuID })
+                                        }
+                                    }>返回列表</Button>
                             </div>
                         </Row>
                     </Col>

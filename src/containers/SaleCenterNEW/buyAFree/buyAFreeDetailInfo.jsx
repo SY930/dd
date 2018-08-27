@@ -29,9 +29,9 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const client = [
-    { key: 'ALL_USER', value: '0', name: '不限制' },
-    { key: 'CUSTOMER_ONLY', value: '1', name: '仅会员' },
-    { key: 'CUSTOMER_EXCLUDED', value: '2', name: '非会员' },
+    { key: '0', value: '0', name: '不限制' },
+    { key: '1', value: '1', name: '仅会员' },
+    { key: '2', value: '2', name: '非会员' },
 ];
 const RULE_TYPE = [
     { key: '0', value: '任意消费满' },

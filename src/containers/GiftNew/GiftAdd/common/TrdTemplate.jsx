@@ -128,7 +128,12 @@ class TrdTemplate extends React.Component {
                 loading: false,
             })
             return Promise.resolve(trdTemplateInfoList || [])
-        });
+        }).catch(error => {
+            this.setState({
+                trdTemplateInfoList: [],
+                loading: false,
+            })
+        }) ;
     }
     // Switch Button
     handleDefaultChecked = (value) => {

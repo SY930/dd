@@ -16,6 +16,7 @@ import styles from '../ActivityPage.less';
 
 import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 
 const Immutable = require('immutable');
 
@@ -102,7 +103,7 @@ class PromotionDetailSetting extends React.Component {
         if (_scopeLst.length > 0) {
             let categoryOrDish = 0;
             _scopeLst.map((scope) => {
-                if (scope.scopeType == 'CATEGORY_INCLUDED') {
+                if (scope.scopeType == '1') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -114,7 +115,7 @@ class PromotionDetailSetting extends React.Component {
                                 });
                         });
                 }
-                if (scope.scopeType == 'FOOD_EXCLUDED') {
+                if (scope.scopeType == '4') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -129,7 +130,7 @@ class PromotionDetailSetting extends React.Component {
                                 })
                         });
                 }
-                if (scope.scopeType == 'FOOD_INCLUDED') {
+                if (scope.scopeType == '2') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -192,7 +193,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS() : [];
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         // 当为第二份打折时，过滤套餐
-        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_DISCOUNT_WHEN') {
+        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
             foodCategoryCollection = this.filterGroup(foodCategoryCollection);
         }
         this.setState({
@@ -212,7 +213,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.onChange && this.props.onChange({
                 foodCategory: _scopeLst2,
                 dishes: _scopeLst2,
-                categoryOrDish: _scopeLst2[0] ? (_scopeLst2[0].scopeType == 'CATEGORY_INCLUDED' ? '0' : '1') : '0',
+                categoryOrDish: _scopeLst2[0] ? (_scopeLst2[0].scopeType == '1' ? '0' : '1') : '0',
             })
         }
     }
@@ -223,7 +224,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.get('foodCategoryCollection')) {
             let foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             // 当为第二份打折时，过滤套餐
-            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_DISCOUNT_WHEN') {
+            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
                 foodCategoryCollection = this.filterGroup(foodCategoryCollection);
             }
             this.setState({
@@ -317,6 +318,13 @@ class PromotionDetailSetting extends React.Component {
                         return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
+                {this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' && <CloseableTip content={
+                    <div>
+                        <p>指定菜品：</p>
+                        <p>当未选择任何分类及菜品时，会根据基本档菜品库菜品是否设置了参与打折来执行。即：所有设置了参与打折的菜品都在活动参与范围</p>
+                        <p>当选择了适用菜品，则活动按照设置的菜品执行，不再受基本档菜品是否参与打折的设置影响</p>
+                    </div>
+                } />}
             </FormItem>
 
         );

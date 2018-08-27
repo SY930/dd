@@ -46,7 +46,7 @@ const FORMITEMS = {
     isOfflineCanUsing: {
         label: '到店使用',
         type: 'radio',
-        defaultValue: 'false',
+        defaultValue: 'true',
         options: GiftCfg.isOfflineCanUsing,
     },
     giftShareType: {

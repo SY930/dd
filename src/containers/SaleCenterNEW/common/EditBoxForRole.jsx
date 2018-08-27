@@ -52,7 +52,7 @@ class EditBoxForSubject extends React.Component {
         let _role = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'role']);
         _role = _role ? _role.toJS() : [];
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
-        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+        const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
 
         if (this.props.promotionScopeInfo.get('$scopeInfo').toJS().auto == '1') {
             this.clear();
@@ -85,7 +85,7 @@ class EditBoxForSubject extends React.Component {
                 });
             }
             const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
-            const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == 'SHOP_LEVEL');
+            const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
             this.setState({
                 roleCollection: filterFlag ? _roles.map((roles) => {
                     return {

@@ -118,7 +118,7 @@ class FoodBox extends React.Component {
         if (_scopeLst.length > 0) {
             let categoryOrDish = 1;
             _scopeLst.forEach((scope) => {
-                if (scope.scopeType === 'CATEGORY_INCLUDED') {
+                if (scope.scopeType == '1') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -131,7 +131,7 @@ class FoodBox extends React.Component {
                         });
 
                 }
-                if (scope.scopeType === 'FOOD_EXCLUDED') {
+                if (scope.scopeType == '4') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -146,7 +146,7 @@ class FoodBox extends React.Component {
                                 })
                         });
                 }
-                if (scope.scopeType === 'FOOD_INCLUDED') {
+                if (scope.scopeType == '2') {
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
@@ -169,21 +169,19 @@ class FoodBox extends React.Component {
                 foodSelections,
                 excludeSelections,
             });
-            if (_scopeLst[0].scopeType === 'CATEGORY_INCLUDED') {
+            if (_scopeLst[0].scopeType == '1') {
                 this.props.onChange && this.props.onChange({
                     foodCategory: Array.from(foodCategorySelections),
                     categoryOrDish: '1',
                 });
             }
-            if (_scopeLst[0].scopeType === 'FOOD_INCLUDED') {
+            if (_scopeLst[0].scopeType == '2') {
                 !this.props.dishOnly && this.props.onChange && this.props.onChange({
                     dishes: Array.from(foodSelections),
                     categoryOrDish: '0',
                 });
             }
         }
-
-
     }
     componentDidMount() {
         var opts = {

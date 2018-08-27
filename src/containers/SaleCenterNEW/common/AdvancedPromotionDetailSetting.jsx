@@ -46,7 +46,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             mutexPromotions: [],
             mutexSubjects: [],
             selectedRole: [],
-            userSetting: 'ALL_USER',
+            userSetting: '0',
             subjectType: '0',
             blackListRadio: '0',
             display: 'none',
@@ -83,23 +83,23 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         let userSettingOPtios = []
-        if (promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') {
+        if (promotionType === '2070' || promotionType === '1080') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
-        } else if (promotionType === 'RETURN_GIFT') {
+        } else if (promotionType == '3010') {
             userSettingOPtios = this.props.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT
-        } else if (promotionType === 'RETURN_POINT') {
+        } else if (promotionType == '3020') {
             userSettingOPtios = CLIENT_CATEGORY_RETURN_POINT
         } else {
             userSettingOPtios = CLIENT_CATEGORY
         }
-        if ((promotionType === 'BILL_CUMULATION_FREE' || promotionType === 'FOOD_CUMULATION_GIVE') && userSetting === 'ALL_USER') {
-            userSetting = 'CUSTOMER_ONLY';
+        if ((promotionType == '2070' || promotionType == '1080') && userSetting == '0') {
+            userSetting = '1';
         }
-        if (promotionType === 'RETURN_GIFT' && this.props.stashSome) {
-            userSetting = 'CUSTOMER_ONLY';
+        if (promotionType == '3010' && this.props.stashSome) {
+            userSetting = '1';
         }
-        if (promotionType === 'RETURN_POINT') {
-            userSetting = 'CUSTOMER_ONLY';
+        if (promotionType == '3020') {
+            userSetting = '1';
         }
 
         const cardScopeList = $promotionDetail.get('cardScopeList');
@@ -143,9 +143,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 cardInfo: _groupCardTypeList.toJS(),
             })
         }
-        if (promotionType === 'RETURN_GIFT' && this.props.stashSome !== nextProps.stashSome) {
+        if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {
             this.setState({
-                userSetting: nextProps.stashSome ? 'CUSTOMER_ONLY' : 'ALL_USER',
+                userSetting: nextProps.stashSome ? '1' : '0',
                 userSettingOPtios: nextProps.stashSome ? CLIENT_CATEGORY_RETURN_GIFT.slice(1) : CLIENT_CATEGORY_RETURN_GIFT,
                 cardScopeType: 0,
                 cardScopeIDs: [],
@@ -283,15 +283,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
     };
     renderExcludedPromotionBlackList() {
         const tip = (
-            <div style={{ display: this.state.display, height: 240, width: 460 }} className={styles.tip}>
+            <div style={{ display: this.state.display, height: 330, width: 460 }} className={styles.tip}>
                 <div><p style={{ marginBottom: 10 }}>共享名单方式</p></div>
-                <Row style={{ height: '30%' }}>
+                <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>白名单:</Col>
                     <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>不共享</span></Col>
                 </Row>
-                <Row style={{ height: '30%' }}>
+                <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>黑名单:</Col>
                     <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>不共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>共享</span></Col>
+                </Row>
+                <Row style={{ height: '72px' }}>
+                    <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>注意</span>:</Col>
+                    <Col span={20}>微信餐厅对满赠、买赠、第二份打折、搭赠、加价换购、加价升级换新这六个菜品类营销活动不受互斥规则限制，在微信餐厅上都按同享执行</Col>
                 </Row>
                 <div style={{ marginRight: 14 }}>
                     <div className={styles.tipBtn}>
@@ -498,12 +502,12 @@ class AdvancedPromotionDetailSetting extends React.Component {
     render() {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const _stash = promotionType === 'RETURN_GIFT' || promotionType === 'RETURN_POINT';
+        const _stash = promotionType == '3010' || promotionType == '3020';
         const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo');
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
-                {promotionType !== 'RECOMMEND_FOOD' && (this.state.userSetting === 'CUSTOMER_ONLY' || this.state.userSetting === 'CUSTOMER_SHOP_ACTIVATE' || this.state.userSetting === 'CUSTOMER_CARD_TYPE') ? this.renderCardLeval() : null}
+                {promotionType !== '5010' && (this.state.userSetting == '1' || this.state.userSetting == '3' || this.state.userSetting == '4') ? this.renderCardLeval() : null}
                 {
                     this.props.payLimit ?
                         this.renderPaymentSetting($promotionDetail)

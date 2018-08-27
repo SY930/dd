@@ -32,15 +32,15 @@ let Immutable = require('immutable');
 
 const client = [
     {
-        key: 'ALL_USER',
+        key: '0',
         value: '0',
         name: '不限制'
     }, {
-        key: 'CUSTOMER_ONLY',
+        key: '1',
         value: '1',
         name: '仅会员'
     }, {
-        key: 'CUSTOMER_EXCLUDED',
+        key: '2',
         value: '2',
         name: '非会员'
     }

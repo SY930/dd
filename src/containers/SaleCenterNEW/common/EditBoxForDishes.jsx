@@ -49,7 +49,7 @@ class EditBoxForDishes extends React.Component {
             foodCategoryCollection = [];
         }
         this.setState({
-            priceLst: this.props.type === 'RECOMMEND_FOOD' || this.props.type === 'FOOD_PAY_MORE_THEN_UPGRADE' ? this.props.value : _priceLst,
+            priceLst: this.props.type === '5010' || this.props.type === '1090' ? this.props.value : _priceLst,
             foodCategoryCollection,
         }, () => {
             this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
@@ -124,7 +124,7 @@ class EditBoxForDishes extends React.Component {
         if (
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
-            nextProps.type !== 'FOOD_PAY_MORE_THEN_UPGRADE' && nextProps.type !== 'RECOMMEND_FOOD'
+            nextProps.type !== '1090' && nextProps.type !== '5010'
         ) {
             let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
             _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
@@ -135,7 +135,7 @@ class EditBoxForDishes extends React.Component {
             })
         }
         if (
-            (nextProps.type === 'RECOMMEND_FOOD' || nextProps.type === 'FOOD_PAY_MORE_THEN_UPGRADE') &&
+            (nextProps.type === '5010' || nextProps.type === '1090') &&
             !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
         ) {
             this.setState({

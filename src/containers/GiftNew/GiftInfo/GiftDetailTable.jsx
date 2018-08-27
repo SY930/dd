@@ -32,6 +32,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
+import {NEW_GIFT} from "../../../constants/entryCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -459,8 +460,7 @@ class GiftDetailTable extends Component {
                                 className={styles2.jumpToCreate}
                                 onClick={
                                     () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
-                                        jumpPage({ menuID })
+                                        jumpPage({ menuID: NEW_GIFT })
                                     }
                                 }
                             >新建</Button>

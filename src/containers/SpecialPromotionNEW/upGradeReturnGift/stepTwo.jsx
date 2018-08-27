@@ -493,7 +493,7 @@ class StepTwo extends React.Component {
                         <SendMsgInfo
                             sendFlag={sendFlag}
                             form={this.props.form}
-                            value={sendFlag ? this.state.message.trim() : this.state.message}
+                            value={this.state.message}
                             settleUnitID={this.state.settleUnitID}
                             onChange={
                                 (val) => {

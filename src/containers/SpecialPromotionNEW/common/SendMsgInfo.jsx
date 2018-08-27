@@ -1,4 +1,4 @@
-/**
+﻿/**
 * @Author: Xiao Feng Wang  <xf>
 * @Date:   2017-03-15T10:50:38+08:00
 * @Email:  wangxiaofeng@hualala.com
@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import MsgSelector from "./MsgSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -48,8 +49,8 @@ class SendMsgInfo extends React.Component {
         specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
         this.setState({
             message: this.props.value,
-            settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
-                (specialPromotion.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
+            settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
+                (specialPromotion.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
         }, () => {
             this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
         })
@@ -81,12 +82,12 @@ class SendMsgInfo extends React.Component {
             this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
         })
     }
-    handleMsgChange(e) {
+    handleMsgChange(message) {
         this.props.form.setFieldsValue({
-            message: e.target.value,
+            message: message,
         });
         this.setState({
-            message: e.target.value,
+            message: message,
         }, () => {
             this.props.onChange && this.props.onChange(this.state.message);
         });
@@ -108,10 +109,10 @@ class SendMsgInfo extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
+        const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
         if (this.props.sendFlag) {
             return (
-                <Form>
+                <div>
                     <FormItem
                         label="短信结算账户"
                         className={styles.FormItemStyle}
@@ -140,50 +141,24 @@ class SendMsgInfo extends React.Component {
                     </FormItem>
 
                     <FormItem
-                        label="短信模板"
+                        label="选择短信模板"
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('message', {
-                            rules: [
-                                { required: true, message: '请输入短信模板' },
-                                { max: 500, message: '最多500个字符' },
-                            ],
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange,
+                            rules: [{
+                                required: true,
+                                message: '必须选择一条短信模板',
+                            }],
                         })(
-                            <Input rows={4} type="textarea" placeholder="请输入短信模板" onChange={this.handleDescriptionChange} />
+                            <MsgSelector selectedMessage={this.state.message}/>
                         )}
 
                     </FormItem>
-                    <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
-                        <Button onClick={this.addMessageInfo}>会员姓名</Button>
-                        <Button onClick={this.addMessageInfo}>先生/女士</Button>
-                        <Button onClick={this.addMessageInfo}>卡名称</Button>
-                        <Button onClick={this.addMessageInfo}>卡号后四位</Button>
-                        <Row>
-                            <Col span={2}> <span className={styles.titleHeight}>规则:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>
-                                    {'请不要输入"【】" "[]"符号'}
-                                </p>
-                                <p className={styles.blockP}>
-                                    预计字数：{(this.state.message || '').length}字，67字为一条，最多500字（含标点空格）
-                                </p>
-                                <p className={styles.blockP}>
-                                    短信条数将由您选择的扣费账户短信余额中扣除，请注意保证余额充足
-                                </p>
-                            </Col>
-                            <Col span={2} ><span className={styles.titleHeight}>注:</span></Col>
-                            <Col span={22}>
-                                <p className={styles.blockP}>{'1.  统计字数中含"回复TD退订【互联网餐厅】"'}</p>
-                                <p className={styles.blockP}>{'2.  字数以最终发出短信内容为准'}</p>
-                            </Col>
-
-                        </Row>
-                    </FormItem>
-                </Form>
+                </div>
             );
         }
         return (

@@ -122,7 +122,7 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         });
-        if (promotionType == 'RECOMMEND_FOOD' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        if (promotionType == '5010' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             this.setState({ shopStatus: false })
         } else {
@@ -130,7 +130,7 @@ class PromotionScopeInfo extends React.Component {
         }
         if (flag) {
             this.props.saleCenterSetScopeInfo({
-                channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == 'RECOMMEND_FOOD' ? 'WECHAT' : this.state.channel,
+                channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' ? 'WECHAT' : this.state.channel,
                 auto: this.state.auto,
                 orderType: this.state.orderType,
                 brands: this.state.brands,
@@ -435,9 +435,9 @@ class PromotionScopeInfo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={promotionType == 'RECOMMEND_FOOD'}
-                validateStatus={promotionType != 'RECOMMEND_FOOD' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
-                help={promotionType != 'RECOMMEND_FOOD' ? null : this.state.shopStatus ? null : '必须选择店铺'}
+                required={promotionType == '5010'}
+                validateStatus={promotionType != '5010' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
+                help={promotionType != '5010' ? null : this.state.shopStatus ? null : '必须选择店铺'}
             >
                 <ShopSelector
                     value={this.state.selections}
@@ -572,11 +572,11 @@ class PromotionScopeInfo extends React.Component {
         return (
             <Form className={styles.FormStyle}>
                 {this.props.user.toJS().shopID > 0 ? null : this.renderBrandFormItem()}
-                {promotionType != 'RECOMMEND_FOOD' ? this.renderChannelList() : null}
+                {promotionType != '5010' ? this.renderChannelList() : null}
                 {this.renderBusinessOptions()}
                 {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
-                {promotionType == 'VOUCHER_GROUP' ? this.renderGroup() : null}
-                {promotionType == 'BILL_DISCOUNT' ? this.renderUsageMode() : null}
+                {promotionType == '4010' ? this.renderGroup() : null}
+                {promotionType == '2020' ? this.renderUsageMode() : null}
             </Form>
         );
     }

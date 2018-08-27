@@ -189,7 +189,7 @@ function constructTreeDataContainsPromotion(data) {
     let promotionTypes;
     promotionTypes = Object.keys(treeDataForPromotionSelectionBoxs)
         .filter((item)=>{
-            return item !== 'FOOD_CUSTOMERIZED'
+            return item != '1999'
         })
         .map((key, index)=>{
 

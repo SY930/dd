@@ -160,6 +160,8 @@ class PromotionBasicInfo extends React.Component {
         const lab = type ? categorys.find((cc) => {
             return cc.key === type
         }).title : '';
+        const rangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
                 <p>{type ?  item ? item.tip : '' : ''}</p>
@@ -186,7 +188,7 @@ class PromotionBasicInfo extends React.Component {
             >
                 <p>{lab}</p>
                 {
-                    item && item.tip ?
+                    item && item.tip && (rangeType !== undefined && rangeType != '5') ?
                         <Icon
                             type="question-circle-o"
                             className={styles.question}
