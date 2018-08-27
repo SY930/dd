@@ -369,13 +369,13 @@ class AddGifts extends React.Component {
     handleGiftValidDaysChange(val, index) {
         const _infos = this.state.infos;
         _infos[index].giftValidDays.value = val.number;
-        const _value = parseInt(val.number);
-        if (_value > 0) {
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 36500) {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
         }
         this.setState({
             infos: _infos,
@@ -488,6 +488,7 @@ class AddGifts extends React.Component {
                         <PriceInput
                             addonBefore=""
                             addonAfter="天"
+                            maxNum={10}
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
