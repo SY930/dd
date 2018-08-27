@@ -14,8 +14,9 @@
  */
 
 import {
+    axiosData,
     fetchData,
-    generateXWWWFormUrlencodedParams,
+    generateXWWWFormUrlencodedParams, getAccountInfo,
 } from '../../../helpers/util';
 
 import 'rxjs';
@@ -117,14 +118,20 @@ export const initializationOfMyActivities = (opts) => {
     return (dispatch) => {
         opts.start && opts.start();
         dispatch(initializationOfMyActivitiesStart());
-        const _opts = opts;
-        fetchData('getPromotionList_NEW', { ..._opts }, null, { path: '' })
+        axiosData('/promotion/docPromotionService_query.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((records) => {
                 opts.end && opts.end();
                 dispatch(initializationOfMyActivitiesSucceed(records));
                 opts.cb && opts.cb(records.promotionLst);
             })
             .catch(err => opts.fail && opts.fail());
+        /*fetchData('getPromotionList_NEW', { ..._opts }, null, { path: '' })
+            .then((records) => {
+                opts.end && opts.end();
+                dispatch(initializationOfMyActivitiesSucceed(records));
+                opts.cb && opts.cb(records.promotionLst);
+            })
+            .catch(err => opts.fail && opts.fail());*/
     }
 };
 
@@ -139,32 +146,21 @@ export const toggleSelectedActivityStateAC = (opts) => {
         groupID: opts.record.groupID,
         shopID: opts.record.shopID,
         promotionID: opts.record.promotionIDStr,
-        isActive: opts.record.isActive == 'ACTIVE' ? 'NOT_ACTIVE' : 'ACTIVE',
+        isActive: opts.record.isActive == '1' ? '0' : '1',
     };
     return (dispatch) => {
-        fetch('/api/promotion/setActive_NEW', {
-            method: 'POST',
-            body: JSON.stringify(params),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
+
+        axiosData(
+            '/promotion/docPromotionService_setActive.ajax',
+            {...params, modifiedBy: getAccountInfo().userName},
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_CRM'
+        ).then((responseJSON) => {
             dispatch(toggleSelectedActivityStateSuccess(opts.record));
 
             opts.cb && opts.cb();
-        }).catch((error) => {
-            // dispatch(fetchPromotionTagsFailed())
-        });
+        }).catch((error) => {});
     };
 };
 
@@ -182,30 +178,18 @@ export const deleteSelectedRecordAC = (opts) => {
     };
 
     return (dispatch) => {
-        fetch('/api/promotion/delete_NEW', {
-            method: 'POST',
-            body: generateXWWWFormUrlencodedParams(params),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText))
-        }).then((responseJSON) => {
+        axiosData(
+            '/promotion/docPromotionService_delete.ajax',
+            params,
+            {},
+            {path: 'data'},
+            'HTTP_SERVICE_URL_CRM'
+        ).then((responseJSON) => {
             dispatch(deleteSelectedRecordSuccess({
                 promotionID: opts.promotionID,
             }));
-
             opts.cb && opts.cb();
         }).catch((error) => {
-            // dispatch(fetchPromotionTagsFailed())
         });
     };
 };

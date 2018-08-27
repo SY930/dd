@@ -850,6 +850,7 @@ class GiftAddModalStep extends React.Component {
                     {decorator({
                         rules: [{ required: true, message: '可共用礼品券不能为空' }],
                     })(<InputTreeForGift
+                        key="inputTreeForGift"
                         type={this.props.type}
                         giftItemID={giftItemID}
                         thisGiftItem={this.props.gift.data.giftItemID ? this.props.gift.data : null}
@@ -906,11 +907,11 @@ class GiftAddModalStep extends React.Component {
             const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
             _scopeLst = _foodNameList.map((name) => {
                 return isFoodCatNameList == '1' ? {
-                    'scopeType': 'CATEGORY_INCLUDED',
+                    'scopeType': '1',
                     'foodCategoryName': name,
                 } :
                     {
-                        'scopeType': 'FOOD_INCLUDED',
+                        'scopeType': '2',
                         'foodNameWithUnit': name,
                     }
             })
@@ -969,6 +970,7 @@ class GiftAddModalStep extends React.Component {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            key="foodsboxs"
                             scopeLst={data.couponFoodScopeList}
                             foodSelectType={data.foodSelectType}
                             isExcludeFood={data.isExcludeFood ? '1' : '0'}
@@ -1347,7 +1349,7 @@ class GiftAddModalStep extends React.Component {
             // afterClose={this.afterClose}
             // wrapClassName="progressBarModal"
             >
-                {visible && <div className={styles.customProgressBar}>
+                {visible ? <div className={styles.customProgressBar}>
                     <CustomProgressBar
                         style={{ height: '200px' }}
                         steps={steps}
@@ -1360,7 +1362,7 @@ class GiftAddModalStep extends React.Component {
                         onCancel={this.handleCancel}
                         loading={this.state.finishLoading}
                     />
-                </div>}
+                </div> : null }
             </Modal>
         )
     }

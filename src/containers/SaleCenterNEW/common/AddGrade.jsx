@@ -200,7 +200,7 @@ class AddGrade extends React.Component {
         // TODO:initialValue
         const { getFieldDecorator, getFieldValue } = this.props;
         // 满赠取消分档
-        const isFullGive = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == 'FOOD_AMOUNT_THEN_GIVE';
+        const isFullGive = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1030';
         getFieldDecorator('keys', { initialValue: Object.keys(this.state.data) });
         const keys = isFullGive ? [0] : getFieldValue('keys');
         // let keys = getFieldValue('keys');

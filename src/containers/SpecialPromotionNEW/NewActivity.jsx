@@ -12,7 +12,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
-import { Modal, Row, Col, message } from 'antd';
+import { Modal, Row, Col, message, Button } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo';
@@ -28,6 +28,8 @@ import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
+import { jumpPage } from '@hualala/platform-base'
+import {SPECIAL_PAGE} from "../../constants/entryCodes";
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -101,6 +103,20 @@ class NewActivity extends React.Component {
                     <div className="layoutsTool">
                         <div className="layoutsToolLeft">
                             <h1>新建特色营销</h1>
+                            <Button
+                                type="ghost"
+                                icon="rollback"
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '150px',
+                                }}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === SPECIAL_PAGE).menuID
+                                        menuID && jumpPage({ menuID })
+                                    }
+                                }>返回列表</Button>
                         </div>
                     </div>
                 </Col>
@@ -110,7 +126,7 @@ class NewActivity extends React.Component {
                         {this.renderActivityButtons()}
                     </ul>
                 </Col>
-                {this.state.modal1Visible ? this.renderModal(): null}
+                {this.renderModal()}
             </Row>
 
         );
@@ -157,7 +173,7 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                <ActivityMain
+                {this.state.modal1Visible ? <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
                     isNew={true}
@@ -166,7 +182,7 @@ class NewActivity extends React.Component {
                             this.setModal1Visible(false);
                         }
                     }}
-                />
+                /> : null}
             </Modal>
         );
     }

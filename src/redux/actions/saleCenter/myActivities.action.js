@@ -140,7 +140,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
   var params = {
     _groupID: opts.record.groupID,
     promotionID: opts.record.promotionIDStr,
-    isActive:opts.record.isActive == 'ACTIVE'?'NOT_ACTIVE':'ACTIVE',
+    isActive:opts.record.isActive == '1'?'0':'1',
   };
   return dispatch => {
     fetch("/api/promotion/setActive", {

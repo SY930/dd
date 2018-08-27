@@ -104,6 +104,7 @@ class PriceInput extends React.Component {
         const { size, disabled } = this.props;
         const props = Object.assign({}, this.props);
         delete props.modal; // 将modal 属性传递下去会产生warning
+        delete props.maxNum; // 将maxNum 属性传递下去会产生warning
         const state = this.state;
         return (
             <Input

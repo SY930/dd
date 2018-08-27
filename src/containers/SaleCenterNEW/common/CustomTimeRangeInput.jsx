@@ -79,6 +79,10 @@ class CustomTimeRangeInput extends React.Component {
         let end = value;
         if (end !== null && end !== undefined) {
             let start = this.state.start;
+            // 最小限度修复结束时间能选到比开始时间早的bug
+            if (start.format('HH') > end.format('HH')) {
+                end.set('hour', start.format('HH'))
+            }
             let endString = end.format('YYYYMMDDHHmm');
             let startMM = start.format('mm');
             let endMM = end.format('mm');

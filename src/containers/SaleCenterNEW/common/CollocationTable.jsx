@@ -142,7 +142,7 @@ class CollocationTable extends React.Component {
                 categoryGroup.foodCategoryName.forEach((category) => {
                     category.foods.find((item) => {
                         if (item.itemID == price.foodUnitID) {
-                            data[price.stageNo].free.push(promotionType === 'FOOD_FIXED_SET_GIVE' &&
+                            data[price.stageNo].free.push(promotionType === '1040' &&
                                 (item.isSetFood == '1' || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
                             // data[price.stageNo].free.push(item.isSetFood !== '1' ? item : { ...item, 'foodName': '', 'foodCategoryName': '' });
                             data[price.stageNo].freeCountInfo[item.itemID] = price.num;
@@ -215,7 +215,7 @@ class CollocationTable extends React.Component {
                 selections = new Set(this.state.data[indexInfo[0]].foods);
             }
             // 当为搭赠时，恢复套餐
-            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_FIXED_SET_GIVE') {
+            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1040') {
                 // 过滤套餐
                 const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
                 this.setState({
@@ -234,7 +234,7 @@ class CollocationTable extends React.Component {
                 selections = new Set();
             }
             // 当为搭赠时，过滤套餐
-            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === 'FOOD_FIXED_SET_GIVE') {
+            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1040') {
                 // 过滤套餐
                 const foodCategoryCollection = this.state.foodCategoryCollection.map((city) => {
                     return {
@@ -371,8 +371,8 @@ class CollocationTable extends React.Component {
     // 菜品选择框
     renderDishesSelectionBox(idx) {
         const { recordInfo } = this.state;
-        const isRecommendFood = this.props.type == 'RECOMMEND_FOOD' && (recordInfo || [])[3] == 0;// 推荐菜的点菜foods
-        const recommendFreeMax = this.props.type == 'RECOMMEND_FOOD' && (recordInfo || [])[3] == 1;// 推荐菜free
+        const isRecommendFood = this.props.type == '5010' && (recordInfo || [])[3] == 0;// 推荐菜的点菜foods
+        const recommendFreeMax = this.props.type == '5010' && (recordInfo || [])[3] == 1;// 推荐菜free
         const treeData = [];
         this.state.foodCategoryCollection.map((item) => {
             if (typeof item === 'object') {
@@ -561,7 +561,7 @@ class CollocationTable extends React.Component {
     // 新增一个组合
     addGroup() {
         const { data } = this.state;
-        this.props.type == 'RECOMMEND_FOOD' && data.length >= 50 ? null : data.push(
+        this.props.type == '5010' && data.length >= 50 ? null : data.push(
             {
                 foods: [
                     {
@@ -719,9 +719,9 @@ class CollocationTable extends React.Component {
                     const indexInfo = record.key.split('_');
                     // 根据index显示序号
                     if (parseInt(indexInfo[3]) < parseInt(indexInfo[1])) {
-                        return <span>{this.props.type == 'RECOMMEND_FOOD' ? '主菜' : '菜品'}{parseInt(indexInfo[3]) + 1}</span>
+                        return <span>{this.props.type == '5010' ? '主菜' : '菜品'}{parseInt(indexInfo[3]) + 1}</span>
                     }
-                    return <span>{this.props.type == 'RECOMMEND_FOOD' ? '推荐菜' : '赠菜'}{parseInt(indexInfo[3]) - parseInt(indexInfo[1]) + 1}</span>
+                    return <span>{this.props.type == '5010' ? '推荐菜' : '赠菜'}{parseInt(indexInfo[3]) - parseInt(indexInfo[1]) + 1}</span>
                 },
             },
             {
@@ -790,7 +790,7 @@ class CollocationTable extends React.Component {
                 },
             },
         ];
-        this.props.type == 'RECOMMEND_FOOD' ? null : columns.splice(4, 0, numInput);
+        this.props.type == '5010' ? null : columns.splice(4, 0, numInput);
         return (
             <FormItem className={[styles.FormItemStyle, styles.noBackground].join(' ')}>
                 <Row>
@@ -804,7 +804,7 @@ class CollocationTable extends React.Component {
                     onOk={() => { this.handleOk() }}
                     onCancel={() => { this.handleCancel() }}
                     width="922px"
-                    title={this.state.recordInfo && this.state.recordInfo[3] == '0' ? (this.props.type == 'RECOMMEND_FOOD' ? '选择主菜' : '选择搭售菜品') : (this.props.type == 'RECOMMEND_FOOD' ? '选择推荐菜' : '选择赠送菜品')}
+                    title={this.state.recordInfo && this.state.recordInfo[3] == '0' ? (this.props.type == '5010' ? '选择主菜' : '选择搭售菜品') : (this.props.type == '5010' ? '选择推荐菜' : '选择赠送菜品')}
                 >
                     <div>
                         {this.renderDishesSelectionBox()}

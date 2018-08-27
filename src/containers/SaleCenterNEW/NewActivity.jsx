@@ -12,7 +12,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
-import { Modal, Row, Col, message } from 'antd';
+import { Modal, Row, Col, message, Button } from 'antd';
 import { checkPermission } from '../../helpers/util';
 
 if (process.env.__CLIENT__ === true) {
@@ -37,6 +37,11 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import { jumpPage } from '@hualala/platform-base'
+import {
+    SALE_CENTER_PAGE,
+    SALE_CENTER_PAGE_SHOP,
+} from "../../constants/entryCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -123,6 +128,20 @@ class NewActivity extends React.Component {
                     <div className="layoutsTool">
                         <div className="layoutsToolLeft">
                             <h1>新建基础营销</h1>
+                            <Button
+                                type="ghost"
+                                icon="rollback"
+                                style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '150px',
+                                }}
+                                onClick={
+                                    () => {
+                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
+                                        menuID && jumpPage({ menuID })
+                                    }
+                                }>返回列表</Button>
                         </div>
                     </div>
                 </Col>
@@ -131,7 +150,7 @@ class NewActivity extends React.Component {
                     <ul>
                         {this.renderActivityButtons()}
                     </ul>
-                    {this.state.modal1Visible ? this.renderModal() : null}
+                    {this.renderModal()}
                 </Col>
             </Row>
 
@@ -154,7 +173,7 @@ class NewActivity extends React.Component {
                                 key={`NewActivity${index}`}
                                 style={{
                                     listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === 'RECOMMEND_FOOD') ?
+                                    display: (this.props.user.shopID > 0 && activity.get('key') === '5010') ?
                                         'none' : 'block',
                                 }}
                             >
@@ -172,12 +191,10 @@ class NewActivity extends React.Component {
 
     _renderModal() {
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.index].title;
-
         return (
             <Modal
-
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}活动`}
+                title={(promotionType || '').endsWith('活动') ? `创建${promotionType}` : `创建${promotionType}活动`}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -188,7 +205,7 @@ class NewActivity extends React.Component {
                 onOk={() => this.setModal1Visible(false)}
                 onCancel={() => this.setModal1Visible(false)}
             >
-                <ActivityMain
+                { this.state.modal1Visible && <ActivityMain
                     index={this.state.index}
                     steps={this.props.steps}
                     isNew={true}
@@ -197,7 +214,7 @@ class NewActivity extends React.Component {
                             this.setModal1Visible(false)
                         }
                     }}
-                />
+                />}
             </Modal>
         );
     }

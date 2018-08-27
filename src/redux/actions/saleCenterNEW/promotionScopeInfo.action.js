@@ -82,7 +82,6 @@ export const fetchPromotionScopeInfo = (opts) => {
             if (responseJSON.resultcode === '000') {
                 dispatch(fetchPromotionScopeInfoSuccess(responseJSON.data));
             } else {
-                message.error(`店铺、品牌信息获取失败 ${responseJSON.resultmsg}`);
                 dispatch(fetchPromotionScopeInfoFailed());
             }
         }).catch((error) => {
@@ -116,11 +115,9 @@ export const getPromotionShopSchema = (params) => {
             if (responseJSON.code === '000') {
                 dispatch(getPromotionShopSchemaSuccess(responseJSON.data));
             } else {
-                message.error(`店铺、品牌信息获取失败 ${responseJSON.resultmsg}`);
                 dispatch(getPromotionShopSchemaFailed());
             }
         }, (error) => {
-            message.error(`网络连接异常，请稍后重试`);
             console.log('错误：', error);
             dispatch(getPromotionShopSchemaFailed());
         }).catch((error) => {

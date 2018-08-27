@@ -141,7 +141,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
@@ -211,30 +211,39 @@ export class WeChatMallPromotionList extends React.Component {
 
     getParams = () => {
         const {
-
+            promotionDateRange,
+            promotionTags,
+            promotionName,
+            status,
         } = this.state;
         const opt = {
-
         };
-
+        if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
+            opt.appointedStartTime = promotionDateRange[0].format('YYYYMMDDHHmm');
+            opt.appointedEndTime = promotionDateRange[1].format('YYYYMMDDHHmm');
+        }
+        if (promotionTags !== '' && promotionTags != '0') {
+            opt.tag = promotionTags;
+        }
+        if (promotionName !== '' && promotionName !== undefined) {
+            opt.name = promotionName;
+        }
+        if (status > 0) {
+            opt.status = status
+        }
         return opt
     }
 
-    handleQuery(thisPageNo) {
-        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
-        this.setState({
-            loading: true,
-            queryDisabled: true,
-            pageNo,
-        }, () => {
-            setTimeout(() => {
-                this.setState({ queryDisabled: false })
-            }, 500)
-        });
-        const _opt = {}; // this.getParams();
+    handleQuery(pageNo, pageSize) {
+        if (!this.state.loading) {
+            this.setState({
+                loading: true,
+            });
+        }
+        const _opt = this.getParams();
         const opt = {
-            pageSize: this.state.pageSizes,
-            pageNo,
+            pageSize: pageSize || this.state.pageSizes,
+            pageNo: pageNo || this.state.pageNo,
             ..._opt,
         };
         opt.cb = this.showNothing;
@@ -243,9 +252,7 @@ export class WeChatMallPromotionList extends React.Component {
 
     queryEvents(opts) {
         const params = {...opts, shopID: this.props.user.shopID, };
-        if (this.state.status > 0) {
-            params.status = this.state.status
-        }
+
         axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})
             .then((data) => {
                 this.setState({
@@ -277,6 +284,7 @@ export class WeChatMallPromotionList extends React.Component {
 
     // date qualification
     onDateQualificationChange(value) {
+        console.log(value);
         this.setState({
             promotionDateRange: value,
         });
@@ -314,7 +322,11 @@ export class WeChatMallPromotionList extends React.Component {
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
-            pageSizes: pageSize,
+            /*pageSizes: pageSize,
+            pageNo: 1,*/
+            loading: true
+        }, () => {
+            this.handleQuery(1, pageSize)
         })
     };
 
@@ -387,29 +399,29 @@ export class WeChatMallPromotionList extends React.Component {
                 <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
             );
         });
+        let tags = [];
+
+        const $tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']);
+        if (Immutable.List.isList($tags)) {
+            tags = $tags.toJS();
+        }
         return (
             <div>
                 <div className="layoutsSearch">
                     <ul>
                         <li>
-                            <h5>活动类型</h5>
+                            <h5>活动时间</h5>
                         </li>
                         <li>
-                            <Select
-                                style={{ width: 160 }}
-                                showSearch={true}
-                                placeholder="请选择活动类型"
-                                defaultValue="全部"
-                                onChange={(value) => {
-                                    this.setState({
-                                        eventWay: value === 'ALL' ? null : value,
-                                    });
-                                }}
-                            >
-                                {opts}
-                            </Select>
+                            <RangePicker
+                                style={{ width: 260 }}
+                                showTime={{ format: 'HH:mm' }}
+                                className={styles.ActivityDateDayleft}
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['开始时间', '结束时间']}
+                                onChange={this.onDateQualificationChange}
+                            />
                         </li>
-
                         <li>
                             <h5>使用状态</h5>
                         </li>
@@ -430,11 +442,28 @@ export class WeChatMallPromotionList extends React.Component {
                                 <Option value={'3'}>已终止</Option>
                             </Select>
                         </li>
-                        {/*<li>
-                            <h5>活动时间</h5>
+                        <li>
+                            <h5>标签</h5>
                         </li>
                         <li>
-                            <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
+                            <Select
+                                style={{ width: 120 }}
+                                allowClear={true}
+                                placeholder="请选择标签"
+                                onChange={(tags) => {
+                                    this.setState({
+                                        promotionTags: tags || '',
+                                    });
+                                }}
+                            >
+                                {
+                                    tags.map((tag, index) => {
+                                        return (
+                                            <Option key={`${index}`} value={`${tag.name}`}>{tag.name}</Option>
+                                        );
+                                    })
+                                }
+                            </Select>
                         </li>
 
 
@@ -446,14 +475,14 @@ export class WeChatMallPromotionList extends React.Component {
                                 placeholder="请输入活动名称"
                                 onChange={(e) => {
                                     this.setState({
-                                        eventName: e.target.value,
+                                        promotionName: e.target.value,
                                     });
                                 }}
                             />
-                        </li>*/}
+                        </li>
                         <li>
                             <Authority rightCode="marketing.jichuyingxiaoxin.query">
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.loading}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
                     </ul>
@@ -489,35 +518,10 @@ export class WeChatMallPromotionList extends React.Component {
                                     });
                                 }}
                             >
-
                                 <Option key="0" value={'0'}>全部</Option>
                                 <Option key="1" value={'1'}>未开始</Option>
                                 <Option key="2" value={'2'}>执行中</Option>
                                 <Option key="3" value={'3'}>已结束</Option>
-                            </Select>
-                        </li>
-
-                        <li>
-                            <h5>标签</h5>
-                        </li>
-                        <li>
-                            <Select
-                                style={{ width: 120 }}
-                                allowClear={true}
-                                placeholder="请选择标签"
-                                onChange={(tags) => {
-                                    this.setState({
-                                        promotionTags: tags || '',
-                                    });
-                                }}
-                            >
-                                {
-                                    tags.map((tag, index) => {
-                                        return (
-                                            <Option key={`${index}`} value={`${tag.name}`}>{tag.name}</Option>
-                                        );
-                                    })
-                                }
                             </Select>
                         </li>
                     </ul>
@@ -550,7 +554,7 @@ export class WeChatMallPromotionList extends React.Component {
                     const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
                     const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
                     const buttonText = (record.status == 1 ? isOngoing ? '终止' : '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == 'GROUP_LEVEL';
+                    const isGroupPro = record.maintenanceLevel == '0';
                     return (<span>
                         <a
                             href="#"
@@ -595,17 +599,17 @@ export class WeChatMallPromotionList extends React.Component {
                     return (<span title={text}>{text}</span>);
                 },
             },
-            {
+            /*{
                 title: '活动编码',
                 dataIndex: 'itemID',
                 key: 'itemID',
                 className: 'TableTxtCenter',
                 width: 140,
                 render: text => <span title={text}>{text}</span>,
-            },
+            },*/
 
             {
-                title: '有效时间',
+                title: '活动时间',
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
@@ -680,8 +684,8 @@ export class WeChatMallPromotionList extends React.Component {
                     dataSource={this.state.dataSource}
                     loading={
                         {
+                            delay: 500,
                             spinning: this.state.loading,
-                            delay: 500
                         }
                     }
                     pagination={{
@@ -690,18 +694,15 @@ export class WeChatMallPromotionList extends React.Component {
                         showQuickJumper: true,
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
-                        total: this.state.total ? this.state.total : 0,
+                        total: this.state.total || 0,
                         showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                         onChange: (page, pageSize) => {
                             this.setState({
-                                pageNo: page,
-                            })
-                            const opt = {
-                                pageSize,
-                                pageNo: page,
-                                // ...this.getParams(),
-                            };
-                            this.queryEvents(opt);
+                                /*pageNo: page,*/
+                                loading: true
+                            }, () => {
+                                this.handleQuery(page, this.state.pageSizes);
+                            });
                         },
                     }}
                 />

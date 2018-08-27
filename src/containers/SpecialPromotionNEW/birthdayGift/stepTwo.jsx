@@ -106,7 +106,7 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo') &&
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) &&
             nextProps.specialPromotion.get('$eventInfo').size > 10) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
             this.setState({
@@ -181,7 +181,7 @@ class StepTwo extends React.Component {
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
-                    value={sendFlag ? this.state.message.trim() : this.state.message}
+                    value={this.state.message}
                     settleUnitID={this.state.settleUnitID}
                     onChange={
                         (val) => {

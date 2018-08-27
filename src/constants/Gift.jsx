@@ -111,6 +111,7 @@ const GiftCfg = {
         { value: '116', label: '微信受赠领取' },
         { value: '117', label: '激活送礼' },
         { value: '3010', label: '基础营销消费返券' },
+        { value: '3011', label: '批量生成' },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },

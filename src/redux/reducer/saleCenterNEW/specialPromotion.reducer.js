@@ -54,6 +54,10 @@ const $initialState = Immutable.fromJS({
 export const specialPromotion_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
         case SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO:
+            // 新短信模板上线后 需要把以前审核失败/待审核的活动在编辑时短信模板情况, 强制选择审核通过的短信模板
+            if (action.payload.data && (action.payload.data.status == 21 || action.payload.data.status == 5) && action.payload.data.smsTemplate ) {
+                action.payload.data.smsTemplate = '';
+            }
             if (action.payload.data && action.payload.gifts) {
                 return $$state.mergeIn(['$eventInfo'], Immutable.fromJS({ ...action.payload.data }))
                     .mergeIn(['$giftInfo'], Immutable.fromJS(action.payload.gifts));

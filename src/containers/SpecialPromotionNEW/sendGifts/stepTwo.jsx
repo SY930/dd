@@ -86,7 +86,7 @@ class StepTwo extends React.Component {
             }
             if (flag) {
                 const opts = {
-                    smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : ' ',
+                    smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
                     lastTransTimeFilter: this.state.lastTransTimeFilter,
                     lastTransTime: this.state.lastTransTime || '',
                     lastTransShopID: this.state.lastTransShopID,
@@ -366,7 +366,7 @@ class StepTwo extends React.Component {
                         <SendMsgInfo
                             sendFlag={sendFlag}
                             form={this.props.form}
-                            value={sendFlag ? this.state.message.trim() : this.state.message}
+                            value={this.state.message}
                             settleUnitID={this.state.settleUnitID}
                             onChange={
                                 (val) => {

@@ -328,7 +328,9 @@ class GiftSendOrUsedCount extends React.Component {
                             columns={this.state.columns}
                             dataSource={dataSource}
                             loading={loading}
+                            key={this.props.key}
                             pagination={{
+                                key: this.props.key,
                                 showSizeChanger: true,
                                 pageSize: this.state.pageSize,
                                 current: this.state.pageNo,

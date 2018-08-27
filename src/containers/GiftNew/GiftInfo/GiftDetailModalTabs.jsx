@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Button, Icon } from 'antd';
 import _ from 'lodash';
+import SendGiftPanel from '../components/SendGiftPanel'
 import GiftSendOrUsedCount from './GiftDetailSendorUsedTable';
 import {
     UpdateSendorUsedTabKey,
@@ -10,6 +11,7 @@ import {
     UpdateSendorUsedParams,
 } from '../_action';
 import ExportModal from "./ExportModal";
+import GenerateBatchGifts from "../components/GenerateBatchGifts";
 
 const TabPane = Tabs.TabPane;
 class GiftDetailModalTabs extends React.Component {
@@ -65,27 +67,55 @@ class GiftDetailModalTabs extends React.Component {
                     className="tabsStyles"
                     activeKey={this.state.activeKey}
                     onChange={activeKey => this.onChange(activeKey)}
-                    /*tabBarExtraContent={
+                    tabBarExtraContent={
+                        this.state.activeKey === 'send' || this.state.activeKey === 'used' ?
                         <Button type="ghost"
-                                disabled={this.props.total <= 0}
+                                title={this.state.activeKey === 'send' ? '导出发出信息' : '导出使用信息'}
+                                disabled={
+                                    (this.state.activeKey === 'send' && this.props.sendCount <= 0) ||
+                                    (this.state.activeKey === 'used' && this.props.usedCount <= 0)
+                                }
                                 onClick={this.handleExport}
                                 style={{top: '8px'}}
                         >
-                        <Icon
-                            type="export" />导出</Button>
-                    }*/
+                            <Icon type="export" />导出
+                        </Button>
+                        :
+                        null
+                    }
                 >
                     {
                         tabs.map((tab) => {
                             return (<TabPane tab={tab.tab} key={tab.key}>
-                                <GiftSendOrUsedCount data={data} _key={tab.key} />
+                                <GiftSendOrUsedCount key={tab.key} data={data} _key={tab.key} />
                             </TabPane>)
-                        })
+                        }).concat(
+                            data.giftType == '10' || data.giftType == '20' || data.giftType == '21' || data.giftType == '30' ?
+                                [
+                                    (
+                                        <TabPane tab={'赠送'} key={'send_gift'}>
+                                            <SendGiftPanel giftItemID={data.giftItemID}/>
+                                        </TabPane>
+                                    ),
+                                    (
+                                        <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
+                                            <GenerateBatchGifts giftItemID={data.giftItemID} />
+                                        </TabPane>
+                                    )
+
+                                ]
+                                :
+                                []
+                        )
                     }
                 </Tabs>
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal
+                            giftItemID={data.giftItemID}
+                            giftName={data.giftName}
+                            activeKey={this.state.activeKey}
+                            newExport // 除了礼品定额卡之外的导出, 复用组件
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }

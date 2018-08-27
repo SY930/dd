@@ -38,7 +38,7 @@ import {
 import ActivityMain from '../activityMain';
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, NEW_SPECIAL } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import { promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer';
@@ -233,9 +233,7 @@ class MySpecialActivities extends React.Component {
             updateModalVisible: false,
         }, () => {
             this.props.saleCenterResetDetailInfo();
-            this.showNothing = this.showNothing.bind(this);
         });
-
     }
 
     componentDidMount() {
@@ -348,8 +346,8 @@ class MySpecialActivities extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.state, nextState)
-}
+        return !isEqual(this.state, nextState)
+    }
 
     render() {
         return (
@@ -439,8 +437,7 @@ class MySpecialActivities extends React.Component {
                         className={styles.jumpToCreate}
                         onClick={
                             () => {
-                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076004').menuID
-                                jumpPage({ menuID })
+                                jumpPage({ menuID: NEW_SPECIAL })
                             }
                         }
                     >新建</Button>
@@ -924,7 +921,7 @@ class MySpecialActivities extends React.Component {
                     <span>删除是不可恢复操作，请慎重考虑~</span>
                 </div>
             ),
-            footer: '删除数据时不可恢复操作,请慎重考虑',
+            footer: '删除数据是不可恢复操作,请慎重考虑',
             onOk: () => {
                 this.props.deleteSelectedRecord({
                     ...record,
@@ -1001,7 +998,7 @@ class MySpecialActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.renderContentOfThisModal()}
+                {this.state.updateModalVisible ? this.renderContentOfThisModal() : null}
             </Modal>
         );
     }

@@ -87,6 +87,16 @@ export default class ExportModal extends Component {
     componentDidMount() {
         if (this.props._key) {
             this.exportRecords(this.props.giftItemID, this.props._key)
+        } else if (this.props.newExport) {
+            const {giftItemID, giftName } = this.props;
+            const params = {giftItemID, giftName};
+            if (this.props.activeKey === 'used') {
+                params.giftStatus = '2'
+            }
+            axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', params, null, { path: 'data' })
+                .then(_records => {
+                    this.getExportRecords(this.props._key);
+                })
         } else {
             this.getExportRecords()
         }
@@ -110,20 +120,25 @@ export default class ExportModal extends Component {
             })
     }
     getExportRecords = (key) => {
-        this.setState({ loading: true }, () => {
-            let data = {}
-            if (key) {
-                data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
-                data = { ...data }
-            }
-            axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
-                .then(data => {
-                    const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
-                    this.setState({
-                        dataSource: _Records,
-                        loading: false,
-                    })
+        this.setState({ loading: true });
+        let data = {}
+        if (key) {
+            data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
+        }
+        if (this.props.newExport) {
+            data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
+        }
+        axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
+            .then(data => {
+                const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
+                this.setState({
+                    dataSource: _Records,
+                    loading: false,
                 })
+            }).catch(e => {
+            this.setState({
+                loading: false
+            })
         })
     }
 

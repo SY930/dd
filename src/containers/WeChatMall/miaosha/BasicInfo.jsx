@@ -55,7 +55,7 @@ class BasicInfo extends React.Component {
         fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: 'TAG_NAME',
+            phraseType: '1',
         });
 
         if (promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
@@ -206,7 +206,7 @@ class BasicInfo extends React.Component {
                 itemID,
             },
             success: () => {
-                const type = phraseType == 'CATEGORY_NAME' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
+                const type = phraseType == '0' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
                 this.props[type]({
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
@@ -215,11 +215,11 @@ class BasicInfo extends React.Component {
                 message.success('删除成功');
             },
         });
-        if (phraseType == 'CATEGORY_NAME' && this.state.category == name) {
+        if (phraseType == '0' && this.state.category == name) {
             // 手动删除已选添加类别（而不是加载时），清空已选类别
             this.setState({ category: '' })
         }
-        if (phraseType == 'TAG_NAME' && this.state.tags.includes(name)) {
+        if (phraseType == '1' && this.state.tags.includes(name)) {
             // 手动删除已选添加标签（而不是加载时），清空已选
             const set = new Set(this.state.tags);
             set.delete(name);
@@ -263,14 +263,14 @@ class BasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: 'TAG_NAME',
+                    phraseType: '1',
                     nameList: excludeTags,
                 },
                 success: () => {
                     this.props.fetchPromotionTags({
                         groupID: this.props.user.accountInfo.groupID,
                         shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: 'TAG_NAME',
+                        phraseType: '1',
                     });
                 },
             })
