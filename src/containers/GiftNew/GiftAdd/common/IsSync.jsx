@@ -30,35 +30,50 @@ class IsSync extends Component {
 
     render() {
         return (
-            <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 24 }} >
-                <span className={styles.gTip}>更多礼品限制请使用</span>
-                <span className={styles.gDate} onClick={this.toggleOption}>
+            <div style={{
+                visibility: this.props.operationType === 'add' ? 'hidden' : 'visible'
+            }} >
+                <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 24 }} >
+                    <span className={styles.gTip}>更多礼品限制请使用</span>
+                    <span className={styles.gDate} onClick={this.toggleOption}>
                     高级设置 {!this.state.showOptions && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
-                    {this.state.showOptions && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
+                        {this.state.showOptions && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
-                {this.state.showOptions && <FormItem style={{ marginLeft: 20, width: '100%' }}>
-                    是否对已发出的券进行同步变更&nbsp;&nbsp;&nbsp;&nbsp;
-                    <RadioGroup
-                        value={this.props.value}
-                        onChange={e => {
-                            this.props.onChange && this.props.onChange(e.target.value)
-                        }}
-                    >
-                        {
-                            GiftCfg.isSynch.map(r => {
-                                return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
-                            })
-                        }
-                    </RadioGroup>
-                </FormItem>}
-                {(this.state.showOptions && this.props.value ) && <div style={{ margin: '8px 20px 0 0', width: '100%' }}>
-                        <span style={{color: 'orange'}}>请务必慎重操作</span>
+                    {this.state.showOptions && <FormItem style={{
+                        marginLeft: 20,
+                        width: '100%',
+                    }}>
+                        券同步&nbsp;&nbsp;&nbsp;&nbsp;
+                        <RadioGroup
+                            value={this.props.value}
+                            onChange={e => {
+                                this.props.onChange && this.props.onChange(e.target.value)
+                            }}
+                        >
+                            {
+                                GiftCfg.isSynch.map(r => {
+                                    return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
+                                })
+                            }
+                        </RadioGroup>
+                    </FormItem>}
+                    <div style={{
+                        margin: '8px 20px 0 0',
+                        width: '100%',
+                        visibility: this.state.showOptions && this.props.value ? 'visible' : 'hidden'
+                    }}>
+                        <span style={{color: 'orange'}}>此设置项将对已发出的券产生变更，请务必慎重操作！</span>
                     </div>
-                }
-            </FormItem>
-
+                </FormItem>
+            </div>
         )
     }
 }
 
-export default IsSync;
+function mapStateToProps(state) {
+    return {
+        operationType: state.sale_editGiftInfoNew.get('operationType'),
+    }
+}
+
+export default connect(mapStateToProps, null)(IsSync);

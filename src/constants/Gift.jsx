@@ -158,8 +158,8 @@ const GiftCfg = {
         { label: '按分类', value: '1' },
     ],
     isSynch: [ // 查券时是否优先读取券模板
-        { label: '不需要', value: false },
-        { label: '需要', value: true },
+        { label: '券信息以发出时数据为准', value: false },
+        { label: '券信息以当前数据为准', value: true },
     ],
     getWay: [
         { value: '', label: '全部' },
