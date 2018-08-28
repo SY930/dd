@@ -60,6 +60,7 @@ class PromotionBasicInfo extends React.Component {
         this.setState({
             advanceDays: specialPromotion.giftAdvanceDays,
             description: specialPromotion.eventRemark,
+            mpID: specialPromotion.pushMessageMpID || undefined,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
         });
@@ -110,6 +111,7 @@ class PromotionBasicInfo extends React.Component {
                         giftAdvanceDays: this.state.advanceDays,
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
+                        pushMessageMpID: this.state.sendMsg >= 2 ? this.state.mpID : '',
                         eventName: this.state.name,
                     })
                 }
@@ -121,6 +123,7 @@ class PromotionBasicInfo extends React.Component {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
+                        pushMessageMpID: this.state.sendMsg >= 2 ? this.state.mpID : '',
                         eventName: this.state.name,
                     })
                 }
@@ -170,7 +173,7 @@ class PromotionBasicInfo extends React.Component {
             return cc.key === type
         }).title : '';
         const rangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-        console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
+        // console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
                 <p>{type ?  item ? item.tip : '' : ''}</p>
