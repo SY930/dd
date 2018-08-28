@@ -669,17 +669,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         example: '',
         key: '23',
     },
-    /*{
-        idx: 12,
-        title: '彩蛋猫送礼',
-        color: '#84aac6',
-        text: '玩游戏送礼，在娱乐中让用户增加对品牌的好感。',
-        example: '',
-        key: '70',
-    },*/
-    ]
-
-    const extral = [
         {
             idx: 12,
             title: '唤醒送礼',
@@ -706,11 +695,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '31',
         },
     ];
-    // if (HUALALA.ENVIRONMENT != 'production-release') {
-    return basic.concat(extral);
-    // }
-
-    // return basic;
+    return basic;
 }());
 
 export const arrayTransformAdapter = function (source) {
