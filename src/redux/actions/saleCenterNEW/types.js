@@ -544,6 +544,14 @@ export const ACTIVITY_CATEGORIES = (function () {
         tags: ['SaaS2.0'],
         key: '1090',
     },
+    {
+        idx: 19,
+        color: '#84aac6',
+        title: '低价促销',
+        text: '消费一定的菜品, 可对价格最低菜品进行减免、折扣、特定售价等优惠活动',
+        example: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠',
+        key: '99999',
+    },
     ];
     return basic;
 }());

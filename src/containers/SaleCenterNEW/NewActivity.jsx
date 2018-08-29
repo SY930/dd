@@ -159,11 +159,11 @@ class NewActivity extends React.Component {
 
 
     _renderActivityButtons() {
-        const saleCenter = this.props.saleCenter;
+        const activities = this.props.saleCenter.get('activityCategories').toJS().filter(activity => !(this.props.user.shopID > 0 && activity.key === '5010'));
         return (
 
 
-                    saleCenter.get('activityCategories').map((activity, index) => {
+                    activities.map((activity, index) => {
                         return (
                             <li
                                 onClick={() => {
@@ -171,18 +171,18 @@ class NewActivity extends React.Component {
                                     this.onButtonClicked(index, activity);
                                 }}
                                 key={`NewActivity${index}`}
-                                style={{
+                                /*style={{
                                     listStyle: 'none',
                                     display: (this.props.user.shopID > 0 && activity.get('key') === '5010') ?
                                         'none' : 'block',
-                                }}
+                                }}*/
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                                    <ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />
                                 </Authority>
                             </li>
                         );
-                    }).toJS()
+                    })
 
 
 
@@ -232,7 +232,7 @@ class NewActivity extends React.Component {
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
         this.props.setPromotionType({
-            promotionType: activity.get('key'),
+            promotionType: activity.key,
         });
         this.setState({
             updateModalVisible: true,
