@@ -7,7 +7,7 @@
  * 会员拉新
  * @type {Array}
  */
-const newCustomer = [
+export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: '免费领取',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)

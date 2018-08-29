@@ -8,7 +8,7 @@ const { registeEntryCode } = registerPackage('sale', process.env.JS_VERSION);
 // 注册epic
 mountEpics(rootEpic);
 
-// 注册本地页面, 可以jumpPage(key) 到达, 详细信息参考platform-base 工程代码
+// 注册本地页面, 可以jumpPage(key) 到达, 详细信息参考platform-base工程代码
 registerLocalPage([
     {
         key: entryCodes.WECHAT_MALL_CREATE,
@@ -28,12 +28,13 @@ registerLocalPage([
         label: '新建特色营销',
         parent: [entryCodes.SPECIAL_PAGE],
     },
-    /*{
-        key: entryCodes.NEW_GIFT,
-        value: entryCodes.NEW_GIFT,
-        label: '新建礼品',
-        parent: [entryCodes.GIFT_PAGE],
-    },*/
+    {
+        key: entryCodes.NEW_CUSTOMER,
+        value: entryCodes.NEW_CUSTOMER,
+        label: '会员拉新',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
+
 ]);
 
 export default registeEntryCode(entryCodes, completed => import('./containers').then(completed))

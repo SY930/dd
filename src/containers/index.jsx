@@ -21,3 +21,5 @@ export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
 export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
 
 export { default as MessageTemplatesPage } from './BasicSettings/index';
+
+export { default as NewCustomerPage } from './NewCreatePromotions/NewCustomerPage';

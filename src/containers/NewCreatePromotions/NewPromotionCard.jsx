@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import styles from 'cardStyle.less';
+import styles from './cardStyle.less';
 import bg0 from './assets/bg0.png';
 import bg1 from './assets/bg1.png';
 import bg2 from './assets/bg2.png';
@@ -37,6 +36,12 @@ class NewPromotionCard extends Component {
                 <div className={styles.tagsContainer}>
                     {tags.map(tag => (<div className={styles.tag} key={tag}>{tag}</div>))}
                 </div>
+                <div className={styles.promotionDescription}>
+                    {text}
+                </div>
+                <div className={styles.promotionDescription}>
+                    {example}
+                </div>
                 <div className={styles.cardBackgroundImage}>
                     <img src={backgroundImageString} alt="oops"/>
                 </div>
@@ -44,7 +49,7 @@ class NewPromotionCard extends Component {
                     right,
                     bottom
                 }}>
-                    <img src={`./assets/logo_${key}.png`} alt="oops"/>
+                    <img src={require(`./assets/logo_${key}.png`)} alt="oops"/>
                 </div>
             </div>
         )

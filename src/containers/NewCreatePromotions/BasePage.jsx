@@ -23,6 +23,7 @@ import {
 } from "../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import {saleCenterResetScopeInfoAC} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import styles from '../GiftNew/GiftAdd/Crm.less';
+import NewPromotionCard from "./NewPromotionCard";
 
 class BasePage extends Component {
 
@@ -36,6 +37,7 @@ class BasePage extends Component {
             contentHeight: '782',
         };
         this.onWindowResize = this.onWindowResize.bind(this);
+        this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
 
     componentDidMount() {
@@ -65,6 +67,10 @@ class BasePage extends Component {
         if (!isVisible) {
             this.props.saleCenterResetSpecailDetailInfo();
         }
+    }
+
+    handleNewPromotionCardClick() {
+        console.log('hahahoho');
     }
 
     renderSpecialPromotionModal() {
@@ -140,10 +146,18 @@ class BasePage extends Component {
                 <div
                     className={styles.pageContent}
                     style={{
-                        height: this.state.contentHeight
+                        height: this.state.contentHeight,
+                        padding: '20px',
                     }}
                 >
-
+                    {this.props.promotions.map((item, index) => (
+                        <NewPromotionCard
+                            key={item.key}
+                            promotionEntity={item}
+                            onClick={this.handleNewPromotionCardClick}
+                            index={index}
+                        />
+                    ))}
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
