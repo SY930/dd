@@ -18,7 +18,8 @@ class NewPromotionCard extends Component {
                 right = 0,
                 bottom = 0
             },
-            index
+            index,
+            onCardClick
         } = this.props;
         let backgroundImageString;
         switch (index % 4) {
@@ -29,14 +30,21 @@ class NewPromotionCard extends Component {
             default: backgroundImageString = bg0;
         }
         return (
-            <div className={styles.container} >
+            <div className={styles.container} onClick={() => {
+                onCardClick(this.props.promotionEntity)
+            }}>
                 <div className={styles.cardTitle}>
                     {title}
                 </div>
                 <div className={styles.tagsContainer}>
                     {tags.map(tag => (<div className={styles.tag} key={tag}>{tag}</div>))}
                 </div>
-                <div className={styles.promotionDescription}>
+                <div
+                    className={styles.promotionDescription}
+                    style={{
+                        marginTop: 20
+                    }}
+                >
                     {text}
                 </div>
                 <div className={styles.promotionDescription}>

@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import BasePage from "./BasePage";
 import registerPage from '../../../index';
-import {NEW_CUSTOMER_PROMOTION_TYPES} from "../../constants/promotionType";
-import {NEW_CUSTOMER} from "../../constants/entryCodes";
+import {LOYALTY_PROMOTION_TYPES} from "../../constants/promotionType";
+import {LOYALTY_PROMOTION} from "../../constants/entryCodes";
 
-@registerPage([NEW_CUSTOMER], {
+@registerPage([LOYALTY_PROMOTION], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class NewCustomerPage extends Component {
@@ -13,9 +13,9 @@ class NewCustomerPage extends Component {
     render() {
         return (
             <BasePage
-                categoryTitle="会员拉新"
+                categoryTitle="会员关怀"
                 promotions={
-                    NEW_CUSTOMER_PROMOTION_TYPES
+                    LOYALTY_PROMOTION_TYPES
                 }
             />
         )

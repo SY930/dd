@@ -24,3 +24,7 @@ export const WECHAT_MALL_CREATE = 'wechat_mall_create'; // 门店视角 CREATE
 export const WECHAT_MALL_LIST = 'crm.shop.promotion'; // 门店视角 LIST
 
 export const NEW_CUSTOMER = 'new_customer'; // 创建会员拉新活动
+export const FANS_INTERACTIVITY = 'fans_interactivity'; // 创建粉丝互动活动
+export const REPEAT_PROMOTION = 'repeat_promotion'; // 创建促进复购活动
+export const LOYALTY_PROMOTION = 'loyalty_promotion'; // 创建会员关怀活动
+export const SALE_PROMOTION = 'sale_promotion'; // 创建促进销量活动

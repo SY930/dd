@@ -7,6 +7,7 @@ import {
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     Modal,
+    message
 } from 'antd';
 import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import {toggleIsUpdateAC} from "../../redux/actions/saleCenterNEW/myActivities.action";
@@ -24,6 +25,7 @@ import {
 import {saleCenterResetScopeInfoAC} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import styles from '../GiftNew/GiftAdd/Crm.less';
 import NewPromotionCard from "./NewPromotionCard";
+import {checkPermission} from "../../helpers/util";
 
 class BasePage extends Component {
 
@@ -34,7 +36,7 @@ class BasePage extends Component {
             basicIndex: 0,
             specialModalVisible: false,
             specialIndex: 0,
-            contentHeight: '782',
+            contentHeight: 782,
         };
         this.onWindowResize = this.onWindowResize.bind(this);
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
@@ -53,24 +55,96 @@ class BasePage extends Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
 
-    setBasicModalVisible(isVisible) {
-        this.setState({ isVisible });
-        if (!isVisible) {
+    setBasicModalVisible(basicModalVisible) {
+        this.setState({ basicModalVisible });
+        if (!basicModalVisible) {
             this.props.saleCenterResetBasicBasicInfo();
             this.props.saleCenterResetBasicScopeInfo();
             this.props.saleCenterResetBasicDetailInfo();
         }
     }
 
-    setSpecialModalVisible(isVisible) {
-        this.setState({ isVisible });
-        if (!isVisible) {
+    setSpecialModalVisible(specialModalVisible) {
+        this.setState({ specialModalVisible });
+        if (!specialModalVisible) {
             this.props.saleCenterResetSpecailDetailInfo();
         }
     }
 
-    handleNewPromotionCardClick() {
-        console.log('hahahoho');
+    handleNewPromotionCardClick(promotionEntity) {
+        const { key, isSpecial} = promotionEntity;
+        if (isSpecial) {
+            const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
+            this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
+        } else {
+            const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
+            this.handleBasicPromotionCreate(basicIndex, promotionEntity)
+        }
+    }
+
+    handleSpecialPromotionCreate(index, activity) {
+        if (!checkPermission("marketing.teseyingxiaoxin.create")) {
+            message.warn('您没有新建活动的权限，请联系管理员');
+            return;
+        }
+        const key = activity.key;
+        if (key === '31') {
+            message.success('活动将于近期上线, 敬请期待~');
+            return;
+        }
+        const { user } = this.props;
+        this.setState({
+            specialIndex: index,
+        });
+        this.props.setSpecialPromotionType({
+            eventWay: key,
+        });
+        // 完善资料送礼只能创建一次
+        if (key === '60') {
+            this.props.saleCenterCheckSpecialExist({
+                eventWay: key,
+                data: {
+                    groupID: user.accountInfo.groupID,
+                    eventWay: key,
+                },
+                success: (val) => {
+                    if (key === '60' && val.serviceCode === 1) {
+                        message.warning('您已创建过完善资料送礼,不能重复添加!');
+                    } else {
+                        this.setSpecialModalVisible(true);
+                        this.props.setSpecialPromotionType({
+                            eventName: activity.title,
+                        });
+                    }
+                },
+                fail: () => {
+                    message.error('检查失败!');
+                },
+            });
+            return;
+        }
+        this.setSpecialModalVisible(true);
+    }
+
+    handleBasicPromotionCreate(index, promotionEntity) {
+        if (!checkPermission("marketing.jichuyingxiaoxin.create")) {
+            message.warn('您没有新建活动的权限，请联系管理员');
+            return;
+        }
+        const key = promotionEntity.key;
+        const opts = {
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        };
+        this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.setBasicPromotionType({
+            promotionType: key,
+        });
+        this.setBasicModalVisible(true);
+        this.setState({
+            basicIndex: index,
+        });
     }
 
     renderSpecialPromotionModal() {
@@ -144,7 +218,7 @@ class BasePage extends Component {
                     <div className={styles.placeholder}/>
                 </div>
                 <div
-                    className={styles.pageContent}
+                    className={styles.flexPageWrap}
                     style={{
                         height: this.state.contentHeight,
                         padding: '20px',
@@ -154,7 +228,7 @@ class BasePage extends Component {
                         <NewPromotionCard
                             key={item.key}
                             promotionEntity={item}
-                            onClick={this.handleNewPromotionCardClick}
+                            onCardClick={this.handleNewPromotionCardClick}
                             index={index}
                         />
                     ))}

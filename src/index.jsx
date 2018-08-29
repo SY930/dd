@@ -34,6 +34,30 @@ registerLocalPage([
         label: '会员拉新',
         parent: [entryCodes.SPECIAL_PAGE],
     },
+    {
+        key: entryCodes.SALE_PROMOTION,
+        value: entryCodes.SALE_PROMOTION,
+        label: '会员拉新',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
+    {
+        key: entryCodes.LOYALTY_PROMOTION,
+        value: entryCodes.LOYALTY_PROMOTION,
+        label: '会员拉新',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
+    {
+        key: entryCodes.REPEAT_PROMOTION,
+        value: entryCodes.REPEAT_PROMOTION,
+        label: '会员拉新',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
+    {
+        key: entryCodes.FANS_INTERACTIVITY,
+        value: entryCodes.FANS_INTERACTIVITY,
+        label: '会员拉新',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
 
 ]);
 
