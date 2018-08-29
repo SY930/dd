@@ -36,6 +36,12 @@ const simpleOptionSmsGate = [ // 选项有2种
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
         super(props);
+        let mpID;
+        try {
+            mpID = JSON.parse(props.specialPromotion.getIn(['$eventInfo', 'pushMessageMpID'])).mpID
+        } catch (e) {
+            mpID = undefined
+        }
         this.state = {
             description: null,
             dateRange: Array(2),
@@ -45,7 +51,7 @@ class StepOneWithDateRange extends React.Component {
             timeString: '',
             tableDisplay: false,
             iconDisplay: false,
-            mpID: props.specialPromotion.getIn(['$eventInfo', 'pushMessageMpID']) || undefined,
+            mpID,
             lastConsumeIntervalDays: '',
             getExcludeEventList: [],
             lastConsumeIntervalDaysStatus: 'success',
@@ -202,7 +208,7 @@ class StepOneWithDateRange extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
-
+        const appID = (this.props.allWeChatAccountList.find(item => item.mpID === this.state.mpID) || {}).appID;
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -238,12 +244,12 @@ class StepOneWithDateRange extends React.Component {
                     eventName: this.state.name,
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? this.state.mpID : '',
+                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                 })
             } else if (this.props.type == '61' || this.props.type == '62') {
                 this.props.setSpecialBasicInfo({
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? this.state.mpID : '',
+                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                     eventName: this.state.name,
                     eventRemark: this.state.description,
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
@@ -256,7 +262,7 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? this.state.mpID : '',
+                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
@@ -793,7 +799,7 @@ const mapStateToProps = (state) => {
         occupiedWeChatInfo: state.queryWeixinAccounts,
         allWeChatIDListLoading: state.sale_giftInfoNew.get('mpListLoading'),
         allWeChatIDList: state.sale_giftInfoNew.get('mpList').toJS().map(item => item.mpID),
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS(),
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
     }

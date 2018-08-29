@@ -57,10 +57,16 @@ class PromotionBasicInfo extends React.Component {
         });
         this.props.queryWechatMpInfo();
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        let mpID;
+        try {
+            mpID = JSON.parse(specialPromotion.pushMessageMpID).mpID
+        } catch (e) {
+            mpID = undefined
+        }
         this.setState({
             advanceDays: specialPromotion.giftAdvanceDays,
             description: specialPromotion.eventRemark,
-            mpID: specialPromotion.pushMessageMpID || undefined,
+            mpID,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
         });
@@ -83,9 +89,16 @@ class PromotionBasicInfo extends React.Component {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            let mpID;
+            try {
+                mpID = JSON.parse(specialPromotion.pushMessageMpID).mpID
+            } catch (e) {
+                mpID = undefined
+            }
             this.setState({
                 advanceDays: specialPromotion.giftAdvanceDays,
                 description: specialPromotion.eventRemark,
+                mpID,
                 sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
                 name: specialPromotion.eventName,
             })
@@ -94,6 +107,7 @@ class PromotionBasicInfo extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
+        const appID = (this.props.allWeChatAccountList.find(item => item.mpID === this.state.mpID) || {}).appID;
         this.props.form.validateFieldsAndScroll((err1) => {
             if (this.props.type === '51') {
                 if (err1) {
@@ -111,7 +125,7 @@ class PromotionBasicInfo extends React.Component {
                         giftAdvanceDays: this.state.advanceDays,
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
-                        pushMessageMpID: this.state.sendMsg >= 2 ? this.state.mpID : '',
+                        pushMessageMpID: this.state.sendMsg >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                         eventName: this.state.name,
                     })
                 }
@@ -123,7 +137,7 @@ class PromotionBasicInfo extends React.Component {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
-                        pushMessageMpID: this.state.sendMsg >= 2 ? this.state.mpID : '',
+                        pushMessageMpID: this.state.sendMsg >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                         eventName: this.state.name,
                     })
                 }
@@ -350,7 +364,7 @@ const mapStateToProps = (state) => {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS(),
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
     }
 };
 
