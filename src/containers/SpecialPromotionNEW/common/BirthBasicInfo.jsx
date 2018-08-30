@@ -21,6 +21,7 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
+import {queryWechatMpInfo} from "../../GiftNew/_action";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -40,6 +41,7 @@ class PromotionBasicInfo extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanceDaysChange = this.handleAdvanceDaysChange.bind(this);
         this.handleSendMsgChange = this.handleSendMsgChange.bind(this);
+        this.handleMpIDChange = this.handleMpIDChange.bind(this);
         this.renderPromotionType = this.renderPromotionType.bind(this);
         this.renderMoreInfo = this.renderMoreInfo.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -53,10 +55,18 @@ class PromotionBasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        this.props.queryWechatMpInfo();
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        let mpID;
+        try {
+            mpID = JSON.parse(specialPromotion.pushMessageMpID).mpID
+        } catch (e) {
+            mpID = undefined
+        }
         this.setState({
             advanceDays: specialPromotion.giftAdvanceDays,
             description: specialPromotion.eventRemark,
+            mpID,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
         });
@@ -79,9 +89,16 @@ class PromotionBasicInfo extends React.Component {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            let mpID;
+            try {
+                mpID = JSON.parse(specialPromotion.pushMessageMpID).mpID
+            } catch (e) {
+                mpID = undefined
+            }
             this.setState({
                 advanceDays: specialPromotion.giftAdvanceDays,
                 description: specialPromotion.eventRemark,
+                mpID,
                 sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
                 name: specialPromotion.eventName,
             })
@@ -90,6 +107,7 @@ class PromotionBasicInfo extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
+        const appID = (this.props.allWeChatAccountList.find(item => item.mpID === this.state.mpID) || {}).appID;
         this.props.form.validateFieldsAndScroll((err1) => {
             if (this.props.type === '51') {
                 if (err1) {
@@ -107,6 +125,7 @@ class PromotionBasicInfo extends React.Component {
                         giftAdvanceDays: this.state.advanceDays,
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
+                        pushMessageMpID: this.state.sendMsg >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                         eventName: this.state.name,
                     })
                 }
@@ -118,12 +137,19 @@ class PromotionBasicInfo extends React.Component {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
+                        pushMessageMpID: this.state.sendMsg >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                         eventName: this.state.name,
                     })
                 }
             }
         });
         return nextFlag;
+    }
+
+    handleMpIDChange(v) {
+        this.setState({
+            mpID: v,
+        });
     }
 
     handleDescriptionChange(e) {
@@ -161,7 +187,7 @@ class PromotionBasicInfo extends React.Component {
             return cc.key === type
         }).title : '';
         const rangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-        console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
+        // console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
                 <p>{type ?  item ? item.tip : '' : ''}</p>
@@ -279,8 +305,36 @@ class PromotionBasicInfo extends React.Component {
                             })
                         }
                     </Select>
-
                 </FormItem>
+                { this.state.sendMsg >= 2
+                    ?
+                    <FormItem
+                        label="微信公众号选择"
+                        required
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >{getFieldDecorator('mpID', {
+                        rules: [{
+                            required: true,
+                            message: '请选择微信推送的公众号',
+                        }],
+                        initialValue: this.state.mpID,
+                        onChange: this.handleMpIDChange
+                    })(
+                        <Select size="default"
+                                placeholder="请选择微信推送的公众号"
+                                getPopupContainer={(node) => node.parentNode}
+                        >
+                            {
+                                this.props.allWeChatAccountList.map((item) => {
+                                    return (<Option value={`${item.mpID}`} key={`${item.mpID}`}>{item.mpName}</Option>)
+                                })
+                            }
+                        </Select>
+                    )}
+                    </FormItem> : null
+                }
                 <FormItem
                     label="活动说明"
                     className={styles.FormItemStyle}
@@ -291,7 +345,7 @@ class PromotionBasicInfo extends React.Component {
                         rules: [{
                             required: true,
                             message: '不多于200个字符',
-                            pattern: /.{1,200}/,
+                            pattern: /^.{1,200}$/,
                         }],
                         initialValue: this.state.description,
                     })(
@@ -310,6 +364,7 @@ const mapStateToProps = (state) => {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
     }
 };
 
@@ -324,6 +379,9 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterQueryFsmGroupSettleUnit: (opts) => {
             dispatch(saleCenterQueryFsmGroupSettleUnit(opts));
         },
+        queryWechatMpInfo: (opts) => {
+            dispatch(queryWechatMpInfo())
+        }
     }
 };
 
