@@ -132,13 +132,9 @@ class LowPriceDetailInfo extends React.Component {
     handleSubmit = (cbFn) => {
         let {
             discountRate,
-            discountFlag,
-            freeAmountFlag,
             freeAmount,
-            stageAmountFlag,
             stageAmount,
             disType,
-            ruleType,
         } = this.state;
         let rule;
         if (Number(stageAmount || 0) <= 0) {
@@ -169,7 +165,7 @@ class LowPriceDetailInfo extends React.Component {
                     freeAmount,
                     disType,
                     stageAmount,
-                    discountRate: disType == 2 ? String(discountRate * 10) : ''
+                    discountRate: disType == 2 ? String(Number(discountRate || 0)) : ''
                 }]
             };
             this.props.setPromotionDetail({
