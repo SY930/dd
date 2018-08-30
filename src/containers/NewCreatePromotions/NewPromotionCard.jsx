@@ -42,7 +42,7 @@ class NewPromotionCard extends Component {
                 <div
                     className={styles.promotionDescription}
                     style={{
-                        marginTop: 20
+                        marginTop: 12
                     }}
                 >
                     {text}
