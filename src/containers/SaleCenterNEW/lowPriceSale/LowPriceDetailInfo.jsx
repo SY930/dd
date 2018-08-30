@@ -10,12 +10,22 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
+import {
+    Row,
+    Col,
+    Form,
+    Select,
+    Radio,
+    InputNumber,
+    Input,
+    Icon,
+    Button,
+} from 'antd';
 import { connect } from 'react-redux'
 import ReactDOM from 'react-dom';
 
 const Immutable = require('immutable');
-
+const ButtonGroup = Button.Group;
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 if (process.env.__CLIENT__ === true) {
@@ -57,11 +67,13 @@ class LowPriceDetailInfo extends React.Component {
         this.defaultRun = '0';
         this.state = {
             display: false,
-            isDishVisibleIndex: '0',
-            maxCount: 3,
-            discount: '',
+            discountRate: '',
             discountFlag: true,
+            freeAmountFlag: true,
+            freeAmount: '',
             stageAmountFlag: true,
+            stageAmount: '',
+            disType: '3',
             ruleType: '1',
             targetScope: '0',
         };
@@ -69,10 +81,11 @@ class LowPriceDetailInfo extends React.Component {
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderRulesComponent = this.renderRulesComponent.bind(this);
         this.handleRuleTypeChange = this.handleRuleTypeChange.bind(this);
         this.handleStageAmountChange = this.handleStageAmountChange.bind(this);
-        this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
+        this.handleDisTypeChange = this.handleDisTypeChange.bind(this);
+        this.handleDiscountRateChange = this.handleDiscountRateChange.bind(this);
+        this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
         this.onDiscountChange = this.onDiscountChange.bind(this);
     }
 
@@ -80,107 +93,89 @@ class LowPriceDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        this.parseRule()
+    }
+
+    parseRule(props = this.props) {
+        let _rule = props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
         }
 
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        // default value
-        _rule = Object.assign({}, _rule);
-        const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
-        const _scopeLstLength = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
+        try {
+            _rule = _rule.stage[0];
+        } catch (e) {
+            _rule = {}
+        }
+        const _scopeLstLength = props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
         let display;
         display = !this.props.isNew;
         const _ruleType = _scopeLstLength === 0 ? '1' : '2';
         this.setState({
             display,
             ruleType: _ruleType,
-            discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
-            targetScope: _categoryOrDish,
+            discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
+            disType: _rule.disType ? String(_rule.disType) : '3',
+            freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
+            stageAmount: _rule.stageAmount ? String(_rule.stageAmount) : '',
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !=
+    /*componentWillReceiveProps(nextProps) {
+        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            const _categoryOrDish = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
-            let display;
-            display = !this.props.isNew;
-            this.setState({
-                display,
-                ruleType: _rule.stageType || '0',
-                ruleInfo: _rule.stage ? _rule.stage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.stageAmount,
-                        end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
-                        validationStatus: 'success',
-                        helpMsg: null,
-                    }
-                }) : [{
-                    validationStatus: 'success',
-                    helpMsg: null,
-                    start: null,
-                    end: this.state.discount,
-                }],
-                discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
-                targetScope: _categoryOrDish,
-            });
+            this.parseRule(nextProps)
         }
-    }
+    }*/
 
     handleSubmit = (cbFn) => {
-        let { discount, discountFlag, ruleInfo } = this.state;
+        let {
+            discountRate,
+            discountFlag,
+            freeAmountFlag,
+            freeAmount,
+            stageAmountFlag,
+            stageAmount,
+            disType,
+            ruleType,
+        } = this.state;
         let rule;
-        if (discount == null || discount == '') {
-            discountFlag = false;
+        if (Number(stageAmount || 0) <= 0) {
+            this.setState({
+                stageAmountFlag: false
+            });
+            return
         }
-        this.setState({ discount, discountFlag });
-
-        const ruleValidation = ruleInfo.reduce((p, c) => {
-            if (c.start === null || c.end === null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
-                c.validationStatus = 'error';
-                c.helpMsg = '请输入正确折扣范围';
+        if (disType == 2) {
+            if (Number(discountRate || 0) <= 0 || Number(discountRate || 0) > 10) {
+                this.setState({
+                    discountFlag: false
+                });
+                return
             }
-            return p && c.validationStatus === 'success';
-        }, true);
-        let nextFlag = true;
-        if (discountFlag && this.state.ruleType == '0') {
-            rule = {
-                stageType: this.state.ruleType,
-                targetScope: this.state.targetScope,
-                discountRate: this.state.discount,
+        } else {
+            if (Number(freeAmount || 0) <= 0) {
+                this.setState({
+                    freeAmountFlag: false
+                });
+                return
+            }
+        }
+
+        rule = {
+            stageType: '2',
+            stage:  [{
+                    freeAmount,
+                    disType,
+                    stageAmount,
+                    discountRate: disType == 2 ? String(discountRate * 10) : ''
+                }]
             };
             this.props.setPromotionDetail({
                 rule,
             });
-        } else if (ruleValidation && (this.state.ruleType == '1' || this.state.ruleType == '2')) {
-            rule = {
-                stageType: '2',
-                stage: this.state.ruleInfo.map((ruleInfo) => {
-                    return {
-                        targetScope: this.state.targetScope,
-                        stageAmount: ruleInfo.start,
-                        discountRate: ruleInfo.end,
-                    }
-                }),
-            }
-            this.props.setPromotionDetail({
-                rule,
-            });
-        } else {
-            nextFlag = false;
-        }
-
-
-        return nextFlag;
+        return true;
     };
 
 
@@ -205,29 +200,36 @@ class LowPriceDetailInfo extends React.Component {
         })
     }
 
-    onCustomRangeInputChange(value, index) {
-        const _start = value.start;
-        const _end = value.end;
-        let _validationStatus,
-            _helpMsg;
-        // TODO:刚输入的时候就报错
-        if (parseFloat(_end) <= 10 || (_start == null && _end != null) || (_start != null && _end == null)) {
-            _validationStatus = 'success';
-            _helpMsg = null
-        } else {
-            _validationStatus = 'error';
-            _helpMsg = '请输入正确折扣范围'
-        }
+    handleFreeAmountChange(val) {
+        const numberValue = Number(val.number || 0);
+        const freeAmountFlag = numberValue > 0;
+        this.setState({
+            freeAmount: val.number,
+            freeAmountFlag
+        })
+    }
 
-        const _tmp = this.state.ruleInfo;
-        _tmp[index] = {
-            start: _start,
-            end: _end,
-            validationStatus: _validationStatus,
-            helpMsg: _helpMsg,
-        };
-        this.setState({ ruleInfo: _tmp });
-        this.onDiscountChange(_end);
+    handleDiscountRateChange(val) {
+        const numberValue = Number(val.number || 0);
+        const discountFlag = numberValue > 0 && numberValue <= 10;
+        this.setState({
+            discountRate: val.number,
+            discountFlag
+        })
+    }
+
+    handleDisTypeChange(v) {
+        if (v == 2) {
+            this.setState({
+                disType: v,
+                freeAmountFlag: true,
+            })
+        } else {
+            this.setState({
+                disType: v,
+                discountFlag: true,
+            })
+        }
     }
 
     onDiscountChange(value) {
@@ -253,39 +255,101 @@ class LowPriceDetailInfo extends React.Component {
                 >
                     <p> 消费一定的菜品，可对价格最低菜品进行减免、折扣或特定售价的优惠活动</p>
                 </FormItem>
-                    {this.renderRulesComponent()}
-
-
+                <Row>
+                    <Col span={8} push={1}>
+                        {this.renderStageAmount()}
+                    </Col>
+                    <Col span={15} push={1}>
+                        {this.renderFreeAmountAndDiscount()}
+                    </Col>
+                </Row>
             </div>
         )
     }
 
-    renderRulesComponent() {
+    renderStageAmount() {
         return (
             <FormItem
-                className={[styles.FormItemStyle, styles.explainBack].join(' ')}
-                wrapperCol={{span:17, offset:4}}
+                className={[styles.FormItemStyle, styles.explainBack, styles.pushedExplain].join(' ')}
+                wrapperCol={{span:24}}
                 validateStatus={this.state.stageAmountFlag?'success':'error'}
                 help={this.state.stageAmountFlag?null:'份数为1-50'}
             >
                 <PriceInput
                     addonBefore={
-                    <Select
-                        size="default"
-                        onChange={this.handleRuleTypeChange}
-                        value={this.state.ruleType}
-                    >
-                        <Option key="1" value='1'>任意消费满</Option>
-                        <Option key="2" value='2'>指定菜品消费满</Option>
-                    </Select>
+                        <div style={{
+                            width: "120px"
+                        }}>
+                            <Select
+                                size="default"
+                                dropdownMatchSelectWidth={false}
+                                onChange={this.handleRuleTypeChange}
+                                value={this.state.ruleType}
+                            >
+                                <Option key="1" value='1'>任意消费满</Option>
+                                <Option key="2" value='2'>指定菜品消费满</Option>
+                            </Select>
+                        </div>
+
                 }
-                            addonAfter={'份'}
-                            value={{number: this.state.stageAmount}}
-                            defaultValue={{number: this.state.stageAmount}}
-                            onChange={this.handleStageAmountChange}
-                            maxNum={4}
-                            modal="int"
+                    addonAfter={'份'}
+                    value={{number: this.state.stageAmount}}
+                    defaultValue={{number: this.state.stageAmount}}
+                    onChange={this.handleStageAmountChange}
+                    maxNum={4}
+                    modal="int"
                 />
+            </FormItem>
+        )
+    }
+
+    renderFreeAmountAndDiscount() {
+        const disType = this.state.disType;
+        return (
+            <FormItem
+                className={styles.pushedExplain}
+                wrapperCol={{span:18}}
+                labelCol={{ span: 5 }}
+                label="对最低价菜品"
+                validateStatus={this.state.freeAmountFlag && this.state.discountFlag ?'success':'error'}
+                help={!this.state.freeAmountFlag ? '金额不得为空' : !this.state.discountFlag ? '折扣要大于0, 小于等于10' : null}
+            >
+                <div className={[styles.flexFormItemNoMod, styles.radioInLine].join(' ')}>
+                    <ButtonGroup size="small">
+                        <Button  value="3" type={disType == '3' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('3')}>特定售价</Button>
+                        <Button  value="1" type={disType == '1' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('1')}>减免</Button>
+                        <Button  value="2" type={disType == '2' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('2')}>折扣</Button>
+                    </ButtonGroup>
+                    <div style={{
+                        display: 'inline-block',
+                        width: '100px',
+                        marginLeft: '10px'
+                    }}>
+                        {disType != 2 &&
+                        <PriceInput
+                            addonAfter={'元'}
+                            placeholder={disType == '1' ? '减免金额' : '特定售价'}
+                            value={{number: this.state.freeAmount}}
+                            defaultValue={{number: this.state.freeAmount}}
+                            onChange={this.handleFreeAmountChange}
+                            maxNum={5}
+                            modal="float"
+                        />
+                        }
+                        {disType == 2 &&
+                        <PriceInput
+                            addonAfter={'折'}
+                            discountMode={true}
+                            value={{number: this.state.discountRate}}
+                            placeholder="例如8.8折"
+                            defaultValue={{number: this.state.discountRate}}
+                            onChange={this.handleDiscountRateChange}
+                            maxNum={2}
+                            modal="float"
+                        />
+                        }
+                    </div>
+                </div>
             </FormItem>
         )
     }
@@ -308,14 +372,13 @@ class LowPriceDetailInfo extends React.Component {
 
 
     render() {
-        const payLimit = this.state.ruleType != 0;
         return (
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.state.ruleType === '2' ? <PromotionDetailSetting /> : null}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}
+                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
             </div>
         )
