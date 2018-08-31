@@ -675,7 +675,7 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
                     <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
-                    <Button
+                    {/*<Button
                         type="ghost"
                         icon="plus"
                         className={styles.jumpToCreate}
@@ -683,7 +683,7 @@ class MyActivities extends React.Component {
                             () => {
                                 jumpPage({ menuID: NEW_SALE_CENTER })
                             }
-                        }>新建</Button>
+                        }>新建</Button>*/}
                 </div>
             </div>
         );
