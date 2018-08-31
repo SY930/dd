@@ -159,7 +159,7 @@ class NewActivity extends React.Component {
 
 
     _renderActivityButtons() {
-        const activities = this.props.saleCenter.get('activityCategories').toJS().filter(activity => !(this.props.user.shopID > 0 && activity.key === '5010'));
+        const activities = this.props.saleCenter.get('activityCategories').toJS();
         return (
 
 
@@ -171,11 +171,11 @@ class NewActivity extends React.Component {
                                     this.onButtonClicked(index, activity);
                                 }}
                                 key={`NewActivity${index}`}
-                                /*style={{
+                                style={{
                                     listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === '5010') ?
+                                    display: (this.props.user.shopID > 0 && activity.key === '5010') ?
                                         'none' : 'block',
-                                }}*/
+                                }}
                             >
                                 <Authority rightCode="marketing.jichuyingxiaoxin.create">
                                     <ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />
