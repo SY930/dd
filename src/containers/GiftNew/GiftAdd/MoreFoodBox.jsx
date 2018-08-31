@@ -324,8 +324,8 @@ class MoreFoodBox extends React.Component {
                 </FormItem>
                 <div style={{
                     color: 'orange',
-                    marginTop: '20px',
-                    marginBottom: '-10px',
+                    marginTop: '12px',
+                    marginBottom: '10px',
                     visibility: this.state.foodCategorySelections.size ? 'hidden' : 'visible'
                 }}>
                     不选代表全部
