@@ -15,7 +15,7 @@ class GiftEditPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contentHeight: '782',
+            contentHeight: 782,
             scrollPercent: 0,
         };
         this.formRef = null;

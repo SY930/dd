@@ -150,7 +150,7 @@ const FORMITEMS = {
 };
 
 const FIRST_KEYS = {
-    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType','giftName','selectBrands', 'giftValue', 'giftRemark',] },
+    '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType','giftName','selectBrands', 'giftValue', 'foodsboxs', 'giftRemark',] },
     { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
     '菜品优惠券': [
         {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'foodNameList', 'giftRemark'],},
