@@ -23,8 +23,8 @@ export const SET_MSG_TEMPLATE = '10000888'; // 短信模板
 export const WECHAT_MALL_CREATE = 'wechat_mall_create'; // 门店视角 CREATE
 export const WECHAT_MALL_LIST = 'crm.shop.promotion'; // 门店视角 LIST
 
-export const NEW_CUSTOMER = 'new_customer'; // 创建会员拉新活动
-export const FANS_INTERACTIVITY = 'fans_interactivity'; // 创建粉丝互动活动
-export const REPEAT_PROMOTION = 'repeat_promotion'; // 创建促进复购活动
-export const LOYALTY_PROMOTION = 'loyalty_promotion'; // 创建会员关怀活动
-export const SALE_PROMOTION = 'sale_promotion'; // 创建促进销量活动
+export const NEW_CUSTOMER = '1000073001'; // 创建会员拉新活动
+export const FANS_INTERACTIVITY = '1000073002'; // 创建粉丝互动活动
+export const REPEAT_PROMOTION = '1000073003'; // 创建促进复购活动
+export const LOYALTY_PROMOTION = '1000073004'; // 创建会员关怀活动
+export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动

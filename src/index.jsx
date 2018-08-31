@@ -28,7 +28,7 @@ registerLocalPage([
         label: '新建特色营销',
         parent: [entryCodes.SPECIAL_PAGE],
     },
-    {
+    /*{
         key: entryCodes.NEW_CUSTOMER,
         value: entryCodes.NEW_CUSTOMER,
         label: '会员拉新',
@@ -57,7 +57,7 @@ registerLocalPage([
         value: entryCodes.FANS_INTERACTIVITY,
         label: '会员拉新',
         parent: [entryCodes.SPECIAL_PAGE],
-    },
+    },*/
 
 ]);
 
