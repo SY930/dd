@@ -166,7 +166,7 @@ class PhonePreview extends PureComponent {
                         <img src={bg} alt="oops"/>
                         <div className={styles.valueContainer}>
                             {
-                                !isNaN(giftValue) &&
+                                (!isNaN(giftValue) && giftType != '111') &&
                                 (<div className={(getValueString(giftValue).length <= 4 ||
                                 getValueString(giftValue).includes('.') && getValueString(giftValue).length === 5)
                                     ? styles.giftValue : styles.longerGiftValue}>
@@ -174,13 +174,13 @@ class PhonePreview extends PureComponent {
                                     &yen;{getValueString(giftValue)}
                                 </div>)
                             }
+                            {
+                                (!!giftDiscountThreshold && giftType == '111') &&
+                                (<div className={styles.giftValue}>
+                                    {giftDiscountThreshold}折
+                                </div>)
+                            }
                         </div>
-                        {
-                            !!giftDiscountThreshold &&
-                            (<div className={styles.giftValue}>
-                                {giftDiscountThreshold}折
-                            </div>)
-                        }
                         {
                             moneyLimitType > 0 && <div className={styles.giftLimitValue}>
                                 {`${moneyLimitType == 1 ? `每满` : `满`}${moenyLimitValue}元可用`}

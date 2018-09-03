@@ -647,6 +647,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </Select>)
                 }
                 addonAfter="折"
+                placeholder="例如8.8折, 9.5折"
                 discountMode={true}
                 discountFloat={1}
                 maxNum={2}
