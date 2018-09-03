@@ -124,7 +124,6 @@ class MoreFoodBox extends React.Component {
                                 .forEach((category) => {
                                     if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.targetName) {
                                         foodCategorySelections.add(category); // 返回的已选分类
-                                        console.log('category.foodCategoryName: ', category.foodCategoryName)
                                     }
                                 });
                         });
@@ -197,8 +196,8 @@ class MoreFoodBox extends React.Component {
 
     // // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
-            this.props.promotionDetailInfo.get('foodCategoryCollection')) {
+        if ((nextProps.promotionDetailInfo.get('foodCategoryCollection') !== this.props.promotionDetailInfo.get('foodCategoryCollection'))
+            && !this.props.promotionDetailInfo.get('foodCategoryCollection').toJS().length) {
             const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             this.setState({
                 foodCategoryCollection,
@@ -788,16 +787,16 @@ class MoreFoodBox extends React.Component {
             <div style={{
                 position: 'relative'
             }}>
-                <div style={{
-                    position: 'absolute',
-                    left: '-58px'
-                }}>
-                    适用菜品
+                <div className={this.props.isBuyGive ? styles.requiredFoodBoxLabel : styles.foodBoxLabel}
+                >
+                    {this.props.isSecondary ? '赠送菜品' : '适用菜品'}
                 </div>
-                <FormItem style={{ marginBottom: 8 }}>
+                <FormItem
+                    style={{ marginBottom: 8 }}
+                >
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
-                            label={'适用菜品'}
+                            label={this.props.isSecondary ? '赠送菜品' : '适用菜品'}
                             itemName="foodName+unit"
                             itemID="itemID"
                             data={this.state.foodSelections}
@@ -836,13 +835,13 @@ class MoreFoodBox extends React.Component {
                                 />
                             </HualalaTreeSelect>
                         </HualalaEditorBox>
-                        <div style={{
+                        {this.props.isBuyGive ? null :<div style={{
                             color: 'orange',
                             marginBottom: '-10px',
                             visibility: this.state.foodSelections.size ? 'hidden' : 'visible'
                         }}>
                             不选代表全部
-                        </div>
+                        </div>}
                     </div>
                 </FormItem>
             </div>
@@ -995,16 +994,20 @@ class MoreFoodBox extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                {this.renderPromotionRange()}
-                {
-                    this.state.foodSelectType == 0 ? this.renderDishsSelectionBox() :
-                        this.state.foodSelectType == 1 ? this.renderCategorySelectionBox() :
-                            null
-                }
-            </div>
-        );
+        if (this.props.isBuyGive) {
+            return this.renderDishsSelectionBox();
+        } else {
+            return (
+                <div>
+                    {this.renderPromotionRange()}
+                    {
+                        this.state.foodSelectType == 0 ? this.renderDishsSelectionBox() :
+                            this.state.foodSelectType == 1 ? this.renderCategorySelectionBox() :
+                                null
+                    }
+                </div>
+            );
+        }
     }
 }
 

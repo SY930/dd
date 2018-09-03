@@ -6,7 +6,7 @@ import bg from '../../../assets/bg.png';
 import bg1 from '../../../assets/bg1.png';
 
 const showPreviewGifts = [
-    '10', '20', '21', '30', '111'
+    '10', '20', '21', '30', '111', '110'
 ];
 
 // 价值只显示前4位数字
@@ -166,7 +166,7 @@ class PhonePreview extends PureComponent {
                         <img src={bg} alt="oops"/>
                         <div className={styles.valueContainer}>
                             {
-                                (!isNaN(giftValue) && giftType != '111') &&
+                                (!isNaN(giftValue) && giftType != '111' && giftType != '110') &&
                                 (<div className={(getValueString(giftValue).length <= 4 ||
                                 getValueString(giftValue).includes('.') && getValueString(giftValue).length === 5)
                                     ? styles.giftValue : styles.longerGiftValue}>
@@ -178,6 +178,12 @@ class PhonePreview extends PureComponent {
                                 (!!giftDiscountThreshold && giftType == '111') &&
                                 (<div className={styles.giftValue}>
                                     {giftDiscountThreshold}折
+                                </div>)
+                            }
+                            {
+                                (giftType == '110') &&
+                                (<div className={styles.giftValue}>
+                                    赠
                                 </div>)
                             }
                         </div>

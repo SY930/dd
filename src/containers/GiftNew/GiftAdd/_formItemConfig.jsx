@@ -163,8 +163,9 @@ const FIRST_KEYS = {
     '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
     '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
     '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'price', 'validityDays', 'giftRemark'] }],
-    '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'price', 'giftRemark', 'TrdTemplate'] }],
-    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'disCountTypeAndValue', /*'foodsboxs',*/ 'giftRemark',] },
+    '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'buyGiveFoods', 'stageAmount', 'buyGiveSecondaryFoods', 'giveFoodCount', 'giftRemark',] },
+        { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
+    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'disCountTypeAndValue', 'giftRemark',] },
         { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
 };
 const SECOND_KEYS = {
@@ -194,11 +195,11 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['stages', 'foodsboxs', 'giveLimits', 'couponPeriodSettings', 'supportOrderTypes', 'couponCodeType', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: [ 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderTypes', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', /*'disCountStages', 'disCountRate_Max',*/'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
 };
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
