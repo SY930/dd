@@ -6,7 +6,7 @@ import bg from '../../../assets/bg.png';
 import bg1 from '../../../assets/bg1.png';
 
 const showPreviewGifts = [
-    '10', '20', '21', '30'
+    '10', '20', '21', '30', '111'
 ];
 
 // 价值只显示前4位数字
@@ -81,6 +81,31 @@ class PhonePreview extends PureComponent {
         return `本券仅用于“${foodNameString}”等菜品`;
     }
 
+    foodScopeString() {
+        const { foodsbox, discountType, giftType } = this.props;
+        if (giftType == '111' && discountType == 0) {
+            return '本券对店铺所有菜品适用'
+        }
+        const {
+            dishes = [],
+            excludeDishes = [],
+            foodCategory = [],
+            foodSelectType = 2
+        } = foodsbox ? foodsbox.toJS() : {};
+        if (foodSelectType == 2 || (foodSelectType == 1 && !foodCategory.length) || (foodSelectType == 0 && !dishes.length)) {
+            return '本券对店铺所有菜品适用'
+        } else if (foodSelectType == 1) {
+            const catgoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('，')}类菜品`
+            if (excludeDishes.length) {
+                return catgoryStr + `，对${excludeDishes.map(dish => dish.foodName + dish.unit).join('，')}菜品不可用`
+            } else {
+                return catgoryStr;
+            }
+        } else if (foodSelectType == 0) {
+            return `本券适用于${dishes.map(dish => dish.foodName + dish.unit).join('，')} 菜品`
+        }
+    }
+
     shopNameString() {
         let {
             shopNames : shopIDs,
@@ -110,7 +135,8 @@ class PhonePreview extends PureComponent {
             isOfflineCanUsing = 'true',
             supportOrderType = '2',
             contentHeight,
-            scrollPercent
+            scrollPercent,
+            giftDiscountThreshold
         } = this.props;
         return (
             <div
@@ -145,6 +171,12 @@ class PhonePreview extends PureComponent {
                             </div>)
                         }
                         {
+                            !!giftDiscountThreshold &&
+                            (<div className={styles.giftValue}>
+                                {giftDiscountThreshold}折
+                            </div>)
+                        }
+                        {
                             moneyLimitType > 0 && <div className={styles.giftLimitValue}>
                                 {`${moneyLimitType == 1 ? `每满` : `满`}${getValueString(moenyLimitValue)}元可用`}
                             </div>
@@ -173,6 +205,7 @@ class PhonePreview extends PureComponent {
                                 <p>{`本券适用于${supportOrderTypeMap[supportOrderType]}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
                                 <p>{this.shareTypeString()}</p>
                                 {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
+                                {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
                             </div>
                         )}
 
@@ -211,6 +244,9 @@ function mapStateToProps(state) {
         moneyLimitType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moneyLimitType']),
         moenyLimitValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moenyLimitValue']) || '100',
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
+        discountType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountType']),
+        foodsbox: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodsboxs']),
+        giftDiscountThreshold: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountThreshold', 'number']),
         groupName: state.user.getIn(['accountInfo', 'groupName']),
     }
 }

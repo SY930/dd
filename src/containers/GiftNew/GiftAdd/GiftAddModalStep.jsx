@@ -36,6 +36,7 @@ import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
+import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -70,6 +71,8 @@ class GiftAddModalStep extends React.PureComponent {
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleDiscountThresholdChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleLimitValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
 
     componentDidMount() {
@@ -81,18 +84,17 @@ class GiftAddModalStep extends React.PureComponent {
         const { name, data, value } = thisGift;
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value == '111') {
-            values.discountOffMax = data.discountOffMax
-            values.isDiscountOffMax = data.discountOffMax > 0 ? 1 : 0
-            values.discountType = data.discountThreshold > 0 ? 1 : 0
-            values.discountRate_111 = data.discountRate * 100
+            values.discountType = data.discountType
+            values.discountThreshold = data.discountThreshold
         }
-        if (type === 'edit' && value == '110') {
+
+        /*if (type === 'edit' && value == '110') {
             values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
             values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
             values.maxGiveCountPerBill = data.maxGiveCountPerBill
             values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
             values.BOGOdiscountWay = data.BOGOdiscountWay
-        }
+        }*/
         this.setState({
             values
         });
@@ -180,6 +182,10 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'giftValue':    this.handleValueChangeDebounced({key, value});
                                     break;
+                case 'moenyLimitValue':    this.handleLimitValueChangeDebounced({key, value});
+                                    break;
+                case 'discountThreshold':    this.handleDiscountThresholdChangeDebounced({key, value});
+                                    break;
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
@@ -198,6 +204,21 @@ class GiftAddModalStep extends React.PureComponent {
                 }
                 secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys });
+                break;
+            case 'discountType':
+                // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
+                const keys = [...firstKeys[describe][0].keys];
+                const discountTypeIndex = _.findIndex(keys, item => item == 'disCountTypeAndValue');
+                const foodSelectorIndex = _.findIndex(keys, item => item == 'foodsboxs');
+                if (value != 0) {
+                    foodSelectorIndex == -1 && keys.splice(discountTypeIndex + 1, 0, 'foodsboxs');
+                } else {
+                    foodSelectorIndex !== -1 && keys.splice(foodSelectorIndex, 1);
+                }
+                console.log('foodSelectorIndex: ', foodSelectorIndex)
+                console.log('value: ', value)
+                firstKeys[describe][0].keys = [...keys];
+                this.setState({ firstKeys });
                 break;
             case 'isDiscountRate':
                 const discountRateIndex = _.findIndex(newKeys, item => item == 'discountRate');
@@ -528,15 +549,19 @@ class GiftAddModalStep extends React.PureComponent {
                         })
                     )*/
                 }
-                delete params.foodsboxs;
-                delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             }
             if (params.supportOrderTypes) {
                 params.supportOrderTypes = params.supportOrderTypes.join(',')
             }
-            if (params.discountType === 0) {
-                params.discountThreshold = 0
+            if (value == '111') {
+                params.discountThreshold = params.discountThreshold.number;
+                if (Number(params.discountType) === 0) {
+                    params.foodSelectType = 2;
+                    params.couponFoodScopes = [];
+                    params.excludeFoodScopes = [];
+                }
             }
+
             if (params.couponPeriodSettings) {
                 const { couponPeriodSettings, couponPeriodSettingsStatus } = params.couponPeriodSettings
                 params.couponPeriodSettings = couponPeriodSettings
@@ -570,6 +595,8 @@ class GiftAddModalStep extends React.PureComponent {
             const { groupName } = accountInfo.toJS();
             startSaving();
             delete params.operateTime; // 就, 很烦
+            delete params.foodsboxs;
+            delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
                 endSaving();
                 message.success('成功', 3);
@@ -579,6 +606,50 @@ class GiftAddModalStep extends React.PureComponent {
                 console.log(err)
             });
         });
+    }
+
+    renderDiscountTypeAndValue(decorator) {
+        const { discountType, discountThreshold } = this.props.gift.data;
+        return decorator({
+            key: 'discountThreshold',
+            rules: [
+                {
+                    required: true,
+                    message: '不得为空',
+                },
+                {
+                    validator: (rule, v, cb) => {
+                        Number(v && v.number ? v.number : 0) > 0 &&  Number(v && v.number ? v.number : 0) <= 10 ? cb() : cb(rule.message);
+                    },
+                    message: '折扣要大于0, 小于等于10',
+                },
+            ],
+            initialValue: discountThreshold && discountThreshold.hasOwnProperty('number')  ? discountThreshold : {number: discountThreshold},
+        })(
+            <PriceInput
+                addonBefore={
+                    decorator({
+                        key: 'discountType',
+                        initialValue: String(discountType || 0),
+                    })(<Select
+                        style={{
+                            width: 150,
+                        }}
+                        getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            [{ label: '整单折扣', value: '0' }, { label: '指定菜品折扣', value: '1' }].map((t) => {
+                                return <Option key={t.label} value={t.value}>{t.label}</Option>
+                            })
+                        }
+                    </Select>)
+                }
+                addonAfter="折"
+                discountMode={true}
+                discountFloat={1}
+                maxNum={2}
+            />
+        )
     }
 
     renderDisCountStages(decorator) {
@@ -1272,6 +1343,11 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '活动条件',
                 type: 'custom',
                 render: decorator => this.renderDisCountStages(decorator),
+            },
+            disCountTypeAndValue: {
+                label: '折扣',
+                type: 'custom',
+                render: decorator => this.renderDiscountTypeAndValue(decorator),
             },
             disCountRate_Max: {
                 label: ' ',

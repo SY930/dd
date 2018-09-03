@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import {startCreateGift} from "../_action";
 
-const temparoryDisabledGifts = [ '110', '111'];
+const temparoryDisabledGifts = [ '111'];
 
 class CreateGiftsPanel extends Component {
 

@@ -45,9 +45,9 @@ class PriceInput extends React.Component {
             if (this.props.discountMode) {
                 const { maxNum } = this.state;
                 if (maxNum === 'noLimit') {
-                    reg = /^-?[0-9]*(?:\.[0-9]{0,3})?$/;
+                    reg = new RegExp(`^-?[0-9]*(?:\\.[0-9]{0,${this.props.discountFloat || 3}})?$`);
                 } else {
-                    reg = new RegExp(`^-?[0-9]{0,${maxNum}}(?:\\.[0-9]{0,3})?$`);
+                    reg = new RegExp(`^-?[0-9]{0,${maxNum}}(?:\\.[0-9]{0,${this.props.discountFloat || 3}})?$`);
                 }
             } else {
                 const { maxNum } = this.state;

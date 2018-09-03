@@ -118,7 +118,6 @@ class MoreFoodBox extends React.Component {
         if (_scopeLst.length > 0) {
             _scopeLst.forEach((scope) => {
                 if (scope.scopeType == 1) {
-                    console.log('oo!');
                     foodCategoryCollection
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
