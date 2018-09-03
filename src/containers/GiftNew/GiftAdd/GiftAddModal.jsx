@@ -288,9 +288,9 @@ class GiftAddModal extends React.Component {
                 disabled: type !== 'add',
                 surfix: value == '42' ? '分' : '元',
                 rules: value == '30'
-                    ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }]
+                    ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }]
                     : [{ required: true, message: `${valueLabel}不能为空` },
-                    { pattern: /(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/, message: '请输入整数不超过8位，小数不超过2位的值' }],
+                    { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }],
             },
             giftName: {
                 label: `礼品名称`,

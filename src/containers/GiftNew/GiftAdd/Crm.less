@@ -412,29 +412,39 @@
     display: flex;
     min-width: 1200px;
     .giftValue {
-        position: absolute;
         color: #FFFFFF;
         font-size: 25px;
+        position: relative;
         font-weight: 600;
         width: 80px;
-        top: 25px;
-        left: 11px;
+        left: 4px;
+        text-align: center;
+    }
+    .longerGiftValue {
+        color: #FFFFFF;
+        position: relative;
+        font-size: 16px;
+        font-weight: 600;
+        width: 80px;
+        left: 4px;
         text-align: center;
     }
     .giftLimitValue {
         position: absolute;
-        color: #FFFFFF;
         font-size: 11px;
-        width: 80px;
-        top: 58px;
-        left: 11px;
-        text-align: center;
+        width: 195px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        top: 70px;
+        left: 100px;
     }
     .giftName {
         position: absolute;
         color: #333333;
         font-size: 14px;
         width: 195px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         top: 30px;
         left: 100px;
         overflow: hidden;
@@ -449,6 +459,14 @@
         flex: none;
         position: relative;
         border-right: 1px solid #D7D7D7;
+        .valueContainer {
+            position: absolute;
+            height: 82px;
+            top: 15px;
+            display: flex;
+            align-items: center;
+            width: 100px;
+        }
         .phonePreviewHeader {
             display: block;
             position: absolute;

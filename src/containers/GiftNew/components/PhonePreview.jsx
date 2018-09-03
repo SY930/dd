@@ -11,11 +11,9 @@ const showPreviewGifts = [
 
 // 价值只显示前4位数字
 function getValueString(value) {
-    if (value === undefined) {
-        throw new Error('value cannot be null or undefined!');
-    }
-    return String(value).substring(0, 4).endsWith('.') ? String(value).substring(0, 5)
-        : String(value).substring(0, 4);
+    const valueString = String(Number(value));
+    return valueString.includes('.') ? valueString.substring(0, 8)
+        : valueString.substring(0, 5);
 }
 
 const usingTimeTypeMap = {
@@ -50,16 +48,18 @@ class PhonePreview extends PureComponent {
     shareTypeString() {
         const { giftShareType = '1' } = this.props;
         if (giftShareType == 1) {
-            return `本券可与其他优惠券同享；`
+            return `本券可与其他优惠券同享`
         } else if (giftShareType == 0) {
-            return `本券不可与其他优惠券同享；`
+            return `本券不可与其他优惠券同享`
         } else if (giftShareType == 2) {
             const { shareIDs } = this.props;
             const resultArr = [];
             (shareIDs ? shareIDs.toJS() : []).forEach(item => {
                 resultArr.push(item.giftName)
             });
-            return `本券可与${resultArr.join('，')}券共用；`
+            const resultString = resultArr.join('，') || '';
+
+            return `本券可与${resultString}${resultString.endsWith('券') ? '' : '券'}共用`
         }
     }
 
@@ -164,12 +164,17 @@ class PhonePreview extends PureComponent {
                     </div>
                     <div className={styles.phonePreviewContentWrapper}>
                         <img src={bg} alt="oops"/>
-                        {
-                            !!giftValue &&
-                            (<div className={styles.giftValue}>
-                                &yen;{getValueString(giftValue)}
-                            </div>)
-                        }
+                        <div className={styles.valueContainer}>
+                            {
+                                !isNaN(giftValue) &&
+                                (<div className={(getValueString(giftValue).length <= 4 ||
+                                getValueString(giftValue).includes('.') && getValueString(giftValue).length === 5)
+                                    ? styles.giftValue : styles.longerGiftValue}>
+
+                                    &yen;{getValueString(giftValue)}
+                                </div>)
+                            }
+                        </div>
                         {
                             !!giftDiscountThreshold &&
                             (<div className={styles.giftValue}>
@@ -178,7 +183,7 @@ class PhonePreview extends PureComponent {
                         }
                         {
                             moneyLimitType > 0 && <div className={styles.giftLimitValue}>
-                                {`${moneyLimitType == 1 ? `每满` : `满`}${getValueString(moenyLimitValue)}元可用`}
+                                {`${moneyLimitType == 1 ? `每满` : `满`}${moenyLimitValue}元可用`}
                             </div>
                         }
 

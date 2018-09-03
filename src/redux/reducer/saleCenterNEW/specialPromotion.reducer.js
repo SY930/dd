@@ -32,6 +32,7 @@ const $initialState = Immutable.fromJS({
         eventRemark: '', // 描述
         smsGate: '', // 是否发送短信
         smsTemplate: '', // 短信内容
+        pushMessageMpID: '', // 微信推送时选择的微信号
         eventWay: '',
         eventName: '',
         eventStartDate: '',
