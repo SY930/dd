@@ -145,8 +145,8 @@ export const REPEAT_PROMOTION_TYPES = [
         text: '顾客可以使用积分兑换相应的礼品，增加顾客的消费黏性',
         example: '',
         key: '30',
-        right: 13,
-        bottom: 3,
+        right: 18,
+        bottom: 8,
     },
     {
         title: '累计次数赠送',
