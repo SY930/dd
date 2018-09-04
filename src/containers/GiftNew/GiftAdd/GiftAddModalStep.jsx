@@ -75,6 +75,8 @@ class GiftAddModalStep extends React.PureComponent {
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleDiscountThresholdChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleLimitValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleStageAmountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleGiveFoodCountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
 
     componentDidMount() {
@@ -189,6 +191,10 @@ class GiftAddModalStep extends React.PureComponent {
                 case 'moenyLimitValue':    this.handleLimitValueChangeDebounced({key, value});
                                     break;
                 case 'discountThreshold':    this.handleDiscountThresholdChangeDebounced({key, value});
+                                    break;
+                case 'stageAmount':    this.handleStageAmountChangeDebounced({key, value});
+                                    break;
+                case 'giveFoodCount':    this.handleGiveFoodCountChangeDebounced({key, value});
                                     break;
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
