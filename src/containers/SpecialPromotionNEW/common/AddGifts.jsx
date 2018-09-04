@@ -135,7 +135,8 @@ class AddGifts extends React.Component {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType < 90);
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
+                    .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
             } catch (err) {
                 giftInfo = [];
             }
@@ -199,7 +200,8 @@ class AddGifts extends React.Component {
 
 
     renderItems() {
-        let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90);
+        let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
+            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => type.value === String(cat.giftType))}));
         if (Number(this.props.type) === 31 ) {
             filteredGiftInfo = filteredGiftInfo.filter(cat =>  cat.giftType != 40 && cat.giftType != 42 && cat.giftType != 80)
         }
@@ -260,7 +262,7 @@ class AddGifts extends React.Component {
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
-                                data={_.sortBy(filteredGiftInfo, 'giftType')}
+                                data={_.sortBy(filteredGiftInfo, 'index')}
                                 onChange={(value) => {
                                     this.handleGiftChange(value, index);
                                 }}

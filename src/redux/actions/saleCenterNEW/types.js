@@ -116,9 +116,17 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
     label: '菜品优惠券',
     value: '20',
 },
-    {
+{
     label: '菜品兑换券',
     value: '21',
+},
+{
+    label: '折扣券',
+    value: '111',
+},
+{
+    label: '买赠券',
+    value: '110',
 },
 {
     label: '实物礼品券',
