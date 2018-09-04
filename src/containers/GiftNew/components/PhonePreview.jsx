@@ -182,7 +182,13 @@ class PhonePreview extends PureComponent {
                             }
                             {
                                 (giftType == '110') &&
-                                (<div className={styles.giftValue}>
+                                (<div
+                                    className={styles.giftValue}
+                                    style={{
+                                        fontSize: '30px',
+                                        fontWeight: '400'
+                                    }}
+                                >
                                     赠
                                 </div>)
                             }
