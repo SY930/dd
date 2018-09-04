@@ -81,7 +81,7 @@ const GiftCfg = {
         },
         {
             name: '买赠券',
-            describe: '购买x份某编码菜品，赠送本编码菜品y份',
+            describe: '购买x份A菜品，赠送y份B菜品',
             value: '110',
             category: 'primary',
             color: '#c49b79'
