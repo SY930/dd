@@ -136,7 +136,7 @@ class PhonePreview extends PureComponent {
             supportOrderType = '2',
             contentHeight,
             scrollPercent,
-            giftDiscountThreshold
+            giftDiscountRate
         } = this.props;
         return (
             <div
@@ -175,9 +175,9 @@ class PhonePreview extends PureComponent {
                                 </div>)
                             }
                             {
-                                (!!giftDiscountThreshold && giftType == '111') &&
+                                (!!giftDiscountRate && giftType == '111') &&
                                 (<div className={styles.giftValue}>
-                                    {giftDiscountThreshold}折
+                                    {giftDiscountRate}折
                                 </div>)
                             }
                             {
@@ -263,7 +263,7 @@ function mapStateToProps(state) {
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
         discountType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountType']),
         foodsbox: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodsboxs']),
-        giftDiscountThreshold: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountThreshold', 'number']),
+        giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']),
         groupName: state.user.getIn(['accountInfo', 'groupName']),
     }
 }

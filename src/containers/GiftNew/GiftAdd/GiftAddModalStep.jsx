@@ -73,7 +73,7 @@ class GiftAddModalStep extends React.PureComponent {
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
-        this.handleDiscountThresholdChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
+        this.handleDiscountRateChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleLimitValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleStageAmountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleGiveFoodCountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
@@ -89,7 +89,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { secondKeys, values } = this.state;
         if (type === 'edit' && value == '111') {
             values.discountType = data.discountType
-            values.discountThreshold = data.discountThreshold
+            values.discountRate = data.discountRate
         }
 
         /*if (type === 'edit' && value == '110') {
@@ -190,7 +190,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'moenyLimitValue':    this.handleLimitValueChangeDebounced({key, value});
                                     break;
-                case 'discountThreshold':    this.handleDiscountThresholdChangeDebounced({key, value});
+                case 'discountRate':    this.handleDiscountRateChangeDebounced({key, value});
                                     break;
                 case 'stageAmount':    this.handleStageAmountChangeDebounced({key, value});
                                     break;
@@ -573,7 +573,7 @@ class GiftAddModalStep extends React.PureComponent {
                 params.supportOrderTypes = params.supportOrderTypes.join(',')
             }
             if (value == '111') { // 折扣券
-                params.discountThreshold = params.discountThreshold.number;
+                params.discountRate = params.discountRate.number;
                 if (Number(params.discountType) === 0) {
                     params.foodSelectType = 2;
                     params.couponFoodScopes = [];
@@ -651,9 +651,9 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderDiscountTypeAndValue(decorator) {
-        const { discountType, discountThreshold } = this.props.gift.data;
+        const { discountType, discountRate } = this.props.gift.data;
         return decorator({
-            key: 'discountThreshold',
+            key: 'discountRate',
             rules: [
                 {
                     required: true,
@@ -666,7 +666,7 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '折扣要大于0, 小于等于10',
                 },
             ],
-            initialValue: discountThreshold && discountThreshold.hasOwnProperty('number')  ? discountThreshold : {number: discountThreshold},
+            initialValue: discountRate && discountRate.hasOwnProperty('number')  ? discountRate : {number: discountRate},
         })(
             <PriceInput
                 addonBefore={
@@ -775,7 +775,7 @@ class GiftAddModalStep extends React.PureComponent {
                         <Col span={12}>
                             <FormItem style={{ marginTop: 2 }}>
                                 {decorator({
-                                    key: 'discountThreshold',
+                                    key: 'discountRate',
                                     rules: [{ required: true, message: '不得为空' }, {
                                         validator: (rule, v, cb) => {
                                             if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
