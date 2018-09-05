@@ -14,6 +14,11 @@ import ExportModal from "./ExportModal";
 import GenerateBatchGifts from "../components/GenerateBatchGifts";
 
 const TabPane = Tabs.TabPane;
+
+const sendableGiftTypes = [
+    '10', '20', '21', '30', '110', '111'
+];
+
 class GiftDetailModalTabs extends React.Component {
     constructor(props) {
         super(props);
@@ -90,7 +95,7 @@ class GiftDetailModalTabs extends React.Component {
                                 <GiftSendOrUsedCount key={tab.key} data={data} _key={tab.key} />
                             </TabPane>)
                         }).concat(
-                            data.giftType == '10' || data.giftType == '20' || data.giftType == '21' || data.giftType == '30' ?
+                            sendableGiftTypes.includes(String(data.giftType)) ?
                                 [
                                     (
                                         <TabPane tab={'赠送'} key={'send_gift'}>
