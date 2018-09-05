@@ -36,24 +36,25 @@ class BasePage extends Component {
             basicIndex: 0,
             specialModalVisible: false,
             specialIndex: 0,
-            contentHeight: 782,
+            // contentHeight: 782,
         };
-        this.onWindowResize = this.onWindowResize.bind(this);
+        // this.onWindowResize = this.onWindowResize.bind(this);
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
 
-    componentDidMount() {
+    /*componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 95;
+        console.log('contentHeight: ', contentHeight);
         this.setState({ contentHeight });
-    }
+    }*/
 
-    componentWillUnmount() {
+    /*componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
-    }
+    }*/
 
     setBasicModalVisible(basicModalVisible) {
         this.setState({ basicModalVisible });
@@ -222,7 +223,7 @@ class BasePage extends Component {
                 <div
                     className={styles.flexPageWrap}
                     style={{
-                        height: this.state.contentHeight,
+                        height: 'calc(100% - 95px)',
                         padding: '20px',
                     }}
                 >
