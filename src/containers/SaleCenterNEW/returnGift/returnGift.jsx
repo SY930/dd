@@ -91,7 +91,11 @@ const defaultData = {
 };
 
 const availableGiftTypes = [// 只有电子代金券和菜品优惠券 菜品兑换,实物券, 折扣券, 买赠券有支持到店属性, 顺序matters
-    '10', '20', '21', '111', '110', '30', '110',
+    '10', '20', '21', '111', '110', '30', '40', '42', '80',
+];
+
+const offlineCanUseGiftTypes = [
+    '10', '20', '21', '111', '110', '30',
 ];
 
 class ReturnGift extends React.Component {
@@ -234,10 +238,10 @@ class ReturnGift extends React.Component {
         const giftInfo = this.state.giftInfo;
         if (filterOffLine) {
             giftInfo.forEach((giftTypes) => {
-                if (availableGiftTypes.includes(String(giftTypes.giftType))) {
+                if (offlineCanUseGiftTypes.includes(String(giftTypes.giftType))) {
                     _giftInfo.push({
                         giftType: giftTypes.giftType,
-                        index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
+                        index: offlineCanUseGiftTypes.indexOf(String(giftTypes.giftType)),
                         crmGifts: giftTypes.crmGifts.filter((gift) => {
                             return gift.giftType == '30' ? true : gift.isOfflineCanUsing // 为true表示支持到店
                         }),
@@ -245,7 +249,13 @@ class ReturnGift extends React.Component {
                 }
             });
         } else {
-            _giftInfo = giftInfo;
+            giftInfo.forEach((giftTypes) => {
+                _giftInfo.push({
+                    giftType: giftTypes.giftType,
+                    index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
+                    crmGifts: giftTypes.crmGifts
+                })
+            });
         }
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
