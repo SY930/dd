@@ -96,6 +96,7 @@ class BasePage extends Component {
         this.setState({
             specialIndex: index,
         });
+        this.props.toggleIsSpecialUpdate(true);
         this.props.setSpecialPromotionType({
             eventWay: key,
         });
@@ -138,6 +139,7 @@ class BasePage extends Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.toggleIsBasicUpdate(true);
         this.props.setBasicPromotionType({
             promotionType: key,
         });
