@@ -20,7 +20,8 @@ export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
 export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
 export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
 
-export { default as MessageTemplatesPage } from './BasicSettings/index';
+export { default as MessageTemplatesPage } from './BasicSettings/SmsSettingPage';
+export { default as WeChatMessageSettingPage } from './BasicSettings/WeChatMessageSettingPage';
 
 export { default as NewCustomerPage } from './NewCreatePromotions/NewCustomerPage';
 export { default as RepeatPromotionPage } from './NewCreatePromotions/RepeatPromotionPage';
