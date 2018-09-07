@@ -195,7 +195,7 @@ const SECOND_KEYS = {
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: [ 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderTypes', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: [ 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
