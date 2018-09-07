@@ -274,19 +274,19 @@ export const FetchSendorUsedList = (opts) => {
             pageNo: 0,
             giftItemID: opts.params.giftItemID,
         };
-        if ('giftStatus' in opts.params) {
-            sendOrUsageCountParam.giftStatus = opts.params.giftStatus;
+        if (!opts.isSend) {
+            sendOrUsageCountParam.giftStatus = 2;
         }
         axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
             .then(total => {
-                if (opts.params.giftStatus == 2) {
+                if (!opts.isSend) {
                     dispatch(getUsedTotalCountSuccessAC(total))
                 } else {
                     dispatch(getSendTotalCountSuccessAC(total))
                 }
             })
             .catch(error => {
-                if (opts.params.giftStatus == 2) {
+                if (!opts.isSend) {
                     dispatch(getUsedTotalCountFailAC())
                 } else {
                     dispatch(getSendTotalCountFailAC())
@@ -296,14 +296,14 @@ export const FetchSendorUsedList = (opts) => {
             path: 'data',
         })
             .then((records) => {
-                if ('giftStatus' in opts.params) {
-                    dispatch(getUsedListSuccessAC({
+                if (opts.isSend) {
+                    dispatch(getSendListSuccessAC({
                         payload: {
                             sendorUsedList: records || [],
                         },
                     }));
                 } else {
-                    dispatch(getSendListSuccessAC({
+                    dispatch(getUsedListSuccessAC({
                         payload: {
                             sendorUsedList: records || [],
                         },

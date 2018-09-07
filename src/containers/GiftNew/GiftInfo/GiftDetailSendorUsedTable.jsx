@@ -197,7 +197,7 @@ class GiftSendOrUsedCount extends React.Component {
         }
     }
     getData(params = {}) {
-        const { FetchSendorUsedListAC } = this.props;
+        const { FetchSendorUsedListAC, _key } = this.props;
         const { giftItemID } = this.state;
         FetchSendorUsedListAC({
             params: {
@@ -206,6 +206,7 @@ class GiftSendOrUsedCount extends React.Component {
                 ...params,
                 giftItemID,
             },
+            isSend: _key === 'send'
         });
     }
     handleShop(decorator) {

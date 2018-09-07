@@ -54,7 +54,7 @@ class GiftDetailModalTabs extends React.Component {
         UpdateSendorUsedPage({ page: { pageNo: 1, pageSize: 10 } });
         const params = activeKey === 'used' ? { giftItemID, pageNo: 1, pageSize: 10, giftStatus: '2' } :
             { giftItemID, pageNo: 1, pageSize: 10 }
-        FetchSendorUsedList({ params });
+        FetchSendorUsedList({ params, isSend:  activeKey === 'send'});
         UpdateSendorUsedParams({ params });
     }
     render() {
