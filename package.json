@@ -23,7 +23,8 @@
         "babel-loader": "^7.1.2",
         "jquery": "^3.3.1",
         "keymirror": "^0.1.1",
-        "recharts": "^1.0.0-alpha.5"
+        "recharts": "^1.0.0-alpha.5",
+        "valid-url": "^1.0.9"
     },
     "devDependencies": {
         "@hualala/platform-scripts": "2.2.1",

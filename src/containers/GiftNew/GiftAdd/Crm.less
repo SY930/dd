@@ -411,6 +411,19 @@
     margin: 0 25px;
     display: flex;
     min-width: 1200px;
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        display: block;
+        visibility: hidden;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #c3c3c3;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
     .giftValue {
         color: #FFFFFF;
         font-size: 25px;
@@ -570,6 +583,10 @@
     }
 }
 
+.flex {
+    display: flex
+}
+
 .flexPageWrap {
     flex-wrap: wrap;
     overflow-y: auto;
@@ -643,8 +660,30 @@
 .weChatContent {
     margin: 5px auto;
     width:280px;
-    height:248px;
+    max-height:468px;
+    overflow: hidden;
     background:rgba(255,255,255,1);
+    border: 1px solid #E5E5E5;
     border-radius:4px;
-    padding: 12px 6px 0 6px;
+    div {
+        font-size:14px;
+        font-weight:bold;
+        margin: 5px 0;
+        color:rgba(51,51,51,1);
+        line-height:15px;
+        word-break: break-all;
+    }
+    .weChatContentBottomDiv {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 32px;
+        margin: 0;
+        padding-bottom: 5px;
+        & div {
+            font-weight:normal;
+            color: #999999;
+        }
+    }
+    padding: 12px 8px 0 8px;
 }

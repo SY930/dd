@@ -18,9 +18,10 @@ import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
 import WeChatMessageSetting from "../GiftNew/components/WeChatMessageSetting";
+import { sale_wechat_message_setting } from "../../redux/reducer/reducers";
 
 @registerPage([SET_WECHAT_MESSAGE_TEMPLATE], {
-    messageTemplateState
+    sale_wechat_message_setting
 })
 class MessageTemplatesPage extends React.Component {
     render() {

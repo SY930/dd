@@ -146,9 +146,7 @@ class MessageTemplatesPage extends React.Component {
                                         }}>
                                             您还没有短信模板 , 快去新建吧 ~
                                         </span>
-
                                     </div>
-
                                 </div>
                             </div>
                             :
