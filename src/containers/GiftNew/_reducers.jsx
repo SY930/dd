@@ -30,7 +30,8 @@ import {
     GIFT_NEW_START_EDIT_GIFT,
     GIFT_NEW_CANCEL_START_SAVING_GIFT,
     GIFT_NEW_CANCEL_END_SAVING_GIFT,
-    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE,
+    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE, GIFT_NEW_FETCH_SEND_LIST_OK,
+    GIFT_NEW_FETCH_USED_LIST_OK,
 } from './_action';
 
 const $initialEditState = Immutable.fromJS({
@@ -57,6 +58,8 @@ const $initialState = Immutable.fromJS({
     shopData: [],
     quotaList: [],
     sendorUsedList: [],
+    sendList: [],
+    usedList: [],
     sendorUsedKey: 'send',
     sendorUsedPage: {
         pageNo: 1,
@@ -139,6 +142,10 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('quotaList', Immutable.fromJS(action.payload.quotaList));
         case GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK:
             return $$state.set('sendorUsedList', Immutable.fromJS(action.payload.sendorUsedList));
+        case GIFT_NEW_FETCH_SEND_LIST_OK:
+            return $$state.set('sendList', Immutable.fromJS(action.payload.sendorUsedList));
+        case GIFT_NEW_FETCH_USED_LIST_OK:
+            return $$state.set('usedList', Immutable.fromJS(action.payload.sendorUsedList));
         case GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY:
             return $$state.set('sendorUsedKey', Immutable.fromJS(action.key));
         case GIFT_NEW_UPDATE_SEND_OR_USED_PAGE:
@@ -162,7 +169,11 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_FETCH_USED_TOTAL_OK:
             return $$state.set('totalUsedCount', action.payload.total || 0);
         case GIFT_NEW_RESET_SEND_USED_TOTAL:
-            return $$state.set('totalUsedCount', 0).set('totalSendCount', 0);
+            return $$state
+                .set('sendList', Immutable.fromJS([]))
+                .set('usedList', Immutable.fromJS([]))
+                .set('totalUsedCount', 0)
+                .set('totalSendCount', 0);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:
