@@ -55,6 +55,7 @@ class InputTreeForGift extends React.Component {
     componentWillReceiveProps(nextProps) {
         // TODO: 为什么foodCategoryCollection 会发生变化,传了三次
         const { giftData, value, thisGiftItem } = nextProps;
+        if (giftData === this.props.giftData) return;
         const foodCategoryCollection = giftData.toJS();
         let _foodCategoryCollection = null;
         if (thisGiftItem) {
