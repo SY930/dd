@@ -70,6 +70,7 @@ import { promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW } from '../../../
 import { fullCut_NEW as sale_fullCut_NEW } from '../../../redux/reducer/saleCenterNEW/fullCut.reducer';
 import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
+import { promotionAutoRunState as sale_promotionAutoRunState } from '../../../redux/reducer/saleCenterNEW/promotionAutoRun.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
@@ -159,6 +160,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_myActivities_NEW,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
+    sale_promotionAutoRunState,
     sale_mySpecialActivities_NEW,
     sale_steps,
 })
@@ -670,20 +672,16 @@ class MyActivities extends React.Component {
     }
 
     renderHeader() {
-        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
+        const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
         return (
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
                     <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
-                    {/*<Button
+                    <Button
                         type="ghost"
                         icon="plus"
-                        className={styles.jumpToCreate}
-                        onClick={
-                            () => {
-                                jumpPage({ menuID: NEW_SALE_CENTER })
-                            }
-                        }>新建</Button>*/}
+                        className={styles.customGhostButton}
+                        >自动执行</Button>
                 </div>
             </div>
         );
