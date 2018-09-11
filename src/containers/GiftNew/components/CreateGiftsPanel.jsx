@@ -7,7 +7,9 @@ import {
 } from 'antd';
 import {startCreateGift} from "../_action";
 
-const temparoryDisabledGifts = []; // 不上线, 只在dohko显示的礼品类型
+const temparoryDisabledGifts = [
+    '111', '110'
+]; // 不上线, 只在dohko显示的礼品类型
 
 class CreateGiftsPanel extends Component {
 
