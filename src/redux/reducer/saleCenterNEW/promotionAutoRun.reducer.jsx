@@ -10,67 +10,14 @@ import {
     SALE_CENTER_CLOSE_PROMOTION_AUTORUN_LIST_MODAL,
 } from '../../actions/saleCenterNEW/promotionAutoRun.action';
 
-const availableList = [
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf1',
-        promotionID: '12341'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf2',
-        promotionID: '12342'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf3',
-        promotionID: '12343',
-        order: '2'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf4',
-        promotionID: '12344'
-    }, {
-        promotionName: 'asdfasdfasdfsadfasdfsadf12',
-        promotionID: '123412'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf22',
-        promotionID: '123422'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf32',
-        promotionID: '123432',
-        order: '2'
-    },
-    {
-        promotionName: 'asdfasdfasdfsadfasdfsadf42',
-        promotionID: '123442'
-    },
-];
 const Immutable = require('immutable');
 const $initialState = Immutable.fromJS({
     isLoading: false,
     hasError: false,
     isModalVisible: false,
     isSaving: false,
-    promotionList: [
-        {
-            promotionName: 'asdfasdfasdfsadfasdfsadf1',
-            promotionID: '12341'
-        },
-        {
-            promotionName: 'asdfasdfasdfsadfasdfsadf2',
-            promotionID: '12342'
-        },
-        {
-            promotionName: 'asdfasdfasdfsadfasdfsadf3',
-            promotionID: '12343',
-            order: '2'
-        },
-        {
-            promotionName: 'asdfasdfasdfsadfasdfsadf4',
-            promotionID: '12344'
-        },
-    ],
-    allAvailablePromotionList: [...availableList]
+    promotionList: [],
+    allAvailablePromotionList: []
 
 });
 
@@ -82,8 +29,8 @@ export const promotionAutoRunState = ($$state = $initialState, action) => {
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS:
             return $$state
                 .set('isLoading', false)
-                .set('promotionList', Immutable.fromJS(action.payload[0] || []))
-                .set('allAvailablePromotionList', Immutable.fromJS(action.payload[1] || []));
+                .set('promotionList', Immutable.fromJS(Array.isArray(action.payload[0]) ? action.payload[0] : []))
+                .set('allAvailablePromotionList', Immutable.fromJS(Array.isArray(action.payload[1]) ? action.payload[1] : []));
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL:
             return $$state
                 .set('isLoading', false)

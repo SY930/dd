@@ -75,7 +75,7 @@ export const queryPromotionAutoRunList = (opts) => {
         Promise.all(
             [
                 axiosData(
-                    'xxxxx',
+                    '/promotion/autoExecuteActivities_queryAutoActivities.ajax',
                     opts,
                     {},
                     {path: 'data'},
@@ -86,7 +86,7 @@ export const queryPromotionAutoRunList = (opts) => {
              dispatch(queryPromotionAutoRunListFail(error));
              })*/,
                 axiosData(
-                    'xxxxx',
+                    '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
                     opts,
                     {},
                     {path: 'data'},

@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import styles from '../ActivityPage.less';
 import {
-    closePromotionAutoRunListModal,
+    closePromotionAutoRunListModal, queryPromotionAutoRunList,
     savePromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 
@@ -217,7 +217,7 @@ class PromotionAutoRunModal extends Component {
             isSaving,
         } = this.props;
         return (
-            !hasError ? null : (
+            hasError ? null : (
                 <div>
                     <Button
                         type="ghost"
@@ -247,7 +247,7 @@ class PromotionAutoRunModal extends Component {
     }
 
     handleRetry = () => {
-
+        this.props.queryPromotionAutoRunList();
     }
 
     openInnerModal = () => {
@@ -280,9 +280,16 @@ class PromotionAutoRunModal extends Component {
             >
                 <Spin spinning={isLoading}>
                     {
-                        !hasError ? (
-                            <div className={styles.spinFather}>
-                                查询自动执行信息出错!点击 <a onClick={this.handleRetry}>重试</a>
+                        hasError ? (
+                            <div
+                                style={{
+                                    height: 400,
+                                    lineHeight: '300px',
+                                    textAlign: 'center',
+                                    fontSize: 16
+                                }}
+                            >
+                                查询自动执行信息出错！点击 <a onClick={this.handleRetry}>重试</a>
                             </div>
                         ) : (
                             <div className={styles.autoRunWrapper}>
@@ -372,6 +379,7 @@ function mapDispatchToProps(dispatch) {
     return {
         closePromotionAutoRunListModal: opts => dispatch(closePromotionAutoRunListModal(opts)),
         savePromotionAutoRunList: opts => dispatch(savePromotionAutoRunList(opts)),
+        queryPromotionAutoRunList: opts => dispatch(queryPromotionAutoRunList(opts)),
     }
 }
 
