@@ -190,26 +190,26 @@ class NewActivity extends React.Component {
             >
                 {activities.map((activity, index) => {
                 return (
-                <div
-                key={`NewActivity${index}`}
-                style={{
-                    display: (this.props.user.shopID > 0 && activity.key === '5010') ?
-                        'none' : 'block',
-                }}
-                >
-                <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                <NewPromotionCard
-                key={activity.key}
-                promotionEntity={allBasicActivitiesMap[activity.key]}
-                onCardClick={() => {
-                    this.props.toggleIsUpdate(true);
-                    this.onButtonClicked(index, activity);
-                }}
-                index={index}
-                />
-                {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
-                </Authority>
-                </div>
+                    <div
+                        key={`NewActivity${index}`}
+                        style={{
+                            display: (this.props.user.shopID > 0 && activity.key === '5010') ?
+                                'none' : 'block',
+                        }}
+                    >
+                        <Authority rightCode="marketing.jichuyingxiaoxin.create">
+                            <NewPromotionCard
+                                key={activity.key}
+                                promotionEntity={allBasicActivitiesMap[activity.key]}
+                                onCardClick={() => {
+                                    this.props.toggleIsUpdate(true);
+                                    this.onButtonClicked(index, activity);
+                                }}
+                                index={index}
+                            />
+                            {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
+                        </Authority>
+                    </div>
                 );
             })}
             </div>
