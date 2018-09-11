@@ -75,6 +75,11 @@ import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {axiosData} from "../../../helpers/util";
+import PromotionAutoRunModal from "./PromotionAutoRunModal";
+import {
+    openPromotionAutoRunListModal,
+    queryPromotionAutoRunList
+} from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -150,6 +155,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
         },
+        queryPromotionAutoRunList: (opts) => {
+            dispatch(queryPromotionAutoRunList(opts))
+        },
+        openPromotionAutoRunListModal: (opts) => {
+            dispatch(openPromotionAutoRunListModal(opts))
+        }
     };
 };
 @registerPage([SALE_CENTER_PAGE], {
@@ -673,6 +684,10 @@ class MyActivities extends React.Component {
 
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
+        const {
+            queryPromotionAutoRunList,
+            openPromotionAutoRunListModal
+        } = this.props;
         return (
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
@@ -680,6 +695,10 @@ class MyActivities extends React.Component {
                     <Button
                         type="ghost"
                         icon="plus"
+                        onClick={() => {
+                            queryPromotionAutoRunList();
+                            openPromotionAutoRunListModal();
+                        }}
                         className={styles.customGhostButton}
                         >自动执行</Button>
                 </div>
@@ -1190,6 +1209,7 @@ class MyActivities extends React.Component {
             </div>
             {/*{this.renderModals()}*/}
             {this.renderModifyRecordInfoModal(0)}
+            <PromotionAutoRunModal/>
         </div>
         );
     }

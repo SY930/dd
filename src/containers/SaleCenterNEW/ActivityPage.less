@@ -1340,6 +1340,31 @@
     text-align: center;
     font-size:16px;
 }
+.noPadding {
+    padding: 0;
+}
+.autoRunWrapper {
+    padding: 12px 15px 0 15px;
+    .flexHeader {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+    .emptyAutoRunBox {
+        height:150px;
+        margin-top: 15px;
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        background:rgba(251,251,251,1);
+        border-radius:3px;
+        border: 1px dashed rgba(217,217,217,1);
+        .emptyAutoRunBoxTip {
+            color: #787878;
+        }
+    }
+}
 .littleSelect{
     :global{
         .ant-select{

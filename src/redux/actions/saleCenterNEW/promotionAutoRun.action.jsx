@@ -9,8 +9,8 @@ export const SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_SUCCESS = 'sale center: sav
 export const SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_FAIL = 'sale center: save promotion auto run list FAIL';
 
 export const SALE_CENTER_CHANGE_PROMOTION_AUTORUN_LIST = 'sale center: change promotion auto run list'; // 前端内部action
-export const SALE_CENTER_OPEN_PROMOTION_AUTORUN_LIST_MODAL = 'sale center: toggle promotion auto run list modal visible'; // 前端内部action
-export const SALE_CENTER_CLOSE_PROMOTION_AUTORUN_LIST_MODAL = 'sale center: toggle promotion auto run list modal visible'; // 前端内部action
+export const SALE_CENTER_OPEN_PROMOTION_AUTORUN_LIST_MODAL = 'sale center: set promotion auto run list modal visible = true'; // 前端内部action
+export const SALE_CENTER_CLOSE_PROMOTION_AUTORUN_LIST_MODAL = 'sale center: set promotion auto run list modal visible = false'; // 前端内部action
 
 export const openPromotionAutoRunListModal = () => {
     return {
@@ -72,17 +72,36 @@ const savePromotionAutoRunListStart = () => {
 export const queryPromotionAutoRunList = (opts) => {
     return (dispatch) => {
         dispatch(queryPromotionAutoRunListStart());
-        axiosData(
-            'xxxxx',
-            opts,
-            {},
-            {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
-        ).then((list) => {
-            dispatch(queryPromotionAutoRunListSuccess(list));
+        Promise.all(
+            [
+                axiosData(
+                    'xxxxx',
+                    opts,
+                    {},
+                    {path: 'data'},
+                    'HTTP_SERVICE_URL_CRM'
+                )/*.then((list) => {
+             dispatch(queryPromotionAutoRunListSuccess(list));
+             }).catch((error) => {
+             dispatch(queryPromotionAutoRunListFail(error));
+             })*/,
+                axiosData(
+                    'xxxxx',
+                    opts,
+                    {},
+                    {path: 'data'},
+                    'HTTP_SERVICE_URL_CRM'
+                )/*.then((list) => {
+             dispatch(queryPromotionAutoRunListSuccess(list));
+             }).catch((error) => {
+             dispatch(queryPromotionAutoRunListFail(error));
+             })*/,
+            ]
+        ).then(values => {
+            dispatch(queryPromotionAutoRunListSuccess(values));
         }).catch((error) => {
             dispatch(queryPromotionAutoRunListFail(error));
-        });
+        })
     };
 }
 
