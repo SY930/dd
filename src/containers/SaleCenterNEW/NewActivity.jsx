@@ -14,6 +14,26 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { Modal, Row, Col, message, Button } from 'antd';
 import { checkPermission } from '../../helpers/util';
+import {
+    NEW_CUSTOMER_PROMOTION_TYPES,
+    FANS_INTERACTIVITY_PROMOTION_TYPES,
+    REPEAT_PROMOTION_TYPES,
+    LOYALTY_PROMOTION_TYPES,
+    SALE_PROMOTION_TYPES,
+} from '../../constants/promotionType'
+import styles from './ActivityPage.less'
+
+const allBasicActivitiesArr = [
+    ...NEW_CUSTOMER_PROMOTION_TYPES,
+    ...FANS_INTERACTIVITY_PROMOTION_TYPES,
+    ...REPEAT_PROMOTION_TYPES,
+    ...LOYALTY_PROMOTION_TYPES,
+    ...SALE_PROMOTION_TYPES,
+].filter(item => !item.isSpecial);
+const allBasicActivitiesMap = allBasicActivitiesArr.reduce((acc, curr) => {
+    acc[curr.key] = curr;
+    return acc;
+}, {});
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -42,6 +62,7 @@ import {
     SALE_CENTER_PAGE,
     SALE_CENTER_PAGE_SHOP,
 } from "../../constants/entryCodes";
+import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -147,9 +168,9 @@ class NewActivity extends React.Component {
                 </Col>
                 <Col span={24} className="layoutsLineBlock"></Col>
                 <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
-                    <ul>
-                        {this.renderActivityButtons()}
-                    </ul>
+
+                    {this.renderActivityButtons()}
+
                     {this.renderModal()}
                 </Col>
             </Row>
@@ -161,31 +182,37 @@ class NewActivity extends React.Component {
     _renderActivityButtons() {
         const activities = this.props.saleCenter.get('activityCategories').toJS();
         return (
-
-
-                    activities.map((activity, index) => {
-                        return (
-                            <li
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true);
-                                    this.onButtonClicked(index, activity);
-                                }}
-                                key={`NewActivity${index}`}
-                                style={{
-                                    listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.key === '5010') ?
-                                        'none' : 'block',
-                                }}
-                            >
-                                <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />
-                                </Authority>
-                            </li>
-                        );
-                    })
-
-
-
+            <div
+                className={styles.scrollableMessageContainer}
+                style={{
+                    marginBottom: 20
+                }}
+            >
+                {activities.map((activity, index) => {
+                return (
+                <div
+                key={`NewActivity${index}`}
+                style={{
+                    display: (this.props.user.shopID > 0 && activity.key === '5010') ?
+                        'none' : 'block',
+                }}
+                >
+                <Authority rightCode="marketing.jichuyingxiaoxin.create">
+                <NewPromotionCard
+                key={activity.key}
+                promotionEntity={allBasicActivitiesMap[activity.key]}
+                onCardClick={() => {
+                    this.props.toggleIsUpdate(true);
+                    this.onButtonClicked(index, activity);
+                }}
+                index={index}
+                />
+                {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
+                </Authority>
+                </div>
+                );
+            })}
+            </div>
         );
     }
 
