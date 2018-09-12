@@ -83,7 +83,6 @@ export const queryWeChatMessageTemplates = (opts) => {
                     dispatch(saleCenterQueryWeChatMessageTemplatesSuccess(res));
                 },
                 error => {
-                    // dispatch(saleCenterQueryWeChatMessageTemplatesSuccess([]));
                     dispatch(saleCenterQueryWeChatMessageTemplatesFail());
                 }
             )

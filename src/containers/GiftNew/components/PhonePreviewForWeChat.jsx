@@ -4,11 +4,7 @@ import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phone.png';
 import bg from '../../../assets/bg.png';
 import bg1 from '../../../assets/bg1.png';
-
-const msgType = {
-    '2': '礼品领取成功通知',
-    '1': '会员到期提醒',
-};
+import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../../constants/weChatTemplateConstants";
 
 class PhonePreviewForWeChat extends PureComponent {
 
@@ -47,7 +43,7 @@ class PhonePreviewForWeChat extends PureComponent {
                     <div className={styles.phonePreviewContentWrapper}>
                         <div className={styles.weChatContent}>
                             <div>
-                                {msgType[currentType]}
+                                {DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].type}
                             </div>
                             <div style={{
                                 color: '#8C8C8C',
@@ -57,7 +53,7 @@ class PhonePreviewForWeChat extends PureComponent {
                                 8月22日
                             </div>
                             <div>
-                                {title}
+                                {title || DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].title}
                             </div>
                             <div>
                                 礼品名称 : 15元代金券
@@ -75,7 +71,7 @@ class PhonePreviewForWeChat extends PureComponent {
                                 borderBottom: '1px solid',
                                 borderBottomColor: '#E5E5E5'
                             }}>
-                                {remark}
+                                {remark || DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].remark}
                             </div>
                             <div className={styles.weChatContentBottomDiv}>
                                 <div>详情</div>

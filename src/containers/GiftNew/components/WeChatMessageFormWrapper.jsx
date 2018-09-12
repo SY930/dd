@@ -27,6 +27,7 @@ import {
     Checkbox,
     Button
 } from 'antd';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const validUrl = require('valid-url');
@@ -111,7 +112,7 @@ class WeChatMessageFormWrapper extends Component {
                         }],
                     })(
                         <Input
-                            placeholder="title"
+                            placeholder="通知标题"
                             onChange={(e) => handleKeyValueChange({key: 'title', value: e.target.value, type})}
                         />
                     )}
@@ -132,7 +133,7 @@ class WeChatMessageFormWrapper extends Component {
                         }],
                     })(
                         <Input
-                            placeholder="remark"
+                            placeholder="通知描述"
                             onChange={(e) => handleKeyValueChange({key: 'remark', value: e.target.value, type})}
                         />
                     )}
@@ -327,13 +328,33 @@ class WeChatMessageFormWrapper extends Component {
                         >
                             {availableMsgType.map(type => (<Select.Option value={type.value} key={type.value}>{type.label}</Select.Option>))}
                         </Select>
+                        {
+                            String(currentType) === '1' && (
+                                <CloseableTip
+                                    style={{
+                                        position: 'absolute',
+                                        right: '-20px',
+                                        top: '3px'
+                                    }}
+                                    content={
+                                        <div>
+                                            <p>礼品到期提醒：</p>
+                                            <p style={{
+                                                textIndent: '2em'
+                                            }}
+                                            >由于微信提供的可推送消息类型里没有礼品到期提醒，最接近的模板为：会员到期提醒，所以实际推送模板为会员到期提醒，如有异议，可以关闭推送</p>
+                                        </div>
+                                    }
+                                />
+                            )
+                        }
                     </FormItem>
                     {this.renderFormItems(currentType)}
                 </Form>
                 <div style={{
                     visibility: isEditing ? 'visible' : 'hidden',
                     marginRight: '12.5%',
-                    marginLeft: '66%',
+                    textAlign: 'right'
 
                 }}>
                     <Button
@@ -342,9 +363,7 @@ class WeChatMessageFormWrapper extends Component {
                         style={{
                             marginRight: '10px'
                         }}
-                        onClick={() => {
-                            this.props.saleCenterResetWeChatMessageTemplates()
-                        }}
+                        onClick={this.props.saleCenterResetWeChatMessageTemplates}
                     >
                         取消
                     </Button>

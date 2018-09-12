@@ -11,20 +11,21 @@ import {
     SALE_CENTER_CHANGE_WECHAT_MESSAGE_TEMPLATE_CURRENT_TYPE,
     SALE_CENTER_CHANGE_WECHAT_MESSAGE_TEMPLATE,
 } from '../actions/actions';
+import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../constants/weChatTemplateConstants";
 
 const defaultMsgs = [
     {
         msgType: 2,
-        title: '送礼啦！',
-        remark: '感谢您的支持',
+        title: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].title,
+        remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].remark,
         reDirectType: 1,
         reDirectUrl: '',
         isPushMsg: 1
     },
     {
         msgType: 1,
-        title: '亲，您有电子券即将到期，不要让白花花的银子溜走哦',
-        remark: '请您尽快到店使用',
+        title: DEFAULT_WECHAT_TEMPLATE_CONFIG['1'].title,
+        remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].remark,
         reDirectType: 1,
         reDirectUrl: '',
         isPushMsg: 1
