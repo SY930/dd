@@ -37,14 +37,14 @@ class GiftSendOrUsedCount extends React.Component {
     }
     componentWillMount() {
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
-        const { sendorUsedList, _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData } = this.props;
+        const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList } = this.props;
         const formItems = Object.assign({}, FORMITEMS);
         if (giftType === '91') {
             formItems.getWay.disabled = true;
         } else {
             formItems.getWay.disabled = null;
         }
-
+        const sendorUsedList = _key === 'send' ? sendList : usedList;
         const { pageNo, pageSize } = this.state;
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
@@ -96,7 +96,7 @@ class GiftSendOrUsedCount extends React.Component {
         this.setState({formItems});
 
         this.queryForm && this.queryForm.resetFields();
-        const { sendorUsedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData } = nextProps;
+        const { sendList, usedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData } = nextProps;
         if (sendorUsedPage) {
             // const { pageNo, pageSize } = sendorUsedPage.toJS();
             this.setState({ giftItemID, key: _key, pageNo: 1, pageSize: 10 });
@@ -121,6 +121,7 @@ class GiftSendOrUsedCount extends React.Component {
                 giftType,
             });
         }
+        const sendorUsedList = _key === 'send' ? sendList : usedList;
         this.proRecords(sendorUsedList);
         const _shopData = shopData.toJS();
         this.proShopData(_shopData);
@@ -196,7 +197,7 @@ class GiftSendOrUsedCount extends React.Component {
         }
     }
     getData(params = {}) {
-        const { FetchSendorUsedListAC } = this.props;
+        const { FetchSendorUsedListAC, _key } = this.props;
         const { giftItemID } = this.state;
         FetchSendorUsedListAC({
             params: {
@@ -205,6 +206,7 @@ class GiftSendOrUsedCount extends React.Component {
                 ...params,
                 giftItemID,
             },
+            isSend: _key === 'send'
         });
     }
     handleShop(decorator) {
@@ -350,7 +352,9 @@ class GiftSendOrUsedCount extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        sendorUsedList: state.sale_giftInfoNew.get('sendorUsedList'),
+        // sendorUsedList: state.sale_giftInfoNew.get('sendorUsedList'),
+        sendList: state.sale_giftInfoNew.get('sendList'),
+        usedList: state.sale_giftInfoNew.get('usedList'),
         sendorUsedPage: state.sale_giftInfoNew.get('sendorUsedPage'),
         sendorUsedParams: state.sale_giftInfoNew.get('sendorUsedParams'),
         shopData: state.sale_giftInfoNew.get('shopData'),

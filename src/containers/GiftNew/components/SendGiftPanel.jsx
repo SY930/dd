@@ -30,7 +30,7 @@ const SEND_MSG = [
     },{
         label:'仅发送短信',
         value:'1'
-    },{
+    },/*{
         label:'仅推送微信',
         value:'2'
     },{
@@ -39,7 +39,7 @@ const SEND_MSG = [
     },{
         label:'微信推送不成功则发送短信',
         value:'3'
-    }
+    }*/
 ];
 const VALIDATE_TYPE = [
     { key: 0, value: '1', name: '相对有效期' },

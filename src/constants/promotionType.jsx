@@ -374,6 +374,7 @@ export const SALE_PROMOTION_TYPES = [
         title: '低价促销',
         text: '消费一定的菜品, 可对价格最低菜品进行减免、折扣、特定售价等优惠活动',
         example: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠',
+        tags: ['SaaS2.0'],
         key: '2080',
         right: 25,
         bottom: 6,

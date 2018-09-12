@@ -1126,7 +1126,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
-        let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType} = data;
+        let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
             scopeList = [];

@@ -309,8 +309,8 @@ class GiftDetailTable extends Component {
         const { FetchSendorUsedList } = this.props;
         const { giftType, giftItemID } = rec;
         if (giftType !== '90') {
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID } });
-            giftType !== '91' && FetchSendorUsedList({ params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
             /*axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
                 path: 'data',
             })

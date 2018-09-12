@@ -184,6 +184,15 @@ class LowPriceDetailInfo extends React.Component {
     handleRuleTypeChange(val) {
         this.setState({
             ruleType: val,
+        }, () => {
+            val == 1 && this.props.setPromotionDetail({
+                categoryOrDish: 0,
+                dishes: [],
+                excludeDishes: [],
+                foodCategory: [],
+                priceLst: [],
+                scopeLst: [],
+            })
         })
     }
 

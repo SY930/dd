@@ -11,6 +11,8 @@ export const GIFT_NEW_FETCH_LEVEL_OK = 'gift new ::  fetch level ok';
 export const GIFT_NEW_FETCH_SCHEMA_OK = 'gift new :: fetch schema ok';
 export const GIFT_NEW_FETCH_QUOTA_LIST_OK = 'gift new :: fetch quota list';
 export const GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK = 'gift new:: fetch send or used list';
+export const GIFT_NEW_FETCH_SEND_LIST_OK = 'gift new:: fetch send list';
+export const GIFT_NEW_FETCH_USED_LIST_OK = 'gift new:: fetch used list';
 export const GIFT_NEW_FETCH_USED_TOTAL_OK = 'gift new:: 成功获取到发送数';
 export const GIFT_NEW_FETCH_SEND_TOTAL_OK = 'gift new:: 成功获取到使用数';
 
@@ -215,6 +217,20 @@ export const getSendorUsedListSuccessAC = (opt) => {
     }
 };
 
+export const getSendListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_LIST_OK,
+        ...opt,
+    }
+};
+
+export const getUsedListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_LIST_OK,
+        ...opt,
+    }
+};
+
 export const getUsedTotalCountSuccessAC = (total) => {
     return {
         type: GIFT_NEW_FETCH_USED_TOTAL_OK,
@@ -258,19 +274,19 @@ export const FetchSendorUsedList = (opts) => {
             pageNo: 0,
             giftItemID: opts.params.giftItemID,
         };
-        if ('giftStatus' in opts.params) {
-            sendOrUsageCountParam.giftStatus = opts.params.giftStatus;
+        if (!opts.isSend) {
+            sendOrUsageCountParam.giftStatus = 2;
         }
         axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
             .then(total => {
-                if (opts.params.giftStatus == 2) {
+                if (!opts.isSend) {
                     dispatch(getUsedTotalCountSuccessAC(total))
                 } else {
                     dispatch(getSendTotalCountSuccessAC(total))
                 }
             })
             .catch(error => {
-                if (opts.params.giftStatus == 2) {
+                if (!opts.isSend) {
                     dispatch(getUsedTotalCountFailAC())
                 } else {
                     dispatch(getSendTotalCountFailAC())
@@ -280,11 +296,19 @@ export const FetchSendorUsedList = (opts) => {
             path: 'data',
         })
             .then((records) => {
-                dispatch(getSendorUsedListSuccessAC({
-                    payload: {
-                        sendorUsedList: records || [],
-                    },
-                }));
+                if (opts.isSend) {
+                    dispatch(getSendListSuccessAC({
+                        payload: {
+                            sendorUsedList: records || [],
+                        },
+                    }));
+                } else {
+                    dispatch(getUsedListSuccessAC({
+                        payload: {
+                            sendorUsedList: records || [],
+                        },
+                    }));
+                }
                 return Promise.resolve(records);
             }).catch(err => {
                 // empty catch
