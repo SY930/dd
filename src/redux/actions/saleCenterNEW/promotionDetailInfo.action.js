@@ -211,16 +211,28 @@ const fetchFoodMenuFailed = () => {
 // };
 export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        // return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-        //     dispatch(fetchFoodMenuSuccess(res))
-        // });
-        const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
+        if (params.shopID && params.shopID > 0) {
+            return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+                dispatch(fetchFoodMenuSuccess(res))
+            }).catch(e => {
+                dispatch(fetchFoodMenuFailed(e));
+            });
+        } else {
+            return axiosData('/shopapi/queryGroupFoodSubinfo.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+                    .then(
+                        records => dispatch(fetchFoodMenuSuccess(records)),
+                        error => dispatch(fetchFoodMenuFailed(error))
+                    )
+                    .catch(e => {
+                        console.log('err: ', e);
+                    });
+        }
+        /*const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
         return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-            // console.log(res.records.filter(item => item.foodName.includes('味全')));
             dispatch(fetchFoodMenuSuccess(res))
         }).catch(e => {
             dispatch(fetchFoodMenuFailed(e));
-        });
+        });*/
     }
 }
 const fetchPromotionListSuccess = (opts) => {
