@@ -95,7 +95,7 @@ class SendGiftPanel extends Component {
         if (!flag) {
             return;
         }
-        const { settleUnitID, availableSmsCount, smsGate } = this.state;
+        const { settleUnitID, cellNo, availableSmsCount, smsGate } = this.state;
         const sendFlag = smsGate === '1' || smsGate === '3' || smsGate === '4';
         if (sendFlag) {
             if (!availableSmsCount) {
@@ -115,7 +115,7 @@ class SendGiftPanel extends Component {
                         this.props.form.resetFields(['cellNo']);
                         this.props.form.setFieldsValue({cellNo: {number: ''}});
                     });
-                    messageService.success('发送成功');
+                    messageService.success(`向手机号为 ${cellNo} 的用户发券成功!`, 4);
                 })
                 .catch(err => {
                     this.setState({
