@@ -300,16 +300,16 @@ class MyActivities extends React.Component {
     onWindowResize = () => {
         let parentDoms = ReactDOM.findDOMNode(this.layoutsContainer);           //获取父级的doms节点
         if(null!=parentDoms){                                                  //如果父级节点不是空将执行下列代码
-            let parentHeight=parentDoms.offsetHeight;                           //获取到父级的高度存到变量 parentHeight
+            let parentHeight=parentDoms.getBoundingClientRect().height;                           //获取到父级的高度存到变量 parentHeight
             let contentrDoms = parentDoms.querySelectorAll('.layoutsContent');  //从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
             if(undefined != contentrDoms && contentrDoms.length > 0) {         //如果 contentrDoms 节点存在 并且length>0 时执行下列代码
                 let layoutsContent = contentrDoms[0];                           //把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 let headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                let headerHeight = headerDoms[0].offsetHeight;
+                let headerHeight = headerDoms[0].getBoundingClientRect().height;
                 layoutsContent.style.height = parentHeight - headerHeight - 15 - 20 + 'px';      //layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight:parentHeight - headerHeight - 15,
-                    tableHeight:layoutsContent.offsetHeight - 40 - 68
+                    tableHeight:layoutsContent.getBoundingClientRect().height - 40 - 68
                 })
             }
         }

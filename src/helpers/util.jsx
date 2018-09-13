@@ -629,14 +629,14 @@ export function pyMatch({ name = '', py = '' }, search = '') {
 export function onWindowResize(dom, value) {
     const parentDoms = ReactDOM.findDOMNode(dom);
     if (parentDoms !== null) {
-        const parentHeight = parentDoms.offsetHeight;
+        const parentHeight = parentDoms.getBoundingClientRect().height;
         const contentrDoms = parentDoms.querySelectorAll('.layoutsContent');
         if (undefined !== contentrDoms && contentrDoms.length > 0) {
             const layoutsContent = contentrDoms[0];
             const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-            const headerHeight = headerDoms[0].offsetHeight;
+            const headerHeight = headerDoms[0].getBoundingClientRect().height;
             layoutsContent.style.height = `${parentHeight - headerHeight - 10}px`;
-            const tableHeight = layoutsContent.offsetHeight - value;
+            const tableHeight = layoutsContent.getBoundingClientRect().height - value;
             return tableHeight;
         }
     }

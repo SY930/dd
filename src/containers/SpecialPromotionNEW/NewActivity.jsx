@@ -89,7 +89,7 @@ class NewActivity extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 40;
         this.setState({ contentHeight });
     }
     componentWillUnmount() {

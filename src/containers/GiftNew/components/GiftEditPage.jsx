@@ -29,7 +29,7 @@ class GiftEditPage extends Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 95;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 95;
         this.setState({ contentHeight });
     }
 
