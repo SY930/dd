@@ -52,7 +52,7 @@ export const sale_wechat_message_setting = ($$state = $initialState, action) => 
         case SALE_CENTER_QUERY_WECHAT_MESSAGE_TEMPLATE_SUCCESS:
             const isCreate = !(action.payload || []).length;
             if (isCreate) {
-                return $$state
+                return $initialState
                     .set('loading', false)
                     .set('isCreate', true)
                     .set('isQueryFulfilled', true)

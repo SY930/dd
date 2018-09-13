@@ -301,6 +301,12 @@ class WeChatMessageFormWrapper extends Component {
         this.props.saveWeChatMessageTemplates({wechatTemplates: this.props.wechatTemplates.toJS()} , this.props.isCreate)
     }
 
+    reset = () => {
+        this.props.saleCenterResetWeChatMessageTemplates();
+        this.props.queryWeChatMessageTemplates();
+        this.props.form.resetFields();
+    }
+
     render() {
         const {
             currentType,
@@ -363,7 +369,7 @@ class WeChatMessageFormWrapper extends Component {
                         style={{
                             marginRight: '10px'
                         }}
-                        onClick={this.props.saleCenterResetWeChatMessageTemplates}
+                        onClick={this.reset}
                     >
                         取消
                     </Button>

@@ -83,6 +83,7 @@ export const queryWeChatMessageTemplates = (opts) => {
                     dispatch(saleCenterQueryWeChatMessageTemplatesSuccess(res));
                 },
                 error => {
+                    // dispatch(saleCenterQueryWeChatMessageTemplatesSuccess());
                     dispatch(saleCenterQueryWeChatMessageTemplatesFail());
                 }
             )
@@ -105,6 +106,8 @@ export const saveWeChatMessageTemplates = (opts, isCreate) => {
                     dispatch(saleCenterSaveWeChatMessageTemplatesSuccess(res));
                 },
                 error => {
+                    // message.success('保存成功');
+                    // dispatch(saleCenterSaveWeChatMessageTemplatesSuccess());
                     dispatch(saleCenterSaveWeChatMessageTemplatesFail());
                 }
             )
