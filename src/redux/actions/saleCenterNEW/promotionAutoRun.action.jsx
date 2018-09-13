@@ -108,16 +108,18 @@ export const queryPromotionAutoRunList = (opts) => {
 export const savePromotionAutoRunList = (opts) => {
     return (dispatch) => {
         dispatch(savePromotionAutoRunListStart());
-        axiosData(
-            'xxxxx',
+        return axiosData(
+            '/promotion/autoExecuteActivities_mergeAutoActivities.ajax',
             opts,
             {},
             {path: 'data'},
             'HTTP_SERVICE_URL_CRM'
         ).then((res) => {
             dispatch(savePromotionAutoRunListSuccess(res));
+            return Promise.resolve();
         }).catch((error) => {
             dispatch(savePromotionAutoRunListFail(error));
+            return Promise.reject();
         });
     };
 }

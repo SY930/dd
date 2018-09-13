@@ -7,7 +7,8 @@ import {
     Spin,
     Icon,
     Table,
-    Select
+    Select,
+    message
 
 } from 'antd';
 import styles from '../ActivityPage.less';
@@ -230,6 +231,7 @@ class PromotionAutoRunModal extends Component {
                         style={{
                             marginLeft: 10
                         }}
+                        onClick={this.handleOk}
                         loading={isSaving}
                     >确定</Button>
                 </div>
@@ -244,6 +246,20 @@ class PromotionAutoRunModal extends Component {
             selectedRowKeys: list.map(item => item.promotionID)
         })
         this.props.closePromotionAutoRunListModal();
+    }
+
+    handleOk = () => {
+        const { promotionList } = this.state;
+        this.props
+            .savePromotionAutoRunList({autoExecuteActivityItems: promotionList.map((item, index) => ({...item, order: index + 1}))})
+            .then(() => {
+                this.props.closePromotionAutoRunListModal();
+                message.success('设置成功');
+            })
+            .catch(e => {
+                console.log('e: ', e);
+            })
+        ;
     }
 
     handleRetry = () => {

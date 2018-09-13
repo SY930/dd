@@ -29,8 +29,9 @@ export const promotionAutoRunState = ($$state = $initialState, action) => {
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS:
             return $$state
                 .set('isLoading', false)
-                .set('promotionList', Immutable.fromJS(Array.isArray(action.payload[0]) ? action.payload[0] : []))
-                .set('allAvailablePromotionList', Immutable.fromJS(Array.isArray(action.payload[1]) ? action.payload[1] : []));
+                .set('hasError', false)
+                .set('promotionList', Immutable.fromJS(Array.isArray(action.payload[0]) ? action.payload[0].sort((itemA, itemB) => itemA.order - itemB.order).map(item => ({...item, promotionID: item.promotionIDStr})) : []))
+                .set('allAvailablePromotionList', Immutable.fromJS(Array.isArray(action.payload[1]) ? action.payload[1].map(item => ({...item, promotionID: item.promotionIDStr})) : []));
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL:
             return $$state
                 .set('isLoading', false)
