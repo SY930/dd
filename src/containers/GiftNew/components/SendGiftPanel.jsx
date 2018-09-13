@@ -18,7 +18,7 @@ import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../.
 import {axiosData} from "../../../helpers/util";
 import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
-import {queryWechatMpInfo} from "../../../../lib/containers/GiftNew/_action";
+import {queryWechatMpInfo} from "../../GiftNew/_action";
 
 
 const FormItem = Form.Item;
