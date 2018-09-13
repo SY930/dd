@@ -27,11 +27,9 @@ class MessageTemplatesPage extends React.Component {
         super(props);
         this.state = {
             messageTemplateList: Immutable.List.isList(props.messageTemplateList) ? props.messageTemplateList.toJS() : [],
-            contentHeight: 800,
             editModalVisible: false,
             messageTemplateToEdit: null,
         };
-        this.onWindowResize = this.onWindowResize.bind(this);
         this.editTemplate = this.editTemplate.bind(this);
         this.closeEditModal = this.closeEditModal.bind(this);
     }
@@ -41,12 +39,6 @@ class MessageTemplatesPage extends React.Component {
             pageNo : 1,
             pageSize : 10
         });
-        this.onWindowResize();
-        window.addEventListener('resize', this.onWindowResize);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -63,11 +55,6 @@ class MessageTemplatesPage extends React.Component {
                 messageTemplateList
             })
         }
-    }
-
-    onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 106;
-        this.setState({ contentHeight });
     }
 
     closeEditModal() {
@@ -101,7 +88,12 @@ class MessageTemplatesPage extends React.Component {
         return (
         <div className="layoutsContainer">
             {this.renderEditModal()}
-            <div className="layoutsTool">
+            <div
+                className="layoutsTool"
+                style={{
+                    height: '100%',
+                }}
+            >
                 <div className="layoutsToolLeft" style={{height: '90px', lineHeight: '90px'}}>
                     <span style={{
                         lineHeight: '90px',
@@ -130,33 +122,38 @@ class MessageTemplatesPage extends React.Component {
                     </Authority>
                 </div>
                 <div className="layoutsLineBlock" style={{height: '16px'}}/>
-                <Spin spinning={this.props.loading}>
-                    {
-                        !messageTemplateList.length ?
-                            <div style={{
-                                height: this.state.contentHeight,
-                                paddingTop: '185px',
-                            }}>
-                                <div className={styles.centerFlexContainer}>
-                                    <div>
-                                        <img src={imgSrc} width="154px" height="66px" alt=" "/>
-                                        <span style={{
-                                            display: 'inline-block',
-                                            marginLeft: '27px'
-                                        }}>
+                <div style={{
+                    height: 'calc(100% - 106px)',
+                    overflowY: 'auto'
+                }}>
+                    <Spin spinning={this.props.loading}>
+                        {
+                            !messageTemplateList.length ?
+                                <div style={{
+                                    paddingTop: '185px',
+                                }}>
+                                    <div className={styles.centerFlexContainer}>
+                                        <div>
+                                            <img src={imgSrc} width="154px" height="66px" alt=" "/>
+                                            <span style={{
+                                                display: 'inline-block',
+                                                marginLeft: '27px'
+                                            }}>
                                             您还没有短信模板 , 快去新建吧 ~
                                         </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            :
-                            <div style={{height: this.state.contentHeight, paddingTop: '20px', overflowY: 'auto'}}>
-                                {!!pendingTemplates.length && <MessageGroup title="待审核" key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
-                                {!!verifiedTemplates.length && <MessageGroup title="审核通过" key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
-                                {!!illegalTemplates.length && <MessageGroup title="审核未通过" key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
-                            </div>
-                    }
-                </Spin>
+                                :
+                                <div style={{ paddingTop: '20px'}}>
+                                    {!!pendingTemplates.length && <MessageGroup title="待审核" key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
+                                    {!!verifiedTemplates.length && <MessageGroup title="审核通过" key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
+                                    {!!illegalTemplates.length && <MessageGroup title="审核未通过" key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
+                                </div>
+                        }
+                    </Spin>
+                </div>
+
             </div>
         </div>
         );

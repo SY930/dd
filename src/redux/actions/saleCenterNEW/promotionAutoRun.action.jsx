@@ -78,7 +78,7 @@ export const queryPromotionAutoRunList = (opts) => {
                     '/promotion/autoExecuteActivities_queryAutoActivities.ajax',
                     opts,
                     {},
-                    {path: 'data'},
+                    {path: 'data.autoExecuteActivityItems'},
                     'HTTP_SERVICE_URL_CRM'
                 )/*.then((list) => {
              dispatch(queryPromotionAutoRunListSuccess(list));
@@ -89,7 +89,7 @@ export const queryPromotionAutoRunList = (opts) => {
                     '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
                     opts,
                     {},
-                    {path: 'data'},
+                    {path: 'data.autoExecuteActivityItems'},
                     'HTTP_SERVICE_URL_CRM'
                 )/*.then((list) => {
              dispatch(queryPromotionAutoRunListSuccess(list));
