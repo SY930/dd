@@ -36,39 +36,50 @@ class PromotionAutoRunModal extends Component {
             })
         }
     }
-
-    renderInnerSelectorModal() {
+    handleInnerOk = () => {
         const {
-            innerModalVisible,
             promotionList,
             selectedRowKeys
         } = this.state;
         const {
             availableList
         } = this.props;
+        this.setState({
+            promotionList: availableList
+                .filter(item => selectedRowKeys.includes(item.promotionID))  // 已选项
+                .sort((a, b) => { // 按照已排序列表中的顺序进行排序
+                        return (promotionList.findIndex(promotion => promotion.promotionID === a.promotionID) -
+                        promotionList.findIndex(promotion => promotion.promotionID === b.promotionID))
+                    }
+                ),
+            innerModalVisible: false
+        })
+    }
+
+    handleInnerCancel = () => {
+        const {
+            promotionList,
+        } = this.state;
+        const {
+        } = this.props;
+        this.setState({
+            selectedRowKeys: promotionList.map(item => item.promotionID),
+            innerModalVisible: false
+        })
+    }
+
+    renderInnerSelectorModal() {
+
         return (
             <Modal
                 width="520px"
-                visible={innerModalVisible}
+                style={{
+                    top: 20
+                }}
+                visible={this.state.innerModalVisible}
                 maskClosable={false}
-                onCancel={() => {
-                    this.setState({
-                        selectedRowKeys: promotionList.map(item => item.promotionID),
-                        innerModalVisible: false
-                    })
-                }}
-                onOk={() => {
-                    this.setState({
-                        promotionList: availableList
-                            .filter(item => selectedRowKeys.includes(item.promotionID))  // 已选项
-                            .sort((a, b) => { // 按照已排序列表中的顺序进行排序
-                                return (promotionList.findIndex(promotion => promotion.promotionID === a.promotionID) -
-                                promotionList.findIndex(promotion => promotion.promotionID === b.promotionID))
-                            }
-                            ),
-                        innerModalVisible: false
-                    })
-                }}
+                onCancel={this.handleInnerCancel}
+                onOk={this.handleInnerOk}
                 title={'请选择需要自动执行的活动'}
             >
                 {this.renderInnerTable()}
@@ -289,7 +300,9 @@ class PromotionAutoRunModal extends Component {
                 visible={isVisible}
                 title={'活动执行设置'}
                 width="720px"
-                height="569px"
+                style={{
+                    top: 20
+                }}
                 maskClosable={false}
                 onCancel={this.handleCancel}
                 footer={this.renderAutoRunFooter()}
