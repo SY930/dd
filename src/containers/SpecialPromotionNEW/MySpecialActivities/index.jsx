@@ -53,6 +53,11 @@ import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
+import {
+    SPECIAL_LOOK_PROMOTION_QUERY,
+    SPECIAL_PROMOTION_DELETE, SPECIAL_PROMOTION_QUERY,
+    SPECIAL_PROMOTION_UPDATE
+} from "../../../constants/authorityCodes";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -525,7 +530,7 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode="marketing.teseyingxiaoxin.query">
+                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
@@ -635,7 +640,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             {buttonText}</a>
-                        <Authority rightCode="marketing.teseyingxiaoxin.update">
+                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
                                 className={record.isActive != '0' || statusState ? styles.textDisabled : null}
@@ -670,7 +675,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             查看</a>
-                        <Authority rightCode="marketing.teseyingxiaoxin.delete">
+                        <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
                                 className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
@@ -698,7 +703,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             终止</a>
-                        <Authority rightCode="marketing.chakanteseyingxiaoxin.query">
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
                                 onClick={() => {

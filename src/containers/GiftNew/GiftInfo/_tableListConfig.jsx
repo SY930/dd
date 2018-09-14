@@ -3,6 +3,7 @@ import _ from 'lodash';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import {Tooltip} from 'antd';
+import {GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 
 export const COLUMNS = [
     {
@@ -22,7 +23,7 @@ export const COLUMNS = [
         render(value, record) {
             return (
                 <span>
-                    <Authority rightCode="marketing.lipinxin.update">
+                    <Authority rightCode={GIFT_LIST_UPDATE}>
                         <a
                             href="javaScript:;"
                             onClick={() => {
@@ -43,11 +44,11 @@ export const COLUMNS = [
                             <a disabled={true}><span style={{pointerEvents: 'auto'}}>删除</span></a>
                         </Tooltip>
                         :
-                        <Authority rightCode="marketing.lipinxin.delete">
+                        <Authority rightCode={GIFT_LIST_DELETE}>
                             <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
                         </Authority>
                     }
-                    <Authority rightCode="marketing.chakanlipinxin.query">
+                    <Authority rightCode={GIFT_DETAIL_QUERY}>
                         <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
                     </Authority>
                 </span>

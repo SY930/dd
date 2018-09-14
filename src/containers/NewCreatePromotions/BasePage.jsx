@@ -26,6 +26,7 @@ import {saleCenterResetScopeInfoAC} from "../../redux/actions/saleCenterNEW/prom
 import styles from '../GiftNew/GiftAdd/Crm.less';
 import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
+import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
 
 class BasePage extends Component {
 
@@ -84,7 +85,7 @@ class BasePage extends Component {
     }
 
     handleSpecialPromotionCreate(index, activity) {
-        if (!checkPermission("marketing.teseyingxiaoxin.create")) {
+        if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }
@@ -129,7 +130,7 @@ class BasePage extends Component {
     }
 
     handleBasicPromotionCreate(index, promotionEntity) {
-        if (!checkPermission("marketing.jichuyingxiaoxin.create")) {
+        if (!checkPermission(BASIC_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }

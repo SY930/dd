@@ -34,6 +34,7 @@ import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/pr
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
+import {GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -448,7 +449,7 @@ class GiftDetailTable extends Component {
                                     }
                                 }
                             >新建</Button>
-                            <Authority rightCode="marketing.lipinxinxixin.query">
+                            <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button className={styles2.exportBtn}
                                     type="ghost"
                                     onClick={() => this.setState({ exportVisible: true })}
@@ -471,7 +472,7 @@ class GiftDetailTable extends Component {
                                     />
                                 </li>
                                 <li>
-                                    <Authority rightCode="marketing.lipinxinxixin.query">
+                                    <Authority rightCode={GIFT_LIST_UPDATE}>
                                         <Button type="primary" onClick={() => this.handleQuery()}>
                                             <Icon type="search" />
                                             查询

@@ -63,6 +63,7 @@ import {
     SALE_CENTER_PAGE_SHOP,
 } from "../../constants/entryCodes";
 import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
+import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -197,7 +198,7 @@ class NewActivity extends React.Component {
                                 'none' : 'block',
                         }}
                     >
-                        <Authority rightCode="marketing.jichuyingxiaoxin.create">
+                        <Authority rightCode={BASIC_PROMOTION_CREATE}>
                             <NewPromotionCard
                                 key={activity.key}
                                 promotionEntity={allBasicActivitiesMap[activity.key]}

@@ -54,6 +54,7 @@ import {throttle, isEqual, debounce} from 'lodash'
 import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import Cfg from "../../constants/SpecialPromotionCfg";
+import {BASIC_PROMOTION_QUERY} from "../../constants/authorityCodes";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -481,7 +482,7 @@ export class WeChatMallPromotionList extends React.Component {
                             />
                         </li>
                         <li>
-                            <Authority rightCode="marketing.jichuyingxiaoxin.query">
+                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.loading}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>

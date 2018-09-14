@@ -80,7 +80,10 @@ import {
     openPromotionAutoRunListModal,
     queryPromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
-import {AUTO_RUN_QUERY} from "../../../constants/authorityCodes";
+import {
+    AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
+    BASIC_PROMOTION_UPDATE
+} from "../../../constants/authorityCodes";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -807,7 +810,7 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode="marketing.jichuyingxiaoxin.query">
+                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
@@ -1009,7 +1012,7 @@ class MyActivities extends React.Component {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
                         >{buttonText}</a>
-                        <Authority rightCode="marketing.chakanjichuyingxiaoxin.query">
+                        <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
                                 onClick={() => {
@@ -1021,7 +1024,7 @@ class MyActivities extends React.Component {
                                 查看
                             </a>
                         </Authority>
-                        <Authority rightCode="marketing.jichuyingxiaoxin.update">
+                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                             <a
                                 href="#"
                                 disabled={!isGroupPro}

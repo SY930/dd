@@ -43,6 +43,7 @@ import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
+import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -176,7 +177,7 @@ class NewActivity extends React.Component {
                             listStyle: 'none',
                         }}
                     >
-                        <Authority rightCode="marketing.jichuyingxiaoxin.create">
+                        <Authority rightCode={BASIC_PROMOTION_CREATE}>
                             <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
                         </Authority>
                     </li>

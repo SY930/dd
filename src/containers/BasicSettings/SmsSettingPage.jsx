@@ -17,6 +17,7 @@ import MessageTemplateEditPanel from './MessageTemplateEditPanel'
 import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
+import {SMS_TEMPLATE_CREATE} from "../../constants/authorityCodes";
 
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
@@ -101,7 +102,7 @@ class MessageTemplatesPage extends React.Component {
                         display: 'inline-block',
                         fontSize: '36px',
                     }}>短信模板</span>
-                    <Authority rightCode="crm.sale.smsTemplate.create">
+                    <Authority rightCode={SMS_TEMPLATE_CREATE}>
                         <Button
                             type="ghost"
                             icon="plus"
