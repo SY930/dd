@@ -16,6 +16,8 @@ import {
     closePromotionAutoRunListModal, queryPromotionAutoRunList,
     savePromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
+import Authority from "../../../components/common/Authority/index";
+import {AUTO_RUN_UPDATE} from "../../../constants/authorityCodes";
 
 class PromotionAutoRunModal extends Component {
 
@@ -237,14 +239,16 @@ class PromotionAutoRunModal extends Component {
                     >
                         取消
                     </Button>
-                    <Button
-                        type="primary"
-                        style={{
-                            marginLeft: 10
-                        }}
-                        onClick={this.handleOk}
-                        loading={isSaving}
-                    >确定</Button>
+                    <Authority rightCode={AUTO_RUN_UPDATE}>
+                        <Button
+                            type="primary"
+                            style={{
+                                marginLeft: 10
+                            }}
+                            onClick={this.handleOk}
+                            loading={isSaving}
+                        >确定</Button>
+                    </Authority>
                 </div>
             )
         )

@@ -80,6 +80,7 @@ import {
     openPromotionAutoRunListModal,
     queryPromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
+import {AUTO_RUN_QUERY} from "../../../constants/authorityCodes";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -692,15 +693,17 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '80px'}}>
                 <div className={headerClasses} style={{lineHeight: '80px'}}>
                     <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
-                    <Button
-                        type="ghost"
-                        icon="plus"
-                        onClick={() => {
-                            queryPromotionAutoRunList();
-                            openPromotionAutoRunListModal();
-                        }}
-                        className={styles.customGhostButton}
-                        >自动执行</Button>
+                    <Authority rightCode={AUTO_RUN_QUERY}>
+                        <Button
+                            type="ghost"
+                            icon="plus"
+                            onClick={() => {
+                                queryPromotionAutoRunList();
+                                openPromotionAutoRunListModal();
+                            }}
+                            className={styles.customGhostButton}
+                            >自动执行</Button>
+                    </Authority>
                 </div>
             </div>
         );
