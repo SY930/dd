@@ -279,10 +279,8 @@ class PromotionAutoRunModal extends Component {
 
     openInnerModal = () => {
         this.setState({
-            selectedRowKeys: this.state.promotionList.map(item => item.promotionID)
-        })
-        this.setState({
             innerModalVisible: true,
+            selectedRowKeys: this.state.promotionList.map(item => item.promotionID)
         })
     }
 
