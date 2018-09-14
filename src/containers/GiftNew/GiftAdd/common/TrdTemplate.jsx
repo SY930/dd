@@ -114,14 +114,15 @@ class TrdTemplate extends React.Component {
         return Promise.resolve(TrdTemplateStatus)
     }
     // 第三方券模版
-    queryTrdTemplate = (mpID, trdChannelID) => {
-        if (trdChannelID == 10 && !mpID) return
+    queryTrdTemplate = (mpID, appID, trdChannelID) => {
+        if (trdChannelID == 10 && !appID) return
         // 第三方券模版
         return fetchData('queryTrdTemplate', {
             groupID: this.props.accountInfo.toJS().groupID,
             channelID: trdChannelID || 10,
             forceRefresh: 1,
             mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
+            appID: trdChannelID == 10 ? appID : undefined, // 有值代表微信公众号id,没有代表其他渠道
         }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
             this.setState({
                 trdTemplateInfoList: trdTemplateInfoList || [],
@@ -166,14 +167,15 @@ class TrdTemplate extends React.Component {
             this.props.clearPromotion() // 清空已选活动
         }
         if (value === 10) {
-            this.queryTrdTemplate(this.state.mpList[0].mpID, 10) // 带着微信号查模板
+            this.queryTrdTemplate(this.state.mpList[0].mpID, this.state.mpList[0].appID, 10) // 带着微信号查模板
         } else {
-            this.queryTrdTemplate(undefined, value)
+            this.queryTrdTemplate(undefined, undefined, value)
         }
     }
 
     // 微信号选择
     handleMpSelect = (value) => {
+        const mpList = this.state.mpList;
         this.setState({
             mpID: value,
             trdGiftItemID: '',
@@ -181,12 +183,12 @@ class TrdTemplate extends React.Component {
             loading: true,
         }, () => {
             this.propsChange() // 向父传递
-            this.queryTrdTemplate(value, 10) // 带着微信号查模板
+            const mpAccount = mpList.find(item => String(item.mpID) === String(value));
+            this.queryTrdTemplate(value, mpAccount? mpAccount.appID: undefined, 10) // 带着微信号查模板
         })
     }
     // 三方模板选择
     handleTrdTemplate = (value) => {
-        console.log(value)
         this.setState({ trdGiftItemID: value }, () => {
             this.propsChange() // 向父传递
         })
