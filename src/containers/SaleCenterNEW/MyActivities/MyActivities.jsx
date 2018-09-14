@@ -698,14 +698,17 @@ class MyActivities extends React.Component {
                     <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
                     <Authority rightCode={AUTO_RUN_QUERY}>
                         <Button
-                            type="ghost"
-                            icon="plus"
                             onClick={() => {
                                 queryPromotionAutoRunList();
                                 openPromotionAutoRunListModal();
                             }}
-                            className={styles.customGhostButton}
-                            >自动执行</Button>
+                            className={styles.customPrimaryButton}
+                            >
+                            <span className={styles.customButtonWithContent}>
+                                <div style={{fontSize: '16px'}}>+&nbsp;</div>
+                                <div>自动执行</div>
+                            </span>
+                        </Button>
                     </Authority>
                 </div>
             </div>
