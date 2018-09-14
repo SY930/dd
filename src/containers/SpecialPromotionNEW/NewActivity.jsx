@@ -194,7 +194,7 @@ class NewActivity extends React.Component {
      * @param  {array} activity 所有活动的列表
      */
     _onButtonClicked(index, activity) {
-        if (!checkPermission("marketing.teseyingxiaoxin.create")) {
+        if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }
