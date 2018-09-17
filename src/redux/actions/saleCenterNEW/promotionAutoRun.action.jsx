@@ -80,22 +80,14 @@ export const queryPromotionAutoRunList = (opts) => {
                     {},
                     {path: 'data.autoExecuteActivityItems'},
                     'HTTP_SERVICE_URL_CRM'
-                )/*.then((list) => {
-             dispatch(queryPromotionAutoRunListSuccess(list));
-             }).catch((error) => {
-             dispatch(queryPromotionAutoRunListFail(error));
-             })*/,
+                ),
                 axiosData(
                     '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
-                    opts,
+                    {...opts, isActive: '1'},
                     {},
                     {path: 'data.autoExecuteActivityItems'},
                     'HTTP_SERVICE_URL_CRM'
-                )/*.then((list) => {
-             dispatch(queryPromotionAutoRunListSuccess(list));
-             }).catch((error) => {
-             dispatch(queryPromotionAutoRunListFail(error));
-             })*/,
+                ),
             ]
         ).then(values => {
             dispatch(queryPromotionAutoRunListSuccess(values));
