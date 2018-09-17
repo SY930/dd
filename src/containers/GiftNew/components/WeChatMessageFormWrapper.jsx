@@ -28,6 +28,7 @@ import {
     Button
 } from 'antd';
 import CloseableTip from "../../../components/common/CloseableTip/index";
+import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../../constants/weChatTemplateConstants";
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const validUrl = require('valid-url');
@@ -106,13 +107,12 @@ class WeChatMessageFormWrapper extends Component {
                     {getFieldDecorator(`title${key}`, {
                         initialValue: title,
                         rules: [{
-                            required: true,
-                            message: '不得为空, 不多于50个字符',
-                            pattern: /^.{1,50}$/,
+                            message: '不多于50个字符',
+                            pattern: /^.{0,50}$/,
                         }],
                     })(
                         <Input
-                            placeholder="通知标题"
+                            placeholder={DEFAULT_WECHAT_TEMPLATE_CONFIG[type].title}
                             onChange={(e) => handleKeyValueChange({key: 'title', value: e.target.value, type})}
                         />
                     )}
@@ -127,13 +127,12 @@ class WeChatMessageFormWrapper extends Component {
                     {getFieldDecorator(`remark${key}`, {
                         initialValue: remark,
                         rules: [{
-                            required: true,
-                            message: '不得为空, 不多于50个字符',
-                            pattern: /^.{1,50}$/,
+                            message: '不多于50个字符',
+                            pattern: /^.{0,50}$/,
                         }],
                     })(
                         <Input
-                            placeholder="通知描述"
+                            placeholder={DEFAULT_WECHAT_TEMPLATE_CONFIG[type].remark}
                             onChange={(e) => handleKeyValueChange({key: 'remark', value: e.target.value, type})}
                         />
                     )}
@@ -149,6 +148,7 @@ class WeChatMessageFormWrapper extends Component {
                         getPopupContainer={(node) => node.parentNode}
                         size="default"
                         value={String(reDirectType)}
+                        disabled={type == 1}
                         onChange={(value) => {
                             handleKeyValueChange({key: 'reDirectType', value, type});
                             handleKeyValueChange({key: 'reDirectUrl', value: '', type});
@@ -298,7 +298,7 @@ class WeChatMessageFormWrapper extends Component {
         });
         if (!flag) return message.warning('请先通过表单校验');
         if (this.props.reDirectType == 2 && !this.props.reDirectUrl) return message.warning('请上传海报图片');
-        this.props.saveWeChatMessageTemplates({wechatTemplates: this.props.wechatTemplates.toJS()} , this.props.isCreate)
+        this.props.saveWeChatMessageTemplates({wechatTemplates: this.props.wechatTemplates.toJS()} , this.props.isCreate);
     }
 
     reset = () => {

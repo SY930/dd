@@ -1,5 +1,6 @@
 import { axiosData } from '../../helpers/util';
 import { message } from 'antd';
+import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../constants/weChatTemplateConstants";
 
 
 export const SALE_CENTER_QUERY_WECHAT_MESSAGE_TEMPLATE_START = 'sale center:: query wechat message template START';
@@ -98,21 +99,31 @@ export const saveWeChatMessageTemplates = (opts, isCreate) => {
         dispatch(saleCenterSaveWeChatMessageTemplatesStart());
         const url = isCreate ? '/coupon/CouponWechatTemplateService_addCouponWechatTemplate.ajax' :
             '/coupon/CouponWechatTemplateService_updateCouponWechatTemplate.ajax';
-
-        axiosData(url, opts, {}, {path: 'data'})
+        opts.wechatTemplates.forEach(template => {
+            const type = template.msgType;
+            if (!template.title) {
+                template.title = DEFAULT_WECHAT_TEMPLATE_CONFIG[type].title
+            }
+            if (!template.remark) {
+                template.remark = DEFAULT_WECHAT_TEMPLATE_CONFIG[type].remark
+            }
+        })
+        return axiosData(url, opts, {}, {path: 'data'})
             .then(
                 res => {
                     message.success('保存成功');
                     dispatch(saleCenterSaveWeChatMessageTemplatesSuccess(res));
+                    return Promise.resolve();
                 },
                 error => {
                     // message.success('保存成功');
                     // dispatch(saleCenterSaveWeChatMessageTemplatesSuccess());
                     dispatch(saleCenterSaveWeChatMessageTemplatesFail());
+                    return Promise.reject();
                 }
             )
             .catch(err => {
-                console.log(err);
+                return Promise.reject(err);
             })
     }
 };

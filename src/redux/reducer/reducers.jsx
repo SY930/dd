@@ -25,7 +25,7 @@ const defaultMsgs = [
     {
         msgType: 1,
         title: DEFAULT_WECHAT_TEMPLATE_CONFIG['1'].title,
-        remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].remark,
+        remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['1'].remark,
         reDirectType: 1,
         reDirectUrl: '',
         isPushMsg: 1
