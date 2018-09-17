@@ -74,14 +74,16 @@ const fetchGiftListFailed = (opts) => {
 
 const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
     const categoryIdMap = new Map();
-    opts.records.forEach(cat => {
+    opts.records.filter(cat => cat.foodCount > 0).forEach(cat => {
         if (!categoryIdMap.has(cat.foodCategoryName) || cat.foodCategoryID > categoryIdMap.get(cat.foodCategoryName)) {
             categoryIdMap.set(cat.foodCategoryName, cat.foodCategoryID);
         }
     });
     const uniqMap = new Map();
     opts.records.forEach(cat => {
-        cat.foodCategoryID = categoryIdMap.get(cat.foodCategoryName); // 哎...
+        if (categoryIdMap.has(cat.foodCategoryName)) {
+            cat.foodCategoryID = categoryIdMap.get(cat.foodCategoryName); // 哎...
+        }
         if (!uniqMap.has(cat.foodCategoryName)) {
             uniqMap.set(cat.foodCategoryName, cat);
         }
