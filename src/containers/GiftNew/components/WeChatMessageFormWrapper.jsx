@@ -53,6 +53,7 @@ const availableUrlType = [
     {
         value: '2',
         label: '海报',
+        disabled: true,
     },
     {
         value: '3',
@@ -154,7 +155,7 @@ class WeChatMessageFormWrapper extends Component {
                             handleKeyValueChange({key: 'reDirectUrl', value: '', type});
                         }}
                     >
-                        {availableUrlType.map(type => (<Select.Option value={type.value} key={type.value}>{type.label}</Select.Option>))}
+                        {availableUrlType.map(type => (<Select.Option disabled={type.disabled} value={type.value} key={type.value}>{type.label}</Select.Option>))}
                     </Select>
                 </FormItem>
 
