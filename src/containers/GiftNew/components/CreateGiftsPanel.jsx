@@ -7,14 +7,13 @@ import {
 } from 'antd';
 import {startCreateGift} from "../_action";
 
-const temparoryDisabledGifts = [
-    '111', '110'
+const temporaryDisabledGifts = [
 ]; // 不上线, 只在dohko显示的礼品类型
 
 class CreateGiftsPanel extends Component {
 
     handleLogoClick = (gift = {}) => {
-        if (HUALALA.ENVIRONMENT === 'production-release' && temparoryDisabledGifts.includes(gift.value)) {
+        if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
             message.success('敬请期待~');
             return;
         }
