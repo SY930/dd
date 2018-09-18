@@ -247,20 +247,13 @@ class CardLevelForWX extends React.Component {
     }
 
     handleSelectChange(value) {
-        const opts = {
+        this.queryCanuseShops(value)
+        this.setState({
             cardLevelIDList: value,
-        }
-        if (value.length === 0) {
-            opts.canUseShops = []
-            opts.selections_shopsInfo = { shopsInfo: [] }
-            this.queryCanuseShops([])
-        } else {
-            this.queryCanuseShops(value)
-        }
-        this.setState(opts/*, () => {
-            this.props.form.setFieldsValue({ 'treeSelect': value });
-        }*/)
-        this.props.onChange && this.props.onChange({ cardLevelIDList: value });
+            canUseShops: [],
+            selections_shopsInfo: { shopsInfo: [] }
+        })
+        this.props.onChange && this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
     }
     handleRadioChange(e) {
         const opts = {
