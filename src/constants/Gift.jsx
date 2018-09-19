@@ -77,6 +77,7 @@ const GiftCfg = {
             describe: '指定菜品满x元，折扣率为y',
             value: '111',
             category: 'primary',
+            tags: ['SaaS2.0'],
             color: '#84aac6'
         },
         {
