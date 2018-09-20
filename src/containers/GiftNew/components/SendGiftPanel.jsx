@@ -19,7 +19,7 @@ import {axiosData} from "../../../helpers/util";
 import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 import {queryWechatMpInfo} from "../../GiftNew/_action";
-
+import { debounce } from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -74,7 +74,7 @@ class SendGiftPanel extends Component {
         this.handleWhenToEffectChange = this.handleWhenToEffectChange.bind(this);
         this.handleSmsGateChange = this.handleSmsGateChange.bind(this);
         this.handleCellNoChange = this.handleCellNoChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitDebounced = debounce(this.handleSubmit.bind(this), 400);
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleGiftValidRangeChange = this.handleGiftValidRangeChange.bind(this);
@@ -104,6 +104,9 @@ class SendGiftPanel extends Component {
             }
         }
         if (flag) {
+            this.setState({
+                loading: true,
+            });
             const params = this.mapStateToRequestParams();
             axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
@@ -559,7 +562,7 @@ class SendGiftPanel extends Component {
                     <Button
                         type="primary"
                         loading={this.state.loading}
-                        onClick={this.handleSubmit}
+                        onClick={this.handleSubmitDebounced}
                         style={{
                             marginRight: '3px'
                         }}
