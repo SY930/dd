@@ -89,6 +89,7 @@ class WeChatMessageFormWrapper extends Component {
             currentType: type,
             isPushMsg,
             reDirectUrl,
+            isEditing,
             handleKeyValueChange
         } = this.props;
         return (
@@ -114,6 +115,7 @@ class WeChatMessageFormWrapper extends Component {
                     })(
                         <Input
                             placeholder={DEFAULT_WECHAT_TEMPLATE_CONFIG[type].title}
+                            disabled={!isEditing}
                             onChange={(e) => handleKeyValueChange({key: 'title', value: e.target.value, type})}
                         />
                     )}
@@ -134,6 +136,7 @@ class WeChatMessageFormWrapper extends Component {
                     })(
                         <Input
                             placeholder={DEFAULT_WECHAT_TEMPLATE_CONFIG[type].remark}
+                            disabled={!isEditing}
                             onChange={(e) => handleKeyValueChange({key: 'remark', value: e.target.value, type})}
                         />
                     )}
@@ -149,7 +152,7 @@ class WeChatMessageFormWrapper extends Component {
                         getPopupContainer={(node) => node.parentNode}
                         size="default"
                         value={String(reDirectType)}
-                        disabled={type == 1}
+                        disabled={type == 1 || !isEditing}
                         onChange={(value) => {
                             handleKeyValueChange({key: 'reDirectType', value, type});
                             handleKeyValueChange({key: 'reDirectUrl', value: '', type});
@@ -184,6 +187,7 @@ class WeChatMessageFormWrapper extends Component {
                             ],
                         })(
                             <Input
+                                disabled={!isEditing}
                                 placeholder="自定义链接请务必慎重填写"
                                 onChange={(e) => handleKeyValueChange({key: 'reDirectUrl', value: e.target.value, type})}
                             />
@@ -214,6 +218,7 @@ class WeChatMessageFormWrapper extends Component {
                             <RadioGroup
                                 onChange={(e) => handleKeyValueChange({key: 'isPushMsg', value: e.target.value, type})}
                                 value={isPushMsg}
+                                disabled={!isEditing}
                             >
                                 <Radio key={'1'} value={1}>是</Radio>
                                 <Radio key={'0'} value={0}>否</Radio>
