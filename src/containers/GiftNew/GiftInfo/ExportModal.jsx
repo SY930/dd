@@ -186,13 +186,9 @@ export default class ExportModal extends Component {
                         ]}
                 >
                     <Row>
-                        <Col span={24} className={styles.shopWrap} style={{ textAlign: 'right' }}>
-                            {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                            <Button type="ghost" onClick={this.handleClearAll}>清空列表</Button>
-                            {/* </Authority> */}
-                        </Col>
                         <Col span={24}>
                             <Table
+                                className={styles.rightAlignedPagination}
                                 key={Math.random()}
                                 scroll={{ y: this.state.tableHeight }}
                                 bordered={true}
@@ -204,13 +200,19 @@ export default class ExportModal extends Component {
                                 dataSource={this.state.dataSource}
                                 pagination={{
                                     pageSize: this.state.pageSizes,
-                                    // showQuickJumper:true,
-                                    // showSizeChanger:true,
-                                    // onShowSizeChange:this.onShowSizeChange,
                                     total: this.state.records ? this.state.records.length : 0,
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                                 }}
                             />
+                            <Button
+                                type="ghost"
+                                onClick={this.handleClearAll}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    bottom: 18
+                                }}
+                            >清空列表</Button>
                         </Col>
                     </Row>
                 </Modal>
