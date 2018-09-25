@@ -119,11 +119,7 @@ class PromotionAutoRunModal extends Component {
             },
         ];
         return (
-            <div
-                style={{
-                    marginTop: 15,
-                }}
-            >
+            <div>
                 <Table
                     bordered={true}
                     scroll={{ y: 352 }}
