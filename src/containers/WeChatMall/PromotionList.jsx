@@ -680,7 +680,7 @@ export class WeChatMallPromotionList extends React.Component {
         return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

@@ -1140,7 +1140,7 @@ class MyActivitiesShop extends React.Component {
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
