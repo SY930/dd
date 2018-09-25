@@ -204,15 +204,19 @@ export default class ExportModal extends Component {
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                                 }}
                             />
-                            <Button
-                                type="ghost"
-                                onClick={this.handleClearAll}
-                                style={{
-                                    position: 'absolute',
-                                    left: 0,
-                                    bottom: 18
-                                }}
-                            >清空列表</Button>
+                            {
+                                this.state.records && this.state.records.length && (
+                                    <Button
+                                        type="ghost"
+                                        onClick={this.handleClearAll}
+                                        style={{
+                                            position: 'absolute',
+                                            left: 0,
+                                            bottom: 18
+                                        }}
+                                    >清空列表</Button>
+                                )
+                            }
                         </Col>
                     </Row>
                 </Modal>
