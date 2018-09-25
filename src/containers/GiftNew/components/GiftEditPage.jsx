@@ -29,7 +29,7 @@ class GiftEditPage extends Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 95;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 79;
         this.setState({ contentHeight });
     }
 
@@ -77,6 +77,9 @@ class GiftEditPage extends Component {
                     >
                         保存
                     </Button>
+                </div>
+                <div style={{height: 15}}>
+
                 </div>
                 <div
                     className={styles.pageContent}

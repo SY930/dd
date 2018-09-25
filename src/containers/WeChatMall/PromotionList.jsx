@@ -195,7 +195,6 @@ export class WeChatMallPromotionList extends React.Component {
                 layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight: parentHeight - headerHeight - 120,
-                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
         }
@@ -376,18 +375,20 @@ export class WeChatMallPromotionList extends React.Component {
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>商城活动信息</span>
-                    <Button
-                        type="ghost"
-                        icon="plus"
-                        className={styles.jumpToCreate}
-                        onClick={
-                            () => {
-                                jumpPage({ menuID: WECHAT_MALL_CREATE })
-                            }
-                        }>新建</Button>
+            <div className="layoutsTool" style={{height: '79px'}}>
+                <div className={headerClasses}>
+                    <span className={styles.customHeader}>
+                        商城活动信息
+                        <Button
+                            type="ghost"
+                            icon="plus"
+                            className={styles.jumpToCreate}
+                            onClick={
+                                () => {
+                                    jumpPage({ menuID: WECHAT_MALL_CREATE })
+                                }
+                            }>新建</Button>
+                    </span>
                 </div>
             </div>
         );
@@ -677,9 +678,9 @@ export class WeChatMallPromotionList extends React.Component {
         ];
 
         return (
-            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
+            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scroll={{ x: 1600, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -739,8 +740,8 @@ export class WeChatMallPromotionList extends React.Component {
                 </div>
 
                 <div>
-                    <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                        <div className="layoutsHeader">
+                    <div className={styles.pageContentWrapper}>
+                        <div style={{padding: 0}} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: '0'}} className="layoutsLine"></div>
                         </div>

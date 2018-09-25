@@ -37,7 +37,7 @@ class WeChatMessageSetting extends Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 95;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 79;
         this.setState({ contentHeight });
     }
 
@@ -59,22 +59,23 @@ class WeChatMessageSetting extends Component {
                 backgroundColor: '#F3F3F3',
                 height: '100%'
             }}>
-                <div className={styles.pageHeader} >
-                    <div className={styles.pageHeaderTitle}>
-                        微信模板
+                <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
+                    <div className={styles1.headerWithBgColor}>
+                        <span className={styles1.customHeader}>
+                            微信模板
+                            <Button
+                                type="ghost"
+                                style={{
+                                    display: !isEditing && isQueryFulfilled ? 'block' : 'none',
+                                }}
+                                className={styles1.jumpToCreate}
+                                onClick={startEdit}
+                            >
+                                <Icon type="edit" />
+                                编辑
+                            </Button>
+                        </span>
                     </div>
-                    <Button
-                        type="ghost"
-                        style={{
-                            marginLeft: '30px',
-                            display: !isEditing && isQueryFulfilled ? 'block' : 'none',
-                        }}
-                        className={styles.secondaryButton}
-                        onClick={startEdit}
-                    >
-                        <Icon type="edit" />
-                        编辑
-                    </Button>
                 </div>
                 <Spin spinning={loading}>
                     {isQueryFulfilled ? (
@@ -82,6 +83,8 @@ class WeChatMessageSetting extends Component {
                             className={styles.pageContent}
                             style={{
                                 height: this.state.contentHeight,
+                                borderRadius: 0,
+                                margin: 0,
                                 overflowY: 'auto',
                             }}
                         >
@@ -92,7 +95,10 @@ class WeChatMessageSetting extends Component {
                         <div
                             className={styles.pageContent}
                             style={{
-                                height: this.state.contentHeight
+                                height: this.state.contentHeight,
+                                borderRadius: 0,
+                                margin: 0,
+                                overflowY: 'auto',
                             }}
                         >
                             <div className={styles1.centerFlexContainer} style={{
@@ -100,7 +106,7 @@ class WeChatMessageSetting extends Component {
                                 width: '100%',
                             }}>
                                 <div>
-                                    <img src={imgSrc} width="154px" height="66px" alt=" "/>
+                                    <img src={imgSrc} width="154px" height="66px" alt="oops"/>
                                     <span style={{
                                         display: 'inline-block',
                                         marginLeft: '27px'

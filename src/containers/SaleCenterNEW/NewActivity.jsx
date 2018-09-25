@@ -144,34 +144,37 @@ class NewActivity extends React.Component {
     }
 
     render() {
+        const headerClasses = `${styles.headerWithBgColor}`;
         return (
             <Row className="layoutsContainer">
-                <Col span={24} className="layoutsHeader">
-                    <div className="layoutsTool">
-                        <div className="layoutsToolLeft">
-                            <h1>新建基础营销</h1>
-                            <Button
-                                type="ghost"
-                                icon="rollback"
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    left: '150px',
-                                }}
-                                onClick={
-                                    () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
-                                        menuID && jumpPage({ menuID })
-                                    }
-                                }>返回列表</Button>
+                <Col span={24} style={{padding: 0}} className="layoutsHeader">
+                    <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
+                        <div className={headerClasses}>
+                            <span  className={styles.customHeader}>
+                                新建基础营销&nbsp;&nbsp;
+                                <Button
+                                    type="ghost"
+                                    icon="rollback"
+                                    onClick={
+                                        () => {
+                                            const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
+                                            menuID && jumpPage({ menuID })
+                                        }
+                                    }>返回列表</Button>
+                            </span>
                         </div>
                     </div>
                 </Col>
-                <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
-
+                <Col
+                    span={24}
+                    className="layoutsContent"
+                    style={{
+                        overflow: 'auto',
+                        height: this.state.contentHeight || 800,
+                        padding: '10px 30px 30px 30px',
+                    }}
+                >
                     {this.renderActivityButtons()}
-
                     {this.renderModal()}
                 </Col>
             </Row>

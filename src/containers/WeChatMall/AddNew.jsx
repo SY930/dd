@@ -13,6 +13,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import registerPage from '../../index';
+import styles from '../SaleCenterNEW/ActivityPage.less'
 import { jumpPage } from '@hualala/platform-base'
 import {
     Modal,
@@ -128,29 +129,32 @@ class NewActivity extends React.Component {
     render() {
         return (
             <Row className="layoutsContainer">
-                <Col span={24} className="layoutsHeader">
-                    <div className="layoutsTool">
-                        <div className="layoutsToolLeft">
-                            <h1>新建商城活动</h1>
-                            <Button
-                                type="ghost"
-                                icon="rollback"
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    left: '150px',
-                                }}
-                                onClick={
-                                    () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === WECHAT_MALL_LIST).menuID
-                                        menuID && jumpPage({ menuID })
-                                    }
-                                }>返回列表</Button>
+                <Col span={24} style={{padding: 0}} className="layoutsHeader">
+                    <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
+                        <div className={styles.headerWithBgColor}>
+                            <span  className={styles.customHeader}>
+                                新建商城活动&nbsp;&nbsp;
+                                <Button
+                                    type="ghost"
+                                    icon="rollback"
+                                    onClick={
+                                        () => {
+                                            const menuID = this.props.user.menuList.find(tab => tab.entryCode === WECHAT_MALL_LIST).menuID
+                                            menuID && jumpPage({ menuID })
+                                        }
+                                    }>返回列表</Button>
+                            </span>
                         </div>
                     </div>
                 </Col>
-                <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
+                <Col
+                    span={24}
+                    className="layoutsContent"
+                    style={{
+                        overflow: 'auto',
+                        height: this.state.contentHeight || 800,
+                        padding: 30,
+                    }}>
                     <ul>
                         {this.renderActivityButtons()}
                     </ul>

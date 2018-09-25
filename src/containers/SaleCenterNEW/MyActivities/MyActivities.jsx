@@ -267,6 +267,9 @@ class MyActivities extends React.Component {
      * @description toggle the advanced qualification selection.
      * */
     toggleExpandState() {
+        requestAnimationFrame(() => {
+            this.onWindowResize();
+        });
         const expand = this.state.expand;
         let opt = {
             expand: !expand,
@@ -328,7 +331,6 @@ class MyActivities extends React.Component {
                 layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight: parentHeight - headerHeight - 120,
-                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
         }
@@ -693,9 +695,9 @@ class MyActivities extends React.Component {
             openPromotionAutoRunListModal
         } = this.props;
         return (
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
+            <div className="layoutsTool" style={{height: '79px'}}>
+                <div className={headerClasses}>
+                    <span className={styles.customHeader}>基础营销信息</span>
                     <Authority rightCode={AUTO_RUN_QUERY}>
                         <Button
                             onClick={() => {
@@ -1161,10 +1163,10 @@ class MyActivities extends React.Component {
         ];
 
         return (
-            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -1208,8 +1210,8 @@ class MyActivities extends React.Component {
             </div>
 
             <div>
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>

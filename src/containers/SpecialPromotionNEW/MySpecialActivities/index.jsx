@@ -358,8 +358,8 @@ class MySpecialActivities extends React.Component {
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>
@@ -433,9 +433,9 @@ class MySpecialActivities extends React.Component {
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>特色营销信息</span>
+            <div className="layoutsTool" style={{height: '79px'}}>
+                <div className={headerClasses}>
+                    <span className={styles.customHeader}>特色营销信息</span>
                     {/*<Button
                         type="ghost"
                         icon="plus"
@@ -852,10 +852,10 @@ class MySpecialActivities extends React.Component {
         ];
 
         return (
-            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

@@ -24,6 +24,7 @@ import {
 } from "../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import {saleCenterResetScopeInfoAC} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import styles from '../GiftNew/GiftAdd/Crm.less';
+import styles1 from '../SaleCenterNEW/ActivityPage.less';
 import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
@@ -215,17 +216,18 @@ class BasePage extends Component {
                 backgroundColor: '#F3F3F3',
                 height: '100%'
             }}>
-                <div className={styles.pageHeader} >
-                    <div className={styles.pageHeaderTitle}>
-                        {this.props.categoryTitle}
+                <div className="layoutsTool" style={{height: '79px'}}>
+                    <div className={styles1.headerWithBgColor}>
+                        <div className={styles1.customHeader}>
+                            {this.props.categoryTitle}
+                        </div>
                     </div>
-                    <div className={styles.placeholder}/>
                 </div>
                 <div
                     className={styles.flexPageWrap}
                     style={{
-                        height: 'calc(100% - 95px)',
-                        padding: '20px',
+                        height: 'calc(100% - 79px)',
+                        padding: '10px 30px 30px 30px',
                     }}
                 >
                     {this.props.promotions.map((item, index) => (

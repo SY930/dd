@@ -95,36 +95,26 @@ class MessageTemplatesPage extends React.Component {
                     height: '100%',
                 }}
             >
-                <div className="layoutsToolLeft" style={{height: '90px', lineHeight: '90px'}}>
-                    <span style={{
-                        lineHeight: '90px',
-                        marginLeft: '50px',
-                        display: 'inline-block',
-                        fontSize: '36px',
-                    }}>短信模板</span>
-                    <Authority rightCode={SMS_TEMPLATE_CREATE}>
-                        <Button
-                            type="ghost"
-                            icon="plus"
-                            className={styles.jumpToCreate}
-                            style={{
-                                height: '30px',
-                                width: '90px',
-                                left: '224px',
-                                position: 'absolute',
-                                top: '30px'
-
-                            }}
-                            onClick={
-                                () => {
-                                    this.editTemplate(null);
-                                }
-                            }>新建</Button>
-                    </Authority>
+                <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
+                    <div className={styles.headerWithBgColor}>
+                        <span className={styles.customHeader}>
+                            短信模板
+                            <Authority rightCode={SMS_TEMPLATE_CREATE}>
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles.jumpToCreate}
+                                    onClick={
+                                        () => {
+                                            this.editTemplate(null);
+                                        }
+                                    }>新建</Button>
+                            </Authority>
+                        </span>
+                    </div>
                 </div>
-                <div className="layoutsLineBlock" style={{height: '16px'}}/>
                 <div style={{
-                    height: 'calc(100% - 106px)',
+                    height: 'calc(100% - 79px)',
                     overflowY: 'auto'
                 }}>
                     <Spin spinning={this.props.loading}>
@@ -140,13 +130,13 @@ class MessageTemplatesPage extends React.Component {
                                                 display: 'inline-block',
                                                 marginLeft: '27px'
                                             }}>
-                                            您还没有短信模板 , 快去新建吧 ~
-                                        </span>
+                                                您还没有短信模板 , 快去新建吧 ~
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                                 :
-                                <div style={{ paddingTop: '20px'}}>
+                                <div style={{ padding: 30}}>
                                     {!!pendingTemplates.length && <MessageGroup title="待审核" key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
                                     {!!verifiedTemplates.length && <MessageGroup title="审核通过" key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
                                     {!!illegalTemplates.length && <MessageGroup title="审核未通过" key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}

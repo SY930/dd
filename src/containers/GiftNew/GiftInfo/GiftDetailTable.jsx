@@ -411,54 +411,37 @@ class GiftDetailTable extends Component {
             },
         };
         const formKeys = ['giftName', 'giftType'];
-        const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor}`;
+        const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                    {/*<Row className="layoutsTool">
-                        <div className="layoutsToolLeft">
-                            <h1 style={{ display: 'inline-block' }}>礼品信息</h1>
-                            <Button
-                                type="ghost"
-                                icon="plus"
-                                className={styles2.jumpToCreate}
-                                onClick={
-                                    () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
-                                        jumpPage({ menuID })
+                    <div className="layoutsTool" style={{height: '79px'}}>
+                        <div className={headerClasses}>
+                            <span className={styles2.customHeader}>
+                                礼品信息
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles2.jumpToCreate}
+                                    onClick={
+                                        () => {
+                                            this.setState({
+                                                createModalVisible: true
+                                            })
+                                        }
                                     }
-                                }
-                            >新建</Button>
-                        </div>
+                                >新建</Button>
+                            </span>
 
-                        <Col span={22} style={{ textAlign: 'right' }}>
-
-                        </Col>
-                    </Row>*/}
-                    <div className="layoutsTool" style={{height: '80px'}}>
-                        <div className={headerClasses} style={{lineHeight: '80px'}}>
-                            <span style={{lineHeight: '80px'}} className={styles2.customHeader}>礼品信息</span>
-                            <Button
-                                type="ghost"
-                                icon="plus"
-                                className={styles2.jumpToCreate}
-                                onClick={
-                                    () => {
-                                        this.setState({
-                                            createModalVisible: true
-                                        })
-                                    }
-                                }
-                            >新建</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
-                                <Button className={styles2.exportBtn}
+                                <Button
                                     type="ghost"
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
                         </div>
                     </div>
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles2.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         <div className="layoutsSearch">
                             <ul>
                                 <li className={styles.formWidth}>
@@ -483,7 +466,7 @@ class GiftDetailTable extends Component {
                         </div>
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>
-                    <div className={[styles.giftTable, ' layoutsContent tableClass '].join(' ')} style={{ height: this.state.contentHeight }}>
+                    <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
                         <Table
                             ref={this.setTableRef}
                             bordered={true}
@@ -503,7 +486,7 @@ class GiftDetailTable extends Component {
                                 showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                             }}
                             loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.tableHeight }}
+                            scroll={{ x: 1600, y: this.state.contentHeight - 118 }}
                         />
                     </div>
                 </div>

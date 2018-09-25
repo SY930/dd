@@ -1669,47 +1669,55 @@
     // border-radius: 7px;
 }
 .jumpToCreate{
-
     width: 75px;
-    top: -5px;
     left: 15px;
     color: #1ab495;
     border-color: #1ab495;
     border-radius: 5px;
     background-color: transparent;
     &:hover{
-        background-color: white;
+        background-color: #f2f2f2;
         color: #1ab495;
         border-color: #1ab495;
 
     }
 }
 
-.exportBtn{
-    margin-right: 20px;
-    top: 26px;
-    position: absolute;
-    right: 0;
-    background-color: transparent;
-    &:hover{
-        background-color: white;
-    }
-}
 
 .customHeader {
-    display: inline-block;
-    font-size: 30px;
+    display: inline-flex;
+    font-size: 24px;
+    color: #434343;
+    align-items: center;
 }
 
 .headerWithBgColor {
-    background-color: #F3F3F3;
-    padding-left: 30px;
+    background-color: #FFFFFF;
+    line-height: 64px;
+    height: 64px;
+    padding-left: 20px;
 }
+
+.pageContentWrapper {
+    background-color: #FFFFFF;
+    padding: 30px;
+}
+
+.tableClass {
+    :global {
+        .ant-table-pagination {
+            position: fixed;
+            bottom: 18px;
+        }
+    }
+    padding: 20px 0;
+}
+
 .basicPromotionHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-right: 20px;
+    padding-right: 30px;
 }
 .customGhostButton {
     background-color: transparent;
@@ -1851,7 +1859,6 @@
 .messageGroupWrapper {
     width: 100%;
     flex-shrink: 0;
-    padding-left: 50px;
     .emptyMessageGroup {
         margin: 20px 0;
         width: 100%;
