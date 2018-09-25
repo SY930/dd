@@ -200,23 +200,21 @@ export default class ExportModal extends Component {
                                 dataSource={this.state.dataSource}
                                 pagination={{
                                     pageSize: this.state.pageSizes,
-                                    total: this.state.records ? this.state.records.length : 0,
+                                    total: this.state.dataSource ? this.state.dataSource.length : 0,
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                                 }}
                             />
-                            {
-                                this.state.records && this.state.records.length && (
-                                    <Button
-                                        type="ghost"
-                                        onClick={this.handleClearAll}
-                                        style={{
-                                            position: 'absolute',
-                                            left: 0,
-                                            bottom: 18
-                                        }}
-                                    >清空列表</Button>
-                                )
-                            }
+                            { (!!this.state.dataSource && !!this.state.dataSource.length) && (
+                                <Button
+                                    type="ghost"
+                                    onClick={this.handleClearAll}
+                                    style={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        bottom: 18
+                                    }}
+                                >清空列表</Button>
+                            )}
                         </Col>
                     </Row>
                 </Modal>
