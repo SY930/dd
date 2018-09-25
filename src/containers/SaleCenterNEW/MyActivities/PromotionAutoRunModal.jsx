@@ -126,6 +126,7 @@ class PromotionAutoRunModal extends Component {
             >
                 <Table
                     bordered={true}
+                    scroll={{ y: 352 }}
                     rowSelection={rowSelection}
                     rowKey="promotionID"
                     columns={columns}
@@ -215,6 +216,7 @@ class PromotionAutoRunModal extends Component {
             >
                 <Table
                     bordered={true}
+                    scroll={{ y: 300 }}
                     rowKey="promotionID"
                     columns={columns}
                     pagination={false}
