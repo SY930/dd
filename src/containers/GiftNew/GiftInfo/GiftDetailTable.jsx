@@ -50,7 +50,7 @@ class GiftDetailTable extends Component {
             loading: true,
             queryParams: {
                 pageNo: 1,
-                pageSize: 10,
+                pageSize: 20,
             },
             // total为数据总数。并不是页数。
             total: 2,
@@ -90,7 +90,7 @@ class GiftDetailTable extends Component {
         const { FetchGiftList } = this.props;
         FetchGiftList({
             pageNo: 1,
-            pageSize: 10,
+            pageSize: 20,
         }).then((data = []) => {
             this.proGiftData(data);
         });
