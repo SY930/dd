@@ -58,7 +58,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
         axiosData(
             '/promotion/docPromotionService_add.ajax',
             params,
-            {needThrow: true},
+            {needThrow: true, needCode: true},
             {path: 'data'},
             'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
