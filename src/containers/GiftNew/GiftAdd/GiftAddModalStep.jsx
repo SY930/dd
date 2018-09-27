@@ -325,6 +325,12 @@ class GiftAddModalStep extends React.PureComponent {
                     } else {
                         this.setState({ foodNameListStatus: 'error' });
                     }
+                    // 多存一份菜品, 菜品名与规格分开
+                    values.foodScopes = {
+                        foodCategory,
+                        dishes,
+                        categoryOrDish
+                    };
                     const _foodCategory = foodCategory.map(cat => cat.foodCategoryName)
                     const _dishes = dishes.map(dish => dish.foodName + dish.unit || dish.foodNameWithUnit)
                     values.isFoodCatNameList = categoryOrDish;
@@ -568,6 +574,28 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     })
                 }
+                delete params.foodsboxs;
+            }
+            // foodbxs数据,目前代金券和折扣券用
+            if (params.hasOwnProperty('foodScopes')) {
+                const { foodCategory = [], dishes = [], categoryOrDish = '1' } = params.foodScopes;
+                params.foodSelectType = Number(categoryOrDish);
+                params.excludeFoodScopes = [];
+                params.couponFoodScopes = foodCategory.map((cat) => {
+                    return {
+                        targetID: cat.foodCategoryID,
+                        targetCode: cat.foodCategoryCode,
+                        targetName: cat.foodCategoryName,
+                    }
+                }).concat(dishes.map((food) => {
+                    return {
+                        targetID: food.itemID,
+                        targetCode: food.foodCode,
+                        targetName: food.foodName,
+                        targetUnitName: food.unit || '',
+                    }
+                }));
+                delete params.foodScopes;
             }
             if (params.supportOrderTypes) {
                 params.supportOrderTypes = params.supportOrderTypes.join(',')
@@ -637,7 +665,6 @@ class GiftAddModalStep extends React.PureComponent {
             const { groupName } = accountInfo.toJS();
             startSaving();
             delete params.operateTime; // 就, 很烦
-            delete params.foodsboxs;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
                 endSaving();

@@ -264,7 +264,7 @@ class MoreFoodBox extends React.Component {
             return null;
         };
         return (
-            <div style={{
+            <div key="cat" style={{
                 position: 'relative'
             }}>
                 <div style={{
@@ -784,7 +784,7 @@ class MoreFoodBox extends React.Component {
             return null;
         };
         return (
-            <div style={{
+            <div key="dish" style={{
                 position: 'relative'
             }}>
                 <div className={this.props.isBuyGive ? styles.requiredFoodBoxLabel : styles.foodBoxLabel}
