@@ -387,7 +387,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '顾客只要消费满一定金额即可得到一定的减价优惠',
         example: '例如:菜金满100减10元/酒水每满100减5元',
-        tags: ['SaaS2.0', '新微信', '微信'],
         key: '2010',
     },
     {
@@ -396,7 +395,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#c49b79',
         text: '顾客消费满足条件,商家即赠送菜品',
         example: '例如:菜金满100赠可乐一瓶',
-        tags: ['SaaS2.0', '新微信'],
         key: '1030',
     },
     {
@@ -405,7 +403,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#9dc568',
         text: '可设置显示账单折扣,菜品折扣',
         example: '例如:全部菜品9折,酒水不打折',
-        tags: ['SaaS2.0', '新微信', '微信'],
         key: '2020',
     },
     {
@@ -414,7 +411,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#e5be6c',
         text: '直接降价促销',
         example: '例如:周一凉菜类会员立减10元',
-        tags: ['SaaS2.0', '微信'],
         key: '1010',
     },
     {
@@ -423,7 +419,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#c49b79',
         text: '顾客买X赠送Y,常用于单品推新的促销和曝光度',
         example: '例如:点新菜品2份以上可免费送可乐一瓶',
-        tags: ['SaaS2.0', '新微信'],
         key: '1020',
     },
     {
@@ -432,7 +427,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '更实在的折扣优惠,常用于情侣消费,朋友消费',
         example: '例如:午餐12点-13点可乐第二份8折,第三份半价',
-        tags: ['SaaS2.0'],
         key: '1050',
     },
     {
@@ -441,7 +435,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#9dc568',
         text: '消费后获得奖励将使顾客下次光临的时间大大提前',
         example: '例如:消费满100元送1张10元代金券',
-        tags: ['SaaS2.0', '微信'],
         key: '3010',
     },
     {
@@ -450,7 +443,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#c49b79',
         text: '会员消费满X元送积分,积分可兑换礼品或抵现',
         example: '例如:消费每满1元返1分',
-        tags: ['SaaS2.0', '微信'],
         key: '3020',
     },
     {
@@ -459,7 +451,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#e5be6c',
         text: '对接美团点评团购券,并拆分券实收和优惠金额',
         example: '',
-        tags: ['SaaS2.0'],
         key: '4010',
     },
     {
@@ -468,7 +459,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '消费满X元随机立减一定金额,顾客可获得幸福感',
         example: '例如:消费满100元随机立减1-5元',
-        tags: ['SaaS2.0', '新微信', '微信'],
         key: '2030',
     },
     {
@@ -477,7 +467,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '购买一定份数的指定菜品可享受相应折扣或减价',
         example: '例如:购买1份土豆丝+1份黄瓜即可打9折或减价3元',
-        tags: ['SaaS2.0'],
         key: '2040',
     },
     {
@@ -486,7 +475,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '购买指定菜品组合时可搭配赠送指定菜品',
         example: '例如:购买土豆与茄子组合即可赠送西红柿',
-        tags: ['SaaS2.0'],
         key: '1040',
     },
     {
@@ -495,7 +483,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '任意或指定消费满X元再加Y元即可换购指定菜品',
         example: '例如:任意消费满100元加10元即可换购土豆丝一份',
-        tags: ['SaaS2.0'],
         key: '1070',
     },
     {
@@ -504,7 +491,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '购买X组菜品组合即可享受相应折扣或减价',
         example: '例如:购买任意两组菜品组合即可打9折或减价3元',
-        tags: ['SaaS2.0'],
         key: '2050',
     },
     {
@@ -513,7 +499,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '消费满X份菜品即可在X中免单Y份最低价菜品',
         example: '例如:消费满4份热菜即可在4份中免单最低价的1份',
-        tags: ['SaaS2.0'],
         key: '1060',
     },
     {
@@ -522,7 +507,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '提高老客户忠诚度，开展累计消费次数减免的活动',
         example: '例如:累计消费2次减免2元，累计消费3次减免5元',
-        tags: ['SaaS2.0'],
         key: '2070',
     },
     {
@@ -531,7 +515,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '提高老客户忠诚度，开展累计消费次数赠送的活动',
         example: '例如:累计消费2次赠送A菜，累计消费3次赠送B菜',
-        tags: ['SaaS2.0'],
         key: '1080',
     },
     {
@@ -540,7 +523,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '向用户推荐菜品，提高目标菜品曝光率和客单价',
         example: '例如:客户点A菜推荐B菜，点C菜推荐D菜和F菜',
-        tags: ['新微信', '微信'],
         key: '5010',
     },
     {
@@ -549,7 +531,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         color: '#84aac6',
         text: '加价升级换新是区别加价换购的一个营销活动',
         example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
-        tags: ['SaaS2.0'],
         key: '1090',
     },
     {
@@ -603,7 +584,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         color: '#84aac6',
         text: '限时免费领取礼品，达到短期拉新的效果',
         example: '',
-        tags: ['微信'],
         key: '21',
     },
     {
@@ -612,7 +592,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         color: '#84aac6',
         text: '人人都希望中奖，意外的礼品总是刺激着顾客的就餐神经',
         example: '',
-        tags: ['微信'],
         key: '20',
     },
     {
@@ -620,7 +599,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         title: '积分兑换',
         color: '#84aac6',
         text: '顾客可以使用积分兑换相应的礼品，增加顾客的消费黏性',
-        tags: ['微信'],
         example: '',
         key: '30',
     },
@@ -630,7 +608,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         color: '#84aac6',
         text: '通过报名设置，筛选企业不同价值的客户',
         example: '',
-        tags: ['微信'],
         key: '22',
     },
     {
@@ -680,7 +657,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         idx: 11,
         title: '线上餐厅送礼',
         color: '#84aac6',
-        tags: ['新微信', '微信'],
         text: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。',
         example: '',
         key: '23',
@@ -697,7 +673,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             idx: 13,
             title: '评价送礼',
             color: '#84aac6',
-            tags: ['新微信'],
             text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
             example: '',
             key: '64',
