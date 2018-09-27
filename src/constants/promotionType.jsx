@@ -324,7 +324,7 @@ export const SALE_PROMOTION_TYPES = [
         title: '买赠',
         text: '顾客买X赠送Y,常用于单品推新的促销和曝光度',
         example: '例如:点新菜品2份以上可免费送可乐一瓶',
-        tags: ['SaaS2.0', '新微信'],
+        tags: ['SaaS2.0', '新微信', '微信'],
         key: '1020',
         right: 19,
         bottom: 7,
