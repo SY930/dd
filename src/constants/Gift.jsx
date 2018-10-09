@@ -24,7 +24,7 @@ const GiftCfg = {
             value: '21',
             color: '#c49b79',
             category: 'primary',
-            tags: ['SaaS2.0']
+            tags: ['SaaS2.0', '新微信', '微信']
         },
         {
             name: '会员充值券',
@@ -77,7 +77,7 @@ const GiftCfg = {
             describe: '指定菜品满x元，折扣率为y',
             value: '111',
             category: 'primary',
-            tags: ['SaaS2.0'],
+            tags: ['SaaS2.0', '新微信', '微信'],
             color: '#84aac6'
         },
         {
@@ -85,6 +85,7 @@ const GiftCfg = {
             describe: '购买x份A菜品，赠送y份B菜品',
             value: '110',
             category: 'primary',
+            tags: ['新微信', '微信'],
             color: '#c49b79'
         },
         {
