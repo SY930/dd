@@ -163,7 +163,15 @@ export default class ExportModal extends Component {
             });
     }
     handleClearAll = () => {
-        axiosData('/crm/quotaCardExport/delete.ajax', {}, null, { path: 'data' })
+        const key = this.props._key;
+        let data = {}
+        if (key) {
+            data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
+        }
+        if (this.props.newExport) {
+            data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
+        }
+        axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
                 message.success('删除成功');
                 this.getExportRecords(this.props._key);
