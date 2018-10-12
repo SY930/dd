@@ -39,7 +39,6 @@ if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
 }
 
-import { ActivityLogo } from './ActivityLogo/ActivityLogo';
 import ActivityMain from './activityMain';
 import Authority from './../../components/common/Authority';
 import {
@@ -64,6 +63,7 @@ import {
 } from "../../constants/entryCodes";
 import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
+import {isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP} from "../../constants/projectHuatianConf";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -182,6 +182,15 @@ class NewActivity extends React.Component {
         );
     }
 
+    handleCardClick = (index, activity) => {
+        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
+        this.props.toggleIsUpdate(true);
+        this.onButtonClicked(index, activity);
+    }
+
 
     _renderActivityButtons() {
         const activities = this.props.saleCenter.get('activityCategories').toJS();
@@ -206,8 +215,7 @@ class NewActivity extends React.Component {
                                 key={activity.key}
                                 promotionEntity={allBasicActivitiesMap[activity.key]}
                                 onCardClick={() => {
-                                    this.props.toggleIsUpdate(true);
-                                    this.onButtonClicked(index, activity);
+                                   this.handleCardClick(index, activity)
                                 }}
                                 index={index}
                             />

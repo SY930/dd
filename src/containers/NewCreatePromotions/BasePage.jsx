@@ -28,6 +28,10 @@ import styles1 from '../SaleCenterNEW/ActivityPage.less';
 import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
+import {
+    BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
+    isGroupOfHuaTianGroupList, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
+} from "../../constants/projectHuatianConf";
 
 class BasePage extends Component {
 
@@ -86,6 +90,10 @@ class BasePage extends Component {
     }
 
     handleSpecialPromotionCreate(index, activity) {
+        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
         if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
@@ -131,6 +139,10 @@ class BasePage extends Component {
     }
 
     handleBasicPromotionCreate(index, promotionEntity) {
+        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
         if (!checkPermission(BASIC_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
