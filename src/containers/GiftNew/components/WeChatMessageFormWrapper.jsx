@@ -53,7 +53,7 @@ const availableUrlType = [
     {
         value: '2',
         label: '海报',
-        disabled: true,
+        disabled: HUALALA.ENVIRONMENT === 'production-release',
     },
     {
         value: '3',
