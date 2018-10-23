@@ -30,7 +30,7 @@ import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
 import {
     BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
-    isGroupOfHuaTianGroupList, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
+    isGroupOfHuaTianGroupList, isHuaTian, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
 } from "../../constants/projectHuatianConf";
 
 class BasePage extends Component {
@@ -90,7 +90,8 @@ class BasePage extends Component {
     }
 
     handleSpecialPromotionCreate(index, activity) {
-        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+        // 唤醒送礼 品牌不可创建
+        if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
             return;
         }
@@ -139,7 +140,7 @@ class BasePage extends Component {
     }
 
     handleBasicPromotionCreate(index, promotionEntity) {
-        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+        if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
             return;
         }

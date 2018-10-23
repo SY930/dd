@@ -58,6 +58,7 @@ import {
     SPECIAL_PROMOTION_DELETE, SPECIAL_PROMOTION_QUERY,
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
+import {isBrandOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -618,15 +619,21 @@ class MySpecialActivities extends React.Component {
                 width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 300 : 250,
                 // fixed:'left',
                 render: (text, record, index) => {
-                    const statusState = !!((record.eventWay == '50' || record.eventWay == '53') && (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21'));
-                    // let statusState = (record.eventWay =='50' || record.eventWay =='53') && (record.status !='1'&&record.status !='5') ? true : false;
-                    // console.log(index,`${statusState}`);
+                    const statusState = (
+                        (record.eventWay == '50' || record.eventWay == '53')
+                        &&
+                        (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
+                    );
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     return (<span>
                         <a
                             href="#"
-                            className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
-                            onClick={() => {
+                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) ? styles.textDisabled : null}
+                            onClick={(e) => {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    e.preventDefault();
+                                    return;
+                                }
                                 if (Number(record.eventWay) === 70) {
                                     message.warning('该活动已下线');
                                     return;
@@ -643,9 +650,13 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || statusState ? styles.textDisabled : null}
+                                className={
+                                    record.isActive != '0' || statusState || (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                                        ? styles.textDisabled
+                                        : null
+                                }
                                 onClick={(e) => {
-                                    if (record.isActive != '0' || statusState) {
+                                    if (record.isActive != '0' || statusState || (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
                                         e.preventDefault()
                                     } else {
                                         if (Number(record.eventWay) === 70) {
@@ -678,8 +689,11 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
+                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
                                 onClick={() => {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                        return;
+                                    }
                                     if (Number(record.eventWay) === 70) {
                                         message.warning('该活动已下线');
                                         return;
@@ -692,8 +706,11 @@ class MySpecialActivities extends React.Component {
                         </Authority>
                         <a
                             href="#"
-                            className={record.isActive == '-1' || statusState ? styles.textDisabled : null}
+                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
                             onClick={() => {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    return;
+                                }
                                 if (Number(record.eventWay) === 70) {
                                     message.warning('该活动已下线');
                                     return;
@@ -706,7 +723,11 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
+                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
                                 onClick={() => {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                        return;
+                                    }
                                     if (Number(record.eventWay) === 70) {
                                         message.warning('该活动已下线');
                                         return;

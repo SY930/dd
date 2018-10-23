@@ -84,6 +84,7 @@ import {
     AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
+import {isBrandOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -1004,19 +1005,27 @@ class MyActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
+                className: 'TableTxtCenter',
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
+                    const id = this.props.user.accountInfo.groupID;
                     return (<span>
-                        <a
-                            href="#"
-                            disabled={!isGroupPro}
-                            onClick={() => {
-                                this.handleDisableClickEvent(text, record, index);
-                            }}
-                        >{buttonText}</a>
+                            {
+                                (isHuaTian(id) || !isBrandOfHuaTianGroupList(id)) && (
+                                    <a
+                                        href="#"
+                                        disabled={!isHuaTian(id) && isGroupPro}
+                                        onClick={() => {
+                                            this.handleDisableClickEvent(text, record, index);
+                                        }}
+                                    >
+                                        {buttonText}
+                                    </a>
+                                )
+                            }
                         <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
@@ -1029,16 +1038,20 @@ class MyActivities extends React.Component {
                                 查看
                             </a>
                         </Authority>
-                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                            <a
-                                href="#"
-                                disabled={!isGroupPro}
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true)
-                                    this.handleUpdateOpe(text, record, index);
-                                }}
-                            >编辑</a>
-                        </Authority>
+                            {
+                                !isHuaTian(id) && (
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                        <a
+                                            href="#"
+                                            disabled={!isGroupPro}
+                                            onClick={() => {
+                                                this.props.toggleIsUpdate(true)
+                                                this.handleUpdateOpe(text, record, index);
+                                            }}
+                                        >编辑</a>
+                                    </Authority>
+                                )
+                            }
                     </span>
 
                     );

@@ -77,6 +77,7 @@ import {
     BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
+import {isGroupOfHuaTianGroupList} from "../../../constants/projectHuatianConf";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -978,19 +979,27 @@ class MyActivitiesShop extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
+                className: 'TableTxtCenter',
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
+                    const id = this.props.user.accountInfo.groupID;
                     return (<span>
-                        <a
-                            href="#"
-                            disabled={isGroupPro}
-                            onClick={() => {
-                                this.handleDisableClickEvent(text, record, index);
-                            }}
-                        >{buttonText}</a>
+                            {
+                                !isGroupOfHuaTianGroupList(id) && (
+                                    <a
+                                        href="#"
+                                        disabled={isGroupPro}
+                                        onClick={() => {
+                                            this.handleDisableClickEvent(text, record, index);
+                                        }}
+                                    >
+                                        {buttonText}
+                                    </a>
+                                )
+                            }
                         <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"

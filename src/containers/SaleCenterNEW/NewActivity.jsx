@@ -63,7 +63,10 @@ import {
 } from "../../constants/entryCodes";
 import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
-import {isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP} from "../../constants/projectHuatianConf";
+import {
+    isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP,
+    isHuaTian
+} from "../../constants/projectHuatianConf";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -178,12 +181,11 @@ class NewActivity extends React.Component {
                     {this.renderModal()}
                 </Col>
             </Row>
-
         );
     }
 
     handleCardClick = (index, activity) => {
-        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+        if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
             return;
         }

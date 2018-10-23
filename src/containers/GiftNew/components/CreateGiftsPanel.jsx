@@ -6,7 +6,10 @@ import {
     message,
 } from 'antd';
 import {startCreateGift} from "../_action";
-import {FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP, HUATIAN_GROUP_ID} from "../../../constants/projectHuatianConf";
+import {
+    FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP, GIFT_CREATE_DISABLED_TIP, HUATIAN_GROUP_ID,
+    isBrandOfHuaTianGroupList, isHuaTian
+} from "../../../constants/projectHuatianConf";
 
 const temporaryDisabledGifts = [
 ]; // 不上线, 只在dohko显示的礼品类型
@@ -14,6 +17,14 @@ const temporaryDisabledGifts = [
 class CreateGiftsPanel extends Component {
 
     handleLogoClick = (gift = {}) => {
+        if (isBrandOfHuaTianGroupList() && gift.value === '90') {
+            message.warning(GIFT_CREATE_DISABLED_TIP);
+            return;
+        }
+        if (isHuaTian() && gift.category === 'primary') {
+            message.warning(GIFT_CREATE_DISABLED_TIP);
+            return;
+        }
         if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
             message.success('敬请期待~');
             return;
@@ -43,10 +54,6 @@ class CreateGiftsPanel extends Component {
                                     key={gift.value}
                                     isPrimary={true}
                                     onClick={() => {
-                                        if (this.props.user.accountInfo.groupID == HUATIAN_GROUP_ID) {
-                                            message.warning(FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP);
-                                            return;
-                                        }
                                         this.handleLogoClick(gift)
                                     }}
                                     index={index}
