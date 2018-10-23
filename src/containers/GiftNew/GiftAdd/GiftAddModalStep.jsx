@@ -91,55 +91,9 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-
-        /*if (type === 'edit' && value == '110') {
-            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
-            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
-            values.maxGiveCountPerBill = data.maxGiveCountPerBill
-            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
-            values.BOGOdiscountWay = data.BOGOdiscountWay
-        }*/
         this.setState({
             values
         });
-        /*fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
-            let { cities, shops } = data;
-            const treeData = [];
-            if (cities === undefined) {
-                cities = [];
-            }
-            if (shops === undefined) {
-                shops = [];
-            }
-            cities.forEach((city) => {
-                const newShops = [];
-                shops.filter((shop) => {
-                    return shop.cityID == city.cityID;
-                }).forEach((shop) => {
-                    const shopItem = {};
-                    shopItem.content = shop.shopName;
-                    shopItem.id = shop.shopID;
-                    newShops.push(shopItem);
-                });
-                treeData.push({
-                    province: {
-                        content: city.cityName,
-                        id: city.cityID,
-                    },
-                    shops: newShops,
-                });
-            });
-            this.setState({ shopsData: [...treeData] });
-        });*/
-        /*fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
-            if (!data) return;
-            const groupTypes = [];
-            data.forEach((d) => {
-                groupTypes.push({ value: d.brandID, label: d.brandName })
-            });
-            groupTypes.push({ value: '-1', label: '(空)' });
-            this.setState({ groupTypes });
-        }).catch(() => undefined);*/
         FetchGiftSort({});
     }
 
