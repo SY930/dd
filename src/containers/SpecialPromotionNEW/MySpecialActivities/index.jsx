@@ -58,7 +58,7 @@ import {
     SPECIAL_PROMOTION_DELETE, SPECIAL_PROMOTION_QUERY,
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
-import {isBrandOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
+import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -651,12 +651,12 @@ class MySpecialActivities extends React.Component {
                             <a
                                 href="#"
                                 className={
-                                    record.isActive != '0' || statusState || (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
                                         ? styles.textDisabled
                                         : null
                                 }
                                 onClick={(e) => {
-                                    if (record.isActive != '0' || statusState || (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
                                         e.preventDefault()
                                     } else {
                                         if (Number(record.eventWay) === 70) {
