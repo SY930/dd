@@ -114,6 +114,9 @@ class BasePage extends Component {
         });
         // 完善资料送礼只能创建一次
         if (key === '60') {
+            if (isHuaTian()) {
+                return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+            }
             this.props.saleCenterCheckSpecialExist({
                 eventWay: key,
                 data: {

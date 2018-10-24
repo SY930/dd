@@ -48,7 +48,7 @@ export function isMine({ subGroupId }) {
 }
 
 export const BASIC_PROMOTION_CREATE_DISABLED_TIP = '基础营销活动暂时无法创建, 详情请联系管理人员';
-export const SPECIAL_PROMOTION_CREATE_DISABLED_TIP = '唤醒活动暂时无法创建, 详情请联系管理人员';
+export const SPECIAL_PROMOTION_CREATE_DISABLED_TIP = '该活动暂时无法创建, 详情请联系管理人员';
 export const FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP = '该券暂时无法创建, 详情请联系管理人员';
 export const SMS_EDIT_DISABLED_TIP = '短信模板暂时无法编辑, 详情请联系管理人员';
 export const GIFT_CREATE_DISABLED_TIP = '该礼品暂时无法创建, 详情请联系管理人员';
