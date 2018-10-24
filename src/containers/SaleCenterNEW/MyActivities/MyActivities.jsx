@@ -1017,7 +1017,7 @@ class MyActivities extends React.Component {
                                 (isHuaTian(id) || !isBrandOfHuaTianGroupList(id)) && (
                                     <a
                                         href="#"
-                                        disabled={!isHuaTian(id) && isGroupPro}
+                                        disabled={!isHuaTian(id) && !isGroupPro}
                                         onClick={() => {
                                             this.handleDisableClickEvent(text, record, index);
                                         }}
