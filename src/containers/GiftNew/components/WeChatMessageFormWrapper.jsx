@@ -53,7 +53,6 @@ const availableUrlType = [
     {
         value: '2',
         label: '海报',
-        disabled: HUALALA.ENVIRONMENT === 'production-release',
     },
     {
         value: '3',
@@ -239,6 +238,7 @@ class WeChatMessageFormWrapper extends Component {
             currentType: type,
             isPushMsg,
             reDirectUrl,
+            isEditing,
             handleKeyValueChange
         } = this.props;
         const props = {
@@ -272,7 +272,10 @@ class WeChatMessageFormWrapper extends Component {
             <Row>
                 <Col>
                     <FormItem>
-                        <Upload {...props}>
+                        <Upload
+                            {...props}
+                            disabled={!isEditing}
+                        >
                             {
                                 this.props.reDirectUrl ?
                                     <img src={this.props.reDirectUrl} alt="" className={[styles1.avatar, styles1.thinAvatar].join(' ')} /> :
