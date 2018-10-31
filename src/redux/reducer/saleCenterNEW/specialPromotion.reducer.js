@@ -23,7 +23,7 @@ import {
 
     SALE_CENTER_RESET_SPECIAL_PROMOTION,
     SALE_CENTER_FSM_SETTLE_UNIT,
-    SALE_CENTER_GET_EXCLUDE_EVENT_LIST,
+    SALE_CENTER_GET_EXCLUDE_EVENT_LIST, SALE_CENTER_FSM_EQUITY_UNIT,
 } from '../../actions/saleCenterNEW/specialPromotion.action';
 
 const $initialState = Immutable.fromJS({
@@ -41,7 +41,8 @@ const $initialState = Immutable.fromJS({
         mpIDList: [],
         excludeEventCardLevelIdModelList: [],
         allCardLevelCheck: false,
-        accountInfoList: [], // 短信结算主体
+        accountInfoList: [], // 短信结算主体(旧结算体系, 为了兼容旧特色营销活动而存在)
+        equityAccountInfoList: [], // 短信权益账户(新结算体系)
         getExcludeEventList: [], // 同时段已建立唤醒
     },
     $giftInfo: [],
@@ -108,6 +109,9 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FSM_SETTLE_UNIT:
             return $$state.setIn(['$eventInfo', 'accountInfoList'], action.payload)
+
+        case SALE_CENTER_FSM_EQUITY_UNIT:
+            return $$state.setIn(['$eventInfo', 'equityAccountInfoList'], action.payload)
 
         case SALE_CENTER_GET_EXCLUDE_EVENT_LIST:
             return $$state.setIn(['$eventInfo', 'getExcludeEventList'], action.payload.excludeEventModelList)
