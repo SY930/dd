@@ -57,6 +57,7 @@ class StepTwo extends React.Component {
             cardGroupName: '',
             cardCount: '',
             settleUnitID: '',
+            accountNo: '',
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -102,7 +103,8 @@ class StepTwo extends React.Component {
                     cardCount: groupMembers.totalMembers,
                     cardGroupRemark: groupMembers.groupMembersRemark,
                     cardLevelRangeType: this.state.cardLevelRangeType || '0',
-                    settleUnitID: this.state.settleUnitID,
+                    settleUnitID: this.state.settleUnitID || '0',
+                    accountNo: this.state.accountNo,
                 })
             }
         });
@@ -429,6 +431,9 @@ class StepTwo extends React.Component {
                             if (val instanceof Object) {
                                 if (val.settleUnitID) {
                                     this.setState({ settleUnitID: val.settleUnitID })
+                                }
+                                if (val.accountNo) {
+                                    this.setState({ accountNo: val.accountNo })
                                 }
                             } else {
                                 this.setState({ message: val });

@@ -31,6 +31,8 @@ const $initialState = Immutable.fromJS({
         giftAdvanceDays: '', // 提前天数
         eventRemark: '', // 描述
         smsGate: '', // 是否发送短信
+        settleUnitID: '', // 结算主体id(旧活动)
+        accountNo: '', // 权益账户id(新活动)
         smsTemplate: '', // 短信内容
         pushMessageMpID: '', // 微信推送时选择的微信号
         eventWay: '',
@@ -111,7 +113,7 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$eventInfo', 'accountInfoList'], action.payload)
 
         case SALE_CENTER_FSM_EQUITY_UNIT:
-            return $$state.setIn(['$eventInfo', 'equityAccountInfoList'], action.payload)
+            return $$state.setIn(['$eventInfo', 'equityAccountInfoList'], Immutable.fromJS(action.payload))
 
         case SALE_CENTER_GET_EXCLUDE_EVENT_LIST:
             return $$state.setIn(['$eventInfo', 'getExcludeEventList'], action.payload.excludeEventModelList)

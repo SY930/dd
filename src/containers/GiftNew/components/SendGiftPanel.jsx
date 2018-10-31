@@ -96,7 +96,7 @@ class SendGiftPanel extends Component {
             return;
         }
         const { accountNo, cellNo, availableSmsCount, smsGate } = this.state;
-        const sendFlag = smsGate === '1' || smsGate === '3' || smsGate === '4';
+        const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         if (sendFlag) {
             if (!availableSmsCount) {
                 flag = false;
@@ -543,14 +543,14 @@ class SendGiftPanel extends Component {
                     </Col>
                 )}
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
+                    {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
                         {this.renderAccountNo()}
                     </div>
                 )}
                 </Col>
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
+                    {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
                         {this.renderMsgSelector()}
                     </div>

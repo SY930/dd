@@ -155,9 +155,8 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
 // 获取短信权益账户
 export const queryFsmGroupEquityAccount = () => {
     return (dispatch) => {
-        axiosData('/specialPromotion/queryFsmGroupEquityAccount.ajax', {}, { }, {path: 'data.accountInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+        axiosData('/specialPromotion/queryFsmGroupEquityAccount.ajax', {}, { }, {path: 'accountInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(res => {
-                console.log('res: ', res)
                 dispatch({
                     type: SALE_CENTER_FSM_EQUITY_UNIT,
                     payload: res,

@@ -8,7 +8,7 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     saleCenterGetExcludeEventList,
-    saleCenterGetShopOfEventByDate,
+    saleCenterGetShopOfEventByDate, queryFsmGroupEquityAccount,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { SEND_MSG, NOTIFICATION_FLAG } from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -122,7 +122,10 @@ class StepOneWithDateRange extends React.Component {
         }
         if (this.props.type == '50' || this.props.type == '53' || this.props.type == '60'
             || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '70') {
-            this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID });
+            specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
+                this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
+                :
+                this.props.queryFsmGroupEquityAccount()
         }
     }
 
@@ -830,6 +833,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo())
+        },
+        queryFsmGroupEquityAccount: (opts) => {
+            dispatch(queryFsmGroupEquityAccount(opts))
         }
     }
 };

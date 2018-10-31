@@ -37,6 +37,7 @@ class StepTwo extends React.Component {
         this.state = {
             message: '',
             settleUnitID: '',
+            accountNo: '',
             cardLevelIDList: [],
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             groupMembersList: [],
@@ -57,7 +58,7 @@ class StepTwo extends React.Component {
             }
         });
         const opts = {
-            smsTemplate: smsGate === '1' || smsGate === '3' || smsGate === '4' ? this.state.message : '',
+            smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
             cardLevelIDList: this.state.cardLevelIDList || [],
             cardLevelRangeType: this.state.cardLevelRangeType,
         };
@@ -73,8 +74,12 @@ class StepTwo extends React.Component {
                 opts.cardGroupID = this.state.groupMembersID;
             }
         }
-        if (smsGate === '1' || smsGate === '3' || smsGate === '4') {
+        if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
             opts.settleUnitID = this.state.settleUnitID;
+            opts.accountNo = this.state.accountNo;
+        } else {
+            opts.settleUnitID = '0';
+            opts.accountNo = '0';
         }
         this.props.setSpecialBasicInfo(opts);
         return flag;
@@ -142,7 +147,7 @@ class StepTwo extends React.Component {
 
     render() {
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
-        const sendFlag = info.smsGate === '1' || info.smsGate === '3' || info.smsGate === '4';
+        const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         return (
             <div>
                 {this.props.type == '51' && this.state.cardLevelRangeType == 5 ?
@@ -188,6 +193,9 @@ class StepTwo extends React.Component {
                             if (val instanceof Object) {
                                 if (val.settleUnitID) {
                                     this.setState({ settleUnitID: val.settleUnitID })
+                                }
+                                if (val.accountNo) {
+                                    this.setState({ accountNo: val.accountNo })
                                 }
                             } else {
                                 this.setState({ message: val });
