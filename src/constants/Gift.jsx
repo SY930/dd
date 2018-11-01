@@ -259,7 +259,6 @@ const GiftCfg = {
         { label: '眉州', value: 4, disabled: releaseENV },
         { label: '5i', value: 5, disabled: releaseENV },
         { label: '拉格代尔', value: 6, disabled: releaseENV },
-        { label: '非码', value: 20 },
     ],
     couponCodeType: [
         { value: 1, label: '是' },

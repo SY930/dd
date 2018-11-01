@@ -244,7 +244,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '直接降价促销',
         example: '例如:周一凉菜类会员立减10元',
-        tags: ['SaaS2.0', '微信'],
+        tags: ['SaaS2.0', '新微信', '微信'],
         key: '1010',
         right: 10,
         bottom: 0,
