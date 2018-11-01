@@ -272,6 +272,8 @@ class GroupTicketDetailInfo extends React.Component {
                     <PriceInput
                         addonBefore={''}
                         addonAfter={'元'}
+                        discountMode
+                        discountFloat={5}
                         onChange={this.onTransFeeChange}
                         value={{ number: this.state.transFee }}
                         defaultValue={{ number: this.state.transFee }}

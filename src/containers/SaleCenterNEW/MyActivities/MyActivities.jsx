@@ -70,10 +70,20 @@ import { promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW } from '../../../
 import { fullCut_NEW as sale_fullCut_NEW } from '../../../redux/reducer/saleCenterNEW/fullCut.reducer';
 import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
+import { promotionAutoRunState as sale_promotionAutoRunState } from '../../../redux/reducer/saleCenterNEW/promotionAutoRun.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {axiosData} from "../../../helpers/util";
+import PromotionAutoRunModal from "./PromotionAutoRunModal";
+import {
+    openPromotionAutoRunListModal,
+    queryPromotionAutoRunList
+} from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
+import {
+    AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
+    BASIC_PROMOTION_UPDATE
+} from "../../../constants/authorityCodes";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -149,6 +159,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
         },
+        queryPromotionAutoRunList: (opts) => {
+            dispatch(queryPromotionAutoRunList(opts))
+        },
+        openPromotionAutoRunListModal: (opts) => {
+            dispatch(openPromotionAutoRunListModal(opts))
+        }
     };
 };
 @registerPage([SALE_CENTER_PAGE], {
@@ -159,6 +175,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_myActivities_NEW,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
+    sale_promotionAutoRunState,
     sale_mySpecialActivities_NEW,
     sale_steps,
 })
@@ -250,6 +267,9 @@ class MyActivities extends React.Component {
      * @description toggle the advanced qualification selection.
      * */
     toggleExpandState() {
+        requestAnimationFrame(() => {
+            this.onWindowResize();
+        });
         const expand = this.state.expand;
         let opt = {
             expand: !expand,
@@ -302,16 +322,15 @@ class MyActivities extends React.Component {
     onWindowResize = () => {
         const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
         if (parentDoms != null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.offsetHeight; // 获取到父级的高度存到变量 parentHeight
+            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
             const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
             if (undefined != contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].offsetHeight;
+                const headerHeight = headerDoms[0].getBoundingClientRect().height;
                 layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight: parentHeight - headerHeight - 120,
-                    tableHeight: layoutsContent.offsetHeight - 68,
                 })
             }
         }
@@ -670,20 +689,29 @@ class MyActivities extends React.Component {
     }
 
     renderHeader() {
-        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
+        const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
+        const {
+            queryPromotionAutoRunList,
+            openPromotionAutoRunListModal
+        } = this.props;
         return (
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>基础营销信息</span>
-                    <Button
-                        type="ghost"
-                        icon="plus"
-                        className={styles.jumpToCreate}
-                        onClick={
-                            () => {
-                                jumpPage({ menuID: NEW_SALE_CENTER })
-                            }
-                        }>新建</Button>
+            <div className="layoutsTool" style={{height: '79px'}}>
+                <div className={headerClasses}>
+                    <span className={styles.customHeader}>基础营销信息</span>
+                    <Authority rightCode={AUTO_RUN_QUERY}>
+                        <Button
+                            onClick={() => {
+                                queryPromotionAutoRunList();
+                                openPromotionAutoRunListModal();
+                            }}
+                            className={styles.customPrimaryButton}
+                            >
+                            <span className={styles.customButtonWithContent}>
+                                <div style={{fontSize: '16px'}}>+&nbsp;</div>
+                                <div>自动执行</div>
+                            </span>
+                        </Button>
+                    </Authority>
                 </div>
             </div>
         );
@@ -787,7 +815,7 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode="marketing.jichuyingxiaoxin.query">
+                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
@@ -989,7 +1017,7 @@ class MyActivities extends React.Component {
                                 this.handleDisableClickEvent(text, record, index);
                             }}
                         >{buttonText}</a>
-                        <Authority rightCode="marketing.chakanjichuyingxiaoxin.query">
+                        <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
                                 onClick={() => {
@@ -1001,7 +1029,7 @@ class MyActivities extends React.Component {
                                 查看
                             </a>
                         </Authority>
-                        <Authority rightCode="marketing.jichuyingxiaoxin.update">
+                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                             <a
                                 href="#"
                                 disabled={!isGroupPro}
@@ -1135,10 +1163,10 @@ class MyActivities extends React.Component {
         ];
 
         return (
-            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -1182,8 +1210,8 @@ class MyActivities extends React.Component {
             </div>
 
             <div>
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>
@@ -1192,6 +1220,7 @@ class MyActivities extends React.Component {
             </div>
             {/*{this.renderModals()}*/}
             {this.renderModifyRecordInfoModal(0)}
+            <PromotionAutoRunModal/>
         </div>
         );
     }

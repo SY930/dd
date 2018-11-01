@@ -185,10 +185,11 @@ class CompositeDetailInfo extends React.Component {
                     groupCountStatus: 'success', // 验证信息
                     cutStatus: 'success', // 验证信息
                     discountStatus: 'success', // 验证信息
+                    cutToStatus: 'success', // 验证信息
                 };
             }
             conditions[index].groupCount = ruleStage.combineStageNo;
-            conditions[index].flag = ruleStage.disType === 1 ? '0' : '1';
+            conditions[index].flag = String(ruleStage.disType - 1); //减至disType=3 折扣=2，减免=1 对应前端 2 1 0
             conditions[index].cut = ruleStage.freeAmount;
             conditions[index].discount = ruleStage.discountRate;
         })
@@ -255,12 +256,17 @@ class CompositeDetailInfo extends React.Component {
         let groupCountFlag = true;
         conditions.forEach((condition) => {
             // 校验
-            if (condition.flag == '1' && (condition.discount == null || condition.discount == '')) {
+            if (condition.flag == '1' && (condition.discount == null || condition.discount == '' || condition.discount > 100)) {
                 condition.discountStatus = 'error';
                 nextFlag = false;
             }
             if (condition.flag == '0' && (condition.cut == null || condition.cut == '')) {
                 condition.cutStatus = 'error';
+                nextFlag = false;
+            }
+
+            if (condition.flag == '2' && (condition.cut == null || condition.cut == '')) {
+                condition.cutToStatus = 'error';
                 nextFlag = false;
             }
 
@@ -279,6 +285,12 @@ class CompositeDetailInfo extends React.Component {
                 if (condition.flag == '0') {
                     rule.stage.push({
                         disType: 1,
+                        combineStageNo: condition.groupCount,
+                        freeAmount: condition.cut,
+                    })
+                } else if (condition.flag == '2') {
+                    rule.stage.push({
+                        disType: 3,
                         combineStageNo: condition.groupCount,
                         freeAmount: condition.cut,
                     })
@@ -347,6 +359,7 @@ class CompositeDetailInfo extends React.Component {
                 groupCountStatus: 'success', // 验证信息
                 cutStatus: 'success', // 验证信息
                 discountStatus: 'success', // 验证信息
+                cutTiStatus: 'success', // 验证信息
             }
         );
         this.setState({ conditions });
@@ -404,11 +417,23 @@ class CompositeDetailInfo extends React.Component {
         }
         this.setState({ conditions });
     }
+
+    // 减至金额change
+    handleCutToChange(idx, val) {
+        const { conditions } = this.state;
+        conditions[idx].cut = val.number;
+        if (conditions[idx].flag == '2' && (val.number == '' || val.number == null)) {
+            conditions[idx].cutToStatus = 'error';
+        } else {
+            conditions[idx].cutToStatus = 'success';
+        }
+        this.setState({ conditions });
+    }
     // 折扣率change
     handleDiscountChange(idx, val) {
         const { conditions } = this.state;
         conditions[idx].discount = val.number;
-        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null)) {
+        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null || val.number > 100)) {
             conditions[idx].discountStatus = 'error';
         } else {
             conditions[idx].discountStatus = 'success';
@@ -421,8 +446,13 @@ class CompositeDetailInfo extends React.Component {
         conditions[idx].flag = e;
         if (e == '0') {
             conditions[idx].discountStatus = 'success';
+            conditions[idx].cutToStatus = 'success';
+        } else if (e == '1') {
+            conditions[idx].cutStatus = 'success';
+            conditions[idx].cutToStatus = 'success';
         } else {
             conditions[idx].cutStatus = 'success';
+            conditions[idx].discountStatus = 'success';
         }
         this.setState({ conditions });
     }
@@ -593,13 +623,14 @@ class CompositeDetailInfo extends React.Component {
                         </Col>
                         <Col span={9}>
                             <FormItem className={styles.radioInLine}>
-                                <ButtonGroup onChange={(val) => { console.log(val) }}>
-                                    <Button value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>减免</Button>
-                                    <Button value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>折扣</Button>
+                                <ButtonGroup size="small" onChange={(val) => { console.log(val) }}>
+                                    <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>减免</Button>
+                                    <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>减至</Button>
+                                    <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>折扣</Button>
                                 </ButtonGroup>
-                                <FormItem validateStatus={item.flag == '0' ? item.cutStatus : item.discountStatus} style={{ paddingTop: '0px' }}>
+                                <FormItem validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus} style={{ paddingTop: '0px' }}>
                                     {
-                                        item.flag == '0' ?
+                                        item.flag == '0' &&
                                             <PriceInput
                                                 addonAfter="元"
                                                 key={`cut${idx}`}
@@ -609,7 +640,21 @@ class CompositeDetailInfo extends React.Component {
                                                 onChange={(val) => {
                                                     this.handleCutChange(idx, val);
                                                 }}
-                                            /> :
+                                            /> }
+                                    {
+                                        item.flag == '2' &&
+                                            <PriceInput
+                                                addonAfter="元"
+                                                key={`cut${idx}`}
+                                                type="text"
+                                                modal="float"
+                                                value={{ number: item.cut }}
+                                                onChange={(val) => {
+                                                    this.handleCutToChange(idx, val);
+                                                }}
+                                            /> }
+                                    {
+                                        item.flag == '1' &&
                                             <PriceInput
                                                 addonAfter="%"
                                                 key={`discunt${idx}`}

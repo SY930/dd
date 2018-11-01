@@ -27,12 +27,12 @@ export class GiftAddModalStep extends React.Component {
             moneyTopLimitValueDisabled:true,
             // modalKey:1,
             firstKeys: {
-                '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark'] }],
+                '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark'] }],
                 '菜品优惠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'isFoodCatNameList', 'foodNameList', 'giftRemark'] }],
                 '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
             },
             secondKeys: {
-                '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'shareType', 'moneyLimitType', 'shopNames'] }],
+                '代金券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'shareType', 'moneyLimitType', 'shopNames'] }],
                 '菜品优惠券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'moneyLimitType', 'shopNames'] }],
                 '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['isCustomerPrice', 'hasPrivilegeOfWait', 'isDiscountRate', 'isPointRate','isNumberOfTimeType', 'isMoneyTopLimitType'] }],
             },
@@ -176,12 +176,12 @@ export class GiftAddModalStep extends React.Component {
             current: 0,
             values: {},
             firstKeys: {
-                '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark'] }],
+                '代金券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'giftRemark'] }],
                 '菜品优惠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftValue', 'giftName', 'isFoodCatNameList', 'foodNameList', 'giftRemark'] }],
                 '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName', 'giftRemark'] }],
             },
             secondKeys: {
-                '电子代金券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'shareType', 'moneyLimitType', 'shopNames'] }],
+                '代金券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'shareType', 'moneyLimitType', 'shopNames'] }],
                 '菜品优惠券': [{ col: { span: 24, pull: 2 }, keys: ['isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'moneyLimitType', 'shopNames'] }],
                 '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['isCustomerPrice', 'hasPrivilegeOfWait', 'isDiscountRate', 'isPointRate','isNumberOfTimeType','isMoneyTopLimitType'] }],
             },

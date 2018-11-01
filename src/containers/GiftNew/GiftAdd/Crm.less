@@ -269,3 +269,379 @@
     padding-bottom: 100px!important;
 }
 
+@newBlue: #5494D7;
+@newRed: #D6464A;
+@newOrange: #DA932C;
+@newGreen: #66B92E;
+@newPurple: #9372C1;
+@defaultGreen: #18B494;
+
+.logoContainer(@color: @defaultGreen) {
+    cursor: pointer;
+    width: 210px;
+    flex: none;
+    margin: 0 10px 10px 0;
+    height: 100px;
+    border-radius: 5px;
+    background-color: @color;
+    position: relative;
+    padding: 0 10px;
+    &:hover {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.45);
+        transition: .2s;
+    }
+    &:active {
+        background-color: shade(@color, 20%);
+    }
+    &::before {
+        display: block;
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        position: absolute;
+        background-color: white;
+        left: -3px;
+        top: 72px;
+    }
+    &::after {
+        display: block;
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        position: absolute;
+        background-color: white;
+        right: -3px;
+        top: 72px;
+    }
+}
+
+.logoContainer {
+    .logoContainer()
+}
+
+.logoContainer_0 {
+    .logoContainer(@newRed)
+}
+
+.logoContainer_1 {
+    .logoContainer(@newOrange)
+}
+
+.logoContainer_2 {
+    .logoContainer(@newGreen)
+}
+
+.logoContainer_3 {
+    .logoContainer(@newPurple)
+}
+
+.logoContainer_4 {
+    .logoContainer(@newBlue)
+}
+
+.groupContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.headerWithDash {
+    height: 75px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+    color: #FFFFFF;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+}
+.tagContainer {
+    height: 24px;
+    color: #FFFFFF;
+    font-size: 12px;
+    div {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
+
+.logoGroupHeader {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #333333;
+    position: relative;
+    &::before {
+        margin-left: -7px;
+        position: absolute;
+        display: block;
+        width: 3px;
+        height: 12px;
+        content: '';
+        left: -3px;
+        top: 4px;
+        background-color: #18B495;
+    }
+}
+
+.pageHeader {
+    height: 64px;
+    background-color: #FFFFFF;
+    display: flex;
+    padding: 0 30px 0 20px;
+    align-items: center;
+    .pageHeaderTitle {
+        color: #434343;
+        font-size: 24px;
+        flex: none;
+    }
+    .pageHeaderDescription {
+        margin-left: 12px;
+        color: #AEAEAE;
+        font-size: 14px;
+        flex: none;
+    }
+    .placeholder {
+        flex: 1 1 auto;
+    }
+}
+@newGiftPanelHeight: 782px;
+
+.pageContent {
+    background-color: #FFFFFF;
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    min-width: 1200px;
+    .giftValue {
+        color: #FFFFFF;
+        font-size: 25px;
+        position: relative;
+        font-weight: 600;
+        width: 80px;
+        left: 4px;
+        text-align: center;
+    }
+    .longerGiftValue {
+        color: #FFFFFF;
+        position: relative;
+        font-size: 16px;
+        font-weight: 600;
+        width: 80px;
+        left: 4px;
+        text-align: center;
+    }
+    .giftLimitValue {
+        position: absolute;
+        font-size: 11px;
+        width: 195px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        top: 70px;
+        left: 100px;
+    }
+    .giftName {
+        position: absolute;
+        color: #333333;
+        font-size: 14px;
+        width: 195px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        top: 30px;
+        left: 100px;
+        overflow: hidden;
+    }
+    .phonePreviewContainer {
+        /*overflow-y: hidden;
+        overflow-x: inherit;*/
+        padding-top: 20px;
+        margin-left: 26px;
+        width: 500px;
+        height: 100%;
+        flex: none;
+        position: relative;
+        border-right: 1px solid #D7D7D7;
+        .valueContainer {
+            position: absolute;
+            height: 82px;
+            top: 15px;
+            display: flex;
+            align-items: center;
+            width: 100px;
+        }
+        .phonePreviewHeader {
+            display: block;
+            position: absolute;
+            top: 88px;
+            left: 85px;
+            width: 304px;
+        }
+        .phonePreviewModifier {
+            position: absolute;
+            width: 150px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            top: 111px;
+            left: 160px;
+            background-color: #F2F2F2;
+        }
+        .phonePreviewContentWrapper {
+            position: absolute;
+            z-index: 12;
+            top: 141px;
+            width: 302px;
+            left: 86px;
+            height: 486px;
+            background-color: #F3F5F7;
+            padding: 15px 5px 5px 5px;
+            .greenButton {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 12px auto 0 auto;
+                width: 288px;
+                color: #FFFFFF;
+                font-size: 14px;
+                background-color: #26D644;
+                height: 36px;
+            }
+            .sectionHeader {
+                display: flex;
+                align-items: center;
+                color: #8D7457;
+                font-size: 12px;
+                padding-left: 8px;
+                width: 288px;
+                margin: 0 auto;
+                background-color: #FFFFFF;
+                height: 30px;
+            }
+            .descriptionSection {
+                padding: 10px 0 0 8px;
+                width: 288px;
+                max-height: 60px;
+                overflow-y: auto;
+                margin: 0 auto;
+                font-size: 11px;
+                margin-bottom: 10px;
+                overflow-wrap: break-word;
+            }
+            .ruleSection {
+                font-family: Microsoft Yahei;
+                padding: 10px 0 0 8px;
+                width: 288px;
+                max-height: 100px;
+                overflow-y: auto;
+                margin: 0 auto;
+                font-size: 11px;
+                margin-bottom: 16px;
+                & p {
+                    margin: 0 16px 3px 10px;
+                    position: relative;
+                    &::before {
+                        content: '● ';
+                        margin-left: -10px;
+                        // position: absolute;
+                    }
+                }
+            }
+        }
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left: none;
+            border-right-color: #D7D7D7;
+            right: -1px;
+            top: 200px;
+            &::after {
+                width: 0;
+                height: 0;
+                display: block;
+                position: absolute;
+                content: '';
+                top: -9px;
+                right: -10px;
+                border: 9px solid transparent;
+                border-left: none;
+                border-right-color: #FFFFFF;
+            }
+        }
+    }
+}
+
+.flex {
+    display: flex
+}
+
+.flexPageWrap {
+    flex-wrap: wrap;
+    overflow-y: auto;
+    display: flex;
+    min-width: 400px;
+    align-content: flex-start;
+    background-color: #FFFFFF;
+}
+
+.formWrapper {
+    // max-height: @newGiftPanelHeight;
+    padding: 10px 0;
+    width: 620px;
+    flex: none;
+}
+
+.formWrapperPlaceholder {
+    flex: 1;
+}
+
+.formWrapperContainer {
+    display: flex;
+    min-width: 620px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.secondaryButton {
+    color: #1ab495;
+    border-color: #1ab495;
+    border-radius: 4px;
+    background-color: transparent;
+    &:hover{
+        background-color: white;
+        color: #1ab495;
+        border-color: #1ab495;
+
+    }
+}
+
+.weChatContent {
+    margin: 5px auto;
+    width:280px;
+    max-height:468px;
+    overflow: hidden;
+    background:rgba(255,255,255,1);
+    border: 1px solid #E5E5E5;
+    border-radius:4px;
+    div {
+        font-size:14px;
+        font-weight:bold;
+        margin: 5px 0;
+        color:rgba(51,51,51,1);
+        line-height:15px;
+        word-break: break-all;
+    }
+    .weChatContentBottomDiv {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 32px;
+        margin: 0;
+        padding-bottom: 5px;
+        & div {
+            font-weight:normal;
+            color: #999999;
+        }
+    }
+    padding: 12px 8px 0 8px;
+}

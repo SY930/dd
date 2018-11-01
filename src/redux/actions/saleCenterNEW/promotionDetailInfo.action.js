@@ -72,10 +72,25 @@ const fetchGiftListFailed = (opts) => {
     };
 };
 
-const fetchFoodCategorySuccess = (opts) => {
+const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
+    const categoryIdMap = new Map();
+    opts.records.filter(cat => cat.foodCount > 0).forEach(cat => {
+        if (!categoryIdMap.has(cat.foodCategoryName) || cat.foodCategoryID > categoryIdMap.get(cat.foodCategoryName)) {
+            categoryIdMap.set(cat.foodCategoryName, cat.foodCategoryID);
+        }
+    });
+    const uniqMap = new Map();
+    opts.records.forEach(cat => {
+        if (categoryIdMap.has(cat.foodCategoryName)) {
+            cat.foodCategoryID = categoryIdMap.get(cat.foodCategoryName); // 哎...
+        }
+        if (!uniqMap.has(cat.foodCategoryName)) {
+            uniqMap.set(cat.foodCategoryName, cat);
+        }
+    });
     return {
         type: SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS,
-        payload: opts,
+        payload: {records: Array.from(uniqMap.values())},
     }
 };
 
@@ -128,8 +143,15 @@ export const fetchFoodCategoryInfoAC = (opts) => {
 const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records: Food[] }
     // TODO: 这种去重操作不应该由前端进行, 而且返回的每个对象中属性过多, 如果日后出现性能问题, 建议基本档优化接口
     let records = opts ? opts.records : [];
+    const categoryIdMap = new Map();
+    records.forEach(food => {
+        if (!categoryIdMap.has(food.foodCategoryName) || food.foodCategoryID > categoryIdMap.get(food.foodCategoryName)) {
+            categoryIdMap.set(food.foodCategoryName, food.foodCategoryID);
+        }
+    });
     const uniqMap = new Map();
     records.forEach(food => { //
+        food.foodCategoryID = categoryIdMap.get(food.foodCategoryName); // 哎....
         if (uniqMap.has(`${food.foodName}${food.unit}`)) { // 产品层面决定 如果有名称+规格重复的菜品 保留售价高的那一个
             const previousFood = uniqMap.get(`${food.foodName}${food.unit}`);
             const previousPrice = previousFood.prePrice == -1 ? previousFood.price : previousFood.prePrice;
@@ -144,7 +166,6 @@ const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records:
     return {
         type: SALE_CENTER_FETCH_FOOD_MENU_SUCCESS,
         payload: {records: Array.from(uniqMap.values())},
-
     }
 };
 
@@ -192,16 +213,28 @@ const fetchFoodMenuFailed = () => {
 // };
 export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
-        // return fetchData('getGroupFoodQuery', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-        //     dispatch(fetchFoodMenuSuccess(res))
-        // });
-        const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
+        if (params.shopID && params.shopID > 0) {
+            return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+                dispatch(fetchFoodMenuSuccess(res))
+            }).catch(e => {
+                dispatch(fetchFoodMenuFailed(e));
+            });
+        } else {
+            return axiosData('/shopapi/queryGroupFoodSubinfo.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+                    .then(
+                        records => dispatch(fetchFoodMenuSuccess(records)),
+                        error => dispatch(fetchFoodMenuFailed(error))
+                    )
+                    .catch(e => {
+                        console.log('err: ', e);
+                    });
+        }
+        /*const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
         return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-            // console.log(res.records.filter(item => item.foodName.includes('味全')));
             dispatch(fetchFoodMenuSuccess(res))
         }).catch(e => {
             dispatch(fetchFoodMenuFailed(e));
-        });
+        });*/
     }
 }
 const fetchPromotionListSuccess = (opts) => {

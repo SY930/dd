@@ -24,28 +24,9 @@ class CustomProgressBar extends React.Component {
         super(props);
         this.state = {
             current: 0,
-            isUpdate: true,
         };
     }
-    componentDidMount() {
-        this.setState({
-            loading: this.props.loading,
-            isUpdate: this.props.myActivities.get('isUpdate'),
-        })
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.loading !== nextProps.loading) {
-            this.setState({
-                loading: nextProps.loading,
-            })
-        }
-        if (this.props.myActivities.get('isUpdate') != nextProps.myActivities.get('isUpdate')) {
-            this.setState({ isUpdate: nextProps.myActivities.get('isUpdate') })
-        }
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.loading !== this.props.loading || this.state.current !== nextState.current;
-    }
+
     next(current) {
         const onNext = this.props.onNext;
         if (typeof onNext === 'function') {
@@ -148,10 +129,10 @@ class CustomProgressBar extends React.Component {
                     {
                         this.state.current === steps.length - 1 &&
                         <Button
-                            style={{ marginLeft: 8, display: this.state.isUpdate ? 'inline-block' : 'none' }}
+                            style={{ marginLeft: 8, display: this.props.isUpdate ? 'inline-block' : 'none' }}
                             type="primary"
-                            loading={this.state.loading}
-                            disabled={this.state.loading}
+                            loading={this.props.loading}
+                            disabled={this.props.loading}
                             onClick={() => {
                                 this.finish(current);
                             }}
@@ -167,7 +148,7 @@ class CustomProgressBar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        myActivities: state.sale_myActivities_NEW,
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
 };
 

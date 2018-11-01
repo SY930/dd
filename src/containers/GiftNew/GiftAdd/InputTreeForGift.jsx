@@ -18,6 +18,8 @@ if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
 }
 
+const shareableGiftType = [ 10, 20, 21, 110, 111];
+
 const TreeNode = Tree.TreeNode;
 class InputTreeForGift extends React.Component {
     constructor(props) {
@@ -55,6 +57,7 @@ class InputTreeForGift extends React.Component {
     componentWillReceiveProps(nextProps) {
         // TODO: 为什么foodCategoryCollection 会发生变化,传了三次
         const { giftData, value, thisGiftItem } = nextProps;
+        if (giftData === this.props.giftData) return;
         const foodCategoryCollection = giftData.toJS();
         let _foodCategoryCollection = null;
         if (thisGiftItem) {
@@ -108,7 +111,7 @@ class InputTreeForGift extends React.Component {
 
     proGiftData = (giftTypes = []) => {
         const { type, giftItemID } = this.props;
-        const _giftTypes = _.filter(giftTypes, giftItem => (giftItem.giftType == 10 || giftItem.giftType == 20 || giftItem.giftType == 21));
+        const _giftTypes = _.filter(giftTypes, giftItem => shareableGiftType.includes(Number(giftItem.giftType)));
         let treeData = [],
             gifts = [],
             _treeData = [];
@@ -134,9 +137,9 @@ class InputTreeForGift extends React.Component {
                     children: gift.children.filter(item => item.giftItemID !== giftItemID),
                 }
             });
-            return _.sortBy(_treeData, 'key');
+            return _treeData.sort((a, b) => (shareableGiftType.indexOf(Number(a.giftType)) - shareableGiftType.indexOf(Number(b.giftType))));
         }
-        return _.sortBy(treeData, 'key');
+        return treeData.sort((a, b) => (shareableGiftType.indexOf(Number(a.giftType)) - shareableGiftType.indexOf(Number(b.giftType))));
     }
 
     render() {

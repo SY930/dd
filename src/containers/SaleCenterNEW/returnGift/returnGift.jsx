@@ -90,6 +90,14 @@ const defaultData = {
     },
 };
 
+const availableGiftTypes = [// 只有电子代金券和菜品优惠券 菜品兑换,实物券, 折扣券, 买赠券有支持到店属性, 顺序matters
+    '10', '20', '21', '111', '110', '30', '40', '42', '80',
+];
+
+const offlineCanUseGiftTypes = [
+    '10', '20', '21', '111', '110', '30',
+];
+
 class ReturnGift extends React.Component {
     constructor(props) {
         super(props);
@@ -167,7 +175,7 @@ class ReturnGift extends React.Component {
         if (this.props.promotionDetailInfo.getIn(['$giftInfo', 'data']) !==  nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType < 90);
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => availableGiftTypes.includes(String(giftTypes.giftType)));
             } catch (err) {
                 giftInfo = [];
             }
@@ -230,9 +238,10 @@ class ReturnGift extends React.Component {
         const giftInfo = this.state.giftInfo;
         if (filterOffLine) {
             giftInfo.forEach((giftTypes) => {
-                if (giftTypes.giftType == '10' || giftTypes.giftType == '20' || giftTypes.giftType == '21' || giftTypes.giftType == '30') { // 只有电子代金券和菜品券,shi实物券有支持到店属性
+                if (offlineCanUseGiftTypes.includes(String(giftTypes.giftType))) {
                     _giftInfo.push({
                         giftType: giftTypes.giftType,
+                        index: offlineCanUseGiftTypes.indexOf(String(giftTypes.giftType)),
                         crmGifts: giftTypes.crmGifts.filter((gift) => {
                             return gift.giftType == '30' ? true : gift.isOfflineCanUsing // 为true表示支持到店
                         }),
@@ -240,7 +249,13 @@ class ReturnGift extends React.Component {
                 }
             });
         } else {
-            _giftInfo = giftInfo;
+            giftInfo.forEach((giftTypes) => {
+                _giftInfo.push({
+                    giftType: giftTypes.giftType,
+                    index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
+                    crmGifts: giftTypes.crmGifts
+                })
+            });
         }
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
@@ -302,7 +317,7 @@ class ReturnGift extends React.Component {
                                 value={this.getGiftValue(index)}
                                 data={_.sortBy((_giftInfo).filter((cat) => {
                                     return cat.giftType && cat.giftType != 90
-                                }), 'giftType')}
+                                }), 'index')}
                                 onChange={(value) => {
                                     this.handleGiftChange(value, index);
                                 }}
@@ -445,6 +460,7 @@ class ReturnGift extends React.Component {
                             addonBefore=""
                             addonAfter="天"
                             modal="int"
+                            maxNum={10}
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
                         />
@@ -501,13 +517,13 @@ class ReturnGift extends React.Component {
     handleGiftValidDaysChange(val, index) {
         const _infos = this.state.infos;
         _infos[index].giftValidDays.value = val.number;
-        const _value = parseInt(val.number);
-        if (_value > 0) {
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 36500) {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
         }
         this.setState({
             infos: _infos,

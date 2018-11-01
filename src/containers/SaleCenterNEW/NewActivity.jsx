@@ -14,6 +14,26 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { Modal, Row, Col, message, Button } from 'antd';
 import { checkPermission } from '../../helpers/util';
+import {
+    NEW_CUSTOMER_PROMOTION_TYPES,
+    FANS_INTERACTIVITY_PROMOTION_TYPES,
+    REPEAT_PROMOTION_TYPES,
+    LOYALTY_PROMOTION_TYPES,
+    SALE_PROMOTION_TYPES,
+} from '../../constants/promotionType'
+import styles from './ActivityPage.less'
+
+const allBasicActivitiesArr = [
+    ...NEW_CUSTOMER_PROMOTION_TYPES,
+    ...FANS_INTERACTIVITY_PROMOTION_TYPES,
+    ...REPEAT_PROMOTION_TYPES,
+    ...LOYALTY_PROMOTION_TYPES,
+    ...SALE_PROMOTION_TYPES,
+].filter(item => !item.isSpecial);
+const allBasicActivitiesMap = allBasicActivitiesArr.reduce((acc, curr) => {
+    acc[curr.key] = curr;
+    return acc;
+}, {});
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -42,6 +62,8 @@ import {
     SALE_CENTER_PAGE,
     SALE_CENTER_PAGE_SHOP,
 } from "../../constants/entryCodes";
+import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
+import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -105,7 +127,7 @@ class NewActivity extends React.Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 40;
         this.setState({ contentHeight });
     }
     setModal1Visible(modal1Visible) {
@@ -122,34 +144,37 @@ class NewActivity extends React.Component {
     }
 
     render() {
+        const headerClasses = `${styles.headerWithBgColor}`;
         return (
             <Row className="layoutsContainer">
-                <Col span={24} className="layoutsHeader">
-                    <div className="layoutsTool">
-                        <div className="layoutsToolLeft">
-                            <h1>新建基础营销</h1>
-                            <Button
-                                type="ghost"
-                                icon="rollback"
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    left: '150px',
-                                }}
-                                onClick={
-                                    () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
-                                        menuID && jumpPage({ menuID })
-                                    }
-                                }>返回列表</Button>
+                <Col span={24} style={{padding: 0}} className="layoutsHeader">
+                    <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
+                        <div className={headerClasses}>
+                            <span  className={styles.customHeader}>
+                                新建基础营销&nbsp;&nbsp;
+                                <Button
+                                    type="ghost"
+                                    icon="rollback"
+                                    onClick={
+                                        () => {
+                                            const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
+                                            menuID && jumpPage({ menuID })
+                                        }
+                                    }>返回列表</Button>
+                            </span>
                         </div>
                     </div>
                 </Col>
-                <Col span={24} className="layoutsLineBlock"></Col>
-                <Col span={24} className="layoutsContent" style={{ overflow: 'auto', height: this.state.contentHeight || 800 }}>
-                    <ul>
-                        {this.renderActivityButtons()}
-                    </ul>
+                <Col
+                    span={24}
+                    className="layoutsContent"
+                    style={{
+                        overflow: 'auto',
+                        height: this.state.contentHeight || 800,
+                        padding: '10px 30px 30px 30px',
+                    }}
+                >
+                    {this.renderActivityButtons()}
                     {this.renderModal()}
                 </Col>
             </Row>
@@ -159,33 +184,39 @@ class NewActivity extends React.Component {
 
 
     _renderActivityButtons() {
-        const saleCenter = this.props.saleCenter;
+        const activities = this.props.saleCenter.get('activityCategories').toJS();
         return (
-
-
-                    saleCenter.get('activityCategories').map((activity, index) => {
-                        return (
-                            <li
-                                onClick={() => {
+            <div
+                className={styles.scrollableMessageContainer}
+                style={{
+                    marginBottom: 20
+                }}
+            >
+                {activities.map((activity, index) => {
+                return (
+                    <div
+                        key={`NewActivity${index}`}
+                        style={{
+                            display: (this.props.user.shopID > 0 && activity.key === '5010') ?
+                                'none' : 'block',
+                        }}
+                    >
+                        <Authority rightCode={BASIC_PROMOTION_CREATE}>
+                            <NewPromotionCard
+                                key={activity.key}
+                                promotionEntity={allBasicActivitiesMap[activity.key]}
+                                onCardClick={() => {
                                     this.props.toggleIsUpdate(true);
                                     this.onButtonClicked(index, activity);
                                 }}
-                                key={`NewActivity${index}`}
-                                style={{
-                                    listStyle: 'none',
-                                    display: (this.props.user.shopID > 0 && activity.get('key') === '5010') ?
-                                        'none' : 'block',
-                                }}
-                            >
-                                <Authority rightCode="marketing.jichuyingxiaoxin.create">
-                                    <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
-                                </Authority>
-                            </li>
-                        );
-                    }).toJS()
-
-
-
+                                index={index}
+                            />
+                            {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
+                        </Authority>
+                    </div>
+                );
+            })}
+            </div>
         );
     }
 
@@ -232,7 +263,7 @@ class NewActivity extends React.Component {
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
         this.props.setPromotionType({
-            promotionType: activity.get('key'),
+            promotionType: activity.key,
         });
         this.setState({
             updateModalVisible: true,

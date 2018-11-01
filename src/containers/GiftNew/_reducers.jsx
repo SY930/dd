@@ -1,4 +1,4 @@
-import Immutable, { List } from 'immutable';
+﻿import Immutable, { List } from 'immutable';
 import {
     GIFT_NEW_FETCH_LIST_BEGIN,
     GIFT_NEW_FETCH_LIST_OK,
@@ -23,8 +23,25 @@ import {
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+    GIFT_NEW_FETCH_SEND_TOTAL_OK,
+    GIFT_NEW_FETCH_USED_TOTAL_OK,
+    GIFT_NEW_RESET_SEND_USED_TOTAL,
+    GIFT_NEW_START_CREATE_GIFT,
+    GIFT_NEW_START_EDIT_GIFT,
+    GIFT_NEW_CANCEL_START_SAVING_GIFT,
+    GIFT_NEW_CANCEL_END_SAVING_GIFT,
+    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE, GIFT_NEW_FETCH_SEND_LIST_OK,
+    GIFT_NEW_FETCH_USED_LIST_OK,
 } from './_action';
 
+const $initialEditState = Immutable.fromJS({
+    isCreatingOrEditing: false,
+    currentGiftType: null,
+    operationType: 'add',
+    loading: false,
+    createOrEditFormData: {
+    }
+});
 const $initialState = Immutable.fromJS({
     loading: false,
     dataSource: [],
@@ -41,6 +58,8 @@ const $initialState = Immutable.fromJS({
     shopData: [],
     quotaList: [],
     sendorUsedList: [],
+    sendList: [],
+    usedList: [],
     sendorUsedKey: 'send',
     sendorUsedPage: {
         pageNo: 1,
@@ -50,6 +69,8 @@ const $initialState = Immutable.fromJS({
     sendorUsedPrams: {
 
     },
+    totalSendCount: 0,
+    totalUsedCount: 0,
     detailVisible: false,
     giftSort: [],
     sharedGifts: [],
@@ -58,6 +79,43 @@ const $initialState = Immutable.fromJS({
     mpList: [],
     mpListLoading: false,
 });
+export function editGiftInfoNew($$state = $initialEditState, action) {
+    switch (action.type) {
+        case GIFT_NEW_START_CREATE_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', true)
+                .set('operationType', 'add')
+                .set('currentGiftType', action.payload.value)
+                .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                ;
+        case GIFT_NEW_START_EDIT_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', true)
+                .set('operationType', action.payload.operationType)
+                .set('currentGiftType', action.payload.value)
+                .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                ;
+        case GIFT_NEW_CANCEL_CREATE_EDIT_GIFT:
+            return $$state
+                .set('isCreatingOrEditing', false)
+                .set('currentGiftType', null)
+                .set('operationType', 'add')
+                .set('createOrEditFormData', Immutable.fromJS({}))
+                ;
+        case GIFT_NEW_CANCEL_START_SAVING_GIFT:
+            return $$state
+                .set('loading', true);
+        case GIFT_NEW_CANCEL_END_SAVING_GIFT:
+            return $$state
+                .set('loading', false);
+        case GIFT_NEW_CHANGE_FORM_KEY_VALUE:
+            return $$state
+                .setIn(['createOrEditFormData', action.payload.key], Immutable.fromJS(action.payload.value))
+                ;
+        default:
+            return $$state
+    }
+}
 export function giftInfoNew($$state = $initialState, action) {
     switch (action.type) {
         case GIFT_NEW_FETCH_LIST_BEGIN:
@@ -84,6 +142,10 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('quotaList', Immutable.fromJS(action.payload.quotaList));
         case GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK:
             return $$state.set('sendorUsedList', Immutable.fromJS(action.payload.sendorUsedList));
+        case GIFT_NEW_FETCH_SEND_LIST_OK:
+            return $$state.set('sendList', Immutable.fromJS(action.payload.sendorUsedList));
+        case GIFT_NEW_FETCH_USED_LIST_OK:
+            return $$state.set('usedList', Immutable.fromJS(action.payload.sendorUsedList));
         case GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY:
             return $$state.set('sendorUsedKey', Immutable.fromJS(action.key));
         case GIFT_NEW_UPDATE_SEND_OR_USED_PAGE:
@@ -102,13 +164,22 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('shopsByBatchNo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_QUOTA_CARD_BATCHNO:
             return $$state.set('batchNoInfo', Immutable.fromJS(action.payload.dataSource));
+        case GIFT_NEW_FETCH_SEND_TOTAL_OK:
+            return $$state.set('totalSendCount', action.payload.total || 0);
+        case GIFT_NEW_FETCH_USED_TOTAL_OK:
+            return $$state.set('totalUsedCount', action.payload.total || 0);
+        case GIFT_NEW_RESET_SEND_USED_TOTAL:
+            return $$state
+                .set('sendList', Immutable.fromJS([]))
+                .set('usedList', Immutable.fromJS([]))
+                .set('totalUsedCount', 0)
+                .set('totalSendCount', 0);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:
             return $$state.set('mpList', Immutable.fromJS(action.payload)).set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
-
         default:
             return $$state
     }

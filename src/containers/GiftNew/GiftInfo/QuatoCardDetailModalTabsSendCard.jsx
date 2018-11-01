@@ -112,8 +112,9 @@ class CardOperate extends React.Component {
                 params.startNO = params.startEnd_min;
                 params.endNO = params.startEnd_max;
             }
-            const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum', 'useCardTypeID']);
-            console.log('_params: ', _params);
+            const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum']);
+            _params.cardTypeID = _params.useCardTypeID;
+            delete _params.useCardTypeID;
             axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });

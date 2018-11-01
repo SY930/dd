@@ -629,14 +629,14 @@ export function pyMatch({ name = '', py = '' }, search = '') {
 export function onWindowResize(dom, value) {
     const parentDoms = ReactDOM.findDOMNode(dom);
     if (parentDoms !== null) {
-        const parentHeight = parentDoms.offsetHeight;
+        const parentHeight = parentDoms.getBoundingClientRect().height;
         const contentrDoms = parentDoms.querySelectorAll('.layoutsContent');
         if (undefined !== contentrDoms && contentrDoms.length > 0) {
             const layoutsContent = contentrDoms[0];
             const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-            const headerHeight = headerDoms[0].offsetHeight;
+            const headerHeight = headerDoms[0].getBoundingClientRect().height;
             layoutsContent.style.height = `${parentHeight - headerHeight - 10}px`;
-            const tableHeight = layoutsContent.offsetHeight - value;
+            const tableHeight = layoutsContent.getBoundingClientRect().height - value;
             return tableHeight;
         }
     }
@@ -687,6 +687,9 @@ export function axiosData(api, params, opts, {
             if (code !== '000') {
                 const {redirect, msg} = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {
+                    if (opts && opts.needCode) {
+                        return Promise.reject({code, msg} || '出了点问题, 请稍后或刷新重试');
+                    }
                     return Promise.reject(msg || '出了点问题, 请稍后或刷新重试');
                 }
                 Modal.error({

@@ -84,12 +84,12 @@ class ActivitySidebar extends React.Component {
                     }
                 })()
 
-            }, {
+            }, /*{
                 spanTitle: '自动执行',
                 content: promotionScopeInfo.getIn(['$scopeInfo', 'auto']) == 1
                     ? '是'
                     : '否',
-            }, {
+            },*/ {
                 spanTitle: '适用业务',
                 content: promotionScopeInfo.getIn(['$scopeInfo', 'orderType'])
                     ? promotionScopeInfo.getIn(['$scopeInfo', 'orderType']).map((order) => {

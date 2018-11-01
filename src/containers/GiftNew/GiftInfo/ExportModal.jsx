@@ -163,7 +163,15 @@ export default class ExportModal extends Component {
             });
     }
     handleClearAll = () => {
-        axiosData('/crm/quotaCardExport/delete.ajax', {}, null, { path: 'data' })
+        const key = this.props._key;
+        let data = {}
+        if (key) {
+            data.exportQuotaType = key === 'made' ? '3' : key === 'send' ? '2' : '4';
+        }
+        if (this.props.newExport) {
+            data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
+        }
+        axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
                 message.success('删除成功');
                 this.getExportRecords(this.props._key);
@@ -186,13 +194,9 @@ export default class ExportModal extends Component {
                         ]}
                 >
                     <Row>
-                        <Col span={24} className={styles.shopWrap} style={{ textAlign: 'right' }}>
-                            {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                            <Button type="ghost" onClick={this.handleClearAll}>清空列表</Button>
-                            {/* </Authority> */}
-                        </Col>
                         <Col span={24}>
                             <Table
+                                className={styles.rightAlignedPagination}
                                 key={Math.random()}
                                 scroll={{ y: this.state.tableHeight }}
                                 bordered={true}
@@ -204,13 +208,21 @@ export default class ExportModal extends Component {
                                 dataSource={this.state.dataSource}
                                 pagination={{
                                     pageSize: this.state.pageSizes,
-                                    // showQuickJumper:true,
-                                    // showSizeChanger:true,
-                                    // onShowSizeChange:this.onShowSizeChange,
-                                    total: this.state.records ? this.state.records.length : 0,
+                                    total: this.state.dataSource ? this.state.dataSource.length : 0,
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                                 }}
                             />
+                            { (!!this.state.dataSource && !!this.state.dataSource.length) && (
+                                <Button
+                                    type="ghost"
+                                    onClick={this.handleClearAll}
+                                    style={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        bottom: 18
+                                    }}
+                                >清空列表</Button>
+                            )}
                         </Col>
                     </Row>
                 </Modal>
