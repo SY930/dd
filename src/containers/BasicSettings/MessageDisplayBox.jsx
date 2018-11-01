@@ -7,6 +7,7 @@ import {
     getMessageTemplateList,
 } from "./actions";
 import Authority from "../../components/common/Authority/index";
+import {SMS_TEMPLATE_DELETE, SMS_TEMPLATE_UPDATE} from "../../constants/authorityCodes";
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -47,7 +48,7 @@ class MessageDisplayBox extends React.Component {
 
     render() {
         return (
-            <Authority rightCode="crm.sale.smsTemplate.update">
+            <Authority rightCode={SMS_TEMPLATE_UPDATE}>
                 <div className={styles.messageDisplayBox} onClick={this.props.handleClick}>
                     <div className={styles.rightTopAction}>
                             <div    className={styles.deleteButton}
@@ -56,7 +57,7 @@ class MessageDisplayBox extends React.Component {
                                         e.stopPropagation();
                                     }}
                             >
-                                <Authority rightCode="crm.sale.smsTemplate.delete">
+                                <Authority rightCode={SMS_TEMPLATE_DELETE}>
                                     <span onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();

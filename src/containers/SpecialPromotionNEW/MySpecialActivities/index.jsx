@@ -53,6 +53,11 @@ import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
+import {
+    SPECIAL_LOOK_PROMOTION_QUERY,
+    SPECIAL_PROMOTION_DELETE, SPECIAL_PROMOTION_QUERY,
+    SPECIAL_PROMOTION_UPDATE
+} from "../../../constants/authorityCodes";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -262,16 +267,16 @@ class MySpecialActivities extends React.Component {
     onWindowResize = () => {
         const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
         if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.offsetHeight; // 获取到父级的高度存到变量 parentHeight
+            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
             const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
             if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].offsetHeight;
+                const headerHeight = headerDoms[0].getBoundingClientRect().height;
                 layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight: parentHeight - headerHeight - 120,
-                    tableHeight: layoutsContent.offsetHeight - 68,
+                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
         }
@@ -353,8 +358,8 @@ class MySpecialActivities extends React.Component {
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>
@@ -428,10 +433,10 @@ class MySpecialActivities extends React.Component {
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool" style={{height: '80px'}}>
-                <div className={headerClasses} style={{lineHeight: '80px'}}>
-                    <span style={{lineHeight: '80px'}} className={styles.customHeader}>特色营销信息</span>
-                    <Button
+            <div className="layoutsTool" style={{height: '79px'}}>
+                <div className={headerClasses}>
+                    <span className={styles.customHeader}>特色营销信息</span>
+                    {/*<Button
                         type="ghost"
                         icon="plus"
                         className={styles.jumpToCreate}
@@ -440,7 +445,7 @@ class MySpecialActivities extends React.Component {
                                 jumpPage({ menuID: NEW_SPECIAL })
                             }
                         }
-                    >新建</Button>
+                    >新建</Button>*/}
                 </div>
             </div>
         );
@@ -525,7 +530,7 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode="marketing.teseyingxiaoxin.query">
+                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
@@ -635,7 +640,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             {buttonText}</a>
-                        <Authority rightCode="marketing.teseyingxiaoxin.update">
+                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
                                 className={record.isActive != '0' || statusState ? styles.textDisabled : null}
@@ -670,7 +675,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             查看</a>
-                        <Authority rightCode="marketing.teseyingxiaoxin.delete">
+                        <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
                                 className={record.isActive != '0' || record.userCount != 0 || statusState ? styles.textDisabled : null}
@@ -698,7 +703,7 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             终止</a>
-                        <Authority rightCode="marketing.chakanteseyingxiaoxin.query">
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
                                 onClick={() => {
@@ -847,10 +852,10 @@ class MySpecialActivities extends React.Component {
         ];
 
         return (
-            <div className="layoutsContent  tableClass" style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.tableHeight }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

@@ -139,7 +139,7 @@ class NDiscountDetailInfo extends React.Component {
                 }),
             };
             this.props.setPromotionDetail({
-                rule
+                rule, priceLst: []
             });
             return true;
         } else if (nextFlag && stageType == '1') {

@@ -14,6 +14,7 @@ import {
     UpdateDetailModalVisible,
     FetchCrmOperationShop,
 } from '../../../redux/actions/saleCenterNEW/crmOperation.action';
+import {CUSTOMER_PROFILE_QUERY_NEW} from "../../../constants/authorityCodes";
 
 class SearchModal extends React.Component {
     constructor(props) {
@@ -116,7 +117,7 @@ class SearchModal extends React.Component {
                     footer={[
                         <Button key="crmOperationCancel" onClick={this.handleCancel}
                                 type="ghost">取消</Button>,
-                        <Authority key="crmOperationSerach" rightCode="crm.kehuziliaoxin.query">
+                        <Authority key="crmOperationSerach" rightCode={CUSTOMER_PROFILE_QUERY_NEW}>
                             <Button onClick={this.handleSubmit} type="primary" loading={this.state.loading}>检索</Button>
                         </Authority>
                     ]}

@@ -11,6 +11,14 @@ export const GIFT_NEW_FETCH_LEVEL_OK = 'gift new ::  fetch level ok';
 export const GIFT_NEW_FETCH_SCHEMA_OK = 'gift new :: fetch schema ok';
 export const GIFT_NEW_FETCH_QUOTA_LIST_OK = 'gift new :: fetch quota list';
 export const GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK = 'gift new:: fetch send or used list';
+export const GIFT_NEW_FETCH_SEND_LIST_OK = 'gift new:: fetch send list';
+export const GIFT_NEW_FETCH_USED_LIST_OK = 'gift new:: fetch used list';
+export const GIFT_NEW_FETCH_USED_TOTAL_OK = 'gift new:: 成功获取到发送数';
+export const GIFT_NEW_FETCH_SEND_TOTAL_OK = 'gift new:: 成功获取到使用数';
+
+export const GIFT_NEW_FETCH_USED_TOTAL_FAIL = 'gift new:: 未能成功获取到发送数';
+export const GIFT_NEW_FETCH_SEND_TOTAL_FAIL = 'gift new:: 未能获取到使用数';
+export const GIFT_NEW_RESET_SEND_USED_TOTAL = 'gift new:: 重置发出使用数为0';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY = 'gift new:: update send or used key';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_PAGE = 'gift new:: update send or used page';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_PARAMS = 'gift new:: update send or used params';
@@ -23,6 +31,12 @@ export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
+export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
+export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
+export const GIFT_NEW_CANCEL_CREATE_EDIT_GIFT = 'gift new :: 取消新建或编辑礼品模板';
+export const GIFT_NEW_CANCEL_START_SAVING_GIFT = 'gift new :: 开始保存礼品模板(loading状态开始)';
+export const GIFT_NEW_CANCEL_END_SAVING_GIFT = 'gift new :: 保存礼品模板结束(loading状态结束)';
+export const GIFT_NEW_CHANGE_FORM_KEY_VALUE = 'gift new :: 礼品字段变更';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -203,17 +217,98 @@ export const getSendorUsedListSuccessAC = (opt) => {
     }
 };
 
+export const getSendListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_LIST_OK,
+        ...opt,
+    }
+};
+
+export const getUsedListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_LIST_OK,
+        ...opt,
+    }
+};
+
+export const getUsedTotalCountSuccessAC = (total) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_TOTAL_OK,
+        payload: {total},
+    }
+};
+
+export const getSendTotalCountSuccessAC = (total) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_TOTAL_OK,
+        payload: {total},
+    }
+};
+
+export const getUsedTotalCountFailAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_USED_TOTAL_FAIL,
+        ...opt,
+    }
+};
+
+export const getSendTotalCountFailAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
+        ...opt,
+    }
+};
+
+export const resetSendOrTotalCount = (opt) => {
+    return {
+        type: GIFT_NEW_RESET_SEND_USED_TOTAL,
+        ...opt,
+    }
+};
+
 export const FetchSendorUsedList = (opts) => {
     return (dispatch) => {
+
+        const sendOrUsageCountParam = {
+            pageSize: 1,
+            pageNo: 0,
+            giftItemID: opts.params.giftItemID,
+        };
+        if (!opts.isSend) {
+            sendOrUsageCountParam.giftStatus = 2;
+        }
+        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
+            .then(total => {
+                if (!opts.isSend) {
+                    dispatch(getUsedTotalCountSuccessAC(total))
+                } else {
+                    dispatch(getSendTotalCountSuccessAC(total))
+                }
+            })
+            .catch(error => {
+                if (!opts.isSend) {
+                    dispatch(getUsedTotalCountFailAC())
+                } else {
+                    dispatch(getSendTotalCountFailAC())
+                }
+            })
         return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
             path: 'data',
         })
             .then((records) => {
-                dispatch(getSendorUsedListSuccessAC({
-                    payload: {
-                        sendorUsedList: records || [],
-                    },
-                }));
+                if (opts.isSend) {
+                    dispatch(getSendListSuccessAC({
+                        payload: {
+                            sendorUsedList: records || [],
+                        },
+                    }));
+                } else {
+                    dispatch(getUsedListSuccessAC({
+                        payload: {
+                            sendorUsedList: records || [],
+                        },
+                    }));
+                }
                 return Promise.resolve(records);
             }).catch(err => {
                 // empty catch
@@ -406,5 +501,48 @@ export const queryWechatMpInfo = () => {
             .catch((error) => {
                 console.log(error)
             })
+    }
+};
+
+export const startCreateGift = (opt) => {
+    return {
+        type: GIFT_NEW_START_CREATE_GIFT,
+        payload: opt,
+    }
+};
+
+// opts: {value: String,type: 'edit' | 'detail', data: Object}  查看和编辑都走此action, 故多传一个operationType
+export const startEditGift = (opt) => {
+    return {
+        type: GIFT_NEW_START_EDIT_GIFT,
+        payload: opt,
+    }
+};
+
+export const cancelCreateOrEditGift = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+        payload: opt,
+    }
+};
+
+export const startSaving = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_START_SAVING_GIFT,
+        payload: opt,
+    }
+};
+
+export const endSaving = (opt) => {
+    return {
+        type: GIFT_NEW_CANCEL_END_SAVING_GIFT,
+        payload: opt,
+    }
+};
+
+export const changeGiftFormKeyValue = (opt) => {// opt: {key: String, value: primitive?}
+    return {
+        type: GIFT_NEW_CHANGE_FORM_KEY_VALUE,
+        payload: opt,
     }
 };

@@ -576,7 +576,6 @@ class PromotionScopeInfo extends React.Component {
                 {this.renderBusinessOptions()}
                 {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                 {promotionType == '4010' ? this.renderGroup() : null}
-                {promotionType == '2020' ? this.renderUsageMode() : null}
             </Form>
         );
     }

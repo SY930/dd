@@ -135,7 +135,8 @@ class AddGifts extends React.Component {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => giftTypes.giftType < 90);
+                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
+                    .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
             } catch (err) {
                 giftInfo = [];
             }
@@ -199,7 +200,8 @@ class AddGifts extends React.Component {
 
 
     renderItems() {
-        let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90);
+        let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
+            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => type.value === String(cat.giftType))}));
         if (Number(this.props.type) === 31 ) {
             filteredGiftInfo = filteredGiftInfo.filter(cat =>  cat.giftType != 40 && cat.giftType != 42 && cat.giftType != 80)
         }
@@ -260,7 +262,7 @@ class AddGifts extends React.Component {
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
-                                data={_.sortBy(filteredGiftInfo, 'giftType')}
+                                data={_.sortBy(filteredGiftInfo, 'index')}
                                 onChange={(value) => {
                                     this.handleGiftChange(value, index);
                                 }}
@@ -369,13 +371,13 @@ class AddGifts extends React.Component {
     handleGiftValidDaysChange(val, index) {
         const _infos = this.state.infos;
         _infos[index].giftValidDays.value = val.number;
-        const _value = parseInt(val.number);
-        if (_value > 0) {
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 36500) {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
         }
         this.setState({
             infos: _infos,
@@ -488,6 +490,7 @@ class AddGifts extends React.Component {
                         <PriceInput
                             addonBefore=""
                             addonAfter="天"
+                            maxNum={10}
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
     Form,
     Button,
@@ -17,7 +18,8 @@ import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../.
 import {axiosData} from "../../../helpers/util";
 import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
-
+import {queryWechatMpInfo} from "../../GiftNew/_action";
+import { debounce } from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -62,6 +64,7 @@ class SendGiftPanel extends Component {
             giftValidRange: [],
             validatingStatus: null,
             message: '',
+            pushMessageMpID: '',
             loading: false,
         };
         this.handleGiftNumChange = this.handleGiftNumChange.bind(this);
@@ -71,10 +74,14 @@ class SendGiftPanel extends Component {
         this.handleWhenToEffectChange = this.handleWhenToEffectChange.bind(this);
         this.handleSmsGateChange = this.handleSmsGateChange.bind(this);
         this.handleCellNoChange = this.handleCellNoChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitDebounced = debounce(this.handleSubmit.bind(this), 400);
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleGiftValidRangeChange = this.handleGiftValidRangeChange.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.queryWechatMpInfo();
     }
 
     handleSubmit() {
@@ -88,7 +95,7 @@ class SendGiftPanel extends Component {
         if (!flag) {
             return;
         }
-        const { settleUnitID, availableSmsCount, smsGate } = this.state;
+        const { settleUnitID, cellNo, availableSmsCount, smsGate } = this.state;
         const sendFlag = smsGate === '1' || smsGate === '3' || smsGate === '4';
         if (sendFlag) {
             if (!availableSmsCount) {
@@ -97,6 +104,9 @@ class SendGiftPanel extends Component {
             }
         }
         if (flag) {
+            this.setState({
+                loading: true,
+            });
             const params = this.mapStateToRequestParams();
             axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
@@ -108,7 +118,7 @@ class SendGiftPanel extends Component {
                         this.props.form.resetFields(['cellNo']);
                         this.props.form.setFieldsValue({cellNo: {number: ''}});
                     });
-                    messageService.success('发送成功');
+                    messageService.success(`向手机号为 ${cellNo} 的用户发券成功!`, 4);
                 })
                 .catch(err => {
                     this.setState({
@@ -128,6 +138,7 @@ class SendGiftPanel extends Component {
             smsGate,
             message: smsTemplate,
             settleUnitID,
+            pushMessageMpID,
             cellNo: customerMobile,
             giftNo: giftNum,
             giftValidRange: [effectTime, validUntilDate],
@@ -151,6 +162,9 @@ class SendGiftPanel extends Component {
         if (smsGate == 1 || smsGate == 3 || smsGate == 4) {
             params.smsTemplate = smsTemplate;
             params.settleUnitID = settleUnitID;
+        }
+        if (smsGate > 1) {
+            params.pushMessageMpID = pushMessageMpID;
         }
         params = {...params, validUntilDays, giftNum, customerMobile, smsGate};
         return params;
@@ -383,14 +397,15 @@ class SendGiftPanel extends Component {
                                                     if (!v) {
                                                         return cb();
                                                     }
-                                                    v.number > 0 && v.number <= 9999 ? cb() : cb(rule.message);
+                                                    v.number > 0 && v.number <= 36500 ? cb() : cb(rule.message);
                                                 },
-                                                message: '有效天数为1到9999'
+                                                message: '有效天数必须大于0, 小于等于36500'
                                             },
                                         ]
                                     })(<PriceInput
                                         addonBefore=""
                                         addonAfter="天"
+                                        maxNum={10}
                                         modal="int"
                                     />)}
                                 </FormItem>
@@ -478,6 +493,11 @@ class SendGiftPanel extends Component {
             </FormItem>
         );
     }
+    handlePushMessageJSONChange = (val) => {
+        this.setState({
+            pushMessageMpID: val,
+        })
+    }
 
     render() {
         return (
@@ -491,6 +511,37 @@ class SendGiftPanel extends Component {
                 <Col offset={3} span={17}>
                     {this.renderSmsGate()}
                 </Col>
+                { this.state.smsGate > 1 && (
+                    <Col offset={3} span={17}>
+                        <FormItem
+                            label="微信公众号"
+                            required
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >{this.props.form.getFieldDecorator('pushMessageMpID', {
+                            rules: [{
+                                required: true,
+                                message: '请选择微信推送的公众号',
+                            }],
+                            onChange: this.handlePushMessageJSONChange,
+                        })(
+                            <Select size="default"
+                                    placeholder="请选择微信推送的公众号"
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    this.props.allWeChatAccountList.map((item) => {
+                                        return (<Option
+                                            value={JSON.stringify({mpID: item.mpID, appID: item.appID})}
+                                            key={`${item.mpID}`}>{item.mpName}</Option>)
+                                    })
+                                }
+                            </Select>
+                        )}
+                        </FormItem>
+                    </Col>
+                )}
                 <Col offset={3} span={17}>
                     {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
                     <div>
@@ -511,7 +562,7 @@ class SendGiftPanel extends Component {
                     <Button
                         type="primary"
                         loading={this.state.loading}
-                        onClick={this.handleSubmit}
+                        onClick={this.handleSubmitDebounced}
                         style={{
                             marginRight: '3px'
                         }}
@@ -524,4 +575,18 @@ class SendGiftPanel extends Component {
     }
 }
 
-export default Form.create()(SendGiftPanel);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        queryWechatMpInfo: (opts) => {
+            dispatch(queryWechatMpInfo())
+        }
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(SendGiftPanel));

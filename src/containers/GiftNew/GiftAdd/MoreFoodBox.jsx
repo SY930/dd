@@ -27,10 +27,10 @@ const RadioGroup = Radio.Group;
 // TODO: delete the line, rebase test
 
 const PROMOTION_OPTIONS = Object.freeze([
-    {
+    /*{
         value: 2,
         name: '全部',
-    },
+    },*/
     {
         value: 1,
         name: '按分类选择',
@@ -56,7 +56,7 @@ class MoreFoodBox extends React.Component {
 
         this.state = {
             // 活动范围
-            foodSelectType: 2,
+            foodSelectType: 1,
             selectedCategory: [],
             selectedDishes: [],
             isExcludeFood: '0',
@@ -101,7 +101,6 @@ class MoreFoodBox extends React.Component {
         this.handleFoodSearchInputChange = this.handleFoodSearchInputChange.bind(this);
         this.clear = this.clear.bind(this);
         this.initialData = this.initialData.bind(this);
-        this.renderExcludeRange = this.renderExcludeRange.bind(this);
         this.handleisExcludeFoodChange = this.handleisExcludeFoodChange.bind(this);
     }
     // 将props中的数据匹配到分类，单品，排除框中
@@ -123,7 +122,7 @@ class MoreFoodBox extends React.Component {
                         .forEach((categoryGroup) => {
                             categoryGroup.foodCategoryName
                                 .forEach((category) => {
-                                    if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.foodCategoryName) {
+                                    if (category.foodCategoryID == scope.targetID || category.foodCategoryName == scope.targetName) {
                                         foodCategorySelections.add(category); // 返回的已选分类
                                     }
                                 });
@@ -150,7 +149,7 @@ class MoreFoodBox extends React.Component {
                                 .forEach((category) => {
                                     category.foods
                                         .forEach((menu) => {
-                                            if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) == scope.foodNameWithUnit) {
+                                            if (menu.itemID == scope.targetID || (menu.foodName + menu.unit) === (scope.targetName + scope.targetUnitName)) {
                                                 foodSelections.add(menu); // 返回的已选单品
                                             }
                                         });
@@ -197,8 +196,8 @@ class MoreFoodBox extends React.Component {
 
     // // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') !==
-            this.props.promotionDetailInfo.get('foodCategoryCollection')) {
+        if ((nextProps.promotionDetailInfo.get('foodCategoryCollection') !== this.props.promotionDetailInfo.get('foodCategoryCollection'))
+            && !this.props.promotionDetailInfo.get('foodCategoryCollection').toJS().length) {
             const foodCategoryCollection = nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS();
             this.setState({
                 foodCategoryCollection,
@@ -265,7 +264,15 @@ class MoreFoodBox extends React.Component {
             return null;
         };
         return (
-            <div>
+            <div key="cat" style={{
+                position: 'relative'
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    left: '-82px'
+                }}>
+                    适用菜品分类
+                </div>
                 <FormItem
                 // label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}
                 >
@@ -313,9 +320,16 @@ class MoreFoodBox extends React.Component {
                         </HualalaEditorBox>
                     </div>
                 </FormItem>
-                {this.renderExcludeRange()}
+                <div style={{
+                    color: 'orange',
+                    marginTop: '12px',
+                    marginBottom: '10px',
+                    visibility: this.state.foodCategorySelections.size ? 'hidden' : 'visible'
+                }}>
+                    不选代表全部
+                </div>
                 {
-                    this.state.isExcludeFood == '1' && this.state.foodSelectType == 1 ? this.renderExcludedFoodMenu() : null
+                    this.state.foodSelectType == 1 ? this.renderExcludedFoodMenu() : null
                 }
             </div>
         );
@@ -549,7 +563,15 @@ class MoreFoodBox extends React.Component {
         };
 
         return (
-            <div>
+            <div style={{
+                position: 'relative'
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    left: '-58px'
+                }}>
+                    排除菜品
+                </div>
                 <FormItem style={{ marginBottom: 8 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
@@ -762,11 +784,19 @@ class MoreFoodBox extends React.Component {
             return null;
         };
         return (
-            <div>
-                <FormItem style={{ marginBottom: 8 }}>
+            <div key="dish" style={{
+                position: 'relative'
+            }}>
+                <div className={this.props.isBuyGive ? styles.requiredFoodBoxLabel : styles.foodBoxLabel}
+                >
+                    {this.props.isSecondary ? '赠送菜品' : '适用菜品'}
+                </div>
+                <FormItem
+                    style={{ marginBottom: 8 }}
+                >
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
-                            label={'适用菜品'}
+                            label={this.props.isSecondary ? '赠送菜品' : '适用菜品'}
                             itemName="foodName+unit"
                             itemID="itemID"
                             data={this.state.foodSelections}
@@ -805,6 +835,13 @@ class MoreFoodBox extends React.Component {
                                 />
                             </HualalaTreeSelect>
                         </HualalaEditorBox>
+                        {this.props.isBuyGive ? null :<div style={{
+                            color: 'orange',
+                            marginBottom: '-10px',
+                            visibility: this.state.foodSelections.size ? 'hidden' : 'visible'
+                        }}>
+                            不选代表全部
+                        </div>}
                     </div>
                 </FormItem>
             </div>
@@ -957,16 +994,20 @@ class MoreFoodBox extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                {this.renderPromotionRange()}
-                {
-                    this.state.foodSelectType == 0 ? this.renderDishsSelectionBox() :
-                        this.state.foodSelectType == 1 ? this.renderCategorySelectionBox() :
-                            null
-                }
-            </div>
-        );
+        if (this.props.isBuyGive) {
+            return this.renderDishsSelectionBox();
+        } else {
+            return (
+                <div>
+                    {this.renderPromotionRange()}
+                    {
+                        this.state.foodSelectType == 0 ? this.renderDishsSelectionBox() :
+                            this.state.foodSelectType == 1 ? this.renderCategorySelectionBox() :
+                                null
+                    }
+                </div>
+            );
+        }
     }
 }
 

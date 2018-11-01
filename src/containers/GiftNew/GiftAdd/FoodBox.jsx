@@ -335,7 +335,7 @@ class FoodBox extends React.Component {
             return null;
         };
         return (
-            <div>
+            <div key="cat">
                 <FormItem required={true} label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox
@@ -488,7 +488,7 @@ class FoodBox extends React.Component {
             return null;
         };
         return (
-            <div>
+            <div key="dish">
                 <FormItem required={true} label={this.props.boxLabel || '适用菜品'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <div className={styles.treeSelectMain}>
                         <HualalaEditorBox

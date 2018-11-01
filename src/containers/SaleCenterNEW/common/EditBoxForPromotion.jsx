@@ -8,7 +8,10 @@ import styles from '../ActivityPage.less';
 const Immutable = require('immutable');
 if (process.env.__CLIENT__ === true) {
     // require('../../../../client/componentsPage.less');
-}
+};
+const DISABLED_PROMOTION_TYPE = [
+    '消费返礼品', '消费返积分'
+];
 
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { FetchGiftList, FetchGiftSort } from '../../GiftNew/_action';
@@ -79,8 +82,8 @@ class EditBoxForPromotion extends React.Component {
                 promotion.promotionIDStr = promotion.promotionIDStr ? promotion.promotionIDStr : promotion.sharedIDStr;
             } else {
                 // 基础营销类
-                promotionCollection.map((promotionCategery) => {
-                    promotionCategery.promotionName.map((saleItem) => {
+                promotionCollection.map((promotionCategory) => {
+                    promotionCategory.promotionName.map((saleItem) => {
                         if (saleItem.promotionIDStr == promotion.sharedIDStr) {
                             promotion.finalShowName = saleItem.promotionName || '基础营销活动';
                             promotion.promotionIDStr = promotion.sharedIDStr;
@@ -109,8 +112,6 @@ class EditBoxForPromotion extends React.Component {
             pageSize: 1000, // 代替FetchGiftSort
             pageNo: 1,
         });
-        // 活动列表
-        const _promotions = this.props.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']).toJS();
 
         // 用户选择过的互斥活动
         const _mutexPromotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS() : [];
@@ -144,15 +145,7 @@ class EditBoxForPromotion extends React.Component {
         });
         // this.setState({  })
         this.setState({
-            promotionCollection: filterFlag ?
-                _promotions.map((promotionCategery) => {
-                    return {
-                        promotionType: promotionCategery.promotionType,
-                        promotionName: promotionCategery.promotionName.filter((promotion) => {
-                            return promotion.maintenanceLevel == '1';
-                        }),
-                    }
-                }) : _promotions,
+            promotionCollection: [],
             mutexPromotions: _mutexPromotions,
             vouchersData,
             couponsData,
@@ -206,6 +199,7 @@ class EditBoxForPromotion extends React.Component {
         ) {
             let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']);
             promotionCollection = Immutable.List.isList(promotionCollection) ? promotionCollection.toJS() : [];
+            promotionCollection = promotionCollection.filter(item => !DISABLED_PROMOTION_TYPE.includes(item.promotionType.content));
             this.setState({
                 promotionCollection: filterFlag ?
                     promotionCollection.map((promotionCategery) => {
@@ -225,6 +219,7 @@ class EditBoxForPromotion extends React.Component {
         // 去掉自己，自己不能共享自己
         let promotionCollection = nextProps.promotionDetailInfo.getIn(['$allPromotionListInfo', 'data', 'promotionTree']);
         promotionCollection = Immutable.List.isList(promotionCollection) ? promotionCollection.toJS() : [];
+        promotionCollection = promotionCollection.filter(item => !DISABLED_PROMOTION_TYPE.includes(item.promotionType.content));
         let SelfPromotion = '';
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
             SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'promotionIDStr']);
@@ -259,7 +254,12 @@ class EditBoxForPromotion extends React.Component {
 
     render() {
         const _promotionCollection = this.state.promotionCollection;
-        const promotionSelections = this.state.promotionSelections;
+        const promotionSelections = new Set();
+        this.state.promotionSelections.forEach(item => {
+            if (item.promotionIDStr) {
+                promotionSelections.add(item);
+            }
+        });
         const ProDetail = this.props.myActivities.toJS().$promotionDetailInfo.data;
         const filterFlag = this.props.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
 
@@ -268,21 +268,7 @@ class EditBoxForPromotion extends React.Component {
             if (undefined === data) {
                 return null
             }
-            let _data;
-            // 门店隐藏推荐菜
-            if (!filterFlag) {
-                _data = data
-            } else {
-                _data = data.filter((item, index) => {
-                    if (item.promotionType.content != '菜品推荐') {
-                        return item;
-                    }
-                });
-            }
-            // return _data.map((item, index) => {
-            //     return <TreeNode key={index} title={item.promotionType.content} disabled={filterFlag && item.promotionType.content == '菜品推荐'} />;
-            // });
-            return ACTIVITY_CATEGORIES.map((item, index) => {
+            return ACTIVITY_CATEGORIES.filter(item => !DISABLED_PROMOTION_TYPE.includes(item.title)).map((item, index) => {
                 return <TreeNode key={index} title={item.title} disabled={filterFlag && item.title == '菜品推荐'} />
             });
         }
@@ -292,7 +278,7 @@ class EditBoxForPromotion extends React.Component {
                     label={'营销活动共享'}
                     itemName={'finalShowName'}
                     itemID={'promotionIDStr'}
-                    data={this.state.promotionSelections}
+                    data={promotionSelections}
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
@@ -305,7 +291,7 @@ class EditBoxForPromotion extends React.Component {
                                 {loop(_promotionCollection)}
                             </TreeNode>
                             <TreeNode key={'hualala'} title={'哗啦啦券'}>
-                                <TreeNode key={'vouchers'} title={'电子代金券'} />
+                                <TreeNode key={'vouchers'} title={'代金券'} />
                                 <TreeNode key={'coupons'} title={'菜品优惠券'} />
                                 <TreeNode key={'exchangeCoupons'} title={'菜品兑换券'} />
                             </TreeNode>
@@ -327,7 +313,7 @@ class EditBoxForPromotion extends React.Component {
                             itemName={'finalShowName'}
                             itemID={'promotionIDStr'}
                             selectdTitle={'已选营销活动'}
-                            value={this.state.promotionSelections}
+                            value={promotionSelections}
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}
                         />
@@ -431,6 +417,7 @@ class EditBoxForPromotion extends React.Component {
 
     // CheckBox选择
     handleGroupSelect(value) {
+        // console.log('value: ', value);
         if (value instanceof Array) {
             // get the selections
             const selectionsSet = new Set(this.state.promotionSelections);

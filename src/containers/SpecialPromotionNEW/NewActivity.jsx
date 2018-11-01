@@ -30,6 +30,7 @@ import {
 import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import { jumpPage } from '@hualala/platform-base'
 import {SPECIAL_PAGE} from "../../constants/entryCodes";
+import {SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
 
 if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
@@ -89,7 +90,7 @@ class NewActivity extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 40;
+        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 40;
         this.setState({ contentHeight });
     }
     componentWillUnmount() {
@@ -149,7 +150,7 @@ class NewActivity extends React.Component {
                 key={`NewActivity${index}`}
                 style={{ listStyle: 'none' }}
             >
-                <Authority rightCode="marketing.teseyingxiaoxin.create">
+                <Authority rightCode={SPECIAL_PROMOTION_CREATE}>
                     <ActivityLogo index={index} tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
                 </Authority>
             </li>)
@@ -193,7 +194,7 @@ class NewActivity extends React.Component {
      * @param  {array} activity 所有活动的列表
      */
     _onButtonClicked(index, activity) {
-        if (!checkPermission("marketing.teseyingxiaoxin.create")) {
+        if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }

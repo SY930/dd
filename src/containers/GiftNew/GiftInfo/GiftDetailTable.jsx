@@ -25,7 +25,7 @@ import {
     FetchSharedGifts,
     emptyGetSharedGifts,
     queryCouponShopList,
-    queryWechatMpInfo,
+    queryWechatMpInfo, startEditGift,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -33,6 +33,8 @@ import {
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
+import CreateGiftsPanel from "../components/CreateGiftsPanel";
+import {GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftDetailTable extends Component {
@@ -41,13 +43,14 @@ class GiftDetailTable extends Component {
         this.state = {
             visibleDetail: false,
             visibleEdit: false,
+            createModalVisible: false,
             data: {},
             dataSource: [],
             editGift: { describe: '', value: '' },
             loading: true,
             queryParams: {
                 pageNo: 1,
-                pageSize: 10,
+                pageSize: 20,
             },
             // total为数据总数。并不是页数。
             total: 2,
@@ -80,13 +83,14 @@ class GiftDetailTable extends Component {
                 )
             },
         });
+        this.handleCreateModalCancel = this.handleCreateModalCancel.bind(this);
     }
 
     componentDidMount() {
         const { FetchGiftList } = this.props;
         FetchGiftList({
             pageNo: 1,
-            pageSize: 10,
+            pageSize: 20,
         }).then((data = []) => {
             this.proGiftData(data);
         });
@@ -117,20 +121,27 @@ class GiftDetailTable extends Component {
     onWindowResize = () => {
         const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
         if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.offsetHeight; // 获取到父级的高度存到变量 parentHeight
+            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
             const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
             if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].offsetHeight;
+                const headerHeight = headerDoms[0].getBoundingClientRect().height;
                 layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
                     contentHeight: parentHeight - headerHeight - 120,
-                    tableHeight: layoutsContent.offsetHeight - 68,
+                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
         }
     }
+
+    handleCreateModalCancel() {
+        this.setState({
+            createModalVisible: false,
+        })
+    }
+
     proGiftData = (data) => {
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
@@ -228,7 +239,7 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleEdit(rec) {
+    handleEdit(rec, operationType) {
         let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
         const selectShops = [];
         gift = _.cloneDeep(gift);
@@ -248,13 +259,19 @@ class GiftDetailTable extends Component {
         gift.data.shareType = gift.data.shareType === undefined ? '' : String(gift.data.shareType);
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
-        this.setState({ visibleEdit: true, editGift: gift });
         const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
-        // 请求获取promotionList--券活动
-        gift.value == 100 ? this.props.fetchAllPromotionList({
+        if (gift.value == 100) { //
+            return message.success('该券即将下线, 请使用折扣券');
+        }
+        /*this.props.fetchAllPromotionList({// 请求获取promotionList--券活动
             groupID: this.props.user.accountInfo.groupID,
-        }) : null;
+        }) : null;*/
+        this.props.startEditGift({
+            operationType,
+            value: gift.data.giftType,
+            data: gift.data
+        })
     }
 
     handleDelete(rec) {
@@ -293,49 +310,15 @@ class GiftDetailTable extends Component {
         const { FetchSendorUsedList } = this.props;
         const { giftType, giftItemID } = rec;
         if (giftType !== '90') {
-            FetchSendorUsedList({ params: { pageNo: 1, pageSize: 10, giftItemID } })
-                .then((records) => {
-                    this.setState({ sendTotalSize: records.totalSize })
-                });
-            const opts = { pageNo: 1, pageSize: 10, giftItemID }
-            if (giftType === '91') { // 线上礼品卡
-                opts.WXgiftCardStatus = '1'
-            } else {
-                opts.giftStatus = '2'
-            }
-            giftType !== '91' && axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
+            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+            /*axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
                 path: 'data',
             })
                 .then((records) => {
                     this.setState({ usedTotalSize: records.totalSize })
-                });
+                });*/
         }
-    }
-
-    handleOperate(rec) {
-        return (
-            <span>
-                <Authority rightCode="marketing.lipinxin.update">
-                    <a
-                        href="javaScript:;"
-                        onClick={() => {
-                            this.handleEdit(rec)
-                        }
-                        }
-                    >编辑</a>
-                </Authority>
-                {rec.sendTotalCount > 0 ?
-                    <a disabled={true}><span>删除</span></a>
-                    :
-                    <Authority rightCode="marketing.lipinxin.delete">
-                        <a onClick={() => this.handleDelete(rec)}><span>删除</span></a>
-                    </Authority>
-                }
-                <Authority rightCode="marketing.chakanlipinxin.query">
-                    <a href="javaScript:;" onClick={() => this.handleMore(rec)}>详情</a>
-                </Authority>
-            </span>
-        )
     }
 
     handlePageChange = (pageNo, pageSize) => {
@@ -402,8 +385,8 @@ class GiftDetailTable extends Component {
                 case '111':
                     return (<GiftDetailModal
                         {...detailProps}
-                        usedTotalSize={this.state.usedTotalSize || 0}
-                        sendTotalSize={this.state.sendTotalSize || 0}
+                        /*usedTotalSize={this.state.usedTotalSize || 0}
+                        sendTotalSize={this.state.sendTotalSize || 0}*/
                     />);
                 case '90':
                     return <QuatoCardDetailModal {...detailProps} />;
@@ -428,52 +411,37 @@ class GiftDetailTable extends Component {
             },
         };
         const formKeys = ['giftName', 'giftType'];
-        const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor}`;
+        const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                    {/*<Row className="layoutsTool">
-                        <div className="layoutsToolLeft">
-                            <h1 style={{ display: 'inline-block' }}>礼品信息</h1>
-                            <Button
-                                type="ghost"
-                                icon="plus"
-                                className={styles2.jumpToCreate}
-                                onClick={
-                                    () => {
-                                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076006').menuID
-                                        jumpPage({ menuID })
+                    <div className="layoutsTool" style={{height: '79px'}}>
+                        <div className={headerClasses}>
+                            <span className={styles2.customHeader}>
+                                礼品信息
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles2.jumpToCreate}
+                                    onClick={
+                                        () => {
+                                            this.setState({
+                                                createModalVisible: true
+                                            })
+                                        }
                                     }
-                                }
-                            >新建</Button>
-                        </div>
+                                >新建</Button>
+                            </span>
 
-                        <Col span={22} style={{ textAlign: 'right' }}>
-
-                        </Col>
-                    </Row>*/}
-                    <div className="layoutsTool" style={{height: '80px'}}>
-                        <div className={headerClasses} style={{lineHeight: '80px'}}>
-                            <span style={{lineHeight: '80px'}} className={styles2.customHeader}>礼品信息</span>
-                            <Button
-                                type="ghost"
-                                icon="plus"
-                                className={styles2.jumpToCreate}
-                                onClick={
-                                    () => {
-                                        jumpPage({ menuID: NEW_GIFT })
-                                    }
-                                }
-                            >新建</Button>
-                            <Authority rightCode="marketing.lipinxinxixin.query">
-                                <Button className={styles2.exportBtn}
+                            <Authority rightCode={GIFT_LIST_QUERY}>
+                                <Button
                                     type="ghost"
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
                         </div>
                     </div>
-                <div style={{backgroundColor: 'white', paddingBottom: '25px', borderRadius: '10px', margin: '0 20px'}}>
-                    <div className="layoutsHeader">
+                <div className={styles2.pageContentWrapper}>
+                    <div style={{ padding: '0'}} className="layoutsHeader">
                         <div className="layoutsSearch">
                             <ul>
                                 <li className={styles.formWidth}>
@@ -487,7 +455,7 @@ class GiftDetailTable extends Component {
                                     />
                                 </li>
                                 <li>
-                                    <Authority rightCode="marketing.lipinxinxixin.query">
+                                    <Authority rightCode={GIFT_LIST_UPDATE}>
                                         <Button type="primary" onClick={() => this.handleQuery()}>
                                             <Icon type="search" />
                                             查询
@@ -498,7 +466,7 @@ class GiftDetailTable extends Component {
                         </div>
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
                     </div>
-                    <div className={[styles.giftTable, ' layoutsContent tableClass '].join(' ')} style={{ height: this.state.contentHeight }}>
+                    <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
                         <Table
                             ref={this.setTableRef}
                             bordered={true}
@@ -518,7 +486,7 @@ class GiftDetailTable extends Component {
                                 showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                             }}
                             loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.tableHeight }}
+                            scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
                         />
                     </div>
                 </div>
@@ -535,6 +503,20 @@ class GiftDetailTable extends Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
+                <Modal
+                    key="新建券"
+                    title="新建券"
+                    visible={this.state.createModalVisible}
+                    onCancel={this.handleCreateModalCancel}
+                    footer={false}
+                    style={{
+                        top: '10%'
+                    }}
+                    maskClosable={true}
+                    width={910}
+                >
+                    <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
+                </Modal>
             </div>
         )
     }
@@ -551,6 +533,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
+        startEditGift: opts => dispatch(startEditGift(opts)),
         FetchSendorUsedList: opts => dispatch(FetchSendorUsedList(opts)),
         UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
         UpdateDetailModalVisible: opts => dispatch(UpdateDetailModalVisible(opts)),

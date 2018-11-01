@@ -83,7 +83,12 @@ class MessageTemplateEditPanel extends React.Component {
         } else { // 验证通过
             this.setState({loading: true});
             if (this.props.templateEntity) {
-                this.props.updateMessageTemplate({template: message, modifyBy: this.props.user.accountInfo.userName, itemID: this.props.templateEntity.itemID})
+                this.props.updateMessageTemplate({
+                    template: message,
+                    modifyBy: this.props.user.accountInfo.userName,
+                    itemID: this.props.templateEntity.itemID,
+                    groupName: this.props.user.accountInfo.groupName
+                })
                     .then(() => {
                         messageService.success('修改成功');
                         this.props.getMessageTemplateList();
@@ -95,7 +100,11 @@ class MessageTemplateEditPanel extends React.Component {
                         this.setState({loading: false})
                     })
             } else {
-                this.props.createMessageTemplate({template: message, createBy: this.props.user.accountInfo.userName})
+                this.props.createMessageTemplate({
+                    template: message,
+                    createBy: this.props.user.accountInfo.userName,
+                    groupName: this.props.user.accountInfo.groupName
+                })
                     .then(() => {
                         messageService.success('创建成功');
                         this.props.getMessageTemplateList();

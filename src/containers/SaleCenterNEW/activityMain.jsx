@@ -81,6 +81,8 @@ import ReturnGiftDetailInfo from './returnGift/returnGiftDetailInfo';
 
 import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActivity'; // 加价升级换新
 import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
+import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
+import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 class ActivityMain extends React.Component {
@@ -182,7 +184,10 @@ class ActivityMain extends React.Component {
             {
                 wrapper: NewAddMoneyUpgradeActivity,
                 child: AddMoneyUpgradeDetailInfo,
-            }
+            }, {
+                wrapper: LowPriceSaleActivity,
+                child: LowPriceDetailInfo,
+            },
         ]
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
