@@ -42,8 +42,8 @@ export function isBrandOfHuaTianGroupList(id = getAccountInfo().groupID) {
     return HUATIAN_BRAND_LIST.includes(String(id));
 }
 
-export function isMine({ subGroupId }) {
-    return String(getAccountInfo().groupID) === String(subGroupId)
+export function isMine({ subGroupID }) {
+    return String(getAccountInfo().groupID) === String(subGroupID)
 
 }
 
