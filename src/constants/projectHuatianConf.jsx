@@ -43,6 +43,9 @@ export function isBrandOfHuaTianGroupList(id = getAccountInfo().groupID) {
 }
 
 export function isMine({ subGroupID }) {
+    if (!isBrandOfHuaTianGroupList() && (Number(subGroupID || 0) === 0)) {
+        return true;
+    }
     return String(getAccountInfo().groupID) === String(subGroupID)
 
 }
