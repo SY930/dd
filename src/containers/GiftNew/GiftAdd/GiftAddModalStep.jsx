@@ -1386,7 +1386,7 @@ class GiftAddModalStep extends React.PureComponent {
                             this.secondForm.setFieldsValue({ promotionID: [] })
                             this.setState({ values })
                         }}
-                        data={data.extraInfo ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
+                        data={(data.extraInfo && data.extraInfo !== '0') ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
                     />
                 )
             },
