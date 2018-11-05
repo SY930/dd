@@ -102,28 +102,7 @@ const fetchFoodCategoryFailed = (opts) => {
 };
 
 
-export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
-    if (isHuaTian) {
-        return (dispatch) => {
-            if (opts.shopID && opts.shopID > 0) {
-                // TODO: 替换接口
-                return axiosData('queryShopFoodInfoList', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data' }).then((res = {}) => {
-                    dispatch(fetchFoodCategorySuccess(res))
-                }).catch(e => {
-                    dispatch(fetchFoodCategoryFailed(e));
-                });
-            } else {
-                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data'})
-                    .then(
-                        records => dispatch(fetchFoodCategorySuccess(records)),
-                        error => dispatch(fetchFoodCategoryFailed(error))
-                    )
-                    .catch(e => {
-                        console.log('err: ', e);
-                    });
-            }
-        }
-    }
+export const fetchFoodCategoryInfoAC = (opts) => {
     return (dispatch) => {
         dispatch(fetchFoodCategoryStart());
 
@@ -196,28 +175,43 @@ const fetchFoodMenuFailed = () => {
     }
 };
 
-export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
-    if (isHuaTian) {
-        return (dispatch) => {
-            if (params.shopID && params.shopID > 0) {
-                // TODO: 替换接口
-                return axiosData('queryShopFoodInfoList', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data' }).then((res = {}) => {
-                    dispatch(fetchFoodMenuSuccess(res))
-                }).catch(e => {
-                    dispatch(fetchFoodMenuFailed(e));
-                });
-            } else {
-                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data'})
-                    .then(
-                        records => dispatch(fetchFoodMenuSuccess(records)),
-                        error => dispatch(fetchFoodMenuFailed(error))
-                    )
-                    .catch(e => {
-                        console.log('err: ', e);
-                    });
-            }
-        }
-    }
+// export const fetchFoodMenuInfoAC = (opts) => {
+//     return (dispatch) => {
+//         dispatch({
+//             type: SALE_CENTER_FETCH_FOOD_MENU,
+//         });
+
+//         const config = getSpecifiedUrlConfig('getFoodMenu_NEW', { ...opts, bookID: 0 });
+
+//         fetch(config.url, {
+//             method: config.method,
+//             body: config.params,
+//             credentials: 'include',
+//             headers: {
+//                 'Accept': 'application/json; charset=UTF-8',
+//                 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+//             },
+//         }).then((response) => {
+//             if (response.status >= 200 && response.status < 300) {
+//                 if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+//                     return response.json();
+//                 }
+//                 return response.text();
+//             }
+//             return Promise.reject(new Error(response.statusText))
+//         }).then((responseJSON) => {
+//             if (responseJSON.resultcode === '000') {
+//                 dispatch(fetchFoodMenuSuccess(responseJSON.data))
+//             } else {
+//                 message.error(`获取菜品信息失败!${responseJSON.resultmsg}`);
+//                 dispatch(fetchFoodMenuFailed(responseJSON.resultmsg));
+//             }
+//         }).catch((error) => {
+//             dispatch(fetchFoodMenuFailed(error))
+//         });
+//     }
+// };
+export const fetchFoodMenuInfoAC = (params = {}) => {
     return (dispatch) => {
         if (params.shopID && params.shopID > 0) {
             return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
@@ -235,6 +229,12 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
                         console.log('err: ', e);
                     });
         }
+        /*const url = params.shopID && params.shopID > 0 ? 'queryShopFoodInfoList' : 'getGroupFoodQuery';
+        return fetchData(url, { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
+            dispatch(fetchFoodMenuSuccess(res))
+        }).catch(e => {
+            dispatch(fetchFoodMenuFailed(e));
+        });*/
     }
 }
 const fetchPromotionListSuccess = (opts) => {

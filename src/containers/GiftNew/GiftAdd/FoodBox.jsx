@@ -27,7 +27,6 @@ import {
     HualalaSearchInput,
     // CC2PY,
 } from '../../../components/common';
-import {isHuaTian} from "../../../constants/projectHuatianConf";
 
 // const Immutable = require('immutable');
 
@@ -189,8 +188,8 @@ class FoodBox extends React.Component {
             _groupID: this.props.user.toJS().accountInfo.groupID,
         };
         if (!this.props.disabledFetch) {
-            this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), this.props.subGroupID);
-            this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), this.props.subGroupID);
+            this.props.fetchFoodCategoryInfo({ ...opts });
+            this.props.fetchFoodMenuInfo({ ...opts });
         }
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.dishOnly) {
@@ -963,12 +962,12 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
         },
 
-        fetchFoodCategoryInfo: (opts, flag, id) => {
-            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        fetchFoodCategoryInfo: (opts) => {
+            dispatch(fetchFoodCategoryInfoAC(opts))
         },
 
-        fetchFoodMenuInfo: (opts, flag, id) => {
-            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        fetchFoodMenuInfo: (opts) => {
+            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 };

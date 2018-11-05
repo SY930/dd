@@ -269,9 +269,7 @@ class NewActivity extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
         };
-        /** 已经不用此页面新建活动了, 所以不需要加华天的定制化参数 */
         this.props.fetchFoodCategoryInfo({ ...opts });
-        /** 已经不用此页面新建活动了, 所以不需要加华天的定制化参数 */
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
         this.props.setPromotionType({

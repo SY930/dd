@@ -97,7 +97,6 @@ const mapStateToProps = (state) => {
         myActivities: state.sale_myActivities_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
     };
 };
@@ -155,11 +154,11 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        fetchFoodCategoryInfo: (opts, flag, id) => {
-            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        fetchFoodCategoryInfo: (opts) => {
+            dispatch(fetchFoodCategoryInfoAC(opts))
         },
-        fetchFoodMenuInfo: (opts, flag, id) => {
-            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        fetchFoodMenuInfo: (opts) => {
+            dispatch(fetchFoodMenuInfoAC(opts))
         },
         queryPromotionAutoRunList: (opts) => {
             dispatch(queryPromotionAutoRunList(opts))
@@ -537,8 +536,8 @@ class MyActivities extends React.Component {
                 _groupID: this.props.user.accountInfo.groupID,
                 shopID: responseJSON.promotionInfo.master.shopIDLst,
             };
-            this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
-            this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
+            this.props.fetchFoodCategoryInfo({ ...opts });
+            this.props.fetchFoodMenuInfo({ ...opts });
         }
         // 把查询到的活动信息存到redux
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
@@ -560,9 +559,10 @@ class MyActivities extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
+        console.log('arrayTransformAdapter: ', _record.promotionType);
         if ( _record && _record.maintenanceLevel !== '1') { // 集团
-            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
-            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
+            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
+            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
         }
         this.props.fetchPromotionDetail_NEW({
             data: {

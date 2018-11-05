@@ -17,7 +17,6 @@ import styles from '../ActivityPage.less';
 import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import CloseableTip from "../../../components/common/CloseableTip/index";
-import {isHuaTian} from "../../../constants/projectHuatianConf";
 
 const Immutable = require('immutable');
 
@@ -186,8 +185,8 @@ class PromotionDetailSetting extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
         };
         // autoFetch只有菜品优惠券才发请求
-        this.props.autoFetch && this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subGroupID']));
-        this.props.autoFetch && this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subGroupID']));
+        this.props.autoFetch && this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.autoFetch && this.props.fetchFoodMenuInfo({ ...opts });
 
         const promotionDetailInfo = this.props.promotionDetailInfo.get('$promotionDetail').toJS();
         const _scopeLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])) ?
@@ -1041,12 +1040,12 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
         },
 
-        fetchFoodCategoryInfo: (opts, flag, id) => {
-            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        fetchFoodCategoryInfo: (opts) => {
+            dispatch(fetchFoodCategoryInfoAC(opts))
         },
 
-        fetchFoodMenuInfo: (opts, flag, id) => {
-            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        fetchFoodMenuInfo: (opts) => {
+            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 };
