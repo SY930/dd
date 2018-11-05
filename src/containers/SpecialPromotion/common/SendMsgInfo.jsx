@@ -66,7 +66,7 @@ class SendMsgInfo extends React.Component {
     }
     addMessageInfo(e){
         let {message} = this.state;
-        message += ` [${e.target.textContent}] `;
+        message += `[${e.target.textContent}]`;
         this.props.form.setFieldsValue({
             message:message
         });
