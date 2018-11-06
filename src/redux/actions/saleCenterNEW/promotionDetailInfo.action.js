@@ -106,16 +106,15 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
             if (opts.shopID && opts.shopID > 0) {
-                // TODO: 替换接口
-                return axiosData('queryShopFoodInfoList', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data' }).then((res = {}) => {
-                    dispatch(fetchFoodCategorySuccess(res))
+                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
+                    dispatch(fetchFoodCategorySuccess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodCategoryFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data'})
+                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'})
                     .then(
-                        records => dispatch(fetchFoodCategorySuccess(records)),
+                        (records = []) => dispatch(fetchFoodCategorySuccess({records: records})),
                         error => dispatch(fetchFoodCategoryFailed(error))
                     )
                     .catch(e => {
@@ -200,16 +199,15 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
             if (params.shopID && params.shopID > 0) {
-                // TODO: 替换接口
-                return axiosData('queryShopFoodInfoList', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data' }).then((res = {}) => {
-                    dispatch(fetchFoodMenuSuccess(res))
+                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
+                    dispatch(fetchFoodMenuSuccess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodMenuFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data'})
+                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'})
                     .then(
-                        records => dispatch(fetchFoodMenuSuccess(records)),
+                        (records = []) => dispatch(fetchFoodMenuSuccess({records})),
                         error => dispatch(fetchFoodMenuFailed(error))
                     )
                     .catch(e => {
