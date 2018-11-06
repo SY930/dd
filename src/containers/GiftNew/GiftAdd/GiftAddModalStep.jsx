@@ -1057,7 +1057,7 @@ class GiftAddModalStep extends React.PureComponent {
                     }
             })
         }
-        const {isFoodCatNameList} = this.props.gift.data;
+        const {isFoodCatNameList, subGroupID} = this.props.gift.data;
         return (
             <FormItem
                 {...formItemLayout}
@@ -1067,7 +1067,16 @@ class GiftAddModalStep extends React.PureComponent {
                 help={this.state.foodNameListStatus === 'success' ? null : '不可为空'}
             >
                 {
-                    decorator({})(<FoodBox categoryOrDish={Number(isFoodCatNameList)} radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
+                    decorator({})(
+                        <FoodBox
+                            categoryOrDish={Number(isFoodCatNameList)}
+                            radioLabel={'抵扣方式'}
+                            subGroupID={subGroupID}
+                            noExclude={true}
+                            catOrFoodValue={_scopeLst}
+                            autoFetch={true}
+                        />
+                    )
                 }
             </FormItem>
 
@@ -1125,6 +1134,7 @@ class GiftAddModalStep extends React.PureComponent {
                     decorator({})(
                         <MoreFoodBox
                             key="foodsboxs"
+                            subGroupID={data.subGroupID}
                             scopeLst={scopeList}
                             foodSelectType={foodSelectType}
                             isExcludeFood={'1'}
@@ -1149,6 +1159,7 @@ class GiftAddModalStep extends React.PureComponent {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            subGroupID={data.subGroupID}
                             isBuyGive={true}
                             key="buyGiveFoodsboxs"
                             scopeLst={scopeList}
@@ -1175,6 +1186,7 @@ class GiftAddModalStep extends React.PureComponent {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            subGroupID={data.subGroupID}
                             isBuyGive={true}
                             isSecondary={true}
                             key="buyGiveSecondaryFoodsboxs"

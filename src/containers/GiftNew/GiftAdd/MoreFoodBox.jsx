@@ -16,6 +16,7 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 
 import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import {isHuaTian} from "../../../constants/projectHuatianConf";
 
 const Immutable = require('immutable');
 
@@ -178,8 +179,8 @@ class MoreFoodBox extends React.Component {
         const opts = {
             _groupID: this.props.user.toJS().accountInfo.groupID,
         };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), this.props.subGroupID);
+        this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), this.props.subGroupID);
         const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         if (this.props.scopeLst) {
             const { scopeLst, foodSelectType = 2, isExcludeFood = '0' } = this.props;
@@ -1025,12 +1026,12 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
         },
 
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
+        fetchFoodCategoryInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
         },
 
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+        fetchFoodMenuInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
         },
     }
 };
