@@ -68,6 +68,7 @@ class StepTwo extends React.Component {
             shopSchema,
             occupiedShopIDs: [],
             settleUnitID: '',
+            accountNo: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
         };
@@ -341,8 +342,13 @@ class StepTwo extends React.Component {
                 this.setState({ giveStatus: 'error' })
             }
         }
-        if (this.state.settleUnitID) {
+        const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
+        if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
             opts.settleUnitID = this.state.settleUnitID;
+            opts.accountNo = this.state.accountNo;
+        } else {
+            opts.settleUnitID = '0';
+            opts.accountNo = '0';
         }
         //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
         const noSelected64 = this.props.type == 64 &&
@@ -500,6 +506,9 @@ class StepTwo extends React.Component {
                                     if (val instanceof Object) {
                                         if (val.settleUnitID) {
                                             this.setState({ settleUnitID: val.settleUnitID })
+                                        }
+                                        if (val.accountNo) {
+                                            this.setState({ accountNo: val.accountNo })
                                         }
                                     } else {
                                         this.setState({ message: val });

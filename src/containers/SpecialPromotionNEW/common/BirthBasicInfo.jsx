@@ -18,7 +18,7 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterGetExcludeCardLevelIds,
-    saleCenterQueryFsmGroupSettleUnit,
+    saleCenterQueryFsmGroupSettleUnit, queryFsmGroupEquityAccount,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
@@ -81,7 +81,10 @@ class PromotionBasicInfo extends React.Component {
             this.props.saleCenterGetExcludeCardLevelIds(opts)
         }
         // }
-        this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID });
+        specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
+            this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
+            :
+            this.props.queryFsmGroupEquityAccount()
     }
 
 
@@ -381,6 +384,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo())
+        },
+        queryFsmGroupEquityAccount: (opts) => {
+            dispatch(queryFsmGroupEquityAccount(opts))
         }
     }
 };
