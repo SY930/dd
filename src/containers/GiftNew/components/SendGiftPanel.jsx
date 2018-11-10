@@ -16,7 +16,7 @@ import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../../redux/actions/saleCenterNEW/types";
 import {axiosData} from "../../../helpers/util";
-import SettleUnitIDSelector from "../../SpecialPromotionNEW/common/SettleUnitIDSelector";
+import AccountNoSelector from "../../SpecialPromotionNEW/common/AccountNoSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import { debounce } from 'lodash';
@@ -59,7 +59,7 @@ class SendGiftPanel extends Component {
             whenToEffect: '0',        // 何时生效
             giftValidDays: 1,        // 有效天数
             cellNo: '',             // 用户手机号
-            settleUnitID: '',
+            accountNo: '',
             availableSmsCount: 0,
             giftValidRange: [],
             validatingStatus: null,
@@ -95,8 +95,8 @@ class SendGiftPanel extends Component {
         if (!flag) {
             return;
         }
-        const { settleUnitID, cellNo, availableSmsCount, smsGate } = this.state;
-        const sendFlag = smsGate === '1' || smsGate === '3' || smsGate === '4';
+        const { accountNo, cellNo, availableSmsCount, smsGate } = this.state;
+        const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         if (sendFlag) {
             if (!availableSmsCount) {
                 flag = false;
@@ -137,7 +137,7 @@ class SendGiftPanel extends Component {
         const {
             smsGate,
             message: smsTemplate,
-            settleUnitID,
+            accountNo,
             pushMessageMpID,
             cellNo: customerMobile,
             giftNo: giftNum,
@@ -161,7 +161,7 @@ class SendGiftPanel extends Component {
         }
         if (smsGate == 1 || smsGate == 3 || smsGate == 4) {
             params.smsTemplate = smsTemplate;
-            params.settleUnitID = settleUnitID;
+            params.accountNo = accountNo;
         }
         if (smsGate > 1) {
             params.pushMessageMpID = pushMessageMpID;
@@ -172,10 +172,10 @@ class SendGiftPanel extends Component {
 
     handleSmgInfoChange(val) {
         this.setState({
-            settleUnitID: val.settleUnitID,
+            accountNo: val.accountNo,
             availableSmsCount: val.smsCount,
         }, () => {
-            this.props.form.setFieldsValue({ 'settleUnitID': val.settleUnitID });
+            this.props.form.setFieldsValue({ 'accountNo': val.accountNo });
         })
     }
 
@@ -454,22 +454,22 @@ class SendGiftPanel extends Component {
         )
     }
 
-    renderSettleUnitID() {
+    renderAccountNo() {
         const { getFieldDecorator } = this.props.form;
         return (
             <FormItem
-                label="短信结算账户"
+                label="短信权益账户"
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                {getFieldDecorator('settleUnitID', {
-                    initialValue: this.state.settleUnitID,
+                {getFieldDecorator('accountNo', {
+                    initialValue: this.state.accountNo,
                     onChange: this.handleSmgInfoChange,
                     rules: [
-                        { required: true, message: '短信结算账户不得为空' },
+                        { required: true, message: '短信权益账户不得为空' },
                     ]
-                })(<SettleUnitIDSelector autoFetch />)}
+                })(<AccountNoSelector autoFetch />)}
             </FormItem>
         );
     }
@@ -543,14 +543,14 @@ class SendGiftPanel extends Component {
                     </Col>
                 )}
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
+                    {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
-                        {this.renderSettleUnitID()}
+                        {this.renderAccountNo()}
                     </div>
                 )}
                 </Col>
                 <Col offset={3} span={17}>
-                    {(this.state.smsGate === '1' || this.state.smsGate === '3' || this.state.smsGate === '4') && (
+                    {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
                         {this.renderMsgSelector()}
                     </div>

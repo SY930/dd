@@ -10,6 +10,7 @@ import 'rxjs';
 import Rx from 'rxjs/Rx';
 import axios from 'axios'
 import { fetchFilterShopsSuccess } from './promotionBasicInfo.action'
+import {axiosData} from "../../../helpers/util";
 
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO = 'sale center: set special promotion event info new';
@@ -40,6 +41,7 @@ export const SALE_CENTER_FETCH_GROUP_MEMBER_FAIL = 'sale center: fetch group mem
 export const SALE_CENTER_FETCH_GROUP_MEMBER_TIMEOUT = 'sale center: fetch group member time out new';
 export const SALE_CENTER_FETCH_GROUP_MEMBER_CANCEL = 'sale center: fetch group member cancel new';
 export const SALE_CENTER_FSM_SETTLE_UNIT = 'sale center: query fsm group settle unit new';
+export const SALE_CENTER_FSM_EQUITY_UNIT = 'sale center: query fsm group equity unit new';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude event list new';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
@@ -150,7 +152,20 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
         })
     }
 };
-// 获取短信结算主体
+// 获取短信权益账户
+export const queryFsmGroupEquityAccount = () => {
+    return (dispatch) => {
+        axiosData('/specialPromotion/queryFsmGroupEquityAccount.ajax', {}, { }, {path: 'accountInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then(res => {
+                dispatch({
+                    type: SALE_CENTER_FSM_EQUITY_UNIT,
+                    payload: res,
+                });
+
+            })
+    }
+}
+ // 获取短信结算主体
 export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
     return (dispatch) => {
         fetch('/api/specialPromotion/queryFsmGroupSettleUnit_NEW', {

@@ -11,11 +11,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    Row,
-    Col,
     Form,
-    Button,
-    Input,
     Select,
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -25,11 +21,6 @@ import MsgSelector from "./MsgSelector";
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
-const Immutable = require('immutable');
 
 class SendMsgInfo extends React.Component {
     constructor(props) {
@@ -37,23 +28,35 @@ class SendMsgInfo extends React.Component {
         this.state = {
             message: '',
             settleUnitID: '',
+            accountNo: '',
         };
 
         this.handleMsgChange = this.handleMsgChange.bind(this);
         this.addMessageInfo = this.addMessageInfo.bind(this);
-        this.handleOptionChange = this.handleOptionChange.bind(this);
+        this.handleAccountNoChange = this.handleAccountNoChange.bind(this);
+        this.handleSettleUnitIDChange = this.handleSettleUnitIDChange.bind(this);
     }
 
     componentDidMount() {
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
         this.setState({
             message: this.props.value,
-            settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
-                (specialPromotion.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
-        }, () => {
-            this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
         })
+        if (specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0)) {
+            this.setState(
+                {settleUnitID: specialPromotion.settleUnitID},
+                () => {
+                    this.props.onChange({ settleUnitID: this.state.settleUnitID });
+                }
+            )
+        } else {
+            this.setState(
+                {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (specialPromotion.equityAccountInfoList[0] || {accountNo: ''}).accountNo},
+                () => {
+                    this.props.onChange({ accountNo: this.state.accountNo });
+                }
+            )
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,22 +67,33 @@ class SendMsgInfo extends React.Component {
                 this.props.onChange && this.props.onChange(this.state.message);
             })
         }
-        if (this.props.settleUnitID === '') {
-            const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
-            specialPromotion.accountInfoList && specialPromotion.accountInfoList instanceof Array && specialPromotion.accountInfoList[0] || (specialPromotion.accountInfoList = []);
+        if (!(nextProps.settleUnitID > 0) &&
+            (this.props.specialPromotion.getIn(['$eventInfo', 'equityAccountInfoList']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'equityAccountInfoList']))
+            && (nextProps.specialPromotion.getIn(['$eventInfo', 'equityAccountInfoList']).size > 0)
+        ) {
+            const equityAccountInfoList = nextProps.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList;
+            const accountNo = nextProps.specialPromotion.getIn(['$eventInfo', 'accountNo']);
+
             this.setState({
-                settleUnitID: specialPromotion.settleUnitID == '0' ? (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID || '') :
-                    (specialPromotion.settleUnitID || (specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || ''),
+                accountNo: accountNo > 0 ? accountNo : (equityAccountInfoList[0] || {accountNo: ''}).accountNo,
             }, () => {
-                this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
+                this.props.onChange && this.props.onChange({ accountNo: this.state.accountNo });
             })
+
         }
     }
-    handleOptionChange(value) {
+    handleSettleUnitIDChange(value) {
         this.setState({
             settleUnitID: value,
         }, () => {
             this.props.onChange && this.props.onChange({ settleUnitID: this.state.settleUnitID });
+        })
+    }
+    handleAccountNoChange(value) {
+        this.setState({
+            accountNo: value,
+        }, () => {
+            this.props.onChange && this.props.onChange({ accountNo: this.state.accountNo });
         })
     }
     handleMsgChange(message) {
@@ -94,7 +108,7 @@ class SendMsgInfo extends React.Component {
     }
     addMessageInfo(e) {
         let { message } = this.state;
-        message += ` [${e.target.textContent}] `;
+        message += `[${e.target.textContent}]`;
         this.props.form.setFieldsValue({
             message,
         });
@@ -109,36 +123,71 @@ class SendMsgInfo extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const settleUnitID = this.state.settleUnitID || (specialPromotion.accountInfoList && specialPromotion.accountInfoList[0] && specialPromotion.accountInfoList[0].settleUnitID) || '';
+        const { settleUnitID, accountNo } = this.state;
+        // 旧活动, 已设置settleUnitID的情况下, 继续渲染settleUnitID; 其它情况都渲染accountNo, !(accountNo > 0) 是为了防止undefined
         if (this.props.sendFlag) {
             return (
                 <div>
-                    <FormItem
-                        label="短信结算账户"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        <Select onChange={this.handleOptionChange}
-                                value={settleUnitID}
-                                getPopupContainer={(node) => node.parentNode}
-                        >
-                            {(specialPromotion.accountInfoList || []).map((accountInfo) => {
-                                return (<Option key={accountInfo.settleUnitID}>{accountInfo.settleUnitName}</Option>)
-                            })}
-                        </Select>
-                        <div>
-                            {
-                                (specialPromotion.accountInfoList || []).map((accountInfo) => {
-                                    if (accountInfo.settleUnitID == settleUnitID) {
-                                        return (
-                                            <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount}条`}</div>
-                                        )
+                    {
+                        specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ? (
+                            <FormItem
+                                label="短信结算账户"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Select onChange={this.handleSettleUnitIDChange}
+                                        value={settleUnitID}
+                                        placeholder="请选择结算账户"
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    {(specialPromotion.accountInfoList || []).map((accountInfo) => {
+                                        return (<Option key={accountInfo.settleUnitID}>{accountInfo.settleUnitName}</Option>)
+                                    })}
+                                </Select>
+                                <div>
+                                    {
+                                        (specialPromotion.accountInfoList || []).map((accountInfo) => {
+                                            if (accountInfo.settleUnitID == settleUnitID) {
+                                                return (
+                                                    <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount}条`}</div>
+                                                )
+                                            }
+                                        })
                                     }
-                                })
-                            }
-                        </div>
-                    </FormItem>
+                                </div>
+                            </FormItem>
+                        ) : (
+                            <FormItem
+                                label="短信权益账户"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Select onChange={this.handleAccountNoChange}
+                                        value={accountNo}
+                                        placeholder="请选择权益账户"
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    {(specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
+                                        return (<Option key={accountInfo.accountNo}>{accountInfo.accountName}</Option>)
+                                    })}
+                                </Select>
+                                <div>
+                                    {
+                                        (specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
+                                            if (accountInfo.accountNo == accountNo) {
+                                                return (
+                                                    <div key={accountInfo.accountNo}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount}条`}</div>
+                                                )
+                                            }
+                                        })
+                                    }
+                                </div>
+                            </FormItem>
+                        )
+                    }
+
 
                     <FormItem
                         label="选择短信模板"

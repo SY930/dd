@@ -32,22 +32,29 @@ export default class NewPromotion extends React.Component {
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
-        // console.log('going to final finish', specialPromotion.$eventInfo);
         if (specialPromotion.$eventInfo.eventWay == '50'
-            || (smsGate == '1' || smsGate == '3' || smsGate == '4')
-            && specialPromotion.$eventInfo.settleUnitID) {
-            // console.log('eventInfo: ', specialPromotion.$eventInfo);
-            const settleUnitID = specialPromotion.$eventInfo.settleUnitID;
-            if (settleUnitID != '0') {
-                const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
-
-                if (!selectedEntity.smsCount) {
-                    message.warning('所选结算账户可用短信条数为0，无法创建活动');
-                    //console.log(settleUnitID);
+            || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
+            if (specialPromotion.$eventInfo.accountNo > 0) { // 权益账户的情况
+                const equityAccountInfoList = specialPromotion.$eventInfo.equityAccountInfoList;
+                const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === specialPromotion.$eventInfo.accountNo) || {};
+                if (!selectedAccount.smsCount) {
+                    message.warning('所选权益账户可用短信条数为0，无法创建活动');
                     this.setState({
                         loading: false,
                     });
                     return;
+                }
+            } else { // 结算账户的情况
+                const settleUnitID = specialPromotion.$eventInfo.settleUnitID;
+                if (settleUnitID > 0) {
+                    const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
+                    if (!selectedEntity.smsCount) {
+                        message.warning('所选结算账户可用短信条数为0，无法创建活动');
+                        this.setState({
+                            loading: false,
+                        });
+                        return;
+                    }
                 }
             }
         }
