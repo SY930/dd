@@ -699,20 +699,24 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '79px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>基础营销信息</span>
-                    <Authority rightCode={AUTO_RUN_QUERY}>
-                        <Button
-                            onClick={() => {
-                                queryPromotionAutoRunList();
-                                openPromotionAutoRunListModal();
-                            }}
-                            className={styles.customPrimaryButton}
-                            >
-                            <span className={styles.customButtonWithContent}>
-                                <div style={{fontSize: '16px'}}>+&nbsp;</div>
-                                <div>自动执行</div>
-                            </span>
-                        </Button>
-                    </Authority>
+                    {
+                        !isHuaTian() && (
+                            <Authority rightCode={AUTO_RUN_QUERY}>
+                                <Button
+                                    onClick={() => {
+                                        queryPromotionAutoRunList();
+                                        openPromotionAutoRunListModal();
+                                    }}
+                                    className={styles.customPrimaryButton}
+                                >
+                                    <span className={styles.customButtonWithContent}>
+                                        <div style={{fontSize: '16px'}}>+&nbsp;</div>
+                                        <div>自动执行</div>
+                                    </span>
+                                </Button>
+                            </Authority>
+                        )
+                    }
                 </div>
             </div>
         );
