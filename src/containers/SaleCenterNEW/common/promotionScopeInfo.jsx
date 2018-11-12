@@ -253,7 +253,6 @@ class PromotionScopeInfo extends React.Component {
 
     getFilteredShopSchema() {
         const availableBrands = this.state.brands;
-        const occupiedShops = this.state.filterShops;
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
@@ -261,7 +260,9 @@ class PromotionScopeInfo extends React.Component {
         if (availableBrands instanceof Array && availableBrands.length > 0) {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
         }
-        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(shop.shopID));
+        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010') {
+            dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !this.state.filterShops.includes(shop.shopID));
+        }
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
         const availableBM = uniq(shops.map(shop => shop.businessModel));
