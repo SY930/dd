@@ -169,9 +169,7 @@ export const getGiftSchemaSuccessAC = (opt) => {
 };
 export const FetchGiftSchema = (opts) => {
     return (dispatch) => {
-        return fetchData('getSchema', { ...opts }, null, {
-            path: 'data.shops',
-        })
+        return axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data.shop'})
             .then((records) => {
                 dispatch(getGiftSchemaSuccessAC({
                     payload: {

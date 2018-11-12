@@ -28,6 +28,10 @@ import styles1 from '../SaleCenterNEW/ActivityPage.less';
 import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
+import {
+    BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
+    isGroupOfHuaTianGroupList, isHuaTian, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
+} from "../../constants/projectHuatianConf";
 
 class BasePage extends Component {
 
@@ -86,6 +90,11 @@ class BasePage extends Component {
     }
 
     handleSpecialPromotionCreate(index, activity) {
+        // 唤醒送礼 品牌不可创建
+        if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
         if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
@@ -105,6 +114,9 @@ class BasePage extends Component {
         });
         // 完善资料送礼只能创建一次
         if (key === '60') {
+            if (isHuaTian()) {
+                return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+            }
             this.props.saleCenterCheckSpecialExist({
                 eventWay: key,
                 data: {
@@ -131,6 +143,10 @@ class BasePage extends Component {
     }
 
     handleBasicPromotionCreate(index, promotionEntity) {
+        if (isHuaTian(this.props.user.accountInfo.groupID)) {
+            message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
         if (!checkPermission(BASIC_PROMOTION_CREATE)) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;

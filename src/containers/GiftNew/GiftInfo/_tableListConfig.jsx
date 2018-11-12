@@ -4,6 +4,10 @@ import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import {Tooltip} from 'antd';
 import {GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import {
+    getHuaTianDisabledGifts, isBrandOfHuaTianGroupList, isHuaTian,
+    isMine
+} from "../../../constants/projectHuatianConf";
 
 export const COLUMNS = [
     {
@@ -24,20 +28,28 @@ export const COLUMNS = [
             return (
                 <span>
                     <Authority rightCode={GIFT_LIST_UPDATE}>
-                        <a
-                            href="javaScript:;"
-                            onClick={() => {
-                                this.handleEdit(record, 'edit')
-                            }
-                            }
-                        >编辑</a>
+                        {
+                            (isHuaTian() && getHuaTianDisabledGifts().includes(String(record.giftType))) || (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                <a
+                                    href="javaScript:;"
+                                    disabled={true}
+                                >编辑</a>
+                            ) : (
+                                <a
+                                    href="javaScript:;"
+                                    onClick={() => {
+                                        this.handleEdit(record, 'edit')
+                                    }
+                                    }
+                                >编辑</a>
+                            )
+                        }
                     </Authority>
                     <a
                         href="javaScript:;"
                         onClick={() => {
                             this.handleEdit(record, 'detail')
-                        }
-                        }
+                        }}
                     >查看</a>
                     {record.sendTotalCount > 0 ?
                         <Tooltip title="券已发出，无法删除">
@@ -45,11 +57,23 @@ export const COLUMNS = [
                         </Tooltip>
                         :
                         <Authority rightCode={GIFT_LIST_DELETE}>
-                            <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
+                            {
+                                (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                    <a disabled={true}><span>删除</span></a>
+                                ) : (
+                                    <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
+                                )
+                            }
                         </Authority>
                     }
                     <Authority rightCode={GIFT_DETAIL_QUERY}>
-                        <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                        {
+                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                <a disabled={true}>详情</a>
+                            ) : (
+                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                            )
+                        }
                     </Authority>
                 </span>
             )

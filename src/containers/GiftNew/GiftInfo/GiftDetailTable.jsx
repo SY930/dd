@@ -2,10 +2,9 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
-import { jumpPage } from '@hualala/platform-base'
 import _ from 'lodash';
 import {throttle} from 'lodash';
-import { fetchData, axiosData } from '../../../helpers/util';
+import { axiosData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';

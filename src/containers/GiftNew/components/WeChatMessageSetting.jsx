@@ -19,6 +19,7 @@ import {
 } from "../../../redux/actions/actions";
 import WeChatMessageFormWrapper from "./WeChatMessageFormWrapper";
 import imgSrc from '../../../assets/empty_ph.png';
+import {isBrandOfHuaTianGroupList} from "../../../constants/projectHuatianConf";
 
 class WeChatMessageSetting extends Component {
 
@@ -63,17 +64,21 @@ class WeChatMessageSetting extends Component {
                     <div className={styles1.headerWithBgColor}>
                         <span className={styles1.customHeader}>
                             微信模板
-                            <Button
-                                type="ghost"
-                                style={{
-                                    display: !isEditing && isQueryFulfilled ? 'block' : 'none',
-                                }}
-                                className={styles1.jumpToCreate}
-                                onClick={startEdit}
-                            >
-                                <Icon type="edit" />
-                                编辑
-                            </Button>
+                            {
+                                !isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (
+                                    <Button
+                                        type="ghost"
+                                        style={{
+                                            display: !isEditing && isQueryFulfilled ? 'block' : 'none',
+                                        }}
+                                        className={styles1.jumpToCreate}
+                                        onClick={startEdit}
+                                    >
+                                        <Icon type="edit" />
+                                        编辑
+                                    </Button>
+                                )
+                            }
                         </span>
                     </div>
                 </div>
@@ -134,6 +139,7 @@ function matStateToProps(state) {
         loading: state.sale_wechat_message_setting.get('loading'),
         isEditing: state.sale_wechat_message_setting.get('isEditing'),
         isQueryFulfilled: state.sale_wechat_message_setting.get('isQueryFulfilled'),
+        user: state.user.toJS(),
     }
 }
 
