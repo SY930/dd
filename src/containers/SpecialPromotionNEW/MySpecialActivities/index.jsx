@@ -833,11 +833,18 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'operator',
                 width: 120,
                 key: 'operator',
-                render: (text, record, index) => {
-                    if (record.operator === '') {
+                render: (text, record) => {
+                    if (!record.operator) {
                         return '--';
                     }
-                    return `${JSON.parse(record.operator).userName} / ${JSON.parse(record.operator).u_userName || JSON.parse(record.operator).userName}`;
+                    let result;
+                    try {
+                        const operator = JSON.parse(record.operator);
+                        result = `${operator.userName} / ${operator.u_userName || operator.userName}`;
+                    } catch (e) {
+                        return '--';
+                    }
+                    return result || '--';
                 },
             },
             {
