@@ -1308,10 +1308,11 @@ class GiftAddModalStep extends React.PureComponent {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
-                    {
+                    { max: 50, message: '不能超过50个字符' },
+                    /*{
                         message: '汉字、字母、数字、小数点，50个字符以内',
                         pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                    },
+                    },*/
                 ],
                 disabled: type !== 'add',
             },

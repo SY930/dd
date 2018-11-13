@@ -49,15 +49,6 @@ class GiftAddModal extends React.Component {
 
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
-        /*fetchData('getShopBrand', { _groupID: groupID, groupID, isActive: 1 }, null, { path: 'data.records' }).then((data) => {
-            if (!data) return;
-            const groupTypes = [];
-            data.map((d) => {
-                groupTypes.push({ value: d.brandID, label: d.brandName })
-            });
-            groupTypes.push({ value: '-1', label: '(空)' });
-            this.setState({ groupTypes });
-        });*/
         if (type == 'edit') {
             if (giftImagePath) {
                 this.setState({
@@ -106,12 +97,6 @@ class GiftAddModal extends React.Component {
         const { groupTypes, imageUrl, transferType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
-            /*if (value === '30') {
-                if (imageUrl === '' || imageUrl === undefined) {
-                    message.error('请上传礼品图样!', 3);
-                    return;
-                }
-            }*/ // 礼品图片现在可以不传
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
@@ -299,10 +284,11 @@ class GiftAddModal extends React.Component {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
-                    {
+                    { max: 50, message: '不能超过50个字符' },
+                    /*{
                         message: '汉字、字母、数字、小数点，50个字符以内',
                         pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                    },
+                    },*/
                 ],
                 disabled: type !== 'add',
             },
