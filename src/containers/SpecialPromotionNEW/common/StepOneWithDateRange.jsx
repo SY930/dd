@@ -84,7 +84,6 @@ class StepOneWithDateRange extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        this.props.queryWechatMpInfo();
 
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
@@ -96,6 +95,7 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         if (this.props.type === '31' && this.props.specialPromotion.get('$eventInfo').size > 30) {
             const itemID = specialPromotion.itemID;
             this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
@@ -829,7 +829,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(queryOccupiedWeiXinAccountsStart(opts));
         },
         queryWechatMpInfo: (opts) => {
-            dispatch(queryWechatMpInfo())
+            dispatch(queryWechatMpInfo(opts))
         }
     }
 };
