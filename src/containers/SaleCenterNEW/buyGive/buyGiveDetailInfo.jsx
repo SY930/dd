@@ -40,11 +40,16 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
+const RULE_TYPE = [
+    {
+        value: '2',
+        label: '购买指定菜品满',
+    },
+    {
+        value: '1',
+        label: '购买当前菜品满',
+    }
+]
 
 class BuyGiveDetailInfo extends React.Component {
     constructor(props) {
@@ -60,6 +65,7 @@ class BuyGiveDetailInfo extends React.Component {
             dishes: [],
             targetScope: 0,
             stageAmountFlag: true,
+            stageType: 2,
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
         };
@@ -70,6 +76,7 @@ class BuyGiveDetailInfo extends React.Component {
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
+        this.handleStageTypeChange = this.handleStageTypeChange.bind(this);
         this.onGiveFoodCountChange = this.onGiveFoodCountChange.bind(this);
     }
 
@@ -96,6 +103,7 @@ class BuyGiveDetailInfo extends React.Component {
         // 根据ruleJson填充页面
         this.setState({
             display,
+            stageType: _rule.stageType ? _rule.stageType: 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             giveFoodCount: _rule.stage ? _rule.stage[0].giveFoodCount : '',
         });
@@ -139,7 +147,7 @@ class BuyGiveDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { stageAmount, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodMenuList } = this.state;
+        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodMenuList } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -153,7 +161,7 @@ class BuyGiveDetailInfo extends React.Component {
 
         if (stageAmountFlag && giveFoodCountFlag && dishsSelectStatus == 'success') {
             const rule = {
-                stageType: 2,
+                stageType,
                 targetScope,
                 stage: [
                     {
@@ -203,6 +211,9 @@ class BuyGiveDetailInfo extends React.Component {
         }
         this.setState({ stageAmount, stageAmountFlag });
     }
+    handleStageTypeChange(value) {
+        this.setState({ stageType: Number(value) });
+    }
 
     onGiveFoodCountChange(value) {
         let { giveFoodCount, giveFoodCountFlag } = this.state;
@@ -226,7 +237,17 @@ class BuyGiveDetailInfo extends React.Component {
             >
 
                 <PriceInput
-                    addonBefore={'购买指定菜品满'}
+                    addonBefore={<Select size="default"
+                                         onChange={this.handleStageTypeChange}
+                                         value={`${this.state.stageType}`}
+                                         getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            RULE_TYPE.map((item) => {
+                                return (<Option key={item.value} value={item.value}>{item.label}</Option>)
+                            })
+                        }
+                    </Select>}
                     addonAfter={'份'}
                     value={{ number: this.state.stageAmount }}
                     defaultValue={{ number: this.state.stageAmount }}
@@ -239,8 +260,6 @@ class BuyGiveDetailInfo extends React.Component {
     }
 
     renderGiveDishNumInput() {
-        const { getFieldDecorator } = this.props.form;
-
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
