@@ -91,55 +91,9 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-
-        /*if (type === 'edit' && value == '110') {
-            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
-            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
-            values.maxGiveCountPerBill = data.maxGiveCountPerBill
-            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
-            values.BOGOdiscountWay = data.BOGOdiscountWay
-        }*/
         this.setState({
             values
         });
-        /*fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
-            let { cities, shops } = data;
-            const treeData = [];
-            if (cities === undefined) {
-                cities = [];
-            }
-            if (shops === undefined) {
-                shops = [];
-            }
-            cities.forEach((city) => {
-                const newShops = [];
-                shops.filter((shop) => {
-                    return shop.cityID == city.cityID;
-                }).forEach((shop) => {
-                    const shopItem = {};
-                    shopItem.content = shop.shopName;
-                    shopItem.id = shop.shopID;
-                    newShops.push(shopItem);
-                });
-                treeData.push({
-                    province: {
-                        content: city.cityName,
-                        id: city.cityID,
-                    },
-                    shops: newShops,
-                });
-            });
-            this.setState({ shopsData: [...treeData] });
-        });*/
-        /*fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
-            if (!data) return;
-            const groupTypes = [];
-            data.forEach((d) => {
-                groupTypes.push({ value: d.brandID, label: d.brandName })
-            });
-            groupTypes.push({ value: '-1', label: '(空)' });
-            this.setState({ groupTypes });
-        }).catch(() => undefined);*/
         FetchGiftSort({});
     }
 
@@ -1103,7 +1057,7 @@ class GiftAddModalStep extends React.PureComponent {
                     }
             })
         }
-        const {isFoodCatNameList} = this.props.gift.data;
+        const {isFoodCatNameList, subGroupID} = this.props.gift.data;
         return (
             <FormItem
                 {...formItemLayout}
@@ -1113,7 +1067,16 @@ class GiftAddModalStep extends React.PureComponent {
                 help={this.state.foodNameListStatus === 'success' ? null : '不可为空'}
             >
                 {
-                    decorator({})(<FoodBox categoryOrDish={Number(isFoodCatNameList)} radioLabel={'抵扣方式'} noExclude={true} catOrFoodValue={_scopeLst} autoFetch={true} />)
+                    decorator({})(
+                        <FoodBox
+                            categoryOrDish={Number(isFoodCatNameList)}
+                            radioLabel={'抵扣方式'}
+                            subGroupID={subGroupID}
+                            noExclude={true}
+                            catOrFoodValue={_scopeLst}
+                            autoFetch={true}
+                        />
+                    )
                 }
             </FormItem>
 
@@ -1171,6 +1134,7 @@ class GiftAddModalStep extends React.PureComponent {
                     decorator({})(
                         <MoreFoodBox
                             key="foodsboxs"
+                            subGroupID={data.subGroupID}
                             scopeLst={scopeList}
                             foodSelectType={foodSelectType}
                             isExcludeFood={'1'}
@@ -1195,6 +1159,7 @@ class GiftAddModalStep extends React.PureComponent {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            subGroupID={data.subGroupID}
                             isBuyGive={true}
                             key="buyGiveFoodsboxs"
                             scopeLst={scopeList}
@@ -1221,6 +1186,7 @@ class GiftAddModalStep extends React.PureComponent {
                 {
                     decorator({})(
                         <MoreFoodBox
+                            subGroupID={data.subGroupID}
                             isBuyGive={true}
                             isSecondary={true}
                             key="buyGiveSecondaryFoodsboxs"
@@ -1420,7 +1386,7 @@ class GiftAddModalStep extends React.PureComponent {
                             this.secondForm.setFieldsValue({ promotionID: [] })
                             this.setState({ values })
                         }}
-                        data={data.extraInfo ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
+                        data={(data.extraInfo && data.extraInfo !== '0') ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
                     />
                 )
             },

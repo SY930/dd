@@ -20,7 +20,8 @@ const GiftCfg = {
         },
         {
             name: '菜品兑换券',
-            describe: '用户支付一定的金额可以兑换到相同的菜品',
+            describe: '用户可凭借该兑换券直接兑换菜品一份，仅需支付所设置的兑换金额。',
+            example: '例如：菜品金额20元，设置的兑换金额为5元，用户只需支付5元就可兑换该菜品。',
             value: '21',
             color: '#c49b79',
             category: 'primary',

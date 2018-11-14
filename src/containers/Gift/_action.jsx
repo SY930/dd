@@ -1,4 +1,4 @@
-import { fetchData } from '../../helpers/util';
+import {axiosData, fetchData} from '../../helpers/util';
 import _ from 'lodash';
 export const GIFT_FETCH_LIST_BEGIN = 'gift:: fetch list';
 export const GIFT_FETCH_LIST_OK = 'gift:: fetch list ok';
@@ -137,9 +137,7 @@ export const getGiftSchemaSuccessAC = (opt) => {
 };
 export const FetchGiftSchema = (opts) => {
     return dispatch => {
-        return fetchData('getSchema', { ...opts }, null, {
-                path: 'data.shops'
-            })
+        return axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data.shop'})
             .then(records => {
                 dispatch(getGiftSchemaSuccessAC({
                     payload: {

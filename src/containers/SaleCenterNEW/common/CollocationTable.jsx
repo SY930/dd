@@ -251,15 +251,15 @@ class CollocationTable extends React.Component {
                 })
                 this.setState({
                     foodCategoryCollection,
-                }, () => {
-                    // this.sortData(this.state.priceLst, this.state.scopeLst);
                 });
             }
         }
         this.setState({
             visible: true,
             recordInfo: indexInfo,
+            foodOptions: [],
             foodSelections: selections,
+            foodCurrentSelections: Array.from(selections),
         });
     }
     // 模态框确认事件
@@ -334,7 +334,7 @@ class CollocationTable extends React.Component {
             visible: false,
             // foodOptions: [],
             // foodSelections: new Set(),
-            // foodCurrentSelections: [],
+            foodCurrentSelections: [],
         }, () => {
             this.props.onChange && this.props.onChange(this.state.data);
         });
