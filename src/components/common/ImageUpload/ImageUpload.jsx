@@ -162,6 +162,7 @@ class ImageUpload extends React.Component {
                 {previewVisible &&
                     <Modal
                         title="预览"
+                        maskClosable={false}
                         footer={null}
                         className={styles.previewModal}
                         visible={previewVisible}
