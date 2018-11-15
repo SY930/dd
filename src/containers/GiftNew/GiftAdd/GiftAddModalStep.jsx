@@ -91,55 +91,9 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-
-        /*if (type === 'edit' && value == '110') {
-            values.ismaxGiveCountPerBill = data.maxGiveCountPerBill > 0 ? 1 : 0
-            values.ismaxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill > 0 ? 1 : 0
-            values.maxGiveCountPerBill = data.maxGiveCountPerBill
-            values.maxGiveCountPerFoodPerBill = data.maxGiveCountPerFoodPerBill
-            values.BOGOdiscountWay = data.BOGOdiscountWay
-        }*/
         this.setState({
             values
         });
-        /*fetchData('getSchema', {}, null, { path: 'data' }).then((data) => {
-            let { cities, shops } = data;
-            const treeData = [];
-            if (cities === undefined) {
-                cities = [];
-            }
-            if (shops === undefined) {
-                shops = [];
-            }
-            cities.forEach((city) => {
-                const newShops = [];
-                shops.filter((shop) => {
-                    return shop.cityID == city.cityID;
-                }).forEach((shop) => {
-                    const shopItem = {};
-                    shopItem.content = shop.shopName;
-                    shopItem.id = shop.shopID;
-                    newShops.push(shopItem);
-                });
-                treeData.push({
-                    province: {
-                        content: city.cityName,
-                        id: city.cityID,
-                    },
-                    shops: newShops,
-                });
-            });
-            this.setState({ shopsData: [...treeData] });
-        });*/
-        /*fetchData('getShopBrand', {}, null, { path: 'data.records' }).then((data) => {
-            if (!data) return;
-            const groupTypes = [];
-            data.forEach((d) => {
-                groupTypes.push({ value: d.brandID, label: d.brandName })
-            });
-            groupTypes.push({ value: '-1', label: '(空)' });
-            this.setState({ groupTypes });
-        }).catch(() => undefined);*/
         FetchGiftSort({});
     }
 
@@ -518,8 +472,8 @@ class GiftAddModalStep extends React.PureComponent {
             if (params.discountRate_111 && value == '111') {
                 params.discountRate = (params.discountRate_111 / 100).toFixed(2)
             }
-            if (params.isDiscountOffMax == 0 && value == '111') {
-                params.discountOffMax = 0 // 0标识不限制
+            if (!params.discountOffMax && value == '111') {
+                params.discountOffMax = '0' // 0标识不限制
             }
             if (value == '110') {
                 if (params.ismaxGiveCountPerBill == 0) {
@@ -1266,6 +1220,10 @@ class GiftAddModalStep extends React.PureComponent {
         } else {
             dates.numberOfTimeType = '0'
         }
+        // 折扣上限显示
+        if (value == '111' && dates.discountOffMax == 0) {
+            dates.discountOffMax = ''
+        }
         let giftValueLabel = '可抵扣金额';
         if (value == '10' || value == '91') {
             giftValueLabel = '礼品价值';
@@ -1292,6 +1250,21 @@ class GiftAddModalStep extends React.PureComponent {
                 disabled: type !== 'add',
                 surfix: '元',
                 rules: [{ required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` }, {
+                    validator: (rule, v, cb) => {
+                        if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '整数不能超过5位, 小数不能超过2位',
+                }],
+            },
+            discountOffMax: {
+                label: '折扣金额上限',
+                type: 'text',
+                placeholder: '输入0或者不输入表示不限制',
+                surfix: '元',
+                rules: [{
                     validator: (rule, v, cb) => {
                         if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
                             cb(rule.message);
@@ -1588,20 +1561,12 @@ class GiftAddModalStep extends React.PureComponent {
         // 菜品券金额限制暂时不可用每满选项
         formItems.moneyLimitType.options[1].disabled = this.props.gift.value == '21';
 
-        let formData;
-        // if (type == 'edit') {
-        formData = data === undefined ? dates : values;
-        // }
+        let formData = data === undefined ? dates : values;
         if (type === 'edit') {
             formData = dates;
             if (typeof(formData.foodNameList) === 'string') {
                 formData.foodNameList =  formData.foodNameList.split(',')
             }
-            /*console.log('formData.foodNameList: ', formData.foodNameList);
-            if (formData.foodNameList && formData.foodNameList.categoryOrDish ) {
-                formData.foodNameList
-            }
-            formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];*/
         }
         if (this.props.gift.value == '20') {
             formItems.moneyLimitType.label = '账单金额';
@@ -1610,37 +1575,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
-        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-       /* const steps = [{
-            title: '基本信息',
-            content: <BaseForm
-                getForm={(form) => {
-                    this.firstForm = form
-                }}
-                formItems={formItems}
-                formData={formData}
-                formKeys={firstKeys[describe]}
-                onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
-                getSubmitFn={(handles) => {
-                    this.handles[0] = handles;
-                }}
-                key={`${describe}-${type}1`}
-            />,
-        }, {
-            title: '使用规则',
-            content: (
-                <BaseForm
-                    getForm={form => this.secondForm = form}
-                    formItems={formItems}
-                    formData={formData}
-                    formKeys={secondKeys[describe]}
-                    onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
-                    getSubmitFn={(handles) => {
-                        this.handles[1] = handles;
-                    }}
-                    key={`${describe}-${type}2`}
-                />),
-        }];*/
+
         return (
             <div>
                 <div

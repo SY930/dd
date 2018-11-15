@@ -165,7 +165,7 @@ const FIRST_KEYS = {
     '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'price', 'validityDays', 'giftRemark'] }],
     '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'buyGiveFoods', 'stageAmount', 'buyGiveSecondaryFoods', 'giveFoodCount', 'giftRemark',] },
         { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
-    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'disCountTypeAndValue', 'giftRemark',] },
+    '折扣券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'disCountTypeAndValue', 'discountOffMax', 'giftRemark',] },
         { col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo'] }],
 };
 const SECOND_KEYS = {
