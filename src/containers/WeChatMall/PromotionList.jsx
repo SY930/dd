@@ -251,7 +251,7 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     queryEvents(opts) {
-        if (!this.props.user.shopID) {
+        if (!(this.props.user.shopID > 0)) {
             return;
         }
         const params = {...opts, shopID: this.props.user.shopID, };

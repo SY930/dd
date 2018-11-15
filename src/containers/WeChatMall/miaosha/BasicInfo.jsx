@@ -124,7 +124,7 @@ class BasicInfo extends React.Component {
     }
 
     queryExtraEventsByTime(startTime, endTime) {
-        if (!this.props.user.shopID) {
+        if (!(this.props.user.shopID > 0)) {
             return;
         }
         this.setState({
