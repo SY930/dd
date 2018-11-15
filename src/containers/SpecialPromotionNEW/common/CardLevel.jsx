@@ -63,6 +63,7 @@ class CardLevel extends React.Component {
         this.props.fetchSpecialCardLevel({
             data: opts,
         });
+        const cardLevelRangeType = this.props.cardLevelRangeType;
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
 
         // 渲染&&通知父组件数据
@@ -72,7 +73,7 @@ class CardLevel extends React.Component {
             // 所以要更改为cardLevelRangeType为2（局部范围），并且按照新版把cardLevelIDList数组加入原来局部的cardLevelID
             let cardLevelRangeType = '2',
                 cardLevelID = '0',
-                cardLevelIDList = [thisEventInfo.cardLevelID];
+                cardLevelIDList = thisEventInfo.cardLevelID ? [thisEventInfo.cardLevelID] : [];
             this.setState({
                 cardLevelRangeType,
                 cardLevelIDList,
@@ -85,7 +86,7 @@ class CardLevel extends React.Component {
             })
         } else {
             this.setState({
-                cardLevelRangeType: thisEventInfo.cardLevelRangeType || '0',
+                cardLevelRangeType: cardLevelRangeType || thisEventInfo.cardLevelRangeType || '0',
                 cardLevelIDList: thisEventInfo.cardLevelIDList || [],
                 defaultCardType: thisEventInfo.defaultCardType || '',
             }, () => {
@@ -303,17 +304,17 @@ class CardLevel extends React.Component {
             <Form className={styles.cardLevelTree}>
                 {
                     this.props.type != '61' ?
-                        <FormItem label="会员范围" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                        <FormItem label={this.props.label || '会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>全部会员</Radio>
-                                <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? '会员等级' : '会员卡类'}</Radio>
+                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel || '全部会员'}</Radio>
+                                <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? '会员等级' : (this.props.cusPartialLabel || '会员卡类')}</Radio>
                             </RadioGroup>
                         </FormItem> : null
                 }
                 {
                     this.props.type == '61' || this.state.cardLevelRangeType == '2' ?
                         <FormItem
-                            label={this.props.type == '61' ? '升级后的等级为' : (this.props.catOrCard == 'card' ? '适用卡等级' : '适用卡类')}
+                            label={this.props.type == '61' ? '升级后的等级为' : (this.props.catOrCard == 'card' ? '适用卡等级' : (this.props.cusSelectorLabel || '适用卡类'))}
                             className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
