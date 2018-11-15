@@ -10,22 +10,17 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Select } from 'antd';
+import { Form, Select, Radio } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import {queryGroupMembersList} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+const RadioGroup = Radio.Group;
 
-// const FormItem = Form.Item;
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Immutable = require('immutable');
 
 class StepTwo extends React.Component {
     constructor(props) {
@@ -145,44 +140,85 @@ class StepTwo extends React.Component {
         this.setState({groupMembersID: value});
     }
 
+    renderMemberGroup() {
+        return (
+            <FormItem
+                label="会员群体"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {this.props.form.getFieldDecorator('setgroupMembersID', {
+                    rules: [{
+                        required: true,
+                        message: '请选择会员群体',
+                    }],
+                    initialValue: this.state.groupMembersID,
+                })(
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder="请选择会员群体"
+                        getPopupContainer={(node) => node.parentNode}
+                        onChange={this.handleSelectChange}
+                    >
+                        <Option key={'0'}>全部会员</Option>
+                        {this.renderOptions()}
+                    </Select>
+                )}
+            </FormItem>
+        )
+    }
+    handleGroupOrCatRadioChange = (e) => {
+        const type = e.target.value;
+        this.setState({
+            cardLevelRangeType: type,
+            cardLevelIDList: [],
+            groupMembersID: undefined,
+        })
+    }
+
+    renderBirthDayGroupSelector() {
+        const { cardLevelRangeType } = this.state;
+        const localType = cardLevelRangeType == 5 ? '5' : '0'
+        return (
+            <div>
+                <FormItem label={'会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                    <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
+                        <Radio key={'5'} value={'5'}>会员群体</Radio>
+                        <Radio key={'0'} value={'0'}>会员卡类</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {cardLevelRangeType == 5 && this.renderMemberGroup()}
+                {cardLevelRangeType != 5 && (
+                    <CardLevel
+                        cardLevelRangeType={cardLevelRangeType}
+                        onChange={this.onCardLevelChange}
+                        label="适用卡类"
+                        cusAllLabel="不限"
+                        cusPartialLabel="部分卡类"
+                        cusSelectorLabel="选择卡类"
+                        catOrCard="cat"
+                        type={this.props.type}
+                        form={this.props.form}
+                    />
+                )}
+            </div>
+        )
+    }
+
     render() {
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         return (
             <div>
-                {this.props.type == '51' && this.state.cardLevelRangeType == 5 ?
-                    <FormItem
-                        label="会员群体"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        {this.props.form.getFieldDecorator('setgroupMembersID', {
-                            rules: [{
-                                required: true,
-                                message: '请选择会员群体',
-                            }],
-                            initialValue: this.state.groupMembersID,
-                        })(
-                            <Select
-                                style={{ width: '100%' }}
-                                placeholder="请选择会员群体"
-                                getPopupContainer={(node) => node.parentNode}
-                                onChange={this.handleSelectChange}
-                            >
-                                <Option key={'0'}>全部会员</Option>
-                                {this.renderOptions()}
-                            </Select>
-                        )
-                        }
-                    </FormItem>
-                    :
+                {this.props.type == '51' ? this.renderBirthDayGroupSelector() : (
                     <CardLevel
                         onChange={this.onCardLevelChange}
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}
-                    />}
+                    />
+                )}
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
