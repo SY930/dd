@@ -37,6 +37,7 @@ import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+import GiftTimeIntervals from "./GiftTimeIntervals";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -989,7 +990,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row>
                 <Col>
-                    {decorator({})(<SeniorDateSetting couponPeriodSettings={data.couponPeriodSettingList} />)}
+                    {decorator({})(<GiftTimeIntervals />)}
                 </Col>
             </Row>
         )
