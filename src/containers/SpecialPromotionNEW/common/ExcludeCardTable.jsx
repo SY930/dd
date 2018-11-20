@@ -168,12 +168,13 @@ class ExcludeCardTable extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
+    const groupCardTypeList = state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']);
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
-        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']) || [],
+        groupCardTypeList:  groupCardTypeList? groupCardTypeList.toJS() : [],
     };
 };
 
