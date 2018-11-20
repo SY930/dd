@@ -4,11 +4,11 @@ import GiftCfg from "./Gift";
 // 测试环境 3个集团id 11583      11581 11580
 
 /** 华天集团groupID */
-export const HUATIAN_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '-1' : '11583';
+export const HUATIAN_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '194247' : '11583';
 /** 庆丰集团groupID */
-export const QINGFENG_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '-1' : '11581';
+export const QINGFENG_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '7001' : '11581';
 /** 护国寺小吃集团groupID */
-export const HUGUOSI_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '-1' : '11580';
+export const HUGUOSI_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '137722' : '11580';
 
 
 
