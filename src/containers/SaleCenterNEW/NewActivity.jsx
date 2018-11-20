@@ -39,7 +39,6 @@ if (process.env.__CLIENT__ === true) {
     require('../../components/common/components.less');
 }
 
-import { ActivityLogo } from './ActivityLogo/ActivityLogo';
 import ActivityMain from './activityMain';
 import Authority from './../../components/common/Authority';
 import {
@@ -64,6 +63,10 @@ import {
 } from "../../constants/entryCodes";
 import NewPromotionCard from "../NewCreatePromotions/NewPromotionCard";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
+import {
+    isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP,
+    isHuaTian
+} from "../../constants/projectHuatianConf";
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -178,8 +181,16 @@ class NewActivity extends React.Component {
                     {this.renderModal()}
                 </Col>
             </Row>
-
         );
+    }
+
+    handleCardClick = (index, activity) => {
+        if (isHuaTian(this.props.user.accountInfo.groupID)) {
+            message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
+            return;
+        }
+        this.props.toggleIsUpdate(true);
+        this.onButtonClicked(index, activity);
     }
 
 
@@ -206,8 +217,7 @@ class NewActivity extends React.Component {
                                 key={activity.key}
                                 promotionEntity={allBasicActivitiesMap[activity.key]}
                                 onCardClick={() => {
-                                    this.props.toggleIsUpdate(true);
-                                    this.onButtonClicked(index, activity);
+                                   this.handleCardClick(index, activity)
                                 }}
                                 index={index}
                             />
@@ -259,7 +269,9 @@ class NewActivity extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
         };
+        /** 已经不用此页面新建活动了, 所以不需要加华天的定制化参数 */
         this.props.fetchFoodCategoryInfo({ ...opts });
+        /** 已经不用此页面新建活动了, 所以不需要加华天的定制化参数 */
         this.props.fetchFoodMenuInfo({ ...opts });
         // save the promotionType to redux
         this.props.setPromotionType({

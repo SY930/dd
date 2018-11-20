@@ -251,6 +251,9 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     queryEvents(opts) {
+        if (!(this.props.user.shopID > 0)) {
+            return;
+        }
         const params = {...opts, shopID: this.props.user.shopID, };
 
         axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})

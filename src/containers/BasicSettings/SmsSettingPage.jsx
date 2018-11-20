@@ -18,6 +18,7 @@ import {messageTemplateState} from "./reducers";
 import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_CREATE} from "../../constants/authorityCodes";
+import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
 
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState

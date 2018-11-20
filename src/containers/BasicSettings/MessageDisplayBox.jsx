@@ -8,6 +8,7 @@ import {
 } from "./actions";
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_DELETE, SMS_TEMPLATE_UPDATE} from "../../constants/authorityCodes";
+import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -57,14 +58,16 @@ class MessageDisplayBox extends React.Component {
                                         e.stopPropagation();
                                     }}
                             >
-                                <Authority rightCode={SMS_TEMPLATE_DELETE}>
+                                {!isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (
+                                    <Authority rightCode={SMS_TEMPLATE_DELETE}>
                                     <span onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                         this.showConfirm();
                                     }}
                                     >删除</span>
-                                </Authority>
+                                    </Authority>
+                                ) }
                             </div>
 
                     </div>

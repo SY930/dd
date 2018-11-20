@@ -45,8 +45,7 @@ class GiftEditPage extends Component {
 
     render() {
         const { giftType, operationType, loading } = this.props;
-        const giftName = (GiftCfg.giftType.find(item => item.value === giftType) || {}).name;
-        const giftDescribe = (GiftCfg.giftType.find(item => item.value === giftType) || {}).describe;
+        const { name: giftName, describe: giftDescribe, example } = GiftCfg.giftType.find(item => item.value === giftType) || {};
         return (
             <div style={{
                 backgroundColor: '#F3F3F3',
@@ -56,9 +55,17 @@ class GiftEditPage extends Component {
                     <div className={styles.pageHeaderTitle}>
                         {giftName}
                     </div>
-                    <div className={styles.pageHeaderDescription}>
+                    <div className={styles.pageHeaderDescription} style={{ fontSize: example ? 12 : 14 }}>
                         {giftDescribe}
+                        {
+                            !!example && (
+                                <div>
+                                    {example}
+                                </div>
+                            )
+                        }
                     </div>
+
                     <div className={styles.placeholder}/>
                     <Button
                         type="ghost"

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-02-09T11:12:25+08:00
  * @Email:  wangxiaofeng@hualala.com
@@ -55,8 +55,8 @@ class PromotionBasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        this.props.queryWechatMpInfo();
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         let mpID;
         try {
             mpID = JSON.parse(specialPromotion.pushMessageMpID).mpID
@@ -383,7 +383,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterQueryFsmGroupSettleUnit(opts));
         },
         queryWechatMpInfo: (opts) => {
-            dispatch(queryWechatMpInfo())
+            dispatch(queryWechatMpInfo(opts))
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))

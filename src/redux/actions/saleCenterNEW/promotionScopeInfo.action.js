@@ -51,6 +51,7 @@ export const SCENARIOS = Object.freeze([{
 
 
 import {
+    axiosData,
     fetchData,
     generateXWWWFormUrlencodedParams,
 } from '../../../helpers/util';
@@ -60,33 +61,10 @@ export const fetchPromotionScopeInfo = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO,
         });
-        const params = generateXWWWFormUrlencodedParams(opts);
-
-        fetch('/api/shopcenter/shop/schema', {
-            method: 'POST',
-            body: params,
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-        }).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
-            if (responseJSON.resultcode === '000') {
-                dispatch(fetchPromotionScopeInfoSuccess(responseJSON.data));
-            } else {
-                dispatch(fetchPromotionScopeInfoFailed());
-            }
-        }).catch((error) => {
-            dispatch(fetchPromotionScopeInfoFailed());
-        });
+        axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data'})
+            .then(data => dispatch(fetchPromotionScopeInfoSuccess(data)),
+                error => dispatch(fetchPromotionScopeInfoFailed()))
+            .catch(err => console.log('err: ', err))
     };
 };
 
@@ -96,33 +74,10 @@ export const getPromotionShopSchema = (params) => {
             type: SALE_CENTER_GET_SHOP_SCHEMA,
         });
 
-        fetch('/api/shopapi/schema', {
-            method: 'POST',
-            body: JSON.stringify(params),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            }}).then((response) => {
-            if (response.status >= 200 && response.status < 300) {
-                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                    return response.json();
-                }
-                return response.text();
-            }
-            return Promise.reject(new Error(response.statusText));
-        }).then((responseJSON) => {
-            if (responseJSON.code === '000') {
-                dispatch(getPromotionShopSchemaSuccess(responseJSON.data));
-            } else {
-                dispatch(getPromotionShopSchemaFailed());
-            }
-        }, (error) => {
-            console.log('错误：', error);
-            dispatch(getPromotionShopSchemaFailed());
-        }).catch((error) => {
-            console.log('错误：', error);
-        });
+        axiosData('/crm/groupShopService_findSchema.ajax', {}, {}, {path: 'data'})
+            .then(data => dispatch(getPromotionShopSchemaSuccess(data)),
+                error => dispatch(getPromotionShopSchemaFailed()))
+            .catch(err => console.log('err: ', err))
     };
 };
 

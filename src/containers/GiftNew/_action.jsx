@@ -169,9 +169,7 @@ export const getGiftSchemaSuccessAC = (opt) => {
 };
 export const FetchGiftSchema = (opts) => {
     return (dispatch) => {
-        return fetchData('getSchema', { ...opts }, null, {
-            path: 'data.shops',
-        })
+        return axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data.shop'})
             .then((records) => {
                 dispatch(getGiftSchemaSuccessAC({
                     payload: {
@@ -478,13 +476,13 @@ export const queryCouponShopList = (opts) => {
 };
 
 // 公众号
-export const queryWechatMpInfo = () => {
+export const queryWechatMpInfo = (opts) => {
     return (dispatch) => {
         dispatch({
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
             payload: undefined,
         });
-        return fetchData('queryWechatMpInfo', {}, null, { path: 'mpList', throttle: false })
+        return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
             .then((mpList) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,

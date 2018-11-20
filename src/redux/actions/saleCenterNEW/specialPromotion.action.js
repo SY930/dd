@@ -159,7 +159,7 @@ export const queryFsmGroupEquityAccount = () => {
             .then(res => {
                 dispatch({
                     type: SALE_CENTER_FSM_EQUITY_UNIT,
-                    payload: res,
+                    payload: Array.isArray(res) ? res : [],
                 });
 
             })
@@ -186,12 +186,14 @@ export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
             return Promise.reject(new Error(response.statusText))
         }).then((responseJSON) => {
             if (responseJSON.code === '000') {
-                // 应后端要求 余额balance置为0
-                responseJSON.accountInfoList && responseJSON.accountInfoList.forEach(item => item.balance = 0);
-                dispatch({
-                    type: SALE_CENTER_FSM_SETTLE_UNIT,
-                    payload: responseJSON.accountInfoList,
-                });
+                if (Array.isArray(responseJSON.accountInfoList)) {
+                    // 应后端要求 余额balance置为0
+                    responseJSON.accountInfoList && responseJSON.accountInfoList.forEach(item => item.balance = 0);
+                    dispatch({
+                        type: SALE_CENTER_FSM_SETTLE_UNIT,
+                        payload: responseJSON.accountInfoList,
+                    });
+                }
             }
         }).catch((error) => {
         })

@@ -84,6 +84,7 @@ import {
     AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
+import {isBrandOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -96,6 +97,7 @@ const mapStateToProps = (state) => {
         myActivities: state.sale_myActivities_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user.toJS(),
     };
 };
@@ -153,11 +155,11 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
+        fetchFoodCategoryInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
         },
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+        fetchFoodMenuInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
         },
         queryPromotionAutoRunList: (opts) => {
             dispatch(queryPromotionAutoRunList(opts))
@@ -535,8 +537,8 @@ class MyActivities extends React.Component {
                 _groupID: this.props.user.accountInfo.groupID,
                 shopID: responseJSON.promotionInfo.master.shopIDLst,
             };
-            this.props.fetchFoodCategoryInfo({ ...opts });
-            this.props.fetchFoodMenuInfo({ ...opts });
+            this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
+            this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
         }
         // 把查询到的活动信息存到redux
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
@@ -558,10 +560,9 @@ class MyActivities extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
-        console.log('arrayTransformAdapter: ', _record.promotionType);
         if ( _record && _record.maintenanceLevel !== '1') { // 集团
-            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID });
-            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID });
+            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
+            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
         }
         this.props.fetchPromotionDetail_NEW({
             data: {
@@ -698,20 +699,24 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '79px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>基础营销信息</span>
-                    <Authority rightCode={AUTO_RUN_QUERY}>
-                        <Button
-                            onClick={() => {
-                                queryPromotionAutoRunList();
-                                openPromotionAutoRunListModal();
-                            }}
-                            className={styles.customPrimaryButton}
-                            >
-                            <span className={styles.customButtonWithContent}>
-                                <div style={{fontSize: '16px'}}>+&nbsp;</div>
-                                <div>自动执行</div>
-                            </span>
-                        </Button>
-                    </Authority>
+                    {
+                        !isHuaTian() && (
+                            <Authority rightCode={AUTO_RUN_QUERY}>
+                                <Button
+                                    onClick={() => {
+                                        queryPromotionAutoRunList();
+                                        openPromotionAutoRunListModal();
+                                    }}
+                                    className={styles.customPrimaryButton}
+                                >
+                                    <span className={styles.customButtonWithContent}>
+                                        <div style={{fontSize: '16px'}}>+&nbsp;</div>
+                                        <div>自动执行</div>
+                                    </span>
+                                </Button>
+                            </Authority>
+                        )
+                    }
                 </div>
             </div>
         );
@@ -1004,19 +1009,27 @@ class MyActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
+                className: 'TableTxtCenter',
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
+                    const id = this.props.user.accountInfo.groupID;
                     return (<span>
-                        <a
-                            href="#"
-                            disabled={!isGroupPro}
-                            onClick={() => {
-                                this.handleDisableClickEvent(text, record, index);
-                            }}
-                        >{buttonText}</a>
+                            {
+                                (isHuaTian(id) || !isBrandOfHuaTianGroupList(id)) && (
+                                    <a
+                                        href="#"
+                                        disabled={!isHuaTian(id) && !isGroupPro}
+                                        onClick={() => {
+                                            this.handleDisableClickEvent(text, record, index);
+                                        }}
+                                    >
+                                        {buttonText}
+                                    </a>
+                                )
+                            }
                         <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
@@ -1029,16 +1042,20 @@ class MyActivities extends React.Component {
                                 查看
                             </a>
                         </Authority>
-                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                            <a
-                                href="#"
-                                disabled={!isGroupPro}
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true)
-                                    this.handleUpdateOpe(text, record, index);
-                                }}
-                            >编辑</a>
-                        </Authority>
+                            {
+                                !isHuaTian(id) && (
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                        <a
+                                            href="#"
+                                            disabled={!isGroupPro}
+                                            onClick={() => {
+                                                this.props.toggleIsUpdate(true)
+                                                this.handleUpdateOpe(text, record, index);
+                                            }}
+                                        >编辑</a>
+                                    </Authority>
+                                )
+                            }
                     </span>
 
                     );

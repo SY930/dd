@@ -17,6 +17,7 @@ import {
     updateMessageTemplate,
     getMessageTemplateList,
 } from "./actions";
+import {isBrandOfHuaTianGroupList, SMS_EDIT_DISABLED_TIP} from "../../constants/projectHuatianConf";
 const FormItem = Form.Item;
 
 class MessageTemplateEditPanel extends React.Component {
@@ -65,6 +66,10 @@ class MessageTemplateEditPanel extends React.Component {
 
     /** 新建/编辑 保存*/
     save() {
+        if (this.props.templateEntity && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            messageService.warning(SMS_EDIT_DISABLED_TIP);
+            return;
+        }
         let flag = true;
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
             if (error) {

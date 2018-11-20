@@ -64,23 +64,6 @@ export const FetchAllChannelInfo = () => {
     }
 };
 
-export const loadStores = (params = {}) => {
-    return (dispatch) => {
-        return fetchData('getSchema', params, null, {
-            path: 'data.shops',
-        }).then((stores = []) => {
-            const _stores = stores || []
-            dispatch({
-                type: CRM_CARD_TYPE_GET_SCHEMA_DATA,
-                payload: {
-                    shopStores: _stores,
-                },
-            });
-            return Promise.resolve(_stores);
-        });
-    };
-}
-
 const getFsmSettleUnitSuccessAC = (opt) => {
     return {
         type: CRM_CARD_TYPE_GET_FSM_SETTLE_UNIT_DATA,

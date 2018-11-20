@@ -109,12 +109,11 @@ class PhonePreview extends PureComponent {
     shopNameString() {
         let {
             shopNames : shopIDs,
-            groupName,
             shopSchema,
         } = this.props;
         shopIDs = shopIDs ? shopIDs.toJS() : [];
         if (!shopIDs.length) {
-            return `${groupName || ''}所有门店通用`;
+            return '所有门店通用';
         } else {
             const shops = shopSchema ? shopSchema.toJS().shops : [];
             const selectedShopNames = shops.filter(item => shopIDs.includes(item.shopID)).map(shop => shop.shopName);
