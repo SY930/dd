@@ -322,15 +322,15 @@ class SpecialDetailInfo extends React.Component {
 
         // 校验中奖比率
         function checkGiftOdds(giftOdds) {
-            const _value = parseFloat(giftOdds.value);
             if (type == '20') {
-                if (_value > 0) {
+                const _value = parseFloat(giftOdds.value);
+                if (_value >= 0 && _value <= 100) {
                     return giftOdds;
                 }
                 return {
-                    msg: '中奖比率必须大于0小于100',
+                    msg: '中奖比率必填, 大于等于0, 小于等于100',
                     validateStatus: 'error',
-                    value: '0',
+                    value: '',
                 }
             }
             return giftOdds;
