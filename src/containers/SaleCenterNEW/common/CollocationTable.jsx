@@ -801,6 +801,7 @@ class CollocationTable extends React.Component {
 
                 <Modal
                     visible={this.state.visible}
+                    maskClosable={false}
                     onOk={() => { this.handleOk() }}
                     onCancel={() => { this.handleCancel() }}
                     width="922px"

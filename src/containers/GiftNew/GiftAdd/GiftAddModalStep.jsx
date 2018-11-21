@@ -37,6 +37,7 @@ import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+import AmountType from "./common/AmountType";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -56,7 +57,7 @@ class GiftAddModalStep extends React.PureComponent {
             shopSchema, // 后台请求来的值
             // modalKey:1,
             firstKeys: { ...FIRST_KEYS },
-            secondKeys: { ...SECOND_KEYS },
+            secondKeys: { ...JSON.parse(JSON.stringify(SECOND_KEYS)) },
             groupTypes: [],
             giftData: [],
             sharedGifts: [],
@@ -86,10 +87,17 @@ class GiftAddModalStep extends React.PureComponent {
 
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { name, data, value } = thisGift;
-        const { secondKeys, values } = this.state;
+        const { values } = this.state;
         if (type === 'edit' && value == '111') {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
+        }
+        if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
+            const { secondKeys } = this.state
+            const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
+            if (index >= 0) {
+                secondKeys[name][0].keys.splice(index, 1);
+            this.setState({ secondKeys })
         }
         this.setState({
             values
@@ -98,7 +106,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { gift: { name, data, value }, type, sharedGifts } = nextProps;
+        const { sharedGifts } = nextProps;
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
@@ -472,8 +480,8 @@ class GiftAddModalStep extends React.PureComponent {
             if (params.discountRate_111 && value == '111') {
                 params.discountRate = (params.discountRate_111 / 100).toFixed(2)
             }
-            if (params.isDiscountOffMax == 0 && value == '111') {
-                params.discountOffMax = 0 // 0标识不限制
+            if (!params.discountOffMax && value == '111') {
+                params.discountOffMax = '0' // 0标识不限制
             }
             if (value == '110') {
                 if (params.ismaxGiveCountPerBill == 0) {
@@ -605,6 +613,13 @@ class GiftAddModalStep extends React.PureComponent {
             } else if (type === 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
+            }
+            if (value == 10) {
+                if (type === 'add') {
+                    params.amountType = 1;
+                } else if (!Number(params.amountType || 0)) {
+                    params.amountType = 0;
+                }
             }
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
@@ -1209,6 +1224,8 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, } = this.state;
         const dates = Object.assign({}, data);
+        const displayFirstKeys = firstKeys[describe];
+        const displaySecondKeys = secondKeys[describe];
         if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
@@ -1231,6 +1248,10 @@ class GiftAddModalStep extends React.PureComponent {
             dates.numberOfTimeType = '1'
         } else {
             dates.numberOfTimeType = '0'
+        }
+        // 折扣上限显示
+        if (value == '111' && dates.discountOffMax == 0) {
+            dates.discountOffMax = ''
         }
         let giftValueLabel = '可抵扣金额';
         if (value == '10' || value == '91') {
@@ -1258,6 +1279,21 @@ class GiftAddModalStep extends React.PureComponent {
                 disabled: type !== 'add',
                 surfix: '元',
                 rules: [{ required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` }, {
+                    validator: (rule, v, cb) => {
+                        if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '整数不能超过5位, 小数不能超过2位',
+                }],
+            },
+            discountOffMax: {
+                label: '折扣金额上限',
+                type: 'text',
+                placeholder: '输入0或者不输入表示不限制',
+                surfix: '元',
+                rules: [{
                     validator: (rule, v, cb) => {
                         if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
                             cb(rule.message);
@@ -1550,63 +1586,42 @@ class GiftAddModalStep extends React.PureComponent {
                 defaultValue: false,
                 render: decorator => decorator({})(<IsSync/>),
             },
+            amountType: {
+                label: `规则设置`,
+                type: 'custom',
+                render: decorator => decorator({})(<AmountType/>),
+            },
         };
         // 菜品券金额限制暂时不可用每满选项
         formItems.moneyLimitType.options[1].disabled = this.props.gift.value == '21';
 
-        let formData;
-        // if (type == 'edit') {
-        formData = data === undefined ? dates : values;
-        // }
+        let formData = data === undefined ? dates : values;
         if (type === 'edit') {
             formData = dates;
             if (typeof(formData.foodNameList) === 'string') {
-                formData.foodNameList =  formData.foodNameList.split(',')
+                formData.foodNameList = formData.foodNameList.split(',')
             }
-            /*console.log('formData.foodNameList: ', formData.foodNameList);
-            if (formData.foodNameList && formData.foodNameList.categoryOrDish ) {
-                formData.foodNameList
-            }
-            formData.foodNameList = formData.foodNameList instanceof Array ? formData.foodNameList : formData.foodNameList ? formData.foodNameList.split(',') : [];*/
         }
         if (this.props.gift.value == '20') {
             formItems.moneyLimitType.label = '账单金额';
         } else {
             formItems.moneyLimitType.label = '金额限制';
         }
+        if (this.props.gift.value == '10' && values.amountType == 1) {
+            const {
+                dishes = [],
+                excludeDishes = [],
+                foodCategory = [],
+            } = values.foodsboxs || {};
+            if (dishes.length || excludeDishes.length || foodCategory.length) {
+                formItems.moneyLimitType.label = '活动菜品金额限制'
+            } else {
+                formItems.moneyLimitType.label = '账单金额限制'
+            }
+        }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
-        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-       /* const steps = [{
-            title: '基本信息',
-            content: <BaseForm
-                getForm={(form) => {
-                    this.firstForm = form
-                }}
-                formItems={formItems}
-                formData={formData}
-                formKeys={firstKeys[describe]}
-                onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
-                getSubmitFn={(handles) => {
-                    this.handles[0] = handles;
-                }}
-                key={`${describe}-${type}1`}
-            />,
-        }, {
-            title: '使用规则',
-            content: (
-                <BaseForm
-                    getForm={form => this.secondForm = form}
-                    formItems={formItems}
-                    formData={formData}
-                    formKeys={secondKeys[describe]}
-                    onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
-                    getSubmitFn={(handles) => {
-                        this.handles[1] = handles;
-                    }}
-                    key={`${describe}-${type}2`}
-                />),
-        }];*/
+
         return (
             <div>
                 <div
@@ -1621,7 +1636,7 @@ class GiftAddModalStep extends React.PureComponent {
                     }}
                     formItems={formItems}
                     formData={formData}
-                    formKeys={firstKeys[describe]}
+                    formKeys={displayFirstKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
@@ -1638,7 +1653,7 @@ class GiftAddModalStep extends React.PureComponent {
                     getForm={form => this.secondForm = form}
                     formItems={formItems}
                     formData={formData}
-                    formKeys={secondKeys[describe]}
+                    formKeys={displaySecondKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
                     getSubmitFn={(handles) => {
                         this.handles[1] = handles;
@@ -1647,35 +1662,6 @@ class GiftAddModalStep extends React.PureComponent {
                 />
             </div>
         )
-        /*return (
-            <Modal
-                // key={modalKey}
-                title={`${type === 'add' ? '新建' : '编辑'}${describe}`}
-                className={styles.foodModal}
-                visible={visible}
-                maskClosable={false}
-                onCancel={() => this.handleCancel()}
-                footer={false}
-                key={`${describe}-${type}`}
-            // afterClose={this.afterClose}
-            // wrapClassName="progressBarModal"
-            >
-                {visible ? <div className={styles.customProgressBar}>
-                    <CustomProgressBar
-                        style={{ height: '200px' }}
-                        steps={steps}
-                        callback={(arg) => {
-                            // this.props.callbacktwo(arg);
-                        }}
-                        onNext={this.handleNext}
-                        onFinish={this.handleFinish}
-                        onPrev={this.handlePrev}
-                        onCancel={this.handleCancel}
-                        loading={this.state.finishLoading}
-                    />
-                </div> : null }
-            </Modal>
-        )*/
     }
 }
 

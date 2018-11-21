@@ -131,6 +131,7 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$specialDetailInfo', 'status'], 'pending');
 
         case SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_OK:
+            console.log('action.payload: ', action.payload);
             if ($$state.getIn(['$specialDetailInfo', 'status']) === 'pending') {
                 if (action.payload.eventInfo) {
                     return $$state.setIn(['$specialDetailInfo', 'status'], 'success')
@@ -213,11 +214,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$cardInfo', 'status'], 'pending');
 
         case SALE_CENTER_FETCH_CARD_LEVEL_OK:
-            if ($$state.getIn(['$cardInfo', 'status']) === 'pending') {
-                return $$state.setIn(['$cardInfo', 'status'], 'success')
-                    .setIn(['$specialDetailInfo', 'data', 'cardInfo'], Immutable.fromJS(action.payload));
-            }
-            return $$state;
+            return $$state.setIn(['$cardInfo', 'status'], 'success')
+                .setIn(['$specialDetailInfo', 'data', 'cardInfo'], Immutable.fromJS(action.payload));
 
         case SALE_CENTER_FETCH_CARD_LEVEL_TIMEOUT:
             return $$state.setIn(['$cardInfo', 'status'], 'timeout');

@@ -953,6 +953,7 @@ export default class EditableTable extends React.Component {
                   rowSelection={this.props.rowSelection}
               />
               <Modal
+                  maskClosable={false}
                   title={this.props.ModalTitle}
                   visible={this.state.visible}
                   onOk={this.handleOk}

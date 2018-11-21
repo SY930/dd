@@ -63,6 +63,7 @@ const BASE_COLUMNS = [
     {
         title: '序号',
         dataIndex: 'num',
+        width:50,
         className:'TableTxtCenter',
         key: 'num',
     }, {
@@ -78,6 +79,7 @@ const BASE_COLUMNS = [
         title: '发出时间',
         dataIndex: 'createTime',
         className:'TableTxtCenter',
+        width:140,
         key: 'createTime',
         render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
     }, {
@@ -97,6 +99,7 @@ const BASE_COLUMNS = [
         className:'TableTxtCenter',
         dataIndex: 'customerName',
         key: 'customerName',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
     }, {
         title: '性别',
         dataIndex: 'customerSex',
@@ -109,11 +112,38 @@ const BASE_COLUMNS = [
         title: '手机号',
         className:'TableTxtCenter',
         dataIndex: 'customerMobile',
+        width:120,
         key: 'customerMobile',
         render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
     },
 ];
-const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
+const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
+    {
+        title: '券编码',
+        className:'TableTxtCenter',
+        dataIndex: 'giftPWD',
+        key: 'giftPWD',
+        width: 200,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    },
+    ...BASE_COLUMNS.slice(1, 4),
+    {
+        title: '生效时间',
+        className:'TableTxtCenter',
+        dataIndex: 'EGiftEffectTime',
+        width: 160,
+        key: 'EGiftEffectTime',
+        render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+    },
+    {
+        title: '失效时间',
+        className:'TableTxtCenter',
+        dataIndex: 'validUntilDate',
+        width: 160,
+        key: 'validUntilDate',
+        render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+    },
+    {
     title: '状态',
     dataIndex: 'giftStatus',
     className:'TableTxtCenter',
@@ -121,7 +151,24 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
     render: (value) => {
         return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
     },
-}, ...BASE_COLUMNS.slice(5)]
+}, ...BASE_COLUMNS.slice(5),
+    {
+        title: '会员卡号',
+        width: 120,
+        className:'TableTxtCenter',
+        dataIndex: 'transCardNo',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+        key: 'transCardNo',
+    },
+    {
+        title: '使用时间',
+        className:'TableTxtCenter',
+        dataIndex: 'usingTime',
+        width: 160,
+        key: 'usingTime',
+        render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+    },
+]
 const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
     title: '状态',
     dataIndex: 'giftStatus',
