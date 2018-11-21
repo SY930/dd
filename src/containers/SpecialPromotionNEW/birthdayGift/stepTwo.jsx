@@ -177,6 +177,10 @@ class StepTwo extends React.Component {
         })
     }
 
+    handleSourceWayLimitChange = (v) => {
+        this.props.setSpecialBasicInfo({ sourceWayLimit: v });
+    }
+
     renderBirthDayGroupSelector() {
         const { cardLevelRangeType } = this.state;
         const localType = cardLevelRangeType == 5 ? '5' : '0'
@@ -211,6 +215,21 @@ class StepTwo extends React.Component {
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         return (
             <div>
+                {
+                    this.props.type == '52' && (
+                        <FormItem label={'渠道限制'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                            <Select onChange={this.handleSourceWayLimitChange}
+                                    value={String(info.sourceWayLimit || '0')}
+                                    placeholder="请选择渠道限制"
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value="0">不限制</Option>
+                                <Option key="1" value="1">仅线下</Option>
+                                <Option key="2" value="2">仅线上</Option>
+                            </Select>
+                        </FormItem>
+                    )
+                }
                 {this.props.type == '51' ? this.renderBirthDayGroupSelector() : (
                     <CardLevel
                         onChange={this.onCardLevelChange}
