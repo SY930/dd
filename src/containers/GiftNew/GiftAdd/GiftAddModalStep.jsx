@@ -93,11 +93,12 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountRate = data.discountRate
         }
         if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
-            const { secondKeys } = this.state
+            const {secondKeys} = this.state
             const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
             if (index >= 0) {
                 secondKeys[name][0].keys.splice(index, 1);
-            this.setState({ secondKeys })
+                this.setState({secondKeys})
+            }
         }
         this.setState({
             values
