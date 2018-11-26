@@ -47,7 +47,7 @@ const RULE_TYPE = [
     },
     {
         value: '1',
-        label: '购买当前菜品满',
+        label: '购买同一菜品满',
     }
 ]
 
