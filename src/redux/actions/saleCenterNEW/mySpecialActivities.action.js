@@ -47,6 +47,7 @@ export const SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_OK = 'sale center: fetch
 export const SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_FAIL = 'sale center: fetch special promotion detail fail new';
 export const SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_TIMEOUT = 'sale center: fetch special promotion detail time out new';
 export const SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_CANCEL = 'sale center: fetch special promotion detail cancel new';
+export const SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY = 'sale center: sale_center_fetch_special_promotion_detail_success_only';
 
 export const SALE_CENTER_FETCH_CARD_LEVEL_START = 'sale center: fetch card level start new';
 export const SALE_CENTER_FETCH_CARD_LEVEL_OK = 'sale center: fetch card level ok new';
@@ -119,6 +120,48 @@ export const fetchSpecialPromotionList = (opts) => {
                 return dispatch(fetchPromotionListFail(err));
             })
             .catch(err => {
+
+            })
+    }
+}
+
+export const fetchSpecialPromotionDetailData = (opts) => {
+    return dispatch => {
+        fetch('/api/specialPromotion/queryEvents_NEW', {
+            method: 'POST',
+            body: JSON.stringify(opts.data),
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => {
+                opts.end && opts.end();
+                if (response.status >= 200 && response.status < 300) {
+                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                        return response.json();
+                    }
+                    return response.text();
+                }
+                return Promise.reject(new Error(response.statusText));
+            })
+            .catch((error) => {
+                opts.end && opts.end();
+                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
+            })
+            .then((response) => {
+                const { redirect, success, code, msg } = parseResponseJson(response, '000');
+                if (!success && redirect) {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `${msg}`,
+                    });
+                    redirect && window.setTimeout(() => doRedirect(), 1500);
+                } else if (response.code === '000') {
+                    return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, response });
+                }
+            }, (err) => {
 
             })
     }
