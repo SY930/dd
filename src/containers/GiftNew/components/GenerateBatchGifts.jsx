@@ -387,6 +387,7 @@ class GenerateBatchGifts extends Component {
                             case 5: return '正在导出';
                             case 6: return '已导出';
                             case 7: return '导出失败';
+                            case 8: return '生成券码失败';
                             default: return '--'
                         }
                     })(status);
