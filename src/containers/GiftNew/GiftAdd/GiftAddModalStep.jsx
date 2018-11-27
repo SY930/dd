@@ -1294,6 +1294,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '输入0或者不输入表示不限制',
                 surfix: '元',
+                defaultValue: '',
                 rules: [{
                     validator: (rule, v, cb) => {
                         if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
