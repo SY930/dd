@@ -47,7 +47,7 @@ const RULE_TYPE = [
     },
     {
         value: '1',
-        label: '购买当前菜品满',
+        label: '购买同一菜品满',
     }
 ]
 
@@ -254,7 +254,7 @@ class BuyGiveDetailInfo extends React.Component {
                     onChange={this.onStageAmountChange}
                     modal="int"
                 />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>表示购买菜品的总数，如输入2，代表所有菜品任意购买满2份</span>
+                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>&nbsp;</span>
             </FormItem>
         )
     }

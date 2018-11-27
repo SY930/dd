@@ -24,7 +24,7 @@ class AmountType extends Component {
                     content={
                         <div>
                             <p>老规则：</p>
-                            <p style={{ textIndent: '2em' }}>按账单金额限制代金券能否使用, 如果选择了活动菜品当账单金额满足金额限制条件时, 可以使用代金券</p>
+                            <p style={{ textIndent: '2em' }}>按账单金额限制代金券能否使用, 如果选择了活动菜品, 当账单金额满足金额限制条件时, 可以使用代金券</p>
                             <p>新规则：</p>
                             <p style={{ textIndent: '2em' }}>可以按账单金额和活动菜品金额限制代金券能否使用, 如果选择了活动菜品, 只有活动菜品金额满足金额限制条件时, 代金券才能使用</p>
                         </div>

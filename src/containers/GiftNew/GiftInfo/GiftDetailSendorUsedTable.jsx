@@ -162,8 +162,8 @@ class GiftSendOrUsedCount extends React.Component {
                     d.customerName = d.customerName ? d.customerName : '';
                     d.customerMobile = d.customerMobile ? d.customerMobile : '';
                     d.sendShopName = d.sendShopName ? d.sendShopName : '';
-                    d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY/MM/DD') : '--';
-                    d.createTime = d.createTime ? Moment(d.createTime, 'YYYYMMDDHHmmss').format(format) : '--';
+                    d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY/MM/DD') : '';
+                    d.createTime = d.createTime ? Moment(d.createTime, 'YYYYMMDDHHmmss').format(format) : '';
                     return d;
                 });
                 this.setState({
@@ -181,10 +181,10 @@ class GiftSendOrUsedCount extends React.Component {
                     d.customerName = d.customerName ? d.customerName : '';
                     d.customerMobile = d.customerMobile ? d.customerMobile : '';
                     d.sendShopName = d.sendShopName ? d.sendShopName : '';
-                    d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format(format) : '--';
-                    d.EGiftEffectTime = d.EGiftEffectTime ? Moment(d.EGiftEffectTime, 'YYYYMMDDHHmmss').format(format) : '--';
-                    d.createTime = d.createTime ? Moment(d.createTime, 'YYYYMMDDHHmmss').format(format) : '--';
-                    d.usingTime = d.usingTime && d.usingTime != 0 ? Moment(d.usingTime, 'YYYYMMDDHHmmss').format(format) : '--';
+                    d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format(format) : '';
+                    d.EGiftEffectTime = d.EGiftEffectTime ? Moment(d.EGiftEffectTime, 'YYYYMMDDHHmmss').format(format) : '';
+                    d.createTime = d.createTime ? Moment(d.createTime, 'YYYYMMDDHHmmss').format(format) : '';
+                    d.usingTime = d.usingTime && d.usingTime != 0 ? Moment(d.usingTime, 'YYYYMMDDHHmmss').format(format) : '';
                     return d;
                 });
                 this.setState({

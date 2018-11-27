@@ -118,7 +118,7 @@ class AddGifts extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.maxCount !== nextProps.maxCount) {
+        /*if (this.props.maxCount !== nextProps.maxCount) {
             this.setState({
                 infos: [JSON.parse(JSON.stringify(defaultData))],
                 maxCount: nextProps.maxCount,
@@ -129,7 +129,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: nextProps.value,
             });
-        }
+        }*/
 
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
@@ -249,16 +249,6 @@ class AddGifts extends React.Component {
                             validateStatus={info.giftInfo.validateStatus}
                             help={info.giftInfo.msg}
                         >
-                            {/* <TreeSelect className={styles.selectTree}
-                                        treeData={this.state.giftTreeData}
-                                        placeholder="请选择礼品"
-                                        size='default'
-                                        dropdownStyle={{ maxHeight: 400, overflowY: 'scroll' }}
-                                        onChange={(value)=>{
-                                            this.handleGiftChange(value, index);
-                                        }}
-                                        value={this.getGiftValue(index)}_.sortBy(treeData, 'key');
-                            /> */}
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
