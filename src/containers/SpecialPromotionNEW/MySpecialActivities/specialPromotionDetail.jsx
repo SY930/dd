@@ -236,7 +236,7 @@ class SpecialPromotionDetail extends React.Component {
     }
     // 礼品信息表格
     renderGiftInfoTable() {
-        const way = this.props.mySpecialActivities.data.eventInfo.data.eventWay;
+        const way = this.state.eventInfo.data.eventWay;
         const columns = [
             {
                 title: '序号',
@@ -287,7 +287,12 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
             },
         ];
-        const record = this.props.mySpecialActivities.data.eventInfo.gifts || [];
+        let record = []
+        try {
+            record = this.props.mySpecialActivities.data.eventInfo.gifts || [];
+        } catch (e) {
+            record = []
+        }
         const dataSource = record.map((gift, index) => {
             let days;
             if (!gift.giftValidUntilDayCount > 0) {

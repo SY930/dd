@@ -127,7 +127,7 @@ export const fetchSpecialPromotionList = (opts) => {
 
 export const fetchSpecialPromotionDetailData = (opts) => {
     return dispatch => {
-        fetch('/api/specialPromotion/queryEvents_NEW', {
+        fetch('/api/specialPromotion/queryEventDetail_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),
             credentials: 'include',
@@ -159,7 +159,7 @@ export const fetchSpecialPromotionDetailData = (opts) => {
                     });
                     redirect && window.setTimeout(() => doRedirect(), 1500);
                 } else if (response.code === '000') {
-                    return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, response });
+                    return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, payload: response });
                 }
             }, (err) => {
 
