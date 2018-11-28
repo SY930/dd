@@ -132,13 +132,13 @@ class TrdTemplate extends React.Component {
                     const entity = {...item};
                     try {
                         // 将后端的JSON解析出来, 根据不同的类型, 修改券名称, 方便区分同名微信券
-                        const dataInfo = JSON.parse(JSON.stringify(item.dataInfo));
+                        const dateInfo = JSON.parse(item.dateInfo);
                         const {
                             type,
                             beginTimestamp,
                             endTimestamp,
                             fixedTerm,
-                        } = dataInfo;
+                        } = dateInfo;
                         // 固定有效期类型
                         if (type === 'DATE_TYPE_FIX_TIME_RANGE') {
                             const startTimeString = moment.unix(beginTimestamp).format('YYYY/MM/DD');
