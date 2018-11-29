@@ -20,7 +20,10 @@ import styles from './specialDetail.less'
 
 const Moment = require('moment');
 
-import { fetchSpecialUserList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import {
+    fetchSpecialPromotionDetailData,
+    fetchSpecialUserList
+} from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { CHARACTERISTIC_CATEGORIES, SEND_MSG } from '../../../redux/actions/saleCenterNEW/types';
 
 class SpecialPromotionDetail extends React.Component {
@@ -284,7 +287,12 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
             },
         ];
-        const record = this.state.eventInfo.gifts || [];
+        let record = []
+        try {
+            record = this.props.mySpecialActivities.data.eventInfo.gifts || [];
+        } catch (e) {
+            record = []
+        }
         const dataSource = record.map((gift, index) => {
             let days;
             if (!gift.giftValidUntilDayCount > 0) {
@@ -360,6 +368,14 @@ class SpecialPromotionDetail extends React.Component {
         this.props.fetchUserList(
             {
                 data: opts,
+            }
+        );
+        this.props.fetchDetailData(
+            {
+                data: {
+                    groupID: user.accountInfo.groupID,
+                    itemID: this.state.eventInfo.data.itemID,
+                },
             }
         );
     }
@@ -514,7 +530,7 @@ class SpecialPromotionDetail extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        mySpecialActivities: state.sale_mySpecialActivities_NEW.get('$specialDetailInfo').toJS(),
         user: state.user.toJS(),
     };
 };
@@ -524,6 +540,9 @@ const mapDispatchToProps = (dispatch) => {
         fetchUserList: (opts) => {
             dispatch(fetchSpecialUserList(opts))
         },
+        fetchDetailData: (opts) => {
+            dispatch(fetchSpecialPromotionDetailData(opts))
+        }
     };
 };
 

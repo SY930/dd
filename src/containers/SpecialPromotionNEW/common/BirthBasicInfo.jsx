@@ -278,12 +278,16 @@ class PromotionBasicInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('promotionName', {
-                        rules: [{
+                        rules: [
+                            { required: true, message: '礼品名称不能为空' },
+                            { max: 50, message: '不能超过50个字符' },
+                        /*    {
                             whitespace: true,
                             required: true,
                             message: '汉字、字母、数字组成，不多于50个字符',
                             pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{1,50}$/,
-                        }],
+                        }*/
+                        ],
                         initialValue: this.state.name,
                     })(
                         <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />

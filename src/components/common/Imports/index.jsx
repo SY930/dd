@@ -85,6 +85,7 @@ class Imports extends Component {
         return (
             <Modal
                 title={this.props.title || '导入'}
+                maskClosable={false}
                 visible={this.state.importVisible}
                 onCancel={this.props.importCancel}
                 footer={[<Button key="0" type="ghost" onClick={this.props.importCancel}>取消</Button>]}

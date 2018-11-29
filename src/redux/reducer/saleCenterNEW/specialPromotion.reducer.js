@@ -40,6 +40,7 @@ const $initialState = Immutable.fromJS({
         eventStartDate: '',
         eventEndDate: '',
         startTime: '',
+        sourceWayLimit: '0',
         mpIDList: [],
         excludeEventCardLevelIdModelList: [],
         allCardLevelCheck: false,

@@ -10,6 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Select, Form, Switch, Input, Spin } from 'antd';
 import { fetchData } from '../../../../helpers/util';
 import GiftCfg from '../../../../constants/Gift';
@@ -124,12 +125,40 @@ class TrdTemplate extends React.Component {
             forceRefresh: 1,
             mpID: trdChannelID == 10 ? mpID : undefined, // 有值代表微信公众号id,没有代表其他渠道
             appID: trdChannelID == 10 ? appID : undefined, // 有值代表微信公众号id,没有代表其他渠道
-        }, null, { path: 'trdTemplateInfoList' }).then((trdTemplateInfoList) => {
+        }, null, { path: 'trdTemplateInfoList' }).then((rawList ) => {
+            const trdTemplateInfoList = []
+            if (Array.isArray(rawList)) {
+                rawList.forEach(item => {
+                    const entity = {...item};
+                    try {
+                        // 将后端的JSON解析出来, 根据不同的类型, 修改券名称, 方便区分同名微信券
+                        const dateInfo = JSON.parse(item.dateInfo);
+                        const {
+                            type,
+                            beginTimestamp,
+                            endTimestamp,
+                            fixedTerm,
+                        } = dateInfo;
+                        // 固定有效期类型
+                        if (type === 'DATE_TYPE_FIX_TIME_RANGE') {
+                            const startTimeString = moment.unix(beginTimestamp).format('YYYY/MM/DD');
+                            const endTimeString = moment.unix(endTimestamp).format('YYYY/MM/DD');
+                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${startTimeString}~${endTimeString})`
+                        }
+                        // 相对有效期类型
+                        if (type === 'DATE_TYPE_FIX_TERM') {
+                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${fixedTerm}天)`
+                        }
+                    } catch (e) {
+                    }
+                    trdTemplateInfoList.push(entity);
+                })
+            }
             this.setState({
-                trdTemplateInfoList: trdTemplateInfoList || [],
+                trdTemplateInfoList: trdTemplateInfoList,
                 loading: false,
             })
-            return Promise.resolve(trdTemplateInfoList || [])
+            return Promise.resolve(trdTemplateInfoList)
         }).catch(error => {
             this.setState({
                 trdTemplateInfoList: [],

@@ -118,7 +118,7 @@ class AddGifts extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.maxCount !== nextProps.maxCount) {
+        /*if (this.props.maxCount !== nextProps.maxCount) {
             this.setState({
                 infos: [JSON.parse(JSON.stringify(defaultData))],
                 maxCount: nextProps.maxCount,
@@ -129,7 +129,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: nextProps.value,
             });
-        }
+        }*/
 
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
@@ -249,16 +249,6 @@ class AddGifts extends React.Component {
                             validateStatus={info.giftInfo.validateStatus}
                             help={info.giftInfo.msg}
                         >
-                            {/* <TreeSelect className={styles.selectTree}
-                                        treeData={this.state.giftTreeData}
-                                        placeholder="请选择礼品"
-                                        size='default'
-                                        dropdownStyle={{ maxHeight: 400, overflowY: 'scroll' }}
-                                        onChange={(value)=>{
-                                            this.handleGiftChange(value, index);
-                                        }}
-                                        value={this.getGiftValue(index)}_.sortBy(treeData, 'key');
-                            /> */}
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
@@ -354,7 +344,7 @@ class AddGifts extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giftOdds.value = val.number;
         const _value = parseFloat(val.number);
-        if (_value > 0 && _value <= 100) {
+        if (_value >= 0 && _value <= 100) {
             _infos[index].giftOdds.validateStatus = 'success';
             _infos[index].giftOdds.msg = null;
         } else {
@@ -401,30 +391,6 @@ class AddGifts extends React.Component {
         if (info.effectType != '2') {
             return (
                 <div>
-                    {/* 若回退版本，把下面注释放开，把424-471行注释即可，其它的不用改 */}
-                    {/* <FormItem
-                        label="相对有效期"
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                    >
-                        <Select
-                            size="default"
-                            value={
-                                typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
-                                    '0' :
-                                    `${this.state.infos[index].giftEffectiveTime.value}`
-                            }
-                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
-                        >
-                            {
-                                SALE_CENTER_GIFT_EFFICT_TIME
-                                    .map((item, index) => {
-                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
-                                    })
-                            }
-                        </Select>
-                    </FormItem> */}
                     <FormItem
                         className={[styles.FormItemStyle].join(' ')}
                     >

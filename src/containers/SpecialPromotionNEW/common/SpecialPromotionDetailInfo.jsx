@@ -261,7 +261,6 @@ class SpecialDetailInfo extends React.Component {
                     giftName: giftInfo.giftInfo.giftName,
                 }
             }
-            // console.log(this.props.type)
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 gifts.giftCount = giftInfo.giftCount.value;
             } else {
@@ -279,6 +278,7 @@ class SpecialDetailInfo extends React.Component {
         return this.handleSubmit(true)
     }
     handleSubmit(isPrev) {
+        if (isPrev) return true;
         let { data } = this.state;
         const { type } = this.props;
 
@@ -322,15 +322,15 @@ class SpecialDetailInfo extends React.Component {
 
         // 校验中奖比率
         function checkGiftOdds(giftOdds) {
-            const _value = parseFloat(giftOdds.value);
             if (type == '20') {
-                if (_value > 0) {
+                const _value = parseFloat(giftOdds.value);
+                if (_value >= 0 && _value <= 100) {
                     return giftOdds;
                 }
                 return {
-                    msg: '中奖比率必须大于0小于100',
+                    msg: '中奖比率必填, 大于等于0, 小于等于100',
                     validateStatus: 'error',
-                    value: '0',
+                    value: '',
                 }
             }
             return giftOdds;
@@ -385,7 +385,7 @@ class SpecialDetailInfo extends React.Component {
         }, 0);
         data = validatedRuleData;
         this.setState({ data });
-        if (isPrev || validateFlag) {
+        if (validateFlag) {
             if (validOdds > 100) {
                 message.warning('中奖比率之和不能大于100!');
                 return false;
@@ -396,18 +396,11 @@ class SpecialDetailInfo extends React.Component {
             return true;
         }
         return false;
-
-
-        return isPrev || validateFlag;
     }
 
     gradeChange(val) {
-        let { data } = this.state;
         if (val !== undefined) {
-            data = val;
-            this.setState({ data });
-        } else {
-
+            this.setState({ data: JSON.parse(JSON.stringify(val)) });
         }
     }
     render() {

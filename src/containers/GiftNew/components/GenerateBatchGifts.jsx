@@ -21,6 +21,9 @@ import {axiosData} from "../../../helpers/util";
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+
+const BATCH_LIMIT = 10000;
+
 class GenerateBatchGifts extends Component {
 
     constructor(props) {
@@ -136,11 +139,11 @@ class GenerateBatchGifts extends Component {
                         errors: ['终止号必须大于等于起始号'],
                     }
                 })
-            } else if (endNoValue.number && (Number(endNoValue.number) - (Number(val.number || 0) ) > 9999)) {
+            } else if (endNoValue.number && (Number(endNoValue.number) - (Number(val.number || 0) ) >= BATCH_LIMIT)) {
                 this.props.form.setFields({
                     endNo: {
                         value: endNoValue,
-                        errors: ['张数不能超过10000'],
+                        errors: [`张数不能超过${BATCH_LIMIT}`],
                     }
                 })
             } else {
@@ -384,6 +387,7 @@ class GenerateBatchGifts extends Component {
                             case 5: return '正在导出';
                             case 6: return '已导出';
                             case 7: return '导出失败';
+                            case 8: return '生成券码失败';
                             default: return '--'
                         }
                     })(status);
@@ -456,7 +460,7 @@ class GenerateBatchGifts extends Component {
                                 if (!v || !v.number) {
                                     return cb('张数为必填项');
                                 }
-                                v.number > 0 && v.number <= 10000 ? cb() : cb('不能超过1万张');
+                                v.number > 0 && v.number <= BATCH_LIMIT ? cb() : cb(`不能超过${Math.floor(BATCH_LIMIT / 10000)}万张`);
                             },
                         },
                     ]
@@ -528,8 +532,8 @@ class GenerateBatchGifts extends Component {
                                                 if (Number(v.number || 0) < Number(this.props.form.getFieldValue('startNo').number || 0)) {
                                                     return cb('终止号必须大于等于起始号')
                                                 }
-                                                if (Number(v.number || 0) - Number(this.props.form.getFieldValue('startNo').number || 0) > 9999) {
-                                                    return cb('张数不能超过10000')
+                                                if (Number(v.number || 0) - Number(this.props.form.getFieldValue('startNo').number || 0) >= BATCH_LIMIT) {
+                                                    return cb(`张数不能超过${BATCH_LIMIT}`)
                                                 }
                                                 cb()
                                             },

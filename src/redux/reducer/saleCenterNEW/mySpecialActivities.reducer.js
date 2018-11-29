@@ -53,7 +53,7 @@ import {
     SALE_CENTER_FETCH_CARD_LEVEL_CANCEL,
 
     SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK,
-    SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED,
+    SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED, SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY,
 } from '../../actions/saleCenterNEW/mySpecialActivities.action'
 
 const $initialState = Immutable.fromJS({
@@ -139,6 +139,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
                 return $$state.setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload));
             }
             return $$state;
+        case SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY:
+            return $$state.setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload));
 
         case SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_TIMEOUT:
             return $$state.setIn(['$specialDetailInfo', 'status'], 'timeout');
@@ -213,11 +215,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$cardInfo', 'status'], 'pending');
 
         case SALE_CENTER_FETCH_CARD_LEVEL_OK:
-            if ($$state.getIn(['$cardInfo', 'status']) === 'pending') {
-                return $$state.setIn(['$cardInfo', 'status'], 'success')
-                    .setIn(['$specialDetailInfo', 'data', 'cardInfo'], Immutable.fromJS(action.payload));
-            }
-            return $$state;
+            return $$state.setIn(['$cardInfo', 'status'], 'success')
+                .setIn(['$specialDetailInfo', 'data', 'cardInfo'], Immutable.fromJS(action.payload));
 
         case SALE_CENTER_FETCH_CARD_LEVEL_TIMEOUT:
             return $$state.setIn(['$cardInfo', 'status'], 'timeout');
