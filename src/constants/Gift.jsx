@@ -190,6 +190,7 @@ const GiftCfg = {
         { value: '100', label: '批量导入' },
         { value: '101', label: '购买权益包' },
         { value: '102', label: '消费赠送' },
+        { value: '103', label: '商城售卖' },
         { value: '112', label: '完善资料送礼' },
         { value: '111', label: '升级送礼' },
         { value: '113', label: '累计消费送礼' },

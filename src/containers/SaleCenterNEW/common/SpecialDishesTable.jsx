@@ -634,6 +634,7 @@ class SpecialDishesTable extends React.Component {
                     visible={this.state.visible}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
+                    maskClosable={false}
                     width="922px"
                     title={`        ${this.props.isWeChatMall ? '选择特价商品' : '选择特价菜品'}`}
                 >

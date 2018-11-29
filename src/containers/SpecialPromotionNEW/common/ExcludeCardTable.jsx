@@ -53,16 +53,16 @@ class ExcludeCardTable extends React.Component {
 
     componentDidMount() {
         this.setState({
-            cardInfo: this.props.groupCardTypeList.toJS(),
+            cardInfo: this.props.groupCardTypeList,
             weChatCardInfo: this.props.crmCardTypeNew.get('cardTypeLst').toJS(),
             getExcludeCardLevelIds: this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [],
         });
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.groupCardTypeList) {
+        if (nextProps.groupCardTypeList.length) {
             this.setState({
-                cardInfo: nextProps.groupCardTypeList.toJS(),
+                cardInfo: nextProps.groupCardTypeList,
             })
         }
         this.setState({
@@ -168,12 +168,13 @@ class ExcludeCardTable extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
+    const groupCardTypeList = state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']);
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
-        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        groupCardTypeList:  groupCardTypeList? groupCardTypeList.toJS() : [],
     };
 };
 

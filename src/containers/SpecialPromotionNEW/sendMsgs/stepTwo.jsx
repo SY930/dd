@@ -345,45 +345,6 @@ class StepTwo extends React.Component {
         }
         return (
             <Form>
-                {/* <FormItem
-                    label="最后消费日期"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-
-                    <Col span={11} className="selectContanier">
-                        <FormItem className={styles.FormItemStyle} >
-                            <Select
-                                size="default"
-                                value={`${lastTransTimeFilter}`}
-                                onChange={this.TimeFilterChange}
-                                getPopupContainer={() => document.querySelector('.selectContanier')}
-                            >
-                                <Option value={'0'}>不限制</Option>
-                                <Option value={'1'}>早于</Option>
-                                <Option value={'2'}>晚于</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span={12} offset={1}>
-                        <FormItem className={styles.FormItemStyle} validateStatus={lastTransTimeStatus} help={lastTransTimeStatus == 'success' ? null : '请选择最后消费日期'}>
-
-                            <DatePicker disabled={lastTransTimeFilter == '0'} {...lastTimeProps} />
-                        </FormItem>
-                    </Col>
-                </FormItem> */}
-
-                {/* <FormItem
-                    label="最后消费店铺"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Col span={24} className="crmOperationTree">
-                        <TreeSelect {...treeProps} />
-                    </Col>
-                </FormItem> */}
                 <FormItem
                     label="会员群体"
                     className={styles.FormItemStyle}

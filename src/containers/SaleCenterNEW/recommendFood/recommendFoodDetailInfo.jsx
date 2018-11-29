@@ -275,7 +275,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         onChange={this.handDishesChange}
                                         priceLst={this.state.priceLstHand}
                                         scopeLst={this.state.scopeLst}
-                                        type="RECOMMEND_FOOD"
+                                        type="5010"
                                     />
                                 </FormItem>
                             </div> : null

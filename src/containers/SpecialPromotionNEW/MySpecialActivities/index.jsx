@@ -1114,6 +1114,7 @@ class MySpecialActivities extends React.Component {
         return (
             <Modal
                 title="活动详情"
+                maskClosable={false}
                 visible={this.state.visible}
                 footer={<Button onClick={this.handleClose}>关闭</Button>}
                 closable={false}

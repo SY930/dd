@@ -132,6 +132,7 @@ class ModalSelector extends React.Component {
                 {
                     visible && <Modal
                         width={width}
+                        maskClosable={false}
                         title={title}
                         visible={visible}
                         onOk={this.handleOk}
