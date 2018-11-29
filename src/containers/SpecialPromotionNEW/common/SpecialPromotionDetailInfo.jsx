@@ -253,6 +253,7 @@ class SpecialDetailInfo extends React.Component {
                 }
             } else {
                 // 固定期限
+                console.log('giftInfo.giftEffectiveTime: ', giftInfo.giftEffectiveTime)
                 gifts = {
                     effectType: '2',
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
@@ -399,8 +400,10 @@ class SpecialDetailInfo extends React.Component {
     }
 
     gradeChange(val) {
+        let { data } = this.state;
         if (val !== undefined) {
-            this.setState({ data: JSON.parse(JSON.stringify(val)) });
+            data = val;
+            this.setState({ data });
         }
     }
     render() {
