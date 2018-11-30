@@ -315,7 +315,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                         this.props.form.getFieldDecorator('priceLst', {
                                             initialValue: this.state.priceLstAuto,
                                         })(
-                                            <EditBoxForDishes onChange={this.autoDishesChange} type="RECOMMEND_FOOD" />
+                                            <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
                                         )}
                                 </FormItem>
                             </div> : null

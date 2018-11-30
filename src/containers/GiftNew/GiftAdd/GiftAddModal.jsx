@@ -58,7 +58,6 @@ class GiftAddModal extends React.Component {
         }
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
-            transferType: this.props.gift.data.transferType || 0,
         })
     }
     componentWillReceiveProps(nextProps) {
@@ -94,7 +93,7 @@ class GiftAddModal extends React.Component {
         }
     }
     handleSubmit() {
-        const { groupTypes, imageUrl, transferType } = this.state;
+        const { groupTypes, imageUrl } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
@@ -116,7 +115,6 @@ class GiftAddModal extends React.Component {
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
             params.giftImagePath = imageUrl;
-            params.transferType = transferType;
             // 定额卡工本费
             if (value == '90') {
                 params.giftCost = `${Number(params.giftCost || 0)}`;
@@ -227,25 +225,6 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
-    renderTransferType(decorator) {
-        return (
-            <RadioGroup
-                value={this.state.transferType}
-                onChange={(e) => {
-                    // console.log('radio checked', e.target.value);
-                    this.setState({
-                        transferType: e.target.value,
-                    });
-                }}
-            >
-                {
-                    GiftCfg.transferType.map((cfg) => {
-                        return (<Radio key={cfg.value} value={cfg.value}>{cfg.label}</Radio>)
-                    })
-                }
-            </RadioGroup>
-        )
-    }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品价值';
@@ -257,8 +236,9 @@ class GiftAddModal extends React.Component {
             },
             transferType: {
                 label: '券是否可分享',
-                type: 'custom',
-                render: decorator => this.renderTransferType(decorator),
+                type: 'radio',
+                defaultValue: 0,
+                options: GiftCfg.transferType,
             },
             shopNames: {
                 type: 'custom',
