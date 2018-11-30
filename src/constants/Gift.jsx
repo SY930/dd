@@ -262,6 +262,7 @@ const GiftCfg = {
         { label: '5i', value: 5, disabled: releaseENV },
         { label: '拉格代尔', value: 6, disabled: releaseENV },
         { label: '非码', value: 20 },
+        { label: '企迈小程序', value: 30 },
     ],
     couponCodeType: [
         { value: 1, label: '是' },
