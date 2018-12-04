@@ -1,4 +1,4 @@
-import {getAccountInfo} from "../helpers/util";
+import { getStore } from '@hualala/platform-base'
 import GiftCfg from "./Gift";
 
 // 测试环境 3个集团id 11583      11581 11580
@@ -10,10 +10,12 @@ export const QINGFENG_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? 
 /** 护国寺小吃集团groupID */
 export const HUGUOSI_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '137722' : '11580';
 
-
+const getAccountInfo = () => {
+    return { groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']) }
+}
 
 export function getHuaTianDisabledGifts() {
-    return GiftCfg.giftType.filter(gift => gift.category === 'primary').map(gift => gift.value)
+    return GiftCfg.giftType.filter(gift => gift.category === 'primary' && gift.value != 10).map(gift => gift.value)
 }
 
 export const HUATIAN_GROUP_LIST = [

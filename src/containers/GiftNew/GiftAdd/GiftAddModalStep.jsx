@@ -38,6 +38,7 @@ import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
+import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -116,6 +117,15 @@ class GiftAddModalStep extends React.PureComponent {
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
+    }
+
+    isHuaTianSpecificCoupon = () => {
+        const { type, gift: { value, data } } = this.props;
+        if (value != 10) return false;
+        if (type === 'add') {
+            return isHuaTian()
+        }
+        return isHuaTian() && isMine(data)
     }
 
     proSharedGifts = (sharedGifts = []) => {
@@ -1145,7 +1155,7 @@ class GiftAddModalStep extends React.PureComponent {
             foodSelectType = 0;
         }
         return (
-            <FormItem style={{ marginTop: -12, marginBottom: 0 }}>
+            <FormItem style={{ marginTop: -12, marginBottom: 0, display: this.isHuaTianSpecificCoupon() ? 'none' : 'block' }}>
                 {
                     decorator({})(
                         <MoreFoodBox
@@ -1551,7 +1561,7 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => this.renderDisCountRate(decorator),
             },
             foodsboxs: {
-                label: '选择菜品',
+                label: this.isHuaTianSpecificCoupon() ? '' : '选择菜品',
                 type: 'custom',
                 render: decorator => this.renderFoodsboxs(decorator),
             },
