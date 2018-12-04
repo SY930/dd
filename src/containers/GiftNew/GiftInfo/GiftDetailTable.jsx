@@ -168,9 +168,9 @@ class GiftDetailTable extends Component {
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
                 if (g.giftImagePath.startsWith('/')) {
-                    g.giftImagePath = 'https://res.hualala.com' + g.giftImagePath
+                    g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath
                 } else {
-                    g.giftImagePath = 'https://res.hualala.com/' + g.giftImagePath
+                    g.giftImagePath = 'http://res.hualala.com/' + g.giftImagePath
                 }
             }
             return g;

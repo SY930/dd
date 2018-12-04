@@ -61,22 +61,10 @@ class GiftAddModal extends React.Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        const { gift: { data: { giftImagePath, transferType = 0 } }, type } = nextProps;
-        if (type === 'edit') {
-            if (giftImagePath) {
-                this.setState({
-                    imageUrl: giftImagePath,
-                })
-            }
-        }
-
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
-        this.setState({
-            transferType,
-        })
         if (this.props.myActivities.get('isUpdate') !== nextProps.myActivities.get('isUpdate')) {
             this.setState({ isUpdate: nextProps.myActivities.get('isUpdate') })
         }
