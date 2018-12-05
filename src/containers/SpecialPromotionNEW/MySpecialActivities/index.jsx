@@ -59,6 +59,7 @@ import {
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
+import {isFormalRelease} from "../../../utils/index";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -638,7 +639,7 @@ class MySpecialActivities extends React.Component {
                                     message.warning('该活动已下线');
                                     return;
                                 }
-                                if (Number(record.eventWay) === 31) {
+                                if (Number(record.eventWay) === 31 && isFormalRelease()) {
                                     message.warning('活动将于近期上线, 敬请期待~');
                                     return;
                                 }
@@ -663,7 +664,7 @@ class MySpecialActivities extends React.Component {
                                             message.warning('该活动已下线');
                                             return;
                                         }
-                                        if (Number(record.eventWay) === 31) {
+                                        if (Number(record.eventWay) === 31 && isFormalRelease()) {
                                             message.warning('活动将于近期上线, 敬请期待~');
                                             return;
                                         }

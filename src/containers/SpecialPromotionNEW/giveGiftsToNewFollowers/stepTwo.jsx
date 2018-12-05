@@ -57,6 +57,7 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // 当时写这里的时候太年轻, 把props转一遍state毫无意义, 徒增bug
         let { allAccounts, isLoading, selectedIDs, occupiedIDs, isAllOccupied} = this.state;
         if (this.props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']) !== nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList'])) {
             selectedIDs = nextProps.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']).toJS();
@@ -107,8 +108,6 @@ class StepTwo extends React.Component {
                         <Option value={account.mpID} key={account.mpID} disabled={!!account.disabled}>{account.mpName}</Option>
                     );
                 });
-                !this.state.isAllOccupied && !this.state.occupiedIDs.length &&
-                options.unshift(<Option value={'-1'} key={'-1'}>{`全部`}</Option>) // 产品让加的, 点击相当于全选, 但是~~~ emmmm
             } else {
                 options = (<Option value={'0'} disabled={true}>未查询到可绑定的微信公众号</Option>);
             }
@@ -117,14 +116,9 @@ class StepTwo extends React.Component {
         }
 
         const opts = {
-            multiple: true,
-            allowClear: true,
-            showSearch: false,
-            filterOption: false,
             placeholder: '集团下全部微信公众号',
             onChange: this.handleSelectionChange,
-            // defaultValue: this.state.brands,
-            value: selectedIDs,
+            value: Array.isArray(selectedIDs) ? selectedIDs[0] : undefined,
         };
         const isSomeAccountsOccupied = this.state.isAllOccupied || !!this.state.occupiedIDs.length;
         const occupiedTips = '当前所选日期段内,有公众号已设置关注送礼活动';
@@ -189,12 +183,8 @@ class StepTwo extends React.Component {
     }
 
     handleSelectionChange(value) {
-        if (value.includes('-1')) {
-            this.setState({selectedIDs: ['-1']});
-        } else {
-            this.setState({selectedIDs: value});
-        }
-
+        // 关注送礼以前是多选, 后来变成了单选, 后端协议不变所以前端处理
+        this.setState({selectedIDs: [value]});
     }
 
     handleSubmit() {
@@ -206,19 +196,21 @@ class StepTwo extends React.Component {
             message.warning('未查询到该集团下可绑定的微信公众号');
             return false;
         }
+        const mpIDList = this.state.selectedIDs.filter(id => !this.state.occupiedIDs.includes(id));
         if (!this.state.selectedIDs.length) {
-            message.warning('请至少选择一个微信公众号');
+            message.warning('请至少选择一个可用微信公众号');
             return false;
         }
-        const isAll = this.state.selectedIDs[0] === '-1'; // 前端虚拟的全部选项
-        let mpIDList;
-        if (isAll) {
-            const availableAccounts = this.state.allAccounts.filter(account => !this.state.occupiedIDs.find(id => id === account.mpID));
-            mpIDList = availableAccounts.map(accounts => accounts.mpID);
-        }else {
-            mpIDList = this.state.selectedIDs.filter(id => !this.state.occupiedIDs.includes(id));
+        const accountEntity = this.state.allAccounts.find(({mpID}) => !!mpID && mpID === mpIDList[0]);
+        if (!accountEntity) {
+            message.warning('获取公众号信息时出了问题, 请刷新重试');
+            return false;
         }
-        this.props.setSpecialBasicInfo({mpIDList});
+        this.props.setSpecialBasicInfo({
+            mpIDList,
+            smsGate: '2',
+            pushMessageMpID: JSON.stringify({mpID: accountEntity.mpID, appID: accountEntity.appID})
+        });
         return true;
     }
 

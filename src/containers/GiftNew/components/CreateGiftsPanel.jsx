@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import {startCreateGift} from "../_action";
 import {
-    FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP, GIFT_CREATE_DISABLED_TIP, HUATIAN_GROUP_ID,
+    FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP, getHuaTianDisabledGifts, GIFT_CREATE_DISABLED_TIP, HUATIAN_GROUP_ID,
     isBrandOfHuaTianGroupList, isHuaTian
 } from "../../../constants/projectHuatianConf";
 
@@ -21,7 +21,7 @@ class CreateGiftsPanel extends Component {
             message.warning(GIFT_CREATE_DISABLED_TIP);
             return;
         }
-        if (isHuaTian() && gift.category === 'primary') {
+        if (isHuaTian() && getHuaTianDisabledGifts().includes(String(gift.value))) {
             message.warning(GIFT_CREATE_DISABLED_TIP);
             return;
         }
