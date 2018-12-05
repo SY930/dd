@@ -30,7 +30,7 @@ const fullOptionSmsGate = [ // 选项有5种
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
-    '21', '20', '30', '60', '23', '64', '31'
+    '21', '20', '30', '60', '23', '64'
 ];
 
 class StepOneWithDateRange extends React.Component {
@@ -538,7 +538,7 @@ class StepOneWithDateRange extends React.Component {
                     <FormItem label="活动名称" className={styles.FormItemStyle} {...formItemLayout}>
                         {getFieldDecorator('promotionName', {
                             rules: [
-                                { required: true, message: '礼品名称不能为空' },
+                                { required: true, message: '活动名称不能为空' },
                                 { max: 50, message: '不能超过50个字符' },
                             /*    {
                                 whitespace: true,
