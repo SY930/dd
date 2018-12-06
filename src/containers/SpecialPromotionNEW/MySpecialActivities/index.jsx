@@ -571,13 +571,14 @@ class MySpecialActivities extends React.Component {
      * @param eventID: record.itemID
      */
     activateNow(eventID) {
-        axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
+        message.warning('立即执行功能暂时下线噜~');
+        /* axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
         }).catch(err => {
             message.warning(err || 'sorry, 立即执行失败, 请稍后再试!');
-        })
+        }) */
     }
 
     renderTables() {

@@ -18,7 +18,7 @@ import {
     Spin,
 } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
-import { axiosData } from '../../../helpers/util'
+import {axiosData, getAccountInfo} from '../../../helpers/util'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
@@ -74,14 +74,15 @@ import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../.
 import { steps as sale_steps } from '../../../redux/modules/steps';
 import {throttle, isEqual} from 'lodash'
 import {
-    BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
+    BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
-import {isGroupOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
+import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
+const confirm = Modal.confirm;
 
 const mapStateToProps = (state) => {
     return {
@@ -222,9 +223,7 @@ class MyActivitiesShop extends React.Component {
     changeSortOrder(record, direction) {
         const params = {promotionID: record.promotionIDStr, shopID: this.props.user.shopID, rankingType: direction};
         axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_CRM').then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
+            this.tryToRefresh()
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
         })
@@ -292,8 +291,17 @@ class MyActivitiesShop extends React.Component {
         });
     }
 
-    toggleStateCallBack() {
+    tryToRefresh = () => {
+        try {
+            this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+        } catch (e) {
+            this.handleQuery()
+        }
+    }
+
+    toggleStateCallBack = () => {
         message.success('使用状态修改成功');
+        this.tryToRefresh()
     }
 
     handleClose() {
@@ -382,6 +390,43 @@ class MyActivitiesShop extends React.Component {
                     break;
             }
         }
+    }
+
+    confirmDelete = (record) => {
+        confirm({
+            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+            content: (
+                <div>
+                    <span style={{color: '#787878'}}>
+                        {`您将删除【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】活动`}
+                    </span>
+                    <br/>
+                    <span style={{color: '#aeaeae'}}>
+                        删除数据是不可恢复操作, 请慎重考虑
+                    </span>
+                </div>
+            ),
+            onOk: () => {
+                const params = {
+                    groupID: record.groupID,
+                    shopID: record.shopID,
+                    promotionID: record.promotionIDStr,
+                    isActive: 2,
+                    modifiedBy: getAccountInfo().userName
+                }
+                return axiosData(
+                    '/promotion/docPromotionService_setActive.ajax',
+                    params,
+                    {},
+                    {path: 'data'},
+                    'HTTP_SERVICE_URL_CRM'
+                ).then(() => {
+                    message.success(`删除成功`);
+                    this.tryToRefresh()
+                }).catch((error) => {});
+            },
+            onCancel() {},
+        });
     }
 
     getParams = () => {
@@ -616,6 +661,7 @@ class MyActivitiesShop extends React.Component {
                         this.setState({
                             updateModalVisible: false,
                         });
+                        this.tryToRefresh()
                     }
                 }}
             />);
@@ -985,45 +1031,60 @@ class MyActivitiesShop extends React.Component {
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
-                    const id = this.props.user.accountInfo.groupID;
-                    return (<span>
-                            {
-                                !isGroupOfHuaTianGroupList(id) && (
-                                    <a
-                                        href="#"
-                                        disabled={isGroupPro}
-                                        onClick={() => {
-                                            this.handleDisableClickEvent(text, record, index);
-                                        }}
-                                    >
-                                        {buttonText}
-                                    </a>
-                                )
-                            }
-                        <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                    const isShopToggleActiveDisabled = (() => {
+                        if (!isGroupOfHuaTianGroupList()) {
+                            return isGroupPro
+                        }
+                        if (isHuaTian()) {
+                            return record.userType == 2 || record.userType == 0
+                        }
+                        if (isBrandOfHuaTianGroupList()) {
+                            return record.userType == 1 || record.userType == 3 || isGroupPro;
+                        }
+                    })()
+                    return (
+                        <span>
                             <a
                                 href="#"
+                                disabled={isShopToggleActiveDisabled}
                                 onClick={() => {
-                                    { /* this.checkDetailInfo(text, record, index); */ }
-                                    this.props.toggleIsUpdate(false)
-                                    this.handleUpdateOpe(text, record, index);
+                                    this.handleDisableClickEvent(text, record, index);
                                 }}
                             >
-                                查看
+                                {buttonText}
                             </a>
-                        </Authority>
-                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                            <a
-                                href="#"
-                                disabled={isGroupPro}
-                                onClick={() => {
-                                    this.props.toggleIsUpdate(true)
-                                    this.handleUpdateOpe(text, record, index);
-                                }}
-                            >编辑</a>
-                        </Authority>
-                    </span>
-
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        { /* this.checkDetailInfo(text, record, index); */ }
+                                        this.props.toggleIsUpdate(false)
+                                        this.handleUpdateOpe(text, record, index);
+                                    }}
+                                >
+                                    查看
+                                </a>
+                            </Authority>
+                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                <a
+                                    href="#"
+                                    disabled={isGroupPro}
+                                    onClick={() => {
+                                        this.props.toggleIsUpdate(true)
+                                        this.handleUpdateOpe(text, record, index);
+                                    }}
+                                >编辑</a>
+                            </Authority>
+                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                                <a
+                                    href="#"
+                                    disabled={isGroupPro}
+                                    onClick={() => {
+                                        this.confirmDelete(record)
+                                    }}
+                                >删除</a>
+                            </Authority>
+                        </span>
                     );
                 },
             },
