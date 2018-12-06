@@ -84,7 +84,7 @@ import {
     AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
-import {isBrandOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
+import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -328,19 +328,16 @@ class MyActivities extends React.Component {
                     'HTTP_SERVICE_URL_CRM'
                 ).then(() => {
                     message.success(`删除成功`);
-                    try {
-                        this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-                    } catch (e) {
-                        this.handleQuery()
-                    }
+                    this.tryToRefresh()
                 }).catch((error) => {});
             },
             onCancel() {},
         });
     }
 
-    toggleStateCallBack() {
+    toggleStateCallBack = () => {
         message.success('使用状态修改成功');
+        this.tryToRefresh()
     }
 
     handleClose() {
@@ -552,12 +549,18 @@ class MyActivities extends React.Component {
     changeSortOrder(record, direction) {
         const params = {promotionID: record.promotionIDStr, rankingType: direction};
         axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_CRM').then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
+            this.tryToRefresh()
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
         })
+    }
+
+    tryToRefresh = () => {
+        try {
+            this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+        } catch (e) {
+            this.handleQuery()
+        }
     }
 
     // 切换每页显示条数
@@ -673,6 +676,7 @@ class MyActivities extends React.Component {
                         this.setState({
                             updateModalVisible: false,
                         });
+                        this.tryToRefresh()
                     }
                 }}
             />);
@@ -1057,22 +1061,30 @@ class MyActivities extends React.Component {
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
-                    const id = this.props.user.accountInfo.groupID;
+                    const isToggleActiveDisabled = (() => {
+                        if (!isGroupOfHuaTianGroupList()) {
+                            return !isGroupPro
+                        }
+                        if (isHuaTian()) {
+                            return record.userType == 2 || record.userType == 0;
+                        }
+                        if (isBrandOfHuaTianGroupList()) {
+                            return record.userType == 1 || record.userType == 3 || !isGroupPro;
+                        }
+                    })()
                     return (
                         <span>
-                            {
-                                (isHuaTian(id) || !isBrandOfHuaTianGroupList(id)) && (
-                                    <a
-                                        href="#"
-                                        disabled={!isHuaTian(id) && !isGroupPro}
-                                        onClick={() => {
-                                            this.handleDisableClickEvent(text, record, index);
-                                        }}
-                                    >
-                                        {buttonText}
-                                    </a>
-                                )
-                            }
+                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                <a
+                                    href="#"
+                                    disabled={isToggleActiveDisabled}
+                                    onClick={() => {
+                                        this.handleDisableClickEvent(text, record, index);
+                                    }}
+                                >
+                                    {buttonText}
+                                </a>
+                            </Authority>
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
@@ -1086,7 +1098,7 @@ class MyActivities extends React.Component {
                                 </a>
                             </Authority>
                             {
-                                !isHuaTian(id) && (
+                                !isHuaTian() && (
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
