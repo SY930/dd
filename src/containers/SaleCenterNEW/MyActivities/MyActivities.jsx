@@ -74,14 +74,14 @@ import { promotionAutoRunState as sale_promotionAutoRunState } from '../../../re
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { steps as sale_steps } from '../../../redux/modules/steps';
-import {axiosData} from "../../../helpers/util";
+import {axiosData, getAccountInfo} from "../../../helpers/util";
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import {
     openPromotionAutoRunListModal,
     queryPromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import {
-    AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_QUERY,
+    AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
@@ -90,6 +90,7 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
+const confirm = Modal.confirm;
 
 
 const mapStateToProps = (state) => {
@@ -294,6 +295,47 @@ class MyActivities extends React.Component {
         this.props.toggleSelectedActivityState({
             record,
             cb: this.toggleStateCallBack,
+        });
+    }
+
+    confirmDelete = (record) => {
+        confirm({
+            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+            content: (
+                <div>
+                    <span style={{color: '#787878'}}>
+                        {`您将删除【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】活动`}
+                    </span>
+                    <br/>
+                    <span style={{color: '#aeaeae'}}>
+                        删除数据是不可恢复操作, 请慎重考虑
+                    </span>
+                </div>
+            ),
+            onOk: () => {
+                const params = {
+                    groupID: record.groupID,
+                    shopID: record.shopID,
+                    promotionID: record.promotionIDStr,
+                    isActive: 2,
+                    modifiedBy: getAccountInfo().userName
+                }
+                return axiosData(
+                    '/promotion/docPromotionService_setActive.ajax',
+                    params,
+                    {},
+                    {path: 'data'},
+                    'HTTP_SERVICE_URL_CRM'
+                ).then(() => {
+                    message.success(`删除成功`);
+                    try {
+                        this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+                    } catch (e) {
+                        this.handleQuery()
+                    }
+                }).catch((error) => {});
+            },
+            onCancel() {},
         });
     }
 
@@ -1010,13 +1052,14 @@ class MyActivities extends React.Component {
                 title: '操作',
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 140,
+                width: 180,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
                     const id = this.props.user.accountInfo.groupID;
-                    return (<span>
+                    return (
+                        <span>
                             {
                                 (isHuaTian(id) || !isBrandOfHuaTianGroupList(id)) && (
                                     <a
@@ -1030,18 +1073,18 @@ class MyActivities extends React.Component {
                                     </a>
                                 )
                             }
-                        <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
-                            <a
-                                href="#"
-                                onClick={() => {
-                                    { /* this.checkDetailInfo(text, record, index); */ }
-                                    this.props.toggleIsUpdate(false)
-                                    this.handleUpdateOpe(text, record, index);
-                                }}
-                            >
-                                查看
-                            </a>
-                        </Authority>
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        { /* this.checkDetailInfo(text, record, index); */ }
+                                        this.props.toggleIsUpdate(false)
+                                        this.handleUpdateOpe(text, record, index);
+                                    }}
+                                >
+                                    查看
+                                </a>
+                            </Authority>
                             {
                                 !isHuaTian(id) && (
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
@@ -1056,6 +1099,15 @@ class MyActivities extends React.Component {
                                     </Authority>
                                 )
                             }
+                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                                <a
+                                    href="#"
+                                    disabled={!isGroupPro}
+                                    onClick={() => {
+                                        this.confirmDelete(record)
+                                    }}
+                                >删除</a>
+                            </Authority>
                     </span>
 
                     );
@@ -1219,7 +1271,6 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        // console.log('渲染:-----')
         return (
         <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
             <div>
@@ -1235,7 +1286,6 @@ class MyActivities extends React.Component {
                     {this.renderTables()}
                 </div>
             </div>
-            {/*{this.renderModals()}*/}
             {this.renderModifyRecordInfoModal(0)}
             <PromotionAutoRunModal/>
         </div>
