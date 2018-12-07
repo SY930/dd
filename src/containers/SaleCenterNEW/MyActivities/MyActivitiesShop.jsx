@@ -170,7 +170,9 @@ class MyActivitiesShop extends React.Component {
     constructor(props) {
         super(props);
         this.tableRef = null;
+        this.nameSearchRef = null;
         this.setTableRef = el => this.tableRef = el;
+        this.setNameSearchRef = el => this.nameSearchRef = el;
         this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
@@ -299,6 +301,14 @@ class MyActivitiesShop extends React.Component {
         }
     }
 
+    tryToUpdateNameList = () => {
+        try {
+            this.nameSearchRef.getNameList()
+        } catch (e) {
+            console.log('e: ', e)
+        }
+    }
+
     toggleStateCallBack = () => {
         message.success('使用状态修改成功');
         this.tryToRefresh()
@@ -349,6 +359,7 @@ class MyActivitiesShop extends React.Component {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("shop.dianpu.promotion")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+                this.tryToUpdateNameList();
             }
         }
         if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
@@ -422,7 +433,8 @@ class MyActivitiesShop extends React.Component {
                     'HTTP_SERVICE_URL_CRM'
                 ).then(() => {
                     message.success(`删除成功`);
-                    this.tryToRefresh()
+                    this.tryToRefresh();
+                    this.tryToUpdateNameList();
                 }).catch((error) => {});
             },
             onCancel() {},
@@ -661,7 +673,8 @@ class MyActivitiesShop extends React.Component {
                         this.setState({
                             updateModalVisible: false,
                         });
-                        this.tryToRefresh()
+                        this.tryToRefresh();
+                        this.tryToUpdateNameList();
                     }
                 }}
             />);
@@ -835,6 +848,7 @@ class MyActivitiesShop extends React.Component {
                         </li>
                         <li>
                             <PromotionNameSelect
+                                ref={this.setNameSearchRef}
                                 getParams={{ ...opt, promotionName: undefined }}
                                 onChange={(promotionName) => {
                                     this.setState(promotionName)

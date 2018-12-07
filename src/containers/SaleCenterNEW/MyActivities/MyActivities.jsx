@@ -187,7 +187,9 @@ class MyActivities extends React.Component {
     constructor(props) {
         super(props);
         this.tableRef = null;
+        this.nameSearchRef = null;
         this.setTableRef = el => this.tableRef = el;
+        this.setNameSearchRef = el => this.nameSearchRef = el;
         this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.state = {
             dataSource: [],
@@ -328,7 +330,8 @@ class MyActivities extends React.Component {
                     'HTTP_SERVICE_URL_CRM'
                 ).then(() => {
                     message.success(`删除成功`);
-                    this.tryToRefresh()
+                    this.tryToRefresh();
+                    this.tryToUpdateNameList();
                 }).catch((error) => {});
             },
             onCancel() {},
@@ -382,6 +385,7 @@ class MyActivities extends React.Component {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("1000076001")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+                this.tryToUpdateNameList();
             }
         }
         if (this.props.myActivities.get('$promotionList') != nextProps.myActivities.get('$promotionList')) {
@@ -563,6 +567,14 @@ class MyActivities extends React.Component {
         }
     }
 
+    tryToUpdateNameList = () => {
+        try {
+            this.nameSearchRef.getNameList()
+        } catch (e) {
+            console.log('e: ', e)
+        }
+    }
+
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
@@ -676,7 +688,8 @@ class MyActivities extends React.Component {
                         this.setState({
                             updateModalVisible: false,
                         });
-                        this.tryToRefresh()
+                        this.tryToRefresh();
+                        this.tryToUpdateNameList();
                     }
                 }}
             />);
@@ -858,6 +871,7 @@ class MyActivities extends React.Component {
                         </li>
                         <li>
                             <PromotionNameSelect
+                                ref={this.setNameSearchRef}
                                 getParams={{ ...opt, promotionName: undefined }}
                                 onChange={(promotionName) => {
                                     this.setState(promotionName)
