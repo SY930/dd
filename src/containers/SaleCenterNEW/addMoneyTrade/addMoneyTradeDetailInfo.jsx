@@ -302,9 +302,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectionFlag ? 'success' : 'error'}
                 help={this.state.dishsSelectionFlag ? null : '请选择换购菜品'}
             >
-                <EditBoxForDishes onChange={(value) => {
-                    this.onDishesChange(value);
-                }}
+                <EditBoxForDishes
+                    type='1070'
+                    onChange={(value) => {
+                        this.onDishesChange(value);
+                    }}
                 />
             </FormItem>
         )
