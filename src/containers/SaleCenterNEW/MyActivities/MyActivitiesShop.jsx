@@ -1092,7 +1092,7 @@ class MyActivitiesShop extends React.Component {
                             <Authority rightCode={BASIC_PROMOTION_DELETE}>
                                 <a
                                     href="#"
-                                    disabled={isGroupPro}
+                                    disabled={isGroupPro || record.isActive != 0}
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
