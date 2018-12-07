@@ -77,7 +77,10 @@ import {
     BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
     BASIC_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
-import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian} from "../../../constants/projectHuatianConf";
+import {
+    isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian,
+    isMine
+} from "../../../constants/projectHuatianConf";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -1092,7 +1095,7 @@ class MyActivitiesShop extends React.Component {
                             <Authority rightCode={BASIC_PROMOTION_DELETE}>
                                 <a
                                     href="#"
-                                    disabled={isGroupPro || record.isActive != 0}
+                                    disabled={isGroupPro || record.isActive != 0 || !isMine(record)}
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
