@@ -1126,9 +1126,10 @@ class MyActivities extends React.Component {
                                 )
                             }
                             <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                                {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
-                                    disabled={!isGroupPro}
+                                    disabled={!isGroupPro || record.isActive != 0}
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
