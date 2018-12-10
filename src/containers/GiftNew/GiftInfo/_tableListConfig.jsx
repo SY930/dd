@@ -45,18 +45,14 @@ export const COLUMNS = [
                             )
                         }
                     </Authority>
-                    {
-                        (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                            <a disabled={true}>查看</a>
-                        ) : (
-                            <a
-                                href="javaScript:;"
-                                onClick={() => {
-                                    this.handleEdit(record, 'detail')
-                                }}
-                            >查看</a>
-                        )
-                    }
+                    <a
+                        href="javaScript:;"
+                        onClick={() => {
+                            this.handleEdit(record, 'detail')
+                        }}
+                    >
+                        查看
+                    </a>
                     {record.sendTotalCount > 0 ?
                         <Tooltip title="券已发出，无法删除">
                             <a disabled={true}><span style={{pointerEvents: 'auto'}}>删除</span></a>
