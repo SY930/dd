@@ -1,4 +1,3 @@
-
 /**
  * @Author: ZBL
  * @Date:   2017-03-02T11:12:25+08:00
@@ -30,6 +29,7 @@ import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -776,7 +776,26 @@ class CompositeDetailInfo extends React.Component {
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     {this.renderPromotionSetting()}
                     <Row>
-                        <Col span={5} offset={2}>条件组合:</Col>
+                        <Col span={5} offset={2}>
+                            条件组合:
+                            <CloseableTip
+                                style={{
+                                    position: 'absolute',
+                                    right: '64px',
+                                    top: '-2px'
+                                }}
+                                content={
+                                    <div>
+                                        <p style={{ textIndent: '2em' }}>1、当只设置一个条件组合时，活动可多次执行。例如，条件设置：1杯饮品+1个甜品，减免5元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，减免10元，依次类推。</p>
+                                        <br/>
+                                        <p style={{ textIndent: '2em' }}>2、当设置2个及2个以上条件组合时，活动只能执行一次。例如，条件设置1：1杯饮品+1个甜品，减免5元。条件设置2：1杯饮品+1个甜品+1个套餐，减免15元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，也是减免5元。
+                                        </p>
+                                    </div>
+                                }
+                                customStyle={{ top: -240, left: 56 }}
+                            />
+                        </Col>
+
                     </Row>
                     {this.renderConditions()}
                     {this.renderAdvancedSettingButton()}
