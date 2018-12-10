@@ -338,12 +338,25 @@ class CompositeDetailInfo extends React.Component {
         const { data, conditions } = this.state;
         data.splice(idx, 1);
         // 删除组合 的时候,如果条件的个数多余组合个数,删除最后一个条件
-        let count = 1;
+        // 组合只有2 和3 4时  没必要算排列组合
+
+        /* let count = 1;
         for (let i = 2; i < this.state.data.length; i++) {
             count += this.getFlagArrs(this.state.data.length, i);
         }
         if (count + 1 < conditions.length) {
             conditions.length = count;
+        } */
+        if (data.length === 2) {
+            conditions.length = 1;
+            conditions.forEach(item => {
+                item.groupCount = (item.groupCount || []).filter(num => num < 2)
+            })
+        } else if (data.length === 3 && conditions.length > 4) {
+            conditions.length = 4;
+            conditions.forEach(item => {
+                item.groupCount = (item.groupCount || []).filter(num => num < 3)
+            })
         }
         this.setState({ data, conditions });
     }
@@ -359,7 +372,7 @@ class CompositeDetailInfo extends React.Component {
                 groupCountStatus: 'success', // 验证信息
                 cutStatus: 'success', // 验证信息
                 discountStatus: 'success', // 验证信息
-                cutTiStatus: 'success', // 验证信息
+                cutToStatus: 'success', // 验证信息
             }
         );
         this.setState({ conditions });
@@ -397,9 +410,9 @@ class CompositeDetailInfo extends React.Component {
     // 条件菜品数change
     handleGroupCountChange(idx, val) {
         const { conditions } = this.state;
-        if (val.length == 0) {
+        if (val.length < 2) {
             conditions[idx].groupCountStatus = 'error';
-            message.warning('至少选择两个组合条件!');
+            // message.warning('至少选择两个组合条件!');
         } else {
             conditions[idx].groupCountStatus = 'success';
         }
@@ -715,11 +728,13 @@ class CompositeDetailInfo extends React.Component {
 
     // 条件 + -图标
     renderConditionIcon(idx) {
-        let count = 1;
-        for (let i = 2; i < this.state.data.length; i++) {
-            count += this.getFlagArrs(this.state.data.length, i);
+        let count;
+        switch (this.state.data.length) {
+            case 2: count = 1; break;
+            case 3: count = 4; break;
+            case 4: count = 11; break;
+            default: count = 11; break;
         }
-        // console.log(count)
         if (idx == 0 && this.state.conditions.length == 1 && this.state.conditions.length < count) {
             return (
                 <span className={styles.iconsGroupStyle}>
