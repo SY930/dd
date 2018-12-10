@@ -1459,7 +1459,10 @@ class GiftAddModalStep extends React.PureComponent {
                         { required: true, message: `礼品售价不能为空` },
                         {
                             validator: (rule, v, cb) => {
-                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) || Number(v) > values.giftValue) {
+                                if (type !== 'add') {
+                                    return cb();
+                                }
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(String(v)) || Number(v) > values.giftValue) {
                                     cb(rule.message);
                                 }
                                 cb();
@@ -1469,8 +1472,10 @@ class GiftAddModalStep extends React.PureComponent {
                     ] : [
                         {
                             validator: (rule, v, cb) => {
-
-                                if((v || '').includes(' ')) {
+                                if (type !== 'add') {
+                                    return cb();
+                                }
+                                if(String(v || '').includes(' ')) {
                                     cb(rule.message);
                                 }
                                 cb();
@@ -1479,11 +1484,10 @@ class GiftAddModalStep extends React.PureComponent {
                         },
                         {
                             validator: (rule, v, cb) => {
-
-                                if((v || '').includes(' ')) {
-                                    cb('请不要输入空格');
+                                if (type !== 'add') {
+                                    return cb();
                                 }
-                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) && v !== undefined && v !== '') {
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(String(v)) && v !== undefined && v !== '') {
                                     cb(rule.message);
                                 }
                                 cb();
