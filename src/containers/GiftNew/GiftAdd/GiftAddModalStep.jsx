@@ -1447,21 +1447,50 @@ class GiftAddModalStep extends React.PureComponent {
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form), // <GiftPromotion></GiftPromotion>,
             },
+            // 线上礼品卡(91) 和其他的券类 price字段有微弱不同
             price: {
-                label: '礼品售价',
+                label: value == '91' ? '礼品售价' : '建议售价',
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
                 surfix: '元',
-                rules: [{ required: true, message: `礼品售价不能为空` }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) || Number(v) > values.giftValue) {
-                            cb(rule.message);
+                rules: value == '91' ?
+                    [
+                        { required: true, message: `礼品售价不能为空` },
+                        {
+                            validator: (rule, v, cb) => {
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) || Number(v) > values.giftValue) {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '整数不超过8位，小数不超过2位, 且不允许大于礼品价值',
+                        },
+                    ] : [
+                        {
+                            validator: (rule, v, cb) => {
+
+                                if((v || '').includes(' ')) {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '请不要输入空格',
+                        },
+                        {
+                            validator: (rule, v, cb) => {
+
+                                if((v || '').includes(' ')) {
+                                    cb('请不要输入空格');
+                                }
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) && v !== undefined && v !== '') {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '整数不超过8位，小数不超过2位',
                         }
-                        cb();
-                    },
-                    message: '整数不超过8位，小数不超过2位, 且不允许大于礼品价值',
-                }],
+                    ],
             },
             validityDays: {
                 label: '有效期',

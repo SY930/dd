@@ -115,7 +115,13 @@ class CardOperate extends React.Component {
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum']);
             _params.cardTypeID = _params.useCardTypeID;
             delete _params.useCardTypeID;
-            axiosData(callserver, _params, null, { path: 'data' }).then((data) => {
+            let reqParams = {
+                ..._params,
+                batchNO: (_params.batchNO || '').trim(),
+                endNO: (_params.endNO || '').trim(),
+                startNO: (_params.startNO || '').trim(),
+            }
+            axiosData(callserver, reqParams, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
         });
@@ -181,7 +187,7 @@ class CardOperate extends React.Component {
                                         message: '起始号必须是1-999999之间的数字'
                                     },
                                     { validator: (rule, v, cb) => {
-                                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                                        String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
                                     },
                                         message: '不能超过6位'},
                                 ],
@@ -205,7 +211,7 @@ class CardOperate extends React.Component {
                                         message: '终止号必须是起始号到999999之间的数字'
                                     },
                                     { validator: (rule, v, cb) => {
-                                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                                        String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
                                     },
                                         message: '不能超过6位'},
                                 ],
@@ -244,7 +250,7 @@ class CardOperate extends React.Component {
                         message: '批次号必须是1-999999之间的整数'
                     },
                     { validator: (rule, v, cb) => {
-                        String(v || '').length <= 6 ? cb() : cb(rule.message);
+                        String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
                     },
                         message: '不能超过6位'},
                 ],
