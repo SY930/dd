@@ -85,10 +85,10 @@ class BasePage extends Component {
             return;
         }
         const key = activity.key;
-        if (key === '31' && isFormalRelease()) {
+        /* if (key === '31' && isFormalRelease()) {
             message.success('活动将于近期上线, 敬请期待~');
             return;
-        }
+        } */
         const { user } = this.props;
         this.setState({
             specialIndex: index,
