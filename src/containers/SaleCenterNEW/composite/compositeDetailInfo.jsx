@@ -789,9 +789,11 @@ class CompositeDetailInfo extends React.Component {
                                         <br/>
                                         <p style={{ textIndent: '2em' }}>2、当设置2个及2个以上条件组合时，活动只能执行一次。例如，条件设置1：1杯饮品+1个甜品，减免5元。条件设置2：1杯饮品+1个甜品+1个套餐，减免15元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，也是减免5元。
                                         </p>
+                                        <br/>
+                                        <p>注意：同一菜品不要在多个条件中重复设置</p>
                                     </div>
                                 }
-                                customStyle={{ top: -240, left: 56 }}
+                                customStyle={{ top: -275, left: 56 }}
                             />
                         </Col>
 
