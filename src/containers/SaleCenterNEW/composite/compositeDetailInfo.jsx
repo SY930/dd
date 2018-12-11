@@ -412,7 +412,6 @@ class CompositeDetailInfo extends React.Component {
         const { conditions } = this.state;
         if (val.length < 2) {
             conditions[idx].groupCountStatus = 'error';
-            message.warning('至少选择两个组合条件!');
         } else {
             conditions[idx].groupCountStatus = 'success';
         }
