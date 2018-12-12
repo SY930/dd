@@ -640,10 +640,6 @@ class MySpecialActivities extends React.Component {
                                     message.warning('该活动已下线');
                                     return;
                                 }
-                                if (Number(record.eventWay) === 31 && isFormalRelease()) {
-                                    message.warning('活动将于近期上线, 敬请期待~');
-                                    return;
-                                }
                                 record.isActive == '-1' || statusState ? null :
                                     this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
                             }}
@@ -663,10 +659,6 @@ class MySpecialActivities extends React.Component {
                                     } else {
                                         if (Number(record.eventWay) === 70) {
                                             message.warning('该活动已下线');
-                                            return;
-                                        }
-                                        if (Number(record.eventWay) === 31 && isFormalRelease()) {
-                                            message.warning('活动将于近期上线, 敬请期待~');
                                             return;
                                         }
                                         this.props.toggleIsUpdate(true)
