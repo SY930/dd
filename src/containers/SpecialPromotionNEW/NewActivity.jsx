@@ -198,10 +198,6 @@ class NewActivity extends React.Component {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }
-        if (activity.get('key') === '31') {
-            message.success('活动将于近期上线, 敬请期待~');
-            return;
-        }
         const { user } = this.props;
         this.setState({
             index,
