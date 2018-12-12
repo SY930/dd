@@ -209,6 +209,7 @@ const GiftCfg = {
         { value: '3', label: '已过期' },
         { value: '4', label: '已退订' },
         { value: '5', label: '已失效' },
+        { value: '13', label: '已作废' },
         { value: '99', label: '已删除' },
     ],
     giftCardStatus: [
