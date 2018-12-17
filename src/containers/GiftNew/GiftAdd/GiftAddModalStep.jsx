@@ -39,6 +39,7 @@ import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
+import SelectCardTypes from "../components/SelectCardTypes";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -1282,6 +1283,13 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '所属品牌',
                 type: 'custom',
                 render: decorator => decorator({})(<SelectBrands/>),
+            },
+            cardTypeList: {
+                label: '适用卡类',
+                type: 'custom',
+                render: decorator => decorator({
+                    rules: [{ required: true, message: '至少要选择1个适用卡类' }]
+                })(<SelectCardTypes/>),
             },
             giftValue: {
                 label: giftValueLabel,
