@@ -16,7 +16,7 @@ import GenerateBatchGifts from "../components/GenerateBatchGifts";
 const TabPane = Tabs.TabPane;
 
 const sendableGiftTypes = [
-    '10', '20', '21', '30', '110', '111'
+    '10', '20', '21', '30', '110', '111', '40', '42', '80'
 ];
 
 class GiftDetailModalTabs extends React.Component {
