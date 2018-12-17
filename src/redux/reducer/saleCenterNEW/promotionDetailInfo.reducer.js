@@ -136,7 +136,7 @@ function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $fo
 
         $categories.map(($category, key) => {
             let groupName = $category.get('foodCategoryGroupName');
-            if (groupName === '') {
+            if (!groupName) {
                 groupName = '未分类';
             }
             const foodsOfTheCategory = $foods

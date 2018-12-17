@@ -160,7 +160,19 @@ class RecommendFoodDetailInfo extends React.Component {
             }
         })
         if (handSetChecked) {
+            if (Array.isArray(data)) {
+                const unCompleteIndex = data.findIndex(group => {
+                    return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
+                        (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
+                        ))
+                });
+                if (unCompleteIndex > -1) {
+                    message.warning(`组合${unCompleteIndex + 1}没有搭配完整`)
+                    return false;
+                }
+            }
             data ? data.forEach((group, groupIdx) => {
+                // TODO: 用这种方法去判断是否选过菜品是真的蠢, 但是需求真的太多 来不及改了
                 if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
                     group.free.forEach((free) => {
                         priceLst.push({

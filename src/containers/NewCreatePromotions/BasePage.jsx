@@ -32,6 +32,7 @@ import {
     BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
     isGroupOfHuaTianGroupList, isHuaTian, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
 } from "../../constants/projectHuatianConf";
+import {isFormalRelease} from "../../utils/index";
 
 class BasePage extends Component {
 
@@ -42,25 +43,9 @@ class BasePage extends Component {
             basicIndex: 0,
             specialModalVisible: false,
             specialIndex: 0,
-            // contentHeight: 782,
         };
-        // this.onWindowResize = this.onWindowResize.bind(this);
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
-
-    /*componentDidMount() {
-        this.onWindowResize();
-        window.addEventListener('resize', this.onWindowResize);
-    }
-    onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').offsetHeight - 95;
-        console.log('contentHeight: ', contentHeight);
-        this.setState({ contentHeight });
-    }*/
-
-    /*componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize);
-    }*/
 
     setBasicModalVisible(basicModalVisible) {
         this.setState({ basicModalVisible });
@@ -100,10 +85,6 @@ class BasePage extends Component {
             return;
         }
         const key = activity.key;
-        if (key === '31') {
-            message.success('活动将于近期上线, 敬请期待~');
-            return;
-        }
         const { user } = this.props;
         this.setState({
             specialIndex: index,

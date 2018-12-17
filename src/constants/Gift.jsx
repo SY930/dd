@@ -198,6 +198,7 @@ const GiftCfg = {
         { value: '115', label: '微信购买领取' },
         { value: '116', label: '微信受赠领取' },
         { value: '117', label: '激活送礼' },
+        { value: '120', label: '关注送礼' },
         { value: '3010', label: '基础营销消费返券' },
         { value: '3011', label: '批量生成' },
     ],
@@ -208,6 +209,7 @@ const GiftCfg = {
         { value: '3', label: '已过期' },
         { value: '4', label: '已退订' },
         { value: '5', label: '已失效' },
+        { value: '13', label: '已作废' },
         { value: '99', label: '已删除' },
     ],
     giftCardStatus: [
@@ -262,6 +264,7 @@ const GiftCfg = {
         { label: '5i', value: 5, disabled: releaseENV },
         { label: '拉格代尔', value: 6, disabled: releaseENV },
         { label: '非码', value: 20 },
+        { label: '企迈小程序', value: 30 },
     ],
     couponCodeType: [
         { value: 1, label: '是' },

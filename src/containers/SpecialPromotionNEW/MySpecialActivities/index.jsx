@@ -59,6 +59,7 @@ import {
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
+import {isFormalRelease} from "../../../utils/index";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -570,13 +571,14 @@ class MySpecialActivities extends React.Component {
      * @param eventID: record.itemID
      */
     activateNow(eventID) {
-        axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
+        message.warning('立即执行功能暂时下线噜~');
+        /* axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
         }).catch(err => {
             message.warning(err || 'sorry, 立即执行失败, 请稍后再试!');
-        })
+        }) */
     }
 
     renderTables() {
@@ -638,10 +640,6 @@ class MySpecialActivities extends React.Component {
                                     message.warning('该活动已下线');
                                     return;
                                 }
-                                if (Number(record.eventWay) === 31) {
-                                    message.warning('活动将于近期上线, 敬请期待~');
-                                    return;
-                                }
                                 record.isActive == '-1' || statusState ? null :
                                     this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
                             }}
@@ -661,10 +659,6 @@ class MySpecialActivities extends React.Component {
                                     } else {
                                         if (Number(record.eventWay) === 70) {
                                             message.warning('该活动已下线');
-                                            return;
-                                        }
-                                        if (Number(record.eventWay) === 31) {
-                                            message.warning('活动将于近期上线, 敬请期待~');
                                             return;
                                         }
                                         this.props.toggleIsUpdate(true)

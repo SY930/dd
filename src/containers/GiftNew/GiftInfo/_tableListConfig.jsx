@@ -29,7 +29,7 @@ export const COLUMNS = [
                 <span>
                     <Authority rightCode={GIFT_LIST_UPDATE}>
                         {
-                            (isHuaTian() && getHuaTianDisabledGifts().includes(String(record.giftType))) || (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                 <a
                                     href="javaScript:;"
                                     disabled={true}
@@ -50,7 +50,9 @@ export const COLUMNS = [
                         onClick={() => {
                             this.handleEdit(record, 'detail')
                         }}
-                    >查看</a>
+                    >
+                        查看
+                    </a>
                     {record.sendTotalCount > 0 ?
                         <Tooltip title="券已发出，无法删除">
                             <a disabled={true}><span style={{pointerEvents: 'auto'}}>删除</span></a>

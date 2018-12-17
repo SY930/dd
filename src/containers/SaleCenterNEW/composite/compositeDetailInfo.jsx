@@ -1,4 +1,3 @@
-
 /**
  * @Author: ZBL
  * @Date:   2017-03-02T11:12:25+08:00
@@ -30,6 +29,7 @@ import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -338,12 +338,25 @@ class CompositeDetailInfo extends React.Component {
         const { data, conditions } = this.state;
         data.splice(idx, 1);
         // 删除组合 的时候,如果条件的个数多余组合个数,删除最后一个条件
-        let count = 1;
+        // 组合只有2 和3 4时  没必要算排列组合
+
+        /* let count = 1;
         for (let i = 2; i < this.state.data.length; i++) {
             count += this.getFlagArrs(this.state.data.length, i);
         }
         if (count + 1 < conditions.length) {
             conditions.length = count;
+        } */
+        if (data.length === 2) {
+            conditions.length = 1;
+            conditions.forEach(item => {
+                item.groupCount = (item.groupCount || []).filter(num => num < 2)
+            })
+        } else if (data.length === 3 && conditions.length > 4) {
+            conditions.length = 4;
+            conditions.forEach(item => {
+                item.groupCount = (item.groupCount || []).filter(num => num < 3)
+            })
         }
         this.setState({ data, conditions });
     }
@@ -359,7 +372,7 @@ class CompositeDetailInfo extends React.Component {
                 groupCountStatus: 'success', // 验证信息
                 cutStatus: 'success', // 验证信息
                 discountStatus: 'success', // 验证信息
-                cutTiStatus: 'success', // 验证信息
+                cutToStatus: 'success', // 验证信息
             }
         );
         this.setState({ conditions });
@@ -397,9 +410,8 @@ class CompositeDetailInfo extends React.Component {
     // 条件菜品数change
     handleGroupCountChange(idx, val) {
         const { conditions } = this.state;
-        if (val.length == 0) {
+        if (val.length < 2) {
             conditions[idx].groupCountStatus = 'error';
-            message.warning('至少选择两个组合条件!');
         } else {
             conditions[idx].groupCountStatus = 'success';
         }
@@ -715,11 +727,13 @@ class CompositeDetailInfo extends React.Component {
 
     // 条件 + -图标
     renderConditionIcon(idx) {
-        let count = 1;
-        for (let i = 2; i < this.state.data.length; i++) {
-            count += this.getFlagArrs(this.state.data.length, i);
+        let count;
+        switch (this.state.data.length) {
+            case 2: count = 1; break;
+            case 3: count = 4; break;
+            case 4: count = 11; break;
+            default: count = 11; break;
         }
-        // console.log(count)
         if (idx == 0 && this.state.conditions.length == 1 && this.state.conditions.length < count) {
             return (
                 <span className={styles.iconsGroupStyle}>
@@ -761,7 +775,28 @@ class CompositeDetailInfo extends React.Component {
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     {this.renderPromotionSetting()}
                     <Row>
-                        <Col span={5} offset={2}>条件组合:</Col>
+                        <Col span={5} offset={2}>
+                            条件组合:
+                            <CloseableTip
+                                style={{
+                                    position: 'absolute',
+                                    right: '64px',
+                                    top: '-2px'
+                                }}
+                                content={
+                                    <div>
+                                        <p style={{ textIndent: '2em' }}>1、当只设置一个条件组合时，活动可多次执行。例如，条件设置：1杯饮品+1个甜品，减免5元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，减免10元，依次类推。</p>
+                                        <br/>
+                                        <p style={{ textIndent: '2em' }}>2、当设置2个及2个以上条件组合时，活动只能执行一次。例如，条件设置1：1杯饮品+1个甜品，减免5元。条件设置2：1杯饮品+1个甜品+1个套餐，减免15元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，也是减免5元。
+                                        </p>
+                                        <br/>
+                                        <p>注意：同一菜品不要在多个条件中重复设置</p>
+                                    </div>
+                                }
+                                customStyle={{ top: -275, left: 56 }}
+                            />
+                        </Col>
+
                     </Row>
                     {this.renderConditions()}
                     {this.renderAdvancedSettingButton()}

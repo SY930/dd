@@ -69,12 +69,6 @@ class PriceInput extends React.Component {
             const _reg = new RegExp(`^\\+?\\d{0,${maxNum}}$`);
             reg = maxNum == 'noLimit' ? /^\d\d*$/ : _reg;
             valueNum = this.state.number;
-            // before modification
-            // if (!isNaN(value) && reg.test(value)) {
-            //    valueNum = parseInt(value);
-            // }else if(value === ''){
-            //     valueNum = null;
-            // }
             if (value === '') {
                 valueNum = null;
             } else if (!isNaN(value) && reg.test(value)) {

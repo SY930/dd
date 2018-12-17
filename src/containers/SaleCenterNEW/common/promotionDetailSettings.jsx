@@ -217,7 +217,15 @@ class PromotionDetailSettings extends React.Component {
             foodSelections.clear();
             this.setState({
                 categoryOrDish: e.target.value,
-                foodSelections,
+                foodCategoryOptions: [],
+                foodCategorySelections: new Set(),
+                foodCategoryCurrentSelections: [],
+                excludeOptions: [],
+                excludeSelections: new Set(),
+                excludeCurrentSelections: [],
+                foodOptions: [],
+                foodSelections: new Set(),
+                foodCurrentSelections: [],
             }, () => {
                 this.props.onChange && this.props.onChange({
                     foodCategory: Array.from(this.state.foodCategorySelections),
@@ -234,8 +242,15 @@ class PromotionDetailSettings extends React.Component {
             excludeSelections.clear();
             this.setState({
                 categoryOrDish: e.target.value,
-                foodCategorySelections,
-                excludeSelections,
+                foodCategoryOptions: [],
+                foodCategorySelections: new Set(),
+                foodCategoryCurrentSelections: [],
+                excludeOptions: [],
+                excludeSelections: new Set(),
+                excludeCurrentSelections: [],
+                foodOptions: [],
+                foodSelections: new Set(),
+                foodCurrentSelections: [],
             }, () => {
                 this.props.onChange && this.props.onChange({
                     dishes: Array.from(this.state.foodSelections),
