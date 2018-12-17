@@ -38,6 +38,7 @@ import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
+import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -116,6 +117,15 @@ class GiftAddModalStep extends React.PureComponent {
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
+    }
+
+    isHuaTianSpecificCoupon = () => {
+        const { type, gift: { value, data } } = this.props;
+        if (value != 10) return false;
+        if (type === 'add') {
+            return isHuaTian()
+        }
+        return isHuaTian() && isMine(data)
     }
 
     proSharedGifts = (sharedGifts = []) => {
@@ -1145,7 +1155,7 @@ class GiftAddModalStep extends React.PureComponent {
             foodSelectType = 0;
         }
         return (
-            <FormItem style={{ marginTop: -12, marginBottom: 0 }}>
+            <FormItem style={{ marginTop: -12, marginBottom: 0, display: this.isHuaTianSpecificCoupon() ? 'none' : 'block' }}>
                 {
                     decorator({})(
                         <MoreFoodBox
@@ -1437,21 +1447,54 @@ class GiftAddModalStep extends React.PureComponent {
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form), // <GiftPromotion></GiftPromotion>,
             },
+            // 线上礼品卡(91) 和其他的券类 price字段有微弱不同
             price: {
-                label: '礼品售价',
+                label: value == '91' ? '礼品售价' : '建议售价',
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
                 surfix: '元',
-                rules: [{ required: true, message: `礼品售价不能为空` }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v)) || Number(v) > values.giftValue) {
-                            cb(rule.message);
+                rules: value == '91' ?
+                    [
+                        { required: true, message: `礼品售价不能为空` },
+                        {
+                            validator: (rule, v, cb) => {
+                                if (type !== 'add') {
+                                    return cb();
+                                }
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(String(v)) || Number(v) > values.giftValue) {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '整数不超过8位，小数不超过2位, 且不允许大于礼品价值',
+                        },
+                    ] : [
+                        {
+                            validator: (rule, v, cb) => {
+                                if (type !== 'add') {
+                                    return cb();
+                                }
+                                if(String(v || '').includes(' ')) {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '请不要输入空格',
+                        },
+                        {
+                            validator: (rule, v, cb) => {
+                                if (type !== 'add') {
+                                    return cb();
+                                }
+                                if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(String(v)) && v !== undefined && v !== '') {
+                                    cb(rule.message);
+                                }
+                                cb();
+                            },
+                            message: '整数不超过8位，小数不超过2位',
                         }
-                        cb();
-                    },
-                    message: '整数不超过8位，小数不超过2位, 且不允许大于礼品价值',
-                }],
+                    ],
             },
             validityDays: {
                 label: '有效期',
@@ -1551,7 +1594,7 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => this.renderDisCountRate(decorator),
             },
             foodsboxs: {
-                label: '选择菜品',
+                label: this.isHuaTianSpecificCoupon() ? '' : '选择菜品',
                 type: 'custom',
                 render: decorator => this.renderFoodsboxs(decorator),
             },

@@ -286,6 +286,7 @@ class AddGifts extends React.Component {
                         >
                             <PriceInput
                                 addonBefore={addonBefore}
+                                maxNum={10}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter="个"
@@ -573,12 +574,12 @@ class AddGifts extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giftTotalCount.value = value.number;
         const _value = parseFloat(value.number);
-        if (_value > 0) {
+        if (_value > 0 && _value <= 1000000000) {
             _infos[index].giftTotalCount.validateStatus = 'success';
             _infos[index].giftTotalCount.msg = null;
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
-            _infos[index].giftTotalCount.msg = '礼品总数必须大于0';
+            _infos[index].giftTotalCount.msg = '礼品总数必须大于0, 小于等于10亿';
         }
         this.setState({
             infos: _infos,

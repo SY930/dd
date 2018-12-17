@@ -36,6 +36,7 @@ import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
+const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
     constructor(props) {
         super(props);
@@ -165,6 +166,13 @@ class GiftDetailTable extends Component {
             g.usingTimeType = g.usingTimeType.split(',');
             g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
+            if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
+                if (g.giftImagePath.startsWith('/')) {
+                    g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath
+                } else {
+                    g.giftImagePath = 'http://res.hualala.com/' + g.giftImagePath
+                }
+            }
             return g;
         });
         this.setState({ dataSource: [...newDataSource], total: _total });

@@ -17,14 +17,14 @@ export default class PromotionNameSelect extends React.Component {
         }
     }
     componentDidMount() {
-        this.getNameList(this.props.getParams)
+        this.getNameList()
     }
     componentWillReceiveProps(nextProps) {
         if (!Immutable.is(Immutable.fromJS(this.props.getParams), Immutable.fromJS(nextProps.getParams))) {
             this.getNameList(nextProps.getParams)
         }
     }
-    getNameList = (opt) => {
+    getNameList = (opt = this.props.getParams) => {
         axiosData('/promotion/docPromotionService_queryPromotionNameLst.ajax', opt, null, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((res) => {
                 this.setState({
