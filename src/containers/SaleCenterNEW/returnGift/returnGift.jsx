@@ -90,12 +90,12 @@ const defaultData = {
     },
 };
 
-const availableGiftTypes = [// 只有电子代金券和菜品优惠券 菜品兑换,实物券, 折扣券, 买赠券有支持到店属性, 顺序matters
+const availableGiftTypes = [// 顺序matters
     '10', '20', '21', '111', '110', '30', '40', '42', '80',
 ];
 
 const offlineCanUseGiftTypes = [
-    '10', '20', '21', '111', '110', '30',
+    '10', '20', '21', '111', '110', '30', '40', '42', '80',
 ];
 
 class ReturnGift extends React.Component {

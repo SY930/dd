@@ -201,10 +201,7 @@ class AddGifts extends React.Component {
 
     renderItems() {
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
-            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => type.value === String(cat.giftType))}));
-        if (Number(this.props.type) === 31 ) {
-            filteredGiftInfo = filteredGiftInfo.filter(cat =>  cat.giftType != 40 && cat.giftType != 42 && cat.giftType != 80)
-        }
+            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
         const arr = ['一等奖', '二等奖', '三等奖', '四等奖', '五等奖', '六等奖', '七等奖', '八等奖', '九等奖', '十等奖'];
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
