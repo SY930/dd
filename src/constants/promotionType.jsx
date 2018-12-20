@@ -3,6 +3,24 @@
  *
  */
 
+export const BASIC_PROMOTION_MAP = {
+    DISCOUNT: '2020',
+    SPECIAL_PRICE: '1010',
+    GROUP_PROMOTION: '4010',
+    N_TH_DISCOUNT: '1050',
+    ADD_MONEY_TRADE: '1070',
+    RECOMMEND_FOOD: '5010',
+    ADD_MONEY_UPGRADE: '1090', // 加价升级换新
+    FULL_DEDUCT: '2010', // 满减
+    FULL_GIVE: '1030', // 满赠
+    BUY_GIVE: '1020', // 买赠
+    BUY_M_GIVE_N: '1060', // 买3免1
+    BUY_TO_DEDUCT_DISCOUNT: '2040', // 买减买折
+    COMPOSITE: '2050', // 组合减免
+    COMPOSITE_GIVE: '1040', // 搭赠
+    LOW_PRICE_PROMOTION: '2080', // 低价促销
+}
+
 /**
  * 会员拉新
  * @type {Array}
