@@ -31,3 +31,4 @@ export const LOYALTY_PROMOTION = '1000073004'; // 创建会员关怀活动
 export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动
 
 export const SHARE_RULES = 'share_rules'; // 创建共享群组页面
+// export const SHARE_RULES = '1000080001'; // 创建共享群组页面

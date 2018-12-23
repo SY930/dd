@@ -73,6 +73,7 @@ const $initialState = Immutable.fromJS({
     totalUsedCount: 0,
     detailVisible: false,
     giftSort: [],
+    allGiftList: [],
     sharedGifts: [],
     shopsByBatchNo: [],
     batchNoInfo: [],
@@ -121,7 +122,17 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_FETCH_LIST_BEGIN:
             return $$state.set('loading', Immutable.fromJS(action.payload));
         case GIFT_NEW_FETCH_LIST_OK:
-            return $$state.set('dataSource', Immutable.fromJS(action.payload.dataSource))
+            // 之前状态结构不太合理, 故采用新的字段存储, 防止对旧组件产生影响
+            return $$state
+                .set('dataSource', Immutable.fromJS(action.payload.dataSource))
+                .set('allGiftList',
+                    Immutable.fromJS(
+                        Array.isArray(action.payload.dataSource) ?
+                            []
+                            :
+                            (action.payload.dataSource || { crmGiftList: [] }).crmGiftList
+                    )
+                )
                 .set('loading', Immutable.fromJS(action.payload.loading));
         case GIFT_NEW_LIST_PARAMS:
             return $$state.set('listParams', Immutable.fromJS(action.payload));

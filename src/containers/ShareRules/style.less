@@ -34,10 +34,41 @@
 
 .bodyContainer {
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
+    position: relative;
     flex-wrap: wrap;
     padding: 20px;
+    .spinner {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.5);
+        text-align: center;
+        position: absolute;
+    }
 }
+
+.emptyBodyContainer {
+    overflow: hidden;
+    display: flex;
+    padding-top: 150px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    .primaryTip {
+        font-size:12px;
+        font-weight:bold;
+        color:rgba(69,69,69,1);
+        margin-top: 30px;
+    }
+    .tip {
+        font-size:12px;
+        font-weight:400;
+        color:rgba(153,153,153,1);
+        margin-top: 10px;
+    }
+}
+
 
 .shareGroupWrapper {
     flex: none;
@@ -72,7 +103,7 @@
         }
     }
     .shareGroupBody {
-        height: 210px;
+        height: 216px;
         overflow-y: auto;
         .shareGroupItem {
             margin: 0 15px;

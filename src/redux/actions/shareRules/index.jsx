@@ -35,11 +35,22 @@ export const startEditCertainShareGroup = opts => ({
     payload: opts,
 });
 
-// TODO: 替换真实请求接口
+// 修改搜索类型
+export const changeSearchType = opts => ({
+    type: SALE_CENTER_CHANGE_QUERY_PROMOTION_TYPE,
+    payload: opts,
+});
+
+// 修改搜索名称
+export const changeSearchName = opts => ({
+    type: SALE_CENTER_CHANGE_QUERY_PROMOTION_NAME,
+    payload: opts,
+});
+
 export const queryShareGroups = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_QUERY_SHARE_GROUP_START});
-        axiosData('/promotion/docPromotionService_querySHAREGROUPS.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        axiosData('/promotion/promotionShareGroupService_queryList.ajax', opts, {}, { path: 'data.promotionShareGroupList' }, 'HTTP_SERVICE_URL_CRM')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_QUERY_SHARE_GROUP_SUCCESS,
@@ -59,13 +70,18 @@ export const queryShareGroups = (opts) => {
 export const createOrUpdateCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_SAVE_SHARE_GROUP_START});
-        axiosData('/promotion/docPromotionService_querySHAREGROUPS.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        const url = !opts.itemID ? '/promotion/promotionShareGroupService_add.ajax' : '/promotion/promotionShareGroupService_update.ajax'
+        return axiosData(url, opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_SAVE_SHARE_GROUP_SUCCESS,
                 })
+                return Promise.resolve()
             })
-            .catch(err => dispatch({type: SALE_CENTER_SAVE_SHARE_GROUP_FAIL}));
+            .catch(err => {
+                dispatch({type: SALE_CENTER_SAVE_SHARE_GROUP_FAIL})
+                return Promise.reject()
+            });
     }
 };
 
@@ -78,13 +94,17 @@ export const createOrUpdateCertainShareGroup = (opts) => {
 export const deleteCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_DELETE_SHARE_GROUP_START});
-        axiosData('/promotion/docPromotionService_querySHAREGROUPS.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        return axiosData('/promotion/promotionShareGroupService_deleteShareGroup.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_DELETE_SHARE_GROUP_SUCCESS,
                 })
+                return Promise.resolve()
             })
-            .catch(err => dispatch({type: SALE_CENTER_DELETE_SHARE_GROUP_FAIL}));
+            .catch(err => {
+                dispatch({type: SALE_CENTER_DELETE_SHARE_GROUP_FAIL});
+                return Promise.reject()
+            });
     }
 };
 
@@ -96,12 +116,16 @@ export const deleteCertainShareGroup = (opts) => {
 export const removeItemFromCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_START});
-        axiosData('/promotion/docPromotionService_querySHAREGROUPS.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        return axiosData('/promotion/promotionShareGroupService_deleteShareGroupDetail.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_SUCCESS,
                 })
+                return Promise.resolve()
             })
-            .catch(err => dispatch({type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_FAIL}));
+            .catch(err => {
+                dispatch({type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_FAIL});
+                return  Promise.reject()
+            });
     }
 };
