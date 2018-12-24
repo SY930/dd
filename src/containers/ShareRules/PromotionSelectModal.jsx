@@ -5,10 +5,13 @@ import {
     Modal,
     Tree,
     Button,
+    Tooltip
 } from 'antd';
 import {debounce} from 'lodash';
 import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
 const TreeNode = Tree.TreeNode;
+
+const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
 const AVAILABLE_GIFTS = [
     '10', '20', '21', '110', '111',
@@ -127,7 +130,13 @@ class PromotionSelectModal extends Component {
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>取消</Button>,
-                    <Button key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>,
+                    selected.length >= 2 ?
+                    <Button key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>
+                        :
+                    <Tooltip title="至少要选择2项进行共享">
+                        <Button key="1" disabled type="primary" size="large">保存</Button>
+                    </Tooltip>
+                    ,
                 ]}
                 onCancel={this.props.handleCancel}
                 width="922px"
@@ -147,24 +156,11 @@ class PromotionSelectModal extends Component {
                             selectedKeys={[currentCategory]}
                         >
                             <TreeNode key={'salePromotion'} title={'基础营销'}>
-                                <TreeNode key={'2020'} title={'折扣'} />
-                                <TreeNode key={'1010'} title={'特价菜'} />
-                                <TreeNode key={'4010'} title={'团购'} />
-
-                                <TreeNode key={'1090'} title={'加价升级换新'} />
-                                <TreeNode key={'2010'} title={'满减/每满减'} />
-                                <TreeNode key={'1030'} title={'满赠/每满赠'} />
-
-                                <TreeNode key={'1020'} title={'买赠'} />
-                                <TreeNode key={'1060'} title={'买三免一'} />
-                                <TreeNode key={'2040'} title={'买减/买折'} />
-
-                                <TreeNode key={'2050'} title={'组合减免'} />
-                                <TreeNode key={'1040'} title={'搭赠'} />
-                                <TreeNode key={'2030'} title={'随机立减'} />
-                                <TreeNode key={'2080'} title={'低价促销'} />
-                                <TreeNode key={'1080'} title={'累计次数赠送'} />
-                                <TreeNode key={'2070'} title={'累计次数减免'} />
+                                {
+                                    AVAILABLE_PROMOTIONS.map(item => (
+                                        <TreeNode key={item} value={item} title={BASIC_PROMOTION_MAP[item]} />
+                                    ))
+                                }
                             </TreeNode>
                             <TreeNode key={'hualala'} title={'哗啦啦券'}>
                                 <TreeNode key={'10'} title={'代金券'} />

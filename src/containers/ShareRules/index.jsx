@@ -383,9 +383,13 @@ export default class ShareRules extends Component {
                                                                     {item.activityName}
                                                                 </div>
                                                                 <div className={style.itemAction}>
-                                                                    <Popconfirm title="确定要将该条目移除吗?" onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
-                                                                        <a disabled={!this.isMyShareGroup(shareGroup)}>移除</a>
-                                                                    </Popconfirm>
+                                                                    {
+                                                                        ((shareGroup.shareGroupDetailList || []).length) > 2 && (
+                                                                            <Popconfirm title="确定要将该条目移除吗?" onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
+                                                                                <a disabled={!this.isMyShareGroup(shareGroup)}>移除</a>
+                                                                            </Popconfirm>
+                                                                        )
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         )
