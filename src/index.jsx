@@ -16,12 +16,12 @@ registerLocalPage([
         label: '新建商城活动',
         parent: [entryCodes.WECHAT_MALL_LIST],
     },
-    {
+/*    {
         key: entryCodes.SHARE_RULES,
         value: entryCodes.SHARE_RULES,
         label: '规则设置',
         parent: [entryCodes.SET_MSG_TEMPLATE],
-    },
+    },*/
 
 ]);
 

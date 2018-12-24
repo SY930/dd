@@ -13,7 +13,7 @@ import {
     Modal
 } from 'antd';
 import registerPage from '../../../index';
-import {SHARE_RULES} from "../../constants/entryCodes";
+import {SHARE_RULES_GROUP, SHARE_RULES_SHOP} from "../../constants/entryCodes";
 import style from './style.less'
 import { share_rules } from '../../redux/reducer/shareRules'
 import {
@@ -48,7 +48,7 @@ const getItemTag = (item) => {
     return tag || '活动'
 }
 
-@registerPage([SHARE_RULES], {
+@registerPage([SHARE_RULES_GROUP, SHARE_RULES_SHOP], {
     share_rules
 })
 @connect(mapStateToProps, mapDispatchToProps)
