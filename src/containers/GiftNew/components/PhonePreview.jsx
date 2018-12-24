@@ -33,15 +33,23 @@ const supportOrderTypeMap = {
 class PhonePreview extends PureComponent {
 
     usingTimeTypeString() {
-        if (!this.props.usingTimeType) {
-            return `早餐、午餐、下午茶、晚餐、夜宵`;
+        if (!this.props.couponPeriodSettings) {
+            return ' ';
         } else {
-            const { usingTimeType } = this.props;
-            const resultArr = [];
-            usingTimeType.toJS().sort().forEach(item => {
-                resultArr.push(usingTimeTypeMap[item])
-            });
-            return resultArr.join('、');
+            let res;
+            try {
+                const { couponPeriodSettings } = this.props;
+                const arr = couponPeriodSettings.toJS();
+                if (Array.isArray(arr)) {
+                    res = arr
+                        .filter(({periodStart, periodEnd}) => !!periodStart && !!periodEnd)
+                        .map(({periodStart, periodEnd}) => (periodStart || '').substring(0, 4).match(/\d{2}/g).join(':') + '-' + (periodEnd || '').substring(0, 4).match(/\d{2}/g).join(':'))
+                        .join(', ')
+                }
+            } catch (e) {
+                res = ' '
+            }
+            return res;
         }
     }
 
@@ -263,6 +271,7 @@ function mapStateToProps(state) {
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
         discountType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountType']),
         foodsbox: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodsboxs']),
+        couponPeriodSettings: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'couponPeriodSettings']),
         giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']),
         groupName: state.user.getIn(['accountInfo', 'groupName']),
     }

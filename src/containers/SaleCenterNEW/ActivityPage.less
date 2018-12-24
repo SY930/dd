@@ -940,6 +940,12 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    .tipBlock {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 16px;
+    }
     .timePickerWrapper {
         display: flex;
         justify-content: space-between;
@@ -1946,4 +1952,22 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 1em;
+}
+
+.timeIntervalContainer {
+    padding: 10px 0;
+    margin-top: -10px;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.invalidTimeIntervals {
+    border: 1px solid rgb(240, 65, 52);
+    border-radius: 3px;
+}
+.timeIntervalHelp {
+    position: absolute;
+    bottom: -6px;
+    left: 10px;
+    color: rgb(240, 65, 52);
 }
