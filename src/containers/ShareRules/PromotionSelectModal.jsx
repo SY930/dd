@@ -58,7 +58,7 @@ class PromotionSelectModal extends Component {
         }))).reduce((acc, curr) => {
             acc.push(...curr);
             return acc;
-        }, []);
+        }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
         return [
             ...allPromotionArray,
             ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
