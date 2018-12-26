@@ -120,7 +120,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: '消费返礼品',
-        tags: ['SaaS2.0', '微信'],
+        tags: ['SaaS2.0', '新微信', '微信'],
         isSpecial: false,
         text: '消费后获得奖励将使顾客下次光临的时间大大提前',
         example: '例如:消费满100元送1张10元代金券',
@@ -130,7 +130,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: '消费返积分',
-        tags: ['SaaS2.0', '微信'],
+        tags: ['SaaS2.0', '新微信', '微信'],
         isSpecial: false,
         text: '会员消费满X元送积分,积分可兑换礼品或抵现',
         example: '例如:消费每满1元返1分',
