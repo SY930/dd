@@ -238,7 +238,7 @@ export default class ShareRules extends Component {
         this.setState({
             isEdit: true,
             isCreate: false,
-            selected: (shareGroup.shareGroupDetailList || []).map(item => String(item.activityID)),
+            selected: (shareGroup.shareGroupDetailList || []).filter(item => item.action !== 2).map(item => String(item.activityID)),
             selectedGroupID: shareGroup.itemID,
         })
     }
@@ -380,11 +380,11 @@ export default class ShareRules extends Component {
                                                             </span>
                                                                 </div>
                                                                 <div className={style.itemTitle}>
-                                                                    {item.activityName}
+                                                                    {item.action !== 2 ? item.activityName : `${item.activityName}(已删除)`}
                                                                 </div>
                                                                 <div className={style.itemAction}>
                                                                     {
-                                                                        ((shareGroup.shareGroupDetailList || []).length) > 2 && (
+                                                                        (((shareGroup.shareGroupDetailList || []).length) > 2 && item.action !== 2) (
                                                                             <Popconfirm title="确定要将该条目移除吗?" onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
                                                                                 <a disabled={!this.isMyShareGroup(shareGroup)}>移除</a>
                                                                             </Popconfirm>
