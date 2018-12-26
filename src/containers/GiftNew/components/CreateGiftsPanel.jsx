@@ -7,8 +7,10 @@ import {
 } from 'antd';
 import {startCreateGift} from "../_action";
 import {
-    FOOD_INVOLVED_GIFT_CREATE_DISABLED_TIP, getHuaTianDisabledGifts, GIFT_CREATE_DISABLED_TIP, HUATIAN_GROUP_ID,
-    isBrandOfHuaTianGroupList, isHuaTian
+    getHuaTianDisabledGifts,
+    GIFT_CREATE_DISABLED_TIP,
+    isBrandOfHuaTianGroupList,
+    isHuaTian
 } from "../../../constants/projectHuatianConf";
 
 const temporaryDisabledGifts = [

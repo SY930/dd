@@ -4,11 +4,15 @@ import GiftCfg from "./Gift";
 // 测试环境 3个集团id 11583      11581 11580
 
 /** 华天集团groupID */
-export const HUATIAN_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '194247' : '11583';
+const HUATIAN_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '194247' : '11583';
 /** 庆丰集团groupID */
-export const QINGFENG_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '7001' : '11581';
+const QINGFENG_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '7001' : '11581';
 /** 护国寺小吃集团groupID */
-export const HUGUOSI_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? '137722' : '11580';
+const HUGUOSI_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '137722' : '11580';
+
+/** 华天项目正式上线后的主集团ID和子集团ID */
+const HUATIAN_GROUP_ID_ONLINE = '206817';
+const HUATIAN_SUBGROUP_ID_ONLINE = '212252';
 
 const getAccountInfo = () => {
     return { groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']) }
@@ -18,20 +22,31 @@ export function getHuaTianDisabledGifts() {
     return GiftCfg.giftType.filter(gift => gift.category === 'primary' && gift.value != 10).map(gift => gift.value)
 }
 
-export const HUATIAN_GROUP_LIST = [
-    HUATIAN_GROUP_ID,
-    QINGFENG_GROUP_ID,
-    HUGUOSI_GROUP_ID,
+// 华天主集团id list: 1个测试 1个线上
+const HUATIAN_MAIN_GROUP_LIST = [
+    HUATIAN_GROUP_ID_TEST,
+    HUATIAN_GROUP_ID_ONLINE
+]
+
+// 华天所有'集团'(不分主 从)id list: 3个测试 2个线上
+const HUATIAN_GROUP_LIST = [
+    HUATIAN_GROUP_ID_TEST,
+    QINGFENG_GROUP_ID_TEST,
+    HUGUOSI_GROUP_ID_TEST,
+    HUATIAN_GROUP_ID_ONLINE,
+    HUATIAN_SUBGROUP_ID_ONLINE,
 ];
 
-export const HUATIAN_BRAND_LIST = [
-    QINGFENG_GROUP_ID,
-    HUGUOSI_GROUP_ID,
+// 华天子集团(品牌)id list: 2个测试 1个线上
+const HUATIAN_BRAND_LIST = [
+    QINGFENG_GROUP_ID_TEST,
+    HUGUOSI_GROUP_ID_TEST,
+    HUATIAN_SUBGROUP_ID_ONLINE,
 ];
 
 export function isHuaTian(id = getAccountInfo().groupID) {
     if (!id) return false;
-    return HUATIAN_GROUP_ID === String(id);
+    return HUATIAN_MAIN_GROUP_LIST.includes(String(id));
 }
 
 export function isGroupOfHuaTianGroupList(id = getAccountInfo().groupID) {
