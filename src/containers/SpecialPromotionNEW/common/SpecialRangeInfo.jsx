@@ -83,8 +83,8 @@ class SpecialRangeInfo extends React.Component {
             finish: this.handleSubmit,
             cancel: undefined,
         });
-
-        if (this.props.specialPromotion.get('$eventInfo').size > 20) {
+        // TODO: 这弱智判断方式,  待替换成id
+        if (this.props.specialPromotion.get('$eventInfo').size > 25) {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
             let joinRange = [],
                 freeGetJoinRange = [],
@@ -141,7 +141,7 @@ class SpecialRangeInfo extends React.Component {
     componentWillReceiveProps(nextProps) {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo') &&
-            nextProps.specialPromotion.get('$eventInfo').size > 20) {
+            nextProps.specialPromotion.get('$eventInfo').size > 25) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
             let joinRange = [],
                 freeGetJoinRange = [],
