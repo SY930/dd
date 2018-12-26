@@ -203,6 +203,11 @@ export default class ShareRules extends Component {
                 <Input
                     value={searchNameInput}
                     onChange={(e) => this.setState({ searchNameInput: e.target.value })}
+                    onPressEnter={() => {
+                        changeSearchType(searchTypeInput);
+                        changeSearchName(searchNameInput);
+                        this.queryAll()
+                    }}
                     style={{ width: 240, marginRight: 20 }}
                     placeholder="请输入活动名称搜索"
                 />
@@ -215,9 +220,7 @@ export default class ShareRules extends Component {
                         this.queryAll()
                     }}
                 >
-                    <Icon
-                        type="search"
-                    />
+                    <Icon type="search"/>
                     查询
                 </Button>
 
