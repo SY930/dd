@@ -662,7 +662,15 @@ class PromotionBasicInfo extends React.Component {
         if (date === null || dateString === '') {
             return null;
         }
-        if (this.state.excludeDateArray.contains(date)) {
+        // 太累了, 额外加一层 try catch 防bug 吧
+        try {
+            if (this.state.excludeDateArray.contains(date)) {
+                return null;
+            }
+            if (this.state.excludeDateArray.some(item => item.format('YYYY-MM-DD') === dateString)) {
+                return null;
+            }
+        } catch (e) {
             return null;
         }
         this.setState({

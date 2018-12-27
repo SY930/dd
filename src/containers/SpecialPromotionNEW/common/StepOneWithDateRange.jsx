@@ -1,5 +1,18 @@
 ﻿import React from 'react'
-import { Row, Col, Input, DatePicker, TimePicker, Form, Select, Icon, Button } from 'antd';
+import {
+    Row,
+    Col,
+    Input,
+    Tag,
+    DatePicker,
+    TimePicker,
+    Form,
+    Select,
+    Icon,
+    Button,
+    Checkbox,
+    message
+} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
@@ -10,20 +23,27 @@ import {
     saleCenterGetExcludeEventList,
     saleCenterGetShopOfEventByDate, queryFsmGroupEquityAccount,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { SEND_MSG, NOTIFICATION_FLAG } from '../../../redux/actions/saleCenterNEW/types';
+import {SEND_MSG, NOTIFICATION_FLAG, FULL_CUT_ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import {fetchSpecialCardLevel} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
 import {queryOccupiedWeiXinAccountsStart} from "../../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import {queryWechatMpInfo} from "../../GiftNew/_action";
+import {
+    MONTH_OPTIONS,
+    WEEK_OPTIONS,
+} from '../../../redux/actions/saleCenterNEW/fullCutActivity.action';
 
-const Immutable = require('immutable');
+const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+
+const options = WEEK_OPTIONS;
+const days = MONTH_OPTIONS;
 
 const fullOptionSmsGate = [ // 选项有5种
     '53', '61', '62', '63', '70'
@@ -37,10 +57,41 @@ class StepOneWithDateRange extends React.Component {
     constructor(props) {
         super(props);
         let mpID;
+        let excludeDateArray;
+        let selectWeekValue;
+        let selectMonthValue;
+        let validCycleType;
+        let expand;
         try {
             mpID = JSON.parse(props.specialPromotion.getIn(['$eventInfo', 'pushMessageMpID'])).mpID
         } catch (e) {
-            mpID = undefined
+            mpID = undefined;
+        }
+        try {
+            const eventInfo = props.specialPromotion.getIn(['$eventInfo']).toJS();
+            excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
+            expand = !!excludeDateArray.length;
+            if (!eventInfo.validCycle) {
+                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
+                selectWeekValue = ['1'];
+                selectMonthValue = ['1'];
+            }else if (eventInfo.validCycle[0].startsWith('m')) {
+                expand = true;
+                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY;
+                selectWeekValue = ['1'];
+                selectMonthValue = eventInfo.validCycle.map(item => item.substring(1));
+            }else if (eventInfo.validCycle[0].startsWith('w')) {
+                expand = true;
+                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY;
+                selectMonthValue = ['1'];
+                selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
+            }
+        } catch (e) {
+            console.log('e: ', e)
+            validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
+            excludeDateArray = [];
+            selectWeekValue = ['1'];
+            selectMonthValue = ['1'];
         }
         this.state = {
             description: null,
@@ -50,6 +101,14 @@ class StepOneWithDateRange extends React.Component {
             smsGate: '0',
             timeString: '',
             tableDisplay: false,
+
+            // advanced time setting
+            expand: !!expand,
+            validCycleType,
+            excludeDateArray,
+            selectWeekValue,
+            selectMonthValue,
+
             iconDisplay: false,
             mpID,
             lastConsumeIntervalDays: '',
@@ -269,8 +328,37 @@ class StepOneWithDateRange extends React.Component {
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
+            if (this.props.type == '30') {
+                const {
+                    validCycleType,
+                    selectMonthValue,
+                    selectWeekValue
+                } = this.state;
+                let validCycle;
+                switch (validCycleType) {
+                    case FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY:
+                        validCycle = selectMonthValue.map(item => `m${item}`);
+                        break;
+                    case FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY:
+                        validCycle = selectWeekValue.map(item => `w${item}`);
+                        break;
+                    default: validCycle = null;
+                }
+                this.props.setSpecialBasicInfo({
+                    excludedDate: (this.state.excludeDateArray || []).map(moments => moments.format('YYYYMMDD')),
+                    validCycle,
+                })
+            }
         }
         return nextFlag;
+    }
+
+    toggleAdvancedDateSettings = () => {
+        this.setState(({ expand }) => {
+            return ({
+                expand: !expand
+            })
+        })
     }
 
     getDateCount() {
@@ -331,6 +419,169 @@ class StepOneWithDateRange extends React.Component {
             dateRange: date,
             dateString,
         })
+    }
+
+    onDateWeekChange = (value) => {
+        if (!value.length) {
+            return message.warning('至少要选择1天')
+        }
+        this.setState({
+            selectWeekValue: value,
+        });
+    }
+
+    onDateMonthChange = (value) => {
+        if (!value.length) {
+            return message.warning('至少要选择1天')
+        }
+        this.setState({
+            selectMonthValue: value,
+        });
+    }
+
+    renderPromotionCycleDetailSetting() {
+        if (this.state.validCycleType === FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY) {
+            return (
+                <div className={styles.SeniorDateWeek}>
+                    <CheckboxGroup
+                        options={options}
+                        defaultValue={this.state.selectWeekValue}
+                        value={this.state.selectWeekValue}
+                        onChange={this.onDateWeekChange}
+                    />
+                </div>
+            )
+        } else if (this.state.validCycleType === FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY) {
+            return (
+                <div className={styles.SeniorDateMonth}>
+                    <CheckboxGroup
+                        options={days}
+                        defaultValue={this.state.selectMonthValue}
+                        onChange={this.onDateMonthChange}
+                        value={this.state.selectMonthValue}
+                    />
+                </div>
+            )
+        }
+        return null
+    }
+
+    renderPromotionCycleSetting() {
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label="选择周期" className={styles.FormItemStyle} {...formItemLayout}>
+                <Select
+                    size="default"
+                    placeholder="请选择周期"
+                    getPopupContainer={(node) => node.parentNode}
+                    defaultValue={this.state.validCycleType}
+                    onChange={(arg) => {
+                        this.setPromotionCycle(arg);
+                    }}
+                >
+                    <Option value="0">每日</Option>
+                    <Option value="1">每周</Option>
+                    <Option value="2">每月</Option>
+                </Select>
+                <div className={styles.SeniorDateMain}>
+                    {this.renderPromotionCycleDetailSetting()}
+                </div>
+
+            </FormItem>
+        )
+    }
+
+    renderExcludedDatePicker() {
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
+                <DatePicker onChange={
+                    (moment, dateString) => {
+                        this.excludeDatePicker(moment, dateString);
+                    }
+                }
+                />
+                {
+                    this.state.excludeDateArray.length > 0 ? (
+                        <div className={styles.showExcludeDate}>{this.renderExcludedDate()}</div>
+                    ) : null
+                }
+            </FormItem>
+        )
+    }
+
+    excludeDatePicker = (date, dateString) => { // 排除日期
+        if (date === null || dateString === '') {
+            return null;
+        }
+        const dateStr = date.format('YYYY-MM-DD');
+        const excludeDateArray = this.state.excludeDateArray.slice();
+        if (excludeDateArray.some(item => item.format('YYYY-MM-DD') === dateStr)) {
+            return null;
+        }
+        excludeDateArray.push(date)
+        this.setState({
+            excludeDateArray,
+        });
+
+        const { onChange } = this.props;
+        if (onChange) {
+            onChange(this.state);
+        }
+    }
+
+    setPromotionCycle = (value) => {
+        this.setState({
+            validCycleType: value,
+        });
+        const { onChange } = this.props;
+        if (onChange) {
+            onChange(this.state);
+        }
+    }
+
+    unselectExcludeDate = (index) => { // 删除排除日期
+        const excludeDateArray = this.state.excludeDateArray.slice();
+        excludeDateArray.splice(index, 1);
+        this.setState({
+            excludeDateArray,
+        });
+        const { onChange } = this.props;
+        if (onChange) {
+            onChange(this.state);
+        }
+    }
+
+    renderExcludedDate() {
+        return this.state.excludeDateArray.map((date, index) => {
+            const callback = (e) => {
+                e.preventDefault();
+                this.unselectExcludeDate(index);
+            };
+
+            return (
+                <Tag key={`${index}`} closable={true} onClose={callback}>{date.format('YYYY-MM-DD')}</Tag>
+            );
+        });
+    }
+
+    renderAdvancedDateSettings() {
+        return (
+            <div>
+                <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
+                    <span className={styles.gTip}>更多活动日期与时间的设置请使用</span>
+                    <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>高级日期设置</span>
+                </FormItem>
+                {this.state.expand && this.renderPromotionCycleSetting()}
+                {this.state.expand && this.renderExcludedDatePicker()}
+            </div>
+        )
     }
 
     handleNameChange(e) {
@@ -772,6 +1023,9 @@ class StepOneWithDateRange extends React.Component {
                                     <ExcludeGroupTable />
                                 </div>
                             </div> : null
+                    }
+                    {
+                        this.props.type == '30' && this.renderAdvancedDateSettings()
                     }
 
                     <FormItem

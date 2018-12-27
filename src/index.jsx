@@ -16,47 +16,11 @@ registerLocalPage([
         label: '新建商城活动',
         parent: [entryCodes.WECHAT_MALL_LIST],
     },
-    {
-        key: entryCodes.NEW_SALE_CENTER,
-        value: entryCodes.NEW_SALE_CENTER,
-        label: '新建基础营销',
-        parent: [entryCodes.SALE_CENTER_PAGE],
-    },
-    {
-        key: entryCodes.NEW_SPECIAL,
-        value: entryCodes.NEW_SPECIAL,
-        label: '新建特色营销',
-        parent: [entryCodes.SPECIAL_PAGE],
-    },
-    /*{
-        key: entryCodes.NEW_CUSTOMER,
-        value: entryCodes.NEW_CUSTOMER,
-        label: '会员拉新',
-        parent: [entryCodes.SPECIAL_PAGE],
-    },
-    {
-        key: entryCodes.SALE_PROMOTION,
-        value: entryCodes.SALE_PROMOTION,
-        label: '会员拉新',
-        parent: [entryCodes.SPECIAL_PAGE],
-    },
-    {
-        key: entryCodes.LOYALTY_PROMOTION,
-        value: entryCodes.LOYALTY_PROMOTION,
-        label: '会员拉新',
-        parent: [entryCodes.SPECIAL_PAGE],
-    },
-    {
-        key: entryCodes.REPEAT_PROMOTION,
-        value: entryCodes.REPEAT_PROMOTION,
-        label: '会员拉新',
-        parent: [entryCodes.SPECIAL_PAGE],
-    },
-    {
-        key: entryCodes.FANS_INTERACTIVITY,
-        value: entryCodes.FANS_INTERACTIVITY,
-        label: '会员拉新',
-        parent: [entryCodes.SPECIAL_PAGE],
+/*    {
+        key: entryCodes.SHARE_RULES,
+        value: entryCodes.SHARE_RULES,
+        label: '规则设置',
+        parent: [entryCodes.SET_MSG_TEMPLATE],
     },*/
 
 ]);

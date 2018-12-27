@@ -1,0 +1,149 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size:22px;
+    font-weight:400;
+    color:rgba(102,102,102,1);
+    height: 60px;
+    padding: 0 20px;
+    .titleArea {
+        display: flex;
+        align-items: center;
+        .title {
+            margin-right: 20px;
+        }
+        :global {
+            .ant-alert {
+                margin-bottom: 0!important;
+            }
+        }
+    }
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    margin: 0 20px;
+    border-top: 1px solid rgba(243,243,243,1);
+    .headerLabel {
+        margin-right: 10px;
+    }
+}
+
+.bodyContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    padding: 20px;
+    .spinner {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.5);
+        text-align: center;
+        position: absolute;
+    }
+}
+
+.emptyBodyContainer {
+    overflow: hidden;
+    display: flex;
+    padding-top: 150px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    .primaryTip {
+        font-size:12px;
+        font-weight:bold;
+        color:rgba(69,69,69,1);
+        margin-top: 30px;
+    }
+    .tip {
+        font-size:12px;
+        font-weight:400;
+        color:rgba(153,153,153,1);
+        margin-top: 10px;
+    }
+}
+
+
+.shareGroupWrapper {
+    flex: none;
+    min-width: 100px;
+    height:262px;
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(233,233,233,1);
+    margin-bottom: 15px;
+    border-radius:5px;
+    overflow: hidden;
+    &:hover {
+        border:1px solid rgba(26,179,149,1);
+    }
+    &:nth-child(odd) {
+        margin-right: 10px;
+    }
+    .shareGroupHeader {
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        height: 50px;
+        background:rgba(248,248,248,1);
+        .shareGroupTitle {
+            font-size:14px;
+            font-weight:bold;
+            color:rgba(51,51,51,1);
+            flex: none;
+            max-width: 15em;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+    .shareGroupBody {
+        height: 216px;
+        overflow-y: auto;
+        .shareGroupItem {
+            margin: 0 15px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            background-color: #FFFFFF;
+            &:not(:last-child) {
+                border-bottom: 1px solid #E9E9E9;
+            }
+            &:nth-child(even) {
+                background-color: #FAFAFA;
+            }
+            .typeTag {
+                flex: none;
+                width: 8em;
+                span {
+                    display: inline-block;
+                    text-align: center;
+                    border: 1px solid rgba(247,192,160,1);
+                    color: #EE7D3A;
+                    border-radius:3px;
+                    padding: 0 5px;
+                }
+            }
+            .itemAction {
+                width: 10%;
+                display: flex;
+                justify-content: center;
+            }
+            .itemTitle {
+                width: 80%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+.flexSpacer {
+    flex: 1;
+}

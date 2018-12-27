@@ -220,6 +220,7 @@ function constructTreeDataContainsPromotion(data) {
                     }) : [],
             }
         });
+    // TODO: 把空分类filter一下
     return promotionTypes;
 }
 

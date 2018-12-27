@@ -29,3 +29,6 @@ export const FANS_INTERACTIVITY = '1000073002'; // 创建粉丝互动活动
 export const REPEAT_PROMOTION = '1000073003'; // 创建促进复购活动
 export const LOYALTY_PROMOTION = '1000073004'; // 创建会员关怀活动
 export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动
+
+export const SHARE_RULES_GROUP = '1000080001'; // 创建共享群组页面
+export const SHARE_RULES_SHOP = 'shop.promotion.gongxiangshezhi'; // 创建共享群组页面

@@ -33,7 +33,7 @@ import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/pr
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
-import {GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 const validUrl = require('valid-url');
@@ -425,18 +425,20 @@ class GiftDetailTable extends Component {
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
-                                <Button
-                                    type="ghost"
-                                    icon="plus"
-                                    className={styles2.jumpToCreate}
-                                    onClick={
-                                        () => {
-                                            this.setState({
-                                                createModalVisible: true
-                                            })
+                                <Authority rightCode={GIFT_LIST_CREATE}>
+                                    <Button
+                                        type="ghost"
+                                        icon="plus"
+                                        className={styles2.jumpToCreate}
+                                        onClick={
+                                            () => {
+                                                this.setState({
+                                                    createModalVisible: true
+                                                })
+                                            }
                                         }
-                                    }
-                                >新建</Button>
+                                    >新建</Button>
+                                </Authority>
                             </span>
 
                             <Authority rightCode={GIFT_LIST_QUERY}>

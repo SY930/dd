@@ -38,6 +38,7 @@ const $initialState = Immutable.fromJS({
         eventWay: '',
         eventName: '',
         eventStartDate: '',
+        isVipBirthdayMonth: '0',
         eventEndDate: '',
         startTime: '',
         sourceWayLimit: '0',
@@ -47,6 +48,8 @@ const $initialState = Immutable.fromJS({
         accountInfoList: [], // 短信结算主体(旧结算体系, 为了兼容旧特色营销活动而存在)
         equityAccountInfoList: [], // 短信权益账户(新结算体系)
         getExcludeEventList: [], // 同时段已建立唤醒
+        excludedDate: [], // 活动排除日期：excludedDate，格式为 yyyyMMdd，例：20181210
+        validCycle: null, // 可选择每日、每周、每月，每一项的第一位表示周期类型w-周,m-月,第二位之后表示周期内值,如w1表示每周一,m2表示每周二，m1表示每月1号，当表示每日时该字段为null
     },
     $giftInfo: [],
     addStatus: {
