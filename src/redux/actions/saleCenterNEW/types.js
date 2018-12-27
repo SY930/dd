@@ -815,15 +815,13 @@ export const promotionBasicDataAdapter = function (source, dir) {
     })(_source.excludeDateArray);
 
     const timeLst = ((range) => {
-        if (range[0].start != undefined) {
-            return range.map((r) => {
-                return {
-                    timeType: 'CONSUME_TIME',
-                    startTime: r.start.format('HHmm'),
-                    endTime: r.end.format('HHmm'),
-                };
-            });
-        }
+        return range.filter(item => item.start && item.end).map((r) => {
+            return {
+                timeType: 'CONSUME_TIME',
+                startTime: r.start.format('HHmm'),
+                endTime: r.end.format('HHmm'),
+            };
+        });
     })(_source.timeRangeInfo);
     return {
         categoryName: _source.category,

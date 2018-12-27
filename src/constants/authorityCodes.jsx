@@ -24,3 +24,4 @@ export const GIFT_DETAIL_QUERY = 'marketing.chakanlipinxin.query';
 export const GIFT_LIST_QUERY = 'marketing.lipinxinxixin.query';
 export const GIFT_LIST_UPDATE = 'marketing.lipinxin.update';
 export const GIFT_LIST_DELETE = 'marketing.lipinxin.delete';
+export const GIFT_LIST_CREATE = 'marketing.lipinxin.create';
