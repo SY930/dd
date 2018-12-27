@@ -1015,7 +1015,7 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label="活动名称" className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionName', {
                         rules: [
-                            { required: true, message: '礼品名称不能为空' },
+                            { required: true, message: '活动名称不能为空' },
                             { max: 50, message: '不能超过50个字符' },
                         /*    {
                             // whitespace: true,

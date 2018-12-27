@@ -181,8 +181,8 @@ class SendGiftPanel extends Component {
 
     handleMessageChange(val) {
         let message = val || '';
-        if (/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g.test(message)) {
-            messageService.warning('请选择不含[会员姓名][先生/女士][卡名称][卡号后四位] 的模板');
+        if (/(\[会员姓名])|(\[先生\/女士])/g.test(message)) {
+            messageService.warning('请选择不含 [会员姓名] [先生/女士] 的模板');
             message = '';
         }
         this.setState({ message }, () => {

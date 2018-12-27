@@ -18,6 +18,7 @@ import {debounce} from 'lodash';
 import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import SelectBrands from "../components/SelectBrands";
+import SelectCardTypes from "../components/SelectCardTypes";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -324,6 +325,13 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectBrands/>),
             },
+            cardTypeList: {
+                label: '适用卡类',
+                type: 'custom',
+                render: decorator => decorator({
+                    rules: [{ required: true, message: '至少要选择1个适用卡类' }]
+                })(<SelectCardTypes/>),
+            },
             isSynch: {
                 label: ` `,
                 type: 'custom',
@@ -354,8 +362,8 @@ class GiftAddModal extends React.Component {
         };
         const formKeys = {
             '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
-            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
-            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
+            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
+            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
             '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
         };
         let formData = {};
