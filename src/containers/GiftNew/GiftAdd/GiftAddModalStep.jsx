@@ -1628,6 +1628,7 @@ class GiftAddModalStep extends React.PureComponent {
             couponPeriodSettings: {
                 label: '使用时段',
                 type: 'custom',
+                defaultValue: [{periodStart: '000000', periodEnd: '235900'}],
                 render: decorator => this.renderCouponPeriodSettings(decorator),
             },
             isNeedCustomerInfo: {

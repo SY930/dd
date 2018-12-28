@@ -7,6 +7,18 @@ import {
 import moment from 'moment'
 import styles from '../../SaleCenterNEW/ActivityPage.less'
 
+const isOverlapped = (a, b) => {
+    return (a.periodStart >= b.periodStart
+        && a.periodStart <= b.periodEnd) || (
+            a.periodEnd >= b.periodStart
+            && a.periodEnd <= b.periodEnd
+        ) || (b.periodStart >= a.periodStart
+        && b.periodStart <= a.periodEnd) || (
+            b.periodEnd >= a.periodStart
+            && b.periodEnd <= a.periodEnd
+        );
+}
+
 export const getItervalsErrorStatus = (intervals) => {
     const filteredIntervals = (intervals || []).filter(({periodStart, periodEnd}) => !!periodStart && !!periodEnd);
     if (!filteredIntervals.length) {
@@ -23,21 +35,7 @@ export const getItervalsErrorStatus = (intervals) => {
                     &&
                     filteredIntervals[j].periodStart <= filteredIntervals[j].periodEnd
                 ) { // i, j非跨天
-                    if ((filteredIntervals[j].periodStart >= filteredIntervals[i].periodStart
-                        && filteredIntervals[j].periodStart <= filteredIntervals[i].periodEnd) || (
-                            filteredIntervals[j].periodEnd >= filteredIntervals[i].periodStart
-                            && filteredIntervals[j].periodEnd <= filteredIntervals[i].periodEnd
-                        )) {
-                        return {
-                            hasError: true,
-                            errorMessage: '时间段设置不能重复'
-                        }
-                    }
-                    if ((filteredIntervals[i].periodStart >= filteredIntervals[j].periodStart
-                        && filteredIntervals[i].periodStart <= filteredIntervals[j].periodEnd) || (
-                            filteredIntervals[i].periodEnd >= filteredIntervals[j].periodStart
-                            && filteredIntervals[i].periodEnd <= filteredIntervals[j].periodEnd
-                        )) {
+                    if (isOverlapped(filteredIntervals[j], filteredIntervals[i])) {
                         return {
                             hasError: true,
                             errorMessage: '时间段设置不能重复'
@@ -57,16 +55,9 @@ export const getItervalsErrorStatus = (intervals) => {
                     &&
                     filteredIntervals[j].periodStart > filteredIntervals[j].periodEnd
                 ) { // i非跨天 j跨天
-                    if ((filteredIntervals[i].periodStart > filteredIntervals[j].periodEnd
-                        && filteredIntervals[i].periodStart < filteredIntervals[j].periodStart) && (
-                            filteredIntervals[i].periodEnd > filteredIntervals[j].periodEnd
-                            && filteredIntervals[i].periodEnd < filteredIntervals[j].periodStart
-                        )) {
-                        return {
-                            hasError: false,
-                            errorMessage: ''
-                        }
-                    } else {
+                    const beforeMidNightInterval = {...filteredIntervals[j], periodEnd: '235900'}
+                    const afterMidNightInterval = {...filteredIntervals[j], periodStart: '000000'}
+                    if (isOverlapped(beforeMidNightInterval, filteredIntervals[i]) || isOverlapped(afterMidNightInterval, filteredIntervals[i])) {
                         return {
                             hasError: true,
                             errorMessage: '时间段设置不能重复'
@@ -77,16 +68,9 @@ export const getItervalsErrorStatus = (intervals) => {
                     &&
                     filteredIntervals[i].periodStart > filteredIntervals[i].periodEnd
                 ) { // i跨天 j非跨天
-                    if ((filteredIntervals[j].periodStart > filteredIntervals[i].periodEnd
-                        && filteredIntervals[j].periodStart < filteredIntervals[i].periodStart) && (
-                            filteredIntervals[j].periodEnd > filteredIntervals[i].periodEnd
-                            && filteredIntervals[j].periodEnd < filteredIntervals[i].periodStart
-                        )) {
-                        return {
-                            hasError: false,
-                            errorMessage: ''
-                        }
-                    } else {
+                    const beforeMidNightInterval = {...filteredIntervals[i], periodEnd: '235900'}
+                    const afterMidNightInterval = {...filteredIntervals[i], periodStart: '000000'}
+                    if (isOverlapped(beforeMidNightInterval, filteredIntervals[j]) || isOverlapped(afterMidNightInterval, filteredIntervals[j])) {
                         return {
                             hasError: true,
                             errorMessage: '时间段设置不能重复'
@@ -108,7 +92,13 @@ class GiftTimeIntervals extends Component {
         super(props);
         this.state = {
             maxIntervals: 5,
-            intervals: props.value || [{periodStart: '', periodEnd: ''}],
+            intervals: Array.isArray(props.value) ? props.value : [{periodStart: '000000', periodEnd: '235900'}],
+        }
+    }
+
+    componentDidMount() {
+        if (!Array.isArray(this.props.value)) {
+            this.props.onChange([{periodStart: '000000', periodEnd: '235900'}])
         }
     }
 
@@ -180,6 +170,7 @@ class GiftTimeIntervals extends Component {
                     <TimePicker
                         style={{ width: 120 }}
                         placeholder="起始时间"
+                        getPopupContainer={(node) => node.parentNode}
                         size="large"
                         value={periodStart ? moment(periodStart, 'HHmmss') : null}
                         hideDisabledOptions
@@ -191,6 +182,7 @@ class GiftTimeIntervals extends Component {
                     <TimePicker
                         style={{ width: 120 }}
                         allowEmpty={false}
+                        getPopupContainer={(node) => node.parentNode}
                         size="large"
                         format="HH:mm"
                         value={periodEnd ? moment(periodEnd, 'HHmmss') : null}
