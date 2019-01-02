@@ -266,6 +266,7 @@ const GiftCfg = {
         { label: '拉格代尔', value: 6, disabled: releaseENV },
         { label: '非码', value: 20 },
         { label: '企迈小程序', value: 30 },
+        { label: '银行服务商 - 众联享付', value: 40 },
     ],
     couponCodeType: [
         { value: 1, label: '是' },
