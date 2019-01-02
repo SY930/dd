@@ -1287,9 +1287,7 @@ class GiftAddModalStep extends React.PureComponent {
             cardTypeList: {
                 label: '适用卡类',
                 type: 'custom',
-                render: decorator => decorator({
-                    rules: [{ required: true, message: '至少要选择1个适用卡类' }]
-                })(<SelectCardTypes/>),
+                render: decorator => decorator({})(<SelectCardTypes/>),
             },
             giftValue: {
                 label: giftValueLabel,

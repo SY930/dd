@@ -65,7 +65,7 @@ class SelectCardTypes extends Component {
                 <Col span={24}>
                     <FormItem required style={{ marginBottom: 0 }}>
                         <Select
-                            placeholder="请选择适用卡类"
+                            placeholder="默认全部适用"
                             multiple={true}
                             allowClear={true}
                             showSearch={false}
