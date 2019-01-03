@@ -1043,7 +1043,7 @@ class MyActivitiesShop extends React.Component {
                 title: '操作',
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 140,
+                width: 180,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
