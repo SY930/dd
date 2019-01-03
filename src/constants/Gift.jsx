@@ -135,12 +135,12 @@ const GiftCfg = {
         { label: '堂食', value: '0' },
         { label: '外送', value: '1' },
     ],
-    supportOrderTypes: [
-        { label: '堂食', value: '0' },
-        { label: '外送', value: '1' },
-        { label: '自提', value: '2' },
-        { label: '闪吃', value: '3' },
-        { label: '预定', value: '4' },
+    supportOrderTypeLst: [
+        { label: '预定', value: '10' },
+        { label: '闪吃', value: '11' },
+        { label: '外送', value: '20' },
+        { label: '堂食', value: '31' },
+        { label: '自提', value: '21' },
     ],
     isOfflineCanUsing: [
         { label: '支持', value: 'true' },

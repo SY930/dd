@@ -573,9 +573,6 @@ class GiftAddModalStep extends React.PureComponent {
                 }));
                 delete params.foodScopes;
             }
-            if (params.supportOrderTypes) {
-                params.supportOrderTypes = params.supportOrderTypes.join(',')
-            }
             if (value == '111') { // 折扣券
                 params.discountRate = params.discountRate.number;
                 if (Number(params.discountType) === 0) {
@@ -627,6 +624,8 @@ class GiftAddModalStep extends React.PureComponent {
             } else if (type === 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
+                data.supportOrderTypes !== undefined && (params.supportOrderTypes = data.supportOrderTypes);
+                data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
             }
             if (value == 10) {
                 if (type === 'add') {
@@ -641,11 +640,12 @@ class GiftAddModalStep extends React.PureComponent {
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
             params.isFoodCatNameList = values.isFoodCatNameList;
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
+            Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
             });
             const { accountInfo, startSaving, endSaving } = this.props;
-            const { groupName } = accountInfo.toJS();
+            const groupName = accountInfo.get('groupName');
             startSaving();
             delete params.operateTime; // 就, 很烦
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
@@ -1755,11 +1755,4 @@ export default connect(
     null,
     {withRef: true}
 )(GiftAddModalStep)
-
-class MyProjectEditBox extends React.Component {
-    render() {
-        const { value, ...otherProps } = this.props;
-        return <ProjectEditBox {...otherProps} data={value} />;
-    }
-}
 
