@@ -570,9 +570,6 @@ class GiftAddModalStep extends React.PureComponent {
                 }));
                 delete params.foodScopes;
             }
-            if (params.supportOrderTypes) {
-                params.supportOrderTypes = params.supportOrderTypes.join(',')
-            }
             if (value == '111') { // 折扣券
                 params.discountRate = params.discountRate.number;
                 if (Number(params.discountType) === 0) {

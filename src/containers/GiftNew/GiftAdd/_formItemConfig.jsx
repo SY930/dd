@@ -36,13 +36,6 @@ const FORMITEMS = {
         defaultValue: '2',
         options: GiftCfg.supportOrderType,
     },
-    supportOrderTypes: {
-        label: '业务支持',
-        type: 'checkbox',
-        defaultValue: ['0', '1', '2', '3', '4'],
-        options: GiftCfg.supportOrderTypes,
-        rules: [{ type: 'array', required: true, message: '请选择业务支持' }],
-    },
     isOfflineCanUsing: {
         label: '到店使用',
         type: 'radio',
