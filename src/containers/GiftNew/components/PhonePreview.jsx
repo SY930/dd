@@ -4,6 +4,7 @@ import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phone.png';
 import bg from '../../../assets/bg.png';
 import bg1 from '../../../assets/bg1.png';
+import GiftCfg from "../../../constants/Gift";
 
 const showPreviewGifts = [
     '10', '20', '21', '30', '111', '110'
@@ -42,6 +43,16 @@ class PhonePreview extends PureComponent {
                 resultArr.push(usingTimeTypeMap[item])
             });
             return resultArr.join('、');
+        }
+    }
+
+    supportOrderTypeString() {
+        if (!this.props.supportOrderTypeLst) {
+            return GiftCfg.supportOrderTypeLst.map(item => item.label).join('、');
+        } else {
+            const { supportOrderTypeLst } = this.props;
+            const supportOrderTypeArray = supportOrderTypeLst.toJS();
+            return GiftCfg.supportOrderTypeLst.filter(item => supportOrderTypeArray.includes(item.value)).map(item => item.label).join('、')
         }
     }
 
@@ -218,7 +229,7 @@ class PhonePreview extends PureComponent {
                         {giftType !== '30' && (
                             <div className={styles.ruleSection}>
                                 <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                                <p>{`本券适用于${supportOrderTypeMap[supportOrderType]}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
+                                <p>{`本券适用于${this.supportOrderTypeString()}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
                                 <p>{this.shareTypeString()}</p>
                                 {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
                                 {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
@@ -257,6 +268,7 @@ function mapStateToProps(state) {
         foodNameList: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodNameList']),
         shopSchema: state.sale_shopSchema_New.get('shopSchema'),
         supportOrderType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'supportOrderType']),
+        supportOrderTypeLst: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'supportOrderTypeLst']),
         moneyLimitType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moneyLimitType']),
         moenyLimitValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'moenyLimitValue']) || '100',
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
