@@ -124,13 +124,14 @@ class BasicInfo extends React.Component {
     }
 
     queryExtraEventsByTime(startTime, endTime) {
-        if (!(this.props.user.shopID > 0)) {
+        const shopID = this.props.user.shopID;
+        if (shopID == undefined || shopID === 'undefined' || !(shopID > 0)) {
             return;
         }
         this.setState({
             loading: true,
         });
-        const params = {startTime, endTime, shopID: this.props.user.shopID, pageNo: 1, pageSize: 10};
+        const params = {startTime, endTime, shopID, pageNo: 1, pageSize: 10};
         if (this.props.itemID) {
             params.itemID = this.props.itemID;
         }
