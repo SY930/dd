@@ -198,10 +198,16 @@ class FullCutDetailInfo extends React.Component {
     // next is 0, finish is 1
     handleSubmit() {
         const { ruleInfo, ruleType } = this.state;
-        const ruleValidation = ruleInfo.reduce((p, c) => {
-            if (c.start === null || c.end === null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
+        const ruleValidation = ruleInfo.reduce((p, c, index, arr) => {
+            if (c.start === null || c.end === null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end) || Number(c.start) < Number(c.end)) {
                 c.validationStatus = 'error';
-                c.helpMsg = '请输入正确金额范围';
+                c.helpMsg = '满减金额不得为空, 且门槛金额不能小于减免金额';
+                return false;
+            }
+            if (index > 0 && (Number(c.start) <= Number(arr[index - 1].start) || Number(c.end) <= Number(arr[index - 1].end))) {
+                c.validationStatus = 'error';
+                c.helpMsg = '满减金额要大于上一档位的金额';
+                return false;
             }
             return p && c.validationStatus === 'success';
         }, true);
@@ -249,16 +255,35 @@ class FullCutDetailInfo extends React.Component {
         const _end = value.end;
         let _validationStatus,
             _helpMsg;
-        // TODO:刚输入的时候就报错
         if (parseFloat(_start) >= parseFloat(_end) || (_start == null && _end != null) || (_start != null && _end == null)) {
             _validationStatus = 'success';
             _helpMsg = null
         } else {
             _validationStatus = 'error';
-            _helpMsg = '请输入正确金额范围'
+            _helpMsg = '满减金额不得为空, 且门槛金额不能小于减免金额'
         }
-
         const _tmp = this.state.ruleInfo;
+        if (
+            _validationStatus === 'success' &&
+            _start && _end &&
+            index > 0 &&
+            (Number(_start) <= Number(_tmp[index - 1].start) || Number(_end) <= Number(_tmp[index - 1].end))
+        ) {
+            _validationStatus = 'error';
+            _helpMsg = '满减金额要大于上一档位的金额'
+        }
+        if (
+            _validationStatus === 'success' &&
+            index > 0 && (_tmp.length > index + 1) &&
+            _start && _end && _tmp[index + 1].start && _tmp[index + 1].end &&
+            (Number(_start) >= Number(_tmp[index + 1].start) || Number(_end) >= Number(_tmp[index + 1].end))
+        ) {
+            _tmp[index + 1] = {
+                ..._tmp[index + 1],
+                validationStatus: 'error',
+                helpMsg: '满减金额要大于上一档位的金额',
+            };
+        }
         _tmp[index] = {
             start: _start,
             end: _end,
@@ -311,14 +336,11 @@ class FullCutDetailInfo extends React.Component {
                         <FormItem
                             label=""
                             className={styles.FormItemStyle}
-                            // labelCol={{span: 4}}
-                            // wrapperCol={{span: 17}}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
                             style={{ marginLeft: '109px', width: '70.5%' }}
                         >
                             <CustomRangeInput
-                                // addonBefore = {this.state.ruleType == 1 ? '消费每满':'消费满'}
                                 addonBefore={
                                     <Select
                                         size="default"
