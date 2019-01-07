@@ -179,7 +179,8 @@ class CardLevelForWX extends React.Component {
     queryCanuseShops = (cardTypeIDs) => {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
-        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS() : [];
+        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
+            .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         let questArr = [];
         if (cardTypeIDs && cardTypeIDs.length) {
             if (cardLevelRangeType == '5') {// 卡等级
@@ -318,7 +319,8 @@ class CardLevelForWX extends React.Component {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
         let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
-        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS() : [];
+        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
+            .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
             cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
         } else if (!!eventInfo.allCardLevelCheck) {
