@@ -391,6 +391,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
                 }
             })
             .catch((err) => {
+            console.log('err: ', err)
                 opts.fail();
                 return dispatch(fetchSpecialPromotionDetailFail(err));
             })
