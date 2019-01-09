@@ -19,6 +19,10 @@ const sendableGiftTypes = [
     '10', '20', '21', '30', '110', '111', '40', '42', '80'
 ];
 
+const batchableGiftTypes = [
+    '10', '20', '21', '30', '110', '111',
+];
+
 class GiftDetailModalTabs extends React.Component {
     constructor(props) {
         super(props);
@@ -101,13 +105,18 @@ class GiftDetailModalTabs extends React.Component {
                                         <TabPane tab={'赠送'} key={'send_gift'}>
                                             <SendGiftPanel giftItemID={data.giftItemID}/>
                                         </TabPane>
-                                    ),
+                                    )
+                                ]
+                                :
+                                []
+                        ).concat(
+                            batchableGiftTypes.includes(String(data.giftType)) ?
+                                [
                                     (
                                         <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
                                             <GenerateBatchGifts giftItemID={data.giftItemID} />
                                         </TabPane>
                                     )
-
                                 ]
                                 :
                                 []
