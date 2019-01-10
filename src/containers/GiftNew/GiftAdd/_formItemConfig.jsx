@@ -36,12 +36,12 @@ const FORMITEMS = {
         defaultValue: '2',
         options: GiftCfg.supportOrderType,
     },
-    supportOrderTypeLst: {
-        label: '适用业务',
+    supportOrderTypes: {
+        label: '业务支持',
         type: 'checkbox',
-        defaultValue: ['31', '20', '21', '11', '10'],
-        options: GiftCfg.supportOrderTypeLst,
-        rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
+        defaultValue: ['0', '1', '2', '3', '4'],
+        options: GiftCfg.supportOrderTypes,
+        rules: [{ type: 'array', required: true, message: '请选择业务支持' }],
     },
     isOfflineCanUsing: {
         label: '到店使用',
@@ -164,15 +164,15 @@ const FIRST_KEYS = {
 const SECOND_KEYS = (() => ({
     '代金券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderTypeLst', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'amountType', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'amountType', 'isSynch'],
     }],
     '菜品优惠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderTypeLst', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
     }],
     '菜品兑换券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderTypeLst', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
     }],
     '会员权益券': [{
         col: { span: 24, pull: 2 },
@@ -188,11 +188,11 @@ const SECOND_KEYS = (() => ({
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: [ 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderTypeLst', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: [ 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderTypeLst', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
 }))();
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

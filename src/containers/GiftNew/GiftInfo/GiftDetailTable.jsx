@@ -163,8 +163,8 @@ class GiftDetailTable extends Component {
             g.operator = `${g.createBy} / ${g.modifyBy}`;
             g.giftRule = g.giftRule.split('</br>');
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
-            g.usingTimeType = (g.usingTimeType || '').split(',');
-            g.supportOrderTypeLst = g.supportOrderTypeLst ? (g.supportOrderTypeLst).split(',') : undefined;
+            g.usingTimeType = g.usingTimeType.split(',');
+            g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
                 if (g.giftImagePath.startsWith('/')) {
