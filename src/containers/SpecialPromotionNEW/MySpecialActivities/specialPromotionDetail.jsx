@@ -41,13 +41,11 @@ class SpecialPromotionDetail extends React.Component {
 
         this.state = {
             keyword: '',
-            cardLevelID: '',
             eventInfo: {
                 data: {},
                 gifts: [],
             },
             userInfo: [],
-            cardInfo: [],
             pageNo: 1,
             pageSize: 10,
             total: 0,
@@ -59,10 +57,8 @@ class SpecialPromotionDetail extends React.Component {
         this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
         this.renderGiftInfoTable = this.renderGiftInfoTable.bind(this);
         this.renderSearch = this.renderSearch.bind(this);
-        this.renderOptions = this.renderOptions.bind(this);
         this.renderActivityInfoTable = this.renderActivityInfoTable.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSelectChange = this.handleSelectChange.bind(this);
         this.query = this.query.bind(this);
         this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
     }
@@ -72,22 +68,6 @@ class SpecialPromotionDetail extends React.Component {
         if (record.eventInfo) {
             this.setState({
                 eventInfo: record.eventInfo,
-            })
-        }
-        if (record.cardInfo && record.cardInfo.data && record.cardInfo.data.groupCardTypeList) {
-            this.setState({
-                cardInfo: record.cardInfo.data.groupCardTypeList,
-            })
-        }
-        if (record.userInfo && record.userInfo.list) {
-            record.userInfo.list.forEach((user) => {
-                record.cardInfo.data.groupCardTypeList.forEach((cat) => {
-                    cat.cardTypeLevelList.forEach((card) => {
-                        if (card.cardLevelID === user.cardLevelID) {
-                            user.cardTypeName = cat.cardTypeName;
-                        }
-                    })
-                })
             })
         }
         this.setState({
@@ -101,22 +81,6 @@ class SpecialPromotionDetail extends React.Component {
             if (nextProps.record.eventInfo) {
                 this.setState({
                     eventInfo: nextProps.record.eventInfo,
-                })
-            }
-            if (nextProps.record.cardInfo && nextProps.record.cardInfo.data && nextProps.record.cardInfo.data.groupCardTypeList) {
-                this.setState({
-                    cardInfo: nextProps.record.cardInfo.data.groupCardTypeList,
-                })
-            }
-            if (nextProps.record.userInfo && nextProps.record.userInfo.list) {
-                nextProps.record.userInfo.list.forEach((user) => {
-                    nextProps.record.cardInfo.data.groupCardTypeList.forEach((cat) => {
-                        cat.cardTypeLevelList.forEach((card) => {
-                            if (card.cardLevelID === user.cardLevelID) {
-                                user.cardTypeName = cat.cardTypeName;
-                            }
-                        })
-                    })
                 })
             }
             if (nextProps.record.userInfo && nextProps.record.userInfo.list) {
@@ -332,15 +296,6 @@ class SpecialPromotionDetail extends React.Component {
                 <Col span={24}>
                     <Col span={3}>关键字</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
-                    <Col span={3}>会员等级</Col>
-                    <Col span={6}>
-                        <Select size="default"
-                                onChange={this.handleSelectChange}
-                                getPopupContainer={(node) => node.parentNode}
-                        >
-                            {this.renderOptions()}
-                        </Select>
-                    </Col>
                     <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
                 </Col>
             </div>
@@ -353,11 +308,6 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
 
-    handleSelectChange(val) {
-        this.setState({
-            cardLevelID: val,
-        })
-    }
 
     // 查询 关键字、等级
     query(needReset = false) {
@@ -370,9 +320,6 @@ class SpecialPromotionDetail extends React.Component {
         };
         if (this.state.keyword !== '') {
             opts.keyword = this.state.keyword;
-        }
-        if (this.state.cardLevelID !== '') {
-            opts.cardLevelID = this.state.cardLevelID;
         }
         this.props.fetchUserList(
             {
@@ -387,22 +334,6 @@ class SpecialPromotionDetail extends React.Component {
                 },
             }
         );
-    }
-
-    // 会员等级Option
-    renderOptions() {
-        const cardInfo = this.state.cardInfo;
-        let options = [
-            <Option key={'0'} value={''}>不限</Option>,
-        ];
-        options = options.concat(cardInfo.map((cardType) => {
-            return cardType.cardTypeLevelList.map((card, index) => {
-                return (
-                    <Option key={`${index + 1}`} value={card.cardLevelID}>{`${cardType.cardTypeName} - ${card.cardLevelName}`}</Option>
-                )
-            })
-        }));
-        return options;
     }
 
     handleUserTablePageChange(pageNo, pageSize) {
@@ -446,16 +377,6 @@ class SpecialPromotionDetail extends React.Component {
                 fixed: 'left',
             },
             {
-                title: '卡号',
-                dataIndex: 'cardNo',
-                key: 'cardNo',
-                className: 'TableTxtRight',
-                width: 150,
-                render:(text)=> {
-                    return (<Tooltip title={text}>{text}</Tooltip>)
-                }
-            },
-            {
                 title: '手机号',
                 dataIndex: 'telephoneNo',
                 key: 'telephoneNo',
@@ -464,13 +385,6 @@ class SpecialPromotionDetail extends React.Component {
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
-            },
-            {
-                title: '等级',
-                dataIndex: 'level',
-                key: 'level',
-                className: 'TableTxtLeft',
-                width: 200,
             },
             {
                 title: '消费累计',
@@ -494,27 +408,12 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
         ];
-        const sexInfo = [
-            {
-                key: '0',
-                lable: '女',
-            },
-            {
-                key: '1',
-                lable: '男',
-            },
-            {
-                key: '2',
-                lable: '未知',
-            },
-        ];
         const userInfo = this.state.userInfo || [];
         const dataSource = userInfo.map((user, index) => {
             return {
                 key: `${index}`,
                 idx: `${index + 1}`,
                 name: user.customerName,
-                // gender: sexInfo[user.customerSex].lable, // 0 ,1 ,2  女 男  未知
                 cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
                 customerID: user.customerID,
@@ -531,7 +430,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns}
                 bordered={true}
-                scroll={{ x: 1100 }}
+                scroll={{ x: 750 }}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
