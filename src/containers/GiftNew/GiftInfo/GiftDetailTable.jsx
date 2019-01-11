@@ -143,6 +143,7 @@ class GiftDetailTable extends Component {
     }
 
     proGiftData = (data) => {
+        // 在此处预处理用来显示 编辑的字段
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
         const _pageNo = data.pageNo;
@@ -166,6 +167,8 @@ class GiftDetailTable extends Component {
             g.usingTimeType = (g.usingTimeType || '').split(',');
             g.supportOrderTypeLst = g.supportOrderTypeLst ? (g.supportOrderTypeLst).split(',') : undefined;
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
+            g.isDiscountRate = g.discountRate < 1;
+            g.isPointRate = g.pointRate > 0;
             if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
                 if (g.giftImagePath.startsWith('/')) {
                     g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath

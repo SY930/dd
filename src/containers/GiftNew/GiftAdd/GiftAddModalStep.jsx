@@ -171,7 +171,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'giveFoodCount':    this.handleGiveFoodCountChangeDebounced({key, value});
                                     break;
-                default: console.log({key, value}); this.props.changeGiftFormKeyValue({key, value});
+                default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
 
@@ -1245,16 +1245,6 @@ class GiftAddModalStep extends React.PureComponent {
         if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
-        if (dates.discountRate < 1) {
-            dates.isDiscountRate = true
-        } else {
-            dates.isDiscountRate = false
-        }
-        if (dates.pointRate > 0) {
-            dates.isPointRate = true
-        } else {
-            dates.isPointRate = false
-        }
         if (dates.moneyTopLimitValue) {
             dates.moneyTopLimitType = '1'
         } else {
@@ -1538,9 +1528,6 @@ class GiftAddModalStep extends React.PureComponent {
                                     </Select>)}
                                 </FormItem>
                             </Col>
-                            {
-                                // console.log(this.state.values)
-                            }
                             {
                                 this.state.values.transferLimitType == 0 ? null :
                                     <div>
