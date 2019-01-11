@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import GiftCfg from '../../../constants/Gift';
 
 const FORMITEMS = {
@@ -24,7 +24,7 @@ const FORMITEMS = {
         options: GiftCfg.isHolidaysUsing,
     },
     usingTimeType: {
-        label: '使用时段',
+        label: '使用餐段',
         type: 'checkbox',
         defaultValue: ['1', '2', '3', '4', '5'],
         options: GiftCfg.usingTimeType,
@@ -153,7 +153,7 @@ const FIRST_KEYS = {
         {col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'price', 'foodNameList', 'giftRemark'],},
         {col: { span: 24, push: 3 }, keys: ['isNeedCustomerInfo']
     }],
-    '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
+    '会员权益券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'cardTypeList', 'giftRemark'] }],
     '活动券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftRemark'] }],
     '线上礼品卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'price', 'validityDays', 'giftRemark'] }],
     '买赠券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'buyGiveFoods', 'stageAmount', 'buyGiveSecondaryFoods', 'giveFoodCount', 'price', 'giftRemark',] },
@@ -164,15 +164,15 @@ const FIRST_KEYS = {
 const SECOND_KEYS = (() => ({
     '代金券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'amountType', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'amountType', 'isSynch'],
     }],
     '菜品优惠券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
     }],
     '菜品兑换券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'moneyLimitType', 'shopNames', 'isSynch'],
     }],
     '会员权益券': [{
         col: { span: 24, pull: 2 },
@@ -188,11 +188,11 @@ const SECOND_KEYS = (() => ({
     }],
     '买赠券': [{
         col: { span: 24, pull: 2 },
-        keys: [ 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: [ 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
     '折扣券': [{
         col: { span: 24, pull: 2 },
-        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'usingTimeType', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
+        keys: ['TrdTemplate', 'transferType', 'isHolidaysUsing', 'couponPeriodSettings', 'supportOrderType', 'isOfflineCanUsing', 'giftShareType', 'shopNames', 'isSynch'],
     }],
 }))();
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }

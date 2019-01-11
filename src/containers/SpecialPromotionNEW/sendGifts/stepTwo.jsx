@@ -56,9 +56,6 @@ class StepTwo extends React.Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.TimeChange = this.TimeChange.bind(this);
-        this.TimeFilterChange = this.TimeFilterChange.bind(this);
-        this.onShopChange = this.onShopChange.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleVipBirthdayMonthChange = this.handleVipBirthdayMonthChange.bind(this);
         this.preProShops = this.preProShops.bind(this);
@@ -78,37 +75,26 @@ class StepTwo extends React.Component {
             if (err1) {
                 flag = false;
             }
-            // 校验最后消费时间
-            if (this.state.lastTransTimeFilter != '0' && (this.state.lastTransTime == '' || this.state.lastTransTime == '0')) {
-                flag = false;
-                this.setState({
-                    lastTransTimeStatus: 'error',
-                })
-            }
-            if (flag) {
-                const opts = {
-                    smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
-                    lastTransTimeFilter: this.state.lastTransTimeFilter,
-                    lastTransTime: this.state.lastTransTime || '',
-                    lastTransShopID: this.state.lastTransShopID,
-                    lastTransShopName: this.state.lastTransShopName,
-                    isVipBirthdayMonth: this.state.isVipBirthdayMonth,
-                    cardGroupID: this.state.groupMembersID || '0',
-                    cardGroupName: groupMembers.groupMembersName,
-                    cardCount: groupMembers.totalMembers,
-                    cardGroupRemark: groupMembers.groupMembersRemark,
-                    cardLevelRangeType: this.state.cardLevelRangeType || '0',
-                }
-                if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
-                    opts.settleUnitID = this.state.settleUnitID;
-                    opts.accountNo = this.state.accountNo;
-                } else {
-                    opts.settleUnitID = '0';
-                    opts.accountNo = '0';
-                }
-                this.props.setSpecialBasicInfo(opts)
-            }
         });
+        if (flag) {
+            const opts = {
+                smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
+                isVipBirthdayMonth: this.state.isVipBirthdayMonth,
+                cardGroupID: this.state.groupMembersID || '0',
+                cardGroupName: groupMembers.groupMembersName,
+                cardCount: groupMembers.totalMembers,
+                cardGroupRemark: groupMembers.groupMembersRemark,
+                cardLevelRangeType: this.state.cardLevelRangeType || '0',
+            }
+            if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
+                opts.settleUnitID = this.state.settleUnitID;
+                opts.accountNo = this.state.accountNo;
+            } else {
+                opts.settleUnitID = '0';
+                opts.accountNo = '0';
+            }
+            this.props.setSpecialBasicInfo(opts)
+        }
 
         return flag;
     }
@@ -131,10 +117,6 @@ class StepTwo extends React.Component {
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,
-                lastTransTimeFilter: specialPromotion.lastTransTimeFilter,
-                lastTransTime: specialPromotion.lastTransTime,
-                lastTransShopID: specialPromotion.lastTransShopID,
-                lastTransShopName: specialPromotion.lastTransShopName,
                 isVipBirthdayMonth: specialPromotion.isVipBirthdayMonth,
                 groupMembersID: specialPromotion.cardGroupID || '0',
                 cardGroupName: specialPromotion.groupMembersName,
@@ -163,10 +145,6 @@ class StepTwo extends React.Component {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
             this.setState({
                 message: specialPromotion.smsTemplate,
-                lastTransTimeFilter: specialPromotion.lastTransTimeFilter,
-                lastTransTime: specialPromotion.lastTransTime,
-                lastTransShopID: specialPromotion.lastTransShopID,
-                lastTransShopName: specialPromotion.lastTransShopName,
                 isVipBirthdayMonth: specialPromotion.isVipBirthdayMonth,
                 groupMembersID: specialPromotion.cardGroupID || '0',
                 cardGroupName: specialPromotion.groupMembersName,
@@ -246,46 +224,6 @@ class StepTwo extends React.Component {
         return shopsData;
     }
 
-    // lastTransTimeFilter change
-    TimeFilterChange(val) {
-        // 不限制的时候把日期置空
-        if (val == '0') {
-            this.setState({
-                lastTransTimeFilter: val,
-                lastTransTimeStatus: 'success',
-                lastTransTime: '',
-            })
-        } else {
-            this.setState({
-                lastTransTimeFilter: val,
-            })
-        }
-    }
-    // lastTransTime change
-    TimeChange(val) {
-        if (val == null) {
-            this.setState({
-                lastTransTimeStatus: 'error',
-                lastTransTime: null,
-            })
-        } else {
-            this.setState({
-                lastTransTime: val.format('YYYYMMDD'),
-                lastTransTimeStatus: 'success',
-            })
-        }
-    }
-    // 最后购买店铺 change
-    onShopChange(val) {
-        if (val == undefined || val == '') {
-            return
-        }
-        const nameAndID = val.split(',');
-        this.setState({
-            lastTransShopID: nameAndID[0],
-            lastTransShopName: nameAndID[1],
-        })
-    }
     handleSelectChange(value) {
         if (value == '0') {
             this.setState({
@@ -314,31 +252,7 @@ class StepTwo extends React.Component {
     render() {
         const sendFlag = true;
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
-        let { lastTransTimeFilter, lastTransTime, lastTransShopID, lastTransShopName, lastTransTimeStatus } = this.state,
-            // treeselect props
-            treeProps = {
-                treeData: this.state.shopsData,
-                showSearch: true,
-                onChange: this.onShopChange,
-                showCheckedStrategy: SHOW_PARENT,
-                searchPlaceholder: '请搜索店铺',
-                treeNodeFilterProp: 'label',
-                allowClear: true,
-                getPopupContainer: () => document.querySelector('.crmOperationTree'),
-            },
-            lastTimeProps = {
-                onChange: this.TimeChange,
-            },
-            getFieldDecorator = this.props.form.getFieldDecorator;
-
-        // treeSelect value: 店铺ID,店铺Name
-        if (lastTransShopID !== '' && lastTransShopName !== '') {
-            treeProps.value = `${lastTransShopID},${lastTransShopName}`
-        }
-        // 字符串转成moment
-        if (lastTransTime !== '' && lastTransTime !== '0' && lastTransTime !== null) {
-            lastTimeProps.value = moment(lastTransTime, 'YYYYMMDD')
-        }
+        const getFieldDecorator = this.props.form.getFieldDecorator;
         return (
             <Form>
                 <FormItem

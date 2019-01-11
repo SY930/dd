@@ -12,7 +12,16 @@ import moment from 'moment';
 import React, { PropTypes } from 'react';
 
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Table, Input, Select, Button } from 'antd';
+import {
+    Modal,
+    Row,
+    Col,
+    Table,
+    Input,
+    Select,
+    Button,
+    Tooltip
+} from 'antd';
 
 const Option = Select.Option;
 
@@ -419,32 +428,42 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
+                title: '客户编号',
+                dataIndex: 'customerID',
+                key: 'customerID',
+                width: 180,
+                className: 'TableTxtCenter',
+                fixed: 'left',
+                render:(text)=> {
+                    return (<Tooltip title={text}>{text}</Tooltip>)
+                }
+            },
+            {
                 title: '姓名',
                 dataIndex: 'name',
                 key: 'name',
                 width: 100,
                 fixed: 'left',
             },
-            // 性别暂时拿掉
-            // {
-            //     title: '性别',
-            //     dataIndex: 'gender',
-            //     key: 'gender',
-            //     width: 30
-            // },
             {
                 title: '卡号',
                 dataIndex: 'cardNo',
                 key: 'cardNo',
                 className: 'TableTxtRight',
                 width: 150,
+                render:(text)=> {
+                    return (<Tooltip title={text}>{text}</Tooltip>)
+                }
             },
             {
                 title: '手机号',
                 dataIndex: 'telephoneNo',
                 key: 'telephoneNo',
                 className: 'TableTxtRight',
-                width: 120,
+                width: 140,
+                render:(text)=> {
+                    return (<Tooltip title={text}>{text}</Tooltip>)
+                }
             },
             {
                 title: '等级',
@@ -498,6 +517,7 @@ class SpecialPromotionDetail extends React.Component {
                 // gender: sexInfo[user.customerSex].lable, // 0 ,1 ,2  女 男  未知
                 cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
+                customerID: user.customerID,
                 level: `${user.cardTypeName || ''}-${user.cardLevelName && user.cardLevelName !== 'null' ? user.cardLevelName : ''}`,
                 consumptionTotal: user.consumptionTotal,
                 consumptionCount: user.consumptionCount,
@@ -511,7 +531,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns}
                 bordered={true}
-                scroll={{ x: 800 }}
+                scroll={{ x: 1100 }}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,

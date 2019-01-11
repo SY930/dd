@@ -197,7 +197,7 @@ const GiftCfg = {
         { value: '114', label: '线上餐厅送礼' },
         { value: '115', label: '微信购买领取' },
         { value: '116', label: '微信受赠领取' },
-        { value: '117', label: '激活送礼' },
+        { value: '117', label: '唤醒送礼' },
         { value: '118', label: '评价送礼' },
         { value: '120', label: '关注送礼' },
         { value: '3010', label: '基础营销消费返券' },
@@ -266,6 +266,7 @@ const GiftCfg = {
         { label: '拉格代尔', value: 6, disabled: releaseENV },
         { label: '非码', value: 20 },
         { label: '企迈小程序', value: 30 },
+        /*{ label: '银行服务商 - 众联享付', value: 40 },*/
     ],
     couponCodeType: [
         { value: 1, label: '是' },
