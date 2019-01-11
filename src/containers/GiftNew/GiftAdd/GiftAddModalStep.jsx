@@ -1515,13 +1515,14 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '转赠设置',
                 type: 'custom',
                 render: (decorator, form) => {
+                    // 转赠限制类型 -1不限制 0不可转赠 大于0表示可转赠次数
                     return (
                         <Row>
                             <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -6 }}>
                                 <FormItem>
                                     {decorator({
                                         key: 'transferLimitType',
-                                        initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
+                                        defaultValue: '-1',
                                     })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="-1">可转赠</Option>
                                         <Option value="0">不可转赠</Option>
@@ -1536,11 +1537,11 @@ class GiftAddModalStep extends React.PureComponent {
                                             <FormItem>
                                                 {decorator({
                                                     key: 'transferLimitTypeValue',
-                                                    initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
+                                                    defaultValue: '',
                                                     rules: [{
                                                         required: true,
                                                         pattern: /^[1-9]\d{0,9}$/,
-                                                        message: '转赠次数不可大于9999999999',
+                                                        message: '转赠次数必须大于0, 且不可大于9999999999',
                                                     }],
                                                 })(<Input
                                                     placeholder={'请输入限定次数'}

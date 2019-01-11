@@ -169,6 +169,11 @@ class GiftDetailTable extends Component {
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             g.isDiscountRate = g.discountRate < 1;
             g.isPointRate = g.pointRate > 0;
+            if (g.transferLimitType !== undefined && g.transferLimitType != -1) {
+                g.transferLimitType = String(g.transferLimitType);
+                g.transferLimitType === '0' && (g.transferLimitTypeValue = '');
+                g.transferLimitType > 0 && (g.transferLimitTypeValue = g.transferLimitType, g.transferLimitType = '-1');
+            }
             if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
                 if (g.giftImagePath.startsWith('/')) {
                     g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath
