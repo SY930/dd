@@ -138,63 +138,6 @@ class SpecialRangeInfo extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        // 是否更新
-        if (this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo') &&
-            nextProps.specialPromotion.get('$eventInfo').size > 25) {
-            const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
-            let joinRange = [],
-                freeGetJoinRange = [],
-                joinCount = '0',
-                partInTimesNoValidName;
-
-            // 判断CheckBox的值
-            if (specialPromotion.wechatEventListCheck != '0') {
-                freeGetJoinRange.push('0');
-            }
-            if (specialPromotion.wechatOrderCheck != '0') {
-                freeGetJoinRange.push('1');
-            }
-            if (specialPromotion.rewardOnly != '0') {
-                if (this.props.type == '21') {
-                    freeGetJoinRange.push('2');
-                } else {
-                    joinRange.push('0');
-                }
-            }
-            if (parseFloat(specialPromotion.deductPoints) != '0') {
-                joinRange.push('1');
-            }
-            if (parseFloat(specialPromotion.sendPoints) != '0') {
-                joinRange.push('2');
-            }
-            // 判断Radio的值
-            if (specialPromotion.countCycleDays != '0') {
-                joinCount = '2';
-                partInTimesNoValidName = 'partInTimes';
-            } else if (specialPromotion.partInTimes != '0') {
-                joinCount = '1';
-                partInTimesNoValidName = 'partInTimesNoValid';
-            }
-            // 修改时,初始化state
-            this.setState({
-                joinRange: this.state.joinRange.length > 0 ? this.state.joinRange : joinRange,
-                freeGetJoinRange,
-                joinCount: this.state.joinCount,
-                rewardOnly: specialPromotion.rewardOnly, // 是否用于打赏
-                deductPoints: specialPromotion.deductPoints, // 扣减积分数
-                sendPoints: specialPromotion.sendPoints, // 赠送积分数
-                countCycleDays: specialPromotion.countCycleDays, // 参与周期
-                [partInTimesNoValidName]: specialPromotion.partInTimes, // 最大参与次数
-                isVipBirthdayMonth: `${specialPromotion.isVipBirthdayMonth}`, // 是否本月生日才能使用
-                maxPartInPerson: specialPromotion.maxPartInPerson,
-                cardLevelID: specialPromotion.cardLevelID || '0',
-                cardLevelIDList: specialPromotion.cardLevelIDList || [],
-                cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-                autoRegister: specialPromotion.autoRegister == 0 ? 0 : 1,
-            })
-        }
-    }
     handlePrev() {
         return this.handleSubmit(true)
     }
@@ -337,7 +280,6 @@ class SpecialRangeInfo extends React.Component {
                 opts.partInTimes = '1';
             }
             if (isPrev || nextFlag) {
-                // opts = isPrev ? Object.assign(opts,{joinRange}) : opts;
                 this.props.setSpecialBasicInfo(opts);
             }
         }
