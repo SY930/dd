@@ -1,17 +1,12 @@
 import { connect } from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Row, Col, message, Button } from 'antd';
 import {throttle } from 'lodash';
 import { checkPermission } from '../../../helpers/util';
 import { CrmLogo } from './CrmOperation';
 import GiftCfg from '../../../constants/Gift';
-import Moment from 'moment';
 import GiftAddModalStep from './GiftAddModalStep';
 import GiftAddModal from './GiftAddModal';
-import { fetchData, axiosData } from '../../../helpers/util';
-import _ from 'lodash';
-import Authority from '../../../components/common/Authority';
 import {
     emptyGetSharedGifts,
     queryWechatMpInfo,

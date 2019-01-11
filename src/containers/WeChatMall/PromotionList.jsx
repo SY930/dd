@@ -200,15 +200,6 @@ export class WeChatMallPromotionList extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === WECHAT_MALL_LIST) {
-            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes(WECHAT_MALL_LIST)) {
-                this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
-            }
-        }
-    }
-
     getParams = () => {
         const {
             promotionDateRange,
@@ -251,10 +242,11 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     queryEvents(opts) {
-        if (!(this.props.user.shopID > 0)) {
+        const shopID = this.props.user.shopID;
+        if (shopID == undefined || shopID === 'undefined' || !(shopID > 0)) {
             return;
         }
-        const params = {...opts, shopID: this.props.user.shopID, };
+        const params = {...opts, shopID };
 
         axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})
             .then((data) => {

@@ -31,6 +31,7 @@ import PromotionSelectModal from "./PromotionSelectModal";
 import {FetchGiftList} from "../GiftNew/_action";
 import {fetchAllPromotionListAC} from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
+import {fetchPromotionScopeInfo} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -76,6 +77,7 @@ export default class ShareRules extends Component {
             pageNo: 1,
         });
         this.queryAll();
+        this.props.getAllShops();
     }
 
     handleDeleteGroup = ({ itemID }, index) => {
@@ -277,6 +279,11 @@ export default class ShareRules extends Component {
         const currentShopID = this.props.user.shopID > 0 ? this.props.user.shopID : 0;
         return shopID == currentShopID;
     }
+    getCreateBy = ({ shopID }) => {
+        const { shops } = this.props;
+        const res = shops.find(item => item.get('shopID') == shopID)
+        return  `由${res ? res.get('shopName') : `店铺${shopID}`}创建`;
+    }
 
     render() {
         const {
@@ -284,7 +291,7 @@ export default class ShareRules extends Component {
             isQuerying,
             searchPromotionType,
             searchPromotionName,
-            isSaving
+            isSaving,
         } = this.props;
         const {
             isCreate,
@@ -334,6 +341,13 @@ export default class ShareRules extends Component {
                                                 <div className={style.shareGroupTitle}>
                                                     {`营销活动共享组${index + 1}`}
                                                 </div>
+                                                {
+                                                    shareGroup.shopID > 0 && (
+                                                        <div className={style.shareGroupTitleTip}>
+                                                            {this.getCreateBy(shareGroup)}
+                                                        </div>
+                                                    )
+                                                }
                                                 <div className={style.flexSpacer} />
                                                 {
                                                     this.isMyShareGroup(shareGroup) ? (
@@ -453,6 +467,7 @@ function mapStateToProps(state) {
         myActivities: state.sale_myActivities_NEW,
         giftInfoNew: state.sale_giftInfoNew, // 所有哗啦啦券列表--共享用
         mySpecialActivities: state.sale_mySpecialActivities_NEW, // 所有会员等级列表--共享用
+        shops: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'shops']),
     }
 }
 
@@ -472,6 +487,9 @@ function mapDispatchToProps(dispatch) {
         },
         FetchGiftList: (opts) => {
             dispatch(FetchGiftList(opts))
+        },
+        getAllShops: (opts) => {
+            dispatch(fetchPromotionScopeInfo(opts));
         },
     };
 }

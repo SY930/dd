@@ -18,6 +18,7 @@ import {debounce} from 'lodash';
 import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import SelectBrands from "../components/SelectBrands";
+import SelectCardTypes from "../components/SelectCardTypes";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -324,6 +325,11 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectBrands/>),
             },
+            cardTypeList: {
+                label: '适用卡类',
+                type: 'custom',
+                render: decorator => decorator({})(<SelectCardTypes/>),
+            },
             isSynch: {
                 label: ` `,
                 type: 'custom',
@@ -343,9 +349,9 @@ class GiftAddModal extends React.Component {
                         case '30':
                             return '顾客在获取实物礼品券后，礼品具体领取方式请联系商家，商家会在核对信息无误后进行赠送。';
                         case '40':
-                            return '顾客在获取会员充值类礼品后，将直接充入其会员储值余额账户中！';
+                            return '顾客在获取会员充值券后，可以充入其会员卡中当卡值使用';
                         case '42':
-                            return '顾客在获取会员积分类礼品后，将直接充入其会员积分余额账户中！';
+                            return '顾客在获取会员积分券后，可以充入其会员卡中进行使用';
                         case '90':
                             return '顾客在获取定额卡之后，具体使用规则请联系商家！';
                     }
@@ -354,8 +360,8 @@ class GiftAddModal extends React.Component {
         };
         const formKeys = {
             '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
-            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
-            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'giftRule', ] }],
+            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
+            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
             '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
         };
         let formData = {};

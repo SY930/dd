@@ -78,7 +78,7 @@ class MessageTemplateEditPanel extends React.Component {
         });
         if (!flag) return;
         const { message } = this.state;
-        const strippedMessage = message.replace(/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g, '');
+        const strippedMessage = message.replace(/(\[会员姓名])|(\[先生\/女士])/g, '');
         if (/[\[\]【】]/.test(strippedMessage)) { // 剔除模板字段(例如[会员姓名])后依然有"【】" "[]"符号, 不允许保存
             this.props.form.setFields({
                 message: {
@@ -176,14 +176,12 @@ class MessageTemplateEditPanel extends React.Component {
     }
 
     renderModalBody() {
-        const previewMessage = this.state.message.replace(/(\[会员姓名])|(\[先生\/女士])|(\[卡名称])|(\[卡号后四位])/g, 'XX').concat('回复TD退订【互联网餐厅】');
+        const previewMessage = this.state.message.replace(/(\[会员姓名])|(\[先生\/女士])/g, 'XX').concat('回复TD退订【互联网餐厅】');
         return (
             <div>
                 <FormItem style={{padding: '0'}} label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
                     <Button onClick={this.addMessageInfo}>会员姓名</Button>
                     <Button onClick={this.addMessageInfo}>先生/女士</Button>
-                    <Button onClick={this.addMessageInfo}>卡名称</Button>
-                    <Button onClick={this.addMessageInfo}>卡号后四位</Button>
                 </FormItem>
                 <Form>
                     <FormItem

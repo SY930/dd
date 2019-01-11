@@ -38,7 +38,9 @@ import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
+import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
+import SelectCardTypes from "../components/SelectCardTypes";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -169,7 +171,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'giveFoodCount':    this.handleGiveFoodCountChangeDebounced({key, value});
                                     break;
-                default: this.props.changeGiftFormKeyValue({key, value});
+                default: console.log({key, value}); this.props.changeGiftFormKeyValue({key, value});
             }
         }
 
@@ -505,6 +507,7 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '110' || value == '111') {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
+            params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             // foodbxs数据,目前代金券和折扣券用
             if (params.hasOwnProperty('foodsboxs')) {
                 if (!params.foodsboxs) { // 用户没选择，默认全部信息
@@ -605,13 +608,13 @@ class GiftAddModalStep extends React.PureComponent {
                 delete params.buyGiveFoods;
                 delete params.buyGiveSecondaryFoods;
             }
-            if (params.couponPeriodSettings) {
-                const { couponPeriodSettings, couponPeriodSettingsStatus } = params.couponPeriodSettings
-                params.couponPeriodSettings = couponPeriodSettings
-                if (!couponPeriodSettingsStatus) {
-                    message.warning((<div><p>时间不能为空</p><p>有交集的日期内，时间不能有重合</p></div>))
+            if (params.couponPeriodSettings && Array.isArray(params.couponPeriodSettings)) {
+                const { hasError, errorMessage } = getItervalsErrorStatus(params.couponPeriodSettings)
+                if (hasError) {
+                    message.warning(errorMessage)
                     return
                 }
+                params.couponPeriodSettings = params.couponPeriodSettings.filter(({periodStart, periodEnd}) => !!periodStart && !!periodEnd)
             }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
@@ -1015,7 +1018,9 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row>
                 <Col>
-                    {decorator({})(<SeniorDateSetting couponPeriodSettings={data.couponPeriodSettingList} />)}
+                    {decorator({
+                        rules: [{ required: true, message: ' ' }]
+                    })(<GiftTimeIntervals />)}
                 </Col>
             </Row>
         )
@@ -1282,6 +1287,11 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '所属品牌',
                 type: 'custom',
                 render: decorator => decorator({})(<SelectBrands/>),
+            },
+            cardTypeList: {
+                label: '适用卡类',
+                type: 'custom',
+                render: decorator => decorator({})(<SelectCardTypes/>),
             },
             giftValue: {
                 label: giftValueLabel,
@@ -1616,6 +1626,7 @@ class GiftAddModalStep extends React.PureComponent {
             couponPeriodSettings: {
                 label: '使用时段',
                 type: 'custom',
+                defaultValue: [{periodStart: '000000', periodEnd: '235900'}],
                 render: decorator => this.renderCouponPeriodSettings(decorator),
             },
             isNeedCustomerInfo: {
@@ -1666,6 +1677,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
+        formData.couponPeriodSettings = formData.couponPeriodSettingList
 
         return (
             <div>

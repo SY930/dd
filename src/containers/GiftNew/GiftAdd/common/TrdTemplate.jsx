@@ -30,6 +30,10 @@ const itemStyle = {
     style: { marginBottom: 0 },
     required: true,
 }
+// 这些第三方渠道的对接, 不需要渲染选择券码的Select
+const SIMPLE_TRD_CHANNEL_IDS = [
+    20, 30, 40
+]
 class TrdTemplate extends React.Component {
     constructor(props) {
         super(props);
@@ -111,7 +115,7 @@ class TrdTemplate extends React.Component {
         if (!channelID) { channelIDStatus = false; TrdTemplateStatus = false; }
         if (channelID == 10 && !mpID) { mpIDStatus = false; TrdTemplateStatus = false; }
         if (!trdGiftItemID) { trdGiftItemIDStatus = false; TrdTemplateStatus = false; }
-        if (channelID == 20 || channelID == 30 ) { trdGiftItemIDStatus = true; TrdTemplateStatus = true; }
+        if (SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID))) { trdGiftItemIDStatus = true; TrdTemplateStatus = true; }
         this.setState({ channelIDStatus, mpIDStatus, trdGiftItemIDStatus })
         return Promise.resolve(TrdTemplateStatus)
     }
@@ -196,7 +200,7 @@ class TrdTemplate extends React.Component {
             this.props.queryUnbindCouponPromotion({ channelID: value }) // 查询未绑定过的活动
             this.props.clearPromotion() // 清空已选活动
         }
-        if (value === 20 || value === 30) return this.propsChange();
+        if (SIMPLE_TRD_CHANNEL_IDS.includes(Number(value))) return this.propsChange();
         if (value === 10) {
             this.queryTrdTemplate(this.state.mpList[0].mpID, this.state.mpList[0].appID, 10) // 带着微信号查模板
         } else {
@@ -286,7 +290,7 @@ class TrdTemplate extends React.Component {
                                         </FormItem>)
                                 }
                                 {
-                                    channelID === 20 || channelID === 30 ? null : (
+                                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
                                         <FormItem
                                             label='第三方券模板或活动'
                                             {...itemStyle}
@@ -308,7 +312,7 @@ class TrdTemplate extends React.Component {
                                     )
                                 }
                                 {
-                                    channelID === 20 || channelID === 30 ? null : (
+                                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
                                         <FormItem
                                             label='券模板或活动ID'
                                             {...itemStyle}
