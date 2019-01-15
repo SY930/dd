@@ -34,6 +34,7 @@ import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 const validUrl = require('valid-url');
@@ -127,9 +128,9 @@ class GiftDetailTable extends Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 120,
+                    contentHeight: parentHeight - headerHeight - 200,
                     tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
@@ -457,6 +458,7 @@ class GiftDetailTable extends Component {
                             </Authority>
                         </div>
                     </div>
+                <PromotionCalendarBanner />
                 <div className={styles2.pageContentWrapper}>
                     <div style={{ padding: '0'}} className="layoutsHeader">
                         <div className="layoutsSearch">

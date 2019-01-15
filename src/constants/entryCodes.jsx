@@ -32,3 +32,6 @@ export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动
 
 export const SHARE_RULES_GROUP = '1000080001'; // 创建共享群组页面
 export const SHARE_RULES_SHOP = 'shop.promotion.gongxiangshezhi'; // 创建共享群组页面
+
+export const PROMOTION_CALENDAR_GROUP = 'promotion_calendar'; // 营销日历局部页面 集团视角
+export const PROMOTION_CALENDAR_SHOP = 'promotion_calendar_shop'; // 营销日历局部页面 门店视角

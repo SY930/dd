@@ -60,6 +60,7 @@ import {
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
 import {isFormalRelease} from "../../../utils/index";
+import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -275,9 +276,9 @@ class MySpecialActivities extends React.Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 120,
+                    contentHeight: parentHeight - headerHeight - 200,
                     tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
@@ -360,6 +361,7 @@ class MySpecialActivities extends React.Component {
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
+                <PromotionCalendarBanner />
                 <div className={styles.pageContentWrapper}>
                     <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}

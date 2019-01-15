@@ -29,3 +29,4 @@ export { default as SalePromotionPage } from './NewCreatePromotions/SalePromotio
 export { default as LoyaltyPromotionPage } from './NewCreatePromotions/LoyaltyPromotionPage';
 export { default as FansInteractivityPage } from './NewCreatePromotions/FansInteractivityPage';
 export { default as ShareRules } from './ShareRules';
+export { default as PromotionCalendar } from './PromotionCalendar';
