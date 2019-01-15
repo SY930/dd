@@ -57,7 +57,6 @@ class SpecialPromotionDetail extends React.Component {
         this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
         this.renderGiftInfoTable = this.renderGiftInfoTable.bind(this);
         this.renderSearch = this.renderSearch.bind(this);
-        this.renderActivityInfoTable = this.renderActivityInfoTable.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.query = this.query.bind(this);
         this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
@@ -353,9 +352,8 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'idx',
                 className: 'TableTxtCenter',
                 width: 30,
-                fixed: 'left',
                 render:(text, record, index)=> {
-                    return (this.state.pageNo - 1) * this.state.pageSize + Number(text);
+                    return (this.state.pageNo - 1) * this.state.pageSize + Number(index + 1);
                 }
             },
             {
@@ -364,7 +362,6 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'customerID',
                 width: 180,
                 className: 'TableTxtCenter',
-                fixed: 'left',
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
@@ -373,8 +370,11 @@ class SpecialPromotionDetail extends React.Component {
                 title: '姓名',
                 dataIndex: 'name',
                 key: 'name',
+                className: 'TableTxtCenter',
                 width: 100,
-                fixed: 'left',
+                render:(text)=> {
+                    return (<Tooltip title={text}>{text}</Tooltip>)
+                }
             },
             {
                 title: '手机号',
@@ -385,20 +385,6 @@ class SpecialPromotionDetail extends React.Component {
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
-            },
-            {
-                title: '消费累计',
-                dataIndex: 'consumptionTotal',
-                key: 'consumptionTotal',
-                className: 'TableTxtRight',
-                width: 20,
-            },
-            {
-                title: '消费次数',
-                dataIndex: 'consumptionCount',
-                key: 'consumptionCount',
-                className: 'TableTxtRight',
-                width: 20,
             },
             {
                 title: '参与时间',
@@ -412,14 +398,10 @@ class SpecialPromotionDetail extends React.Component {
         const dataSource = userInfo.map((user, index) => {
             return {
                 key: `${index}`,
-                idx: `${index + 1}`,
                 name: user.customerName,
                 cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
                 customerID: user.customerID,
-                level: `${user.cardTypeName || ''}-${user.cardLevelName && user.cardLevelName !== 'null' ? user.cardLevelName : ''}`,
-                consumptionTotal: user.consumptionTotal,
-                consumptionCount: user.consumptionCount,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
 
             }
@@ -430,7 +412,6 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns}
                 bordered={true}
-                scroll={{ x: 750 }}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,

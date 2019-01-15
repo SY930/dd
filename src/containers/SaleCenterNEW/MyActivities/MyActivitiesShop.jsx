@@ -21,7 +21,7 @@ import { jumpPage } from '@hualala/platform-base'
 import {axiosData, getAccountInfo} from '../../../helpers/util'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import { SALE_CENTER_PAGE_SHOP } from '../../../constants/entryCodes';
+import {PROMOTION_CALENDAR_SHOP, SALE_CENTER_PAGE_SHOP} from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -81,6 +81,7 @@ import {
     isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian,
     isMine
 } from "../../../constants/projectHuatianConf";
+import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -345,9 +346,9 @@ class MyActivitiesShop extends React.Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 120,
+                    contentHeight: parentHeight - headerHeight - 200,
                 })
             }
         }
@@ -1265,7 +1266,7 @@ class MyActivitiesShop extends React.Component {
                 <div>
                     {this.renderHeader()}
                 </div>
-
+                <PromotionCalendarBanner jumpTarget={PROMOTION_CALENDAR_SHOP} />
                 <div>
                     <div className={styles.pageContentWrapper}>
                         <div style={{padding: 0}} className="layoutsHeader">
