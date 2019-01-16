@@ -28,20 +28,27 @@ const HUATIAN_MAIN_GROUP_LIST = [
     HUATIAN_GROUP_ID_ONLINE
 ]
 
-// 华天所有'集团'(不分主 从)id list: 3个测试 2个线上
-const HUATIAN_GROUP_LIST = [
-    HUATIAN_GROUP_ID_TEST,
-    QINGFENG_GROUP_ID_TEST,
-    HUGUOSI_GROUP_ID_TEST,
-    HUATIAN_GROUP_ID_ONLINE,
-    HUATIAN_SUBGROUP_ID_ONLINE,
-];
-
 // 华天子集团(品牌)id list: 2个测试 1个线上
 const HUATIAN_BRAND_LIST = [
     QINGFENG_GROUP_ID_TEST,
     HUGUOSI_GROUP_ID_TEST,
     HUATIAN_SUBGROUP_ID_ONLINE,
+    '218707',
+    '218712',
+    '12707',
+    '218692',
+    '214962',
+    '4819',
+    '146392',
+    '207137',
+    '162502',
+    '130332',
+];
+
+// 华天所有'集团'(不分主 从)id list: 3个测试 2个线上
+const HUATIAN_GROUP_LIST = [
+    ...HUATIAN_MAIN_GROUP_LIST,
+    ...HUATIAN_BRAND_LIST,
 ];
 
 export function isHuaTian(id = getAccountInfo().groupID) {
