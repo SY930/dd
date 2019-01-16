@@ -243,8 +243,19 @@ class GiftAddModal extends React.Component {
                 surfix: value == '42' ? '分' : '元',
                 rules: value == '30'
                     ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }]
-                    : [{ required: true, message: `${valueLabel}不能为空` },
-                    { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }],
+                    : [
+                        { required: true, message: `${valueLabel}不能为空` },
+                        { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' },
+                        {
+                            validator: (rule, v, cb) => {
+                                if (['10', '20', '40'].includes(value) && v !== undefined && v !== '' && v == 0) {
+                                    cb(rule.message);
+                                }
+                                cb()
+                            },
+                            message: '金额不得为0',
+                        },
+                    ],
             },
             giftName: {
                 label: `礼品名称`,

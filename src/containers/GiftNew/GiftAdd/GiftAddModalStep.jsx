@@ -1289,15 +1289,27 @@ class GiftAddModalStep extends React.PureComponent {
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
                 surfix: '元',
-                rules: [{ required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
-                            cb(rule.message);
-                        }
-                        cb();
+                rules: [
+                    { required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '整数不能超过5位, 小数不能超过2位',
                     },
-                    message: '整数不能超过5位, 小数不能超过2位',
-                }],
+                    {
+                        validator: (rule, v, cb) => {
+                            if (['10', '20', '40'].includes(value) && v !== undefined && v !== '' && v == 0) {
+                                cb(rule.message);
+                            }
+                            cb()
+                        },
+                        message: '金额不得为0',
+                    },
+                ],
             },
             discountOffMax: {
                 label: '折扣金额上限',
