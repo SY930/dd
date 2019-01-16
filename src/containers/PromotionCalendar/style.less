@@ -1,7 +1,4 @@
 .calendar {
-    .fairRed {
-        color: rgb(252,80,31);
-    }
     img {
         width: 100%;
         margin: 15px 0;
@@ -13,12 +10,27 @@
         text-align: center;
     }
     h2 {
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin-top: 24px;
+        margin-bottom: 18px;
         font-size: 24px;
+        color: #333333;
+        & + p {
+            padding: 24px;
+            background: rgb(247,247,250);
+            border-left: 3px solid rgb(235,235,239);
+            margin-bottom: 30px;
+            color: #999999;
+        }
     }
     p {
         font-size: 14px;
-        line-height: 1.8;
+        line-height: 1.75;
+        color: #666666;
+    }
+    .bold {
+        font-weight: bold;
+    }
+    .lastPara {
+        margin-bottom: 20px;
     }
 }
