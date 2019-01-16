@@ -437,7 +437,7 @@ class MySpecialActivities extends React.Component {
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool" style={{height: '79px'}}>
+            <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>特色营销信息</span>
                     {/*<Button
@@ -879,7 +879,7 @@ class MySpecialActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
+                    scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

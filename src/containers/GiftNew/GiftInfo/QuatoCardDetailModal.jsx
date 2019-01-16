@@ -94,7 +94,7 @@ class QuatoCardDetailModal extends Component {
                             <Col span={4}>
                                 <div className="gift-image" style={{ backgroundImage: `url("/asserts/img/${value}.jpg")` }}>
                                     <span><em>{data.giftValue}</em>元</span>
-                                    <p>{data.giftName}</p>
+                                    <p className={styles.ellipsisBlock}>{data.giftName}</p>
                                 </div>
                             </Col>
                             <Col span={19} push={1}>
@@ -154,7 +154,7 @@ class InfoDisplay extends Component {
                                     }
                                     return (<Row key={idx} className="info-display">
                                         <Col {...labelCol}>{`${itm.keys[key]} :`}</Col>
-                                        <Col {...itemCol}>{value}</Col>
+                                        <Col {...itemCol} className={styles.breakWordsWrap}>{value}</Col>
                                     </Row>)
                                 })
                             }

@@ -430,7 +430,7 @@ class GiftDetailTable extends Component {
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                    <div className="layoutsTool" style={{height: '79px'}}>
+                    <div className="layoutsTool" style={{height: '64px'}}>
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
@@ -505,7 +505,7 @@ class GiftDetailTable extends Component {
                                 showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                             }}
                             loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
+                            scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
                         />
                     </div>
                 </div>
