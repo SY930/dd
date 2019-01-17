@@ -345,44 +345,18 @@ export const fetchSpecialPromotionDetailAC = opts => {
                     }
                 })
         }
-        const getGroupCardTypeLevels = param => {
-            return fetch('/api/shopcenter/crm/groupParamsService_getGroupCardTypeLevels', {
-                method: 'POST',
-                body: generateXWWWFormUrlencodedParams({ _groupID: param.data.groupID, groupID: param.data.groupID }),
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json; charset=UTF-8',
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                },
-            })
-                .then((response) => {
-                    if (response.status >= 200 && response.status < 300) {
-                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                            return response.json();
-                        }
-                        return response.text();
-                    }
-                    return Promise.reject(new Error(response.statusText));
-                })
-                .then((response) => {
-                    return {
-                        cardInfo: response,
-                    }
-                })
-        }
-        Promise.all([queryEventDetail(opts), queryEventCustomer(opts), getGroupCardTypeLevels(opts)])
+        Promise.all([queryEventDetail(opts), queryEventCustomer(opts)])
             .then((res) => {
                 const result = res.reduce((curr, val) => {
                     return { ...curr, ...val };
                 }, {});
-                if (parseResponseJson(result.eventInfo, '000').redirect || parseResponseJson(result.userInfo, '000').redirect
-                    || parseResponseJson(result.cardInfo, '000').redirect) {
+                if (parseResponseJson(result.eventInfo, '000').redirect || parseResponseJson(result.userInfo, '000').redirect) {
                     Modal.error({
                         title: '啊哦！好像有问题呦~~',
                         content: `会话失效,请重新登录`,
                     });
                     window.setTimeout(() => doRedirect(), 1500);
-                }else if (result.eventInfo.code === '000' && result.userInfo.code === '000' && result.cardInfo.code === '000') {
+                }else if (result.eventInfo.code === '000' && result.userInfo.code === '000') {
                     opts.success && opts.success(result.eventInfo);
                     return dispatch(fetchSpecialPromotionDetailFullfilled(result));
                 }else {
@@ -391,7 +365,6 @@ export const fetchSpecialPromotionDetailAC = opts => {
                 }
             })
             .catch((err) => {
-            console.log('err: ', err)
                 opts.fail();
                 return dispatch(fetchSpecialPromotionDetailFail(err));
             })

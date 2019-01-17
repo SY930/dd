@@ -171,7 +171,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'giveFoodCount':    this.handleGiveFoodCountChangeDebounced({key, value});
                                     break;
-                default: console.log({key, value}); this.props.changeGiftFormKeyValue({key, value});
+                default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
 
@@ -573,9 +573,6 @@ class GiftAddModalStep extends React.PureComponent {
                 }));
                 delete params.foodScopes;
             }
-            if (params.supportOrderTypes) {
-                params.supportOrderTypes = params.supportOrderTypes.join(',')
-            }
             if (value == '111') { // 折扣券
                 params.discountRate = params.discountRate.number;
                 if (Number(params.discountType) === 0) {
@@ -627,6 +624,8 @@ class GiftAddModalStep extends React.PureComponent {
             } else if (type === 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
+                data.supportOrderTypes !== undefined && (params.supportOrderTypes = data.supportOrderTypes);
+                data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
             }
             if (value == 10) {
                 if (type === 'add') {
@@ -641,11 +640,12 @@ class GiftAddModalStep extends React.PureComponent {
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
             params.isFoodCatNameList = values.isFoodCatNameList;
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
+            Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
             });
             const { accountInfo, startSaving, endSaving } = this.props;
-            const { groupName } = accountInfo.toJS();
+            const groupName = accountInfo.get('groupName');
             startSaving();
             delete params.operateTime; // 就, 很烦
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
@@ -1245,16 +1245,6 @@ class GiftAddModalStep extends React.PureComponent {
         if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
-        if (dates.discountRate < 1) {
-            dates.isDiscountRate = true
-        } else {
-            dates.isDiscountRate = false
-        }
-        if (dates.pointRate > 0) {
-            dates.isPointRate = true
-        } else {
-            dates.isPointRate = false
-        }
         if (dates.moneyTopLimitValue) {
             dates.moneyTopLimitType = '1'
         } else {
@@ -1299,15 +1289,27 @@ class GiftAddModalStep extends React.PureComponent {
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
                 surfix: '元',
-                rules: [{ required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
-                            cb(rule.message);
-                        }
-                        cb();
+                rules: [
+                    { required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '整数不能超过5位, 小数不能超过2位',
                     },
-                    message: '整数不能超过5位, 小数不能超过2位',
-                }],
+                    {
+                        validator: (rule, v, cb) => {
+                            if (['10', '20', '40'].includes(value) && v !== undefined && v !== '' && v == 0) {
+                                cb(rule.message);
+                            }
+                            cb()
+                        },
+                        message: '金额不得为0',
+                    },
+                ],
             },
             discountOffMax: {
                 label: '折扣金额上限',
@@ -1525,22 +1527,20 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '转赠设置',
                 type: 'custom',
                 render: (decorator, form) => {
+                    // 转赠限制类型 -1不限制 0不可转赠 大于0表示可转赠次数
                     return (
                         <Row>
                             <Col span={this.state.values.transferLimitType == 0 ? 24 : 11} style={{ marginTop: -6 }}>
                                 <FormItem>
                                     {decorator({
                                         key: 'transferLimitType',
-                                        initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '0' : '-1'}` : '-1',
+                                        defaultValue: '-1',
                                     })(<Select getPopupContainer={(node) => node.parentNode}>
                                         <Option value="-1">可转赠</Option>
                                         <Option value="0">不可转赠</Option>
                                     </Select>)}
                                 </FormItem>
                             </Col>
-                            {
-                                // console.log(this.state.values)
-                            }
                             {
                                 this.state.values.transferLimitType == 0 ? null :
                                     <div>
@@ -1549,11 +1549,11 @@ class GiftAddModalStep extends React.PureComponent {
                                             <FormItem>
                                                 {decorator({
                                                     key: 'transferLimitTypeValue',
-                                                    initialValue: this.props.type === 'edit' ? `${this.props.gift.data.transferLimitType == 0 ? '' : this.props.gift.data.transferLimitType}` : '',
+                                                    defaultValue: '',
                                                     rules: [{
                                                         required: true,
                                                         pattern: /^[1-9]\d{0,9}$/,
-                                                        message: '转赠次数不可大于9999999999',
+                                                        message: '转赠次数必须大于0, 且不可大于9999999999',
                                                     }],
                                                 })(<Input
                                                     placeholder={'请输入限定次数'}
@@ -1755,11 +1755,4 @@ export default connect(
     null,
     {withRef: true}
 )(GiftAddModalStep)
-
-class MyProjectEditBox extends React.Component {
-    render() {
-        const { value, ...otherProps } = this.props;
-        return <ProjectEditBox {...otherProps} data={value} />;
-    }
-}
 

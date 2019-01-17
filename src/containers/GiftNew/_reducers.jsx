@@ -2,6 +2,7 @@
 import {
     GIFT_NEW_FETCH_LIST_BEGIN,
     GIFT_NEW_FETCH_LIST_OK,
+    GIFT_NEW_FETCH_ALL_LIST_OK,
     GIFT_NEW_LIST_PARAMS,
     GIFT_NEW_FETCH_QUOTA_CARD_SUM_BEGIN,
     GIFT_NEW_FETCH_QUOTA_CARD_SUM_OK,
@@ -122,9 +123,12 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_FETCH_LIST_BEGIN:
             return $$state.set('loading', Immutable.fromJS(action.payload));
         case GIFT_NEW_FETCH_LIST_OK:
-            // 之前状态结构不太合理, 故采用新的字段存储, 防止对旧组件产生影响
             return $$state
                 .set('dataSource', Immutable.fromJS(action.payload.dataSource))
+                .set('loading', Immutable.fromJS(action.payload.loading));
+        case GIFT_NEW_FETCH_ALL_LIST_OK:
+            // 之前状态结构不太合理, 故采用新的字段存储, 防止对旧组件产生影响
+            return $$state
                 .set('allGiftList',
                     Immutable.fromJS(
                         Array.isArray(action.payload.dataSource) ?
@@ -132,8 +136,7 @@ export function giftInfoNew($$state = $initialState, action) {
                             :
                             (action.payload.dataSource || { crmGiftList: [] }).crmGiftList
                     )
-                )
-                .set('loading', Immutable.fromJS(action.payload.loading));
+                );
         case GIFT_NEW_LIST_PARAMS:
             return $$state.set('listParams', Immutable.fromJS(action.payload));
         case GIFT_NEW_FETCH_QUOTA_CARD_SUM_BEGIN:

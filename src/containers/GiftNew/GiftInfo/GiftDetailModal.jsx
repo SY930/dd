@@ -200,7 +200,7 @@ class GiftDetailModal extends Component {
                                         style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
                                     >
                                         {giftLogo(giftType)}
-                                        <p>{data.giftName}</p>
+                                        <p className={styles.ellipsisBlock}>{data.giftName}</p>
                                     </div>
                                 </Col>
                                 <Col span={19} push={1}>
@@ -302,10 +302,10 @@ class InfoDisplay extends Component {
                                         <Col {...labelCol}>{`${itm.keys[key]} :`}</Col>
                                         {
                                             _.isArray(value)
-                                                ? <Col {...itemCol}>{value.map((item, idx) => (<span
+                                                ? <Col {...itemCol} className={styles.breakWordsWrap}>{value.map((item, idx) => (<span
                                                     key={idx}
                                                 >{`${++idx}、${item}`}<br /></span>))}</Col>
-                                                : <Col {...itemCol}>{
+                                                : <Col {...itemCol} className={styles.breakWordsWrap}>{
                                                     getByteLength(value) > maxL
                                                         ? (<Tooltip title={value}>{value}</Tooltip>)
                                                         : value
