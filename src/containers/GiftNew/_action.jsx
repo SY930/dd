@@ -2,6 +2,7 @@ import { fetchData, axiosData } from '../../helpers/util';
 
 export const GIFT_NEW_FETCH_LIST_BEGIN = 'gift new:: fetch list';
 export const GIFT_NEW_FETCH_LIST_OK = 'gift new :: fetch list ok';
+export const GIFT_NEW_FETCH_ALL_LIST_OK = 'gift new :: fetch ALL list ok';
 export const GIFT_NEW_LIST_PARAMS = 'gift new :: update list params';
 export const GIFT_NEW_FETCH_QUOTA_CARD_SUM_BEGIN = 'gift new :: get quota card sum begin';
 export const GIFT_NEW_FETCH_QUOTA_CARD_SUM_OK = 'gift new :: get quota card sum ok';
@@ -50,25 +51,41 @@ const getGiftListSuccessAC = (opt) => {
         ...opt,
     }
 };
+const getAllGiftListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_ALL_LIST_OK,
+        ...opt,
+    }
+};
 const updateGiftListParams = (opt) => {
     return {
         type: GIFT_NEW_LIST_PARAMS,
         payload: opt,
     }
 }
-export const FetchGiftList = (opts) => {
+export const FetchGiftList = (opts, isAllGifts) => {
     return (dispatch) => {
         dispatch(getGiftListBegin(true));
         return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
             path: 'data',
         })
             .then((records) => {
-                dispatch(getGiftListSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                        loading: false,
-                    },
-                }));
+                dispatch(
+                    isAllGifts ?
+                    getAllGiftListSuccessAC({
+                        payload: {
+                            dataSource: records || [],
+                            loading: false,
+                        },
+                    })
+                        :
+                    getGiftListSuccessAC({
+                        payload: {
+                            dataSource: records || [],
+                            loading: false,
+                        },
+                    })
+                );
                 dispatch(updateGiftListParams(opts));
                 return Promise.resolve(records);
             }).catch((err) => {

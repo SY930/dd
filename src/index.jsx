@@ -16,12 +16,22 @@ registerLocalPage([
         label: '新建商城活动',
         parent: [entryCodes.WECHAT_MALL_LIST],
     },
-/*    {
-        key: entryCodes.SHARE_RULES,
-        value: entryCodes.SHARE_RULES,
-        label: '规则设置',
-        parent: [entryCodes.SET_MSG_TEMPLATE],
-    },*/
+    {
+        key: entryCodes.PROMOTION_CALENDAR_SHOP,
+        value: entryCodes.PROMOTION_CALENDAR_SHOP,
+        label: '营销日历',
+        parent: [entryCodes.SALE_CENTER_PAGE_SHOP],
+    },
+    {
+        key: entryCodes.PROMOTION_CALENDAR_GROUP,
+        value: entryCodes.PROMOTION_CALENDAR_GROUP,
+        label: '营销日历',
+        parent: [
+            entryCodes.SALE_CENTER_PAGE,
+            entryCodes.SPECIAL_PAGE,
+            entryCodes.GIFT_PAGE,
+        ],
+    },
 
 ]);
 

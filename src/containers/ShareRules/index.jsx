@@ -73,9 +73,9 @@ export default class ShareRules extends Component {
         // 请求获取所有哗啦啦券列表--共享用
         this.props.FetchGiftList({
             groupID: this.props.user.accountInfo.groupID,
-            pageSize: 1000,
+            pageSize: 10000,
             pageNo: 1,
-        });
+        }, true);
         this.queryAll();
         this.props.getAllShops();
     }
@@ -485,8 +485,8 @@ function mapDispatchToProps(dispatch) {
         fetchAllPromotionList: (opts) => {
             dispatch(fetchAllPromotionListAC(opts))
         },
-        FetchGiftList: (opts) => {
-            dispatch(FetchGiftList(opts))
+        FetchGiftList: (opts, isAllGifts) => {
+            dispatch(FetchGiftList(opts, isAllGifts))
         },
         getAllShops: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));

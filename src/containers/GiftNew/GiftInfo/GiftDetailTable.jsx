@@ -34,6 +34,7 @@ import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {NEW_GIFT} from "../../../constants/entryCodes";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 const validUrl = require('valid-url');
@@ -127,9 +128,9 @@ class GiftDetailTable extends Component {
                 const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
                 const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
                 const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 120}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
+                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
                 this.setState({
-                    contentHeight: parentHeight - headerHeight - 120,
+                    contentHeight: parentHeight - headerHeight - 200,
                     tableHeight: layoutsContent.getBoundingClientRect().height - 68,
                 })
             }
@@ -143,6 +144,7 @@ class GiftDetailTable extends Component {
     }
 
     proGiftData = (data) => {
+        // 在此处预处理用来显示 编辑的字段
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
         const _pageNo = data.pageNo;
@@ -163,9 +165,16 @@ class GiftDetailTable extends Component {
             g.operator = `${g.createBy} / ${g.modifyBy}`;
             g.giftRule = g.giftRule.split('</br>');
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
-            g.usingTimeType = g.usingTimeType.split(',');
-            g.supportOrderTypes = g.supportOrderTypes ? g.supportOrderTypes.split(',') : [];
+            g.usingTimeType = (g.usingTimeType || '').split(',');
+            g.supportOrderTypeLst = g.supportOrderTypeLst ? (g.supportOrderTypeLst).split(',') : undefined;
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
+            g.isDiscountRate = g.discountRate < 1;
+            g.isPointRate = g.pointRate > 0;
+            if (g.transferLimitType !== undefined && g.transferLimitType != -1) {
+                g.transferLimitType = String(g.transferLimitType);
+                g.transferLimitType === '0' && (g.transferLimitTypeValue = '');
+                g.transferLimitType > 0 && (g.transferLimitTypeValue = g.transferLimitType, g.transferLimitType = '-1');
+            }
             if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
                 if (g.giftImagePath.startsWith('/')) {
                     g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath
@@ -421,7 +430,7 @@ class GiftDetailTable extends Component {
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                    <div className="layoutsTool" style={{height: '79px'}}>
+                    <div className="layoutsTool" style={{height: '64px'}}>
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
@@ -449,6 +458,7 @@ class GiftDetailTable extends Component {
                             </Authority>
                         </div>
                     </div>
+                <PromotionCalendarBanner />
                 <div className={styles2.pageContentWrapper}>
                     <div style={{ padding: '0'}} className="layoutsHeader">
                         <div className="layoutsSearch">
@@ -495,7 +505,7 @@ class GiftDetailTable extends Component {
                                 showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                             }}
                             loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
+                            scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
                         />
                     </div>
                 </div>
