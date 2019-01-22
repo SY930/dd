@@ -33,7 +33,7 @@ import {
     fetchSpecialPromotionDetailData,
     fetchSpecialUserList
 } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
-import { CHARACTERISTIC_CATEGORIES, SEND_MSG } from '../../../redux/actions/saleCenterNEW/types';
+import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -53,7 +53,6 @@ class SpecialPromotionDetail extends React.Component {
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
         this.renderBaseInfo = this.renderBaseInfo.bind(this);
-        this.renderActivityRangeInfo = this.renderActivityRangeInfo.bind(this);
         this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
         this.renderGiftInfoTable = this.renderGiftInfoTable.bind(this);
         this.renderSearch = this.renderSearch.bind(this);
@@ -102,10 +101,6 @@ class SpecialPromotionDetail extends React.Component {
         return (
             <div className={styles.showInfo}>
                 {this.renderBaseInfo()}
-                {// 开卡赠送没有活动范围
-                    this.state.eventInfo.eventWay == '51' ?
-                        this.renderActivityRangeInfo() : null
-                }
                 {this.renderActivityDetailInfo()}
             </div>
         );
@@ -162,34 +157,6 @@ class SpecialPromotionDetail extends React.Component {
         );
     }
 
-    // 活动范围
-    renderActivityRangeInfo() {
-        const record = this.state.eventInfo.data
-        return (
-            <div>
-                <h5><span></span>活动范围</h5>
-                <Row>
-                    <Col span={4} style={{ textAlign: 'right' }}>提前赠送天数</Col>
-                    <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                    <Col span={18} style={{ textAlign: 'left' }}>{record.giftAdvanceDays}</Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={{ textAlign: 'right' }}>是否发送信息</Col>
-                    <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                    <Col span={18} style={{ textAlign: 'left' }}>{
-                        SEND_MSG.find((item) => {
-                            return item.value === record.smsGate
-                        }).label
-                    }</Col>
-                </Row>
-                <Row>
-                    <Col span={4} style={{ textAlign: 'right' }}>发送信息模板</Col>
-                    <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                    <Col span={18} style={{ textAlign: 'left' }}>{record.smsTemplate}</Col>
-                </Row>
-            </div>
-        );
-    }
     // 统计信息
     renderActivityDetailInfo() {
         return (

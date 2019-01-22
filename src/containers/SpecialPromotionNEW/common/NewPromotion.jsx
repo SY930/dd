@@ -57,6 +57,10 @@ export default class NewPromotion extends React.Component {
                     }
                 }
             }
+            this.setState({
+                loading: false,
+            });
+            return message.warning('权益账户不得为空');
         }
         const opts = {
             event: {
