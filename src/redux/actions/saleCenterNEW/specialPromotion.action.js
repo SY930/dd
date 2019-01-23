@@ -159,9 +159,8 @@ export const queryFsmGroupEquityAccount = () => {
             .then(res => {
                 dispatch({
                     type: SALE_CENTER_FSM_EQUITY_UNIT,
-                    payload: HUALALA.ENVIRONMENT === 'production-release' ? Array.isArray(res) ? res : [] : moment().seconds() >= 30 ? Array.isArray(res) ? res : [] : [],
+                    payload: Array.isArray(res) ? res : [],
                 });
-
             })
     }
 }
