@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Radio } from 'antd';
+import { Form, Select, Radio, message } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -70,8 +70,13 @@ class StepTwo extends React.Component {
             }
         }
         if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
-            opts.settleUnitID = this.state.settleUnitID;
-            opts.accountNo = this.state.accountNo;
+            if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
+                opts.settleUnitID = this.state.settleUnitID;
+                opts.accountNo = this.state.accountNo;
+            } else {
+                message.warning('短信权益账户不得为空')
+                return false;
+            }
         } else {
             opts.settleUnitID = '0';
             opts.accountNo = '0';

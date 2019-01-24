@@ -57,6 +57,12 @@ export default class NewPromotion extends React.Component {
                     }
                 }
             }
+            if (!(specialPromotion.$eventInfo.accountNo > 0) && !(specialPromotion.$eventInfo.settleUnitID > 0)) {
+                this.setState({
+                    loading: false,
+                });
+                return message.warning('权益账户不得为空');
+            }
         }
         const opts = {
             event: {

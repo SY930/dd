@@ -163,9 +163,12 @@ class SendMsgInfo extends React.Component {
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
+                                required
+                                validateStatus={accountNo > 0 ? 'success' : 'error'}
+                                help={accountNo > 0 ? '' : '短信权益账户不得为空'}
                             >
                                 <Select onChange={this.handleAccountNoChange}
-                                        value={accountNo}
+                                        value={accountNo || undefined}
                                         placeholder="请选择权益账户"
                                         getPopupContainer={(node) => node.parentNode}
                                 >
