@@ -7,7 +7,7 @@ import {
 import { message } from 'antd';
 
 import 'rxjs';
-import Rx from 'rxjs/Rx';
+import moment from 'moment';
 import axios from 'axios'
 import { fetchFilterShopsSuccess } from './promotionBasicInfo.action'
 import {axiosData} from "../../../helpers/util";
@@ -161,7 +161,6 @@ export const queryFsmGroupEquityAccount = () => {
                     type: SALE_CENTER_FSM_EQUITY_UNIT,
                     payload: Array.isArray(res) ? res : [],
                 });
-
             })
     }
 }

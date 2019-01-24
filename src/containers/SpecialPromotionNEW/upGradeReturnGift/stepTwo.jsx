@@ -12,11 +12,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     Form,
-    DatePicker,
     Select,
-    Col,
-    Radio,
-    TreeSelect,
+    message,
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -29,23 +26,11 @@ import {
     fetchPromotionScopeInfo,
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import EditBoxForShops from '../../SaleCenterNEW/common/EditBoxForShops';
 import ShopSelector from "../../../components/common/ShopSelector";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-// const RadioGroup = Radio.Group;
-// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-// import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
-
-
 const moment = require('moment');
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
-const Immutable = require('immutable');
 
 class StepTwo extends React.Component {
     constructor(props) {
@@ -99,10 +84,6 @@ class StepTwo extends React.Component {
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         this.setState({occupiedShopIDs: currentOccupiedShops || []});
-
-        /*if (this.props.type == '64' && !isEmpty(currentOccupiedShops) && !isEmpty(this.state.shopSchema.shops)) {
-            this.filterAvailableShops(currentOccupiedShops);
-        }*/
 
         if (this.props.type === '64') {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -344,8 +325,13 @@ class StepTwo extends React.Component {
         }
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
-            opts.settleUnitID = this.state.settleUnitID;
-            opts.accountNo = this.state.accountNo;
+            if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
+                opts.settleUnitID = this.state.settleUnitID;
+                opts.accountNo = this.state.accountNo;
+            } else {
+                message.warning('短信权益账户不得为空')
+                return false;
+            }
         } else {
             opts.settleUnitID = '0';
             opts.accountNo = '0';
