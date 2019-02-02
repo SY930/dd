@@ -35,3 +35,6 @@ export const SHARE_RULES_SHOP = 'shop.promotion.gongxiangshezhi'; // 创建共�
 
 export const PROMOTION_CALENDAR_GROUP = 'promotion_calendar'; // 营销日历局部页面 集团视角
 export const PROMOTION_CALENDAR_SHOP = 'promotion_calendar_shop'; // 营销日历局部页面 门店视角
+
+export const PROMOTION_WECHAT_COUPON_LIST = 'promotion_wechat_coupon_list'; // 微信支付代金券 列表页
+export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页

@@ -1,0 +1,47 @@
+.spacer {
+    flex: 1;
+}
+.centeredFlex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flexHeader {
+    .centeredFlex();
+    height: 60px;
+    padding: 0 20px;
+    .title {
+        font-size: 22px;
+        color: #666666;
+    }
+}
+.blockLine {
+    width: 100%;
+    height: 15px;
+    background-color: #F3F3F3;
+}
+.tableActionRow {
+    display: flex;
+    & > * {
+        flex: none;
+        margin-bottom: 20px;
+    }
+    flex-wrap: wrap;
+    border-bottom: 1px solid #F3F3F3;
+}
+.tableWrapper {
+    padding: 20px 0;
+    position: relative;
+    :global {
+        .ant-table-pagination {
+            position: fixed;
+            bottom: 8px;
+        }
+    }
+}
+.secondaryTitle {
+    font-size:16px;
+    font-weight:bold;
+    color:rgba(102,102,102,1);
+}
+
