@@ -16,7 +16,7 @@ import {PROMOTION_WECHAT_COUPON_CREATE, PROMOTION_WECHAT_COUPON_LIST} from '../.
 import style from './style.less'
 import {axiosData} from "../../helpers/util";
 
-const BATCH_STATUS = [
+export const BATCH_STATUS = [
     {
         value: '',
         label: '全部',

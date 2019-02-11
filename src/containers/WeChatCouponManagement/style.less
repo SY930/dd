@@ -22,12 +22,19 @@
 }
 .tableActionRow {
     display: flex;
-    & > * {
+    > * {
         flex: none;
         margin-bottom: 20px;
     }
     flex-wrap: wrap;
     border-bottom: 1px solid #F3F3F3;
+}
+.tableActionRowWithoutMargin {
+    .tableActionRow();
+    > * {
+        flex: none;
+        margin: 0;
+    }
 }
 .tableWrapper {
     padding: 20px 0;
@@ -43,18 +50,100 @@
     font-size:16px;
     font-weight:bold;
     color:rgba(102,102,102,1);
+    margin-bottom: 10px;
 }
 .weChatCardWrapper {
-    width:200px;
-    height:120px;
+    width:240px;
+    height:144px;
     background:rgba(247,91,91,1);
     border-radius:5px;
     position: relative;
+    padding: 10px;
+    .titleRow {
+        display: flex;
+        align-items: center;
+        height: 24px;
+        span {
+            max-width: 12em;
+            .ellipsisBlock();
+            color: #fff;
+        }
+    }
+    .valueRow {
+        margin-top: 10px;
+        font-size: 20px;
+        text-align: center;
+        color: #fff;
+        .centeredFlex();
+        span {
+            max-width: 8em;
+            .ellipsisBlock();
+        }
+    }
+    .descRow {
+        margin-top: 10px;
+        text-align: center;
+        color: #fff;
+        .centeredFlex();
+        span {
+            max-width: 8em;
+            .ellipsisBlock();
+        }
+    }
+    .timeRow {
+        text-align: center;
+        margin-top: 5px;
+        color: #fff;
+        font-size: 10px;
+        .centeredFlex();
+    }
 }
 .ellipsisBlock {
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+.placeholderBox {
+    margin-top: 50px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:rgba(153,153,153,1);
+}
+.customUploaderRow {
+
+}
+.couponDetailWrapper {
+    display: flex;
+}
+.details {
+    width: 350px;
+    margin-left: 30px;
+    .nameRow {
+        display: flex;
+        align-items: center;
+        .name {
+            font-size:26px;
+            font-weight:400;
+            color:rgba(51,51,51,1);
+            .ellipsisBlock();
+            max-width: 10em;
+        }
+        .status {
+            display: block;
+            margin-left: 10px;
+            border: 1px solid #3FAA1F;
+            border-radius: 3px;
+            color: #3FAA1F;
+            .centeredFlex();
+            padding: 2px 5px 1px 5px;
+        }
+    }
+    .detailContent {
+        color: #454545;
+        padding-left: 10px;
+    }
 }
 
