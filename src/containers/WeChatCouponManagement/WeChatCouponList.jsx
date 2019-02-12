@@ -15,6 +15,7 @@ import registerPage from '../../index';
 import {PROMOTION_WECHAT_COUPON_CREATE, PROMOTION_WECHAT_COUPON_LIST} from '../../constants/entryCodes';
 import style from './style.less'
 import {axiosData} from "../../helpers/util";
+import WeChatCouponDetailModal from "./WeChatCouponDetailModal";
 
 export const BATCH_STATUS = [
     {
@@ -44,7 +45,8 @@ export const BATCH_STATUS = [
 ]
 
 @registerPage([PROMOTION_WECHAT_COUPON_LIST])
-class WeChatCouponList extends Component {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class WeChatCouponList extends Component {
 
     constructor(props) {
         super(props);
@@ -55,85 +57,89 @@ class WeChatCouponList extends Component {
             queryBatchStatus: '',
             isQuerying: false,
             couponList: [
-                {
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },{
-
-                },
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
             ],
             pageSize: 30,
             pageNo: 1,
             total: 0,
             tableHeight: 800,
+            selectedCoupon: null,
         };
         this.tableActionRef = null;
-        this.tableWrapperRef = null;
         this.bodyRef = null;
     }
 
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize)
+        this.query();
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize)
     }
     query = () => {
+        const groupID = this.props.user.accountInfo.groupID
+        this.setState({ isQuerying: true })
         axiosData(
-            '/payCoupon/getPayCouponBatch',
+            `/payCoupon/getPayCouponBatchList?groupID=${groupID}`,
             {},
             {},
             { path: 'data' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
-            console.log('res: ', res)
+            this.setState({
+                isQuerying: false,
+            })
+        }).catch(e => {
+            this.setState({ isQuerying: false })
         })
     }
 
@@ -164,12 +170,6 @@ class WeChatCouponList extends Component {
         this.setState({ queryBatchStatus: value })
     }
 
-    handleShowSizeChange = (current, pageSize) => {
-        this.setState({
-            pageSize,
-        })
-    }
-
     renderHeader() {
         return (
             <div className={style.flexHeader} >
@@ -195,13 +195,11 @@ class WeChatCouponList extends Component {
             queryBatchID,
             queryBatchStatus,
             queryBusinessNo,
-            pageSize,
-            pageNo,
-            total,
-            couponList,
             isQuerying,
             tableHeight,
+            selectedCoupon,
         } = this.state;
+        const couponList = this.state.couponList.map((item, index) => ({...item, index: index + 1}))
         const columns = [
             {
                 title: '序号',
@@ -209,9 +207,6 @@ class WeChatCouponList extends Component {
                 className: 'TableTxtCenter',
                 width: 60,
                 key: 'key',
-                render: (text, record, index) => {
-                    return (pageNo - 1) * pageSize + text;
-                },
             },
 
             {
@@ -221,7 +216,7 @@ class WeChatCouponList extends Component {
                 className: 'TableTxtCenter',
                 render: (text, record) => {
                     return (
-                        <a onClick={() => console.log(123)}>
+                        <a onClick={() => this.setState({ selectedCoupon: record })}>
                             代金券详情
                         </a>
                     );
@@ -311,7 +306,8 @@ class WeChatCouponList extends Component {
         ];
         return (
             <div style={{ padding: 20, height: 'calc(100% - 75px)' }} ref={e => this.bodyRef = e}>
-                <div className={style.tableActionRow} ref={e => this.tableActionRef = e}>
+                { /* 后端不支持这些查询, 先把div高置为0 */ }
+                <div className={style.tableActionRow} style={{ height: 0, overflow: 'hidden' }} ref={e => this.tableActionRef = e}>
                     <div>
                         商户编号&nbsp;&nbsp;
                         <Input
@@ -348,7 +344,7 @@ class WeChatCouponList extends Component {
                     </div>
                     <Button
                         type="primary"
-                        onClick={() => console.log(223)}
+                        onClick={this.query}
                         disabled={isQuerying}
                     >
                         <Icon type="search"/>
@@ -364,19 +360,22 @@ class WeChatCouponList extends Component {
                         dataSource={couponList}
                         loading={isQuerying}
                         pagination={{
-                            pageSize,
-                            current: pageNo,
                             showQuickJumper: true,
+                            defaultPageSize: 30,
                             showSizeChanger: true,
-                            onShowSizeChange: this.handleShowSizeChange,
-                            total,
+                            total: couponList.length,
                             showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
-                            onChange: (page, pageSize) => {
-                                this.query(page, pageSize)
-                            },
                         }}
                     />
                 </div>
+                {
+                    !!selectedCoupon && (
+                        <WeChatCouponDetailModal
+                            couponID={selectedCoupon.itemID}
+                            onClose={() => this.setState({ selectedCoupon: null })}
+                        />
+                    )
+                }
             </div>
         )
     }
@@ -393,11 +392,7 @@ class WeChatCouponList extends Component {
 }
 
 function mapStateToProps(state) {
-    return {}
+    return {
+        user: state.user.toJS(),
+    }
 }
-
-function mapDispatchToProps(dispatch) {
-    return {}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(WeChatCouponList)

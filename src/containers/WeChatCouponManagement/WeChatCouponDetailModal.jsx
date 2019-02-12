@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     Table,
     Modal,
+    Spin,
 } from 'antd';
 import {axiosData} from "../../helpers/util";
 import style from './style.less';
@@ -15,6 +16,7 @@ class WeChatCouponDetailModal extends Component {
 
         this.state = {
             loading: false,
+            fulfilledWithError: false,
             couponEntity: null,
         }
     }
@@ -41,18 +43,23 @@ class WeChatCouponDetailModal extends Component {
     }
 
     render() {
-        const { couponEntity } = this.state;
+        const {
+            couponEntity,
+            loading,
+        } = this.state;
         return (
-            <div>
-                {
-                    !!couponEntity && (
-                        <WeChatCouponDetail entity={couponEntity} />
-                    )
-                }
-                <div className={}>
-                    代金券消耗汇总
+            <Spin spinning={loading}>
+                <div style={{ minHeight: 400 }}>
+                    {
+                        !!couponEntity && (
+                            <WeChatCouponDetail entity={couponEntity} />
+                        )
+                    }
+                    <div className={style.colorBorderedHeader}>
+                        代金券消耗汇总
+                    </div>
                 </div>
-            </div>
+            </Spin>
         )
     }
 }

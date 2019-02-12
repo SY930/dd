@@ -15,7 +15,6 @@ import { PROMOTION_WECHAT_COUPON_CREATE } from '../../constants/entryCodes';
 import emptyBoxImg from '../../assets/empty_box.png';
 import {axiosData, fetchData} from "../../helpers/util";
 import PayAccountModal from "./PayAccountModal";
-import WeChatCouponCard from "./WeChatCouponCard";
 import WeChatCouponDetail from "./WeChatCouponDetail";
 
 const FormItem = Form.Item;
@@ -50,7 +49,8 @@ const defaultState = {
 
 @registerPage([PROMOTION_WECHAT_COUPON_CREATE])
 @Form.create()
-class WeChatCouponCreate extends Component {
+@connect(mapStateToProps)
+export default class WeChatCouponCreate extends Component {
 
     constructor(props) {
         super(props);
@@ -80,14 +80,14 @@ class WeChatCouponCreate extends Component {
     }
 
     queryAllPayAccounts = () => {
+        const groupID = this.props.user.accountInfo.groupID
         axiosData(
-            '/payCoupon/accountList',
+            `/payCoupon/accountList?groupID=${groupID}`,
             {},
             {},
             { path: 'data' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
-            console.log('res: ', res)
             this.setState({
                 allPayAccounts: []
             })
@@ -364,4 +364,8 @@ class WeChatCouponCreate extends Component {
     }
 }
 
-export default WeChatCouponCreate
+function mapStateToProps(state) {
+    return {
+        user: state.user.toJS(),
+    }
+}
