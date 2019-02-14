@@ -6,8 +6,8 @@ import weChatPayImg from '../../assets/wechat_pay.png'
 const WeChatCouponCard = ({entity: { couponName, couponValue, couponMinimum, beginTime, endTime }}) => {
     const couponValueInRMB = couponValue / 100;
     const couponMinimumInRMB = couponMinimum / 100;
-    const beginDate = moment(beginTime).format('YYYY-MM-DD')
-    const endDate = moment(endTime).format('YYYY-MM-DD')
+    const beginDate = moment.unix(+beginTime).format('YYYY-MM-DD')
+    const endDate = moment.unix(+endTime).format('YYYY-MM-DD')
     return (
         <div className={style.weChatCardWrapper}>
             <div className={style.titleRow}>

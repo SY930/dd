@@ -45,7 +45,7 @@ export const BATCH_STATUS = [
 ]
 
 @registerPage([PROMOTION_WECHAT_COUPON_LIST])
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class WeChatCouponList extends Component {
 
     constructor(props) {
@@ -56,56 +56,7 @@ export default class WeChatCouponList extends Component {
             queryBusinessNo: '',
             queryBatchStatus: '',
             isQuerying: false,
-            couponList: [
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-                {},
-            ],
+            couponList: [],
             pageSize: 30,
             pageNo: 1,
             total: 0,
@@ -132,11 +83,12 @@ export default class WeChatCouponList extends Component {
             `/payCoupon/getPayCouponBatchList?groupID=${groupID}`,
             {},
             {},
-            { path: 'data' },
+            { path: 'payCouponInfos' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
             this.setState({
                 isQuerying: false,
+                couponList: Array.isArray(res) ? res : []
             })
         }).catch(e => {
             this.setState({ isQuerying: false })
@@ -224,8 +176,8 @@ export default class WeChatCouponList extends Component {
             },
             {
                 title: '代金券批次ID',
-                dataIndex: 'batchNo',
-                key: 'batchNo',
+                dataIndex: 'couponStockId',
+                key: 'couponStockId',
                 width: 120,
                 render: (text) => {
                     return <Tooltip title={text}><span>{text}</span></Tooltip>
@@ -247,7 +199,7 @@ export default class WeChatCouponList extends Component {
                 className: 'TableTxtRight',
                 width: 240,
                 render: (text) => {
-                    const res = (text || '').padStart(3, '0').replace(/(.{2})$/, '.$1')
+                    const res = (`${text}` || '').padStart(3, '0').replace(/(.{2})$/, '.$1')
                     return <Tooltip title={res}><span>{res}</span></Tooltip>
                 },
             },
@@ -258,7 +210,7 @@ export default class WeChatCouponList extends Component {
                 key: 'beginTime',
                 width: 200,
                 render: (time) => {
-                    return `${moment(time).format('YYYY/MM/DD HH:mm')}`;
+                    return `${moment.unix(+time).format('YYYY/MM/DD HH:mm')}`;
                 },
             },
             {
@@ -268,7 +220,7 @@ export default class WeChatCouponList extends Component {
                 key: 'endTime',
                 width: 200,
                 render: (time) => {
-                    return `${moment(time).format('YYYY/MM/DD HH:mm')}`;
+                    return `${moment.unix(+time).format('YYYY/MM/DD HH:mm')}`;
                 },
             },
             {
@@ -371,7 +323,7 @@ export default class WeChatCouponList extends Component {
                 {
                     !!selectedCoupon && (
                         <WeChatCouponDetailModal
-                            couponID={selectedCoupon.itemID}
+                            couponEntity={selectedCoupon}
                             onClose={() => this.setState({ selectedCoupon: null })}
                         />
                     )

@@ -56,7 +56,7 @@ class PayAccountModal extends Component {
             {
                 shaSecretKey,
                 subMchID,
-                apiCertificateUrl,
+                apiCertificateUrl: `http://res.hualala.com/${apiCertificateUrl}`,
             },
             {},
             { path: 'data' },
@@ -84,7 +84,6 @@ class PayAccountModal extends Component {
             onChange: (info) => {
                 const status = info.file.status;
                 let fileList = info.fileList;
-                console.log('fileList: ', fileList)
                 fileList = fileList.filter((file) => {
                     if (file.response) {
                         return file.response.status !== 'error';

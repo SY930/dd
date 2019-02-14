@@ -22,7 +22,8 @@ const FormItem = Form.Item;
 const defaultState = {
     /* 表单状态 */
     // couponEntity: null,
-    couponEntity: {
+    couponEntity: null
+    /*{
         itemID: 123123123,
         batchNo: 123123123,
         couponName: '微信10元代金券',
@@ -35,8 +36,8 @@ const defaultState = {
         beginTime: 0,
         endTime: 0,
         createTime: 0,
-
-    },
+    }*/
+    ,
     isQuerying: false,
     batchNo: null,
     shopAppID: undefined,
@@ -85,11 +86,11 @@ export default class WeChatCouponCreate extends Component {
             `/payCoupon/accountList?groupID=${groupID}`,
             {},
             {},
-            { path: 'data' },
+            { path: 'wechatPayAccounts' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
             this.setState({
-                allPayAccounts: []
+                allPayAccounts: Array.isArray(res) ? res.map(({ id, subMchName }) => ({ value: `${id}`, label: subMchName})) : [],
             })
         }).catch(err => {
                 // oops
@@ -127,38 +128,43 @@ export default class WeChatCouponCreate extends Component {
         this.setState({ isQuerying: true });
 
         axiosData(
-            '/payCoupon/getPayCouponBatch',
-            {
-                itemID: batchNo,
-                shopAppID,
-                payAccount,
-            },
+           // `/payCoupon/getPayCouponBatchFromWechat?batchNum=${9341958}&shopAppID=${'wx9eb8cc99c9acdbee'}&payAccount=${2}`,
+           `/payCoupon/getPayCouponBatchFromWechat?batchNum=${batchNo}&shopAppID=${shopAppID}&payAccount=${payAccount}`,
             {},
-            { path: 'data' },
+            {},
+            { path: 'payCouponInfo' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
-            console.log('res: ', res)
-            this.setState({ isQuerying: false });
+            this.setState({
+                isQuerying: false,
+                couponEntity: res,
+            });
         }).catch(err => this.setState({ isQuerying: false }))
     }
 
     handleSubmit = () => {
         const { batchNo, shopAppID, payAccount } = this.state;
+        const groupID = this.props.user.accountInfo.groupID
         this.setState({ isSaving: true });
         axiosData(
-            '/payCoupon/addPayCouponInfo',
-            {
-                batchNo,
-                shopAppID,
-                payAccount,
-            },
+            // `/payCoupon/addPayCouponInfo?groupID=${groupID}&batchNum=${9341958}&shopAppID=${'wx9eb8cc99c9acdbee'}&payAccount=${2}`,
+            `/payCoupon/addPayCouponInfo?groupID=${groupID}&batchNum=${batchNo}&shopAppID=${shopAppID}&payAccount=${payAccount}`,
+            {},
             {},
             { path: 'data' },
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
-            console.log('res: ', res)
-            this.setState({ isSaving: false });
-        }).catch(err => this.setState({ isSaving: false }))
+            message.success('关联成功')
+            this.setState({
+                isSaving: false,
+                couponEntity: null,
+            });
+            this.props.form.resetFields(['batchNo'])
+        }).catch(err => {
+            this.setState({
+                isSaving: false,
+            });
+        })
     }
 
     renderHeader() {

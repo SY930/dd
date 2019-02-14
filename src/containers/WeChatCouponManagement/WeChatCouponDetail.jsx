@@ -12,8 +12,8 @@ const WeChatCouponDetail = ({ entity }) => {
     const statusText = (BATCH_STATUS.find(item => item.value === String(entity.couponStockStatus)) || {label: '未知'}).label;
     const couponValueInRMB = entity.couponValue / 100;
     const couponMinimumInRMB = entity.couponMinimum / 100;
-    const beginDate = moment(entity.beginTime).format('YYYY-MM-DD')
-    const endDate = moment(entity.endTime).format('YYYY-MM-DD')
+    const beginDate = moment.unix(+entity.beginTime).format('YYYY-MM-DD')
+    const endDate = moment.unix(+entity.endTime).format('YYYY-MM-DD')
     return (
         <div className={style.couponDetailWrapper}>
             <WeChatCouponCard entity={entity} />
@@ -27,9 +27,9 @@ const WeChatCouponDetail = ({ entity }) => {
                     </span>
                 </div>
                 <div style={{ color: '#8D8D8D' }}>
-                    创建时间: {moment(entity.createTime).format('YYYY.MM.DD')}
+                    创建时间: {moment.unix(+entity.createTime).format('YYYY.MM.DD')}
                     &nbsp;&nbsp;&nbsp;
-                    批次ID: {entity.batchNo}
+                    批次ID: {entity.couponStockId}
                 </div>
                 <div style={{ color: '#787878', fontSize: 14, lineHeight: 2 }}>
                     <Row>
