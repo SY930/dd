@@ -21,30 +21,12 @@ const FormItem = Form.Item;
 
 const defaultState = {
     /* 表单状态 */
-    // couponEntity: null,
-    couponEntity: null
-    /*{
-        itemID: 123123123,
-        batchNo: 123123123,
-        couponName: '微信10元代金券',
-        couponValue: 10010,
-        couponMinimum: 2000,
-        couponStockStatus: 16,
-        couponTotal: 1000,
-        maxQuota: 2,
-        isSendNum: 12,
-        beginTime: 0,
-        endTime: 0,
-        createTime: 0,
-    }*/
-    ,
+    couponEntity: null,
     isQuerying: false,
     batchNo: null,
     shopAppID: undefined,
     payAccount: undefined,
     isSaving: false,
-    allWeChatAccounts: [],
-    allPayAccounts: [],
     payAccountModalVisible: false,
 }
 
@@ -57,7 +39,9 @@ export default class WeChatCouponCreate extends Component {
         super(props);
 
         this.state = {
-            ...defaultState
+            ...defaultState,
+            allWeChatAccounts: [],
+            allPayAccounts: [],
         }
     }
 
@@ -190,7 +174,7 @@ export default class WeChatCouponCreate extends Component {
                                     根据条件查询到如下代金券:
                                 </div>
                                 <WeChatCouponDetail entity={couponEntity}/>
-                                <div style={{ margin: 20, textAlign: 'center'}}>
+                                <div style={{ margin: '20px 20px 20px 106px', textAlign: 'center'}}>
                                     <Button
                                         type="primary"
                                         loading={isSaving}
@@ -333,7 +317,7 @@ export default class WeChatCouponCreate extends Component {
                         </Button>
                         &nbsp;&nbsp;
                         <Button
-                            type="default"
+                            type="ghost"
                             onClick={this.handleReset}
                             disabled={isQuerying}
                         >

@@ -81,6 +81,7 @@ class PayAccountModal extends Component {
         const props = {
             name: 'file',
             action: '/api/shopcenter/upload',
+            accept: '.p12',
             onChange: (info) => {
                 const status = info.file.status;
                 let fileList = info.fileList;
@@ -128,8 +129,8 @@ class PayAccountModal extends Component {
                 <div>
                     <FormItem
                         label="商户号"
-                        wrapperCol={{span: 17}}
-                        labelCol={{span: 4}}
+                        wrapperCol={{span: 18}}
+                        labelCol={{span: 4, offset: 1}}
                         required={true}
                     >
                         {getFieldDecorator('subMchID', {
@@ -156,8 +157,8 @@ class PayAccountModal extends Component {
                     </FormItem>
                     <FormItem
                         label="秘钥"
-                        wrapperCol={{span: 17}}
-                        labelCol={{span: 4}}
+                        wrapperCol={{span: 18}}
+                        labelCol={{span: 4, offset: 1}}
                         required={true}
                     >
                         {getFieldDecorator('shaSecretKey', {
@@ -173,20 +174,14 @@ class PayAccountModal extends Component {
                     </FormItem>
                     <FormItem
                         label="API 证书"
-                        wrapperCol={{span: 17}}
-                        labelCol={{span: 4}}
+                        wrapperCol={{span: 18}}
+                        labelCol={{span: 4, offset: 1}}
                         required={true}
                         className={style.customUploaderRow}
                     >
                         {this.renderUploadButton()}
-                    </FormItem>
-                    <FormItem
-                        label=" "
-                        wrapperCol={{span: 17}}
-                        labelCol={{span: 4}}
-                    >
-                        <span style={{ color: '#999999'}}>
-                            请上传对应的API证书, 例如: apiclient_cert.p12
+                        <span className={style.positionedUploaderTip} >
+                            请上传对应的API证书,例如:api_cert.p12
                         </span>
                     </FormItem>
                 </div>

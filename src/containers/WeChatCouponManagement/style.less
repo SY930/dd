@@ -73,7 +73,7 @@
         margin-top: 10px;
         font-size: 20px;
         text-align: center;
-        color: #fff;
+        color: #FEFFFE;
         .centeredFlex();
         span {
             max-width: 8em;
@@ -81,9 +81,10 @@
         }
     }
     .descRow {
-        margin-top: 10px;
+        margin: 2px 0 5px 0;
         text-align: center;
         color: #fff;
+        font-size: 14px;
         .centeredFlex();
         span {
             max-width: 8em;
@@ -92,9 +93,9 @@
     }
     .timeRow {
         text-align: center;
-        margin-top: 5px;
-        color: #fff;
-        font-size: 10px;
+
+        color: #FED8D8;
+        font-size: 12px;
         .centeredFlex();
     }
 }
@@ -113,7 +114,26 @@
     color:rgba(153,153,153,1);
 }
 .customUploaderRow {
-
+    position: relative;
+    .positionedUploaderTip {
+        color: #999999;
+        position: absolute;
+        top: 0;
+        left: 105px;
+    }
+    :global {
+        .ant-btn:hover, .ant-btn:focus, .ant-btn:active {
+            color: #1ab495!important;
+            background-color: #fff!important;
+            border-color: #1ab495!important;
+        }
+        .ant-btn:focus {
+            box-shadow: 0 0 0 2px rgba(26, 179, 148, 0.2);
+        }
+        .anticon {
+            transition: none;
+        }
+    }
 }
 .couponDetailWrapper {
     display: flex;

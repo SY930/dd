@@ -26,12 +26,12 @@ const WeChatCouponDetail = ({ entity }) => {
                         {statusText}
                     </span>
                 </div>
-                <div style={{ color: '#8D8D8D' }}>
+                <div style={{ color: '#8D8D8D', marginBottom: 14 }}>
                     创建时间: {moment.unix(+entity.createTime).format('YYYY.MM.DD')}
                     &nbsp;&nbsp;&nbsp;
                     批次ID: {entity.couponStockId}
                 </div>
-                <div style={{ color: '#787878', fontSize: 14, lineHeight: 2 }}>
+                <div style={{ color: '#787878', lineHeight: 2 }}>
                     <Row>
                         <Col span={7}>代金券面额:</Col>
                         <Col className={style.detailContent} span={14}>{couponValueInRMB}元</Col>

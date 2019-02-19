@@ -157,14 +157,16 @@ export default class WeChatCouponList extends Component {
                 title: '序号',
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
-                width: 60,
+                width: 50,
+                fixed: 'left',
                 key: 'key',
             },
 
             {
                 title: '操作',
                 key: 'operation',
-                width: 120,
+                width: 100,
+                fixed: 'left',
                 className: 'TableTxtCenter',
                 render: (text, record) => {
                     return (
@@ -179,6 +181,7 @@ export default class WeChatCouponList extends Component {
                 dataIndex: 'couponStockId',
                 key: 'couponStockId',
                 width: 120,
+                fixed: 'left',
                 render: (text) => {
                     return <Tooltip title={text}><span>{text}</span></Tooltip>
                 },
@@ -187,7 +190,7 @@ export default class WeChatCouponList extends Component {
                 title: '券名称',
                 dataIndex: 'couponName',
                 key: 'couponName',
-                width: 240,
+                width: 540,
                 render: (text) => {
                     return <Tooltip title={text}><span>{text}</span></Tooltip>
                 },
@@ -197,7 +200,7 @@ export default class WeChatCouponList extends Component {
                 dataIndex: 'couponValue',
                 key: 'couponValue',
                 className: 'TableTxtRight',
-                width: 240,
+                width: 360,
                 render: (text) => {
                     const res = (`${text}` || '').padStart(3, '0').replace(/(.{2})$/, '.$1')
                     return <Tooltip title={res}><span>{res}</span></Tooltip>
@@ -208,7 +211,7 @@ export default class WeChatCouponList extends Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'beginTime',
                 key: 'beginTime',
-                width: 200,
+                width: 140,
                 render: (time) => {
                     return `${moment.unix(+time).format('YYYY/MM/DD HH:mm')}`;
                 },
@@ -218,7 +221,7 @@ export default class WeChatCouponList extends Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'endTime',
                 key: 'endTime',
-                width: 200,
+                width: 140,
                 render: (time) => {
                     return `${moment.unix(+time).format('YYYY/MM/DD HH:mm')}`;
                 },
@@ -227,7 +230,8 @@ export default class WeChatCouponList extends Component {
                 title: '代金券批次状态',
                 dataIndex: 'couponStockStatus',
                 key: 'couponStockStatus',
-                width: 100,
+                fixed: 'right',
+                width: 140,
                 render: (status) => {
                     const text = (BATCH_STATUS.find(({ value }) => `${status}` === value) || { label: '状态未知' }).label;
                     let color;
