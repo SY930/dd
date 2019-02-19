@@ -190,7 +190,7 @@ export default class WeChatCouponList extends Component {
                 title: '券名称',
                 dataIndex: 'couponName',
                 key: 'couponName',
-                width: 540,
+                width: 500,
                 render: (text) => {
                     return <Tooltip title={text}><span>{text}</span></Tooltip>
                 },
@@ -200,7 +200,6 @@ export default class WeChatCouponList extends Component {
                 dataIndex: 'couponValue',
                 key: 'couponValue',
                 className: 'TableTxtRight',
-                width: 360,
                 render: (text) => {
                     const res = (`${text}` || '').padStart(3, '0').replace(/(.{2})$/, '.$1')
                     return <Tooltip title={res}><span>{res}</span></Tooltip>
@@ -263,7 +262,7 @@ export default class WeChatCouponList extends Component {
         return (
             <div style={{ padding: 20, height: 'calc(100% - 75px)' }} ref={e => this.bodyRef = e}>
                 { /* 后端不支持这些查询, 先把div高置为0 */ }
-                <div className={style.tableActionRow} style={{ height: 0, overflow: 'hidden' }} ref={e => this.tableActionRef = e}>
+                <div className={style.tableActionRow} style={{ height: 0, overflow: 'hidden', border: 'none' }} ref={e => this.tableActionRef = e}>
                     <div>
                         商户编号&nbsp;&nbsp;
                         <Input
