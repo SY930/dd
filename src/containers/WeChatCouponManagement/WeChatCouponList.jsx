@@ -73,6 +73,15 @@ export default class WeChatCouponList extends Component {
         this.query();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.user.activeTabKey !== prevProps.user.activeTabKey && this.props.user.activeTabKey === PROMOTION_WECHAT_COUPON_LIST) {
+            const tabArr = this.props.user.tabList.map((tab) => tab.value);
+            if (tabArr.includes(PROMOTION_WECHAT_COUPON_LIST)) {
+                this.query(); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
+    }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize)
     }
@@ -123,12 +132,24 @@ export default class WeChatCouponList extends Component {
     }
 
     renderHeader() {
+        const { isQuerying } = this.state;
         return (
             <div className={style.flexHeader} >
                 <span className={style.title} >
                     微信支付代金券
                 </span>
                 <div className={style.spacer} />
+                <Button
+                    type="ghost"
+                    onClick={() => {
+                        this.query()
+                    }}
+                    disabled={isQuerying}
+                    style={{ marginRight: 12 }}
+                >
+                    <Icon type="sync" />
+                    刷新
+                </Button>
                 <Button
                     type="ghost"
                     onClick={() => {

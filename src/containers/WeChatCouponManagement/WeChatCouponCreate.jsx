@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import { jumpPage } from '@hualala/platform-base'
 import {
     Form,
     Button,
@@ -11,7 +12,7 @@ import {
 } from 'antd';
 import registerPage from '../../index';
 import style from './style.less'
-import { PROMOTION_WECHAT_COUPON_CREATE } from '../../constants/entryCodes';
+import {PROMOTION_WECHAT_COUPON_CREATE, PROMOTION_WECHAT_COUPON_LIST} from '../../constants/entryCodes';
 import emptyBoxImg from '../../assets/empty_box.png';
 import {axiosData, fetchData} from "../../helpers/util";
 import PayAccountModal from "./PayAccountModal";
@@ -158,6 +159,19 @@ export default class WeChatCouponCreate extends Component {
                     关联微信支付代金券
                 </span>
                 <div className={style.spacer} />
+                <Button
+                    type="ghost"
+                    icon="rollback"
+                    onClick={
+                        () => {
+                            try {
+                                const menuID = this.props.user.menuList.find(tab => tab.entryCode === PROMOTION_WECHAT_COUPON_LIST).menuID;
+                                menuID && jumpPage({ menuID })
+                            } catch (e) {
+                                // empty catch
+                            }
+                        }
+                    }>返回列表</Button>
             </div>
         )
     }
