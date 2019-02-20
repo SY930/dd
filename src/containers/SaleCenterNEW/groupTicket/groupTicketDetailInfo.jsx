@@ -108,7 +108,7 @@ class GroupTicketDetailInfo extends React.Component {
 
         let nextFlag = true;
 
-        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.transFeeFlag) {
+        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.giftMaxUseNum <= 999 && _state.transFeeFlag) {
             let rule;
             if (_state.stageType == '2') {
                 rule = {
@@ -219,6 +219,7 @@ class GroupTicketDetailInfo extends React.Component {
     }
     renderGroupTicket() {
         const voucherVerify = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerify']);
+        const { giftMaxUseNum } = this.state;
         return (
             <div>
                 <FormItem
@@ -327,12 +328,15 @@ class GroupTicketDetailInfo extends React.Component {
                     <FormItem
                         className={styles.priceInLine}
                         style={{ marginTop: -20, width: this.state.stageType == 2 ? '28%' : '20%' }}
-                        validateStatus={this.state.giftMaxUseNum ? 'success' : 'error'}
-                        help={this.state.giftMaxUseNum ? null : '必须大于0'}
+                        validateStatus={giftMaxUseNum > 0 && giftMaxUseNum < 1000 ? 'success' : 'error'}
+                        help={
+                            giftMaxUseNum > 0 && giftMaxUseNum <= 999 ? null :
+                                giftMaxUseNum > 999 ? '最多使用999张' : '必须大于0'}
                     >
                         <PriceInput
                             addonBefore={''}
                             addonAfter={'张'}
+                            maxNum={4}
                             onChange={this.onGiftMaxUseNumChange}
                             value={{ number: this.state.giftMaxUseNum }}
                             defaultValue={{ number: this.state.giftMaxUseNum }}
