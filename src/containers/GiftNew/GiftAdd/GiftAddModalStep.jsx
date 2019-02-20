@@ -319,7 +319,8 @@ class GiftAddModalStep extends React.PureComponent {
                 break;
 
             case 'TrdTemplate':
-                if (describe === '代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '活动券') {
+                // FIXME: 先按以前格式临时支持上折扣券, 以后改成type判断
+                if (describe === '代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '折扣券' || describe === '活动券') {
                     if (value) {
                         newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
                     } else {
@@ -1511,16 +1512,18 @@ class GiftAddModalStep extends React.PureComponent {
             validityDays: {
                 label: '有效期',
                 type: 'text',
-                placeholder: '不填为不限制有效期',
+                placeholder: '不填则默认有效期为36525天（100年）',
                 surfix: '天',
-                rules: [{ required: false, message: `请输入数字` }, {
+                rules: [{
                     validator: (rule, v, cb) => {
-                        if (!/^\+?\d{0,8}$/.test(Number(v)) && v !== undefined) { // 可不填，填了就校验
-                            cb(rule.message);
+                        if (v === '' && v !== undefined) { // 可不填，填了就校验
+                            return cb();
+                        } else if (/^[1-9]\d*$/.test(v) && v > 0 && v <= 36525) {
+                            return cb();
                         }
-                        cb();
+                        cb(rule.message);
                     },
-                    message: '请输入数字，不超过8位',
+                    message: '请输入整数，大于等于1, 小于等于36525',
                 }],
             },
             transferLimitType: {
