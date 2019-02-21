@@ -156,7 +156,7 @@ class PayAccountModal extends Component {
                         />)}
                     </FormItem>
                     <FormItem
-                        label="秘钥"
+                        label="密钥"
                         wrapperCol={{span: 18}}
                         labelCol={{span: 4, offset: 1}}
                         required={true}
@@ -165,10 +165,11 @@ class PayAccountModal extends Component {
                             onChange: this.handleShaSecretKeyChange,
                             rules: [
                                 { required: true, message: '密钥不得为空' },
+                                { len: 32, message: '密钥长度为32位'},
+                                { pattern: /^\S*$/, message: '不要输入空格'}
                             ]
                         })(<Input
                             placeholder="请输入正确的密钥"
-                            type="password"
                             style={{ width: 320, marginRight: 20 }}
                         />)}
                     </FormItem>
