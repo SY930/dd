@@ -196,7 +196,7 @@ class ReturnGift extends React.Component {
                         ...item,
                         giftType: '112',
                         giftName: item.couponName,
-                        giftItemID: item.couponStockId,
+                        giftItemID: item.itemID,
                         giftValue: item.couponValue / 100
                     })) : []
             })
@@ -265,7 +265,7 @@ class ReturnGift extends React.Component {
             // 微信支付代金券实体
             let couponEntity;
             if (info.giftInfo.giftType == '112') {
-                couponEntity = this.state.weChatCouponList.find(item => item.couponStockId == info.giftInfo.giftItemID)
+                couponEntity = this.state.weChatCouponList.find(item => item.itemID == info.giftInfo.giftItemID)
             }
             return (
                 <div className={styles.addGrade} key={index}>
