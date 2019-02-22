@@ -122,7 +122,7 @@ class StepOneWithDateRange extends React.Component {
             allWeChatIDList: props.allWeChatIDList,
             allWeChatIDListLoading: props.allWeChatIDListLoading,
         };
-
+        this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.getDateCount = this.getDateCount.bind(this);
@@ -143,7 +143,6 @@ class StepOneWithDateRange extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
             _role: this.props.user.accountInfo.roleType,
@@ -185,6 +184,12 @@ class StepOneWithDateRange extends React.Component {
                 this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
                 :
                 this.props.queryFsmGroupEquityAccount()
+        }
+        // 活动名称auto focus
+        try {
+            this.promotionNameInputRef.focus()
+        } catch (e) {
+            // oops
         }
     }
 
@@ -800,7 +805,11 @@ class StepOneWithDateRange extends React.Component {
                             ],
                             initialValue: this.state.name,
                         })(
-                            <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
+                            <Input
+                                placeholder="请输入活动名称"
+                                onChange={this.handleNameChange}
+                                ref={node => this.promotionNameInputRef = node}
+                            />
                         )}
                     </FormItem>
                     {

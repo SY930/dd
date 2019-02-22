@@ -238,7 +238,7 @@ class PromotionBasicInfo extends React.Component {
             rangePickerstatus: 'success',
             hasQuery: false,
         };
-
+        this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.renderExcludedDatePicker = this.renderExcludedDatePicker.bind(this);
         this.onDateWeekChange = this.onDateWeekChange.bind(this);
@@ -439,6 +439,12 @@ class PromotionBasicInfo extends React.Component {
             excludeDateArray: promotionBasicInfo.getIn(['$basicInfo', 'excludeDateArray']),
             expand,
         })
+        // 活动名称 auto focus
+        try {
+            this.promotionNameInputRef.focus()
+        } catch (e) {
+            // oops
+        }
     }
 
 
@@ -1026,7 +1032,11 @@ class PromotionBasicInfo extends React.Component {
                         ],
                         initialValue: this.state.name,
                     })(
-                        <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
+                        <Input
+                            placeholder="请输入活动名称"
+                            onChange={this.handleNameChange}
+                            ref={node => this.promotionNameInputRef = node}
+                        />
                         )}
                 </FormItem>
 

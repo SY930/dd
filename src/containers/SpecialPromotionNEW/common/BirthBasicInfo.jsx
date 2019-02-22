@@ -37,7 +37,7 @@ class PromotionBasicInfo extends React.Component {
             name: '',
             tipDisplay: 'none',
         };
-
+        this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanceDaysChange = this.handleAdvanceDaysChange.bind(this);
         this.handleSendMsgChange = this.handleSendMsgChange.bind(this);
@@ -84,7 +84,13 @@ class PromotionBasicInfo extends React.Component {
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
             :
-            this.props.queryFsmGroupEquityAccount()
+            this.props.queryFsmGroupEquityAccount();
+        // 活动名称auto focus
+        try {
+            this.promotionNameInputRef.focus()
+        } catch (e) {
+            // oops
+        }
     }
 
 
@@ -290,7 +296,11 @@ class PromotionBasicInfo extends React.Component {
                         ],
                         initialValue: this.state.name,
                     })(
-                        <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
+                        <Input
+                            placeholder="请输入活动名称"
+                            onChange={this.handleNameChange}
+                            ref={node => this.promotionNameInputRef = node}
+                        />
                         )}
                 </FormItem>
                 {this.renderMoreInfo()}
