@@ -179,8 +179,8 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[index].giftInfo.giftType = stage.giftType || null;
                     rule.data[index].giftInfo.giftValue = stage.freeCashVoucherValue || null;
                     rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                    rule.data[index].giftValidType = stage.giftValidType;
-                    rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
+                    rule.data[index].giftValidType = stage.giftType == 112 ? '0' : stage.giftValidType;
+                    rule.data[index].giftEffectiveTime.value = stage.giftType == 112 ? 0 : stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
                 })
             } else {
                 rule.data[0].stageAmount.value = _rule.stageAmount;
@@ -191,8 +191,8 @@ class ReturnGiftDetailInfo extends React.Component {
                 rule.data[0].giftInfo.giftValue = _rule.freeCashVoucherValue || null;
                 rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
                 rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                rule.data[0].giftValidType = _rule.giftValidType;
-                rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
+                rule.data[0].giftValidType = _rule.giftType == 112 ? '0' : _rule.giftValidType;
+                rule.data[0].giftEffectiveTime.value = _rule.giftType == 112 ? 0 : _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
             }
             this.setState({
                 rule,
@@ -210,9 +210,9 @@ class ReturnGiftDetailInfo extends React.Component {
                     if (item.giftInfo.giftType == '112') {
                         return {
                             stageAmount: item.stageAmount.value,
-                            giftValidType: item.giftValidType,
-                            giftValidDays: item.giftValidDays.value,
-                            giftEffectiveTime: item.giftEffectiveTime.value,
+                            giftValidType: '0',
+                            giftValidDays: 1,
+                            giftEffectiveTime: 0,
                             giftNum: item.giftNum.value,
                             giftName: item.giftInfo.giftName,
                             giftItemID: item.giftInfo.giftItemID,
@@ -257,7 +257,9 @@ class ReturnGiftDetailInfo extends React.Component {
         if (this.state.rule.data[0].giftInfo.giftType == '112') {
             return {
                 stageType: this.state.rule.type,
-                giftValidType: this.state.rule.data[0].giftValidType,
+                giftValidDays: 1,
+                giftEffectiveTime: 0,
+                giftValidType: '0',
                 stageAmount: this.state.rule.data[0].stageAmount.value,
                 giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
                 giftNum: this.state.rule.data[0].giftNum.value,
