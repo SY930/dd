@@ -118,6 +118,10 @@ const GiftCfg = {
         { label: '可分享', value: 1 },
         { label: '仅分享后使用', value: 2 },
     ],
+    goldGift: [
+        { label: '不可用', value: 0 },
+        { label: '可用', value: 1 },
+    ],
     isHolidaysUsing: [
         { label: '不限制', value: '0' },
         { label: '不含节假日', value: '1' },

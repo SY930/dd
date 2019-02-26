@@ -17,6 +17,12 @@ const FORMITEMS = {
         defaultValue: 0,
         options: GiftCfg.transferType,
     },
+    goldGift: {
+        label: '金豆商城是否可用',
+        type: 'radio',
+        defaultValue: 0,
+        options: GiftCfg.goldGift,
+    },
     isHolidaysUsing: {
         label: '节假日是否可用',
         type: 'radio',
@@ -331,6 +337,7 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
+                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -352,6 +359,7 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
+                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -372,6 +380,7 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
+                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -434,6 +443,7 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
+                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -453,6 +463,7 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
+                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
