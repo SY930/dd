@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {
     Modal,
     Button,
@@ -64,6 +63,7 @@ class PayAccountModal extends Component {
         ).then(res => {
             this.setState({ isSaving: false });
             this.props.onOk();
+            message.success('添加成功')
         }).catch(err => {
             this.setState({ isSaving: false });
         })
