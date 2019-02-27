@@ -248,12 +248,12 @@ class GiftAddModal extends React.Component {
                         { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' },
                         {
                             validator: (rule, v, cb) => {
-                                if (['10', '20', '40'].includes(value) && v !== undefined && v !== '' && v == 0) {
+                                if (['10', '20', '40', '42'].includes(value) && v !== undefined && v !== '' && v == 0) {
                                     cb(rule.message);
                                 }
                                 cb()
                             },
-                            message: '金额不得为0',
+                            message: '数额不得为0',
                         },
                     ],
             },
