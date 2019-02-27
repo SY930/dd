@@ -363,7 +363,7 @@ class ReturnGift extends React.Component {
                             info.giftInfo.giftType == '112' ? (
                                 <div>
                                     { !!couponEntity && (
-                                        <div style={{ paddingLeft: 120, marginBottom: 12}}>
+                                        <div style={{ paddingLeft: 120, margin: '12px 0'}}>
                                             <WeChatCouponCard entity={couponEntity}  />
                                         </div>
                                     )}
