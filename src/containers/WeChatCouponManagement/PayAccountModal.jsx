@@ -142,12 +142,12 @@ class PayAccountModal extends Component {
                                         if (!v) {
                                             return cb();
                                         }
-                                        if ((!/^\d{1,20}$/g.test(v))) {
+                                        if ((!/^\d{1,19}$/g.test(v))) {
                                             return cb(rule.message);
                                         }
                                         cb();
                                     },
-                                    message: '必须输入数字, 且长度不超过20位',
+                                    message: '必须输入数字, 且长度不超过19位',
                                 }
                             ]
                         })(<Input
