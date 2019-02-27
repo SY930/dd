@@ -1,12 +1,12 @@
 {
     "name": "@hualala/platform-sale",
-    "version": "1.19.6",
+    "version": "1.20.2",
     "description": "商户平台营销中心(sale)业务包，基于@hualala/platform-base定义的规范实现",
     "main": "index.js",
     "scripts": {
         "debug:server": "cd ../platform && cross-env DEBUG_PACKAGE=platform-sale npm run debug:server",
         "debug:client": "platform-scripts run-dev-server --port=8000",
-        "prepublishOnly": "platform-scripts babel && platform-scripts build",
+        "prepublishOnly": "rimraf ./lib && platform-scripts babel && platform-scripts build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "lint-staged": {
@@ -31,7 +31,8 @@
         "cross-env": "^5.1.3",
         "prop-types": "^15.6.0",
         "react": "^15.6.2",
-        "react-dom": "^15.6.2"
+        "react-dom": "^15.6.2",
+        "rimraf": "^2.6.3"
     },
     "engines": {
         "node": ">=6.2.2",

@@ -16,9 +16,6 @@ import ActivityMain from './WeChatMaLLActivityMain';
 import {Iconlist} from "../../components/basic/IconsFont/IconsFont";
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from '../../constants/entryCodes';
 import {
-    initializationOfMyActivities,
-    toggleSelectedActivityStateAC,
-    fetchPromotionList,
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {
