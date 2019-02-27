@@ -82,7 +82,6 @@ class CardLevelForWX extends React.Component {
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
-            // this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
         })
     }
 
@@ -102,9 +101,7 @@ class CardLevelForWX extends React.Component {
                 cardInfo: cardInfo.filter((cardType) => {
                     return cardType.regFromLimit
                 }),
-            }/*, () => {
-                this.props.form.setFieldsValue({ 'treeSelect': this.state.cardLevelIDList })
-            }*/);
+            });
         }
         // 每次第一步选择时间变化，就清空已选
         if ((thisEventInfo.eventStartDate !== nextEventInfo.eventStartDate || thisEventInfo.eventEndDate !== nextEventInfo.eventEndDate) &&
@@ -170,7 +167,7 @@ class CardLevelForWX extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.cardInfo !== prevProps.cardInfo) {
+        if (this.props.cardInfo !== prevProps.cardInfo || this.props.crmCardTypeNew.get('cardTypeLst') !== prevProps.crmCardTypeNew.get('cardTypeLst')) {
             this.queryCanuseShops(this.state.cardLevelIDList)
         }
     }
@@ -203,9 +200,6 @@ class CardLevelForWX extends React.Component {
             }
             questArr = cardInfo.map(cardType => cardType.cardTypeID)
         }
-
-        // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
-        //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             cardTypeIds: uniq(questArr).join(','),
@@ -288,17 +282,7 @@ class CardLevelForWX extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    // validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
-                    // help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
                 >
-                    {/*<EditBoxForShops
-                        value={this.state.selections_shopsInfo}
-                        onChange={
-                            this.editBoxForShopsChange
-                        }
-                        type={this.props.type}
-                        canUseShops={this.state.canUseShops}
-                    />*/}
                     <ShopSelector
                         value={(this.state.selections_shopsInfo.shopsInfo || []).map(shopID => String(shopID))}
                         onChange={
@@ -307,10 +291,6 @@ class CardLevelForWX extends React.Component {
                         schemaData={this.getDynamicShopSchema()}
                     />
                 </Form.Item>
-                {/*<div
-                    className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
-                    style={{ left: 110, width: '71%', height: '81%', top: 7 }}
-                />*/}
             </div>
         );
     }
@@ -318,7 +298,7 @@ class CardLevelForWX extends React.Component {
     render() {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
-        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
@@ -327,9 +307,7 @@ class CardLevelForWX extends React.Component {
             cardInfo = [];
         }
         const boxData = new Set();
-        // cardScopeType=1 // @mock
         this.state.cardLevelIDList.forEach((id) => {
-            // ['759692756909309952'].forEach((id) => { //  @mock
             cardInfo.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
@@ -347,7 +325,6 @@ class CardLevelForWX extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                        {/*<Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>全部微信卡类别</Radio>*/}
                         <Radio key={'2'} value={'2'}>{'线上卡类别'}</Radio>
                         <Radio key={'5'} value={'5'}>{'线上卡等级'}</Radio>
                     </RadioGroup>
@@ -441,10 +418,14 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        // 后端查回来的所有卡类存在这里, 里面的数据有表示是否线上卡类型的字段(regFromLimit, 1 为线上 )
+        crmCardTypeNew: state.sale_crmCardTypeNew,
+        // 后端查回来的所有卡类 **及其所包含卡等级信息** 存在这里, 但是没有regFromLimit信息
+        // 因为线上餐厅送礼要限制只能选到线上卡类型, 所以调了2个接口
         cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         shopSchemaInfo: state.sale_shopSchema_New,
-        crmCardTypeNew: state.sale_crmCardTypeNew,
+
     };
 };
 
