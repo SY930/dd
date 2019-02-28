@@ -198,6 +198,16 @@ export default class WeChatCouponList extends Component {
                 },
             },
             {
+                title: '商户号',
+                dataIndex: 'subMchID',
+                key: 'subMchID',
+                width: 120,
+                fixed: 'left',
+                render: (text) => {
+                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                },
+            },
+            {
                 title: '代金券批次ID',
                 dataIndex: 'couponStockId',
                 key: 'couponStockId',
