@@ -1516,7 +1516,6 @@ class GiftAddModalStep extends React.PureComponent {
                 surfix: '天',
                 rules: [{
                     validator: (rule, v, cb) => {
-                        console.log('v: ', v)
                         if (v === '' || v == undefined) { // 可不填，填了就校验
                             return cb();
                         } else if (/^[1-9]\d*$/.test(v) && v > 0 && v <= 36525) {
