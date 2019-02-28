@@ -10,18 +10,14 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { isEqual, uniq } from 'lodash';
 import { axiosData } from '../../../helpers/util';
-
 
 import {
     Form,
     Radio,
-    TreeSelect,
     Select,
     Icon,
-    Tag,
 } from 'antd';
 import Immutable from 'immutable';
 
@@ -30,22 +26,13 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
-import EditBoxForShops from './EditBoxForShops';
-
-// import _ from 'lodash';
-// import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import ShopSelector from "../../../components/common/ShopSelector";
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 
 const FormItem = Form.Item;
-// const Option = Select.Option;
 const RadioGroup = Radio.Group;
-// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-// const Immutable = require('immutable');
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
+
 
 class CardLevelForWX extends React.Component {
     constructor(props) {
