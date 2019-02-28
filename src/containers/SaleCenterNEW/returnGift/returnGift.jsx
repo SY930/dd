@@ -26,6 +26,7 @@ import ExpandTree from '../../SpecialPromotionNEW/common/ExpandTree';
 import _ from 'lodash';
 import {axiosData} from "../../../helpers/util";
 import WeChatCouponCard from "../../WeChatCouponManagement/WeChatCouponCard";
+import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
 
 const moment = require('moment');
 
@@ -367,7 +368,14 @@ class ReturnGift extends React.Component {
                                             <WeChatCouponCard entity={couponEntity}  />
                                         </div>
                                     )}
-                                    <Alert message="实际返券张数以微信支付商户平台设置的用户参与次数为准" type="success" />
+                                    { !!couponEntity && (
+                                        <Alert
+                                            message={`当前状态：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: '未知'}).label}`}
+                                            description="券未激活时无法发放成功，请确认。实际返券张数以微信支付商户平台设置的用户参与次数为准"
+                                            type="warning"
+                                            showIcon
+                                        />
+                                    )}
                                 </div>
                             ) : (
                                 <div>
