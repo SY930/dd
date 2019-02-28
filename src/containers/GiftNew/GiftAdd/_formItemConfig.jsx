@@ -12,7 +12,7 @@ const FORMITEMS = {
         ],
     },
     transferType: {
-        label: '券是否可分享',
+        label: '券是否可转赠',
         type: 'radio',
         defaultValue: 0,
         options: GiftCfg.transferType,

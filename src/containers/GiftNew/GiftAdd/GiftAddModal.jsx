@@ -224,7 +224,7 @@ class GiftAddModal extends React.Component {
                 render: () => describe,
             },
             transferType: {
-                label: '券是否可分享',
+                label: '券是否可转赠',
                 type: 'radio',
                 defaultValue: 0,
                 options: GiftCfg.transferType,

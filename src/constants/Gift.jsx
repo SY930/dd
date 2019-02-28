@@ -114,9 +114,8 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
     ],
     transferType: [
-        { label: '不可分享', value: 0 },
-        { label: '可分享', value: 1 },
-        { label: '仅分享后使用', value: 2 },
+        { label: '不可转赠', value: 0 },
+        { label: '可转赠', value: 1 },
     ],
     isHolidaysUsing: [
         { label: '不限制', value: '0' },
