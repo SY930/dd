@@ -62,7 +62,7 @@ class CardLevelForWX extends React.Component {
         this.setState({
             cardLevelRangeType: cardLevelRangeType || '2',
             cardLevelIDList: thisEventInfo.cardLevelIDList || [],
-            selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
+            selections_shopsInfo: { shopsInfo: (thisEventInfo.shopIDList || []).filter(id => id > 0) },
         }, () => {
             this.props.onChange({
                 shopIDList: thisEventInfo.shopIDList || [],
