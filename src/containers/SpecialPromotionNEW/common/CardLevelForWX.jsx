@@ -21,7 +21,10 @@ import {
 } from 'antd';
 import Immutable from 'immutable';
 
-import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds,
+    getEventExcludeCardTypes
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
@@ -45,9 +48,9 @@ class CardLevelForWX extends React.Component {
             dynamicShopSchema: shopSchema,
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
-            canUseShops: [], // 所选卡类适用店铺
+            canUseShops: [], // 所选卡类适用店铺id
+            occupiedShops: [], // 已经被占用的卡类适用店铺id
             selections_shopsInfo: { shopsInfo: [] }, // 已选店铺
-
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -73,15 +76,11 @@ class CardLevelForWX extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const previousSchema = this.state.shopSchema;
-        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
-        if (!isEqual(previousSchema, nextShopSchema)) {
-            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-                dynamicShopSchema: nextShopSchema
+        if (this.props.shopSchemaInfo.getIn(['shopSchema']) !== nextProps.shopSchemaInfo.getIn(['shopSchema'])) {
+            this.setState({
+                shopSchema: nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
-        const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
             const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
             this.setState({
@@ -91,7 +90,10 @@ class CardLevelForWX extends React.Component {
             });
         }
         // 每次第一步选择时间变化，就清空已选
-        if ((thisEventInfo.eventStartDate !== nextEventInfo.eventStartDate || thisEventInfo.eventEndDate !== nextEventInfo.eventEndDate) &&
+        const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
+        if ((thisEventInfo.eventStartDate !== nextEventInfo.eventStartDate
+            || thisEventInfo.eventEndDate !== nextEventInfo.eventEndDate) &&
             nextEventInfo.eventStartDate && thisEventInfo.eventStartDate) {
             this.handleSelectChange([]);
         }
@@ -108,24 +110,26 @@ class CardLevelForWX extends React.Component {
             this.setState({
                 getExcludeCardLevelIdsStatus: true,
             }, () => {
-                this.props.saleCenterGetExcludeCardLevelIds(opts2);
+                this.props.saleCenterGetExcludeCardLevelIds(opts2); // 之前此接口过滤卡类, 现在只用来更新卡类占用table
+                this.props.getEventExcludeCardTypes(opts2);
             })
         }
 
         const arr = [];
         const excludeEvent = nextEventInfo.excludeEventCardLevelIdModelList || [];
         // 遍历所有排除卡
-        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
             // true全部占用
-            this.setState({ getExcludeCardLevelIds: this.state.cardInfo })
-        } else {
-            // false 无/局部 占用
-            excludeEvent.map((event) => {
-                event.cardLevelIDList && event.cardLevelIDList.map((card) => {
-                    arr.push(card)
-                })
-            })
-            this.setState({ getExcludeCardLevelIds: arr })
+            this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() })
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
+            const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
+                acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
+                return acc;
+            }, []);
+            this.setState({ occupiedShops })
         }
         const fun = () => {
             this.setState({ allCheckDisabel: true }, () => {
@@ -133,22 +137,22 @@ class CardLevelForWX extends React.Component {
             })
         }
         // 禁用全部会员按钮
-        if (Object.keys(nextEventInfo).length < 30 &&
+        if (!nextEventInfo.itemID &&
             ((nextEventInfo.excludeEventCardLevelIdModelList && nextEventInfo.excludeEventCardLevelIdModelList.length > 0)
                 || nextEventInfo.allCardLevelCheck)) {
             // 新建&&局部被使用||全部被使用
             fun();
-        } else if (Object.keys(nextEventInfo).length > 30 && nextEventInfo.allCardLevelCheck) {
+        } else if (nextEventInfo.itemID && nextEventInfo.allCardLevelCheck) {
             // 编辑&&true全部被使用
             fun();
-        } else if (Object.keys(nextEventInfo).length > 30 && !nextEventInfo.allCardLevelCheck
+        } else if (nextEventInfo.itemID && !nextEventInfo.allCardLevelCheck
             && nextEventInfo.excludeEventCardLevelIdModelList && nextEventInfo.excludeEventCardLevelIdModelList.length > 0) {
             // 编辑&&false&&局部被使用
             fun();
         } else {
             this.setState({ allCheckDisabel: false })
         }
-        if (!Immutable.is(Immutable.fromJS(thisEventInfo.shopIDList), Immutable.fromJS(nextEventInfo.shopIDList))) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'shopIDList'])) {
             this.setState({ selections_shopsInfo: { shopsInfo: nextEventInfo.shopIDList || [] } })
         }
     }
@@ -162,7 +166,10 @@ class CardLevelForWX extends React.Component {
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        let {
+            getExcludeCardLevelIds = [],
+            cardLevelRangeType,
+        } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         let questArr = [];
@@ -210,8 +217,8 @@ class CardLevelForWX extends React.Component {
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
         }
-        let canUseShops = this.state.canUseShops;
-        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(String(shop.shopID)));
+        const { canUseShops, occupiedShops } = this.state;
+        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShops.includes(`${shop.shopID}`));
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
         const availableBM = uniq(shops.map(shop => shop.businessModel));
@@ -434,9 +441,9 @@ const mapDispatchToProps = (dispatch) => {
         FetchCrmCardTypeLst: (opts) => {
             dispatch(FetchCrmCardTypeLst(opts));
         },
-        // FetchSelectedShopsAC: (opts) => {
-        //     return dispatch(FetchSelectedShops(opts));
-        // },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
     };
 };
 

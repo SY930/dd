@@ -21,7 +21,9 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     saleCenterGetExcludeEventList,
-    saleCenterGetShopOfEventByDate, queryFsmGroupEquityAccount,
+    saleCenterGetShopOfEventByDate,
+    queryFsmGroupEquityAccount,
+    getEventExcludeCardTypes,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import {SEND_MSG, NOTIFICATION_FLAG, FULL_CUT_ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -155,7 +157,7 @@ class StepOneWithDateRange extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
-        if (this.props.type === '31' && this.props.specialPromotion.get('$eventInfo').size > 30) {
+        if (this.props.type === '31' && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
             this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
         }
@@ -386,10 +388,8 @@ class StepOneWithDateRange extends React.Component {
             eventStartDate: date[0] ? date[0].format('YYYYMMDD') : '',
             eventEndDate: date[1] ? date[1].format('YYYYMMDD') : '',
         };
-        if (this.props.specialPromotion.get('$eventInfo').size > 30) {
-            // 编辑时，解放自己的选项不被排除
-            opts.itemID = this.props.specialPromotion.get('$eventInfo').toJS().itemID;
-        }
+        // 编辑时，解放自己的选项不被排除; 新建时没有id, 也不会传到后端
+        opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
         if (opts.eventStartDate) {
             if (this.props.type === '61' || this.props.type === '62' || this.props.type === '23') {
                 this.setState({
@@ -397,6 +397,8 @@ class StepOneWithDateRange extends React.Component {
                     iconDisplay: false,
                 });
                 this.props.saleCenterGetExcludeCardLevelIds(opts);
+                // 线上餐厅送礼还需要再查一个接口: http://wiki.hualala.com/pages/viewpage.action?pageId=30511315
+                this.props.type === '23' && this.props.getEventExcludeCardTypes(opts)
             }
             if (this.props.type === '63') {
                 this.props.saleCenterGetExcludeEventList(opts);
@@ -1094,7 +1096,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
     }
 };
 
