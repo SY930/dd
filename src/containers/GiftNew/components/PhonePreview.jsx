@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
-import phone from '../../../assets/phone.png';
+import phone from '../../../assets/phoneX.png';
 import bg from '../../../assets/bg.png';
 import bg1 from '../../../assets/bg1.png';
 import GiftCfg from "../../../constants/Gift";
