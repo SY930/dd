@@ -21,6 +21,7 @@ export const SALE_CENTER_CHECK_BIRTHDAY_SUCCESS = 'sale center: check birthday e
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST_FAILED = 'sale center: check birthday exist fail new';
 export const SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS = 'sale center: get exclude cardLevelIds new';
 export const SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP = 'sale center: sale_center_get_exclude_card_type_and_shop';
+export const SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP = 'sale center: sale_center_save_current_can_use_shop';
 
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_START = 'sale center: add special promotion start new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_OK = 'sale center: add special promotion ok new';
@@ -168,6 +169,15 @@ export const getEventExcludeCardTypes = (opts) => {
                     },
                 });
             })
+    }
+}
+// 计算出当前线上餐厅送礼的可选活动 存到redux
+export const saveCurrentCanUseShops = (arr) => {
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP,
+            payload: arr,
+        });
     }
 }
 // 获取短信权益账户

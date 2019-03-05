@@ -23,7 +23,7 @@ import Immutable from 'immutable';
 
 import {
     saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds,
-    getEventExcludeCardTypes
+    getEventExcludeCardTypes, saveCurrentCanUseShops
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
@@ -208,6 +208,7 @@ class CardLevelForWX extends React.Component {
                         canUseShops.push(String(shop.shopID))
                     })
                 });
+                this.props.saveCurrentCanUseShops(canUseShops)
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
             })
     }
@@ -443,6 +444,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getEventExcludeCardTypes: (opts) => {
             dispatch(getEventExcludeCardTypes(opts))
+        },
+        saveCurrentCanUseShops: (opts) => {
+            dispatch(saveCurrentCanUseShops(opts))
         },
     };
 };
