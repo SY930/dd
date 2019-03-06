@@ -656,7 +656,6 @@ class GiftAddModalStep extends React.PureComponent {
                 this.props.cancelCreateOrEditGift()
             }).catch(err => {
                 endSaving();
-                console.log(err)
             });
         });
     }
