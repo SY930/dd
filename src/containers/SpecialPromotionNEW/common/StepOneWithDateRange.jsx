@@ -215,7 +215,7 @@ class StepOneWithDateRange extends React.Component {
                     getExcludeEventList: [],
                 })
             }
-            if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
                 this.setState({ iconDisplay: true }, () => {
                     this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
                 });
@@ -283,7 +283,7 @@ class StepOneWithDateRange extends React.Component {
             this.setState({ lastConsumeIntervalDaysStatus: 'error' });
         }
         // 升级送礼,消费送礼
-        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
             nextFlag = false;
             this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
         }

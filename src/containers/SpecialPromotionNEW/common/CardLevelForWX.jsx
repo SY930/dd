@@ -158,7 +158,8 @@ class CardLevelForWX extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.cardInfo !== prevProps.cardInfo || this.props.crmCardTypeNew.get('cardTypeLst') !== prevProps.crmCardTypeNew.get('cardTypeLst')) {
+        if ((this.props.cardInfo !== prevProps.cardInfo && this.state.cardInfo.length)
+            || (this.props.crmCardTypeNew.get('cardTypeLst') !== prevProps.crmCardTypeNew.get('cardTypeLst') && this.props.cardInfo )) {
             this.queryCanuseShops(this.state.cardLevelIDList)
         }
     }
