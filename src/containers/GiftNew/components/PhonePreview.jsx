@@ -4,7 +4,7 @@ import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phoneX.png';
 import bg from '../../../assets/bg.png';
 import discountOff from '../../../assets/discountOff.png';
-import discountOn from '../../../assets/discountOff.png';
+import discountOn from '../../../assets/discountOn.png';
 import pointOff from '../../../assets/pointOff.png';
 import pointOn from '../../../assets/pointOn.png';
 import privilegeOfWaitOn from '../../../assets/privilegeOfWaitOn.png';

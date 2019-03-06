@@ -19,6 +19,7 @@ class GiftEditPage extends Component {
             scrollPercent: 0,
         };
         this.formRef = null;
+        this.container = null;
         this.saving = this.saving.bind(this);
         this.onWindowResize = this.onWindowResize.bind(this);
         this.lockedSaving = throttle(this.saving , 500, {trailing: false});
@@ -29,13 +30,19 @@ class GiftEditPage extends Component {
         window.addEventListener('resize', this.onWindowResize);
     }
     onWindowResize() {
-        const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 79;
+        let contentHeight;
+        try {
+            contentHeight = this.container.getBoundingClientRect().height - 79;
+        } catch (e) {
+            contentHeight = 782;
+        }
         this.setState({ contentHeight });
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
         this.formRef = null;
+        this.container = null;
     }
 
     saving() {
@@ -50,7 +57,9 @@ class GiftEditPage extends Component {
             <div style={{
                 backgroundColor: '#F3F3F3',
                 height: '100%'
-            }}>
+            }}
+                 ref={e => this.container = e}
+            >
                 <div className={styles.pageHeader} >
                     <div className={styles.pageHeaderTitle}>
                         {giftName}
