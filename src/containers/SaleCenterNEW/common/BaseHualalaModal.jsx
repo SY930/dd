@@ -62,11 +62,17 @@ class BaseHualalaModal extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (!is(fromJS(this.props.treeData), fromJS(nextProps.treeData)) || !is(fromJS(this.props.data), fromJS(nextProps.data))) {
             const hadSelected = nextProps.data || new Set();
+            const CurrentSelections = [];
+            const { rightOptionsData } = this.state;
+            rightOptionsData.forEach((entity) => {
+                if (Array.from(hadSelected).findIndex(item => item[nextProps.innerRightValue] === entity[nextProps.innerRightValue]) > -1) {
+                    CurrentSelections.push(entity[nextProps.innerRightValue])
+                }
+            });
             this.setState({
                 leftTreeData: nextProps.treeData,
                 hadSelected,
-                CurrentSelections: [],
-                rightOptionsData: [],
+                CurrentSelections,
             })
         }
     }
