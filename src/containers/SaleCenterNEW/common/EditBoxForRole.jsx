@@ -127,7 +127,7 @@ class EditBoxForSubject extends React.Component {
                     innerBottomTitle={'已选执行角色'} //   内部底部box的title
                     innerBottomItemName="roleName" //   内部底部已选条目选项的label
                     treeData={roleCollection} // 树形全部数据源【{}，{}，{}】
-                    data={roleSelections} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                    data={Array.from(roleSelections)} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                     onChange={(value) => {
                         // 组件内部已选条目数组【{}，{}，{}】,向外传递值
                         this.props.onChange && this.props.onChange(value)

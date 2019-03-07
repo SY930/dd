@@ -64,9 +64,7 @@ export default class HualalaSelected extends React.Component {
                                     }}
                                 >
                                     {
-                                        this.props.itemNameJoinCatName ?
-                                            `${shopEntity[this.props.itemNameJoinCatName] ? shopEntity[this.props.itemNameJoinCatName] + '---' : ''}${shopEntity[this.props.itemName]}` :
-                                            shopEntity[this.props.itemName] || `${shopEntity.foodName}  (${shopEntity.unit})`
+                                        shopEntity[this.props.itemName] || `${shopEntity.foodName}  (${shopEntity.unit})`
                                     }
                                 </li>
                             )
