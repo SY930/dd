@@ -296,12 +296,12 @@ class CardLevelForWX extends React.Component {
         if (getExcludeCardLevelIds.length) {
             cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
         }
-        const boxData = new Set();
+        const boxData = [];
         this.state.cardLevelIDList.forEach((id) => {
             cardInfo.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
-                        boxData.add(level)
+                        boxData.push(level)
                     }
                 })
             })
