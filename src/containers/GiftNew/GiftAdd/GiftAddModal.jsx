@@ -41,6 +41,7 @@ class GiftAddModal extends React.Component {
             isUpdate: true,
         };
         this.baseForm = null;
+        this.refMap = null;
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
@@ -60,6 +61,12 @@ class GiftAddModal extends React.Component {
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
         })
+        // 礼品名称 auto focus
+        try {
+            this.refMap.giftName.focus()
+        } catch (e) {
+            // oops
+        }
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
@@ -406,6 +413,7 @@ class GiftAddModal extends React.Component {
             <div className={styles.giftAddModal}>
                 <BaseForm
                     getForm={form => this.baseForm = form}
+                    getRefs={refs => this.refMap = refs}
                     formItems={formItems}
                     formData={formData}
                     formKeys={formKeys[describe]}

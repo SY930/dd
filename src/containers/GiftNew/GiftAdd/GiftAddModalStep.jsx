@@ -74,6 +74,7 @@ class GiftAddModalStep extends React.PureComponent {
         };
         this.firstForm = null;
         this.secondForm = null;
+        this.firstFormRefMap = null;
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
@@ -107,6 +108,12 @@ class GiftAddModalStep extends React.PureComponent {
             values
         });
         FetchGiftSort({});
+        // 礼品名称 auto focus
+        try {
+            this.firstFormRefMap.giftName.focus()
+        } catch (e) {
+            // oops
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -656,7 +663,6 @@ class GiftAddModalStep extends React.PureComponent {
                 this.props.cancelCreateOrEditGift()
             }).catch(err => {
                 endSaving();
-                console.log(err)
             });
         });
     }
@@ -1694,6 +1700,7 @@ class GiftAddModalStep extends React.PureComponent {
                     getForm={(form) => {
                         this.firstForm = form
                     }}
+                    getRefs={refs => this.firstFormRefMap = refs}
                     formItems={formItems}
                     formData={formData}
                     formKeys={displayFirstKeys}
