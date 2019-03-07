@@ -114,9 +114,6 @@ class CardLevelForWX extends React.Component {
                 this.props.getEventExcludeCardTypes(opts2);
             })
         }
-
-        const arr = [];
-        const excludeEvent = nextEventInfo.excludeEventCardLevelIdModelList || [];
         // 遍历所有排除卡
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
@@ -188,10 +185,8 @@ class CardLevelForWX extends React.Component {
                 questArr = cardTypeIDs;
             }
         } else {// 没选的情况下, 查所有能选的卡类下的适用店铺
-            if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+            if (getExcludeCardLevelIds.length) {
                 cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
-            } else if (!!eventInfo.allCardLevelCheck) {
-                cardInfo = [];
             }
             questArr = cardInfo.map(cardType => cardType.cardTypeID)
         }
@@ -297,10 +292,8 @@ class CardLevelForWX extends React.Component {
         let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
-        if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+        if (getExcludeCardLevelIds.length) {
             cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
-        } else if (!!eventInfo.allCardLevelCheck) {
-            cardInfo = [];
         }
         const boxData = new Set();
         this.state.cardLevelIDList.forEach((id) => {
