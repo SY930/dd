@@ -254,6 +254,7 @@ class CardLevelForWX extends React.Component {
         this.props.onChange && this.props.onChange({
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
+            shopIDList: [],
         })
     }
     editBoxForShopsChange = (val) => {
