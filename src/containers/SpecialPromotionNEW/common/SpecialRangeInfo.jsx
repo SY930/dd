@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, Col } from 'antd';
+import { Form, Checkbox, Radio, Select, message } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
@@ -83,8 +83,7 @@ class SpecialRangeInfo extends React.Component {
             finish: this.handleSubmit,
             cancel: undefined,
         });
-        // TODO: 这弱智判断方式,  待替换成id
-        if (this.props.specialPromotion.get('$eventInfo').size > 25) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
             let joinRange = [],
                 freeGetJoinRange = [],
@@ -199,6 +198,16 @@ class SpecialRangeInfo extends React.Component {
             }
         }
         if (this.props.type === '23') { // 线上餐厅送礼
+            if (!isPrev) {
+                if (this.props.queryCanUseShopStatus === 'pending') {
+                    message.warning('正在查询可用店铺, 请稍候');
+                    return false;
+                }
+                if (this.props.queryCanUseShopStatus === 'error') {
+                    message.warning('查询可用店铺失败, 请重试');
+                    return false;
+                }
+            }
             if (shopIDList.length > 0) { // 如果已选店铺, 透传
                 opts.shopIDList = shopIDList;
             } else if (opts.cardLevelIDList.length > 0) { // 没选店铺 但选了卡类 卡等级
@@ -545,7 +554,6 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
-        const getFieldDecorator = this.props.form.getFieldDecorator;
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
@@ -630,6 +638,7 @@ const mapStateToProps = (state) => {
         specialPromotion: state.sale_specialPromotion_NEW,
         canUseShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'canUseShopIDs']),
         excludeCardTypeAndShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'excludeCardTypeShops']),
+        queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
     }
 };
 

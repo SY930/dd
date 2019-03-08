@@ -45,10 +45,17 @@ export const SALE_CENTER_FETCH_GROUP_MEMBER_CANCEL = 'sale center: fetch group m
 export const SALE_CENTER_FSM_SETTLE_UNIT = 'sale center: query fsm group settle unit new';
 export const SALE_CENTER_FSM_EQUITY_UNIT = 'sale center: query fsm group equity unit new';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude event list new';
+export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS = 'sale center: sale_center_query_online_restaurant_shops_status';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO,
+        payload: opts,
+    };
+};
+export const saleCenterQueryOnlineRestaurantStatus = (opts) => {
+    return {
+        type: SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
         payload: opts,
     };
 };

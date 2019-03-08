@@ -18,12 +18,12 @@ import {
     Radio,
     Select,
     Icon,
+    Tooltip,
 } from 'antd';
-import Immutable from 'immutable';
 
 import {
     saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds,
-    getEventExcludeCardTypes, saveCurrentCanUseShops
+    getEventExcludeCardTypes, saveCurrentCanUseShops, saleCenterQueryOnlineRestaurantStatus
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
@@ -50,7 +50,7 @@ class CardLevelForWX extends React.Component {
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
             canUseShops: [], // 所选卡类适用店铺id
             occupiedShops: [], // 已经被占用的卡类适用店铺id
-            selections_shopsInfo: { shopsInfo: [] }, // 已选店铺
+            selections_shopsInfo: { shopsInfo: [] }, // 已选店铺,
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -163,7 +163,7 @@ class CardLevelForWX extends React.Component {
 
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
-        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        this.props.saleCenterQueryOnlineRestaurantStatus('pending');
         let {
             getExcludeCardLevelIds = [],
             cardLevelRangeType,
@@ -204,8 +204,12 @@ class CardLevelForWX extends React.Component {
                         canUseShops.push(String(shop.shopID))
                     })
                 });
+                canUseShops = Array.from(new Set(canUseShops));
                 this.props.saveCurrentCanUseShops(canUseShops)
+                this.props.saleCenterQueryOnlineRestaurantStatus('success');
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+            }).catch(err => {
+                this.props.saleCenterQueryOnlineRestaurantStatus('error');
             })
     }
 
@@ -267,6 +271,7 @@ class CardLevelForWX extends React.Component {
         })
     }
     renderShopsOptions() {
+        const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
@@ -282,6 +287,39 @@ class CardLevelForWX extends React.Component {
                         }
                         schemaData={this.getDynamicShopSchema()}
                     />
+                    {
+                        queryCanUseShopStatus === 'error' && (
+                            <Tooltip title="查询可用店铺失败, 点击重试">
+                                <Icon
+                                    type="exclamation-circle"
+                                    style={{
+                                        left: '102%',
+                                        top: 28,
+                                        color: 'rgba(239, 72, 72, 0.81)',
+                                        position: 'absolute',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => {
+                                        this.queryCanuseShops(this.state.cardLevelIDList)
+                                    }}
+                                />
+                            </Tooltip>
+                        )
+                    }
+                    {
+                        queryCanUseShopStatus === 'pending' && (
+                            <Tooltip title="正在查询可用店铺">
+                                <Icon
+                                    type="loading"
+                                    style={{
+                                        left: '102%',
+                                        top: 28,
+                                        position: 'absolute'
+                                    }}
+                                />
+                            </Tooltip>
+                        )
+                    }
                 </Form.Item>
             </div>
         );
@@ -415,7 +453,7 @@ const mapStateToProps = (state) => {
         cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         shopSchemaInfo: state.sale_shopSchema_New,
-
+        queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
     };
 };
 
@@ -443,6 +481,9 @@ const mapDispatchToProps = (dispatch) => {
         saveCurrentCanUseShops: (opts) => {
             dispatch(saveCurrentCanUseShops(opts))
         },
+        saleCenterQueryOnlineRestaurantStatus: (opts) => {
+            dispatch(saleCenterQueryOnlineRestaurantStatus(opts))
+        }
     };
 };
 
