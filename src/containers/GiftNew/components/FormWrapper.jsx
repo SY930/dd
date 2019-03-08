@@ -30,7 +30,9 @@ class FormWrapper extends Component {
         }
         return (
             <div onScroll={(e) => {
-                this.props.onFormScroll(e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight));
+                if (e.target === e.currentTarget) {
+                    this.props.onFormScroll(e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight));
+                }
             }} className={styles.formWrapperContainer}>
                 <div className={styles.formWrapper}>
                     <Comp

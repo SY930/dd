@@ -8,7 +8,7 @@ const HUATIAN_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '19
 /** 庆丰集团groupID */
 const QINGFENG_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '7001' : '11581';
 /** 护国寺小吃集团groupID */
-const HUGUOSI_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '137722' : '11580';
+const HUGUOSI_GROUP_ID_TEST = HUALALA.ENVIRONMENT === 'production-release' ? '-1' : '11580';
 
 /** 华天项目正式上线后的主集团ID和子集团ID */
 const HUATIAN_GROUP_ID_ONLINE = '206817';

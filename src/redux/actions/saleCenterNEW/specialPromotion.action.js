@@ -20,6 +20,8 @@ export const SALE_CENTER_CHECK_BIRTHDAY_EXIST = 'sale center: check birthday exi
 export const SALE_CENTER_CHECK_BIRTHDAY_SUCCESS = 'sale center: check birthday exist success new';
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST_FAILED = 'sale center: check birthday exist fail new';
 export const SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS = 'sale center: get exclude cardLevelIds new';
+export const SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP = 'sale center: sale_center_get_exclude_card_type_and_shop';
+export const SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP = 'sale center: sale_center_save_current_can_use_shop';
 
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_START = 'sale center: add special promotion start new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_OK = 'sale center: add special promotion ok new';
@@ -121,7 +123,6 @@ export const saleCenterCheckExist = (opts) => {
 // 获得排除卡id集合 getExcludeCardLevelIds
 export const saleCenterGetExcludeCardLevelIds = (opts) => {
     if (!opts.eventWay) {
-        console.error('there is no eventWay!', opts);
         return (dispatch) => {};
     }
     return (dispatch) => {
@@ -152,6 +153,33 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
         })
     }
 };
+// 获取线上餐厅送礼不可选择的卡类型和卡类型对应的适用店铺
+export const getEventExcludeCardTypes = (opts) => {
+    if (!opts.eventWay) {
+        return (dispatch) => {};
+    }
+    return (dispatch) => {
+        axiosData('/specialPromotion/getEventExcludeCardTypes.ajax', opts, {}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then(({ excludeCardTypeIDs = [], excludeCardTypeShops = [] }) => {
+                dispatch({
+                    type: SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
+                    payload: {
+                        excludeCardTypeIDs: Array.isArray(excludeCardTypeIDs) ? excludeCardTypeIDs : [],
+                        excludeCardTypeShops: Array.isArray(excludeCardTypeShops) ? excludeCardTypeShops : []
+                    },
+                });
+            })
+    }
+}
+// 计算出当前线上餐厅送礼的可选活动 存到redux
+export const saveCurrentCanUseShops = (arr) => {
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP,
+            payload: arr,
+        });
+    }
+}
 // 获取短信权益账户
 export const queryFsmGroupEquityAccount = () => {
     return (dispatch) => {

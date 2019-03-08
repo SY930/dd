@@ -352,7 +352,7 @@ class ReturnGiftDetailInfo extends React.Component {
             });
         });
 
-
+        // FIXME: 这个校验在不人为输入(触发相应onChange)时等于无效, 比如编辑时直接下一步下一步保存时, 如果产品要求, 可以改掉
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                 .reduce((flag, key) => {

@@ -109,7 +109,7 @@ class HualalaGroupSelect extends React.Component {
                     return {
                         key: `${index}`,
                         label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) ( ${!this.props.isWeChatMall ?
-                            `售价：${item.prePrice==-1?item.price:item.prePrice}元` : `积分/现金售价：${this.helper(item)}`})`,
+                            `售价：${item.prePrice == -1 ? item.price : item.prePrice}元` : `积分/现金售价：${this.helper(item)}`})`,
                         value: item[nextProps.valueKey],
                     }
                 }),

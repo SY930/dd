@@ -21,7 +21,9 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     saleCenterGetExcludeEventList,
-    saleCenterGetShopOfEventByDate, queryFsmGroupEquityAccount,
+    saleCenterGetShopOfEventByDate,
+    queryFsmGroupEquityAccount,
+    getEventExcludeCardTypes,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import {SEND_MSG, NOTIFICATION_FLAG, FULL_CUT_ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -122,7 +124,7 @@ class StepOneWithDateRange extends React.Component {
             allWeChatIDList: props.allWeChatIDList,
             allWeChatIDListLoading: props.allWeChatIDListLoading,
         };
-
+        this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.getDateCount = this.getDateCount.bind(this);
@@ -143,7 +145,6 @@ class StepOneWithDateRange extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
             _role: this.props.user.accountInfo.roleType,
@@ -155,7 +156,7 @@ class StepOneWithDateRange extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
-        if (this.props.type === '31' && this.props.specialPromotion.get('$eventInfo').size > 30) {
+        if (this.props.type === '31' && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
             this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
         }
@@ -186,6 +187,12 @@ class StepOneWithDateRange extends React.Component {
                 :
                 this.props.queryFsmGroupEquityAccount()
         }
+        // 活动名称auto focus
+        try {
+            this.promotionNameInputRef.focus()
+        } catch (e) {
+            // oops
+        }
     }
 
     setErrors(target, text) {
@@ -213,7 +220,7 @@ class StepOneWithDateRange extends React.Component {
                     getExcludeEventList: [],
                 })
             }
-            if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
                 this.setState({ iconDisplay: true }, () => {
                     this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
                 });
@@ -281,7 +288,7 @@ class StepOneWithDateRange extends React.Component {
             this.setState({ lastConsumeIntervalDaysStatus: 'error' });
         }
         // 升级送礼,消费送礼
-        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
             nextFlag = false;
             this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
         }
@@ -386,10 +393,8 @@ class StepOneWithDateRange extends React.Component {
             eventStartDate: date[0] ? date[0].format('YYYYMMDD') : '',
             eventEndDate: date[1] ? date[1].format('YYYYMMDD') : '',
         };
-        if (this.props.specialPromotion.get('$eventInfo').size > 30) {
-            // 编辑时，解放自己的选项不被排除
-            opts.itemID = this.props.specialPromotion.get('$eventInfo').toJS().itemID;
-        }
+        // 编辑时，解放自己的选项不被排除; 新建时没有id, 也不会传到后端
+        opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
         if (opts.eventStartDate) {
             if (this.props.type === '61' || this.props.type === '62' || this.props.type === '23') {
                 this.setState({
@@ -397,6 +402,8 @@ class StepOneWithDateRange extends React.Component {
                     iconDisplay: false,
                 });
                 this.props.saleCenterGetExcludeCardLevelIds(opts);
+                // 线上餐厅送礼还需要再查一个接口: http://wiki.hualala.com/pages/viewpage.action?pageId=30511315
+                this.props.type === '23' && this.props.getEventExcludeCardTypes(opts)
             }
             if (this.props.type === '63') {
                 this.props.saleCenterGetExcludeEventList(opts);
@@ -800,7 +807,11 @@ class StepOneWithDateRange extends React.Component {
                             ],
                             initialValue: this.state.name,
                         })(
-                            <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
+                            <Input
+                                placeholder="请输入活动名称"
+                                onChange={this.handleNameChange}
+                                ref={node => this.promotionNameInputRef = node}
+                            />
                         )}
                     </FormItem>
                     {
@@ -1094,7 +1105,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
     }
 };
 

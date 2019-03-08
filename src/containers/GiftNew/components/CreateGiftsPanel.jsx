@@ -27,10 +27,10 @@ class CreateGiftsPanel extends Component {
             message.warning(GIFT_CREATE_DISABLED_TIP);
             return;
         }
-        if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
+        /*if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
             message.success('敬请期待~');
             return;
-        }
+        }*/
         this.props.onClose && this.props.onClose();
         this.props.startCreate({
             value: gift.value,

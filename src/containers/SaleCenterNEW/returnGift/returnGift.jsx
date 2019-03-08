@@ -355,6 +355,7 @@ class ReturnGift extends React.Component {
                                         addonBefore="最多返券"
                                         addonAfter="张"
                                         modal="int"
+                                        maxNum={6}
                                         value={{ number: info.giftMaxUseNum.value }}
                                         onChange={(val) => { this.handlegiftMaxUseNumChange(val, index); }}
                                     />
@@ -672,12 +673,12 @@ class ReturnGift extends React.Component {
         _infos[index].giftMaxUseNum.value = value.number;
 
         const _value = parseInt(value.number);
-        if (_value > 0) {
+        if (_value > 0 && _value <= 10000) {
             _infos[index].giftMaxUseNum.validateStatus = 'success';
             _infos[index].giftMaxUseNum.msg = null;
         } else {
             _infos[index].giftMaxUseNum.validateStatus = 'error';
-            _infos[index].giftMaxUseNum.msg = '使用数量必须大于等于1';
+            _infos[index].giftMaxUseNum.msg = '最多返券数量必须大于等于1, 小于等于10000';
         }
         this.setState({
             infos: _infos,
