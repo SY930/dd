@@ -8,6 +8,7 @@ import {
     Input,
     Select,
     Tooltip,
+    Spin,
 } from 'antd';
 import moment from 'moment';
 import { jumpPage } from '@hualala/platform-base'
@@ -16,6 +17,7 @@ import {PROMOTION_WECHAT_COUPON_CREATE, PROMOTION_WECHAT_COUPON_LIST} from '../.
 import style from './style.less'
 import {axiosData} from "../../helpers/util";
 import WeChatCouponDetailModal from "./WeChatCouponDetailModal";
+import upgradeImg from '../../assets/upgrade.png'
 
 export const BATCH_STATUS = [
     {
@@ -45,6 +47,7 @@ export const BATCH_STATUS = [
 ]
 
 @registerPage([PROMOTION_WECHAT_COUPON_LIST])
+@connect(mapStateToProps)
 export default class EntryPage extends Component {
     state = {
         isShow: false,
@@ -65,14 +68,18 @@ export default class EntryPage extends Component {
         ).then(isShow => {
             this.setState({
                 isShow: isShow === true,
-
+                isQuerying: false,
             })
         }).catch(e => {
             this.setState({ isQuerying: false })
         })
     }
     render() {
-        if (this.state.isShow) {
+        const {
+            isShow,
+            isQuerying,
+        } = this.state;
+        if (isShow) {
             return <WeChatCouponList/>
         }
         return (
@@ -81,10 +88,13 @@ export default class EntryPage extends Component {
                     <span className={style.title} >
                         微信支付代金券
                     </span>
+                    <div className={style.spacer} />
                 </div>
                 <div className={style.blockLine} />
-                <div>
-
+                <div className={style.emptyBodyContainer} style={{ height: 'calc(100% - 79px)' }}>
+                    {isQuerying && <Spin />}
+                    {!isQuerying && <img src={upgradeImg} alt=""/>}
+                    {!isQuerying && <span className={style.upgradeTip}>功能暂未开放, 敬请期待</span>}
                 </div>
             </div>
         )
