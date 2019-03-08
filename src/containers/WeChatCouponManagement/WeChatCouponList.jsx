@@ -347,6 +347,7 @@ class WeChatCouponList extends Component {
                 },
             },
         ];
+        console.log('tableHeight: ', tableHeight)
         return (
             <div style={{ padding: 20, height: 'calc(100% - 75px)' }} ref={e => this.bodyRef = e}>
                 { /* 后端不支持这些查询, 先把div高置为0 */ }
@@ -404,9 +405,9 @@ class WeChatCouponList extends Component {
                         loading={isQuerying}
                         pagination={{
                             showQuickJumper: true,
-                            defaultPageSize: 30,
+                            defaultPageSize: 20,
                             showSizeChanger: true,
-                            total: couponList.length,
+                            // total: couponList.length,
                             showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                         }}
                     />
