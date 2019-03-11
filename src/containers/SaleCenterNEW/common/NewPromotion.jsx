@@ -14,7 +14,6 @@ import { jumpPage } from '@hualala/platform-base'
 import PromotionBasicInfo from './promotionBasicInfo';
 import PromotionScopeInfo from './promotionScopeInfo';
 import CustomProgressBar from './CustomProgressBar';
-import { saleCenterAddNewActivityAC, saleCenterUpdateNewActivityAC } from '../../../redux/actions/saleCenterNEW/promotion.action';
 import {
     promotionBasicDataAdapter,
     promotionScopeInfoAdapter,
@@ -47,10 +46,6 @@ class NewPromotion extends React.Component {
 
         const isActive = detailInfo.isActive;
         let userType = detailInfo.userSetting;
-        // userType = basicInfo.promotionType == 'RETURN_POINT' ? 'CUSTOMER_ONLY' : userType;
-        // userType = basicInfo.promotionType == 'RETURN_GIFT' && detailInfo.rule.gainCodeMode == '0' ? 'CUSTOMER_ONLY' : userType;
-        // userType = (basicInfo.promotionType == 'BILL_CUMULATION_FREE' || basicInfo.promotionType == 'FOOD_CUMULATION_GIVE')
-        //     && userType == 'ALL_USER' ? 'CUSTOMER_ONLY' : userType;// 累计减免赠送
         const subjectType = detailInfo.subjectType == '0' ? '0' : '1';
         const sharedPromotionIDLst = detailInfo.mutexPromotions || [];
         const excludedSubjectLst = typeof detailInfo.mutexSubjects === 'object' ? detailInfo.mutexSubjects.join(',') : detailInfo.mutexSubjects;

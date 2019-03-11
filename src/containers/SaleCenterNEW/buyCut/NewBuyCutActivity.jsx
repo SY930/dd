@@ -29,7 +29,6 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        user: state.user,
     };
 };
 
