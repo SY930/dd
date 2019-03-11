@@ -11,11 +11,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { DatePicker, Radio, Form, Select, TreeSelect, Input, Icon } from 'antd';
+import {
+    DatePicker,
+    Radio,
+    Form,
+    Select,
+    Alert,
+    Input,
+    Icon,
+} from 'antd';
 import styles from '../ActivityPage.less';
 import PriceInput from '../common/PriceInput';
 import ExpandTree from '../../SpecialPromotionNEW/common/ExpandTree';
 import _ from 'lodash';
+import {axiosData} from "../../../helpers/util";
+import WeChatCouponCard from "../../WeChatCouponManagement/WeChatCouponCard";
+import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
 
 const moment = require('moment');
 
@@ -65,6 +76,8 @@ const defaultData = {
     giftInfo: {
         giftName: null,
         giftItemID: null,
+        giftType: null,
+        giftValue: null,
         validateStatus: 'success',
         msg: null,
     },
@@ -91,7 +104,7 @@ const defaultData = {
 };
 
 const availableGiftTypes = [// 顺序matters
-    '10', '20', '21', '111', '110', '30', '40', '42', '80',
+    '112', '10', '20', '21', '111', '110', '30', '40', '42', '80',
 ];
 
 const offlineCanUseGiftTypes = [
@@ -108,7 +121,7 @@ class ReturnGift extends React.Component {
                 1: '0',
                 2: '0',
             },
-            giftInfo: [],
+            weChatCouponList: [],
             defaultValue: null,
             data: {
                 0: {
@@ -126,7 +139,6 @@ class ReturnGift extends React.Component {
             maxCount: this.props.maxCount || 3,
         };
 
-        this.renderItems = this.renderItems.bind(this);
         this.renderBlockHeader = this.renderBlockHeader.bind(this);
         this.handleStageAmountChange = this.handleStageAmountChange.bind(this);
         this.add = this.add.bind(this);
@@ -139,7 +151,6 @@ class ReturnGift extends React.Component {
         this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.handleGiftEffectiveTimeChange = this.handleGiftEffectiveTimeChange.bind(this);
-        this.proGiftTreeData = this.proGiftTreeData.bind(this);
     }
 
     componentDidMount() {
@@ -153,11 +164,10 @@ class ReturnGift extends React.Component {
                 }
             });
         }
-
-
         this.props.fetchGiftListInfo({
             groupID: this.props.user.accountInfo.groupID,
         });
+        this.queryWeChatCouponList()
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.maxCount !== nextProps.maxCount) {
@@ -166,43 +176,35 @@ class ReturnGift extends React.Component {
                 maxCount: nextProps.maxCount,
             });
         }
-
         if (nextProps.value) {
             this.setState({
                 infos: nextProps.value || [JSON.parse(JSON.stringify(defaultData))],
             });
         }
-        if (this.props.promotionDetailInfo.getIn(['$giftInfo', 'data']) !==  nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
-            let giftInfo;
-            try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS().filter(giftTypes => availableGiftTypes.includes(String(giftTypes.giftType)));
-            } catch (err) {
-                giftInfo = [];
-            }
+    }
+    queryWeChatCouponList = () => {
+        const groupID = this.props.user.accountInfo.groupID
+        axiosData(
+            `/payCoupon/getPayCouponBatchList?groupID=${groupID}`,
+            {},
+            {},
+            { path: 'payCouponInfos' },
+            'HTTP_SERVICE_URL_WECHAT'
+        ).then(res => {
             this.setState({
-                giftInfo
-            });
-        }
+                weChatCouponList: Array.isArray(res) ?
+                    res.map(item => ({
+                        ...item,
+                        giftType: '112',
+                        giftName: item.couponName,
+                        giftItemID: item.itemID,
+                        giftValue: item.couponValue / 100
+                    })) : []
+            })
+        }).catch(e => {
+        })
     }
-    proGiftTreeData(giftTypes) {
-        const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90 && giftItem.giftType != 80);
-        let treeData = [];
-        _giftTypes.map((gt, idx) => {
-            treeData.push({
-                label: (_.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }) || {}).label,
-                key: gt.giftType,
-                children: [],
-            });
-            gt.crmGifts.map((gift) => {
-                treeData[idx].children.push({
-                    label: gift.giftName,
-                    value: `${gift.giftItemID},${gift.giftName}`,
-                    key: gift.giftItemID,
-                });
-            });
-        });
-        return treeData = _.sortBy(treeData, 'key');
-    }
+
     remove(index) {
         const _infos = this.state.infos;
         _infos.splice(index, 1);
@@ -234,29 +236,25 @@ class ReturnGift extends React.Component {
 
     renderItems() {
         const filterOffLine = this.props.filterOffLine;// 支持到店属性
-        let _giftInfo = [];
-        const giftInfo = this.state.giftInfo;
-        if (filterOffLine) {
-            giftInfo.forEach((giftTypes) => {
-                if (availableGiftTypes.includes(String(giftTypes.giftType))) {
-                    _giftInfo.push({
-                        giftType: giftTypes.giftType,
-                        index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
-                        crmGifts: giftTypes.crmGifts.filter((gift) => {
-                            return offlineCanUseGiftTypes.includes(String(giftTypes.giftType)) ? true : gift.isOfflineCanUsing // 为true表示支持到店
-                        }),
-                    })
-                }
-            });
-        } else {
-            giftInfo.forEach((giftTypes) => {
+        const allCrmGifts = this.props.allCrmGifts.toJS();
+        const allWeChatCouponList = this.state.weChatCouponList;
+        let _giftInfo = [{
+            giftType: '112',
+            index: 0,
+            crmGifts: allWeChatCouponList
+        }];
+        allCrmGifts.forEach((giftTypes) => {
+            if (availableGiftTypes.includes(String(giftTypes.giftType))) {
                 _giftInfo.push({
                     giftType: giftTypes.giftType,
                     index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
-                    crmGifts: giftTypes.crmGifts
+                    crmGifts: filterOffLine ? giftTypes.crmGifts.filter((gift) => {
+                        return offlineCanUseGiftTypes.includes(String(giftTypes.giftType)) ? true : gift.isOfflineCanUsing // 为true表示支持到店
+                    }) : giftTypes.crmGifts,
                 })
-            });
-        }
+            }
+        });
+        _giftInfo.sort((a, b) => a.index - b.index)
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const toggle = !disArr[index];
@@ -265,6 +263,11 @@ class ReturnGift extends React.Component {
             this.setState({ disArr })
         };
         return this.state.infos.map((info, index) => {
+            // 微信支付代金券实体
+            let couponEntity;
+            if (info.giftInfo.giftType == '112') {
+                couponEntity = this.state.weChatCouponList.find(item => item.itemID == info.giftInfo.giftItemID)
+            }
             return (
                 <div className={styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
@@ -315,9 +318,7 @@ class ReturnGift extends React.Component {
                             <ExpandTree
                                 idx={index}
                                 value={this.getGiftValue(index)}
-                                data={_.sortBy((_giftInfo).filter((cat) => {
-                                    return cat.giftType && cat.giftType != 90
-                                }), 'index')}
+                                data={_giftInfo}
                                 onChange={(value) => {
                                     this.handleGiftChange(value, index);
                                 }}
@@ -360,25 +361,45 @@ class ReturnGift extends React.Component {
                                     />
                                 </FormItem> : null
                         }
-
-                        <FormItem
-                            className={styles.FormItemStyle}
-                        >
-                            <span className={styles.formLabel}>生效方式</span>
-                            <RadioGroup
-                                className={styles.radioMargin}
-                                value={info.giftValidType > 1 ? '0' : info.giftValidType}
-                                onChange={val => this.handleValidateTypeChange(val, index)}
-                            >
-                                {
-                                    VALIDATE_TYPE.map((item, index) => {
-                                        return <Radio value={item.value} key={index}>{item.name}</Radio>
-                                    })
-                                }
-                            </RadioGroup>
-                        </FormItem>
-
-                        {this.renderValidOptions(info, index)}
+                        {
+                            info.giftInfo.giftType == '112' ? (
+                                <div>
+                                    { !!couponEntity && (
+                                        <div style={{ paddingLeft: 120, margin: '12px 0'}}>
+                                            <WeChatCouponCard entity={couponEntity}  />
+                                        </div>
+                                    )}
+                                    { !!couponEntity && (
+                                        <Alert
+                                            message={`当前状态：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: '未知'}).label}`}
+                                            description="券未激活时无法发放成功，请确认。实际返券张数以微信支付商户平台设置的用户参与次数为准"
+                                            type="warning"
+                                            showIcon
+                                        />
+                                    )}
+                                </div>
+                            ) : (
+                                <div>
+                                    <FormItem
+                                        className={styles.FormItemStyle}
+                                    >
+                                        <span className={styles.formLabel}>生效方式</span>
+                                        <RadioGroup
+                                            className={styles.radioMargin}
+                                            value={info.giftValidType > 1 ? '0' : info.giftValidType}
+                                            onChange={val => this.handleValidateTypeChange(val, index)}
+                                        >
+                                            {
+                                                VALIDATE_TYPE.map((item, index) => {
+                                                    return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                                })
+                                            }
+                                        </RadioGroup>
+                                    </FormItem>
+                                    {this.renderValidOptions(info, index)}
+                                </div>
+                            )
+                        }
                     </div>
 
                 </div>
@@ -570,7 +591,12 @@ class ReturnGift extends React.Component {
             this.state.infos[index].giftInfo.giftName === null) {
             return null;
         }
-        return [this.state.infos[index].giftInfo.giftItemID, this.state.infos[index].giftInfo.giftName].join(',');
+        return [
+            this.state.infos[index].giftInfo.giftItemID,
+            this.state.infos[index].giftInfo.giftName,
+            this.state.infos[index].giftInfo.giftType,
+            this.state.infos[index].giftInfo.giftValue,
+        ].join(',');
     }
 
     handleGiftChange(value, index) {
@@ -578,6 +604,8 @@ class ReturnGift extends React.Component {
             const newValue = value.split(',');
             const _infos = this.state.infos;
             _infos[index].giftInfo.giftName = newValue[1];
+            _infos[index].giftInfo.giftType = newValue[2];
+            _infos[index].giftInfo.giftValue = newValue[3];
             _infos[index].giftInfo.giftItemID = newValue[0];
             _infos[index].giftInfo.validateStatus = 'success';
             _infos[index].giftInfo.msg = null;
@@ -589,6 +617,8 @@ class ReturnGift extends React.Component {
         } else {
             const _infos = this.state.infos;
             _infos[index].giftInfo.giftName = null;
+            _infos[index].giftInfo.giftValue = null;
+            _infos[index].giftInfo.giftType = null;
             _infos[index].giftInfo.giftItemID = null;
             _infos[index].giftInfo.validateStatus = 'error';
             _infos[index].giftInfo.msg = '必须选择礼券';
@@ -682,7 +712,7 @@ class ReturnGift extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        allCrmGifts: state.sale_promotionDetailInfo_NEW.getIn(['$giftInfo', 'data']),
         user: state.user.toJS(),
     };
 };

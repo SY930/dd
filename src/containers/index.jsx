@@ -30,3 +30,5 @@ export { default as LoyaltyPromotionPage } from './NewCreatePromotions/LoyaltyPr
 export { default as FansInteractivityPage } from './NewCreatePromotions/FansInteractivityPage';
 export { default as ShareRules } from './ShareRules';
 export { default as PromotionCalendar } from './PromotionCalendar';
+export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
+export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCouponCreate';

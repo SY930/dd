@@ -497,7 +497,6 @@ export const queryWechatMpInfo = (opts) => {
     return (dispatch) => {
         dispatch({
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
-            payload: undefined,
         });
         return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
             .then((mpList) => {
@@ -509,7 +508,6 @@ export const queryWechatMpInfo = (opts) => {
             }, err => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
-                    payload: undefined,
                 });
                 console.log(err)
             })
