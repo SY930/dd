@@ -1,5 +1,3 @@
-
-const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
 const GiftCfg = {
     giftType: [
         {
@@ -267,11 +265,11 @@ const GiftCfg = {
     ],
     trdChannelIDs: [
         { label: '微信优惠券', value: 10 },
-        { label: '饮食通', value: 2, disabled: releaseENV },
-        { label: '雅座', value: 3, disabled: releaseENV },
-        { label: '眉州', value: 4, disabled: releaseENV },
-        { label: '5i', value: 5, disabled: releaseENV },
-        { label: '拉格代尔', value: 6, disabled: releaseENV },
+        { label: '饮食通', value: 2 },
+        { label: '雅座', value: 3 },
+        { label: '眉州', value: 4 },
+        { label: '5i', value: 5 },
+        { label: '拉格代尔', value: 6 },
         { label: '非码', value: 20 },
         { label: '企迈小程序', value: 30 },
         { label: '银行服务商 - 众联享付', value: 40 },

@@ -1,22 +1,12 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber, message } from 'antd';
+import React from 'react'
+import {
+    Col,
+    Form,
+    Select,
+    message,
+} from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -34,16 +24,7 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
 
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
@@ -70,7 +51,6 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.renderupGradeDishesBox = this.renderupGradeDishesBox.bind(this);
         this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.countTypeChange = this.countTypeChange.bind(this);
         this.subjectTypeChange = this.subjectTypeChange.bind(this);
         this.stageConditionChange = this.stageConditionChange.bind(this);
@@ -601,11 +581,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
     }
 }
 
@@ -613,13 +589,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

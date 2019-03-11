@@ -10,14 +10,11 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
+import {
+    Form,
+    Radio,
+} from 'antd';
 import { connect } from 'react-redux'
-import ReactDOM from 'react-dom';
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -70,11 +67,6 @@ class RandomCutDetailInfo extends React.Component {
             billValue: null,
             unitType: '1',
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderRulesComponent = this.renderRulesComponent.bind(this);
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
         this.onPriceInputChange = this.onPriceInputChange.bind(this);
         this.onBillInputChange = this.onBillInputChange.bind(this);
@@ -126,47 +118,6 @@ class RandomCutDetailInfo extends React.Component {
         this.setState({
             display,
         });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !=
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            if (_rule.randomType == 'RATIO') {
-                this.setState({
-                    ruleType: '1',
-                    billRule: [
-                        {
-                            validationStatus: 'success',
-                            helpMsg: null,
-                            start: _rule.randomMin || null,
-                            end: _rule.randomMax || null,
-                        },
-                    ],
-                    billValue: _rule.stageAmount,
-                    unitType: _rule.randomUnit || '1',
-                });
-            } else {
-                this.setState({
-                    ruleType: '0',
-                    priceRule: [
-                        {
-                            validationStatus: 'success',
-                            helpMsg: null,
-                            start: _rule.randomMin || null,
-                            end: _rule.randomMax || null,
-                        },
-                    ],
-                    priceValue: _rule.stageAmount,
-                    unitType: _rule.randomUnit || '',
-                });
-            }
-        }
     }
 
     handleSubmit = (cbFn) => {
@@ -445,8 +396,6 @@ class RandomCutDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
     }

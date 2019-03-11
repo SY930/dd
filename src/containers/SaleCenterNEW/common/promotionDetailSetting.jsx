@@ -182,7 +182,7 @@ class PromotionDetailSetting extends React.Component {
         return []
     }
     componentDidMount() {
-        var opts = {
+        const opts = {
             _groupID: this.props.user.accountInfo.groupID,
         };
         // autoFetch只有菜品优惠券才发请求
@@ -194,7 +194,7 @@ class PromotionDetailSetting extends React.Component {
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS() : [];
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         // 当为第二份打折时，过滤套餐
-        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
+        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) === '1050') {
             foodCategoryCollection = this.filterGroup(foodCategoryCollection);
         }
         this.setState({

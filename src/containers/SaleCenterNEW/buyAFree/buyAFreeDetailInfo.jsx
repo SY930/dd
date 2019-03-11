@@ -1,13 +1,3 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Icon } from 'antd';
 import { connect } from 'react-redux'
@@ -19,20 +9,11 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
 const RULE_TYPE = [
     { key: '0', value: '任意消费满' },
     { key: '1', value: '任意消费每满' },
@@ -408,11 +389,8 @@ class BuyAFreeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
     }
 }
 

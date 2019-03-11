@@ -1,14 +1,4 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-import React, { Component } from 'react'
+import React from 'react'
 import { Form, Radio } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
@@ -18,13 +8,8 @@ import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/pro
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 const Immutable = require('immutable');
 
 const FormItem = Form.Item;
@@ -49,7 +34,6 @@ class BuyCutDetailInfo extends React.Component {
         this.renderGiveDishNumInput = this.renderGiveDishNumInput.bind(this);
         this.renderCutWay = this.renderCutWay.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onDiscountRateChange = this.onDiscountRateChange.bind(this);
         this.onFreeAmountChange = this.onFreeAmountChange.bind(this);
@@ -60,8 +44,7 @@ class BuyCutDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         this.setState({
             display,
         });
@@ -298,11 +281,7 @@ class BuyCutDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
     }
 }
 
@@ -310,13 +289,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

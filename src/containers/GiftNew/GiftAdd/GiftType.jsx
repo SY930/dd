@@ -18,7 +18,6 @@ import { queryUnbindCouponPromotion } from '../../../redux/actions/saleCenterNEW
 import { jumpPage } from '@hualala/platform-base'
 import {GIFT_PAGE} from "../../../constants/entryCodes";
 
-const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftType extends React.Component {
     constructor(props) {
         super(props);
@@ -50,10 +49,7 @@ class GiftType extends React.Component {
         this.props.emptyGetSharedGifts();
     }
     render() {
-        // console.log(this.props)
         const value = this.state.gift.value;
-        // const releaseENV = HUALALA.ENVIRONMENT == 'production-release';
-        // const giftTypes = releaseENV ? GiftCfg.giftType.filter(type => type.value != 100) : GiftCfg.giftType
         const giftTypes = GiftCfg.giftType
         const GiftAdd = (v) => {
             switch (v) {
@@ -102,7 +98,7 @@ class GiftType extends React.Component {
                         <ul>
                             {giftTypes.map((gift, index) => {
                                 return (
-                                    //{/* <Authority rightCode="marketing.lipinxin.create" key={gift.value}> */ }
+
                                     <div>
                                         <a
                                             key={gift.value}

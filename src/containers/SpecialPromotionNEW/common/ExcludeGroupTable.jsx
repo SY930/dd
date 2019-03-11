@@ -16,10 +16,6 @@ import {
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 class ExcludeGroupTable extends React.Component {
     constructor(props) {
         super(props);
@@ -61,18 +57,6 @@ class ExcludeGroupTable extends React.Component {
                     <div key={'eventDate'}><h5 className={styles.cardName} key={'eventDate'}>{`${record.eventStartDate || '--'}/${record.eventEndDate || '--'}`}</h5></div>
                 )
             },
-            // }, {
-            //     title: '占用会员群体信息' ,
-            //     dataIndex: 'idNames',
-            //     key: 'idNames',
-            //     className: 'TableTxtCenter',
-            //     render:(text, record, index)=>{
-            //         return record.idNames.map((idName,i)=>{
-            //             return (
-            //                 <div key={`idName${i}`}><h5 className={styles.cardName} key={`cardName${i}`}>{idName}</h5></div>
-            //             )
-            //         })
-            //     }
         },
         ];
         return (
@@ -94,7 +78,6 @@ class ExcludeGroupTable extends React.Component {
 const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
-        user: state.user.toJS(),
     };
 };
 

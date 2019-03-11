@@ -59,7 +59,6 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
-import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
 import PromotionNameSelect from '../common/PromotionNameSelect';
 
@@ -72,7 +71,6 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { promotionAutoRunState as sale_promotionAutoRunState } from '../../../redux/reducer/saleCenterNEW/promotionAutoRun.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
-import { steps as sale_steps } from '../../../redux/modules/steps';
 import {axiosData, getAccountInfo} from "../../../helpers/util";
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import {
@@ -183,7 +181,6 @@ const mapDispatchToProps = (dispatch) => {
     sale_giftInfoNew,
     sale_promotionAutoRunState,
     sale_mySpecialActivities_NEW,
-    sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MyActivities extends React.Component {
@@ -227,7 +224,6 @@ class MyActivities extends React.Component {
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
-        this.renderModals = this.renderModals.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
@@ -718,39 +714,6 @@ class MyActivities extends React.Component {
         );
     }
 
-    renderModals() {
-        const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const checkDetailInfo = this.checkDetailInfo;
-        let renderContentOfTheModal;
-        if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
-            renderContentOfTheModal = (
-                <div className={styles.spinFather}>
-                    <Spin size="large" />
-                </div>)
-        }
-        if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
-            renderContentOfTheModal = (
-                <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
-                </div>
-            );
-        }
-        if (promotionDetailInfo.status === 'success') {
-            renderContentOfTheModal = (<PromotionDetail record={promotionDetailInfo.data.promotionInfo} />);
-        }
-
-        return (
-            <Modal
-                title="活动详情"
-                visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>关闭</Button>}
-                closable={false}
-            >
-                {renderContentOfTheModal}
-            </Modal>
-        );
-    }
-
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
         const {
@@ -1106,7 +1069,6 @@ class MyActivities extends React.Component {
                                 <a
                                     href="#"
                                     onClick={() => {
-                                        { /* this.checkDetailInfo(text, record, index); */ }
                                         this.props.toggleIsUpdate(false)
                                         this.handleUpdateOpe(text, record, index);
                                     }}

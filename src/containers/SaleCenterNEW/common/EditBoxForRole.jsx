@@ -1,12 +1,9 @@
-import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
 import { connect } from 'react-redux'; import { Tree } from 'antd';
 import styles from '../ActivityPage.less';
 import BaseHualalaModal from './BaseHualalaModal';
 import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { is } from 'immutable';
-
-const TreeNode = Tree.TreeNode;
 
 class EditBoxForSubject extends React.Component {
     constructor(props) {

@@ -1,35 +1,16 @@
 
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-08T13:42:07+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
+
 
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
 import { connect } from 'react-redux'
-import ReactDOM from 'react-dom';
 
-const Immutable = require('immutable');
 
-import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
-
-const FormItem = Form.Item;
-
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
@@ -37,18 +18,13 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
-
 const type = [
     { value: '0', name: '下单即折扣' },
     { value: '1', name: '任意菜品消费满' },
     { value: '2', name: '指定菜品消费满' },
 ]
+const FormItem = Form.Item;
+const Immutable = require('immutable');
 const Option = Select.Option;
 
 class DiscountDetailInfo extends React.Component {
@@ -72,11 +48,6 @@ class DiscountDetailInfo extends React.Component {
             ruleType: '0',
             targetScope: '0',
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderRulesComponent = this.renderRulesComponent.bind(this);
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
         this.addRule = this.addRule.bind(this);
         this.deleteRule = this.deleteRule.bind(this);
@@ -97,8 +68,7 @@ class DiscountDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
         const _scopeLstLength = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         const _ruleType = _rule.stageType == '2' ? (_scopeLstLength == 0 ? '1' : '2') : '0';
         this.setState({
             display,
@@ -121,41 +91,6 @@ class DiscountDetailInfo extends React.Component {
             discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !=
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            const _categoryOrDish = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
-            let { display } = this.state;
-            display = !this.props.isNew;
-            this.setState({
-                display,
-                ruleType: _rule.stageType || '0',
-                ruleInfo: _rule.stage ? _rule.stage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.stageAmount,
-                        end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
-                        validationStatus: 'success',
-                        helpMsg: null,
-                    }
-                }) : [{
-                    validationStatus: 'success',
-                    helpMsg: null,
-                    start: null,
-                    end: this.state.discount,
-                }],
-                discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
-                targetScope: _categoryOrDish,
-            });
-        }
     }
 
     handleSubmit = (cbFn) => {
@@ -250,7 +185,6 @@ class DiscountDetailInfo extends React.Component {
     }
 
     renderPromotionRule() {
-        const { getFieldDecorator } = this.props.form;
         return (
             <div>
                 <FormItem
@@ -479,8 +413,6 @@ class DiscountDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
     }

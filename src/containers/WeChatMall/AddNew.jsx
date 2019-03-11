@@ -80,11 +80,6 @@ function mapDispatchToProps(dispatch) {
     };
 }
 @registerPage([WECHAT_MALL_CREATE], {
-    // sale_promotionBasicInfo_NEW,
-    // sale_promotionDetailInfo_NEW,
-    // sale_promotionScopeInfo_NEW,
-    // sale_fullCut_NEW,
-    // sale_myActivities_NEW,
     sale_saleCenter_NEW,
 })
 @connect(mapStateToProps, mapDispatchToProps)
@@ -234,10 +229,6 @@ class NewActivity extends React.Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
-        // save the promotionType to redux
-        /*this.props.setPromotionType({
-            promotionType: activity.get('key'),
-        });*/
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,

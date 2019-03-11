@@ -318,7 +318,6 @@ class EditBoxForDishes extends React.Component {
                 })
             }
         });
-        // /////////////////////////////////////////
         const storeOptions = treeData[indexArray].foods.map((item) => {
             if (typeof item === 'object') {
                 return item
@@ -346,20 +345,8 @@ class EditBoxForDishes extends React.Component {
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        user: state.user.toJS(),
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
 
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
-        },
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditBoxForDishes);
+export default connect(mapStateToProps)(EditBoxForDishes);

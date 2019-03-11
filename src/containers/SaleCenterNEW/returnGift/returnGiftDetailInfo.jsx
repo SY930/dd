@@ -11,12 +11,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, TreeSelect } from 'antd';
 import { connect } from 'react-redux'
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import ReturnGift from './returnGift'; // 可增删的输入框 组件
@@ -94,14 +88,9 @@ class ReturnGiftDetailInfo extends React.Component {
             },
             needSyncToAliPay: 0,
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.renderRuleDetail = this.renderRuleDetail.bind(this);
         this.handleFinish = this.handleFinish.bind(this);
         this.handlePre = this.handlePre.bind(this);
         this.getRule = this.getRule.bind(this);
-        this.renderPrintCode = this.renderPrintCode.bind(this);
     }
 
 
@@ -109,8 +98,7 @@ class ReturnGiftDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleFinish,
         });
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         this.setState({
             display,
             needSyncToAliPay: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'needSyncToAliPay']),
@@ -191,90 +179,6 @@ class ReturnGiftDetailInfo extends React.Component {
             this.setState({
                 rule,
             })
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !=
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            const { rule } = this.state;
-
-            if (Object.keys(_rule).length > 0) {
-                rule.type = _rule.stageType;
-                rule.gainCodeMode = _rule.gainCodeMode || '1';
-                rule.printCode = _rule.printCode || 0;
-                if (_rule.stageType == '2') {
-                    _rule.stage.map((stage, index) => {
-                        if (rule.data[index] == undefined) {
-                            rule.data.push({
-                                stageAmount: {
-                                    value: null,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                                giftNum: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftInfo: {
-                                    giftName: null,
-                                    giftItemID: null,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                                // 使用张数
-                                giftMaxUseNum: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftValidType: '0',
-
-                                giftEffectiveTime: {
-                                    value: 0,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftValidDays: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                            });
-                        }
-                        rule.data[index].stageAmount.value = stage.stageAmount;
-                        rule.data[index].giftNum.value = stage.giftNum;
-                        rule.data[index].giftInfo.giftName = stage.giftName;
-                        rule.data[index].giftInfo.giftItemID = stage.giftItemID;
-                        rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                        rule.data[index].giftValidType = stage.giftValidType;
-                        rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] :  stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 :  stage.giftEffectiveTime;
-                    })
-                } else {
-                    rule.data[0].stageAmount.value = _rule.stageAmount;
-                    rule.data[0].giftNum.value = _rule.giftNum;
-                    rule.data[0].giftInfo.giftName = _rule.giftName;
-                    rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
-                    rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
-                    rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                    rule.data[0].giftValidType = _rule.giftValidType;
-                    rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
-                }
-                this.setState({
-                    rule,
-                })
-            }
         }
     }
 
@@ -441,28 +345,6 @@ class ReturnGiftDetailInfo extends React.Component {
     renderPromotionRule() {
         return (
             <div>
-                {/* <FormItem
-                    label="同步到支付宝"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <RadioGroup
-                        value={this.state.needSyncToAliPay}
-                        onChange={(e) => {
-                            this.setState({ needSyncToAliPay: e.target.value }, () => {
-                                // this.props.onChange && this.props.onChange(this.state.rule);
-                            });
-                        }}
-                    >
-                        {
-                            [{ value: 0, name: '否' }, { value: 1, name: '是' }]
-                                .map((type) => {
-                                    return <Radio key={type.value} value={type.value}>{type.name}</Radio >
-                                })
-                        }
-                    </RadioGroup >
-                </FormItem> */}
                 <FormItem
                     label="券显示方式"
                     className={styles.FormItemStyle}
@@ -610,11 +492,7 @@ class ReturnGiftDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 }
 
@@ -623,11 +501,6 @@ function mapDispatchToProps(dispatch) {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
         },
-
-        fetchGiftListInfo: (opts) => {
-            dispatch(fetchGiftListInfoAC(opts))
-        },
-
     }
 }
 

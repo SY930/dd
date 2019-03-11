@@ -14,11 +14,8 @@ import { Row, Col, Icon, Input, DatePicker, Tag, Modal, Form, Select, message, S
 const CheckboxGroup = Checkbox.Group;
 import { connect } from 'react-redux'
 
-
-import SeniorDateSetting from './SeniorDateSetting/SeniorDateSetting';// 日期高级设置
 import styles from '../ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-import { WrappedAdvancedTimeSetting } from './AdvancedTimeSetting';
 import CustomTimeRangeInput from './CustomTimeRangeInput';
 
 const Immutable = require('immutable');

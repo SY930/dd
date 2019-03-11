@@ -1,17 +1,13 @@
 ﻿import React, {createRef} from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { jumpPage } from '@hualala/platform-base'
-import { fetchData, axiosData } from '../../../helpers/util';
+import { axiosData } from '../../../helpers/util';
 import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
-import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
-// import FoodCatTree from './FoodCatTree';
 import FoodBox from './FoodBox';
 import MoreFoodBox from './MoreFoodBox';
 import GiftPromotion from './GiftPromotion';
@@ -29,7 +25,6 @@ import {
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
-import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";

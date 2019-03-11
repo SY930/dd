@@ -7,16 +7,10 @@
 
 
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 import { connect } from 'react-redux';
 
 import { Row, Col, Icon, DatePicker, Button, Radio, Form, Input, InputNumber } from 'antd';
 import styles from '../ActivityPage.less';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox'; // 编辑
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 import {

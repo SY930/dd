@@ -6,28 +6,26 @@
  */
 
 
-import React, { Component } from 'react';
-import { render } from 'react-dom';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { Row, Col, Tree, Table, Modal, Form, Icon } from 'antd';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
-import { HualalaEditorBox, HualalaTreeSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import {
+    HualalaTreeSelect,
+    HualalaSelected,
+    HualalaSearchInput,
+} from '../../../components/common';
 import HualalaGroupSelectS from './HualalaGroupSelect/index';
 
 class CollocationTable extends React.Component {
@@ -820,7 +818,6 @@ class CollocationTable extends React.Component {
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        user: state.user.toJS(),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 };
@@ -829,14 +826,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 };

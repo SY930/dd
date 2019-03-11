@@ -13,7 +13,6 @@ import { Input, Form, Select, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-// import { WrappedAdvancedTimeSetting } from '../../SaleCenterNEW/common/AdvancedTimeSetting';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetSpecialBasicInfoAC,

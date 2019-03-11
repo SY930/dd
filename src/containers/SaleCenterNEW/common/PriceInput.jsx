@@ -12,7 +12,6 @@ import { Form, Input, Select, Button } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-import styles from '../ActivityPage.less';
 
 class PriceInput extends React.Component {
     constructor(props) {

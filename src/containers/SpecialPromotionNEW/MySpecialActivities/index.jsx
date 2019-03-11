@@ -49,7 +49,6 @@ import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
-import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
@@ -59,7 +58,6 @@ import {
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
-import {isFormalRelease} from "../../../utils/index";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 
 const confirm = Modal.confirm;
@@ -129,7 +127,6 @@ const mapDispatchToProps = (dispatch) => {
     sale_mySpecialActivities_NEW,
     sale_specialPromotion_NEW,
     sale_crmCardTypeNew,
-    sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MySpecialActivities extends React.Component {

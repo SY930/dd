@@ -10,9 +10,6 @@
 
 
 import React from 'react';
-// if (process.env.__CLIENT__ === true) {
-//     require('../../../components/common/components.less')
-// }
 import { connect } from 'react-redux';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';
 import { Steps, Button } from 'antd';

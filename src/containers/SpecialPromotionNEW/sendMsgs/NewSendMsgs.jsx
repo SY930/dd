@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
-import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import StepTwo from './stepTwo';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
 
@@ -69,7 +68,6 @@ class NewSendMsgs extends NewPromotion {
 const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW.toJS(),
-        user: state.user.toJS(),
     };
 };
 

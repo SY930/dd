@@ -7,26 +7,24 @@
 
 
 import React, { Component } from 'react';
-import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import Immutable, { List } from 'immutable';
+import Immutable from 'immutable';
 import _ from 'lodash';
 
 import { Row, Col, Tree, Table, Input, Popconfirm, message, Modal, Form, Spin, Checkbox } from 'antd';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 import styles from '../ActivityPage.less';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox'; // 编辑
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSearchInput, HualalaSelectedTable } from '../../../components/common';
+import {
+    HualalaTreeSelect,
+    HualalaGroupSelect,
+    HualalaSearchInput,
+    HualalaSelectedTable,
+} from '../../../components/common';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -658,14 +656,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 };

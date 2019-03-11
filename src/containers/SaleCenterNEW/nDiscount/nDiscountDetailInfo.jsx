@@ -1,32 +1,15 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   xf
- * @Last modified time: 2017-03-02T14:31:40+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, Input, message } from 'antd';
 import { connect } from 'react-redux'
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 
 const FormItem = Form.Item;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import { NDiscount } from './NDiscount'; // 可增删的输入框 组件
 
 import {
@@ -35,14 +18,6 @@ import {
 import FoodBox from "../../GiftNew/GiftAdd/FoodBox";
 
 const Immutable = require('immutable');
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
-
 
 class NDiscountDetailInfo extends React.Component {
     constructor(props) {
@@ -82,10 +57,6 @@ class NDiscountDetailInfo extends React.Component {
                     priceLst
                 });
             }
-        }
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            this.initRule(nextProps);
         }
     }
 
@@ -236,8 +207,6 @@ class NDiscountDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
     }
 }

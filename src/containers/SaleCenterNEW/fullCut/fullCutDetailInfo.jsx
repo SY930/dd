@@ -1,26 +1,12 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-08T13:17:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, Icon } from 'antd';
 import { connect } from 'react-redux'
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
 const FormItem = Form.Item;
@@ -31,22 +17,6 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Immutable = require('immutable');
-
-const client = [
-    {
-        key: '0',
-        value: '0',
-        name: '不限制',
-    }, {
-        key: '1',
-        value: '1',
-        name: '仅会员',
-    }, {
-        key: '2',
-        value: '2',
-        name: '非会员',
-    },
-];
 
 const type = [
     {
@@ -502,11 +472,7 @@ class FullCutDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        PromotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 }
 

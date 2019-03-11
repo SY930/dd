@@ -9,15 +9,16 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
+import {
+    Form,
+    Select,
+    Radio,
+} from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 
 const RadioGroup = Radio.Group;
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -35,16 +36,7 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
 
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
@@ -97,8 +89,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         let ruleType = _scopeLst.size > 0 ? 1 : 0;
         if (Number(_rule.stageStyle) === 1) {
             ruleType += 2;
@@ -427,11 +418,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
     }
 }
 
@@ -439,13 +427,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }
