@@ -24,7 +24,7 @@ import {
     SALE_CENTER_RESET_SPECIAL_PROMOTION,
     SALE_CENTER_FSM_SETTLE_UNIT,
     SALE_CENTER_GET_EXCLUDE_EVENT_LIST, SALE_CENTER_FSM_EQUITY_UNIT, SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
-    SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP,
+    SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP, SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
 } from '../../actions/saleCenterNEW/specialPromotion.action';
 
 const $initialState = Immutable.fromJS({
@@ -58,6 +58,7 @@ const $initialState = Immutable.fromJS({
     $giftInfo: [],
     addStatus: {
         status: null,
+        availableShopQueryStatus: 'success', // 线上餐厅送礼专用, 表示限制店铺的查询情况
     },
 
 });
@@ -94,6 +95,9 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_ADD_SPECIAL_PROMOTION_FAIL:
             return $$state.setIn(['addStatus', 'status'], 'fail');
+
+        case SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS:
+            return $$state.setIn(['addStatus', 'availableShopQueryStatus'], action.payload);
 
         case SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START:
             return $$state.setIn(['addStatus', 'status'], 'pending');
