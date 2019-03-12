@@ -145,6 +145,8 @@ class ReturnGiftDetailInfo extends React.Component {
                             giftInfo: {
                                 giftName: null,
                                 giftItemID: null,
+                                giftType: null,
+                                giftValue: null,
                                 validateStatus: 'success',
                                 msg: null,
                             },
@@ -174,107 +176,27 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[index].giftNum.value = stage.giftNum;
                     rule.data[index].giftInfo.giftName = stage.giftName;
                     rule.data[index].giftInfo.giftItemID = stage.giftItemID;
+                    rule.data[index].giftInfo.giftType = stage.giftType || null;
+                    rule.data[index].giftInfo.giftValue = stage.freeCashVoucherValue || null;
                     rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                    rule.data[index].giftValidType = stage.giftValidType;
-                    rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
+                    rule.data[index].giftValidType = stage.giftType == 112 ? '0' : stage.giftValidType;
+                    rule.data[index].giftEffectiveTime.value = stage.giftType == 112 ? 0 : stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
                 })
             } else {
                 rule.data[0].stageAmount.value = _rule.stageAmount;
                 rule.data[0].giftNum.value = _rule.giftNum;
                 rule.data[0].giftInfo.giftName = _rule.giftName;
                 rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
+                rule.data[0].giftInfo.giftType = _rule.giftType || null;
+                rule.data[0].giftInfo.giftValue = _rule.freeCashVoucherValue || null;
                 rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
                 rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                rule.data[0].giftValidType = _rule.giftValidType;
-                rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
+                rule.data[0].giftValidType = _rule.giftType == 112 ? '0' : _rule.giftValidType;
+                rule.data[0].giftEffectiveTime.value = _rule.giftType == 112 ? 0 : _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
             }
             this.setState({
                 rule,
             })
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !=
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            const { rule } = this.state;
-
-            if (Object.keys(_rule).length > 0) {
-                rule.type = _rule.stageType;
-                rule.gainCodeMode = _rule.gainCodeMode || '1';
-                rule.printCode = _rule.printCode || 0;
-                if (_rule.stageType == '2') {
-                    _rule.stage.map((stage, index) => {
-                        if (rule.data[index] == undefined) {
-                            rule.data.push({
-                                stageAmount: {
-                                    value: null,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                                giftNum: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftInfo: {
-                                    giftName: null,
-                                    giftItemID: null,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                                // 使用张数
-                                giftMaxUseNum: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftValidType: '0',
-
-                                giftEffectiveTime: {
-                                    value: 0,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-
-                                giftValidDays: {
-                                    value: 1,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                },
-                            });
-                        }
-                        rule.data[index].stageAmount.value = stage.stageAmount;
-                        rule.data[index].giftNum.value = stage.giftNum;
-                        rule.data[index].giftInfo.giftName = stage.giftName;
-                        rule.data[index].giftInfo.giftItemID = stage.giftItemID;
-                        rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                        rule.data[index].giftValidType = stage.giftValidType;
-                        rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] :  stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 :  stage.giftEffectiveTime;
-                    })
-                } else {
-                    rule.data[0].stageAmount.value = _rule.stageAmount;
-                    rule.data[0].giftNum.value = _rule.giftNum;
-                    rule.data[0].giftInfo.giftName = _rule.giftName;
-                    rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
-                    rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
-                    rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                    rule.data[0].giftValidType = _rule.giftValidType;
-                    rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
-                }
-                this.setState({
-                    rule,
-                })
-            }
         }
     }
 
@@ -285,6 +207,19 @@ class ReturnGiftDetailInfo extends React.Component {
                 gainCodeMode: this.state.rule.gainCodeMode,
                 printCode: this.state.rule.printCode,
                 stage: this.state.rule.data.map((item, index) => {
+                    if (item.giftInfo.giftType == '112') {
+                        return {
+                            stageAmount: item.stageAmount.value,
+                            giftValidType: '0',
+                            giftValidDays: 1,
+                            giftEffectiveTime: 0,
+                            giftNum: item.giftNum.value,
+                            giftName: item.giftInfo.giftName,
+                            giftItemID: item.giftInfo.giftItemID,
+                            giftType: item.giftInfo.giftType,
+                            freeCashVoucherValue: item.giftInfo.giftValue
+                        }
+                    }
                     if (item.giftValidType == '0') {
                         return {
                             stageAmount: item.stageAmount.value,
@@ -317,6 +252,23 @@ class ReturnGiftDetailInfo extends React.Component {
                         giftItemID: item.giftInfo.giftItemID,
                     }
                 }),
+            }
+        }
+        if (this.state.rule.data[0].giftInfo.giftType == '112') {
+            return {
+                stageType: this.state.rule.type,
+                giftValidDays: 1,
+                giftEffectiveTime: 0,
+                giftValidType: '0',
+                stageAmount: this.state.rule.data[0].stageAmount.value,
+                giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
+                giftNum: this.state.rule.data[0].giftNum.value,
+                giftName: this.state.rule.data[0].giftInfo.giftName,
+                giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
+                gainCodeMode: this.state.rule.gainCodeMode,
+                printCode: this.state.rule.printCode,
+                giftType: this.state.rule.data[0].giftInfo.giftType,
+                freeCashVoucherValue: this.state.rule.data[0].giftInfo.giftValue,
             }
         }
         if (this.state.rule.data[0].giftValidType == '0') {
@@ -384,6 +336,8 @@ class ReturnGiftDetailInfo extends React.Component {
                 return {
                     giftItemID: null,
                     giftName: null,
+                    giftType: null,
+                    giftValue: null,
                     validateStatus: 'error',
                     msg: '必须选择礼券',
                 }
@@ -441,28 +395,6 @@ class ReturnGiftDetailInfo extends React.Component {
     renderPromotionRule() {
         return (
             <div>
-                {/* <FormItem
-                    label="同步到支付宝"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <RadioGroup
-                        value={this.state.needSyncToAliPay}
-                        onChange={(e) => {
-                            this.setState({ needSyncToAliPay: e.target.value }, () => {
-                                // this.props.onChange && this.props.onChange(this.state.rule);
-                            });
-                        }}
-                    >
-                        {
-                            [{ value: 0, name: '否' }, { value: 1, name: '是' }]
-                                .map((type) => {
-                                    return <Radio key={type.value} value={type.value}>{type.name}</Radio >
-                                })
-                        }
-                    </RadioGroup >
-                </FormItem> */}
                 <FormItem
                     label="券显示方式"
                     className={styles.FormItemStyle}
@@ -568,6 +500,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 maxCount={this.state.rule.type == '2' ? 3 : 1}
                 value={this.state.rule.data}
                 onChange={(val) => {
+                    console.log('val: ', val)
                     const { rule } = this.state;
                     if (val !== undefined) {
                         rule.data = val;
@@ -623,11 +556,6 @@ function mapDispatchToProps(dispatch) {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
         },
-
-        fetchGiftListInfo: (opts) => {
-            dispatch(fetchGiftListInfoAC(opts))
-        },
-
     }
 }
 

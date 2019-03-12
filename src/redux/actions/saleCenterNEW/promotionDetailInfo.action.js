@@ -321,9 +321,6 @@ export const fetchRoleListInfoAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_ROLE_LIST,
         });
-
-        // const config = getSpecifiedUrlConfig('getRole_NEW', opts);
-
         fetch('/api/shopcenter/empapi/queryRole', {
             method: 'POST',
             body: opts,
@@ -361,24 +358,6 @@ export const fetchGiftListInfoAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_GIFT_LIST,
         });
-
-        // fetch('/api/shopcenter/crm/getSortedGifts_dkl', {
-        //     method: 'POST',
-        //     body: JSON.stringify(opts),
-        //     credentials: 'include',
-        //     headers: {
-        //         'Accept': 'application/json; charset=UTF-8',
-        //         'Content-Type': 'application/json; charset=UTF-8',
-        //     },
-        // }).then((response) => {
-        //     if (response.status >= 200 && response.status < 300) {
-        //         if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-        //             return response.json();
-        //         }
-        //         return response.text();
-        //     }
-        //     return Promise.reject(new Error(response.statusText))
-        // }).
         axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data',
         })

@@ -79,7 +79,7 @@ class ExpandTree extends React.Component {
                                 return (
                                     <TreeNode
                                         title={gift.giftName}
-                                        key={`${gift.giftItemID},${gift.giftName}`}
+                                        key={`${gift.giftItemID},${gift.giftName},${gift.giftType},${gift.giftValue}`}
                                         className={'ExpandTreeVisibel'}
                                     />
                                 )
