@@ -314,7 +314,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_FOOD_MENU_SUCCESS:
             foodCategoryCollection = constructTreeDataContainsFoodCategoryAndFood($$state.getIn(['$foodCategoryListInfo', 'data']), Immutable.fromJS(action.payload));
-
+            console.log('foodCategoryCollection: ', foodCategoryCollection)
             return $$state
                 .setIn(['$foodMenuListInfo', 'data'], Immutable.fromJS(action.payload))
                 .setIn(['$foodMenuListInfo', 'initialized'], true)
