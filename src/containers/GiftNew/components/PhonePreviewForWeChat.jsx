@@ -2,7 +2,7 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phone.png';
-import bg from '../../../assets/bg.png';
+import moment from 'moment';
 import bg1 from '../../../assets/bg1.png';
 import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../../constants/weChatTemplateConstants";
 
@@ -33,7 +33,7 @@ class PhonePreviewForWeChat extends PureComponent {
                         alt="oops"
                         style={{
                             position: 'relative',
-                            top: '20px'
+                            top: 20,
                         }}
                     />
                     <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
@@ -56,15 +56,15 @@ class PhonePreviewForWeChat extends PureComponent {
                                 {title || DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].title}
                             </div>
                             <div>
-                                礼品名称 : 15元代金券
+                                {currentType == 3 ? '核销项目 : 免费吃小菜一份2019' : '礼品名称 : 15元代金券'}
                             </div>
                             <div>
-                                礼品数量 : 2个
+                                {currentType == 3 ? `核销时间 : ${moment().format('YYYY年MM月DD日 mm:ss')}` : '礼品数量 : 2个'}
                             </div>
                             <div style={{
                                 marginBottom: 28
                             }}>
-                                领取时间 : 2018.08.22
+                                {currentType == 3 ? '核销门店 : 哗啦啦北京西直门凯德店' : '领取时间 : 2018.08.22' }
                             </div>
                             <div style={{
                                 paddingBottom: 10,
