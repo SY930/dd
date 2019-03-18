@@ -86,9 +86,7 @@ class HualalaEditorBox extends React.Component {
                                 <div key={`${idx}`} className={styles.projectTag}>
                                     <Tag key={item[itemID]} closable={true} afterClose={() => this.handleClose(item)} className={styles.projectTags}>
                                         {
-                                            this.props.itemNameJoinCatName ?
-                                                `${item[this.props.itemNameJoinCatName] ? item[this.props.itemNameJoinCatName] + '---' : ''}${item[itemName]}` :
-                                                item[itemName] || `${item.foodName}  (${item.unit})`
+                                            item[itemName] || `${item.foodName}  (${item.unit})`
                                         }
                                     </Tag>
                                 </div>

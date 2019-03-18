@@ -23,7 +23,7 @@ DEMO:
         // 组件内部已选条目数组【{}，{}，{}】,向外传递值
         this.props.onChange && this.props.onChange(value)
     }}
-/> 
+/>
 
 */
 
@@ -39,9 +39,9 @@ class BaseHualalaModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            leftTreeData: [],
+            leftTreeData: Array.isArray(props.treeData) ? [...props.treeData] : [],
             rightOptionsData: [],
-            hadSelected: new Set(),
+            hadSelected: Array.isArray(props.data) ? [...props.data] : [],
             CurrentSelections: [],
         };
 
@@ -53,17 +53,20 @@ class BaseHualalaModal extends React.Component {
         this.clear = this.clear.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({
-            leftTreeData: this.props.treeData,
-            hadSelected: this.props.data || new Set(),
-        });
-    }
     componentWillReceiveProps(nextProps) {
         if (!is(fromJS(this.props.treeData), fromJS(nextProps.treeData)) || !is(fromJS(this.props.data), fromJS(nextProps.data))) {
+            const hadSelected = Array.isArray(nextProps.data) ? [...nextProps.data] : [];
+            const CurrentSelections = [];
+            const { rightOptionsData } = this.state;
+            rightOptionsData.forEach((entity) => {
+                if (hadSelected.findIndex(item => item[nextProps.innerRightValue] === entity[nextProps.innerRightValue]) > -1) {
+                    CurrentSelections.push(entity[nextProps.innerRightValue])
+                }
+            });
             this.setState({
                 leftTreeData: nextProps.treeData,
-                hadSelected: nextProps.data || new Set(),
+                hadSelected,
+                CurrentSelections,
             })
         }
     }
@@ -72,7 +75,7 @@ class BaseHualalaModal extends React.Component {
         const { outItemName = '', outItemID = '', innerleftLabelKey = '', innerRightLabel = '', innerRightValue = '', innerBottomItemName = '' } = this.props
         const { outLabel = '', innerleftTitle = '', innerBottomTitle = '' } = this.props
         // loop左侧类别树
-        const { leftTreeData, hadSelected = new Set() } = this.state;
+        const { leftTreeData, hadSelected = [] } = this.state;
         const loop = (data) => {
             if (undefined === data) {
                 return null
@@ -90,8 +93,7 @@ class BaseHualalaModal extends React.Component {
                     label={outLabel} // 外层➕下方文案
                     itemName={outItemName} // 外层已选，条目对应的展示name的key
                     itemID={outItemID} // 外层已选，条目对应的展示id的key
-                    data={hadSelected} // 外层已选，展示条目数据s                            
-                    itemNameJoinCatName={this.props.itemNameJoinCatName} // item条目展示名称是否拼接类别名称
+                    data={hadSelected} // 外层已选，展示条目数据s
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
@@ -111,7 +113,6 @@ class BaseHualalaModal extends React.Component {
                             selectdTitle={innerBottomTitle} // Modal内下侧框title
                             itemName={innerBottomItemName} // Modal内下侧已选条目展示name对应的key
                             value={hadSelected} // Modal内下侧已选项s
-                            itemNameJoinCatName={this.props.itemNameJoinCatName} // item条目展示名称是否拼接类别名称
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}
                         />
@@ -122,11 +123,9 @@ class BaseHualalaModal extends React.Component {
     }
 
     clear() {
-        const { hadSelected } = this.state;
-        hadSelected.clear();
         this.setState({
             CurrentSelections: [],
-            hadSelected,
+            hadSelected: [],
         })
     }
 
@@ -151,9 +150,9 @@ class BaseHualalaModal extends React.Component {
         });
 
         const CurrentSelections = [];
-        allMatchItem.forEach((storeEntity) => {
-            if (this.state.hadSelected.has(storeEntity)) {
-                CurrentSelections.push(storeEntity[innerRightValue])
+        allMatchItem.forEach((entity) => {
+            if (this.state.hadSelected.findIndex(item => item[innerRightValue] === entity[innerRightValue]) > -1) {
+                CurrentSelections.push(entity[innerRightValue])
             }
         });
 
@@ -164,29 +163,33 @@ class BaseHualalaModal extends React.Component {
     }
 
     handleEditorBoxChange(value) {
-        const hadSelected = value;
+        const hadSelected = Array.from(value);
         const CurrentSelections = [];
         const { innerRightValue } = this.props;
-        this.state.rightOptionsData.forEach((storeEntity) => {
-            if (hadSelected.has(storeEntity)) {
-                CurrentSelections.push(storeEntity[innerRightValue])
+        this.state.rightOptionsData.forEach((entity) => {
+            if (hadSelected.findIndex(item => item[innerRightValue] === entity[innerRightValue]) > -1) {
+                CurrentSelections.push(entity[innerRightValue])
             }
         });
 
+
         this.setState({
-            hadSelected: value,
+            hadSelected,
             CurrentSelections,
         }, () => {
-            this.props.onChange && this.props.onChange(Array.from(value));
+            this.props.onChange && this.props.onChange(hadSelected);
         });
     }
 
     handleSelectedChange(value) {
-        const hadSelected = this.state.hadSelected;
+        const hadSelected = this.state.hadSelected.slice();
         const { innerRightValue } = this.props;
         let CurrentSelections = this.state.CurrentSelections;
         if (value !== undefined) {
-            hadSelected.delete(value);
+            const index = hadSelected.findIndex(item => item[innerRightValue] === value[innerRightValue]);
+            if (index > -1) {
+                hadSelected.splice(index, 1)
+            }
             CurrentSelections = CurrentSelections.filter((item) => {
                 return item !== value[innerRightValue]
             })
@@ -196,28 +199,32 @@ class BaseHualalaModal extends React.Component {
             hadSelected,
             CurrentSelections,
         }, () => {
-            this.props.onChange && this.props.onChange(Array.from(hadSelected));
+            this.props.onChange && this.props.onChange(hadSelected);
         });
     }
 
     handleGroupSelect(value) {
         if (value instanceof Array) {
-            const selectionsSet = this.state.hadSelected;
+            const selectionsSet = this.state.hadSelected.slice();
             const { innerRightValue } = this.props;
             this.state.rightOptionsData.forEach((shopEntity) => {
                 if (value.includes(shopEntity[innerRightValue])) {
-                    selectionsSet.add(shopEntity);
+                    const index = selectionsSet.findIndex(item => item[innerRightValue] === shopEntity[innerRightValue]);
+                    if (index === -1) {
+                        selectionsSet.push(shopEntity)
+                    }
                 } else {
-                    selectionsSet.delete(shopEntity)
+                    const index = selectionsSet.findIndex(item => item[innerRightValue] === shopEntity[innerRightValue]);
+                    if (index > -1) {
+                        selectionsSet.splice(index, 1)
+                    }
                 }
             });
-
             this.setState({ CurrentSelections: value, hadSelected: selectionsSet });
         }
     }
 
     handleTreeNodeChange(value) {
-        const { hadSelected } = this.state;
         if (value === undefined || value[0] === undefined) {
             return null;
         }
@@ -233,8 +240,9 @@ class BaseHualalaModal extends React.Component {
         }
 
         const CurrentSelections = [];
+        const hadSelected = this.state.hadSelected.slice();
         storeOptions.forEach((storeEntity) => {
-            if (hadSelected.has(storeEntity)) {
+            if (hadSelected.findIndex(item => item[innerRightValue] === storeEntity[innerRightValue]) > -1) {
                 CurrentSelections.push(storeEntity[innerRightValue])
             }
         });

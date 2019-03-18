@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, Col } from 'antd';
+import { Form, Checkbox, Radio, Select, message } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
@@ -82,8 +82,7 @@ class SpecialRangeInfo extends React.Component {
             finish: this.handleSubmit,
             cancel: undefined,
         });
-        // TODO: 这弱智判断方式,  待替换成id
-        if (this.props.specialPromotion.get('$eventInfo').size > 25) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
             let joinRange = [],
                 freeGetJoinRange = [],
@@ -197,10 +196,30 @@ class SpecialRangeInfo extends React.Component {
                 nextFlag = false;
             }
         }
-        if (this.props.type === '23') {
-            opts.shopIDList = shopIDList
-            opts.shopRange = shopIDList.length > 0 ? 1 : 2
-            // if (shopIDList.length === 0) nextFlag = false;
+        if (this.props.type === '23') { // 线上餐厅送礼
+            if (!isPrev) {
+                if (this.props.queryCanUseShopStatus === 'pending') {
+                    message.warning('正在查询可用店铺, 请稍候');
+                    return false;
+                }
+                if (this.props.queryCanUseShopStatus === 'error') {
+                    message.warning('查询可用店铺失败, 请重试');
+                    return false;
+                }
+            }
+            if (shopIDList.length > 0) { // 如果已选店铺, 透传
+                opts.shopIDList = shopIDList;
+            } else if (opts.cardLevelIDList.length > 0) { // 没选店铺 但选了卡类 卡等级
+                const canUseShop = this.props.canUseShopIDs.toJS();
+                const excludeShopIDs = this.props.excludeCardTypeAndShopIDs.toJS().reduce((acc, curr) => {
+                    acc.push(...curr.shopIDList.map(id => `${id}`));
+                    return acc;
+                }, []);
+                opts.shopIDList = canUseShop.filter(id => !excludeShopIDs.includes(id))
+            } else { // 没选店铺且没选卡类
+                opts.shopIDList = [];
+            }
+            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
         }
         // 由于redux里面存的可能是所有字段,所以修改的时候需要把之前设置过,现在要取消的东西初始化
 
@@ -534,7 +553,6 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
-        const getFieldDecorator = this.props.form.getFieldDecorator;
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
@@ -617,6 +635,9 @@ const mapStateToProps = (state) => {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
+        canUseShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'canUseShopIDs']),
+        excludeCardTypeAndShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'excludeCardTypeShops']),
+        queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
     }
 };
 

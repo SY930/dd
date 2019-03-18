@@ -10,42 +10,32 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { isEqual, uniq } from 'lodash';
 import { axiosData } from '../../../helpers/util';
-
 
 import {
     Form,
     Radio,
-    TreeSelect,
     Select,
     Icon,
-    Tag,
+    Tooltip,
 } from 'antd';
-import Immutable from 'immutable';
 
-import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds,
+    getEventExcludeCardTypes, saveCurrentCanUseShops, saleCenterQueryOnlineRestaurantStatus
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
-import EditBoxForShops from './EditBoxForShops';
-
-// import _ from 'lodash';
-// import { FetchCrmCardTypeLst, FetchSelectedShops } from '../../../redux/actions/crmNew/crmCardType.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import ShopSelector from "../../../components/common/ShopSelector";
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 
 const FormItem = Form.Item;
-// const Option = Select.Option;
 const RadioGroup = Radio.Group;
-// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-// const Immutable = require('immutable');
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
+
 
 class CardLevelForWX extends React.Component {
     constructor(props) {
@@ -58,9 +48,9 @@ class CardLevelForWX extends React.Component {
             dynamicShopSchema: shopSchema,
             cardLevelRangeType: '0',
             cardTypeHadQuery: {}, // 存储查询过的{卡类：[店铺s], 卡类：[店铺s]}
-            canUseShops: [], // 所选卡类适用店铺
-            selections_shopsInfo: { shopsInfo: [] }, // 已选店铺
-
+            canUseShops: [], // 所选卡类适用店铺id
+            occupiedShops: [], // 已经被占用的卡类适用店铺id
+            selections_shopsInfo: { shopsInfo: [] }, // 已选店铺,
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -75,39 +65,35 @@ class CardLevelForWX extends React.Component {
         this.setState({
             cardLevelRangeType: cardLevelRangeType || '2',
             cardLevelIDList: thisEventInfo.cardLevelIDList || [],
-            selections_shopsInfo: { shopsInfo: thisEventInfo.shopIDList || [] },
+            selections_shopsInfo: { shopsInfo: (thisEventInfo.shopIDList || []).filter(id => id > 0) },
         }, () => {
             this.props.onChange({
                 shopIDList: thisEventInfo.shopIDList || [],
                 cardLevelRangeType: this.state.cardLevelRangeType,
                 cardLevelIDList: this.state.cardLevelIDList,
             });
-            // this.queryCanuseShops(thisEventInfo.cardLevelIDList || []) // 局部或全部
         })
     }
 
     componentWillReceiveProps(nextProps) {
-        const previousSchema = this.state.shopSchema;
-        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
-        if (!isEqual(previousSchema, nextShopSchema)) {
-            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-                dynamicShopSchema: nextShopSchema
+        if (this.props.shopSchemaInfo.getIn(['shopSchema']) !== nextProps.shopSchemaInfo.getIn(['shopSchema'])) {
+            this.setState({
+                shopSchema: nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
-        const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
             const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
             this.setState({
                 cardInfo: cardInfo.filter((cardType) => {
                     return cardType.regFromLimit
                 }),
-            }/*, () => {
-                this.props.form.setFieldsValue({ 'treeSelect': this.state.cardLevelIDList })
-            }*/);
+            });
         }
         // 每次第一步选择时间变化，就清空已选
-        if ((thisEventInfo.eventStartDate !== nextEventInfo.eventStartDate || thisEventInfo.eventEndDate !== nextEventInfo.eventEndDate) &&
+        const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
+        if ((thisEventInfo.eventStartDate !== nextEventInfo.eventStartDate
+            || thisEventInfo.eventEndDate !== nextEventInfo.eventEndDate) &&
             nextEventInfo.eventStartDate && thisEventInfo.eventStartDate) {
             this.handleSelectChange([]);
         }
@@ -124,24 +110,23 @@ class CardLevelForWX extends React.Component {
             this.setState({
                 getExcludeCardLevelIdsStatus: true,
             }, () => {
-                this.props.saleCenterGetExcludeCardLevelIds(opts2);
+                this.props.saleCenterGetExcludeCardLevelIds(opts2); // 之前此接口过滤卡类, 现在只用来更新卡类占用table
+                this.props.getEventExcludeCardTypes(opts2);
             })
         }
-
-        const arr = [];
-        const excludeEvent = nextEventInfo.excludeEventCardLevelIdModelList || [];
         // 遍历所有排除卡
-        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
             // true全部占用
-            this.setState({ getExcludeCardLevelIds: this.state.cardInfo })
-        } else {
-            // false 无/局部 占用
-            excludeEvent.map((event) => {
-                event.cardLevelIDList && event.cardLevelIDList.map((card) => {
-                    arr.push(card)
-                })
-            })
-            this.setState({ getExcludeCardLevelIds: arr })
+            this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() })
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
+            const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
+                acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
+                return acc;
+            }, []);
+            this.setState({ occupiedShops })
         }
         const fun = () => {
             this.setState({ allCheckDisabel: true }, () => {
@@ -149,36 +134,40 @@ class CardLevelForWX extends React.Component {
             })
         }
         // 禁用全部会员按钮
-        if (Object.keys(nextEventInfo).length < 30 &&
+        if (!nextEventInfo.itemID &&
             ((nextEventInfo.excludeEventCardLevelIdModelList && nextEventInfo.excludeEventCardLevelIdModelList.length > 0)
                 || nextEventInfo.allCardLevelCheck)) {
             // 新建&&局部被使用||全部被使用
             fun();
-        } else if (Object.keys(nextEventInfo).length > 30 && nextEventInfo.allCardLevelCheck) {
+        } else if (nextEventInfo.itemID && nextEventInfo.allCardLevelCheck) {
             // 编辑&&true全部被使用
             fun();
-        } else if (Object.keys(nextEventInfo).length > 30 && !nextEventInfo.allCardLevelCheck
+        } else if (nextEventInfo.itemID && !nextEventInfo.allCardLevelCheck
             && nextEventInfo.excludeEventCardLevelIdModelList && nextEventInfo.excludeEventCardLevelIdModelList.length > 0) {
             // 编辑&&false&&局部被使用
             fun();
         } else {
             this.setState({ allCheckDisabel: false })
         }
-        if (!Immutable.is(Immutable.fromJS(thisEventInfo.shopIDList), Immutable.fromJS(nextEventInfo.shopIDList))) {
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'shopIDList'])) {
             this.setState({ selections_shopsInfo: { shopsInfo: nextEventInfo.shopIDList || [] } })
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.cardInfo !== prevProps.cardInfo) {
+        if ((this.props.cardInfo !== prevProps.cardInfo && this.state.cardInfo.length)
+            || (this.props.crmCardTypeNew.get('cardTypeLst') !== prevProps.crmCardTypeNew.get('cardTypeLst') && this.props.cardInfo )) {
             this.queryCanuseShops(this.state.cardLevelIDList)
         }
     }
 
     // 查询已选卡类型的可用店铺
     queryCanuseShops = (cardTypeIDs) => {
-        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        this.props.saleCenterQueryOnlineRestaurantStatus('pending');
+        let {
+            getExcludeCardLevelIds = [],
+            cardLevelRangeType,
+        } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         let questArr = [];
@@ -196,16 +185,11 @@ class CardLevelForWX extends React.Component {
                 questArr = cardTypeIDs;
             }
         } else {// 没选的情况下, 查所有能选的卡类下的适用店铺
-            if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+            if (getExcludeCardLevelIds.length) {
                 cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
-            } else if (!!eventInfo.allCardLevelCheck) {
-                cardInfo = [];
             }
             questArr = cardInfo.map(cardType => cardType.cardTypeID)
         }
-
-        // /crm/cardTypeShopService_getListCardTypeShop.ajax， QueryCardType， cardTypeIds
-        //axios.post('http://rap2api.taobao.org/app/mock/8221/POST//test', { groupID: this.props.user.accountInfo.groupID, cardTypeIDs }).then(res => {
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             cardTypeIds: uniq(questArr).join(','),
@@ -220,7 +204,12 @@ class CardLevelForWX extends React.Component {
                         canUseShops.push(String(shop.shopID))
                     })
                 });
+                canUseShops = Array.from(new Set(canUseShops));
+                this.props.saveCurrentCanUseShops(canUseShops)
+                this.props.saleCenterQueryOnlineRestaurantStatus('success');
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+            }).catch(err => {
+                this.props.saleCenterQueryOnlineRestaurantStatus('error');
             })
     }
 
@@ -229,8 +218,8 @@ class CardLevelForWX extends React.Component {
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
         }
-        let canUseShops = this.state.canUseShops;
-        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => canUseShops.includes(String(shop.shopID)));
+        const { canUseShops, occupiedShops } = this.state;
+        dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShops.includes(`${shop.shopID}`));
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
         const availableBM = uniq(shops.map(shop => shop.businessModel));
@@ -269,6 +258,7 @@ class CardLevelForWX extends React.Component {
         this.props.onChange && this.props.onChange({
             cardLevelRangeType: e.target.value,
             cardLevelIDList: [],
+            shopIDList: [],
         })
     }
     editBoxForShopsChange = (val) => {
@@ -281,6 +271,7 @@ class CardLevelForWX extends React.Component {
         })
     }
     renderShopsOptions() {
+        const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
@@ -288,17 +279,7 @@ class CardLevelForWX extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    // validateStatus={this.state.selections_shopsInfo.shopsInfo.length === 0 ? 'error' : 'success'}
-                    // help={this.state.selections_shopsInfo.shopsInfo.length === 0 ? '不得为空' : null}
                 >
-                    {/*<EditBoxForShops
-                        value={this.state.selections_shopsInfo}
-                        onChange={
-                            this.editBoxForShopsChange
-                        }
-                        type={this.props.type}
-                        canUseShops={this.state.canUseShops}
-                    />*/}
                     <ShopSelector
                         value={(this.state.selections_shopsInfo.shopsInfo || []).map(shopID => String(shopID))}
                         onChange={
@@ -306,11 +287,40 @@ class CardLevelForWX extends React.Component {
                         }
                         schemaData={this.getDynamicShopSchema()}
                     />
+                    {
+                        queryCanUseShopStatus === 'error' && (
+                            <Tooltip title="查询可用店铺失败, 点击重试">
+                                <Icon
+                                    type="exclamation-circle"
+                                    style={{
+                                        left: '102%',
+                                        top: 28,
+                                        color: 'rgba(239, 72, 72, 0.81)',
+                                        position: 'absolute',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={() => {
+                                        this.queryCanuseShops(this.state.cardLevelIDList)
+                                    }}
+                                />
+                            </Tooltip>
+                        )
+                    }
+                    {
+                        queryCanUseShopStatus === 'pending' && (
+                            <Tooltip title="正在查询可用店铺">
+                                <Icon
+                                    type="loading"
+                                    style={{
+                                        left: '102%',
+                                        top: 28,
+                                        position: 'absolute'
+                                    }}
+                                />
+                            </Tooltip>
+                        )
+                    }
                 </Form.Item>
-                {/*<div
-                    className={this.state.cardLevelRangeType == 2 && this.state.cardLevelIDList.length == 0 ? styles.opacitySet : null}
-                    style={{ left: 110, width: '71%', height: '81%', top: 7 }}
-                />*/}
             </div>
         );
     }
@@ -318,22 +328,18 @@ class CardLevelForWX extends React.Component {
     render() {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
-        let { getExcludeCardLevelIds = [], cardScopeIDs = [], cardScopeType, cardLevelRangeType } = this.state;
+        let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
-        if (!eventInfo.allCardLevelCheck && getExcludeCardLevelIds.length) {
+        if (getExcludeCardLevelIds.length) {
             cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
-        } else if (!!eventInfo.allCardLevelCheck) {
-            cardInfo = [];
         }
-        const boxData = new Set();
-        // cardScopeType=1 // @mock
+        const boxData = [];
         this.state.cardLevelIDList.forEach((id) => {
-            // ['759692756909309952'].forEach((id) => { //  @mock
             cardInfo.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
-                        boxData.add(level)
+                        boxData.push(level)
                     }
                 })
             })
@@ -347,7 +353,6 @@ class CardLevelForWX extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                        {/*<Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>全部微信卡类别</Radio>*/}
                         <Radio key={'2'} value={'2'}>{'线上卡类别'}</Radio>
                         <Radio key={'5'} value={'5'}>{'线上卡等级'}</Radio>
                     </RadioGroup>
@@ -441,10 +446,14 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        // 后端查回来的所有卡类存在这里, 里面的数据有表示是否线上卡类型的字段(regFromLimit, 1 为线上 )
+        crmCardTypeNew: state.sale_crmCardTypeNew,
+        // 后端查回来的所有卡类 **及其所包含卡等级信息** 存在这里, 但是没有regFromLimit信息
+        // 因为线上餐厅送礼要限制只能选到线上卡类型, 所以调了2个接口
         cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         shopSchemaInfo: state.sale_shopSchema_New,
-        crmCardTypeNew: state.sale_crmCardTypeNew,
+        queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
     };
 };
 
@@ -466,9 +475,15 @@ const mapDispatchToProps = (dispatch) => {
         FetchCrmCardTypeLst: (opts) => {
             dispatch(FetchCrmCardTypeLst(opts));
         },
-        // FetchSelectedShopsAC: (opts) => {
-        //     return dispatch(FetchSelectedShops(opts));
-        // },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saveCurrentCanUseShops: (opts) => {
+            dispatch(saveCurrentCanUseShops(opts))
+        },
+        saleCenterQueryOnlineRestaurantStatus: (opts) => {
+            dispatch(saleCenterQueryOnlineRestaurantStatus(opts))
+        }
     };
 };
 

@@ -497,7 +497,8 @@ export const fetchSpecialCardLevel = opts => {
                     opts.success && opts.success();
                     (response.data.groupCardTypeList || []).forEach((cat) => {
                         (cat.cardTypeLevelList || []).forEach((level) => {
-                            level.cardTypeName = cat.cardTypeName
+                            level.cardTypeName = cat.cardTypeName;
+                            level.cardLevelName = `${cat.cardTypeName} - ${level.cardLevelName}`;
                         })
                     })
                     return dispatch(fetchSpecialCardLevelfilled(response));
@@ -525,7 +526,7 @@ export const fetchShopCardLevel = opts => {
                     opts.success && opts.success();
                     (response.data.groupCardTypeList || []).forEach((cat) => {
                         (cat.cardTypeLevelList || []).forEach((level) => {
-                            level.cardTypeName = cat.cardTypeName
+                            level.cardTypeName = cat.cardTypeName;
                         })
                     })
                     return dispatch(fetchSpecialCardLevelfilled(response));

@@ -384,7 +384,9 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_GIFT_LIST_SUCCESS:
             return $$state
-                .setIn(['$giftInfo', 'data'], Immutable.fromJS(action.payload.crmGiftTypes))
+                .setIn(['$giftInfo', 'data'], Immutable.fromJS(
+                    Array.isArray(action.payload.crmGiftTypes) ?
+                        action.payload.crmGiftTypes : []))
                 .setIn(['$giftInfo', 'initialized'], true);
 
         case SALE_CENTER_FETCH_GIFT_LIST_FAILED:

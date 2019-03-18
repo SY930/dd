@@ -133,6 +133,8 @@ class ReturnGiftDetailInfo extends React.Component {
                             giftInfo: {
                                 giftName: null,
                                 giftItemID: null,
+                                giftType: null,
+                                giftValue: null,
                                 validateStatus: 'success',
                                 msg: null,
                             },
@@ -162,19 +164,23 @@ class ReturnGiftDetailInfo extends React.Component {
                     rule.data[index].giftNum.value = stage.giftNum;
                     rule.data[index].giftInfo.giftName = stage.giftName;
                     rule.data[index].giftInfo.giftItemID = stage.giftItemID;
+                    rule.data[index].giftInfo.giftType = stage.giftType || null;
+                    rule.data[index].giftInfo.giftValue = stage.freeCashVoucherValue || null;
                     rule.data[index].giftValidDays.value = stage.giftValidDays || '0';
-                    rule.data[index].giftValidType = stage.giftValidType;
-                    rule.data[index].giftEffectiveTime.value = stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
+                    rule.data[index].giftValidType = stage.giftType == 112 ? '0' : stage.giftValidType;
+                    rule.data[index].giftEffectiveTime.value = stage.giftType == 112 ? 0 : stage.giftStartTime ? [moment(stage.giftStartTime, 'YYYYMMDDHHmmss'), moment(stage.giftEndTime, 'YYYYMMDDHHmmss')] : stage.giftValidType == 0 ? stage.giftEffectiveTime / 60 : stage.giftEffectiveTime;
                 })
             } else {
                 rule.data[0].stageAmount.value = _rule.stageAmount;
                 rule.data[0].giftNum.value = _rule.giftNum;
                 rule.data[0].giftInfo.giftName = _rule.giftName;
                 rule.data[0].giftInfo.giftItemID = _rule.giftItemID;
+                rule.data[0].giftInfo.giftType = _rule.giftType || null;
+                rule.data[0].giftInfo.giftValue = _rule.freeCashVoucherValue || null;
                 rule.data[0].giftValidDays.value = _rule.giftValidDays || '0';
                 rule.data[0].giftMaxUseNum.value = _rule.giftMaxUseNum || _rule.giftMaxNum;
-                rule.data[0].giftValidType = _rule.giftValidType;
-                rule.data[0].giftEffectiveTime.value = _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
+                rule.data[0].giftValidType = _rule.giftType == 112 ? '0' : _rule.giftValidType;
+                rule.data[0].giftEffectiveTime.value = _rule.giftType == 112 ? 0 : _rule.giftStartTime ? [moment(_rule.giftStartTime, 'YYYYMMDDHHmmss'), moment(_rule.giftEndTime, 'YYYYMMDDHHmmss')] : _rule.giftValidType == 0 ? _rule.giftEffectiveTime / 60 : _rule.giftEffectiveTime;
             }
             this.setState({
                 rule,
@@ -189,6 +195,19 @@ class ReturnGiftDetailInfo extends React.Component {
                 gainCodeMode: this.state.rule.gainCodeMode,
                 printCode: this.state.rule.printCode,
                 stage: this.state.rule.data.map((item, index) => {
+                    if (item.giftInfo.giftType == '112') {
+                        return {
+                            stageAmount: item.stageAmount.value,
+                            giftValidType: '0',
+                            giftValidDays: 1,
+                            giftEffectiveTime: 0,
+                            giftNum: item.giftNum.value,
+                            giftName: item.giftInfo.giftName,
+                            giftItemID: item.giftInfo.giftItemID,
+                            giftType: item.giftInfo.giftType,
+                            freeCashVoucherValue: item.giftInfo.giftValue
+                        }
+                    }
                     if (item.giftValidType == '0') {
                         return {
                             stageAmount: item.stageAmount.value,
@@ -221,6 +240,23 @@ class ReturnGiftDetailInfo extends React.Component {
                         giftItemID: item.giftInfo.giftItemID,
                     }
                 }),
+            }
+        }
+        if (this.state.rule.data[0].giftInfo.giftType == '112') {
+            return {
+                stageType: this.state.rule.type,
+                giftValidDays: 1,
+                giftEffectiveTime: 0,
+                giftValidType: '0',
+                stageAmount: this.state.rule.data[0].stageAmount.value,
+                giftMaxUseNum: this.state.rule.data[0].giftMaxUseNum.value,
+                giftNum: this.state.rule.data[0].giftNum.value,
+                giftName: this.state.rule.data[0].giftInfo.giftName,
+                giftItemID: this.state.rule.data[0].giftInfo.giftItemID,
+                gainCodeMode: this.state.rule.gainCodeMode,
+                printCode: this.state.rule.printCode,
+                giftType: this.state.rule.data[0].giftInfo.giftType,
+                freeCashVoucherValue: this.state.rule.data[0].giftInfo.giftValue,
             }
         }
         if (this.state.rule.data[0].giftValidType == '0') {
@@ -288,6 +324,8 @@ class ReturnGiftDetailInfo extends React.Component {
                 return {
                     giftItemID: null,
                     giftName: null,
+                    giftType: null,
+                    giftValue: null,
                     validateStatus: 'error',
                     msg: '必须选择礼券',
                 }
@@ -450,6 +488,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 maxCount={this.state.rule.type == '2' ? 3 : 1}
                 value={this.state.rule.data}
                 onChange={(val) => {
+                    console.log('val: ', val)
                     const { rule } = this.state;
                     if (val !== undefined) {
                         rule.data = val;

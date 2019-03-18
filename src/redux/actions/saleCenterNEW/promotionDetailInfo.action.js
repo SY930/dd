@@ -321,9 +321,6 @@ export const fetchRoleListInfoAC = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_ROLE_LIST,
         });
-
-        // const config = getSpecifiedUrlConfig('getRole_NEW', opts);
-
         fetch('/api/shopcenter/empapi/queryRole', {
             method: 'POST',
             body: opts,
