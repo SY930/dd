@@ -532,7 +532,7 @@ class CompositeDetailInfo extends React.Component {
                                         message: '菜品不得为空',
                                     }],
                                 })(
-                                    isShopMode ? (
+                                    isShopFoodSelectorMode ? (
                                         <PromotionDetailSettings
                                             stageNo={idx}
                                             onChange={(val) => {

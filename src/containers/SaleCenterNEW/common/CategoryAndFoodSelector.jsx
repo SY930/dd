@@ -12,6 +12,7 @@ const RadioGroup = Radio.Group;
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        promotionDetailInfo: state.sale_promotionScopeInfo_NEW,
     }
 }
 const PROMOTION_OPTIONS = [
