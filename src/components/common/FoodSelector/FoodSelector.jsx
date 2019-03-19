@@ -6,7 +6,6 @@ export default class FoodSelector extends Component {
 
     state = {
         showModal: false,
-        options: null,
     }
 
     handleAdd = () => {
@@ -25,36 +24,43 @@ export default class FoodSelector extends Component {
         const nextValue = value.filter(id => id !== tarID);
         this.props.onChange(nextValue);
     }
+    handleModalOk = (values) => {
+        this.props.onChange(values);
+        this.handleModalCancel()
+    }
 
     render() {
         const { showModal } = this.state;
         const {
             value,
-            comparator,
-            options,
-            onChange,
-            dataLevels = [
-                'brandID',
-                'categoryID',
-            ],
+            mode,
+            allBrands = [],
+            allCategories = [],
+            allDishes = [],
             placeholder,
         } = this.props;
+        const selectedItems = mode === 'category' ? allCategories.filter(category => value.includes(category.value))
+            : allDishes.filter(dish => value.includes(dish.value))
         return (
             <div>
                 <EditableTags
                     title={placeholder}
-                    items={items}
+                    items={selectedItems}
                     onAdd={this.handleAdd}
                     onClose={this.handleClose}
                 />
                 {
-                    showModal &&
-                    <FoodSelectModal
-                        options={options}
-                        defaultValue={value}
-                        onOk={this.handleModalOk}
-                        onCancel={this.handleModalCancel}
-                    />
+                    showModal && (
+                        <FoodSelectModal
+                            allBrands={allBrands}
+                            allCategories={allCategories}
+                            allDishes={allDishes}
+                            mode={mode}
+                            initialValue={value}
+                            onOk={this.handleModalOk}
+                            onCancel={this.handleModalCancel}
+                        />
+                    )
                 }
             </div>
         )

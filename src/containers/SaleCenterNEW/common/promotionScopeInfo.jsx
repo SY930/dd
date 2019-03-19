@@ -550,16 +550,6 @@ class PromotionScopeInfo extends React.Component {
         )
     }
 
-    // only the promotionScopeInfo change cause the render operation of the component
-    shouldComponentUpdate(nextProps, nextState) {
-        // if(this.props.promotionScopeInfo !== nextProps.promotionScopeInfo) {
-        //     return true;
-        // }
-        //
-        // return false;
-        return true;
-    }
-
     render() {
         const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
         return (

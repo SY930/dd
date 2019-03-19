@@ -488,6 +488,7 @@ class CompositeDetailInfo extends React.Component {
     }
 
     renderPromotionSetting() {
+        const { isShopFoodSelectorMode } = this.props;
         return (
             this.state.data.map((item, idx) => {
                 const count = item.count;
@@ -531,12 +532,19 @@ class CompositeDetailInfo extends React.Component {
                                         message: '菜品不得为空',
                                     }],
                                 })(
-                                    <PromotionDetailSettings
-                                        stageNo={idx}
-                                        onChange={(val) => {
-                                            this.handlePromotionSetting(idx, val)
-                                        }}
-                                    />
+                                    isShopMode ? (
+                                        <PromotionDetailSettings
+                                            stageNo={idx}
+                                            onChange={(val) => {
+                                                this.handlePromotionSetting(idx, val)
+                                            }}
+                                        />
+                                    )
+                                    : (
+                                        <div>
+                                            todo
+                                        </div>
+                                    )
                                 )
                             }
                         </FormItem>
@@ -787,6 +795,8 @@ class CompositeDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        user: state.user,
     }
 }
 
