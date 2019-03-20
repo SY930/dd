@@ -114,9 +114,8 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
     ],
     transferType: [
-        { label: '不可分享', value: 0 },
-        { label: '可分享', value: 1 },
-        { label: '仅分享后使用', value: 2 },
+        { label: '不可转赠', value: 0 },
+        { label: '可转赠', value: 1 },
     ],
     goldGift: [
         { label: '不可用', value: 0 },
@@ -203,6 +202,7 @@ const GiftCfg = {
         { value: '116', label: '微信受赠领取' },
         { value: '117', label: '唤醒送礼' },
         { value: '118', label: '评价送礼' },
+        { value: '119', label: '赠送领取' },
         { value: '120', label: '关注送礼' },
         { value: '3010', label: '基础营销消费返券' },
         { value: '3011', label: '批量生成' },
