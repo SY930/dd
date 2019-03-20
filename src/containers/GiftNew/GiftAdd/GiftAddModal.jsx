@@ -370,7 +370,7 @@ class GiftAddModal extends React.Component {
             },
         };
         const formKeys = {
-            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
+            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
             '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
             '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
             '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
