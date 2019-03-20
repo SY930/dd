@@ -42,7 +42,10 @@ const availableMsgType = [
         value: '1',
         label: '礼品到期提醒',
     },
-
+    {
+        value: '3',
+        label: '核销成功通知',
+    },
 ];
 
 const availableUrlType = [
@@ -206,7 +209,7 @@ class WeChatMessageFormWrapper extends Component {
                     </FormItem>
                 )}
                 {
-                    Number(type) === 1 && (
+                    Number(type) !== 2 && (
                         <FormItem
                             label="是否推送消息"
                             className={styles.FormItemStyle}
@@ -231,15 +234,9 @@ class WeChatMessageFormWrapper extends Component {
 
     renderImgUrl = () => {
         const {
-            form: {getFieldDecorator},
-            title,
-            remark,
-            reDirectType,
             currentType: type,
-            isPushMsg,
             reDirectUrl,
             isEditing,
-            handleKeyValueChange
         } = this.props;
         const props = {
             name: 'myFile',
