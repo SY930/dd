@@ -121,12 +121,12 @@ const fetchFoodCategoryFailed = (opts) => {
 
 
 export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
-    dispatch({
-        type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
-        payload: opts.shopID && opts.shopID > 0
-    })
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: opts.shopID && opts.shopID > 0
+            })
             if (opts.shopID && opts.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
                     dispatch(getFoodCategorySuccessToProcess({records: res}))
@@ -149,6 +149,10 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
         }
     }
     return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: opts.shopID && opts.shopID > 0
+        })
         dispatch(fetchFoodCategoryStart());
 
         // let config = getSpecifiedUrlConfig('getFoodCategory_NEW', {...opts,bookID:0});
@@ -237,12 +241,12 @@ const fetchFoodMenuFailed = () => {
 };
 
 export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
-    dispatch({
-        type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
-        payload: params.shopID && params.shopID > 0
-    })
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: params.shopID && params.shopID > 0
+            })
             if (params.shopID && params.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
                     dispatch(fetchFoodMenuSuccess({records: res}))
@@ -265,6 +269,10 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         }
     }
     return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: params.shopID && params.shopID > 0
+        })
         if (params.shopID && params.shopID > 0) {
             return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
                 dispatch(fetchFoodMenuSuccess(res))

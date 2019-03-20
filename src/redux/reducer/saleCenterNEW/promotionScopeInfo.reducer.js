@@ -176,6 +176,7 @@ export const promotionScopeInfo_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO_SUCCESS:
             const constructedData = constructTreeDataContainsCityAndShop(action.payload);
             const cityAreasShops = getDataStructureContainCityAndArea(action.payload);
+            console.log('action.payload', action.payload)
             return $$state
                 .setIn(['refs', 'data'], Immutable.fromJS(action.payload))
                 .setIn(['refs', 'initialized'], true)

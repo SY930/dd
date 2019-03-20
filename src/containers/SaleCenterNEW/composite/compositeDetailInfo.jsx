@@ -1,19 +1,15 @@
-import React from 'react'
-import { Form, Radio, Icon, Col, message, Checkbox, Row, Button } from 'antd';
-import { connect } from 'react-redux'
-
-import styles from '../ActivityPage.less';
-import checkStyle from './checkStyle.less';
-
+import { Button, Checkbox, Col, Form, Icon, message, Row } from 'antd';
+import React from 'react';
+import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import PromotionDetailSettings from '../../../containers/SaleCenterNEW/common/promotionDetailSettings';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-
-import {
-    saleCenterSetPromotionDetailAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import CloseableTip from "../../../components/common/CloseableTip/index";
+import PromotionDetailSettings from '../../../containers/SaleCenterNEW/common/promotionDetailSettings';
+import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import styles from '../ActivityPage.less';
+import checkStyle from './checkStyle.less';
+import CategoryAndFoodSelector from '../common/CategoryAndFoodSelector'
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -541,9 +537,7 @@ class CompositeDetailInfo extends React.Component {
                                         />
                                     )
                                     : (
-                                        <div>
-                                            todo
-                                        </div>
+                                        <CategoryAndFoodSelector />
                                     )
                                 )
                             }

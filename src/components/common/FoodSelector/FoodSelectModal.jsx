@@ -14,7 +14,7 @@ const DEFAULT_CATEGORY_COLUMNS = [
         dataIndex: 'brandName',
         key: 'brandName',
         fixed: 'left',
-        width: 100,
+        width: 200,
         className: 'TableTxtLeft',
         render: (text, record, index) => {
             return <span title={text}>{text}</span>
@@ -37,7 +37,7 @@ const DEFAULT_FOOD_COLUMNS = [
         dataIndex: 'brandName',
         key: 'brandName',
         fixed: 'left',
-        width: 60,
+        width: 120,
         className: 'TableTxtLeft',
         render: (text, record, index) => {
             return <span title={text}>{text}</span>
@@ -48,7 +48,7 @@ const DEFAULT_FOOD_COLUMNS = [
         dataIndex: 'foodCategoryName',
         key: 'foodCategoryName',
         fixed: 'left',
-        width: 60,
+        width: 120,
         className: 'TableTxtLeft',
         render: (text, record, index) => {
             return <span title={text}>{text}</span>
@@ -91,7 +91,7 @@ export default class FoodSelectModal extends Component {
         const {
             selectedCategoryResults,
             selectedDishResults,
-        } = this.props;
+        } = this.state;
         onOk(mode === 'category' ? selectedCategoryResults : selectedDishResults);
     }
     /** 分类模式相关handler开始 */
@@ -143,7 +143,9 @@ export default class FoodSelectModal extends Component {
             .filter(({brandID}) => selectedBrandIDs.includes(`${brandID}`)) : allCategories;
         const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value))
         return (
-            <div className={style.hllFilterSelector}>
+            <div
+                className={style.hllFilterSelector}
+            >
                 <Row type="flex">
                     <div className={style.filterList}>
                         <CheckboxList
@@ -151,7 +153,7 @@ export default class FoodSelectModal extends Component {
                             showCheckAll={false}
                             options={allBrands}
                             value={selectedBrandIDs}
-                            onChange={this.handleFilterChange}
+                            onChange={this.handleSelectedBrandIDsChange}
                         />
                     </div>
                     <div className={style.resultList}>
@@ -197,7 +199,12 @@ export default class FoodSelectModal extends Component {
         const selectedItems = allDishes.filter(({value}) => selectedDishResults.includes(value))
         return (
             <div className={style.hllFilterSelector}>
-                <div className={style.filterKeyList}>
+                <div
+                    className={style.filterKeyList}
+                    style={{
+                        marginBottom: 15,
+                    }}
+                >
                     {allBrands.map(({ value, label }) => (
                         <span
                             key={value}
@@ -255,6 +262,8 @@ export default class FoodSelectModal extends Component {
             <Modal
                 onOk={this.handleOk}
                 onCancel={onCancel}
+                title={mode === 'category' ? '选择菜品分类' : '选择菜品'}
+                width={700}
                 visible={true}
                 maskClosable={false}
             >

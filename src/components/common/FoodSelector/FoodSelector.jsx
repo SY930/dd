@@ -45,6 +45,7 @@ export default class FoodSelector extends Component {
             <div>
                 <EditableTags
                     title={placeholder}
+                    placeholder={placeholder}
                     items={selectedItems}
                     onAdd={this.handleAdd}
                     onClose={this.handleClose}
