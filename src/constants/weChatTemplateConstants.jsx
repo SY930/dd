@@ -8,5 +8,10 @@ export const DEFAULT_WECHAT_TEMPLATE_CONFIG = {
         title: '送礼啦',
         remark: '感谢你的支持',
         type: '礼品领取成功通知'
+    },
+    '3': {// 核销成功提醒
+        title: '您好，您已成功使用优惠券！',
+        remark: '感谢您的使用，欢迎下次光临',
+        type: '核销成功提醒'
     }
 };
