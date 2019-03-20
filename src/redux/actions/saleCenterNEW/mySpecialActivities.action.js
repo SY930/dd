@@ -527,6 +527,7 @@ export const fetchShopCardLevel = opts => {
                     (response.data.groupCardTypeList || []).forEach((cat) => {
                         (cat.cardTypeLevelList || []).forEach((level) => {
                             level.cardTypeName = cat.cardTypeName;
+                            level.cardLevelName = `${cat.cardTypeName} - ${level.cardLevelName}`;
                         })
                     })
                     return dispatch(fetchSpecialCardLevelfilled(response));
