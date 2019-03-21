@@ -359,7 +359,6 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
-                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -380,7 +379,6 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
-                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -443,7 +441,6 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
@@ -463,7 +460,6 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'TrdTemplate',
-                'goldGift',
                 'transferType',
                 'isHolidaysUsing',
                 'couponPeriodSettings',
