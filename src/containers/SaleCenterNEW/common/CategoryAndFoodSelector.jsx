@@ -181,12 +181,14 @@ export default class CategoryAndFoodSelector extends Component {
             }
         }
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
-            this.setState({
-                categoryOrDish: 0,
-                dishes: [],
-                categories: [],
-                excludeDishes: [],
-            }, () => this.mapSelectedValueToObjectsAndEmit())
+            if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
+                this.setState({
+                    categoryOrDish: 0,
+                    dishes: [],
+                    categories: [],
+                    excludeDishes: [],
+                }, () => this.mapSelectedValueToObjectsAndEmit())
+            }
         }
     }
     
@@ -250,6 +252,7 @@ export default class CategoryAndFoodSelector extends Component {
                         return (<Radio key={type.key} value={type.value}>{type.name}</Radio >);
                     })}
                 </RadioGroup >
+                {this.props.scopeTip}
             </FormItem>
 
         );
@@ -321,6 +324,8 @@ export default class CategoryAndFoodSelector extends Component {
         if (dishFilter) {
             filteredDishes = dishFilter(filteredDishes) 
         }
+        const filteredBrands = brands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
+        console.log('this.state.categories', this.state.categories)
         return (
             <div>
                 <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
@@ -340,7 +345,7 @@ export default class CategoryAndFoodSelector extends Component {
                         placeholder="点击添加排除菜品"
                         allDishes={filteredDishes}
                         allCategories={filteredCategories}
-                        allBrands={brands}
+                        allBrands={filteredBrands}
                         value={this.state.excludeDishes}
                         onChange={this.handleExcludeDishChange}
                     />

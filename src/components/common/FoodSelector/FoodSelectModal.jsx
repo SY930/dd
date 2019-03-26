@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     Modal,
     Row,
+    AutoComplete,
 } from 'antd';
 import classnames from 'classnames'
 import CheckboxList from '../CheckboxList'
@@ -114,9 +115,16 @@ export default class FoodSelectModal extends Component {
             selectedBrandIDs: [],
             selectedCategoryResults: props.mode === 'category' ? props.initialValue.slice() : [],
             /** 单品模式状态 */
-            currentBrandID: '0',
+            currentBrandID: props.allBrands.length? props.allBrands[0].brandID : '0',
             selectedCategories: [],
             selectedDishResults: props.mode === 'dish' ? props.initialValue.slice() : [],
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.allBrands !== this.props.allBrands) {
+            this.setState({
+                currentBrandID: nextProps.allBrands.length? nextProps.allBrands[0].brandID : '0',
+            })
         }
     }
 
@@ -175,6 +183,10 @@ export default class FoodSelectModal extends Component {
             selectedBrandIDs,
             selectedCategoryResults
         } = this.state;
+        console.log('selectedBrandIDs', selectedBrandIDs)
+        console.log('allBrands', allBrands)
+        console.log('allCategories', allCategories)
+        console.log('selectedCategoryResults', selectedCategoryResults)
         const filteredCategoryOptions = selectedBrandIDs.length ? allCategories
             .filter(({brandID}) => selectedBrandIDs.includes(`${brandID}`)) : allCategories;
         const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value))
@@ -237,12 +249,16 @@ export default class FoodSelectModal extends Component {
             <div className={style.hllFilterSelector}>
                 <div
                     className={style.filterKeyList}
+                    style={{
+                        maxHeight: 80,
+                        overflowY: 'auto',
+                    }}
                 >
                     {allBrands.map(({ value, label }) => (
                         <span
                             key={value}
                             style={{
-                                marginBottom: 15,
+                                marginBottom: 10,
                             }}
                             className={classnames(style.filterKey, {
                                 [style.active]: value === currentBrandID,
@@ -250,6 +266,7 @@ export default class FoodSelectModal extends Component {
                             role="button"
                             tabIndex="0"
                             onClick={() => this.handleCurrentBrandChange(value)}
+                            title={label}
                         >
                             {label}
                         </span>

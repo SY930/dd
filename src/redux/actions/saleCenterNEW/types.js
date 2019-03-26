@@ -951,7 +951,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             (source.foodCategory || []).map((item) => {
                 scope.push({
                     scopeType: '1',
-                    brandID: `${item.brandID}` || '0',
+                    brandID: `${item.brandID || 0}`,
                     targetID: item.foodCategoryID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName,
@@ -964,7 +964,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 scope.push({
                     scopeType: '4',
                     targetID: item.itemID,
-                    brandID: `${item.brandID}` || '0',
+                    brandID: `${item.brandID || 0}`,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -977,7 +977,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 scope.push({
                     scopeType: '2',
                     targetID: item.itemID,
-                    brandID: `${item.brandID}` || '0',
+                    brandID: `${item.brandID || 0}`,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -990,7 +990,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 scope.push({
                     scopeType: '5',
                     targetID: item.itemID,
-                    brandID: `${item.brandID}` || '0',
+                    brandID: `${item.brandID || 0}`,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
