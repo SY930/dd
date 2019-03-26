@@ -461,8 +461,10 @@ class FullCutDetailInfo extends React.Component {
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.state.ruleType != '1' && this.state.ruleType != '2' && 
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
+                        (
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
+                        )
                     }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display

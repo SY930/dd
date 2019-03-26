@@ -288,7 +288,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        
     }
 }
 

@@ -58,9 +58,8 @@ class NewPromotion extends React.Component {
             }
         }) : []
         const opts = {
-            groupID: this.props.user.toJS().accountInfo.groupID,
-            // shopID: this.props.user.toJS().shopID ? this.props.user.toJS().shopID : '0',
-            maintenanceLevel: this.props.user.toJS().shopID ? '1' : '0',
+            groupID: this.props.user.getIn(['accountInfo', 'groupID']),
+            maintenanceLevel: this.props.user.get('shopID') ? '1' : '0',
             ...basicInfo,
             ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
