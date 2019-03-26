@@ -292,7 +292,6 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
     onDishesChange = (value) => {
-        console.log('value', value)
         let { dishes } = this.state;
         dishes = value;
         this.setState({

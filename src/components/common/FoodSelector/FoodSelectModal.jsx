@@ -183,10 +183,6 @@ export default class FoodSelectModal extends Component {
             selectedBrandIDs,
             selectedCategoryResults
         } = this.state;
-        console.log('selectedBrandIDs', selectedBrandIDs)
-        console.log('allBrands', allBrands)
-        console.log('allCategories', allCategories)
-        console.log('selectedCategoryResults', selectedCategoryResults)
         const filteredCategoryOptions = selectedBrandIDs.length ? allCategories
             .filter(({brandID}) => selectedBrandIDs.includes(`${brandID}`)) : allCategories;
         const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value))

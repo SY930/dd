@@ -489,7 +489,6 @@ class ReturnGiftDetailInfo extends React.Component {
                 maxCount={this.state.rule.type == '2' ? 3 : 1}
                 value={this.state.rule.data}
                 onChange={(val) => {
-                    console.log('val: ', val)
                     const { rule } = this.state;
                     if (val !== undefined) {
                         rule.data = val;

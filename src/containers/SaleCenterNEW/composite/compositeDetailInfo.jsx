@@ -608,7 +608,7 @@ class CompositeDetailInfo extends React.Component {
                         </Col>
                         <Col span={9}>
                             <FormItem className={styles.radioInLine}>
-                                <ButtonGroup size="small" onChange={(val) => { console.log(val) }}>
+                                <ButtonGroup size="small" >
                                     <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>减免</Button>
                                     <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>减至</Button>
                                     <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>折扣</Button>

@@ -252,7 +252,6 @@ class SpecialDetailInfo extends React.Component {
                 }
             } else {
                 // 固定期限
-                console.log('giftInfo.giftEffectiveTime: ', giftInfo.giftEffectiveTime)
                 gifts = {
                     effectType: '2',
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
