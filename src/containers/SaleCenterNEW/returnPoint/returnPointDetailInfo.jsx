@@ -1,14 +1,13 @@
-import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
-import { connect } from 'react-redux'
-import styles from '../ActivityPage.less';
+import { Col, Form, Icon, Row, Select } from 'antd';
+import React from 'react';
+import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
-import {
-    saleCenterSetPromotionDetailAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import styles from '../ActivityPage.less';
 const Immutable = require('immutable');
 const type = [
     { value: '2', name: '消费满一定金额即赠送相应积分' },
@@ -333,7 +332,10 @@ class ReturnPointDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} /> : null}
                 </Form>
@@ -345,6 +347,7 @@ class ReturnPointDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

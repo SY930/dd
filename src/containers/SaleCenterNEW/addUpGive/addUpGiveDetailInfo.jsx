@@ -19,6 +19,7 @@ import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -187,6 +188,7 @@ class AddUpGiveDetailInfo extends React.Component {
                 foodUnitCode: dish.foodKey,
                 foodName: dish.foodName,
                 foodUnitName: dish.unit,
+                brandID: dish.brandID || '0',
                 price: dish.price,
                 stageNo: 0,
             }
@@ -208,7 +210,11 @@ class AddUpGiveDetailInfo extends React.Component {
                         }],
                         initialValue: this.state.priceLst,
                     })(
-                        <EditBoxForDishes onChange={this.onDishesChange} />
+                        this.props.isShopFoodSelectorMode ? (
+                            <EditBoxForDishes onChange={this.onDishesChange} />
+                        ) : (
+                            <ConnectedPriceListSelector onChange={this.onDishesChange} />
+                        )
                     )}
             </FormItem>
         )
@@ -318,6 +324,7 @@ function mapStateToProps(state) {
     return {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

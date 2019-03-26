@@ -25,6 +25,8 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
@@ -231,19 +233,14 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             //     },
             // ],
         }
-
-        const dish = dishes.map((food) => {
-            return foodMenuList.find((menu) => {
-                return food.itemID == menu.itemID
-            })
-        });
-        const priceLst = dish.map((price) => {
+        const priceLst = dishes.map((price) => {
             return {
                 foodUnitID: price.itemID,
                 foodUnitCode: price.foodKey,
                 foodName: price.foodName,
                 foodUnitName: price.unit,
                 price: price.price,
+                brandID: price.brandID || '0',
             }
         });
         let opts = {
@@ -345,12 +342,23 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='1090'
-                    value={this.state.upGradeDishes}
-                    onChange={(value) => {
-                        this.onupGradeDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes type='1090'
+                            value={this.state.upGradeDishes}
+                            onChange={(value) => {
+                                this.onupGradeDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            value={this.state.upGradeDishes}
+                            onChange={(value) => {
+                                this.onupGradeDishesChange(value);
+                            }}
+                        />
+                    )
+                }
             </FormItem>
         )
     }
@@ -397,12 +405,23 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='1090'
-                    value={this.state.dishes}
-                    onChange={(value) => {
-                        this.onAfterDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes type='1090'
+                            value={this.state.dishes}
+                            onChange={(value) => {
+                                this.onAfterDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            value={this.state.dishes}
+                            onChange={(value) => {
+                                this.onAfterDishesChange(value);
+                            }}
+                        />
+                    )
+                }
             </FormItem>
         )
     }
@@ -566,7 +585,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         }
                     </FormItem>
                     {countType == 0 ? null :
-                        countType == 2 || subjectType == 2 || subjectType == 3 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
+                        countType == 2 || subjectType == 2 || subjectType == 3 ?
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
+                        : null /* 条件限制菜品 */}
                     {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}
                     {this.renderDishsSelectionBox()/*升级后菜品*/}
@@ -582,6 +604,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

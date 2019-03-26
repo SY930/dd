@@ -34,9 +34,12 @@ const Immutable = require('immutable');
 
 import EditBoxForDishes from '../common/EditBoxForDishes';
 
+
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
@@ -167,19 +170,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     },
                 ],
             }
-
-            const dish = dishes.map((dish) => {
-                return foodMenuList.find((menu) => {
-                    // return dish.id === menu.foodID
-                    return dish.itemID == menu.itemID
-                })
-            });
-            const priceLst = dish.map((price) => {
+            const priceLst = dishes.map((price) => {
                 return {
                     foodUnitID: price.itemID,
                     foodUnitCode: price.foodKey,
                     foodName: price.foodName,
                     foodUnitName: price.unit,
+                    brandID: price.brandID || '0',
                     price: price.price,
                 }
             });
@@ -293,12 +290,22 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectionFlag ? 'success' : 'error'}
                 help={this.state.dishsSelectionFlag ? null : '请选择换购菜品'}
             >
-                <EditBoxForDishes
-                    type='1070'
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes
+                            type='1070'
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    )
+                }        
             </FormItem>
         )
     }
@@ -404,7 +411,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
-                            <PromotionDetailSetting />
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
                     }
                     {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
@@ -420,6 +428,8 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

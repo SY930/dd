@@ -7,7 +7,9 @@ import {
 } from 'antd';
 import styles from '../ActivityPage.less';
 import FoodSelector from '../../../components/common/FoodSelector'
-import { expandCategoriesAndDishes } from '../../../utils';
+import {
+    memoizedExpandCategoriesAndDishes,
+} from '../../../utils';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -32,19 +34,200 @@ const PROMOTION_OPTIONS = [
         name: '按菜品',
     },
 ];
+const getFoodInfoFromScopeList = (scopeList) => {
+    if (!Array.isArray(scopeList) || !scopeList.length) {
+        return {
+            categoryOrDish: 0,
+            dishes: [],
+            categories: [],
+            excludeDishes: [],
+        }
+    }
+    let categoryOrDish = null;
+    const dishes = [];
+    const categories = [];
+    const excludeDishes = [];
+    scopeList.forEach(scope => {
+        if (categoryOrDish === null) {
+            categoryOrDish = scope.scopeType == 2 ? 1 : 0
+        }
+        if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
+            // dishes.push({
+            //     itemID: scope.targetID,
+            //     brandID: `${scope.brandID}` || '0',
+            //     foodName: scope.targetName,
+            //     foodKey: scope.targetCode,
+            //     unit: scope.targetUnitName,
+            //     value: `${scope.brandID}__${scope.targetName}${scope.targetUnitName}`,
+            // })
+            dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
+        } else if (categoryOrDish === 0 && scope.scopeType != 2) {
+            // scope.scopeType == 1 && categories.push({
+            //     itemID: scope.targetID,
+            //     brandID: `${scope.brandID}` || '0',
+            //     foodCategoryKey: scope.targetCode,
+            //     foodCategoryName: scope.targetName,
+            //     value: `${scope.brandID}__${scope.targetName}`,
+            // })
+            scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
+            scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
+            // scope.scopeType == 4 && excludeDishes.push({
+            //     itemID: scope.targetID,
+            //     brandID: `${scope.brandID}` || '0',
+            //     foodName: scope.targetName,
+            //     foodKey: scope.targetCode,
+            //     unit: scope.targetUnitName,
+            //     value: `${scope.brandID}__${scope.targetName}${scope.targetUnitName}`,
+            // })
+        }
+
+    })
+    return {
+        categoryOrDish,
+        dishes,
+        categories,
+        excludeDishes,
+    }
+}
+const getFoodInfoFromPriceList = (priceLst) => {
+    if (!Array.isArray(priceLst) || !priceLst.length) {
+        return {
+            dishes: [],
+        }
+    }
+    return {
+        dishes: priceLst.map(({brandID = '0', foodName, foodUnitName}) => `${brandID}__${foodName}${foodUnitName}`)
+    }
+}
 
 @connect(mapStateToProps)
 export default class CategoryAndFoodSelector extends Component {
 
-    constructor() {
-        super();
-        this.state = {
-            categoryOrDish: 0,
+    constructor(props) {
+        super(props);
+        if (props.dishOnly) {
+            const {
+                dishes,
+            } = getFoodInfoFromPriceList(props.priceLst) // 只取初始值
+            this.state = {
+                categoryOrDish: 1,
+                dishes,
+                categories: [],
+                excludeDishes: [],
+            }
+        } else {
+            const {
+                categories,
+                categoryOrDish,
+                dishes,
+                excludeDishes,
+            } = getFoodInfoFromScopeList(props.scopeLst) // 只取初始值
+            this.state = {
+                categoryOrDish,
+                dishes,
+                categories,
+                excludeDishes,
+            }
         }
     }
-    handleCategoryOrDishChange = (value) => {
+    mapSelectedValueToObjectsAndEmit = () => {
+        const {
+            allBrands,
+            allCategories,
+            allDishes
+        } = this.props;
+        const { dishes, categories } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const {
+            categories: selectedCategoryValues,
+            categoryOrDish,
+            dishes: selectedDishValues,
+            excludeDishes: excludeDishValues,
+        } = this.state;
+        if (categoryOrDish === 1) {
+            const dishObjects = selectedDishValues.reduce((acc, curr) => {
+                const dish = dishes.find(item => item.value === curr);
+                dish && acc.push(dish)
+                return acc;
+            }, [])
+            this.props.onChange({
+                categoryOrDish,
+                dishes: dishObjects,
+                excludeDishes: [],
+                foodCategory: [],
+            })
+        } else {
+            const excludeDishObjects = excludeDishValues.reduce((acc, curr) => {
+                const dish = dishes.find(item => item.value === curr);
+                dish && acc.push(dish)
+                return acc;
+            }, [])
+            const categoryObjects = selectedCategoryValues.reduce((acc, curr) => {
+                const category = categories.find(item => item.value === curr);
+                category && acc.push(category)
+                return acc;
+            }, [])
+            this.props.onChange({
+                categoryOrDish,
+                dishes: [],
+                excludeDishes: excludeDishObjects,
+                foodCategory: categoryObjects,
+            })
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
+                this.mapSelectedValueToObjectsAndEmit()
+            }
+        }
+        if (this.props.selectedBrands !== prevProps.selectedBrands) {
+            this.setState({
+                categoryOrDish: 0,
+                dishes: [],
+                categories: [],
+                excludeDishes: [],
+            }, () => this.mapSelectedValueToObjectsAndEmit())
+        }
+    }
+    
+    handleCategoryOrDishChange = ({target : {value}}) => {
         this.setState({
             categoryOrDish: value,
+            dishes: [],
+            excludeDishes: [],
+            categories: []
+        })
+        this.props.onChange({
+            categoryOrDish: value,
+            dishes: [],
+            excludeDishes: [],
+            foodCategory: []
+        })
+    }
+    handleDishChange = (value) => {
+        this.setState({
+            dishes: value,
+            excludeDishes: [],
+            categories: []
+        }, () => {
+            this.mapSelectedValueToObjectsAndEmit();
+        })
+    }
+    handleCategoryChange = (value) => {
+        this.setState({
+            dishes: [],
+            excludeDishes: [],
+            categories: value
+        }, () => {
+            this.mapSelectedValueToObjectsAndEmit();
+        })
+    }
+    handleExcludeDishChange = (value) => {
+        this.setState({
+            dishes: [],
+            excludeDishes: value,
+        }, () => {
+            this.mapSelectedValueToObjectsAndEmit();
         })
     }
     renderPromotionRange() {
@@ -72,16 +255,45 @@ export default class CategoryAndFoodSelector extends Component {
         );
     }
     renderDishsSelectionBox() {
+        const {
+            allBrands,
+            allCategories,
+            allDishes,
+            dishFilter,
+        } = this.props;
+        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const selectedBrands = this.props.selectedBrands.toJS();
+        if (selectedBrands.length) {
+            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
+            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+        }
+        if (dishFilter) {
+            dishes = dishFilter(dishes)
+        }
+        if (this.props.dishOnly) {
+            return (
+                <FoodSelector
+                    mode="dish"
+                    placeholder="点击添加适用菜品"
+                    allDishes={dishes}
+                    allCategories={categories}
+                    allBrands={brands}
+                    value={this.state.dishes}
+                    onChange={this.handleDishChange}
+                />
+            )
+        }
         return (
             <FormItem label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                 <FoodSelector
                     mode="dish"
                     placeholder="点击添加适用菜品"
-                    allDishes={[]}
-                    allCategories={[]}
-                    allBrands={[]}
-                    value={[]}
-                    onChange={(v) => console.log(v)}
+                    allDishes={dishes}
+                    allCategories={categories}
+                    allBrands={brands}
+                    value={this.state.dishes}
+                    onChange={this.handleDishChange}
                 />
             </FormItem>
         )
@@ -90,9 +302,25 @@ export default class CategoryAndFoodSelector extends Component {
         const {
             allBrands,
             allCategories,
-            allDishes
+            allDishes,
+            dishFilter,
         } = this.props;
-        const { dishes, categories, brands } = expandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const selectedBrands = this.props.selectedBrands.toJS();
+        if (selectedBrands.length) {
+            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
+            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+        }
+        let filteredCategories = categories;
+        let filteredDishes = dishes;
+        if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
+            filteredCategories = categories.filter(({value}) => this.state.categories.includes(value))
+            filteredDishes = dishes.filter(({localFoodCategoryID: value}) => this.state.categories.includes(value))
+        }
+        if (dishFilter) {
+            filteredDishes = dishFilter(filteredDishes) 
+        }
         return (
             <div>
                 <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
@@ -102,19 +330,19 @@ export default class CategoryAndFoodSelector extends Component {
                         allDishes={dishes}
                         allCategories={categories}
                         allBrands={brands}
-                        value={this.state.cats || []}
-                        onChange={(v) => this.setState({cats: v})}
+                        value={this.state.categories}
+                        onChange={this.handleCategoryChange}
                     />
                 </FormItem>
                 <FormItem label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <FoodSelector
                         mode="dish"
                         placeholder="点击添加排除菜品"
-                        allDishes={dishes}
-                        allCategories={categories}
+                        allDishes={filteredDishes}
+                        allCategories={filteredCategories}
                         allBrands={brands}
-                        value={[]}
-                        onChange={(v) => console.log(v)}
+                        value={this.state.excludeDishes}
+                        onChange={this.handleExcludeDishChange}
                     />
                 </FormItem>
             </div>
@@ -122,6 +350,9 @@ export default class CategoryAndFoodSelector extends Component {
         )
     }
     render() {
+        if (this.props.dishOnly) {
+            return this.renderDishsSelectionBox()
+        }
         return (
             <div>
                 {this.renderPromotionRange()}

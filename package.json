@@ -20,6 +20,7 @@
         "@hualala/platform-base": "4.5.2",
         "@hualala/platform-components": "^1.5.5",
         "@hualala/react-lazyload": "^2.3.0",
+        "memoize-one": "^5.0.0",
         "valid-url": "^1.0.9"
     },
     "devDependencies": {

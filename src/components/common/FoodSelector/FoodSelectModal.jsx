@@ -70,6 +70,40 @@ const DEFAULT_FOOD_COLUMNS = [
         },
     },
 ];
+const getNonBrandVal = (str) => {
+    const index = str.indexOf('__');
+    if (index === -1) return str;
+    return str.substring(index)
+}
+/**
+ * 不限品牌和某一品牌的值不能共存
+ * @param {String[]} prev 
+ * @param {String[]} curr 
+ */
+const excludeDuplicates = (prev, curr) => {
+    // 取消某一项勾选的情况，不处理
+    if (curr.length < prev.length) return curr;
+    const groupLevel = [];
+    let brandLevel = [];
+    // 找出现在比以前多选的那些值,并把这些值按不限品牌还是特定品牌分开
+    curr.filter(val => !prev.includes(val)).forEach(val => {
+        if (val.startsWith('0'))  {
+            groupLevel.push(val)
+        } else {
+            brandLevel.push(val)
+        }
+    })
+    let filteredPrev = prev.slice();
+    groupLevel.forEach(val => {
+        brandLevel = brandLevel.filter(item => getNonBrandVal(item) !== getNonBrandVal(val));
+        filteredPrev = filteredPrev.filter(item => getNonBrandVal(item) !== getNonBrandVal(val))
+    })
+    brandLevel.forEach(val => {
+        filteredPrev = filteredPrev.filter(item => !item.startsWith('0') || getNonBrandVal(item) !== getNonBrandVal(val))
+    })
+    
+    return [...filteredPrev, ...groupLevel, ...brandLevel]
+}
 
 export default class FoodSelectModal extends Component {
 
@@ -96,8 +130,9 @@ export default class FoodSelectModal extends Component {
     }
     /** 分类模式相关handler开始 */
     handleCategoryResultsChange = (valueArray) => {
+        const { selectedCategoryResults: prevSelected } = this.state;
         this.setState({
-            selectedCategoryResults: valueArray,
+            selectedCategoryResults: excludeDuplicates(prevSelected, valueArray),
         })
     }
     handleSelectedBrandIDsChange = (valueArray) => {
@@ -122,8 +157,9 @@ export default class FoodSelectModal extends Component {
         })
     }
     handleDishResultsChange = (valueArray) => {
+        const { selectedDishResults: prevSelected } = this.state;
         this.setState({
-            selectedDishResults: valueArray,
+            selectedDishResults: excludeDuplicates(prevSelected, valueArray),
         })
     }
     /** 单品模式相关handler结束 */
@@ -201,13 +237,13 @@ export default class FoodSelectModal extends Component {
             <div className={style.hllFilterSelector}>
                 <div
                     className={style.filterKeyList}
-                    style={{
-                        marginBottom: 15,
-                    }}
                 >
                     {allBrands.map(({ value, label }) => (
                         <span
                             key={value}
+                            style={{
+                                marginBottom: 15,
+                            }}
                             className={classnames(style.filterKey, {
                                 [style.active]: value === currentBrandID,
                             })}
@@ -253,8 +289,6 @@ export default class FoodSelectModal extends Component {
     }
     render() {
         const {
-            tableColumns,
-            options,
             mode = 'category',
             onCancel,
         } = this.props;

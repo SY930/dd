@@ -9,6 +9,8 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+
 const Immutable = require('immutable');
 
 const FormItem = Form.Item;
@@ -377,7 +379,8 @@ class BuyAFreeDetailInfo extends React.Component {
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '1' ?
                             null :
-                            <PromotionDetailSetting />
+                                this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                                <ConnectedScopeListSelector/>
                     }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
@@ -391,6 +394,8 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

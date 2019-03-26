@@ -18,6 +18,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import EditBoxForDishes from './EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddGrade extends React.Component {
     constructor(props) {
@@ -114,12 +115,23 @@ class AddGrade extends React.Component {
                 validateStatus={this.state.data[k].dishesFlag ? 'success' : 'error'}
                 help={this.state.data[k].dishesFlag ? null : '请选择赠送菜品'}
             >
-                <EditBoxForDishes
-                    stageNum={k}
-                    onChange={(value) => {
-                        this.onDishesChange(value, k);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes
+                            stageNum={k}
+                            onChange={(value) => {
+                                this.onDishesChange(value, k);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            onChange={(value) => {
+                                this.onDishesChange(value, k);
+                            }}
+                        />
+                    )
+                }
+                
             </FormItem>
 
         )
@@ -291,6 +303,7 @@ const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 };
 

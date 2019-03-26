@@ -20,25 +20,12 @@ class CompositeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.defaultRun = '0';
+        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         this.state = {
             display: false,
             // data 用来存放 条件中的菜品信息
-            data: [
-                {
-                    count: null, // 需购买份数
-                    flag: 0, // 按菜品还是按分类
-                    scopeLst: [], // 选择的菜品信息
-                    validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
-                },
-                {
-                    count: null, // 需购买份数
-                    flag: 0, // 按菜品还是按分类
-                    scopeLst: [], // 选择的菜品信息
-                    validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
-                },
-            ],
+            scopeLst: _scopeLst,
+            data: this.sortScopeLst(_scopeLst),
             // conditions 用来存放减免信息
             conditions: [
                 {
@@ -77,8 +64,6 @@ class CompositeDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-
-        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
@@ -89,41 +74,30 @@ class CompositeDetailInfo extends React.Component {
         display = !this.props.isNew;
         this.setState({
             display,
-            scopeLst: _scopeLst,
             rule: _rule,
         }, () => {
-            this.sortScopeLst(this.state.scopeLst);
             this.sortRuleJson(this.state.rule);
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']) != this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])) {
-            const _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-            this.setState({
-                scopeLst: _scopeLst,
-            }, () => {
-                this.sortScopeLst(this.state.scopeLst);
-            });
-        }
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) != this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            _rule = Object.assign({}, _rule);
-            this.setState({
-                rule: _rule,
-            }, () => {
-                this.sortRuleJson(this.state.rule);
-            });
-        }
-    }
-
     sortScopeLst(scopeLst) {
         if (scopeLst === undefined || scopeLst.length === 0) {
-            return
+            return [
+                {
+                    count: null, // 需购买份数
+                    flag: 0, // 按菜品还是按分类
+                    scopeLst: [], // 选择的菜品信息
+                    validateStatus: 'success', // 验证信息
+                    msg: '请输入菜品数量', // 错误信息
+                },
+                {
+                    count: null, // 需购买份数
+                    flag: 0, // 按菜品还是按分类
+                    scopeLst: [], // 选择的菜品信息
+                    validateStatus: 'success', // 验证信息
+                    msg: '请输入菜品数量', // 错误信息
+                },
+            ];
         }
         const data = [];
         scopeLst.map((scope) => {
@@ -138,9 +112,13 @@ class CompositeDetailInfo extends React.Component {
             }
             data[scope.stageNo].count = scope.num;
             data[scope.stageNo].flag = scope.scopeType === '2' ? 1 : 0;
-            data[scope.stageNo].scopeLst.push(scope);
+            // 旧数据没有brandID 默认给0 表示全集团可用
+            data[scope.stageNo].scopeLst.push({
+                ...scope,
+                brandID: scope.brandID ? `${scope.brandID}` : '0',
+            });
         })
-        this.setState({ data })
+        return data;
     }
 
     sortRuleJson(rule) {
@@ -451,6 +429,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '1',
                     targetID: item.foodCategoryID,
+                    brandID: item.brandID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName,
                 });
@@ -462,6 +441,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '4',
                     targetID: item.itemID,
+                    brandID: item.brandID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -474,6 +454,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '2',
                     targetID: item.itemID,
+                    brandID: item.brandID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -523,10 +504,10 @@ class CompositeDetailInfo extends React.Component {
                         >
                             {
                                 this.props.form.getFieldDecorator(`food${idx}`, {
-                                    rules: [{
+                                    rules: isShopFoodSelectorMode ? [{
                                         required: true,
                                         message: '菜品不得为空',
-                                    }],
+                                    }] : [],
                                 })(
                                     isShopFoodSelectorMode ? (
                                         <PromotionDetailSettings
@@ -537,7 +518,20 @@ class CompositeDetailInfo extends React.Component {
                                         />
                                     )
                                     : (
-                                        <CategoryAndFoodSelector />
+                                        <CategoryAndFoodSelector
+                                            /**
+                                             * val: {
+                                             *  categoryOrDish: 0 | 1,
+                                             *  foodCategory: [],
+                                             *  dishes: [],
+                                             *  excludeDishes: [],
+                                             * }
+                                             */
+                                            scopeLst={item.scopeLst}
+                                            onChange={(val) => {
+                                                this.handlePromotionSetting(idx, val)
+                                            }}
+                                        />
                                     )
                                 )
                             }

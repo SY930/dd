@@ -16,6 +16,9 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import FoodBox from "../../GiftNew/GiftAdd/FoodBox";
+import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
+
 
 const Immutable = require('immutable');
 
@@ -169,6 +172,7 @@ class NDiscountDetailInfo extends React.Component {
             foodUnitCode: food.foodKey,
             foodName: food.foodName,
             foodUnitName: food.unit,
+            brandID: food.brandID || '0',
             price: food.prePrice==-1?food.price:food.prePrice}));
         this.setState({priceLst})
     }
@@ -183,20 +187,35 @@ class NDiscountDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <PromotionDetailSetting radioLabel="适用菜品选择方式" />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     <NDiscount
                         onChange={this.handleDiscountTypeChange}
                         form={this.props.form}
                         stageType={this.state.stageType}
                         value={this.state.nDiscount}
                     />
-                    {this.state.stageType === '1' && <FoodBox categoryOrDish={0}
-                                                              dishOnly={true}
-                                                              boxLabel="第二份菜品"
-                                                              noExclude={true}
-                                                              onChange={this.handleDishesChange}
-                                                              catOrFoodValue={_priceLst}
-                                                              disabledFetch={true} />}
+                    {
+                        this.state.stageType === '1' && (
+                            this.props.isShopFoodSelectorMode ? (
+                                <FoodBox
+                                    categoryOrDish={0}
+                                    dishOnly={true}
+                                    boxLabel="第二份菜品"
+                                    noExclude={true}
+                                    onChange={this.handleDishesChange}
+                                    catOrFoodValue={_priceLst}
+                                    disabledFetch={true}
+                                />
+                            ) : (
+                                <FormItem required={true} label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                    <ConnectedPriceListSelector onChange={(dishes) => this.handleDishesChange({dishes})} />
+                                </FormItem>
+                            )
+                        )
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
@@ -208,6 +227,8 @@ class NDiscountDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

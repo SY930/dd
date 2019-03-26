@@ -166,13 +166,15 @@ class NewPromotion extends React.Component {
                         loading: false,
                     });
                 },
-                complete: () => {
-                    // TODO:
+                sameCode: () => {
+                    message.error('活动编码重复');
+                    this.setState({
+                        loading: false,
+                    });
                 },
             });
         } else {
             this.props.addNewPromotion({
-                // data: {...opts,createBy:this.props.user.toJS().accountInfo.userName},
                 data: { promotionInfo },
                 success: () => {
                     cb();

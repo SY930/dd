@@ -9,6 +9,8 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+
 
 const Immutable = require('immutable');
 
@@ -267,7 +269,10 @@ class BuyCutDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderBuyDishNumInput()}
                     {this.renderCutWay()}
                     {this.renderGiveDishNumInput()}
@@ -282,6 +287,8 @@ class BuyCutDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

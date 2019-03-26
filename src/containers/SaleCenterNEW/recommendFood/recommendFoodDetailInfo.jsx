@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import CollocationTable from '../common/CollocationTable'; // 表格
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -173,6 +174,7 @@ class RecommendFoodDetailInfo extends React.Component {
                             foodUnitCode: free.foodKey,
                             foodName: free.foodName,
                             foodUnitName: free.unit,
+                            brandID: free.brandID || '0',
                             price: parseFloat(free.price),
                             stageNo: groupIdx,
                             num: group.freeCountInfo[free.itemID],
@@ -183,6 +185,7 @@ class RecommendFoodDetailInfo extends React.Component {
                             scopeType: '2',
                             targetID: food.itemID,
                             targetCode: food.foodKey,
+                            brandID: food.brandID || '0',
                             targetName: food.foodName,
                             targetUnitName: food.unit,
                             stageNo: groupIdx,
@@ -201,6 +204,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     foodUnitID: free.foodUnitID || free.itemID,
                     foodUnitCode: free.foodKey || free.foodUnitCode,
                     foodName: free.foodName,
+                    brandID: free.brandID || '0',
                     foodUnitName: free.unit || free.foodUnitName,
                     price: parseFloat(free.price),
                     stageNo: -1,
@@ -233,7 +237,6 @@ class RecommendFoodDetailInfo extends React.Component {
         })
     }
     autoDishesChange(val) {
-        // console.log(val)
         this.setState({
             priceLstAuto: val,
         })
@@ -319,8 +322,12 @@ class RecommendFoodDetailInfo extends React.Component {
                                     {
                                         this.props.form.getFieldDecorator('priceLst', {
                                             initialValue: this.state.priceLstAuto,
-                                        })(
-                                            <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
+                                        })(                                           
+                                            this.props.isShopFoodSelectorMode ? (
+                                                <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
+                                            ) : (
+                                                <ConnectedPriceListSelector onChange={this.autoDishesChange} />
+                                            )                                         
                                         )}
                                 </FormItem>
                             </div> : null
@@ -335,6 +342,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

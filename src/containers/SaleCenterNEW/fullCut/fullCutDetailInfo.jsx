@@ -15,6 +15,7 @@ const Option = Select.Option;
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 
 const Immutable = require('immutable');
 
@@ -459,7 +460,10 @@ class FullCutDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType != '1' && this.state.ruleType != '2' && <PromotionDetailSetting />}
+                    {this.state.ruleType != '1' && this.state.ruleType != '2' && 
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display
                         ? <AdvancedPromotionDetailSetting payLimit={true} />
@@ -473,6 +477,8 @@ class FullCutDetailInfo extends React.Component {
 function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

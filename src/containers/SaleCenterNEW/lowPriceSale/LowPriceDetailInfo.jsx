@@ -24,6 +24,8 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+
 const Option = Select.Option;
 
 class LowPriceDetailInfo extends React.Component {
@@ -338,7 +340,9 @@ class LowPriceDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType === '2' ? <PromotionDetailSetting /> : null}
+                    {this.state.ruleType === '2' ? this.props.isShopFoodSelectorMode ?
+                        <PromotionDetailSetting /> : <ConnectedScopeListSelector/>
+                    : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
@@ -352,6 +356,8 @@ function mapStateToProps(state) {
         fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

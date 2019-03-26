@@ -24,6 +24,8 @@ const Option = Select.Option;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+
 
 const Immutable = require('immutable');
 
@@ -230,6 +232,7 @@ class FullGiveDetailInfo extends React.Component {
                         foodUnitCode: dish.foodKey,
                         foodName: dish.foodName,
                         foodUnitName: dish.unit,
+                        brandID: dish.brandID || '0',
                         price: dish.price,
                         stageNo: 0,
                     }
@@ -257,6 +260,7 @@ class FullGiveDetailInfo extends React.Component {
                         foodUnitID: dish.itemID || index,
                         foodUnitCode: dish.foodKey,
                         foodName: dish.foodName,
+                        brandID: dish.brandID || '0',
                         foodUnitName: dish.unit,
                         price: dish.price,
                         stageNo: 0,
@@ -286,6 +290,7 @@ class FullGiveDetailInfo extends React.Component {
                             foodUnitCode: dish.foodKey,
                             foodName: dish.foodName,
                             foodUnitName: dish.unit,
+                            brandID: dish.brandID || '0',
                             price: dish.price,
                             stageNo: keys,
                         }
@@ -371,7 +376,10 @@ class FullGiveDetailInfo extends React.Component {
                             })}
                     </Select>
                 </FormItem>
-                {this.state.ruleType == 3 || this.state.ruleType == 4 ? <PromotionDetailSetting /> : null}
+                {this.state.ruleType == 3 || this.state.ruleType == 4 ?
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    : null}
                 <Row>
                     <Col span={19} offset={2}>
                         <AddGrade
@@ -430,6 +438,8 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

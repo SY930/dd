@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import memoizeOne from 'memoize-one';
 
 /**
  * 判断是不是正式线上环境: HUALALA.ENVIRONMENT === 'production-release'
@@ -21,7 +22,8 @@ export const isFormalRelease = () => {
  * @param {*} $rawCategories Immutable.List 直接从基本档请求来的所有分类信息
  * @param {*} $rawDishes Immutable.List 直接从基本档请求来的所有菜品信息
  */
-export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
+const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
+    console.warn('run once');
     if (!$brands.size || !$rawCategories.size || !$rawDishes.size) {
         return {
             categories: [],
@@ -35,6 +37,11 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
             value: `${item.brandID}`,
             label: `${item.brandName}`,
         }));
+    brands.unshift({
+        brandID: '0',
+        value: '0',
+        label: '不限品牌',
+    })
     const rawCategories = $rawCategories.toJS();
     const rawDishes = $rawDishes.toJS();
     const uniqCatMap = new Map();
@@ -48,7 +55,8 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
             ...cat,
             brandID: '0',
             brandName: '不限品牌',
-            label: cat.foodCategoryName,
+            label: `(不限品牌)${cat.foodCategoryName}`,
+            py: cat.foodCategoryMnemonicCode,
             value: `0__${cat.foodCategoryName}`
         }));
     const uniqDishMap = new Map();
@@ -63,16 +71,19 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
             brandID: '0',
             brandName: '不限品牌',
             localFoodCategoryID: `0__${dish.foodCategoryName}`,
-            label: `${dish.foodName}(${dish.unit})`,
+            label: `(不限品牌)${dish.foodName}(${dish.unit})`,
+            py: dish.foodMnemonicCode,
             value: `0__${dish.foodName}${dish.unit}`
         }));
     const categories = rawCategories.reduce((acc, curr) => {
         if (curr.brandID > 0) {
+            const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
             acc.push({
                 ...curr,
                 brandID: `${curr.brandID}`,
-                brandName: (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName,
-                label: curr.foodCategoryName,
+                brandName,
+                label: `(${brandName})${curr.foodCategoryName}`,
+                py: curr.foodCategoryMnemonicCode,
                 value: `${curr.brandID}__${curr.foodCategoryName}`
             })
         } else if (`${curr.brandID}` === '0') { // 把这种通用的分类扩展给每个品牌
@@ -80,7 +91,8 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
                 ...curr,
                 brandID: `${brand.brandID}`,
                 brandName: brand.brandName,
-                label: curr.foodCategoryName,
+                py: curr.foodCategoryMnemonicCode,
+                label: `(${brand.brandName})${curr.foodCategoryName}`,
                 value: `${brand.brandID}__${curr.foodCategoryName}`
             })))
         }
@@ -88,11 +100,13 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
     }, [...commonCategories]);
     const dishes = rawDishes.reduce((acc, curr) => {
         if (curr.brandID > 0) {
+            const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
             acc.push({
                 ...curr,
                 brandID: `${curr.brandID}`,
-                brandName: (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName,
-                label: `${curr.foodName}(${curr.unit})`,
+                brandName,
+                label: `(${brandName})${curr.foodName}(${curr.unit})`,
+                py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${curr.brandID}__${curr.foodCategoryName}`,
                 value: `${curr.brandID}__${curr.foodName}${curr.unit}`
             })
@@ -101,7 +115,8 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
                 ...curr,
                 brandID: `${brand.brandID}`,
                 brandName: brand.brandName,
-                label: `${curr.foodName}(${curr.unit})`,
+                label: `(${brand.brandName})${curr.foodName}(${curr.unit})`,
+                py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${brand.brandID}__${curr.foodCategoryName}`,
                 value: `${brand.brandID}__${curr.foodName}${curr.unit}`
             })))
@@ -114,3 +129,5 @@ export const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) =
         brands,
     }
 }
+
+export const memoizedExpandCategoriesAndDishes = memoizeOne(expandCategoriesAndDishes)

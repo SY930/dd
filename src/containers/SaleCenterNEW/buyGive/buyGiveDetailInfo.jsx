@@ -30,7 +30,8 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const RULE_TYPE = [
     {
@@ -162,19 +163,13 @@ class BuyGiveDetailInfo extends React.Component {
                     },
                 ],
             }
-
-            const dish = dishes.map((dish) => {
-                return foodMenuList.find((menu) => {
-                    // return dish.id === menu.foodID不唯一
-                    return dish.itemID == menu.itemID
-                })
-            });
-            const priceLst = dish.map((price) => {
+            const priceLst = dishes.map((price) => {
                 return {
                     foodUnitID: price.itemID,
                     foodUnitCode: price.foodKey,
                     foodName: price.foodName,
                     foodUnitName: price.unit,
+                    brandID: price.brandID || '0',
                     price: price.price,
                 }
             });
@@ -285,22 +280,24 @@ class BuyGiveDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectStatus}
                 help={this.state.dishsSelectStatus == 'success' ? null : '赠送菜品不可为空'}
             >
-                <EditBoxForDishes onChange={(value) => {
-                    this.onDishesChange(value);
-                }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes onChange={this.onDishesChange} />
+                    ) : (
+                        <ConnectedPriceListSelector onChange={this.onDishesChange} />
+                    )
+                }
+                
             </FormItem>
         )
     }
-    onDishesChange(value) {
-        // console.log(value)
+    onDishesChange = (value) => {
+        console.log('value', value)
         let { dishes } = this.state;
         dishes = value;
         this.setState({
             dishes,
             dishsSelectStatus: value.length > 0 ? 'success' : 'error',
-        }, () => {
-            // console.log(this.state.dishsSelectStatus)
         });
     }
     renderAdvancedSettingButton() {
@@ -321,7 +318,10 @@ class BuyGiveDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
                     {this.renderGiveDishNumInput()}
@@ -337,6 +337,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
