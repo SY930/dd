@@ -183,7 +183,6 @@ export default class CategoryAndFoodSelector extends Component {
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
             if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
                 this.setState({
-                    categoryOrDish: 0,
                     dishes: [],
                     categories: [],
                     excludeDishes: [],
@@ -317,15 +316,15 @@ export default class CategoryAndFoodSelector extends Component {
         }
         let filteredCategories = categories;
         let filteredDishes = dishes;
+        let filteredBrands = brands;
         if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
-            filteredCategories = categories.filter(({value}) => this.state.categories.includes(value))
-            filteredDishes = dishes.filter(({localFoodCategoryID: value}) => this.state.categories.includes(value))
+            filteredCategories = filteredCategories.filter(({value}) => this.state.categories.includes(value))
+            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value}) => this.state.categories.includes(value))
+            filteredBrands = filteredBrands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
         }
         if (dishFilter) {
             filteredDishes = dishFilter(filteredDishes) 
         }
-        const filteredBrands = brands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
-        console.log('this.state.categories', this.state.categories)
         return (
             <div>
                 <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>

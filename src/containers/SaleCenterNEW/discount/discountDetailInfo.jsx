@@ -27,6 +27,7 @@ const type = [
 const FormItem = Form.Item;
 const Immutable = require('immutable');
 const Option = Select.Option;
+const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(value)
 
 class DiscountDetailInfo extends React.Component {
     constructor(props) {
@@ -97,19 +98,25 @@ class DiscountDetailInfo extends React.Component {
     handleSubmit = (cbFn) => {
         let { discount, discountFlag, ruleInfo } = this.state;
         let rule;
-        if (discount == null || discount == '') {
+        if (!isValidNumber(discount)) {
             discountFlag = false;
         }
-        this.setState({ discount, discountFlag });
-
+        let nextFlag = true;
         const ruleValidation = ruleInfo.reduce((p, c) => {
-            if (c.start === null || c.end === null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
-                c.validationStatus = 'error';
-                c.helpMsg = '请输入正确折扣范围';
+            if (this.state.ruleType == '0') {
+                if (!isValidNumber(c.end)) {                   
+                    c.validationStatus = 'error';
+                    c.helpMsg = '请输入正确折扣范围';
+                }
+            } else {
+                if (!isValidNumber(c.start) || !isValidNumber(c.end)) {
+                    c.validationStatus = 'error';
+                    c.helpMsg = '请输入正确折扣范围';
+                }
             }
             return p && c.validationStatus === 'success';
         }, true);
-        let nextFlag = true;
+        this.setState({ruleInfo, discount, discountFlag})
         if (discountFlag && this.state.ruleType == '0') {
             rule = {
                 stageType: this.state.ruleType,
@@ -119,25 +126,25 @@ class DiscountDetailInfo extends React.Component {
             this.props.setPromotionDetail({
                 rule,
             });
-        } else if (ruleValidation && (this.state.ruleType == '1' || this.state.ruleType == '2')) {
-            rule = {
-                stageType: '2',
-                stage: this.state.ruleInfo.map((ruleInfo) => {
-                    return {
-                        targetScope: this.state.targetScope,
-                        stageAmount: ruleInfo.start,
-                        discountRate: ruleInfo.end,
-                    }
-                }),
-            }
-            this.props.setPromotionDetail({
-                rule,
-            });
         } else {
-            nextFlag = false;
+            if (ruleValidation && (this.state.ruleType == '1' || this.state.ruleType == '2')) {
+                rule = {
+                    stageType: '2',
+                    stage: this.state.ruleInfo.map((ruleInfo) => {
+                        return {
+                            targetScope: this.state.targetScope,
+                            stageAmount: ruleInfo.start,
+                            discountRate: ruleInfo.end,
+                        }
+                    }),
+                }
+                this.props.setPromotionDetail({
+                    rule,
+                });
+            } else {
+                nextFlag = false;
+            }
         }
-
-
         return nextFlag;
     };
 
@@ -153,11 +160,14 @@ class DiscountDetailInfo extends React.Component {
         const _end = value.end;
         let _validationStatus,
             _helpMsg;
-        // TODO:刚输入的时候就报错
         if (parseFloat(_end) <= 10 || (_start == null && _end != null) || (_start != null && _end == null)) {
             _validationStatus = 'success';
             _helpMsg = null
         } else {
+            _validationStatus = 'error';
+            _helpMsg = '请输入正确折扣范围'
+        }
+        if (_end > 10) {
             _validationStatus = 'error';
             _helpMsg = '请输入正确折扣范围'
         }
@@ -280,13 +290,10 @@ class DiscountDetailInfo extends React.Component {
                                 relation={'折扣'}
                                 addonAfterUnit={'折'}
                                 disabled={this.state.ruleType == '0'}
-                                value={
-                                    _value
-                                }
+                                value={_value}
                                 onChange={(value) => {
                                     this.onCustomRangeInputChange(value, index);
-                                }
-                                }
+                                }}
                             />
                         </FormItem>
                     </Col>
