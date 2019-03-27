@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
-import phone from '../../../assets/phone.png';
+import phone from '../../../assets/phoneX.png';
 import moment from 'moment';
 import bg1 from '../../../assets/bg1.png';
 import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../../constants/weChatTemplateConstants";
@@ -36,12 +36,22 @@ class PhonePreviewForWeChat extends PureComponent {
                             top: 20,
                         }}
                     />
-                    <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
+                    {/* <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
+                     */}
+                    {/* <div className={styles.phonePreviewContentWrapper}>
+                        
+                    </div> */}
                     <div className={styles.phonePreviewModifier}>
                         微信公众号
                     </div>
-                    <div className={styles.phonePreviewContentWrapper}>
-                        <div className={styles.weChatContent}>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 145,
+                            left: 58,
+                        }}
+                        className={styles.weChatContent}
+                    >
                             <div>
                                 {DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].type}
                             </div>
@@ -78,7 +88,6 @@ class PhonePreviewForWeChat extends PureComponent {
                                 <div>{`>`}</div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         )
