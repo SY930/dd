@@ -126,46 +126,6 @@ class FullCutDetailInfo extends React.Component {
         return true
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) !==
-            JSON.stringify(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']))) {
-            const _promotionDetail = nextProps.promotionDetailInfo.get('$promotionDetail').toJS();
-            const _rule = Object.assign({}, _promotionDetail.rule);
-
-
-            let ruleInfo,
-                maxCount,
-                ruleType = _rule.stageType;
-            if (_rule.stage !== undefined && _rule.stage instanceof Array) {
-                ruleInfo = _rule.stage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.stageAmount,
-                        end: stageInfo.freeAmount,
-                        validationStatus: 'success',
-                        helpMsg: null,
-                    }
-                });
-                maxCount = 3;
-            } else {
-                // 初始值
-                ruleInfo = [{
-                    start: _rule.stageAmount,
-                    end: _rule.freeAmount,
-                    validationStatus: 'success',
-                    helpMsg: null,
-                }];
-                maxCount = 1;
-            }
-
-            // TODO: set state
-            this.setState({
-                ruleType,
-                ruleInfo,
-                maxCount,
-            });
-        }
-    }
-
     // next is 0, finish is 1
     handleSubmit() {
         const { ruleInfo, ruleType } = this.state;
@@ -460,11 +420,11 @@ class FullCutDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType != '1' && this.state.ruleType != '2' && 
+                    {this.state.ruleType != '1' && this.state.ruleType != '2' ? 
                         (
                             this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
                             <ConnectedScopeListSelector/>
-                        )
+                        ) : null
                     }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display
