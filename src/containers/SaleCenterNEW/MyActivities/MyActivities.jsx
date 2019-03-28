@@ -708,7 +708,7 @@ class MyActivities extends React.Component {
                 title={this.state.modalTitle}
                 visible={this.state.updateModalVisible}
                 footer={false}
-                width="924px"
+                width={1000}
                 height="569px"
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}

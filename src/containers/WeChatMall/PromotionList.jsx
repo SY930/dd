@@ -315,8 +315,6 @@ export class WeChatMallPromotionList extends React.Component {
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
-            /*pageSizes: pageSize,
-            pageNo: 1,*/
             loading: true
         }, () => {
             this.handleQuery(1, pageSize)
@@ -342,7 +340,7 @@ export class WeChatMallPromotionList extends React.Component {
                 title={this.state.modalTitle}
                 visible={this.state.updateModalVisible}
                 footer={false}
-                width="924px"
+                width={1000}
                 height="569px"
                 maskClosable={false}
                 onCancel={() => {
