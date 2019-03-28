@@ -130,6 +130,11 @@ export default class CategoryAndFoodSelector extends Component {
             }
         }
     }
+    componentDidMount() {
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            this.mapSelectedValueToObjectsAndEmit()
+        }
+    }
     mapSelectedValueToObjectsAndEmit = () => {
         const {
             allBrands,

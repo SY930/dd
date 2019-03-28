@@ -83,6 +83,8 @@ class EditBoxForDishes extends React.Component {
 
         this.setState({
             foodSelections: _foodSelections,
+        }, () => {
+            this.props.onChange && this.props.onChange(Array.from(_foodSelections))
         })
     }
     // 过滤套餐,临时菜，临时套餐

@@ -50,8 +50,6 @@ class BuyGiveDetailInfo extends React.Component {
         this.defaultRun = '0';
         this.state = {
             display: false,
-            foodMenuList: [],
-            foodCategoryCollection: [],
             // TODO:存到state中了，页面中需要用到defaultValue的地方现在都是state代替的，要换成redux中的数据
             stageAmount: '',
             giveFoodCount: '',
@@ -77,14 +75,6 @@ class BuyGiveDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-
-            this.setState({
-                foodMenuList,
-            })
-        }
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
@@ -102,45 +92,14 @@ class BuyGiveDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-            })
-        }
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
         nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
-
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-            const _dish = [];
-            _priceLst.map((price) => {
-                foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                        _dish.push(food)
-                    }
-                });
-            });
-            _dish.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-            }));
-            this.setState({
-                foodMenuList,
-                dishes: _dish,
-            });
-        }
     }
 
     handleSubmit = () => {
-        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodMenuList } = this.state;
+        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -291,10 +250,8 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
     onDishesChange = (value) => {
-        let { dishes } = this.state;
-        dishes = value;
         this.setState({
-            dishes,
+            dishes: [...value],
             dishsSelectStatus: value.length > 0 ? 'success' : 'error',
         });
     }
