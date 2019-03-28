@@ -691,7 +691,7 @@ class GenerateBatchGifts extends Component {
                     maskClosable={false}
                     visible={this.state.modalVisible}
                     confirmLoading={this.state.confirmLoading}
-                    width={900}
+                    width={950}
                     onCancel={this.hideModal}
                     onOk={this.handleModalOk}
                 >

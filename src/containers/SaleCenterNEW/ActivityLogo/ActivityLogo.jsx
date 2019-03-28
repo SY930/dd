@@ -25,8 +25,6 @@ export class ActivityLogo extends React.Component {
                 </div>) : null
                 }
                 <div className={this.props.activityMain ? style.title : styles.title}>{this.props.titletext}</div>
-                <div className={styles.describe}>{this.props.spantext}</div>
-                <div className={styles.describe}>{this.props.example}</div>
             </div>
         );
     }

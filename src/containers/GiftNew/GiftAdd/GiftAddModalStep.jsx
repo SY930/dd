@@ -11,7 +11,6 @@ import BaseForm from '../../../components/common/BaseForm';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
-// import FoodCatTree from './FoodCatTree';
 import FoodBox from './FoodBox';
 import MoreFoodBox from './MoreFoodBox';
 import GiftPromotion from './GiftPromotion';
@@ -29,7 +28,6 @@ import {
     queryUnbindCouponPromotion,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
-import SeniorDateSetting from './common/SeniorDateSetting/SeniorDateSetting';
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";

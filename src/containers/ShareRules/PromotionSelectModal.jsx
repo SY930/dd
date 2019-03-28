@@ -130,13 +130,7 @@ class PromotionSelectModal extends Component {
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>取消</Button>,
-                    selected.length >= 2 ?
-                    <Button key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>
-                        :
-                    <Tooltip title="至少要选择2项进行共享">
-                        <Button key="1" disabled type="primary" size="large">保存</Button>
-                    </Tooltip>
-                    ,
+                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>,
                 ]}
                 onCancel={this.props.handleCancel}
                 width="922px"

@@ -27,15 +27,6 @@ class QuatoCardDetailModal extends Component {
         }).then((data = []) => {
             this.proSumData(data);
         });
-        // fetchData('getQuotaSummary',{giftItemID},null,{path:"data.summary"}).then(data=>{
-        //     let dataSource = [];
-        //     if(data){
-        //         dataSource = [{key:'summary',...data,giftStatus:'数量'}]
-        //         this.setState({dataSource,loading:false});
-        //     }else{
-        //         this.setState({loading:false});
-        //     }
-        // });
     }
     componentWillReceiveProps(nextProps) {
         const { visible, data: { giftItemID }, FetchQuotaCardSum, quotaCardSumSource } = nextProps
@@ -82,7 +73,7 @@ class QuatoCardDetailModal extends Component {
                 visible={this.props.visible}
                 maskClosable={false}
                 onCancel={() => this.props.onCancel()}
-                width={900}
+                width={950}
                 footer={[<Button key="0" type="primary" onClick={() => this.handleCancel()}>关闭</Button>]}
             >
                 <div className={styles.giftDetailModal}>

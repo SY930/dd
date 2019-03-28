@@ -184,7 +184,7 @@ class GiftDetailModal extends Component {
                 visible={this.props.visible}
                 onCancel={() => this.handleCancel()}
                 maskClosable={false}
-                width={900}
+                width={950}
                 footer={[<Button key="0" className="cancelBtnJs" type="ghost" onClick={() => this.handleCancel()}>关闭</Button>]}
             >
                 {visible && (

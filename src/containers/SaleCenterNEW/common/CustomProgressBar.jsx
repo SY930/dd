@@ -84,7 +84,6 @@ class CustomProgressBar extends React.Component {
         }
     }
 
-    // this.state.current <div className={styles.stepsContent}>{steps[this.state.current].content}</div>
     render() {
         const { steps } = this.props;
         const current = this.state.current;
@@ -114,7 +113,15 @@ class CustomProgressBar extends React.Component {
                     >取消
                     </Button>
                     {
-                        this.state.current > 0 && <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.prev(current)}> 上一步 </Button>
+                        this.state.current > 0 && (
+                            <Button
+                                style={{ marginLeft: 8 }}
+                                type="primary"
+                                onClick={() => this.prev(current)}
+                            >
+                                上一步
+                            </Button>
+                        )
                     }
                     {
                         this.state.current < steps.length - 1 &&

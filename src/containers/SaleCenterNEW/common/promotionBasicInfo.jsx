@@ -136,6 +136,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                 <Modal
                     title={`管理${title}`}
                     visible={this.state.cateVisible}
+                    width={580}
                     confirmLoading={this.state.loading}
                     onCancel={this.handleCancel}
                     wrapClassName={styles.linkSelectorModalHasTag}

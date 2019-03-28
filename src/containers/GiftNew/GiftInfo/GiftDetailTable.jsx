@@ -533,7 +533,7 @@ class GiftDetailTable extends Component {
                         top: '10%'
                     }}
                     maskClosable={true}
-                    width={910}
+                    width={960}
                 >
                     <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
                 </Modal>
