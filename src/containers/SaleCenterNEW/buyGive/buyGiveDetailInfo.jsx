@@ -269,7 +269,6 @@ class BuyGiveDetailInfo extends React.Component {
     }
 
     renderDishsSelectionBox() {
-        const { getFieldDecorator } = this.props.form;
         return (
             <FormItem
                 label="赠送菜品"
