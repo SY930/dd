@@ -71,34 +71,6 @@ class NewPromotion extends React.Component {
             shareLst,
             usageMode: scopeInfo.usageMode,
         };
-        // 存储普通菜品分类和单品（非套餐），scopeLst过滤掉线上菜品，priceLst过滤套餐
-        const categoryNames = [];
-        const singleFoods = [];
-        promotionDetailInfo.toJS().foodCategoryCollection.forEach((cat) => {
-            cat.foodCategoryName.forEach((catName) => {
-                categoryNames.push(catName.foodCategoryID);
-                catName.foods.forEach((food) => {
-                    // 加价换购放开套餐限制
-                    if (basicInfo.promotionType === '1070' && food.isTempFood != '1' && food.isTempSetFood != '1') {
-                        singleFoods.push(String(food.itemID))
-                    } else if (food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1') {
-                        singleFoods.push(String(food.itemID))
-                    }
-                })
-            })
-        });
-        // console.log(categoryNames, singleFoods);
-        const scopeLst = opts.scopeLst.filter((cat) => {
-            if (cat.scopeType == '1') {
-                return categoryNames.includes(cat.targetID)
-            }
-            return cat
-        })
-        const priceLst = basicInfo.promotionType === '5010' || basicInfo.promotionType === '1010' ?
-            opts.priceLst :
-            (opts.priceLst || []).filter((price) => {
-                return singleFoods.includes(String(price.foodUnitID))
-            })
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
@@ -141,8 +113,8 @@ class NewPromotion extends React.Component {
                 needSyncToAliPay: detailInfo.needSyncToAliPay,
             },
             timeLst: opts.timeLst,
-            priceLst,
-            scopeLst,
+            priceLst: opts.priceLst,
+            scopeLst: opts.scopeLst,
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }

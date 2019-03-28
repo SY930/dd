@@ -194,7 +194,6 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     rule, priceLst,
                 });
             }
-
             return true
         }
         const errElement = document.querySelector('.ant-form-explain');
