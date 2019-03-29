@@ -69,14 +69,12 @@ class AddGrade extends React.Component {
             if (nextProps.ruleType !== '2' && nextProps.ruleType !== '3') {
                 this.uuid = 0;
                 const { form } = this.props;
-                const keys = form.getFieldValue('keys');
                 form.setFieldsValue({
                     keys: [0],
                 });
             } else {
                 this.uuid = Object.keys(nextProps.value).length - 1;
                 const { form } = this.props;
-                const keys = form.getFieldValue('keys');
                 form.setFieldsValue({
                     keys: Object.keys(nextProps.value),
                 });

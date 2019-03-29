@@ -131,25 +131,27 @@ class FullGiveDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('foodCategoryCollection') != this.props.promotionDetailInfo.get('foodCategoryCollection')) {
-            this.setState({
-                foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-            }, () => {
-                this.sortData(this.state.priceLst, this.state.foodMenuList)
-            });
-        }
-
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+        if (this.props.isShopFoodSelectorMode) {
+            if (nextProps.promotionDetailInfo.get('foodCategoryCollection') != this.props.promotionDetailInfo.get('foodCategoryCollection')) {
                 this.setState({
-                    priceLst: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
+                    foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
+                    foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
                 }, () => {
                     this.sortData(this.state.priceLst, this.state.foodMenuList)
                 });
             }
-        }
+    
+            if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
+                this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
+                if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
+                    this.setState({
+                        priceLst: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
+                    }, () => {
+                        this.sortData(this.state.priceLst, this.state.foodMenuList)
+                    });
+                }
+            }
+        } 
     }
 
     sortData(_priceLst, foodMenu) {
