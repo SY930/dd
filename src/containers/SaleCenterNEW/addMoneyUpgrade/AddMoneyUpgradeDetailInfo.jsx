@@ -31,6 +31,13 @@ import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
+        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "5") || [];
+        let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        if (Immutable.List.isList(priceLst)) {
+            priceLst = priceLst.toJS();
+        } else {
+            priceLst = [];
+        }
         this.state = {
             display: false,
             foodMenuList: [],
@@ -39,10 +46,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: 0,
             stageCondition: 0,
             stageAmount: '',
-            upGradeDishes: [],
+            upGradeDishes,
             isAddMoney: 0,
             freeAmount: '',
-            dishes: [],
+            dishes: priceLst,
             mostNewLimit: 0,
             giveFoodMax: '',
             singleNewLimit: 0,
@@ -86,15 +93,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
         // 根据ruleJson填充页面
-        // const stage = _rule.stage ? _rule.stage[0] : {}
-        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "5") || [];
         const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
-        let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        if (Immutable.List.isList(priceLst)) {
-            priceLst = priceLst.toJS();
-        } else {
-            priceLst = [];
-        }
 
         let subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         if (subjectType == 1) {
@@ -109,10 +108,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType,
             stageCondition: _rule.stageCondition || 0,
             stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
-            upGradeDishes,
             isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
             freeAmount: _rule.freeAmount || '',
-            dishes: priceLst || [],
             mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
             giveFoodMax: _rule.giveFoodMax || '',
             singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
@@ -120,7 +117,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+        if (nextProps.isShopFoodSelectorMode) {
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
             nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized']) &&
             !this.state.hadFoodMenuList) {
             this.setState({
@@ -140,23 +138,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 $promotionDetail.getIn(['priceLst']).toJS() : [];
             let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType == "5");
             _upGradeDishes = _upGradeDishes.length > 0 ? _upGradeDishes : $promotionDetail.getIn(['upGradeDishes']).toJS();
-            const scope = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
-            let subjectType = $promotionDetail.getIn(['subjectType']);
-
-            if (subjectType == 1) {
-                subjectType = scope.length > 0 ? 3 : 1
-            }
-            if (subjectType == 0) {
-                subjectType = scope.length > 0 ? 2 : 0
-            }
-            let _rule = $promotionDetail.getIn(['rule']);
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            _rule = Object.assign({}, _rule);
-            // const stage = _rule.stage ? _rule.stage[0] : {}
             const _dish = [];
             _priceLst.map((price) => {
                 foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
                     if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
                         _dish.push(food)
                     }
@@ -181,18 +165,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 item.foodUnitID = item.itemID;
             }));
             this.setState({
-                countType: _rule.countType || 0,
-                subjectType,
-                stageCondition: _rule.stageCondition || 0,
-                stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
                 upGradeDishes,
-                isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
-                freeAmount: _rule.freeAmount || '',
                 dishes: _dish,
-                mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
-                giveFoodMax: _rule.giveFoodMax || '',
-                singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
-                giveFoodCount: _rule.giveFoodCount || '',
                 hadSetWhenEdit: true,
             });
         }
@@ -201,6 +175,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
             })
         }
+    }
     }
 
     handleSubmit = () => {
@@ -350,7 +325,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 this.onupGradeDishesChange(value);
                             }}
                         />
-                    ) : (
+                    ) : ( // 这里没有考虑到，其实不是priceLst而是scopeType为5的scopeLst, 最后是在组件内兼容的
                         <ConnectedPriceListSelector
                             value={this.state.upGradeDishes}
                             onChange={(value) => {

@@ -89,14 +89,16 @@ const getFoodInfoFromScopeList = (scopeList) => {
         excludeDishes,
     }
 }
-const getFoodInfoFromPriceList = (priceLst) => {
+const getDishesInfoFromPriceOrScopeList = (priceLst) => {
     if (!Array.isArray(priceLst) || !priceLst.length) {
         return {
             dishes: [],
         }
     }
     return {
-        dishes: priceLst.map(({brandID = '0', foodName, foodUnitName}) => `${brandID}__${foodName}${foodUnitName}`)
+        dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`
+        : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
+        )
     }
 }
 
@@ -108,7 +110,7 @@ export default class CategoryAndFoodSelector extends Component {
         if (props.dishOnly) {
             const {
                 dishes,
-            } = getFoodInfoFromPriceList(props.priceLst) // 只取初始值
+            } = getDishesInfoFromPriceOrScopeList(props.priceLst) // 只取初始值
             this.state = {
                 categoryOrDish: 1,
                 dishes,
