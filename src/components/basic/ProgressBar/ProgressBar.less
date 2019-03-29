@@ -1,6 +1,6 @@
 @import '~@hualala/platform-base/lib/styles/variables.less';
 
-.ProgressBar{
+.commonProgressBar(@main-color: #1ab394, @sub-color: #97e0d1) {
 	:global{
 		//步骤条距离上下的距离
 		.ant-steps{
@@ -21,15 +21,15 @@
 		}
 		//横线的颜色
 		.ant-steps .ant-steps-item.ant-steps-status-finish .ant-steps-tail>i:after{
-			background:#1ab394;
+			background:@main-color;
 		}
 		//当前状态
 		.ant-steps-status-process{
 			.ant-steps-head{
 				.ant-steps-head-inner{
 					border-radius:3px;
-					border-color:#1ab394;
-					background-color: #1ab394;
+					border-color:@main-color;
+					background-color: @main-color;
 					.ant-steps-icon{
 						color: #ffffff;
 					}
@@ -41,8 +41,8 @@
 			.ant-steps-head{
 				.ant-steps-head-inner{
 					border-radius:3px;
-					border-color:#97e0d1;
-					background-color: #97e0d1;
+					border-color:@sub-color;
+					background-color: @sub-color;
 					.ant-steps-icon{
 						color: #ffffff;
 					}
@@ -78,4 +78,10 @@
 			max-height: 447px;
 		}
 	}
+}
+.ProgressBar{
+	.commonProgressBar();
+}
+.ProgressBarPro{
+	.commonProgressBar(#379ff1, #87C5F7)
 }

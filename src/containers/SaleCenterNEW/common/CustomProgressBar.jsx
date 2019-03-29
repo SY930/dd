@@ -16,6 +16,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';
 import { Steps, Button } from 'antd';
+import {
+    isProfessionalTheme,
+} from '../../../helpers/util'
 
 const Step = Steps.Step;
 
@@ -93,7 +96,7 @@ class CustomProgressBar extends React.Component {
         }
 
         return (
-            <div className={styles.ProgressBar}>
+            <div className={isProfessionalTheme() ? styles.ProgressBarPro : styles.ProgressBar}>
                 <Steps current={current} className="clearfix">
                     {steps.map(item => <Step key={item.title} title={item.title} />)}
                 </Steps>

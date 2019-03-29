@@ -1,7 +1,7 @@
 @import '~@hualala/platform-base/lib/styles/variables.less';
 @import '~@hualala/platform-base/lib/styles/mixins.less';
 
-.hllFilterSelector {
+.commonFilterSelector(@primary-color: @btn1-default-background, @sub-color: @btn1-hover-background) {
     .filterKeyList {
         .filterKey {
             display: inline-block;
@@ -15,12 +15,12 @@
             cursor: pointer;
             transition: all .15s cubic-bezier(.645,.045,.355,1);
             &:hover {
-                color: @btn1-hover-background;
-                border-color: @btn1-hover-background;
+                color: @sub-color;
+                border-color: @sub-color;
             }
             &.active {
                 color: #ffffff;
-                background-color: @btn1-default-background;
+                background-color: @primary-color;
             }
         }
     }
@@ -50,4 +50,11 @@
     .selectedList {
         margin-top: 5px;
     }
+}
+
+.hllFilterSelector {
+    .commonFilterSelector();
+}
+.hllFilterSelectorPro {
+    .commonFilterSelector(#379ff1, #3496e0);
 }
