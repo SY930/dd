@@ -101,9 +101,9 @@ class StepTwo extends React.Component {
         if (Object.keys(specialPromotion).length > 30) {
             let addUpOpts = {};
             if (this.props.type == '62') {
-                if (specialPromotion.consumeType == '0') {
+                if (specialPromotion.consumeType % 2 === 0) {
                     addUpOpts = {
-                        consumeType: '0',
+                        consumeType: `${specialPromotion.consumeType}`,
                         numberValue: {
                             number: specialPromotion.consumeTotalAmount,
                             modal: 'float',
@@ -111,7 +111,7 @@ class StepTwo extends React.Component {
                     }
                 } else {
                     addUpOpts = {
-                        consumeType: '1',
+                        consumeType: `${specialPromotion.consumeType}`,
                         numberValue: {
                             number: specialPromotion.consumeTotalTimes,
                             modal: 'int',
@@ -201,38 +201,6 @@ class StepTwo extends React.Component {
                 this.setState({occupiedShopIDs: nextOccupiedShops || []});
             }
         }
-
-        const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
-        const _specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const cardLevelIDListChange = specialPromotion.eventStartDate != _specialPromotion.eventStartDate || specialPromotion.eventEndDate != _specialPromotion.eventEndDate;
-        // 修改时,初始化state
-        if (cardLevelIDListChange &&
-            nextProps.specialPromotion.get('$eventInfo').size > 30) {
-            let addUpOpts = {};
-            if (this.props.type == '62') {
-                if (specialPromotion.consumeType == '0') {
-                    addUpOpts = {
-                        consumeType: '0',
-                        numberValue: {
-                            number: specialPromotion.consumeTotalAmount,
-                            modal: 'float',
-                        },
-                    }
-                } else {
-                    addUpOpts = {
-                        consumeType: '1',
-                        numberValue: {
-                            number: specialPromotion.consumeTotalTimes,
-                            modal: 'int',
-                        },
-                    }
-                }
-            }
-            this.setState({
-                message: specialPromotion.smsTemplate,
-                ...addUpOpts,
-            })
-        }
     }
     // 会员群体Option
     renderOptions() {
@@ -240,21 +208,19 @@ class StepTwo extends React.Component {
 
     }
     handleOptionChange(value) {
-        // console.log(value);
         this.setState({
             consumeType: value,
             numberValue: {
                 number: '',
-                modal: value == '0' ? 'float' : 'int',
+                modal: value % 2 ? 'int' : 'float',
             },
         }, () => {
             this.props.form.setFieldsValue({ 'give': this.state.numberValue })
         });
     }
     handleNumberChange(value) {
-        // console.log(value);
         const consumeType = this.state.consumeType;
-        if (consumeType == '0') { // 消费累计金额每满"
+        if (consumeType % 2 === 0) { // 消费累计金额满 每满
             if (value.number < 0 || value.number === '') {
                 this.setState({ giveStatus: 'error' })
             } else {
@@ -266,7 +232,7 @@ class StepTwo extends React.Component {
                     },
                 });
             }
-        } else { // 消费累计次数每满
+        } else { // 消费累计次数满 每满
             if (value.number < 3) {
                 this.setState({ giveStatus: 'error' })
             } else {
@@ -317,8 +283,8 @@ class StepTwo extends React.Component {
         if (this.props.type == '62') {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
-            consumeType == '0' ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
-            if ((consumeType == '0' && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 3)) {
+            consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
+            if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 3)) {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
@@ -373,13 +339,6 @@ class StepTwo extends React.Component {
                     validateStatus={noSelected64 ? 'error' : 'success'}
                     help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
                 >
-                    {/*<EditBoxForShops
-                        value={this.state.selections_shopsInfo}
-                        onChange={
-                            this.editBoxForShopsChange
-                        }
-                        type={this.props.type}
-                    />*/}
                     <ShopSelector
                         value={selectedShopIdStrings}
                         onChange={
@@ -397,16 +356,18 @@ class StepTwo extends React.Component {
     }
     render() {
         const sendFlag = true;
-        const tip = this.state.consumeType == '0' ? '累计金额不得少于0元' : '累计次数不得少于3次'
-        const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
-        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，giveSelect不可编辑
+        const tip = this.state.consumeType % 2 === 0 ? '累计金额不得少于0元' : '累计次数不得少于3次'
+        const smsGate = this.props.specialPromotion.getIn(['$eventInfo', 'smsGate']);
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
             <Select onChange={this.handleOptionChange}
                     value={this.state.consumeType}
                     disabled={userCount > 0}
                     getPopupContainer={(node) => node.parentNode}
             >
+                <Option key="2">累计金额满</Option>
                 <Option key="0">累计金额每满</Option>
+                <Option key="3">累计次数满</Option>
                 <Option key="1">累计次数每满</Option>
             </Select>
         );
@@ -435,7 +396,7 @@ class StepTwo extends React.Component {
                                 })(<PriceInput
                                     onChange={this.handleNumberChange}
                                     addonBefore={giveSelect}
-                                    addonAfter={this.state.consumeType == '0' ? '元' : '次'}
+                                    addonAfter={this.state.consumeType % 2 === 0 ? '元' : '次'}
                                 />)
                                 }
                             </FormItem>
