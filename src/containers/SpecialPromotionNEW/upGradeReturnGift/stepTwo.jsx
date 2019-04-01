@@ -44,7 +44,7 @@ class StepTwo extends React.Component {
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             cardLevelRangeType: cardLevelRangeType === undefined ? '5' : cardLevelRangeType,
             giveStatus: 'success',
-            consumeType: '0',
+            consumeType: '2',
             numberValue: {
                 number: '',
                 modal: 'float',
