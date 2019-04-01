@@ -33,7 +33,7 @@ const GiftCfg = {
             value: '40',
             color: '#9dc568',
             category: 'secondary',
-            tags: ['pos']
+            tags: ['pos', '新微信']
         },
         {
             name: '会员积分券',
@@ -41,14 +41,15 @@ const GiftCfg = {
             value: '42',
             color: '#84aac6',
             category: 'secondary',
-            tags: ['pos']
+            tags: ['pos', '新微信']
         },
         {
             name: '会员权益券',
             describe: '会员获取后，可享受折扣，会员价，插队等权益',
             value: '80',
             category: 'secondary',
-            color: '#84aac6'
+            color: '#84aac6',
+            tags: ['新微信']
         },
         {
             name: '礼品定额卡',
@@ -56,7 +57,7 @@ const GiftCfg = {
             value: '90',
             color: '#c49b79',
             category: 'secondary',
-            tags: ['pos']
+            tags: ['pos', '新微信']
         },
         {
             name: '活动券',
