@@ -373,13 +373,12 @@ class BasicInfo extends React.Component {
                 >
                     {getFieldDecorator('description', {
                         rules: [
-                            { required: true, message: '活动说明不能为空' },
                             { max: 200, message: '最多200个字符' },
                         ],
                         initialValue: this.state.description,
                         onChange: this.handleDescriptionChange,
                     })(
-                        <Input type="textarea" placeholder="请输入活动说明, 最多200个字符"/>
+                        <Input type="textarea" placeholder="活动说明最多200个字符"/>
                     )}
                 </FormItem>
 

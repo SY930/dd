@@ -1139,12 +1139,11 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label="活动说明" className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
                         rules: [
-                            { required: true, message: '活动说明不能为空' },
                             { max: 200, message: '最多200个字符' },
                         ],
                         initialValue: this.state.description,
                     })(
-                        <Input type="textarea" placeholder="请输入活动说明, 最多200个字符" onChange={this.handleDescriptionChange} />
+                        <Input type="textarea" placeholder="活动说明最多200个字符" onChange={this.handleDescriptionChange} />
                         )}
                 </FormItem>
             </Form>
