@@ -109,36 +109,37 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-            })
-        }
-
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-            const _dish = [];
-            _priceLst.map((price) => {
-                foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                        _dish.push(food)
-                    }
+        if (this.props.isShopFoodSelectorMode) { // 摆脱原有菜品组件逻辑
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+                nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
+                this.setState({
+                    foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
+                    foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
+                })
+            }
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
+                const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
+                const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
+                    nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
+                const _dish = [];
+                _priceLst.map((price) => {
+                    foodMenuList.map((food) => {
+                        // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
+                        if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
+                            _dish.push(food)
+                        }
+                    });
                 });
-            });
-            _dish.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-            }));
-            this.setState({
-                foodMenuList,
-                dishes: _dish,
-            });
+                _dish.map(((item) => {
+                    item.id = item.foodID;
+                    item.content = item.foodName;
+                }));
+                this.setState({
+                    foodMenuList,
+                    dishes: _dish,
+                });
+            }
         }
     }
 

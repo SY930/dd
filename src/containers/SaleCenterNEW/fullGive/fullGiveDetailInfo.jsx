@@ -140,17 +140,6 @@ class FullGiveDetailInfo extends React.Component {
                     this.sortData(this.state.priceLst, this.state.foodMenuList)
                 });
             }
-    
-            if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-                this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-                if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
-                    this.setState({
-                        priceLst: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
-                    }, () => {
-                        this.sortData(this.state.priceLst, this.state.foodMenuList)
-                    });
-                }
-            }
         } 
     }
 

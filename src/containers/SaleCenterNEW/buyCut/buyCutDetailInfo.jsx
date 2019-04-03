@@ -74,10 +74,6 @@ class BuyCutDetailInfo extends React.Component {
             nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            this.initRule(nextProps);
-        }
     }
 
     handleSubmit = () => {

@@ -174,8 +174,6 @@ class FullCutDetailInfo extends React.Component {
         this.setState({ ruleInfo });
     }
 
-    componentWillUnmount() {}
-
     onChangeClick = () => {
         this.setState({
             display: !this.state.display,

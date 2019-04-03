@@ -69,7 +69,8 @@ class SpecialDetailInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
+        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])
+            !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])});
         }
     }

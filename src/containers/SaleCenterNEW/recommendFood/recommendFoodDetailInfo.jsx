@@ -114,32 +114,6 @@ class RecommendFoodDetailInfo extends React.Component {
             this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
         });
     }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('$promotionDetail') != this.props.promotionDetailInfo.get('$promotionDetail')) {
-            let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-            let _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-            if (Immutable.List.isList(_priceLst)) {
-                _priceLst = _priceLst.toJS();
-            } else {
-                _priceLst = [];
-            }
-            if (Immutable.List.isList(_scopeLst)) {
-                _scopeLst = _scopeLst.toJS();
-            } else {
-                _scopeLst = [];
-            }
-            const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
-            const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })
-            this.setState({
-                // priceLst: _priceLst,
-                priceLstHand,
-                priceLstAuto,
-                scopeLst: _scopeLst,
-            }, () => {
-                this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
-            });
-        }
-    }
 
     handleSubmit() {
         let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum, recommendNumStatus, recommendTopNumStatus } = this.state;

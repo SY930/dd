@@ -51,18 +51,6 @@ class NDiscountDetailInfo extends React.Component {
         this.setState({priceLst, display});
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
-                const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-                this.setState({
-                    priceLst
-                });
-            }
-        }
-    }
-
     initRule(props = this.props) {
         let _rule = props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
