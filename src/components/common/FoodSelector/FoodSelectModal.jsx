@@ -4,7 +4,8 @@ import {
     Row,
     AutoComplete,
 } from 'antd';
-import classnames from 'classnames'
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import CheckboxList from '../CheckboxList'
 import SelectedList from '../FilterSelector/SelectedList'
 import style from '../FilterSelector/assets/FilterSelector.less'
@@ -106,7 +107,7 @@ const excludeDuplicates = (prev, curr) => {
     return [...filteredPrev, ...groupLevel, ...brandLevel]
 }
 
-export default class FoodSelectModal extends Component {
+class FoodSelectModal extends Component {
 
     constructor(props) {
         super(props);
@@ -321,3 +322,9 @@ export default class FoodSelectModal extends Component {
         )
     }
 }
+
+FoodSelectModal.propTypes = {
+    mode: PropTypes.oneOf(['category', 'dish']),
+};
+
+export default FoodSelectModal;

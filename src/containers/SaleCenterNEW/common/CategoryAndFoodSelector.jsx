@@ -134,10 +134,10 @@ export default class CategoryAndFoodSelector extends Component {
     }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
-            this.mapSelectedValueToObjectsAndEmit()
+            this.mapSelectedValueToObjectsThenEmit()
         }
     }
-    mapSelectedValueToObjectsAndEmit = () => {
+    mapSelectedValueToObjectsThenEmit = () => {
         const {
             allBrands,
             allCategories,
@@ -184,7 +184,7 @@ export default class CategoryAndFoodSelector extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
-                this.mapSelectedValueToObjectsAndEmit()
+                this.mapSelectedValueToObjectsThenEmit()
             }
         }
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
@@ -193,7 +193,7 @@ export default class CategoryAndFoodSelector extends Component {
                     dishes: [],
                     categories: [],
                     excludeDishes: [],
-                }, () => this.mapSelectedValueToObjectsAndEmit())
+                }, () => this.mapSelectedValueToObjectsThenEmit())
             }
         }
     }
@@ -218,7 +218,7 @@ export default class CategoryAndFoodSelector extends Component {
             excludeDishes: [],
             categories: []
         }, () => {
-            this.mapSelectedValueToObjectsAndEmit();
+            this.mapSelectedValueToObjectsThenEmit();
         })
     }
     handleCategoryChange = (value) => {
@@ -227,7 +227,7 @@ export default class CategoryAndFoodSelector extends Component {
             excludeDishes: [],
             categories: value
         }, () => {
-            this.mapSelectedValueToObjectsAndEmit();
+            this.mapSelectedValueToObjectsThenEmit();
         })
     }
     handleExcludeDishChange = (value) => {
@@ -235,7 +235,7 @@ export default class CategoryAndFoodSelector extends Component {
             dishes: [],
             excludeDishes: value,
         }, () => {
-            this.mapSelectedValueToObjectsAndEmit();
+            this.mapSelectedValueToObjectsThenEmit();
         })
     }
     renderPromotionRange() {

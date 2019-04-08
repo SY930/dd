@@ -18,12 +18,11 @@ export const isFormalRelease = () => {
  * 1. 考虑品牌化上线前旧数据兼容性：先将所有的菜品分类、菜品根据名称进行去重，模拟一个‘不限品牌’的品牌
  * 2. 有许多分类、菜品的brandID为0，这是由于基本档品牌化上线前的老数据，需要将这些菜品与分类复制给每个品牌
  * 最终返回处理之后的品牌分类与菜品，供给新菜品组件使用
- * @param {*} $brands Immutable.List 从店铺schema接口获得的所有可选品牌
- * @param {*} $rawCategories Immutable.List 直接从基本档请求来的所有分类信息
- * @param {*} $rawDishes Immutable.List 直接从基本档请求来的所有菜品信息
+ * @param {Immutable.List} $brands Immutable.List 从店铺schema接口获得的所有可选品牌
+ * @param {Immutable.List} $rawCategories Immutable.List 直接从基本档请求来的所有分类信息
+ * @param {Immutable.List} $rawDishes Immutable.List 直接从基本档请求来的所有菜品信息
  */
 const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
-    console.warn('run once');
     if (!$brands.size || !$rawCategories.size || !$rawDishes.size) {
         return {
             categories: [],
@@ -72,6 +71,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             brandName: '不限品牌',
             localFoodCategoryID: `0__${dish.foodCategoryName}`,
             label: `(不限品牌)${dish.foodName}(${dish.unit})`,
+            price: dish.prePrice == -1 ? dish.price : dish.prePrice,
             py: dish.foodMnemonicCode,
             value: `0__${dish.foodName}${dish.unit}`
         }));
@@ -103,6 +103,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
             acc.push({
                 ...curr,
+                price: curr.prePrice == -1 ? curr.price : curr.prePrice,
                 brandID: `${curr.brandID}`,
                 brandName,
                 label: `(${brandName})${curr.foodName}(${curr.unit})`,
@@ -113,6 +114,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
         } else if (`${curr.brandID}` === '0') { // 把这种通用的菜品扩展给每个品牌
             acc.push(...brands.map(brand => ({
                 ...curr,
+                price: curr.prePrice == -1 ? curr.price : curr.prePrice,
                 brandID: `${brand.brandID}`,
                 brandName: brand.brandName,
                 label: `(${brand.brandName})${curr.foodName}(${curr.unit})`,

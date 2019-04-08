@@ -18,6 +18,7 @@ import Immutable from 'immutable';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import SpecialDishesTable from '../common/SpecialDishesTable'; // 表格
+import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -112,7 +113,7 @@ class SpecialDetailInfo extends React.Component {
         )
     }
     dishesChange(val) {
-        console.log('val', val)
+        console.log('special detail onchange: ', val)
         val.forEach(item => {
             if (Number(item.newPrice) === 0) {
                 item.newPrice = 0;
@@ -149,9 +150,18 @@ class SpecialDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <SpecialDishesTable
-                        onChange={this.dishesChange}
-                    />
+                    {
+                        this.props.isShopFoodSelectorMode ? (
+                            <SpecialDishesTable
+                                onChange={this.dishesChange}
+                            />
+                        ) : (
+                            <SpecialDishesTableWithBrand
+                                onChange={this.dishesChange}
+                            />
+                        )
+                    }
+                    
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>{'单笔订单同一菜品最多使用数量限制'}</div>
                         <div style={{width: '300px'}}>
@@ -199,6 +209,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
