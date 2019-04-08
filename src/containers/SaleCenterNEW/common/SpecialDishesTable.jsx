@@ -52,7 +52,6 @@ class SpecialDishesTable extends React.Component {
 
         this.handleFoodTreeNodeChange = this.handleFoodTreeNodeChange.bind(this);
         this.handleFoodGroupSelect = this.handleFoodGroupSelect.bind(this);
-        this.handleFoodSelectedChange = this.handleFoodSelectedChange.bind(this);
         this.handleFoodSearchInputChange = this.handleFoodSearchInputChange.bind(this);
         this.clear = this.clear.bind(this);
         this.sortData = this.sortData.bind(this);
@@ -292,10 +291,6 @@ class SpecialDishesTable extends React.Component {
             foodOptions: allMatchItem,
             foodCurrentSelections,
         });
-    }
-
-    handleFoodSelectedChange(value) {
-        // console.log(value);
     }
 
     // GroupSelect 处理函数

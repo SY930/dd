@@ -112,6 +112,7 @@ class SpecialDetailInfo extends React.Component {
         )
     }
     dishesChange(val) {
+        console.log('val', val)
         val.forEach(item => {
             if (Number(item.newPrice) === 0) {
                 item.newPrice = 0;
@@ -141,7 +142,6 @@ class SpecialDetailInfo extends React.Component {
     }
 
     handleAmountLimitChange(value) {
-        // console.log(value);
         this.setState({amountLimit: value.number})
     }
 
