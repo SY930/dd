@@ -78,13 +78,14 @@ class SpecialDetailInfo extends React.Component {
 
     handleSubmit = (cbFn) => {
         const { data } = this.state;
-        const priceLst = data.map((data) => {
+        const priceLst = data.map((item) => {
             return {
-                foodUnitID: data.itemID,
-                foodUnitCode: data.foodKey,
-                foodName: data.foodName,
-                foodUnitName: data.unit,
-                price: parseFloat(data.newPrice) < 0 ?  data.price : parseFloat(data.newPrice),
+                foodUnitID: item.itemID,
+                foodUnitCode: item.foodKey,
+                foodName: item.foodName,
+                foodUnitName: item.unit,
+                brandID: item.brandID,
+                price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
             }
         });
         if (this.state.isLimited == 1 && !this.state.amountLimit) {
@@ -113,7 +114,6 @@ class SpecialDetailInfo extends React.Component {
         )
     }
     dishesChange(val) {
-        console.log('special detail onchange: ', val)
         val.forEach(item => {
             if (Number(item.newPrice) === 0) {
                 item.newPrice = 0;

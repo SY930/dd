@@ -72,6 +72,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             localFoodCategoryID: `0__${dish.foodCategoryName}`,
             label: `(不限品牌)${dish.foodName}(${dish.unit})`,
             price: dish.prePrice == -1 ? dish.price : dish.prePrice,
+            newPrice: dish.prePrice == -1 ? dish.price : dish.prePrice,
             py: dish.foodMnemonicCode,
             value: `0__${dish.foodName}${dish.unit}`
         }));
@@ -104,6 +105,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             acc.push({
                 ...curr,
                 price: curr.prePrice == -1 ? curr.price : curr.prePrice,
+                newPrice: curr.prePrice == -1 ? curr.price : curr.prePrice,
                 brandID: `${curr.brandID}`,
                 brandName,
                 label: `(${brandName})${curr.foodName}(${curr.unit})`,
@@ -115,6 +117,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             acc.push(...brands.map(brand => ({
                 ...curr,
                 price: curr.prePrice == -1 ? curr.price : curr.prePrice,
+                newPrice: curr.prePrice == -1 ? curr.price : curr.prePrice,
                 brandID: `${brand.brandID}`,
                 brandName: brand.brandName,
                 label: `(${brand.brandName})${curr.foodName}(${curr.unit})`,

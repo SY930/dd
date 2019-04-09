@@ -4,9 +4,6 @@ import {
     Row,
     Col,
     Table,
-    Input,
-    message,
-    Modal,
     Form,
     Popconfirm,
 } from 'antd';
@@ -40,7 +37,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class SpecialDishesTableWithBrand extends Component {
-
     constructor(props) {
         super(props);
         let priceLst;
@@ -58,7 +54,6 @@ class SpecialDishesTableWithBrand extends Component {
                     title: '序号',
                     dataIndex: 'index',
                     key: 'index',
-                    // fixed: 'left',
                     width: 50,
                     className: 'TableTxtCenter',
                     render: (text) => `${text + 1}`,
@@ -67,7 +62,6 @@ class SpecialDishesTableWithBrand extends Component {
                     title: '操作',
                     dataIndex: 'operation',
                     key: 'operation',
-                    // fixed: 'left',
                     width: 50,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
@@ -94,7 +88,7 @@ class SpecialDishesTableWithBrand extends Component {
                     title: '分类',
                     dataIndex: 'foodCategoryName',
                     key: 'foodCategoryName',
-                    width: 100,
+                    width: 90,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
                         return <span title={text}>{text}</span>
@@ -104,8 +98,7 @@ class SpecialDishesTableWithBrand extends Component {
                     title: '菜品',
                     dataIndex: 'foodName',
                     key: 'foodName',
-                    // fixed: 'left',
-                    width: 80,
+                    width: 90,
                     className: 'TableTxtLeft',
                     render: (text, record, index) => {
                         return <span title={text}>{text}</span>
@@ -115,7 +108,6 @@ class SpecialDishesTableWithBrand extends Component {
                     title: '单位',
                     dataIndex: 'unit',
                     key: 'unit',
-                    // fixed: 'left',
                     width: 50,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
@@ -129,13 +121,13 @@ class SpecialDishesTableWithBrand extends Component {
                     key: 'newPrice',
                     className: 'noPadding',
                     render: (text, record, index) => {
-                        // return Number(record.newPrice) <= 0 ? 0 : Number(record.newPrice)
                         return (
                             <span className={styles.rightAlign}>
                                 <PriceInputIcon
                                     type="text"
                                     modal="float"
-                                    value={{ number: record.newPrice == -1 ? record.price : record.newPrice }}
+                                    placeholder="空表示0"
+                                    value={{ number: record.newPrice }}
                                     index={index}
                                     onChange={(val) => { this.onCellChange(val, record) }}
                                 />
@@ -163,18 +155,58 @@ class SpecialDishesTableWithBrand extends Component {
             ],
         }
     }
+    componentDidMount() {
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            this.mapPriceLstToDataThenEmit()
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
+                this.mapPriceLstToDataThenEmit()
+            }
+        }
+        if (this.props.selectedBrands !== prevProps.selectedBrands) {
+            if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
+                this.setState({
+                    data: [],
+                });
+                this.props.onChange([]);
+            }
+        }
+    }
+    mapPriceLstToDataThenEmit = () => {
+        const {
+            allBrands,
+            allCategories,
+            allDishes
+        } = this.props;
+        const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
+        const { priceLst } = this.state;
+        if (!priceLst.length) return;
+        const data = priceLst.reduce((acc, item) => {
+            const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
+            dish && (dish.newPrice = item.price, acc.push(dish));
+            return acc;
+        }, [])
+        this.setState({ data })
+        this.props.onChange(data)
+    }
     dishFilter = (dishArray) => {
         return dishArray.filter(fish => fish.isSetFood != '1' && fish.isTempFood != '1' && fish.isTempSetFood != '1')
     }
     onCellChange = (val, {index}) => {
         const record = this.state.data[index];
-        if (val.number > record.price) {// 特价不超过原价
+        if (val.number > record.price) {// 特价不超过售价价
             val.number = record.price;
         }else if (val.number < 0) {// 特价不小于0
             val.number = 0;
         }
         record.newPrice = val.number;
-        this.setState({data: this.state.data })
+        this.setState({data: this.state.data }, () => {
+            this.props.onChange(data)
+        })
+
     }
     handleDel = (record) => {
         const data = [...this.state.data];
@@ -197,6 +229,7 @@ class SpecialDishesTableWithBrand extends Component {
             selectorModalVisible: false,
             data: dishObjects,
         })
+        this.props.onChange(dishObjects)
     }
     handleModalCancel = () => {
         this.setState({
@@ -263,7 +296,6 @@ class SpecialDishesTableWithBrand extends Component {
                             bordered={true}
                             dataSource={displayDataSource}
                             columns={resultTableColumns}
-                            // scroll={{ x: 650 }}
                             pagination={{ size: 'small', pageSize: 10 }}
                         />
                     </Col>
