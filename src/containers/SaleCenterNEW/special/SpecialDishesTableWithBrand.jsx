@@ -212,6 +212,7 @@ class SpecialDishesTableWithBrand extends Component {
         const data = [...this.state.data];
         data.splice(record.index, 1);
         this.setState({data})
+        this.props.onChange(data)
     };
     handleModalOk = (v) => {
         const {
@@ -255,7 +256,7 @@ class SpecialDishesTableWithBrand extends Component {
             dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
         }
         dishes = this.dishFilter(dishes)
-        const initialValue = this.state.priceLst.map((item) => `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
+        const initialValue = this.state.data.map((item) => `${item.brandID || 0}__${item.foodName}${item.unit}`);
         return (
             <FoodSelectModal
                 allBrands={brands}
