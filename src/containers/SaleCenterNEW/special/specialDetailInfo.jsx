@@ -84,7 +84,7 @@ class SpecialDetailInfo extends React.Component {
                 foodUnitCode: item.foodKey,
                 foodName: item.foodName,
                 foodUnitName: item.unit,
-                brandID: item.brandID,
+                brandID: item.brandID || 0,
                 price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
             }
         });
