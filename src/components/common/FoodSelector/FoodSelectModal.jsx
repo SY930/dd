@@ -230,6 +230,7 @@ class FoodSelectModal extends Component {
             allBrands = [], // [{value: String}]
             allCategories = [], // [{value: String}]
             allDishes = [], // [{value: String}]
+            multiple,
         } = this.props;
         const {
             currentBrandID,
@@ -238,9 +239,13 @@ class FoodSelectModal extends Component {
         } = this.state;
         const filteredCategoryOptions = allCategories
             .filter(item => currentBrandID === `${item.brandID}`)
-        const filteredDishesOptions = filteredCategoryOptions.length ?
+        let filteredDishesOptions = filteredCategoryOptions.length ?
             allDishes.filter(({localFoodCategoryID}) => selectedCategories.includes(localFoodCategoryID)) :
-            allDishes.filter(({brandID}) => currentBrandID === `${brandID}`)
+            allDishes.filter(({brandID}) => currentBrandID === `${brandID}`);
+        // 单选模式，禁用掉其它菜
+        if (!multiple && selectedDishResults.length) {
+            filteredDishesOptions = filteredDishesOptions.map(dish => ({...dish, disabled: !selectedDishResults.includes(dish.value)}))
+        }
         const selectedItems = allDishes.filter(({value}) => selectedDishResults.includes(value))
         return (
             <div className={style.hllFilterSelector}>
@@ -283,6 +288,7 @@ class FoodSelectModal extends Component {
                         <CheckboxList
                             display="table"
                             showCollapse={false}
+                            showCheckAll={multiple}
                             options={filteredDishesOptions}
                             value={selectedDishResults}
                             tableColumns={tableColumns}
@@ -325,6 +331,12 @@ class FoodSelectModal extends Component {
 
 FoodSelectModal.propTypes = {
     mode: PropTypes.oneOf(['category', 'dish']),
+    /** 是否是多选模式(目前只支持菜品) */
+    multiple: PropTypes.bool,
+};
+
+FoodSelectModal.defaultProps = {
+    multiple: true,
 };
 
 export default FoodSelectModal;

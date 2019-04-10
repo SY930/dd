@@ -14,11 +14,6 @@ import { Row, Col, Tree, Table, Modal, Form, Icon } from 'antd';
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 
-import {
-    saleCenterSetPromotionDetailAC,
-
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
 import {
@@ -142,7 +137,6 @@ class CollocationTable extends React.Component {
                         if (item.itemID == price.foodUnitID) {
                             data[price.stageNo].free.push(promotionType === '1040' &&
                                 (item.isSetFood == '1' || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
-                            // data[price.stageNo].free.push(item.isSetFood !== '1' ? item : { ...item, 'foodName': '', 'foodCategoryName': '' });
                             data[price.stageNo].freeCountInfo[item.itemID] = price.num;
                         }
                     });
@@ -218,8 +212,6 @@ class CollocationTable extends React.Component {
                 const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
                 this.setState({
                     foodCategoryCollection,
-                }, () => {
-                    // this.sortData(this.state.priceLst, this.state.scopeLst);
                 });
             }
         } else if (indexInfo[1] === indexInfo[3]) { // free
@@ -821,12 +813,4 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 };
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setPromotionDetail: (opts) => {
-            dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-    }
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CollocationTable);
+export default connect(mapStateToProps)(CollocationTable);

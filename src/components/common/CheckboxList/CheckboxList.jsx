@@ -71,7 +71,7 @@ class CheckboxList extends Component {
     }
 
     renderList() {
-        const { value, display, tableColumns } = this.props;
+        const { value, display, tableColumns, showCheckAll } = this.props;
         const { keyword, options } = this.state;
         switch (display) {
             case 'tree':
@@ -94,6 +94,7 @@ class CheckboxList extends Component {
                         bordered={true}
                         scroll={{ y: 164 }}
                         rowKey="value"
+                        showCheckAll={showCheckAll}
                         columns={tableColumns}
                         dataSource={options}
                         checkable={true}

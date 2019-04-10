@@ -28,14 +28,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setPromotionDetail: (opts) => {
-            dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-    }
-}
-
 class SpecialDishesTableWithBrand extends Component {
     constructor(props) {
         super(props);
@@ -307,4 +299,4 @@ class SpecialDishesTableWithBrand extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpecialDishesTableWithBrand);
+export default connect(mapStateToProps)(SpecialDishesTableWithBrand);

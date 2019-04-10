@@ -40,7 +40,7 @@ class HualalaTable extends Component {
     }
 
     renderTableHeader(columns, dataSource) {
-        const { rowKey, checkable, checkedKeys, scroll: { x: scollX } = {} } = this.props;
+        const { rowKey, checkable, checkedKeys, scroll: { x: scollX } = {}, showCheckAll } = this.props;
         const isAllChecked = checkable && dataSource.length
             && (dataSource.length <= checkedKeys.length)
             && (!dataSource.find(record => checkedKeys.indexOf(record.key || record[rowKey]) === -1));
@@ -54,10 +54,14 @@ class HualalaTable extends Component {
                             if (key === ROW_SELECTION) {
                                 return (
                                     <th key={key}>
-                                        <Checkbox
-                                            checked={isAllChecked}
-                                            onChange={this.handleCheckAll}
-                                        />
+                                        {
+                                            showCheckAll && (
+                                                <Checkbox
+                                                    checked={isAllChecked}
+                                                    onChange={this.handleCheckAll}
+                                                />
+                                            )
+                                        }
                                     </th>
                                 );
                             }
@@ -97,6 +101,7 @@ class HualalaTable extends Component {
                                                 <td key={key} onClick={evt => evt.stopPropagation()}>
                                                     <Checkbox
                                                         checked={checkedKeys.indexOf(rowDataKey) > -1}
+                                                        disabled={rowData.disabled}
                                                         onChange={evt => this.handleRowCheck(evt, rowDataKey, rowData)}
                                                     />
                                                 </td>
@@ -153,6 +158,7 @@ HualalaTable.defaultProps = {
     dataSource: [],
     rowKey: '',
     checkable: false,
+    showCheckAll: true,
     checkedKeys: [],
     onCheck() {},
     onCheckAll() {},
@@ -188,6 +194,8 @@ HualalaTable.propTypes = {
     rowKey: PropTypes.string,
     /** 是否支持行勾选 */
     checkable: PropTypes.bool,
+    /** 是否支持全选 */
+    showCheckAll: PropTypes.bool,
     /** 当前勾选的行（受控） */
     checkedKeys: PropTypes.arrayOf(PropTypes.string),
     /** 勾选一行时的回调 */

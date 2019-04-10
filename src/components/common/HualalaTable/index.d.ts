@@ -24,6 +24,8 @@ export interface ColumnProps {
 export interface HualalaTableProps {
     /** 是否展示外边框和内边框 */
     bordered?: boolean;
+    /** 是否支持全选 */
+    showCheckAll?: boolean;
     /** 横向或纵向支持滚动，也可用于指定滚动区域的宽高度：{{ y: 300 }} */
     scroll?: TabelScroll;
     /** 表格列的配置描述 */
