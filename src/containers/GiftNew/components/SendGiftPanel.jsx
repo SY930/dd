@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import {
     Form,
     Button,
@@ -18,7 +17,6 @@ import {SALE_CENTER_GIFT_EFFICT_DAY, SALE_CENTER_GIFT_EFFICT_TIME} from "../../.
 import {axiosData} from "../../../helpers/util";
 import AccountNoSelector from "../../SpecialPromotionNEW/common/AccountNoSelector";
 import MsgSelector from "../../SpecialPromotionNEW/common/MsgSelector";
-import {queryWechatMpInfo} from "../../GiftNew/_action";
 import { debounce } from 'lodash';
 
 const FormItem = Form.Item;
@@ -64,7 +62,6 @@ class SendGiftPanel extends Component {
             giftValidRange: [],
             validatingStatus: null,
             message: '',
-            pushMessageMpID: '',
             loading: false,
         };
         this.handleGiftNumChange = this.handleGiftNumChange.bind(this);
@@ -138,7 +135,6 @@ class SendGiftPanel extends Component {
             smsGate,
             message: smsTemplate,
             accountNo,
-            pushMessageMpID,
             cellNo: customerMobile,
             giftNo: giftNum,
             giftValidRange: [effectTime, validUntilDate],
@@ -163,9 +159,7 @@ class SendGiftPanel extends Component {
             params.smsTemplate = smsTemplate;
             params.accountNo = accountNo;
         }
-        if (smsGate > 1) {
-            params.pushMessageMpID = pushMessageMpID;
-        }
+
         params = {...params, validUntilDays, giftNum, customerMobile, smsGate};
         return params;
     }
@@ -493,11 +487,6 @@ class SendGiftPanel extends Component {
             </FormItem>
         );
     }
-    handlePushMessageJSONChange = (val) => {
-        this.setState({
-            pushMessageMpID: val,
-        })
-    }
 
     render() {
         return (
@@ -511,37 +500,6 @@ class SendGiftPanel extends Component {
                 <Col offset={3} span={17}>
                     {this.renderSmsGate()}
                 </Col>
-                { this.state.smsGate > 1 && (
-                    <Col offset={3} span={17}>
-                        <FormItem
-                            label="微信公众号"
-                            required
-                            className={styles.FormItemStyle}
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >{this.props.form.getFieldDecorator('pushMessageMpID', {
-                            rules: [{
-                                required: true,
-                                message: '请选择微信推送的公众号',
-                            }],
-                            onChange: this.handlePushMessageJSONChange,
-                        })(
-                            <Select size="default"
-                                    placeholder="请选择微信推送的公众号"
-                                    getPopupContainer={(node) => node.parentNode}
-                            >
-                                {
-                                    this.props.allWeChatAccountList.map((item) => {
-                                        return (<Option
-                                            value={JSON.stringify({mpID: item.mpID, appID: item.appID})}
-                                            key={`${item.mpID}`}>{item.mpName}</Option>)
-                                    })
-                                }
-                            </Select>
-                        )}
-                        </FormItem>
-                    </Col>
-                )}
                 <Col offset={3} span={17}>
                     {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
@@ -564,7 +522,7 @@ class SendGiftPanel extends Component {
                         loading={this.state.loading}
                         onClick={this.handleSubmitDebounced}
                         style={{
-                            marginRight: '3px'
+                            marginRight: 3
                         }}
                     >
                         发送
@@ -575,18 +533,4 @@ class SendGiftPanel extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        queryWechatMpInfo: (opts) => {
-            dispatch(queryWechatMpInfo())
-        }
-    }
-};
-
-const mapStateToProps = (state) => {
-    return {
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(SendGiftPanel));
+export default Form.create()(SendGiftPanel);

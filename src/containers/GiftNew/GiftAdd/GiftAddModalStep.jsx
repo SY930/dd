@@ -6,9 +6,7 @@ import { fetchData, axiosData } from '../../../helpers/util';
 import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import BaseForm from '../../../components/common/BaseForm';
-import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
 import FoodBox from './FoodBox';
@@ -34,6 +32,7 @@ import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
+import PushMessageMpID from "../components/PushMessageMpID";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
@@ -1277,6 +1276,12 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '礼品类型',
                 type: 'custom',
                 render: () => describe,
+            },
+            pushMessageMpID: {
+                label: '消息推送公众号',
+                rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
+                type: 'custom',
+                render: decorator => decorator({})(<PushMessageMpID/>),
             },
             selectBrands: {
                 label: '所属品牌',

@@ -61,25 +61,19 @@ class SelectBrands extends Component {
         const realValue = (this.props.value || []).map(target => String(target.targetID))
 
         return (
-            <Row style={{ marginTop: -6 }}>
-                <Col span={24}>
-                    <FormItem required style={{ marginBottom: 0 }}>
-                        <Select
-                            placeholder="默认为全部品牌"
-                            multiple={true}
-                            allowClear={true}
-                            showSearch={false}
-                            filterOption={false}
-                            value={realValue}
-                            onChange={this.handleSelectChange}
-                        >
-                            {
-                                this.getMergedBrands().map(brand => <Option key={brand.value} value={brand.value}>{brand.label}</Option>)
-                            }
-                        </Select>
-                    </FormItem>
-                </Col>
-            </Row>
+            <Select
+                placeholder="默认为全部品牌"
+                multiple={true}
+                allowClear={true}
+                showSearch={false}
+                filterOption={false}
+                value={realValue}
+                onChange={this.handleSelectChange}
+            >
+                {
+                    this.getMergedBrands().map(brand => <Option key={brand.value} value={brand.value}>{brand.label}</Option>)
+                }
+            </Select>
         )
     }
 }
