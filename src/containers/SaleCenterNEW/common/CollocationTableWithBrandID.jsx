@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { Row, Col, Tree, Table, Modal, Form, Icon } from 'antd';
-
+import {
+    Row,
+    Col,
+    Table,
+    Form,
+    Icon,
+    Tooltip,
+} from 'antd';
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 import {
@@ -100,7 +105,12 @@ class CollocationTableWithBrandID extends Component {
         const data = [];
         priceLst.forEach((price) => {
             if (!data[price.stageNo]) {
-                data[price.stageNo] = getDefaultStageData();
+                data[price.stageNo] = {
+                    foods: [],
+                    foodsCountInfo: {}, // 购买菜品对应的count {itemID: countNum}
+                    free: [],
+                    freeCountInfo: {}, // 赠送菜品对应的count {itemID: countNum}
+                };
             }
             const matchedDish = dishes
                 .find(dish => dish.value === `${price.brandID || 0}__${price.foodName}${price.foodUnitName}`);
@@ -391,7 +401,7 @@ class CollocationTableWithBrandID extends Component {
                 key: 'brandName',
                 width: 100,
                 className: 'TableTxtLeft',
-                render: (text) => <span title={text}>{text}</span>,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
                 title: '分类',
@@ -399,7 +409,7 @@ class CollocationTableWithBrandID extends Component {
                 key: 'foodCategoryName',
                 width: 60,
                 className: 'TableTxtLeft',
-                render: (text) => <span title={text}>{text}</span>,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
                 title: '菜品名称',
@@ -407,7 +417,7 @@ class CollocationTableWithBrandID extends Component {
                 key: 'foodName',
                 width: 120,
                 className: 'TableTxtLeft',
-                render: (text) => <span title={text}>{text}</span>,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
                 title: '规格',
@@ -417,7 +427,7 @@ class CollocationTableWithBrandID extends Component {
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
                     const span = `${record.prePrice==-1?record.price:record.prePrice || ''}元/${record.unit || '份'}`
-                    return <span title={span}>{span}</span>;
+                    return <Tooltip title={span}>{span}</Tooltip>;
                 },
             },
             {

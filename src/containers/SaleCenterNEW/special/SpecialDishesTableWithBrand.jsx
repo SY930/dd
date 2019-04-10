@@ -5,6 +5,7 @@ import {
     Col,
     Table,
     Form,
+    Tooltip,
     Popconfirm,
 } from 'antd';
 import {
@@ -73,7 +74,7 @@ class SpecialDishesTableWithBrand extends Component {
                     width: 72,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
-                        return <span title={text}>{text}</span>
+                        return <Tooltip title={text}>{text}</Tooltip>
                     },
                 },
                 {
@@ -83,7 +84,7 @@ class SpecialDishesTableWithBrand extends Component {
                     width: 90,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
-                        return <span title={text}>{text}</span>
+                        return <Tooltip title={text}>{text}</Tooltip>
                     },
                 },
                 {
@@ -93,7 +94,7 @@ class SpecialDishesTableWithBrand extends Component {
                     width: 90,
                     className: 'TableTxtLeft',
                     render: (text, record, index) => {
-                        return <span title={text}>{text}</span>
+                        return <Tooltip title={text}>{text}</Tooltip>
                     },
                 },
                 {
@@ -103,7 +104,7 @@ class SpecialDishesTableWithBrand extends Component {
                     width: 50,
                     className: 'TableTxtCenter',
                     render: (text, record, index) => {
-                        return <span title={text}>{text}</span>
+                        return <Tooltip title={text}>{text}</Tooltip>
                     },
                 },
                 {
