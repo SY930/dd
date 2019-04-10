@@ -769,12 +769,10 @@ class MyActivities extends React.Component {
                                         queryPromotionAutoRunList();
                                         openPromotionAutoRunListModal();
                                     }}
+                                    icon="plus"
                                     className={styles.customPrimaryButton}
                                 >
-                                    <span className={styles.customButtonWithContent}>
-                                        <div style={{fontSize: '16px'}}>+&nbsp;</div>
-                                        <div>自动执行</div>
-                                    </span>
+                                    自动执行
                                 </Button>
                             </Authority>
                         )
