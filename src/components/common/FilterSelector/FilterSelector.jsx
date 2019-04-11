@@ -9,6 +9,7 @@ import SelectedList from './SelectedList';
 import { filterOptions } from './_utils';
 
 import style from './assets/FilterSelector.less';
+import { isProfessionalTheme } from '../../../helpers/util'
 
 class FilterSelector extends React.Component {
     state = {
@@ -93,7 +94,7 @@ class FilterSelector extends React.Component {
         );
 
         return (
-            <div className={classnames(style.hllFilterSelector, className)}>
+            <div className={classnames(isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector, className)}>
                 <div className={style.filterKeyList}>
                     {oriFilters.map(({ key, label }) => (
                         <span

@@ -136,6 +136,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                 <Modal
                     title={`管理${title}`}
                     visible={this.state.cateVisible}
+                    width={580}
                     confirmLoading={this.state.loading}
                     onCancel={this.handleCancel}
                     wrapClassName={styles.linkSelectorModalHasTag}
@@ -1138,13 +1139,12 @@ class PromotionBasicInfo extends React.Component {
 
                 <FormItem label="活动说明" className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
-                        rules: [{
-                            message: '不多于200个字符',
-                            pattern: /^.{1,200}$/,
-                        }],
+                        rules: [
+                            { max: 200, message: '最多200个字符' },
+                        ],
                         initialValue: this.state.description,
                     })(
-                        <Input type="textarea" placeholder="请输入活动说明" onChange={this.handleDescriptionChange} />
+                        <Input type="textarea" placeholder="活动说明最多200个字符" onChange={this.handleDescriptionChange} />
                         )}
                 </FormItem>
             </Form>

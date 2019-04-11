@@ -35,7 +35,6 @@ const $initialState = Immutable.fromJS({
         settleUnitID: '', // 结算主体id(旧活动)
         accountNo: '', // 权益账户id(新活动)
         smsTemplate: '', // 短信内容
-        pushMessageMpID: '', // 微信推送时选择的微信号
         eventWay: '',
         eventName: '',
         eventStartDate: '',

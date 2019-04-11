@@ -686,15 +686,13 @@ class MyActivitiesShop extends React.Component {
     }
 
     renderModifyRecordInfoModal() {
-        // TODO: remove the const 0, fixed with corresponding promotionType
-
         return (
             <Modal
                 wrapClassName="progressBarModal"
                 title={this.state.modalTitle}
                 visible={this.state.updateModalVisible}
                 footer={false}
-                width="924px"
+                width={1000}
                 height="569px"
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
