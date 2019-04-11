@@ -80,7 +80,7 @@ class CustomRangeInput extends React.Component {
             <Row
                 className={styles.rightInput}
             >
-                <Col span={12}>
+                <Col span={13}>
                     <PriceInput
                         disabled={this.props.disabled}
                         addonBefore={this.state.addonBefore}
@@ -92,7 +92,7 @@ class CustomRangeInput extends React.Component {
                     />
                 </Col>
 
-                <Col span={5}>
+                <Col span={4}>
                     <div>{this.state.relation}</div>
                 </Col>
 

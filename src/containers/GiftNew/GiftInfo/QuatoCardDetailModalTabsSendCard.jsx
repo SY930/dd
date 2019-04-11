@@ -300,11 +300,11 @@ class CardOperate extends React.Component {
                 key={type}
                 visible={visible}
                 maskClosable={false}
-                width={500}
+                width={540}
             >
                 <Row className={styles.quatoCardDetailModalTabsSendCard}>
-                    <Col span={24} pull={3}>
-                        <div style={{ border: '3px dashed #e9e9e9', margin: '0 10px 10px 60px', width: 420, padding: 10 }}>
+                    <Row>
+                        <div style={{ border: '3px dashed #e9e9e9', margin: '0 auto', width: 420, padding: 10 }}>
                             {[{ tip1: '666', tip2: '3位标识符', tip3: '（系统固定）' }, { tip1: 'XXXXXX', tip2: '6位批次号', tip3: '（手动输入）' },
                             { tip1: 'YYYYYY', tip2: '6位顺序号', tip3: '（手动输入）' }, { tip1: 'ZZZ', tip2: '3位随机号', tip3: '（系统随机）' }].map((node, index) => {
                                 return (
@@ -322,13 +322,18 @@ class CardOperate extends React.Component {
                             })}
                             <div style={{ textAlign: 'center', marginTop: 10, fontSize: 16, color: '#999', letterSpacing: 5 }}>卡号组成图示</div>
                         </div>
-                        <BaseForm
-                            getForm={form => this.form = form}
-                            formItems={formItems}
-                            formKeys={formKeys}
-                            onChange={(key, value) => this.handleFormChange(key, value, this.queryForm)}
-                        />
-                    </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24} pull={3}>
+                            
+                            <BaseForm
+                                getForm={form => this.form = form}
+                                formItems={formItems}
+                                formKeys={formKeys}
+                                onChange={(key, value) => this.handleFormChange(key, value, this.queryForm)}
+                            />
+                        </Col>
+                    </Row>                
                 </Row>
             </Modal>
         )

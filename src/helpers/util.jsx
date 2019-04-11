@@ -119,6 +119,13 @@ export function getAccountInfo() {
     const state = getStore().getState();
     return state.user.get('accountInfo').toJS();
 }
+/**
+ * 从 Redux Store 中获取是否是企业版UI
+ * @return {Boolean} 是否企业版
+ */
+export function isProfessionalTheme() {
+    return getStore().getState().user.getIn(['versionUI', 'styleName']) === 'professional';
+}
 
 /**
  * 解析后台响应是否正常

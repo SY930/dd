@@ -119,13 +119,12 @@ class ActivityMain extends React.Component {
     renderActivityTags() {
         return this.state.pages[this.props.index];
     }
-    // style={{ padding: '15px 15px 10px 15px' }}
     render() {
         const index = this.props.index;
         return (
             <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: '0' }}>
                 <Row>
-                    <Col span={6} className={styles.activityMainLeft} style={{ padding: '15px 15px 10px 15px' }}>
+                    <Col span={6} className={styles.activityMainLeft}>
                         <ActivityLogo index={index} titletext={this.state.promotionType[index].title} activityMain={true} />
                         <br />
                         {
@@ -133,7 +132,7 @@ class ActivityMain extends React.Component {
                         }
                         <br />
                     </Col>
-                    <Col span={18} className={styles.activityMainRight} style={{ padding: '15px 15px 10px 15px' }}>
+                    <Col span={18} className={styles.activityMainRight}>
                         {this.renderActivityTags()}
                     </Col>
                 </Row>

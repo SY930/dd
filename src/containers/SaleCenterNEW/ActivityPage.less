@@ -144,9 +144,6 @@
             position:absolute;
             left: 0 ;
         }
-        .has-error .ant-form-explain, .has-error .ant-form-split{
-            //color:red;  修改提示文字的颜色
-        }
         .pro-all{
             padding-left: 10px;
 
@@ -323,11 +320,6 @@
     }
 
 }
-
-
-.AddActivity-span{
-
-}
 .AddActivity-title{
     width: 100px;
     font-size: 14px;
@@ -403,7 +395,7 @@
 .activityMain{
     width: 100%;
     border-radius:0 0 10px 10px;
-    background: #eeeeee;
+    background: #FFFFFF;
     height: 100%;
     .ant-row{
         border-radius:0 0 10px 10px;
@@ -414,13 +406,13 @@
 }
 
 .activityMainLeft{
-    background: #eeeeee;
+    background: #FFFFFF;
     height: 100%;
-    padding:15px 15px 10px 15px;
+    padding:15px 0 10px;
     border-radius: 0px 0px 0px 10px;
 }
 .activityMainRight{
-    padding: 15px 15px 10px 15px;
+    padding: 15px 15px 0 15px;
     background: #FFFFFF;
     border-radius: 0px 0px 10px 0px;
 }
@@ -1178,16 +1170,15 @@
     font-family:微软雅黑;
     color: #fff;
     font-size: 30px;
-    margin: 36px 0px 36px 0px;
-    // float: left;
     text-shadow:0px 2px 2px rgba(0,0,0,0.3);
     font-weight:700;
 }
 
 .cardWrap{
-    width: 200px!important;
-    height: 120px!important;
+    width: 230px!important;
+    height: 138px!important;
     margin: 0;
+    margin-bottom: 10px;
     border-radius: 5px;
     float:left;
     transition:0.2s;
@@ -1202,9 +1193,13 @@
     }
 }
 .cardWrap(@color: #709dc7){
-    width: 200px!important;
-    height: 120px!important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 230px!important;
+    height: 138px!important;
     margin: 0;
+    margin-bottom: 10px;
     background-color: @color;
     border-radius: 5px;
     float:left;
@@ -1766,10 +1761,15 @@
 
 .customPrimaryButton {
     background-color: #FFFFFF;
+    :global {
+        .anticon {
+            transition: none;
+        }
+    }
     &:hover {
-        background-color: #1ab495;
-        border: 1px solid #1ab495;
-        color: #FFFFFF;
+        background-color: #1ab495!important;
+        border: 1px solid #1ab495!important;
+        color: #FFFFFF!important;
     }
 }
 .scrollableMessageContainer {
@@ -1812,8 +1812,6 @@
     &:hover {
         .rightTopAction {
             visibility: visible;
-            .deleteButton {
-            }
         }
         color: #333333;
         border: 1px solid #10B793;

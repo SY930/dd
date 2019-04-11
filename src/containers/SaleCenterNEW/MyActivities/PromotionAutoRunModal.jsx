@@ -74,7 +74,7 @@ class PromotionAutoRunModal extends Component {
 
         return (
             <Modal
-                width="520px"
+                width={550}
                 style={{
                     top: 20
                 }}
@@ -223,35 +223,6 @@ class PromotionAutoRunModal extends Component {
         )
     }
 
-    renderAutoRunFooter() {
-        const {
-            hasError,
-            isSaving,
-        } = this.props;
-        return (
-            hasError ? null : (
-                <div>
-                    <Button
-                        type="ghost"
-                        onClick={this.handleCancel}
-                    >
-                        取消
-                    </Button>
-                    <Authority rightCode={AUTO_RUN_UPDATE}>
-                        <Button
-                            type="primary"
-                            style={{
-                                marginLeft: 10
-                            }}
-                            onClick={this.handleOk}
-                            loading={isSaving}
-                        >确定</Button>
-                    </Authority>
-                </div>
-            )
-        )
-    }
-
     handleCancel = () => {
         const list = this.props.promotionList.toJS();
         this.setState({
@@ -290,6 +261,7 @@ class PromotionAutoRunModal extends Component {
         const {
             isVisible,
             isLoading,
+            isSaving,
             hasError,
         } = this.props;
         const {
@@ -305,7 +277,24 @@ class PromotionAutoRunModal extends Component {
                 }}
                 maskClosable={false}
                 onCancel={this.handleCancel}
-                footer={this.renderAutoRunFooter()}
+                footer={hasError ? false : [
+                    <Button
+                        type="ghost"
+                        onClick={this.handleCancel}
+                    >
+                        取消
+                    </Button>,
+                    <Authority rightCode={AUTO_RUN_UPDATE}>
+                        <Button
+                            type="primary"
+                            style={{
+                                marginLeft: 10
+                            }}
+                            onClick={this.handleOk}
+                            loading={isSaving}
+                        >确定</Button>
+                    </Authority>
+                ]}
             >
                 <Spin spinning={isLoading}>
                     {
