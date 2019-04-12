@@ -72,6 +72,7 @@ const DEFAULT_FOOD_COLUMNS = [
         },
     },
 ];
+const FAKE_ALL_BRANDID = '0';
 const getNonBrandVal = (str) => {
     const index = str.indexOf('__');
     if (index === -1) return str;
@@ -89,7 +90,7 @@ const excludeDuplicates = (prev, curr) => {
     let brandLevel = [];
     // 找出现在比以前多选的那些值,并把这些值按不限品牌还是特定品牌分开
     curr.filter(val => !prev.includes(val)).forEach(val => {
-        if (val.startsWith('0'))  {
+        if (val.startsWith(FAKE_ALL_BRANDID))  {
             groupLevel.push(val)
         } else {
             brandLevel.push(val)
@@ -101,7 +102,7 @@ const excludeDuplicates = (prev, curr) => {
         filteredPrev = filteredPrev.filter(item => getNonBrandVal(item) !== getNonBrandVal(val))
     })
     brandLevel.forEach(val => {
-        filteredPrev = filteredPrev.filter(item => !item.startsWith('0') || getNonBrandVal(item) !== getNonBrandVal(val))
+        filteredPrev = filteredPrev.filter(item => !item.startsWith(FAKE_ALL_BRANDID) || getNonBrandVal(item) !== getNonBrandVal(val))
     })
     
     return [...filteredPrev, ...groupLevel, ...brandLevel]
@@ -116,7 +117,7 @@ class FoodSelectModal extends Component {
             selectedBrandIDs: [],
             selectedCategoryResults: props.mode === 'category' ? props.initialValue.slice() : [],
             /** 单品模式状态 */
-            currentBrandID: props.allBrands.length? props.allBrands[0].brandID : '0',
+            currentBrandID: props.allBrands.length? props.allBrands[0].brandID : FAKE_ALL_BRANDID,
             selectedCategories: [],
             selectedDishResults: props.mode === 'dish' ? props.initialValue.slice() : [],
         }
@@ -124,7 +125,7 @@ class FoodSelectModal extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.allBrands !== this.props.allBrands) {
             this.setState({
-                currentBrandID: nextProps.allBrands.length? nextProps.allBrands[0].brandID : '0',
+                currentBrandID: nextProps.allBrands.length? nextProps.allBrands[0].brandID : FAKE_ALL_BRANDID,
             })
         }
     }
@@ -186,7 +187,12 @@ class FoodSelectModal extends Component {
         } = this.state;
         const filteredCategoryOptions = selectedBrandIDs.length ? allCategories
             .filter(({brandID}) => selectedBrandIDs.includes(`${brandID}`)) : allCategories;
-        const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value))
+        const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value));
+        /**
+         * 当分类选择器右侧有 不限品牌 + 其它品牌时，由于excludeDuplicates（文件上方） 逻辑，全选框需要去掉
+         */
+        const isExcludeMode = (selectedBrandIDs.length === 0 && allBrands.length > 1) ||
+            (selectedBrandIDs.length > 1 && selectedBrandIDs.includes(FAKE_ALL_BRANDID))
         return (
             <div
                 className={style.hllFilterSelector}
@@ -205,6 +211,7 @@ class FoodSelectModal extends Component {
                         <CheckboxList
                             display="table"
                             showCollapse={false}
+                            showCheckAll={!isExcludeMode}
                             options={filteredCategoryOptions}
                             value={selectedCategoryResults}
                             tableColumns={tableColumns}
@@ -236,10 +243,10 @@ class FoodSelectModal extends Component {
             currentBrandID,
             selectedCategories,
             selectedDishResults,
-        } = this.state;
+        } = this.state;        
         const filteredCategoryOptions = allCategories
-            .filter(item => currentBrandID === `${item.brandID}`)
-        let filteredDishesOptions = filteredCategoryOptions.length ?
+            .filter(item => currentBrandID === `${item.brandID}`);
+        let filteredDishesOptions = selectedCategories.length ?
             allDishes.filter(({localFoodCategoryID}) => selectedCategories.includes(localFoodCategoryID)) :
             allDishes.filter(({brandID}) => currentBrandID === `${brandID}`);
         // 单选模式，禁用掉其它菜

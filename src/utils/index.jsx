@@ -59,9 +59,16 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             value: `0__${cat.foodCategoryName}`
         }));
     const uniqDishMap = new Map();
-    rawDishes.forEach(item => {
-        if (!uniqDishMap.has(`${item.foodName}${item.unit}`)) {
-            uniqDishMap.set(`${item.foodName}${item.unit}`, item)
+    rawDishes.forEach(food => {
+        if (uniqDishMap.has(`${food.foodName}${food.unit}`)) { // 产品层面决定 如果有名称+规格重复的菜品 保留售价高的那一个
+            const previousFood = uniqDishMap.get(`${food.foodName}${food.unit}`);
+            const previousPrice = previousFood.prePrice == -1 ? previousFood.price : previousFood.prePrice;
+            const newPrice = food.prePrice == -1 ? food.price : food.prePrice;
+            if (newPrice > previousPrice) {
+                uniqDishMap.set(`${food.foodName}${food.unit}`, food)
+            }
+        } else {
+            uniqDishMap.set(`${food.foodName}${food.unit}`, food)
         }
     })
     const commonDishes = Array.from(uniqDishMap.values())
