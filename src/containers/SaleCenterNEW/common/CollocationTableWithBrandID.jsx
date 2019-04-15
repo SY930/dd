@@ -98,7 +98,7 @@ class CollocationTableWithBrandID extends Component {
             priceLst,
             scopeLst,
         } = this.props;
-        if (!priceLst.size && !scopeLst.size) return;
+        if (!scopeLst.size) return;
         priceLst = priceLst.toJS();
         scopeLst = scopeLst.toJS();
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
