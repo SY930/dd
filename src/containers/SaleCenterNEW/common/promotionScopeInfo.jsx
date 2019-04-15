@@ -91,6 +91,7 @@ class PromotionScopeInfo extends React.Component {
             voucherVerifyChannel: '1',
             points: '1',
             evidence: '0',
+            invoice: '0',
             shopStatus: 'success',
             usageMode: 1,
             filterShops: [],
@@ -138,6 +139,7 @@ class PromotionScopeInfo extends React.Component {
                 voucherVerify: this.state.voucherVerify,
                 voucherVerifyChannel: this.state.voucherVerifyChannel,
                 points: this.state.points,
+                invoice: this.state.invoice,
                 evidence: this.state.evidence,
                 usageMode: this.state.usageMode,
             });
@@ -169,22 +171,24 @@ class PromotionScopeInfo extends React.Component {
 
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
             const _stateFromRedux = this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
-            const voucherVerify = _stateFromRedux.voucherVerify;
-            const voucherVerifyChannel = _stateFromRedux.voucherVerifyChannel;
-            const points = _stateFromRedux.points;
-            const evidence = _stateFromRedux.evidence;
-
+            const {
+                voucherVerify,
+                voucherVerifyChannel,
+                points,
+                evidence,
+                invoice = '0',
+            } = _stateFromRedux;
 
             this.setState({
                 voucherVerify,
                 voucherVerifyChannel,
                 points,
                 evidence,
+                invoice,
                 brands: _stateFromRedux.brands,
                 channel: _stateFromRedux.channel,
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
-                // TODO: shopsIdInfo converted to shopsInfo
                 selections: _stateFromRedux.shopsInfo.map((item) => item.shopID || item),
                 initialized: true,
                 currentSelections: _stateFromRedux.shopsInfo,
@@ -400,6 +404,10 @@ class PromotionScopeInfo extends React.Component {
         this.setState({ orderType: value });
     }
 
+    handleInvoiceChange = (v) => {
+        this.setState({ invoice: v })
+    }
+
     renderBusinessOptions() {
         return (
             <Form.Item
@@ -528,6 +536,24 @@ class PromotionScopeInfo extends React.Component {
                         </Select>
                     </Col>
                 </Form.Item>
+                <Form.Item
+                    label="是否参与开发票"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Col span={12}>
+                        <Select
+                            size="default"
+                            onChange={this.handleInvoiceChange}
+                            value={this.state.invoice}
+                            getPopupContainer={(node) => node.parentNode}
+                        >
+                            <Option value="0">否</Option>
+                            <Option value="1">是</Option>
+                        </Select>
+                    </Col>
+                </Form.Item>
             </div>
         );
     }
@@ -556,16 +582,6 @@ class PromotionScopeInfo extends React.Component {
                 </RadioGroup>
             </Form.Item>
         )
-    }
-
-    // only the promotionScopeInfo change cause the render operation of the component
-    shouldComponentUpdate(nextProps, nextState) {
-        // if(this.props.promotionScopeInfo !== nextProps.promotionScopeInfo) {
-        //     return true;
-        // }
-        //
-        // return false;
-        return true;
     }
 
     render() {

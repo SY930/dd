@@ -96,6 +96,7 @@ class GroupTicketDetailInfo extends React.Component {
         const voucherVerifyChannel = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerifyChannel']);
         const points = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'points']);
         const evidence = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'evidence']);
+        const invoice = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'invoice']);
 
         if (_state.giftPrice == null || _state.giftPrice == '') {
             _state.giftPriceFlag = false;
@@ -127,6 +128,7 @@ class GroupTicketDetailInfo extends React.Component {
                     voucherVerifyChannel,
                     points,
                     evidence,
+                    invoice,
                     costIncome: _state.costIncome,
                 };
             } else if (_state.stageType == '1') {
@@ -142,6 +144,7 @@ class GroupTicketDetailInfo extends React.Component {
                     voucherVerifyChannel,
                     points,
                     evidence,
+                    invoice,
                     costIncome: _state.costIncome,
                 };
             } else {
@@ -156,10 +159,10 @@ class GroupTicketDetailInfo extends React.Component {
                     voucherVerifyChannel,
                     points,
                     evidence,
+                    invoice,
                     costIncome: _state.costIncome,
                 };
             }
-
             // save state to redux
             this.props.setPromotionDetail({
                 rule,
@@ -167,7 +170,6 @@ class GroupTicketDetailInfo extends React.Component {
         } else {
             nextFlag = false;
         }
-
         return nextFlag;
     };
 
