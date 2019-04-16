@@ -102,7 +102,7 @@ class CollocationTableWithBrandID extends Component {
         priceLst = priceLst.toJS();
         scopeLst = scopeLst.toJS();
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
-        const data = [];
+        let data = [];
         priceLst.forEach((price) => {
             if (!data[price.stageNo]) {
                 data[price.stageNo] = {
@@ -145,6 +145,7 @@ class CollocationTableWithBrandID extends Component {
                 },);
             }
         })
+        data = data.filter(item => !!item)
         this.setState({ data });
         this.props.onChange(data);
     }
