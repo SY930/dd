@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {
     Modal,
     Row,
-    AutoComplete,
 } from 'antd';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import CheckboxList from '../CheckboxList'
 import SelectedList from '../FilterSelector/SelectedList'
 import style from '../FilterSelector/assets/FilterSelector.less'
+import { isProfessionalTheme } from '../../../helpers/util'
 
 const DEFAULT_CATEGORY_COLUMNS = [
     {
@@ -255,7 +255,7 @@ class FoodSelectModal extends Component {
         }
         const selectedItems = allDishes.filter(({value}) => selectedDishResults.includes(value))
         return (
-            <div className={style.hllFilterSelector}>
+            <div className={isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector}>
                 <div
                     className={style.filterKeyList}
                     style={{
