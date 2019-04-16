@@ -568,7 +568,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     const basic = [{
         idx: 0,
         title: '生日赠送',
-        color: '#84aac6',
         text: '生日总要HAPPY一下，此时赠送礼品恰到好处的吸引客户进店消费',
         example: '',
         key: '51',
@@ -577,7 +576,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 1,
         title: '开卡赠送',
-        color: '#84aac6',
         text: '开启开卡赠送礼品，可以带来更多的新客户',
         example: '',
         key: '52',
@@ -585,7 +583,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 2,
         title: '免费领取',
-        color: '#84aac6',
         text: '限时免费领取礼品，达到短期拉新的效果',
         example: '',
         key: '21',
@@ -593,7 +590,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 3,
         title: '摇奖活动',
-        color: '#84aac6',
         text: '人人都希望中奖，意外的礼品总是刺激着顾客的就餐神经',
         example: '',
         key: '20',
@@ -601,7 +597,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 4,
         title: '积分兑换',
-        color: '#84aac6',
         text: '顾客可以使用积分兑换相应的礼品，增加顾客的消费黏性',
         example: '',
         key: '30',
@@ -609,7 +604,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 5,
         title: '报名活动',
-        color: '#84aac6',
         text: '通过报名设置，筛选企业不同价值的客户',
         example: '',
         key: '22',
@@ -618,7 +612,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
 
         idx: 6,
         title: '群发礼品',
-        color: '#84aac6',
         text: '在最恰当的时间，送去最温馨的优惠礼品，顾客倍感惊喜',
         example: '',
         key: '53',
@@ -626,7 +619,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 7,
         title: '群发短信',
-        color: '#84aac6',
         text: '群发短消息，将问候和优惠及时传递给你的每一位顾客',
         example: '',
         key: '50',
@@ -634,7 +626,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 8,
         title: '完善资料送礼',
-        color: '#84aac6',
         text: '获取会员更详细的资料，例如生日，住址，手机号，邮箱等资料，与会员建立更多维度的维系渠道',
         example: '',
         key: '60',
@@ -642,7 +633,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 9,
         title: '升级送礼',
-        color: '#84aac6',
         text: '选择升级后的会员等级为某等级，升级后是这个等级中的，赠送礼品',
         example: '',
         key: '61',
@@ -651,7 +641,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 10,
         title: '累计消费送礼',
-        color: '#84aac6',
         text: '当客人消费达到累计的次数或者金额后，商家能够赠送相应的礼品，客人体验感会更好',
         example: '',
         key: '62',
@@ -660,7 +649,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
     {
         idx: 11,
         title: '线上餐厅送礼',
-        color: '#84aac6',
         text: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。',
         example: '',
         key: '23',
@@ -668,7 +656,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         {
             idx: 12,
             title: '唤醒送礼',
-            color: '#84aac6',
             text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
             example: '',
             key: '63',
@@ -676,7 +663,6 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         {
             idx: 13,
             title: '评价送礼',
-            color: '#84aac6',
             text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
             example: '',
             key: '64',
@@ -684,10 +670,16 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
         {
             idx: 14,
             title: '关注送礼',
-            color: '#84aac6',
             text: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数',
             example: '',
             key: '31',
+        },
+        {
+            idx: 15,
+            title: '分享裂变',
+            text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
+            example: '',
+            key: '65',
         },
     ];
     return basic;

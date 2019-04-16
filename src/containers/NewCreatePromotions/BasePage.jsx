@@ -67,6 +67,7 @@ class BasePage extends Component {
         const { key, isSpecial} = promotionEntity;
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
+            console.log('specialIndex', specialIndex)
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);

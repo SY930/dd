@@ -281,25 +281,6 @@ class CardLevel extends React.Component {
                 }
             })
         }
-        const columns = [{
-            title: '活动名称',
-            dataIndex: 'eventName',
-            key: 'eventName',
-            className: 'TableTxtCenter',
-        }, {
-            title: this.props.catOrCard == 'card' ? '占用卡等级信息' : '占用卡类信息',
-            dataIndex: 'idNames',
-            key: 'idNames',
-            className: 'TableTxtCenter',
-            render: (text, record, index) => {
-                return record.idNames.map((idName, i) => {
-                    return (
-                        <div key={`idName${i}`}><h5 className={styles.cardName} key={`cardName${i}`}>{idName}</h5></div>
-                    )
-                })
-            },
-        },
-        ];
         return (
             <Form className={styles.cardLevelTree}>
                 {

@@ -100,6 +100,15 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 5,
         bottom: 7,
     },
+    {
+        title: '分享裂变',
+        isSpecial: true,
+        text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
+        example: '',
+        key: '65',
+        right: 5,
+        bottom: 7,
+    },
 ];
 
 /**

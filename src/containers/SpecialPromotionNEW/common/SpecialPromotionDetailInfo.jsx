@@ -13,13 +13,8 @@ import { Row, Col, Form, message, Radio, Input, InputNumber } from 'antd';
 import { connect } from 'react-redux'
 import { saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import AddGifts from '../common/AddGifts';
 
-const Immutable = require('immutable');
 const moment = require('moment');
 
 

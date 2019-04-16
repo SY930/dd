@@ -52,7 +52,7 @@ const fullOptionSmsGate = [ // 选项有5种
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
-    '21', '20', '30', '60', '23', '64'
+    '21', '20', '30', '60', '23', '64', '65'
 ];
 
 class StepOneWithDateRange extends React.Component {
@@ -83,7 +83,6 @@ class StepOneWithDateRange extends React.Component {
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
         } catch (e) {
-            console.log('e: ', e)
             validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
