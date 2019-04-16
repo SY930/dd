@@ -29,7 +29,15 @@ const defaultMsgs = [
         reDirectType: 1,
         reDirectUrl: '',
         isPushMsg: 1
-    }
+    },
+    {
+        msgType: 3,
+        title: DEFAULT_WECHAT_TEMPLATE_CONFIG['3'].title,
+        remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['3'].remark,
+        reDirectType: 1,
+        reDirectUrl: '',
+        isPushMsg: 1
+    },
 ];
 const $initialState = Immutable.fromJS({
     loading: false,
@@ -50,20 +58,14 @@ export const sale_wechat_message_setting = ($$state = $initialState, action) => 
                     .set('loading', false)
                     .set('isQueryFulfilled', false);
         case SALE_CENTER_QUERY_WECHAT_MESSAGE_TEMPLATE_SUCCESS:
-            const isCreate = !(action.payload || []).length;
-            if (isCreate) {
-                return $initialState
-                    .set('loading', false)
-                    .set('isCreate', true)
-                    .set('isQueryFulfilled', true)
-            } else {
-                const list = Immutable.fromJS(action.payload || []);
-                return $$state
-                    .set('loading', false)
-                    .set('isCreate', false)
-                    .set('isQueryFulfilled', true)
-                    .set('wechatMessageTemplateList', list);
-            }
+            // 逻辑变更 统一调用新增接口
+            const isCreate = true;
+            const [a = defaultMsgs[0], b = defaultMsgs[1], c = defaultMsgs[2]] = Array.isArray(action.payload) ? action.payload : [];
+            return $$state
+                .set('loading', false)
+                .set('isCreate', isCreate)
+                .set('isQueryFulfilled', true)
+                .set('wechatMessageTemplateList', Immutable.fromJS([a, b, c]));
         case SALE_CENTER_EDIT_WECHAT_MESSAGE_TEMPLATE:
             return $$state.set('isEditing', true);
         case SALE_CENTER_RESET_WECHAT_MESSAGE_TEMPLATE:

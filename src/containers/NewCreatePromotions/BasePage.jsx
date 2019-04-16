@@ -160,7 +160,7 @@ class BasePage extends Component {
                 style={{
                     top: 20,
                 }}
-                width="924px"
+                width={1000}
                 visible={this.state.specialModalVisible}
                 onOk={() => this.setSpecialModalVisible(false)}
                 onCancel={() => this.setSpecialModalVisible(false)}
@@ -189,7 +189,7 @@ class BasePage extends Component {
                 style={{
                     top: 20,
                 }}
-                width="924px"
+                width={1000}
                 visible={this.state.basicModalVisible}
                 onOk={() => this.setBasicModalVisible(false)}
                 onCancel={() => this.setBasicModalVisible(false)}

@@ -1,6 +1,5 @@
 ﻿export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
 export { default as MySpecialActivities } from './SpecialPromotionNEW/MySpecialActivities/index';
-export { default as NewSpecialActivity } from './SpecialPromotionNEW/index';
 export { default as GiftInfo } from './GiftNew/GiftInfo/index';
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
 export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';

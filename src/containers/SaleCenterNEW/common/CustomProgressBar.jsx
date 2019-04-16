@@ -13,6 +13,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';
 import { Steps, Button } from 'antd';
+import {
+    isProfessionalTheme,
+} from '../../../helpers/util'
 
 const Step = Steps.Step;
 
@@ -81,7 +84,6 @@ class CustomProgressBar extends React.Component {
         }
     }
 
-    // this.state.current <div className={styles.stepsContent}>{steps[this.state.current].content}</div>
     render() {
         const { steps } = this.props;
         const current = this.state.current;
@@ -91,7 +93,7 @@ class CustomProgressBar extends React.Component {
         }
 
         return (
-            <div className={styles.ProgressBar}>
+            <div className={isProfessionalTheme() ? styles.ProgressBarPro : styles.ProgressBar}>
                 <Steps current={current} className="clearfix">
                     {steps.map(item => <Step key={item.title} title={item.title} />)}
                 </Steps>
@@ -111,7 +113,15 @@ class CustomProgressBar extends React.Component {
                     >取消
                     </Button>
                     {
-                        this.state.current > 0 && <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.prev(current)}> 上一步 </Button>
+                        this.state.current > 0 && (
+                            <Button
+                                style={{ marginLeft: 8 }}
+                                type="primary"
+                                onClick={() => this.prev(current)}
+                            >
+                                上一步
+                            </Button>
+                        )
                     }
                     {
                         this.state.current < steps.length - 1 &&

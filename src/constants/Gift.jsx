@@ -6,7 +6,7 @@ const GiftCfg = {
             value: '10',
             color: '#84aac6',
             category: 'primary',
-            tags: ['SaaS2.0', '新微信', '微信']
+            tags: ['pos', '新微信', '微信']
         },
         {
             name: '菜品优惠券',
@@ -14,7 +14,7 @@ const GiftCfg = {
             value: '20',
             color: '#c49b79',
             category: 'primary',
-            tags: ['SaaS2.0', '新微信', '微信']
+            tags: ['pos', '新微信', '微信']
         },
         {
             name: '菜品兑换券',
@@ -23,7 +23,7 @@ const GiftCfg = {
             value: '21',
             color: '#c49b79',
             category: 'primary',
-            tags: ['SaaS2.0', '新微信', '微信']
+            tags: ['pos', '新微信', '微信']
         },
         {
             name: '会员充值券',
@@ -31,7 +31,7 @@ const GiftCfg = {
             value: '40',
             color: '#9dc568',
             category: 'secondary',
-            tags: ['SaaS2.0']
+            tags: ['pos', '新微信']
         },
         {
             name: '会员积分券',
@@ -39,14 +39,15 @@ const GiftCfg = {
             value: '42',
             color: '#84aac6',
             category: 'secondary',
-            tags: ['SaaS2.0']
+            tags: ['pos', '新微信']
         },
         {
             name: '会员权益券',
             describe: '会员获取后，可享受折扣，会员价，插队等权益',
             value: '80',
             category: 'secondary',
-            color: '#84aac6'
+            color: '#84aac6',
+            tags: ['新微信']
         },
         {
             name: '礼品定额卡',
@@ -54,14 +55,14 @@ const GiftCfg = {
             value: '90',
             color: '#c49b79',
             category: 'secondary',
-            tags: ['SaaS2.0']
+            tags: ['pos', '新微信']
         },
         {
             name: '活动券',
             describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码',
             value: '100',
             color: '#c49b79',
-            tags: ['SaaS2.0']
+            tags: ['pos']
         },
         {
             name: '线上礼品卡',
@@ -76,7 +77,7 @@ const GiftCfg = {
             describe: '指定菜品满x元，折扣率为y',
             value: '111',
             category: 'primary',
-            tags: ['SaaS2.0', '新微信', '微信'],
+            tags: ['pos', '新微信', '微信'],
             color: '#84aac6'
         },
         {
@@ -93,7 +94,7 @@ const GiftCfg = {
             value: '30',
             color: '#e5be6c',
             category: 'secondary',
-            tags: ['SaaS2.0', '新微信']
+            tags: ['pos', '新微信']
         },
     ],
     giftTypeName: [
@@ -112,9 +113,12 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
     ],
     transferType: [
-        { label: '不可分享', value: 0 },
-        { label: '可分享', value: 1 },
-        { label: '仅分享后使用', value: 2 },
+        { label: '不可转赠', value: 0 },
+        { label: '可转赠', value: 1 },
+    ],
+    goldGift: [
+        { label: '不可用', value: 0 },
+        { label: '可用', value: 1 },
     ],
     isHolidaysUsing: [
         { label: '不限制', value: '0' },
@@ -197,6 +201,7 @@ const GiftCfg = {
         { value: '116', label: '微信受赠领取' },
         { value: '117', label: '唤醒送礼' },
         { value: '118', label: '评价送礼' },
+        { value: '119', label: '赠送领取' },
         { value: '120', label: '关注送礼' },
         { value: '3010', label: '基础营销消费返券' },
         { value: '3011', label: '批量生成' },

@@ -58,17 +58,11 @@ const simpleOptionSmsGate = [ // 选项有2种
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
         super(props);
-        let mpID;
         let excludeDateArray;
         let selectWeekValue;
         let selectMonthValue;
         let validCycleType;
         let expand;
-        try {
-            mpID = JSON.parse(props.specialPromotion.getIn(['$eventInfo', 'pushMessageMpID'])).mpID
-        } catch (e) {
-            mpID = undefined;
-        }
         try {
             const eventInfo = props.specialPromotion.getIn(['$eventInfo']).toJS();
             excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
@@ -112,7 +106,6 @@ class StepOneWithDateRange extends React.Component {
             selectMonthValue,
 
             iconDisplay: false,
-            mpID,
             lastConsumeIntervalDays: '',
             getExcludeEventList: [],
             lastConsumeIntervalDaysStatus: 'success',
@@ -130,7 +123,6 @@ class StepOneWithDateRange extends React.Component {
         this.getDateCount = this.getDateCount.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleMpIDChange = this.handleMpIDChange.bind(this);
         this.msgSendTime = this.msgSendTime.bind(this);
         this.handlesmsGateChange = this.handlesmsGateChange.bind(this);
         this.onTimePickerChange = this.onTimePickerChange.bind(this);
@@ -277,7 +269,6 @@ class StepOneWithDateRange extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
-        const appID = (this.props.allWeChatAccountList.find(item => item.mpID === this.state.mpID) || {}).appID;
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -313,12 +304,10 @@ class StepOneWithDateRange extends React.Component {
                     eventName: this.state.name,
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                 })
             } else if (this.props.type == '61' || this.props.type == '62') {
                 this.props.setSpecialBasicInfo({
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                     eventName: this.state.name,
                     eventRemark: this.state.description,
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
@@ -331,7 +320,6 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
-                    pushMessageMpID: this.state.smsGate >= 2 ? JSON.stringify({mpID: this.state.mpID, appID}) : '',
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
@@ -597,11 +585,6 @@ class StepOneWithDateRange extends React.Component {
         });
     }
 
-    handleMpIDChange(v) {
-        this.setState({
-            mpID: v,
-        });
-    }
     // startTime change
     msgSendTime(val) {
         let startTime;
@@ -938,34 +921,6 @@ class StepOneWithDateRange extends React.Component {
                                 </Select>
 
                             </FormItem> : null
-                    }{ [...simpleOptionSmsGate, ...fullOptionSmsGate].includes(String(this.props.type)) && this.state.smsGate >= 2
-                         ?
-                            <FormItem
-                                label="微信公众号选择"
-                                required
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                            >{getFieldDecorator('mpID', {
-                                rules: [{
-                                    required: true,
-                                    message: '请选择微信推送的公众号',
-                                }],
-                                initialValue: this.state.mpID,
-                                onChange: this.handleMpIDChange
-                            })(
-                                <Select size="default"
-                                        placeholder="请选择微信推送的公众号"
-                                        getPopupContainer={(node) => node.parentNode}
-                                >
-                                    {
-                                        this.props.allWeChatAccountList.map((item) => {
-                                            return (<Option value={`${item.mpID}`} key={`${item.mpID}`}>{item.mpName}</Option>)
-                                        })
-                                    }
-                                </Select>
-                            )}
-                            </FormItem> : null
                     }
                     {
                         this.props.type != '53' && this.props.type != '50' && this.props.type != '60' || this.props.type == '70' ?
@@ -1046,14 +1001,13 @@ class StepOneWithDateRange extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('description', {
-                            rules: [{
-                                required: true,
-                                message: '1---200个字符',
-                                pattern: /^[\s\S]{1,200}$/,
-                            }],
+                            rules: [
+                                { required: true, message: '活动说明不能为空' },
+                                { max: 200, message: '最多200个字符' },
+                            ],
                             initialValue: this.state.description,
                         })(
-                            <Input type="textarea" placeholder="请输入活动说明,1---200个字符" onChange={this.handleDescriptionChange} />
+                            <Input type="textarea" placeholder="请输入活动说明, 最多200个字符" onChange={this.handleDescriptionChange} />
                         )}
                     </FormItem>
                 </div>

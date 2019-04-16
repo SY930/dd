@@ -201,15 +201,9 @@ class StepTwo extends React.Component {
             message.warning('请至少选择一个可用微信公众号');
             return false;
         }
-        const accountEntity = this.state.allAccounts.find(({mpID}) => !!mpID && mpID === mpIDList[0]);
-        if (!accountEntity) {
-            message.warning('获取公众号信息时出了问题, 请刷新重试');
-            return false;
-        }
         this.props.setSpecialBasicInfo({
             mpIDList,
             smsGate: '2',
-            pushMessageMpID: JSON.stringify({mpID: accountEntity.mpID, appID: accountEntity.appID})
         });
         return true;
     }

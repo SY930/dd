@@ -19,6 +19,7 @@ import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import SelectBrands from "../components/SelectBrands";
 import SelectCardTypes from "../components/SelectCardTypes";
+import PushMessageMpID from "../components/PushMessageMpID";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -230,8 +231,14 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: () => describe,
             },
+            pushMessageMpID: {
+                label: '消息推送公众号',
+                rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
+                type: 'custom',
+                render: decorator => decorator({})(<PushMessageMpID/>),
+            },
             transferType: {
-                label: '券是否可分享',
+                label: '券是否可转赠',
                 type: 'radio',
                 defaultValue: 0,
                 options: GiftCfg.transferType,
@@ -377,10 +384,70 @@ class GiftAddModal extends React.Component {
             },
         };
         const formKeys = {
-            '实物礼品券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'transferType', 'giftName','selectBrands', 'giftValue', 'giftRemark', 'shopNames', 'giftImagePath', 'giftRule', 'isSynch'] }],
-            '会员积分券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
-            '会员充值券': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'cardTypeList', 'giftRemark', 'giftRule', ] }],
-            '礼品定额卡': [{ col: { span: 24, pull: 2 }, keys: ['giftType', 'giftName','selectBrands', 'giftValue', 'giftCost', 'price', 'giftRemark', 'giftRule', 'isSynch'] }],
+            '实物礼品券': [
+                {
+                    col:
+                        { span: 24, pull: 2 },
+                    keys: [
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'pushMessageMpID',
+                        'giftValue',
+                        'giftRemark',
+                        'shopNames',
+                        'giftImagePath',
+                        'giftRule',
+                        'isSynch'
+                    ]
+                }
+            ],
+            '会员积分券': [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'pushMessageMpID',
+                        'giftValue',
+                        'cardTypeList',
+                        'giftRemark',
+                        'giftRule',
+                    ]
+                }
+            ],
+            '会员充值券': [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'pushMessageMpID',
+                        'giftValue',
+                        'cardTypeList',
+                        'giftRemark',
+                        'giftRule',
+                    ]
+                }
+            ],
+            '礼品定额卡': [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'giftValue',
+                        'giftCost',
+                        'price',
+                        'giftRemark',
+                        'giftRule',
+                        'isSynch'
+                    ]
+                }
+            ],
         };
         let formData = {};
         if (type == 'edit') {
@@ -389,26 +456,6 @@ class GiftAddModal extends React.Component {
         if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
-        /*return (
-            <Modal
-                title={`${type === 'edit' ? '修改' : '创建'}${describe}`}
-                visible={visible}
-                maskClosable={false}
-                onCancel={() => {
-                    this.handleCancel()
-                }}
-                footer={[<Button key="0" type="ghost" onClick={() => this.handleCancel()}>取消</Button>,
-                <Button
-                    key="1"
-                    type="primary"
-                    disabled={this.state.finishLoading}
-                    style={{ display: this.state.isUpdate ? 'inline-block' : 'none' }}
-                    onClick={() => this.handleOk()}>确定</Button>]}
-                key={`${describe}-${type}`}
-            >
-                {visible && }
-            </Modal>
-        )*/
         return (
             <div className={styles.giftAddModal}>
                 <BaseForm

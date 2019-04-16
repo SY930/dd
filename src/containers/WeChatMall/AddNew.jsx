@@ -198,7 +198,7 @@ class NewActivity extends React.Component {
                 style={{
                     top: 20,
                 }}
-                width="924px"
+                width={1000}
                 visible={this.state.modal1Visible}
                 onOk={this.clear}
                 onCancel={this.clear}

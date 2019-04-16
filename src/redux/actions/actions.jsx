@@ -97,8 +97,8 @@ export const queryWeChatMessageTemplates = (opts) => {
 export const saveWeChatMessageTemplates = (opts, isCreate) => {
     return (dispatch) => {
         dispatch(saleCenterSaveWeChatMessageTemplatesStart());
-        const url = isCreate ? '/coupon/CouponWechatTemplateService_addCouponWechatTemplate.ajax' :
-            '/coupon/CouponWechatTemplateService_updateCouponWechatTemplate.ajax';
+        const url = '/coupon/CouponWechatTemplateService_addCouponWechatTemplate.ajax';
+        // '/coupon/CouponWechatTemplateService_updateCouponWechatTemplate.ajax';
         opts.wechatTemplates.forEach(template => {
             const type = template.msgType;
             if (!template.title) {

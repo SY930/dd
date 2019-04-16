@@ -42,7 +42,10 @@ const availableMsgType = [
         value: '1',
         label: '礼品到期提醒',
     },
-
+    {
+        value: '3',
+        label: '核销成功通知',
+    },
 ];
 
 const availableUrlType = [
@@ -206,7 +209,7 @@ class WeChatMessageFormWrapper extends Component {
                     </FormItem>
                 )}
                 {
-                    Number(type) === 1 && (
+                    Number(type) !== 2 && (
                         <FormItem
                             label="是否推送消息"
                             className={styles.FormItemStyle}
@@ -231,15 +234,9 @@ class WeChatMessageFormWrapper extends Component {
 
     renderImgUrl = () => {
         const {
-            form: {getFieldDecorator},
-            title,
-            remark,
-            reDirectType,
             currentType: type,
-            isPushMsg,
             reDirectUrl,
             isEditing,
-            handleKeyValueChange
         } = this.props;
         const props = {
             name: 'myFile',
@@ -357,7 +354,7 @@ class WeChatMessageFormWrapper extends Component {
                                             <p style={{
                                                 textIndent: '2em'
                                             }}
-                                            >由于微信提供的可推送消息类型里没有礼品到期提醒，最接近的模板为：会员到期提醒，所以实际推送模板为会员到期提醒，如有异议，可以关闭推送</p>
+                                            >由于微信提供的可推送消息类型里没有礼品到期提醒，最接近的模板为：饭票过期提醒，所以实际推送模板为饭票过期提醒，如有异议，可以关闭推送</p>
                                         </div>
                                     }
                                 />

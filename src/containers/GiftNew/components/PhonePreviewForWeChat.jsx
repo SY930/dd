@@ -1,12 +1,43 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
-import phone from '../../../assets/phone.png';
-import bg from '../../../assets/bg.png';
+import phone from '../../../assets/phoneX.png';
+import moment from 'moment';
 import bg1 from '../../../assets/bg1.png';
 import {DEFAULT_WECHAT_TEMPLATE_CONFIG} from "../../../constants/weChatTemplateConstants";
 
 class PhonePreviewForWeChat extends PureComponent {
+
+    getPreviewLine = (currentType, lineNo) => {
+        switch (+currentType) {
+            case 1: {
+                switch (lineNo) {
+                    case 1: return '来源 : 系统发送'
+                    case 2: return '过期时间 : 2019-10-20'
+                    case 3: return '使用说明 : 请点击查看使用详情'
+                    default: return '';
+                };
+            };
+            case 2: {
+                switch (lineNo) {
+                    case 1: return '礼品名称 : 15元代金券'
+                    case 2: return '礼品数量 : 2个'
+                    case 3: return '领取时间 : 2018.08.22'
+                    default: return '';
+                };
+            };
+            case 3: {
+                switch (lineNo) {
+                    case 1: return '核销项目 : 免费吃小菜一份2019'
+                    case 2: return `核销时间 : ${moment().format('YYYY年MM月DD日 mm:ss')}`
+                    case 3: return '核销门店 : 哗啦啦北京西直门凯德店'
+                    default: return '';
+                };
+            }
+        }
+    }
+
+
 
     render() {
         const {
@@ -33,15 +64,20 @@ class PhonePreviewForWeChat extends PureComponent {
                         alt="oops"
                         style={{
                             position: 'relative',
-                            top: '20px'
+                            top: 20,
                         }}
                     />
-                    <img className={styles.phonePreviewHeader} src={bg1}  alt="oops"/>
                     <div className={styles.phonePreviewModifier}>
                         微信公众号
                     </div>
-                    <div className={styles.phonePreviewContentWrapper}>
-                        <div className={styles.weChatContent}>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 145,
+                            left: 58,
+                        }}
+                        className={styles.weChatContent}
+                    >
                             <div>
                                 {DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].type}
                             </div>
@@ -56,15 +92,15 @@ class PhonePreviewForWeChat extends PureComponent {
                                 {title || DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].title}
                             </div>
                             <div>
-                                礼品名称 : 15元代金券
+                                {this.getPreviewLine(currentType, 1)}
                             </div>
                             <div>
-                                礼品数量 : 2个
+                                {this.getPreviewLine(currentType, 2)}
                             </div>
                             <div style={{
                                 marginBottom: 28
                             }}>
-                                领取时间 : 2018.08.22
+                                {this.getPreviewLine(currentType, 3)}
                             </div>
                             <div style={{
                                 paddingBottom: 10,
@@ -78,7 +114,6 @@ class PhonePreviewForWeChat extends PureComponent {
                                 <div>{`>`}</div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
         )

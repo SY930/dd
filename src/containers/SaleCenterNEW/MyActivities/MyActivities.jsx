@@ -704,7 +704,7 @@ class MyActivities extends React.Component {
                 title={this.state.modalTitle}
                 visible={this.state.updateModalVisible}
                 footer={false}
-                width="924px"
+                width={1000}
                 height="569px"
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
@@ -732,12 +732,10 @@ class MyActivities extends React.Component {
                                         queryPromotionAutoRunList();
                                         openPromotionAutoRunListModal();
                                     }}
+                                    icon="plus"
                                     className={styles.customPrimaryButton}
                                 >
-                                    <span className={styles.customButtonWithContent}>
-                                        <div style={{fontSize: '16px'}}>+&nbsp;</div>
-                                        <div>自动执行</div>
-                                    </span>
+                                    自动执行
                                 </Button>
                             </Authority>
                         )
