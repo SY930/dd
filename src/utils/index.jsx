@@ -136,9 +136,9 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
         return acc;
     }, [...commonDishes])
     return {
-        dishes: _.uniqBy(dishes, 'value'),
-        categories: _.uniqBy(categories, 'value'),
-        brands,
+        dishes: _.sortBy(_.uniqBy(dishes, 'value'), [ 'brandID', 'foodCategoryName']),
+        categories: _.sortBy(_.uniqBy(categories, 'value'), [ 'brandID', 'foodCategoryName']),
+        brands: brands.sort((a, b) => a.brandID - b .brandID),
     }
 }
 
