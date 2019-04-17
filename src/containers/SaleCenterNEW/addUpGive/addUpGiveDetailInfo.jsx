@@ -9,28 +9,24 @@
 */
 
 import React, { Component } from 'react';
-import { Row, Col, Form, Select, Radio, DatePicker, Input } from 'antd';
+import {
+    Form,
+    Select,
+    Input,
+} from 'antd';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import moment from 'moment';
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const InputGroup = Input.Group;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
-const Immutable = require('immutable');
 
 
 class AddUpGiveDetailInfo extends React.Component {
@@ -48,10 +44,6 @@ class AddUpGiveDetailInfo extends React.Component {
             },
             priceLst: [],
         };
-
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeClick = this.onChangeClick.bind(this);
         this.handleStageTypeChange = this.handleStageTypeChange.bind(this);
         this.handleStageChange = this.handleStageChange.bind(this);
@@ -61,9 +53,6 @@ class AddUpGiveDetailInfo extends React.Component {
     }
 
     componentDidMount() {
-        const opts = {
-            groupID: this.props.user.accountInfo.groupID,
-        };
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
@@ -199,6 +188,7 @@ class AddUpGiveDetailInfo extends React.Component {
                 foodUnitCode: dish.foodKey,
                 foodName: dish.foodName,
                 foodUnitName: dish.unit,
+                brandID: dish.brandID || '0',
                 price: dish.price,
                 stageNo: 0,
             }
@@ -220,7 +210,11 @@ class AddUpGiveDetailInfo extends React.Component {
                         }],
                         initialValue: this.state.priceLst,
                     })(
-                        <EditBoxForDishes onChange={this.onDishesChange} />
+                        this.props.isShopFoodSelectorMode ? (
+                            <EditBoxForDishes onChange={this.onDishesChange} />
+                        ) : (
+                            <ConnectedPriceListSelector onChange={this.onDishesChange} />
+                        )
                     )}
             </FormItem>
         )
@@ -328,12 +322,9 @@ class AddUpGiveDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
@@ -341,13 +332,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

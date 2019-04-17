@@ -152,6 +152,7 @@ export const fetchPromotionDetail = (opts) => {
             }
             return dispatch(fetchPromotionDetailFullfilled(res.data))
         }).catch((error) => {
+            console.log('error', error)
             dispatch(fetchPromotionDetailFail(error.code))
         });
     }

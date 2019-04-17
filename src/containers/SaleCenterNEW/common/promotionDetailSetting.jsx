@@ -182,19 +182,12 @@ class PromotionDetailSetting extends React.Component {
         return []
     }
     componentDidMount() {
-        var opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-        };
-        // autoFetch只有菜品优惠券才发请求
-        this.props.autoFetch && this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subGroupID']));
-        this.props.autoFetch && this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subGroupID']));
-
         const promotionDetailInfo = this.props.promotionDetailInfo.get('$promotionDetail').toJS();
         const _scopeLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])) ?
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS() : [];
         let foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
         // 当为第二份打折时，过滤套餐
-        if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1050') {
+        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) === '1050') {
             foodCategoryCollection = this.filterGroup(foodCategoryCollection);
         }
         this.setState({
@@ -1029,7 +1022,6 @@ PromotionDetailSetting.defaultProps = {};
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        user: state.user.toJS(),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 };
@@ -1039,14 +1031,6 @@ const mapDispatchToProps = (dispatch) => {
 
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-
-        fetchFoodCategoryInfo: (opts, flag, id) => {
-            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
-        },
-
-        fetchFoodMenuInfo: (opts, flag, id) => {
-            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
         },
     }
 };

@@ -7,16 +7,10 @@
 
 
 import React, { Component } from 'react'
-import { render } from 'react-dom'
 import { connect } from 'react-redux';
 
 import { Row, Col, Icon, DatePicker, Button, Radio, Form, Input, InputNumber } from 'antd';
 import styles from '../ActivityPage.less';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox'; // 编辑
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 import {
@@ -24,6 +18,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import EditBoxForDishes from './EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddGrade extends React.Component {
     constructor(props) {
@@ -74,14 +69,12 @@ class AddGrade extends React.Component {
             if (nextProps.ruleType !== '2' && nextProps.ruleType !== '3') {
                 this.uuid = 0;
                 const { form } = this.props;
-                const keys = form.getFieldValue('keys');
                 form.setFieldsValue({
                     keys: [0],
                 });
             } else {
                 this.uuid = Object.keys(nextProps.value).length - 1;
                 const { form } = this.props;
-                const keys = form.getFieldValue('keys');
                 form.setFieldsValue({
                     keys: Object.keys(nextProps.value),
                 });
@@ -120,12 +113,23 @@ class AddGrade extends React.Component {
                 validateStatus={this.state.data[k].dishesFlag ? 'success' : 'error'}
                 help={this.state.data[k].dishesFlag ? null : '请选择赠送菜品'}
             >
-                <EditBoxForDishes
-                    stageNum={k}
-                    onChange={(value) => {
-                        this.onDishesChange(value, k);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes
+                            stageNum={k}
+                            onChange={(value) => {
+                                this.onDishesChange(value, k);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            onChange={(value) => {
+                                this.onDishesChange(value, k);
+                            }}
+                        />
+                    )
+                }
+                
             </FormItem>
 
         )
@@ -297,6 +301,7 @@ const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 };
 

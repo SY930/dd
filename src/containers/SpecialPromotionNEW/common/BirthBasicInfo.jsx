@@ -13,7 +13,6 @@ import { Input, Form, Select, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-// import { WrappedAdvancedTimeSetting } from '../../SaleCenterNEW/common/AdvancedTimeSetting';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -158,7 +157,6 @@ class PromotionBasicInfo extends React.Component {
             return cc.key === type
         }).title : '';
         const rangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-        // console.log('cardLevelRangeType', this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']));
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
                 <p>{type ?  item ? item.tip : '' : ''}</p>

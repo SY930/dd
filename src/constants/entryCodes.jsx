@@ -1,10 +1,10 @@
 ﻿
 export const SALE_CENTER_PAGE = '1000076001'; // 基础营销信息新
-export const NEW_SALE_CENTER = '1000076002'; // 创建基础营销
+// export const NEW_SALE_CENTER = '1000076002'; // 创建基础营销
 export const SPECIAL_PAGE = '1000076003'; // 特色营销首页
 export const NEW_SPECIAL = '1000076004'; // 创建特色营销
 export const GIFT_PAGE = '1000076005'; // 礼品首页
-export const NEW_GIFT = '1000076006'; // 创建礼品
+// export const NEW_GIFT = '1000076006'; // 创建礼品
 
 /*export const OLD_SALE_CENTER_PAGE = '12'; // 基础营销信息新
 export const OLD_NEW_SALE_CENTER = '13'; // 创建基础营销
@@ -16,9 +16,8 @@ export const OLD_NEW_GIFT = '16'; // 创建礼品*/
 export const SALE_CENTER_PAGE_SHOP = 'shop.dianpu.promotion'; // 门店-基础营销信息新
 export const NEW_SALE_CENTER_SHOP = 'shop.dianpu.creatpromotion'; // 门店-创建基础营销
 
-export const CRM_DATA_VALIDATOR = 'crm.data_verification.crmdv'; // admin视角 数据导入前校验
-
-
+// admin视角 数据导入前校验, 做完之后一直没有上线, 可以从git中找回
+// export const CRM_DATA_VALIDATOR = 'crm.data_verification.crmdv';
 export const SET_MSG_TEMPLATE = '10000888'; // 短信模板
 export const SET_WECHAT_MESSAGE_TEMPLATE = '100009991'; // 短信模板
 export const WECHAT_MALL_CREATE = 'wechat_mall_create'; // 门店视角 CREATE

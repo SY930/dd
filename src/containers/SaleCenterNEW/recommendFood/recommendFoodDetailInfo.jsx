@@ -2,16 +2,10 @@
 import React, { Component } from 'react'
 import { Form, Select, message, Checkbox, Input, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
-import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import CollocationTable from '../common/CollocationTable'; // 表格
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -20,6 +14,7 @@ const Immutable = require('immutable');
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID';
 
 
 class Tip extends React.Component {
@@ -67,21 +62,24 @@ class Tip extends React.Component {
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
         super(props);
+        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
+        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
+        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
+        const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
+        const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })   
         this.state = {
-            priceLst: [],
-            scopeLst: [],
             handSetChecked: true,
             autoSetChecked: true,
-            // autoSetChecked: false,
-            priceLstHand: [],
-            priceLstAuto: [],
+            priceLstHand,
+            priceLstAuto,
+            scopeLst: _scopeLst,
             stageType: 1,
             recommendNum: '',
             recommendTopNum: '',
             recommendNumStatus: 'success',
             recommendTopNumStatus: 'success',
         };
-
         this.onHandSetChange = this.onHandSetChange.bind(this);
         this.onAutoSetChange = this.onAutoSetChange.bind(this);
         this.handDishesChange = this.handDishesChange.bind(this);
@@ -93,58 +91,18 @@ class RecommendFoodDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
-        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
         rule = rule ? rule.toJS() : {};
-        let { stageType = '1', recommendNum = '', recommendTopNum = '' } = rule;
+        let { recommendNum = '', recommendTopNum = '' } = rule;
         let { display } = this.state;
         display = !this.props.isNew;
-        const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
-        const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })
         this.setState({
             display,
-            // priceLst: _priceLst,
-            priceLstHand,
-            priceLstAuto,
-            scopeLst: _scopeLst,
-            // handSetChecked: !!(stageType == 0 || stageType == 1),
-            // autoSetChecked: !!(stageType == 0 || stageType == 2),
             handSetChecked: true,
             autoSetChecked: true,
             recommendNum,
             recommendTopNum,
-        }, () => {
-            this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
         });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.get('$promotionDetail') != this.props.promotionDetailInfo.get('$promotionDetail')) {
-            let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-            let _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-            if (Immutable.List.isList(_priceLst)) {
-                _priceLst = _priceLst.toJS();
-            } else {
-                _priceLst = [];
-            }
-            if (Immutable.List.isList(_scopeLst)) {
-                _scopeLst = _scopeLst.toJS();
-            } else {
-                _scopeLst = [];
-            }
-            const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
-            const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })
-            this.setState({
-                // priceLst: _priceLst,
-                priceLstHand,
-                priceLstAuto,
-                scopeLst: _scopeLst,
-            }, () => {
-                this.props.form.setFieldsValue({ 'priceLst': this.state.priceLstAuto })
-            });
-        }
     }
 
     handleSubmit() {
@@ -172,7 +130,6 @@ class RecommendFoodDetailInfo extends React.Component {
                 }
             }
             data ? data.forEach((group, groupIdx) => {
-                // TODO: 用这种方法去判断是否选过菜品是真的蠢, 但是需求真的太多 来不及改了
                 if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
                     group.free.forEach((free) => {
                         priceLst.push({
@@ -180,9 +137,10 @@ class RecommendFoodDetailInfo extends React.Component {
                             foodUnitCode: free.foodKey,
                             foodName: free.foodName,
                             foodUnitName: free.unit,
+                            brandID: free.brandID || '0',
                             price: parseFloat(free.price),
                             stageNo: groupIdx,
-                            num: group.freeCountInfo[free.itemID],
+                            num: group.freeCountInfo[free.value || free.itemID],
                         })
                     });
                     group.foods.forEach((food) => {
@@ -190,10 +148,11 @@ class RecommendFoodDetailInfo extends React.Component {
                             scopeType: '2',
                             targetID: food.itemID,
                             targetCode: food.foodKey,
+                            brandID: food.brandID || '0',
                             targetName: food.foodName,
                             targetUnitName: food.unit,
                             stageNo: groupIdx,
-                            num: group.foodsCountInfo[food.itemID],
+                            num: group.foodsCountInfo[food.value || food.itemID],
                         })
                     });
                 } else {
@@ -208,6 +167,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     foodUnitID: free.foodUnitID || free.itemID,
                     foodUnitCode: free.foodKey || free.foodUnitCode,
                     foodName: free.foodName,
+                    brandID: free.brandID || '0',
                     foodUnitName: free.unit || free.foodUnitName,
                     price: parseFloat(free.price),
                     stageNo: -1,
@@ -240,7 +200,6 @@ class RecommendFoodDetailInfo extends React.Component {
         })
     }
     autoDishesChange(val) {
-        // console.log(val)
         this.setState({
             priceLstAuto: val,
         })
@@ -253,6 +212,7 @@ class RecommendFoodDetailInfo extends React.Component {
     }
     render() {
         const { recommendNumStatus, recommendTopNumStatus } = this.state;
+        const { isShopFoodSelectorMode } = this.props;
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -282,13 +242,22 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
-                                    <CollocationTable
-                                        onChange={this.handDishesChange}
-                                        priceLst={this.state.priceLstHand}
-                                        scopeLst={this.state.scopeLst}
-                                        type="5010"
-                                    />
+                                <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+                                    {
+                                        isShopFoodSelectorMode ? (
+                                            <CollocationTable
+                                                onChange={this.handDishesChange}
+                                                priceLst={this.state.priceLstHand}
+                                                scopeLst={this.state.scopeLst}
+                                                type="5010"
+                                            />
+                                        ) : (
+                                            <CollocationTableWithBrandID
+                                                onChange={this.handDishesChange}
+                                            />
+                                        )
+                                    }
+                                    
                                 </FormItem>
                             </div> : null
                     }
@@ -322,12 +291,16 @@ class RecommendFoodDetailInfo extends React.Component {
                                         }}
                                     />
                                 </FormItem>
-                                <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
+                                <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
                                     {
                                         this.props.form.getFieldDecorator('priceLst', {
                                             initialValue: this.state.priceLstAuto,
-                                        })(
-                                            <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
+                                        })(                                           
+                                            this.props.isShopFoodSelectorMode ? (
+                                                <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
+                                            ) : (
+                                                <ConnectedPriceListSelector onChange={this.autoDishesChange} />
+                                            )                                         
                                         )}
                                 </FormItem>
                             </div> : null
@@ -340,11 +313,9 @@ class RecommendFoodDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

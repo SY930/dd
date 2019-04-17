@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
 import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
-// import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import {
     saleCenterSetPromotionDetailAC,
     fetchPromotionListAC,
@@ -27,7 +26,6 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types.js';
 import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
-import EditBoxForSubject from './EditBoxForSubject';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
 
@@ -35,7 +33,6 @@ import BaseHualalaModal from './BaseHualalaModal';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const Immutable = require('immutable');
 
 class AdvancedPromotionDetailSetting extends React.Component {
     constructor(props) {
@@ -59,7 +56,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.renderUserSetting = this.renderUserSetting.bind(this);
         this.renderPaymentSetting = this.renderPaymentSetting.bind(this);
         this.renderExcludedPromotionSelection = this.renderExcludedPromotionSelection.bind(this);
-        this.renderExcludedPayTypeSelection = this.renderExcludedPayTypeSelection.bind(this);
         this.onPromotionChange = this.onPromotionChange.bind(this);
         this.onSubjectChange = this.onSubjectChange.bind(this);
         this.renderRoleOptions = this.renderRoleOptions.bind(this);
@@ -354,23 +350,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         )
     }
 
-    renderExcludedPayTypeSelection() {
-        return (
-            <FormItem
-                label="结算方式互斥"
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-            >
-                <EditBoxForSubject onChange={(val) => {
-                    this.onSubjectChange(val)
-                }}
-                />
-            </FormItem>
-        )
-    }
-
-
     renderRoleOptions() {
         return (
 
@@ -513,7 +492,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 }
                 {_stash ? null : this.renderExcludedPromotionBlackList()}
                 {_stash ? null : this.renderExcludedPromotionSelection()}
-                {/* {this.renderExcludedPayTypeSelection()} */}
                 {
                     _stash || $promotionScope.toJS().auto == 1 || $promotionScope.toJS().channel == 2 ? null :
                         this.renderRoleOptions()

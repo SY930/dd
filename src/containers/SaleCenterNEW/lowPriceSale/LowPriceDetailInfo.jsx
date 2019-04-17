@@ -1,64 +1,31 @@
-
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-08T13:42:07+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import {
     Row,
     Col,
     Form,
     Select,
-    Radio,
-    InputNumber,
-    Input,
-    Icon,
     Button,
 } from 'antd';
 import { connect } from 'react-redux'
-import ReactDOM from 'react-dom';
 
 const Immutable = require('immutable');
 const ButtonGroup = Button.Group;
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 
 const FormItem = Form.Item;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
-import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
-
-const type = [
-    { value: '0', name: '下单即折扣' },
-    { value: '1', name: '任意菜品消费满' },
-    { value: '2', name: '指定菜品消费满' },
-]
 const Option = Select.Option;
 
 class LowPriceDetailInfo extends React.Component {
@@ -80,7 +47,6 @@ class LowPriceDetailInfo extends React.Component {
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRuleTypeChange = this.handleRuleTypeChange.bind(this);
         this.handleStageAmountChange = this.handleStageAmountChange.bind(this);
         this.handleDisTypeChange = this.handleDisTypeChange.bind(this);
@@ -122,14 +88,7 @@ class LowPriceDetailInfo extends React.Component {
         });
     }
 
-    /*componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            this.parseRule(nextProps)
-        }
-    }*/
-
-    handleSubmit = (cbFn) => {
+    handleSubmit = () => {
         let {
             discountRate,
             freeAmount,
@@ -381,7 +340,9 @@ class LowPriceDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType === '2' ? <PromotionDetailSetting /> : null}
+                    {this.state.ruleType === '2' ? this.props.isShopFoodSelectorMode ?
+                        <PromotionDetailSetting /> : <ConnectedScopeListSelector/>
+                    : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
@@ -392,10 +353,11 @@ class LowPriceDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
         fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

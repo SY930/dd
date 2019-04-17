@@ -16,10 +16,13 @@ import {
 
     SALE_CENTER_FETCH_FOOD_CATEGORY,
     SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS,
+    SALE_CENTER_FETCH_RAW_FOOD_CATEGORY_SUCCESS,
     SALE_CENTER_FETCH_FOOD_CATEGORY_FAILED,
     SALE_CENTER_FETCH_FOOD_MENU,
+    SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS,
     SALE_CENTER_FETCH_FOOD_MENU_SUCCESS,
     SALE_CENTER_FETCH_FOOD_MENU_FAILED,
+    SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
 
 
     SALE_CENTER_FETCH_PROMOTION_LIST,
@@ -53,7 +56,11 @@ const $initialState = Immutable.fromJS({
         initialized: false,
         data: [],
     },
-
+    $categoryAndFoodInfo: { // 菜品品牌化改动新增的字段
+        categories: [],
+        dishes: [],
+    },
+    isShopFoodSelectorMode: false,
     $foodMenuListInfo: {
         initialized: false,
         data: [],
@@ -300,11 +307,12 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS:
             foodCategoryCollection = constructTreeDataContainsFoodCategoryAndFood(Immutable.fromJS(action.payload), $$state.getIn(['$foodMenuListInfo', 'data']));
-
             return $$state
                 .setIn(['$foodCategoryListInfo', 'data'], Immutable.fromJS(action.payload))
                 .setIn(['$foodCategoryListInfo', 'initialized'], true)
                 .setIn(['foodCategoryCollection'], Immutable.fromJS(foodCategoryCollection));
+        case SALE_CENTER_FETCH_RAW_FOOD_CATEGORY_SUCCESS:
+            return $$state.setIn(['$categoryAndFoodInfo', 'categories'], Immutable.fromJS(action.payload.records));
 
         case SALE_CENTER_FETCH_FOOD_CATEGORY_FAILED:
             return $$state;
@@ -314,14 +322,17 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_FOOD_MENU_SUCCESS:
             foodCategoryCollection = constructTreeDataContainsFoodCategoryAndFood($$state.getIn(['$foodCategoryListInfo', 'data']), Immutable.fromJS(action.payload));
-
             return $$state
                 .setIn(['$foodMenuListInfo', 'data'], Immutable.fromJS(action.payload))
                 .setIn(['$foodMenuListInfo', 'initialized'], true)
                 .setIn(['foodCategoryCollection'], Immutable.fromJS(foodCategoryCollection));
+        case SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS:
+            return $$state.setIn(['$categoryAndFoodInfo', 'dishes'], Immutable.fromJS(action.payload.records));
 
         case SALE_CENTER_FETCH_FOOD_MENU_FAILED:
             return $$state;
+        case SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE:
+            return $$state.set('isShopFoodSelectorMode', action.payload)
 
 
         case SALE_CENTER_FETCH_PROMOTION_LIST:

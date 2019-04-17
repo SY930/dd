@@ -14,14 +14,10 @@ import React, { Component } from 'react'
 import { Form, Select, message } from 'antd';
 import { connect } from 'react-redux'
 
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import CollocationTable from '../common/CollocationTable'; // 表格
+import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID'; // 表格
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -92,9 +88,10 @@ class CollocationDetailInfo extends React.Component {
                         foodUnitCode: free.foodKey,
                         foodName: free.foodName,
                         foodUnitName: free.unit,
+                        brandID: free.brandID || 0,
                         price: parseFloat(free.prePrice==-1?free.price:free.prePrice || 0),
                         stageNo: groupIdx,
-                        num: group.freeCountInfo[free.itemID] >= 1 ? group.freeCountInfo[free.itemID] : 1,
+                        num: group.freeCountInfo[free.value || free.itemID] >= 1 ? group.freeCountInfo[free.value || free.itemID] : 1,
                     })
                 });
                 group.foods.forEach((food) => {
@@ -104,8 +101,9 @@ class CollocationDetailInfo extends React.Component {
                         targetCode: food.foodKey,
                         targetName: food.foodName,
                         targetUnitName: food.unit,
+                        brandID: food.brandID || 0,
                         stageNo: groupIdx,
-                        num: group.foodsCountInfo[food.itemID] >= 1 ? group.foodsCountInfo[food.itemID] : 1,
+                        num: group.foodsCountInfo[food.value || food.itemID] >= 1 ? group.foodsCountInfo[food.value || food.itemID] : 1,
                     })
                 });
             } else {
@@ -152,11 +150,19 @@ class CollocationDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <CollocationTable
-                        onChange={this.dishesChange}
-                        priceLst={this.state.priceLst}
-                        scopeLst={this.state.scopeLst}
-                    />
+                    {
+                        this.props.isShopFoodSelectorMode ? (
+                            <CollocationTable
+                                onChange={this.dishesChange}
+                                priceLst={this.state.priceLst}
+                                scopeLst={this.state.scopeLst}
+                            />
+                        ) : (
+                            <CollocationTableWithBrandID
+                                onChange={this.dishesChange}
+                            />
+                        )
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
@@ -167,11 +173,8 @@ class CollocationDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

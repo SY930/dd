@@ -11,8 +11,6 @@ import React from 'react';
 import { Input, Icon } from 'antd';
 import ReactDOM from 'react-dom';
 
-import styles from '../ActivityPage.less';
-
 class PriceInputIcon extends React.Component {
     constructor(props) {
         super(props);

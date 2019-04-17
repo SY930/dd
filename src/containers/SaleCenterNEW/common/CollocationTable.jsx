@@ -6,28 +6,21 @@
  */
 
 
-import React, { Component } from 'react';
-import { render } from 'react-dom';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { Row, Col, Tree, Table, Modal, Form, Icon } from 'antd';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 
-import {
-    saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
-
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
 const FormItem = Form.Item;
 const TreeNode = Tree.TreeNode;
-import { HualalaEditorBox, HualalaTreeSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
+import {
+    HualalaTreeSelect,
+    HualalaSelected,
+    HualalaSearchInput,
+} from '../../../components/common';
 import HualalaGroupSelectS from './HualalaGroupSelect/index';
 
 class CollocationTable extends React.Component {
@@ -144,7 +137,6 @@ class CollocationTable extends React.Component {
                         if (item.itemID == price.foodUnitID) {
                             data[price.stageNo].free.push(promotionType === '1040' &&
                                 (item.isSetFood == '1' || item.isTempFood == '1' || item.isTempSetFood == '1') ? {} : item); // 过滤套餐
-                            // data[price.stageNo].free.push(item.isSetFood !== '1' ? item : { ...item, 'foodName': '', 'foodCategoryName': '' });
                             data[price.stageNo].freeCountInfo[item.itemID] = price.num;
                         }
                     });
@@ -220,8 +212,6 @@ class CollocationTable extends React.Component {
                 const foodCategoryCollection = this.props.promotionDetailInfo.get('foodCategoryCollection').toJS();
                 this.setState({
                     foodCategoryCollection,
-                }, () => {
-                    // this.sortData(this.state.priceLst, this.state.scopeLst);
                 });
             }
         } else if (indexInfo[1] === indexInfo[3]) { // free
@@ -820,24 +810,7 @@ class CollocationTable extends React.Component {
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        user: state.user.toJS(),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
     }
 };
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setPromotionDetail: (opts) => {
-            dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
-        },
-    }
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CollocationTable);
+export default connect(mapStateToProps)(CollocationTable);

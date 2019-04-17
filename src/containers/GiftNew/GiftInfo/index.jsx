@@ -9,7 +9,6 @@ import { giftInfoNew as sale_giftInfoNew } from '../_reducers';
 import { editGiftInfoNew as sale_editGiftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import { crmOperation_dkl as sale_crmOperation_dkl } from '../../../redux/reducer/saleCenterNEW/crmOperation.reducer';
-import { steps as sale_steps } from '../../../redux/modules/steps';
 import GiftEditPage from "../components/GiftEditPage";
 
 function mapStateToProps(state) {
@@ -24,7 +23,6 @@ function mapStateToProps(state) {
     sale_editGiftInfoNew,
     sale_promotionDetailInfo_NEW,
     sale_crmOperation_dkl,
-    sale_steps,
 })
 @connect(mapStateToProps)
 export default class GiftInfo extends React.Component {

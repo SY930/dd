@@ -15,14 +15,10 @@ import { Row, Col, Form, Select, Radio, message } from 'antd';
 import { connect } from 'react-redux'
 import Immutable from 'immutable';
 
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import SpecialDishesTable from '../common/SpecialDishesTable'; // 表格
+import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -31,8 +27,6 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from "../common/PriceInput";
 
@@ -76,29 +70,22 @@ class SpecialDetailInfo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
+        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])
+            !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])});
-        }
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
-            this.setState({
-                isLimited: Number(!!amountLimit),
-                amountLimit: amountLimit || 1,
-            });
         }
     }
 
     handleSubmit = (cbFn) => {
         const { data } = this.state;
-        const priceLst = data.map((data) => {
+        const priceLst = data.map((item) => {
             return {
-                foodUnitID: data.itemID,
-                foodUnitCode: data.foodKey,
-                foodName: data.foodName,
-                foodUnitName: data.unit,
-                price: parseFloat(data.newPrice) < 0 ?  data.price : parseFloat(data.newPrice),
+                foodUnitID: item.itemID,
+                foodUnitCode: item.foodKey,
+                foodName: item.foodName,
+                foodUnitName: item.unit,
+                brandID: item.brandID || 0,
+                price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
             }
         });
         if (this.state.isLimited == 1 && !this.state.amountLimit) {
@@ -156,7 +143,6 @@ class SpecialDetailInfo extends React.Component {
     }
 
     handleAmountLimitChange(value) {
-        // console.log(value);
         this.setState({amountLimit: value.number})
     }
 
@@ -164,9 +150,18 @@ class SpecialDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <SpecialDishesTable
-                        onChange={this.dishesChange}
-                    />
+                    {
+                        this.props.isShopFoodSelectorMode ? (
+                            <SpecialDishesTable
+                                onChange={this.dishesChange}
+                            />
+                        ) : (
+                            <SpecialDishesTableWithBrand
+                                onChange={this.dishesChange}
+                            />
+                        )
+                    }
+                    
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>{'单笔订单同一菜品最多使用数量限制'}</div>
                         <div style={{width: '300px'}}>
@@ -212,11 +207,9 @@ class SpecialDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
@@ -224,13 +217,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

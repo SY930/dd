@@ -1,22 +1,12 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber, message } from 'antd';
+import React from 'react'
+import {
+    Col,
+    Form,
+    Select,
+    message,
+} from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -34,20 +24,20 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
+        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "5") || [];
+        let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
+        if (Immutable.List.isList(priceLst)) {
+            priceLst = priceLst.toJS();
+        } else {
+            priceLst = [];
+        }
         this.state = {
             display: false,
             foodMenuList: [],
@@ -56,10 +46,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType: 0,
             stageCondition: 0,
             stageAmount: '',
-            upGradeDishes: [],
+            upGradeDishes,
             isAddMoney: 0,
             freeAmount: '',
-            dishes: [],
+            dishes: priceLst,
             mostNewLimit: 0,
             giveFoodMax: '',
             singleNewLimit: 0,
@@ -70,7 +60,6 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.renderupGradeDishesBox = this.renderupGradeDishesBox.bind(this);
         this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.countTypeChange = this.countTypeChange.bind(this);
         this.subjectTypeChange = this.subjectTypeChange.bind(this);
         this.stageConditionChange = this.stageConditionChange.bind(this);
@@ -104,15 +93,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
         // 根据ruleJson填充页面
-        // const stage = _rule.stage ? _rule.stage[0] : {}
-        const upGradeDishes = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType == "5") || [];
         const scope = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
-        let priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        if (Immutable.List.isList(priceLst)) {
-            priceLst = priceLst.toJS();
-        } else {
-            priceLst = [];
-        }
 
         let subjectType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'subjectType']);
         if (subjectType == 1) {
@@ -127,10 +108,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             subjectType,
             stageCondition: _rule.stageCondition || 0,
             stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
-            upGradeDishes,
             isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
             freeAmount: _rule.freeAmount || '',
-            dishes: priceLst || [],
             mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
             giveFoodMax: _rule.giveFoodMax || '',
             singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
@@ -138,7 +117,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+        if (nextProps.isShopFoodSelectorMode) {
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
             nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized']) &&
             !this.state.hadFoodMenuList) {
             this.setState({
@@ -158,23 +138,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 $promotionDetail.getIn(['priceLst']).toJS() : [];
             let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType == "5");
             _upGradeDishes = _upGradeDishes.length > 0 ? _upGradeDishes : $promotionDetail.getIn(['upGradeDishes']).toJS();
-            const scope = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType != "5") || [];
-            let subjectType = $promotionDetail.getIn(['subjectType']);
-
-            if (subjectType == 1) {
-                subjectType = scope.length > 0 ? 3 : 1
-            }
-            if (subjectType == 0) {
-                subjectType = scope.length > 0 ? 2 : 0
-            }
-            let _rule = $promotionDetail.getIn(['rule']);
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            _rule = Object.assign({}, _rule);
-            // const stage = _rule.stage ? _rule.stage[0] : {}
             const _dish = [];
             _priceLst.map((price) => {
                 foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
                     if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
                         _dish.push(food)
                     }
@@ -199,18 +165,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 item.foodUnitID = item.itemID;
             }));
             this.setState({
-                countType: _rule.countType || 0,
-                subjectType,
-                stageCondition: _rule.stageCondition || 0,
-                stageAmount: _rule.stageAmount > 0 ? _rule.stageAmount : 0,
                 upGradeDishes,
-                isAddMoney: _rule.freeAmount > 0 ? 1 : 0,
-                freeAmount: _rule.freeAmount || '',
                 dishes: _dish,
-                mostNewLimit: _rule.giveFoodMax > 0 ? 1 : 0,
-                giveFoodMax: _rule.giveFoodMax || '',
-                singleNewLimit: _rule.giveFoodCount > 0 ? 1 : 0,
-                giveFoodCount: _rule.giveFoodCount || '',
                 hadSetWhenEdit: true,
             });
         }
@@ -219,6 +175,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
             })
         }
+    }
     }
 
     handleSubmit = () => {
@@ -251,19 +208,14 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             //     },
             // ],
         }
-
-        const dish = dishes.map((food) => {
-            return foodMenuList.find((menu) => {
-                return food.itemID == menu.itemID
-            })
-        });
-        const priceLst = dish.map((price) => {
+        const priceLst = dishes.map((price) => {
             return {
                 foodUnitID: price.itemID,
                 foodUnitCode: price.foodKey,
                 foodName: price.foodName,
                 foodUnitName: price.unit,
                 price: price.price,
+                brandID: price.brandID || '0',
             }
         });
         let opts = {
@@ -286,7 +238,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             : null
         let text = '';
         upGradeDishes.length === 0 ? text += '升级前菜品不可为空;' : null;
-        dish.length === 0 ? text += '升级后菜品不可为空;' : null;
+        dishes.length === 0 ? text += '升级后菜品不可为空;' : null;
         mostNewLimit == 1 && giveFoodMax < 1 ? text += '单笔订单最多升级换新数量限制不可为空;' : null;
         singleNewLimit == 1 && giveFoodCount < 1 ? text += '单笔订单同一菜品最多升级换新数量限制不可为空;' : null;
         mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += '同一菜品数量不能大于单笔订单最多数量;' : null;
@@ -365,12 +317,23 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='1090'
-                    value={this.state.upGradeDishes}
-                    onChange={(value) => {
-                        this.onupGradeDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes type='1090'
+                            value={this.state.upGradeDishes}
+                            onChange={(value) => {
+                                this.onupGradeDishesChange(value);
+                            }}
+                        />
+                    ) : ( // 这里没有考虑到，其实不是priceLst而是scopeType为5的scopeLst, 最后是在组件内兼容的
+                        <ConnectedPriceListSelector
+                            value={this.state.upGradeDishes}
+                            onChange={(value) => {
+                                this.onupGradeDishesChange(value);
+                            }}
+                        />
+                    )
+                }
             </FormItem>
         )
     }
@@ -417,12 +380,23 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <EditBoxForDishes type='1090'
-                    value={this.state.dishes}
-                    onChange={(value) => {
-                        this.onAfterDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes type='1090'
+                            value={this.state.dishes}
+                            onChange={(value) => {
+                                this.onAfterDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            value={this.state.dishes}
+                            onChange={(value) => {
+                                this.onAfterDishesChange(value);
+                            }}
+                        />
+                    )
+                }
             </FormItem>
         )
     }
@@ -586,7 +560,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                         }
                     </FormItem>
                     {countType == 0 ? null :
-                        countType == 2 || subjectType == 2 || subjectType == 3 ? <PromotionDetailSetting /> : null /* 条件限制菜品 */}
+                        countType == 2 || subjectType == 2 || subjectType == 3 ?
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
+                        : null /* 条件限制菜品 */}
                     {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}
                     {this.renderDishsSelectionBox()/*升级后菜品*/}
@@ -601,11 +578,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
@@ -613,13 +587,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

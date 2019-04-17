@@ -31,7 +31,6 @@ import {
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import {NEW_GIFT} from "../../../constants/entryCodes";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
