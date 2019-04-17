@@ -1,71 +1,31 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-import React from 'react'
-import { Form, Radio, Icon, Col, message, Checkbox, Row, Button } from 'antd';
-import { connect } from 'react-redux'
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
-import styles from '../ActivityPage.less';
-import checkStyle from './checkStyle.less';
-
+import { Button, Checkbox, Col, Form, Icon, message, Row } from 'antd';
+import React from 'react';
+import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import PromotionDetailSettings from '../../../containers/SaleCenterNEW/common/promotionDetailSettings';
+import CloseableTip from "../../../components/common/CloseableTip/index";
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-
-import {
-    saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import CloseableTip from "../../../components/common/CloseableTip/index";
+import PromotionDetailSettings from '../../../containers/SaleCenterNEW/common/promotionDetailSettings';
+import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import styles from '../ActivityPage.less';
+import checkStyle from './checkStyle.less';
+import CategoryAndFoodSelector from '../common/CategoryAndFoodSelector'
 
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 const ButtonGroup = Button.Group;
 const Immutable = require('immutable');
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
 
 class CompositeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.defaultRun = '0';
+        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         this.state = {
             display: false,
             // data 用来存放 条件中的菜品信息
-            data: [
-                {
-                    count: null, // 需购买份数
-                    flag: 0, // 按菜品还是按分类
-                    scopeLst: [], // 选择的菜品信息
-                    validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
-                },
-                {
-                    count: null, // 需购买份数
-                    flag: 0, // 按菜品还是按分类
-                    scopeLst: [], // 选择的菜品信息
-                    validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
-                },
-            ],
+            scopeLst: _scopeLst,
+            data: this.sortScopeLst(_scopeLst),
             // conditions 用来存放减免信息
             conditions: [
                 {
@@ -104,8 +64,6 @@ class CompositeDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-
-        const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
@@ -116,41 +74,30 @@ class CompositeDetailInfo extends React.Component {
         display = !this.props.isNew;
         this.setState({
             display,
-            scopeLst: _scopeLst,
             rule: _rule,
         }, () => {
-            this.sortScopeLst(this.state.scopeLst);
             this.sortRuleJson(this.state.rule);
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']) != this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])) {
-            const _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-            this.setState({
-                scopeLst: _scopeLst,
-            }, () => {
-                this.sortScopeLst(this.state.scopeLst);
-            });
-        }
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) != this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            _rule = Object.assign({}, _rule);
-            this.setState({
-                rule: _rule,
-            }, () => {
-                this.sortRuleJson(this.state.rule);
-            });
-        }
-    }
-
     sortScopeLst(scopeLst) {
         if (scopeLst === undefined || scopeLst.length === 0) {
-            return
+            return [
+                {
+                    count: null, // 需购买份数
+                    flag: 0, // 按菜品还是按分类
+                    scopeLst: [], // 选择的菜品信息
+                    validateStatus: 'success', // 验证信息
+                    msg: '请输入菜品数量', // 错误信息
+                },
+                {
+                    count: null, // 需购买份数
+                    flag: 0, // 按菜品还是按分类
+                    scopeLst: [], // 选择的菜品信息
+                    validateStatus: 'success', // 验证信息
+                    msg: '请输入菜品数量', // 错误信息
+                },
+            ];
         }
         const data = [];
         scopeLst.map((scope) => {
@@ -165,9 +112,13 @@ class CompositeDetailInfo extends React.Component {
             }
             data[scope.stageNo].count = scope.num;
             data[scope.stageNo].flag = scope.scopeType === '2' ? 1 : 0;
-            data[scope.stageNo].scopeLst.push(scope);
+            // 旧数据没有brandID 默认给0 表示全集团可用
+            data[scope.stageNo].scopeLst.push({
+                ...scope,
+                brandID: scope.brandID ? `${scope.brandID}` : '0',
+            });
         })
-        this.setState({ data })
+        return data;
     }
 
     sortRuleJson(rule) {
@@ -478,6 +429,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '1',
                     targetID: item.foodCategoryID,
+                    brandID: item.brandID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName,
                 });
@@ -489,6 +441,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '4',
                     targetID: item.itemID,
+                    brandID: item.brandID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -501,6 +454,7 @@ class CompositeDetailInfo extends React.Component {
                 data[idx].scopeLst.push({
                     scopeType: '2',
                     targetID: item.itemID,
+                    brandID: item.brandID,
                     targetCode: item.foodKey,
                     targetName: item.foodName,
                     targetUnitName: item.unit,
@@ -511,6 +465,7 @@ class CompositeDetailInfo extends React.Component {
     }
 
     renderPromotionSetting() {
+        const { isShopFoodSelectorMode } = this.props;
         return (
             this.state.data.map((item, idx) => {
                 const count = item.count;
@@ -549,17 +504,35 @@ class CompositeDetailInfo extends React.Component {
                         >
                             {
                                 this.props.form.getFieldDecorator(`food${idx}`, {
-                                    rules: [{
+                                    rules: isShopFoodSelectorMode ? [{
                                         required: true,
                                         message: '菜品不得为空',
-                                    }],
+                                    }] : [],
                                 })(
-                                    <PromotionDetailSettings
-                                        stageNo={idx}
-                                        onChange={(val) => {
-                                            this.handlePromotionSetting(idx, val)
-                                        }}
-                                    />
+                                    isShopFoodSelectorMode ? (
+                                        <PromotionDetailSettings
+                                            stageNo={idx}
+                                            onChange={(val) => {
+                                                this.handlePromotionSetting(idx, val)
+                                            }}
+                                        />
+                                    )
+                                    : (
+                                        <CategoryAndFoodSelector
+                                            /**
+                                             * val: {
+                                             *  categoryOrDish: 0 | 1,
+                                             *  foodCategory: [],
+                                             *  dishes: [],
+                                             *  excludeDishes: [],
+                                             * }
+                                             */
+                                            scopeLst={item.scopeLst}
+                                            onChange={(val) => {
+                                                this.handlePromotionSetting(idx, val)
+                                            }}
+                                        />
+                                    )
                                 )
                             }
                         </FormItem>
@@ -635,7 +608,7 @@ class CompositeDetailInfo extends React.Component {
                         </Col>
                         <Col span={9}>
                             <FormItem className={styles.radioInLine}>
-                                <ButtonGroup size="small" onChange={(val) => { console.log(val) }}>
+                                <ButtonGroup size="small" >
                                     <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>减免</Button>
                                     <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>减至</Button>
                                     <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>折扣</Button>
@@ -809,11 +782,9 @@ class CompositeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        user: state.user,
     }
 }
 
@@ -821,13 +792,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

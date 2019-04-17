@@ -35,21 +35,6 @@ class ShopSelectModal extends Component {
         }
     }
 
-    /*loadShops(params = {}, isForce = false) {
-        if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
-        this.setState({ loading: true });
-        return loadShopSchema(params).then(({ shops, ...filterOptions }) => {
-            this.setState({
-                loading: false,
-                options: shops,
-                filters: FILTERS.map(filter => ({
-                    ...filter,
-                    options: filterOptions[filter.name],
-                })),
-            });
-        });
-    }*/
-
     async loadOrgs(params = {}) {
         const shops = this.props.options || this.state.options || [];
         const orgIDs = uniq(shops.reduce((ret, shop) => {

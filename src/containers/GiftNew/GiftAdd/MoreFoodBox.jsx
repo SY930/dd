@@ -18,20 +18,13 @@ import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuI
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import {isHuaTian} from "../../../constants/projectHuatianConf";
 
-const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 
 const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
 
-// TODO: delete the line, rebase test
-
 const PROMOTION_OPTIONS = Object.freeze([
-    /*{
-        value: 2,
-        name: '全部',
-    },*/
     {
         value: 1,
         name: '按分类选择',
@@ -82,8 +75,6 @@ class MoreFoodBox extends React.Component {
 
         this.renderPromotionRange = this.renderPromotionRange.bind(this);
         this.renderCategorySelectionBox = this.renderCategorySelectionBox.bind(this);
-        // this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
-        // this.renderExcludedFoodMenu = this.renderExcludedFoodMenu.bind(this);
         this.handlefoodSelectTypeChange = this.handlefoodSelectTypeChange.bind(this);
         this.handleFoodCategoryTreeNodeChange = this.handleFoodCategoryTreeNodeChange.bind(this);
         this.handleFoodCategoryGroupSelect = this.handleFoodCategoryGroupSelect.bind(this);
@@ -195,7 +186,6 @@ class MoreFoodBox extends React.Component {
         }
     }
 
-    // // TODO:第二次进入不执行ReceiveProps,state里没有数据
     componentWillReceiveProps(nextProps) {
         if ((nextProps.promotionDetailInfo.get('foodCategoryCollection') !== this.props.promotionDetailInfo.get('foodCategoryCollection'))
             && !this.props.promotionDetailInfo.get('foodCategoryCollection').toJS().length) {

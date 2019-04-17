@@ -12,17 +12,11 @@ import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
 import { connect } from 'react-redux'
 
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -35,10 +29,9 @@ import EditBoxForDishes from '../common/EditBoxForDishes';
 
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const RULE_TYPE = [
     {
@@ -57,8 +50,6 @@ class BuyGiveDetailInfo extends React.Component {
         this.defaultRun = '0';
         this.state = {
             display: false,
-            foodMenuList: [],
-            foodCategoryCollection: [],
             // TODO:存到state中了，页面中需要用到defaultValue的地方现在都是state代替的，要换成redux中的数据
             stageAmount: '',
             giveFoodCount: '',
@@ -84,14 +75,6 @@ class BuyGiveDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-
-            this.setState({
-                foodMenuList,
-            })
-        }
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
             return null;
@@ -109,45 +92,14 @@ class BuyGiveDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-            })
-        }
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
         nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
-
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-            const _dish = [];
-            _priceLst.map((price) => {
-                foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                        _dish.push(food)
-                    }
-                });
-            });
-            _dish.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-            }));
-            this.setState({
-                foodMenuList,
-                dishes: _dish,
-            });
-        }
     }
 
     handleSubmit = () => {
-        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodMenuList } = this.state;
+        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -170,19 +122,13 @@ class BuyGiveDetailInfo extends React.Component {
                     },
                 ],
             }
-
-            const dish = dishes.map((dish) => {
-                return foodMenuList.find((menu) => {
-                    // return dish.id === menu.foodID不唯一
-                    return dish.itemID == menu.itemID
-                })
-            });
-            const priceLst = dish.map((price) => {
+            const priceLst = dishes.map((price) => {
                 return {
                     foodUnitID: price.itemID,
                     foodUnitCode: price.foodKey,
                     foodName: price.foodName,
                     foodUnitName: price.unit,
+                    brandID: price.brandID || '0',
                     price: price.price,
                 }
             });
@@ -282,7 +228,6 @@ class BuyGiveDetailInfo extends React.Component {
     }
 
     renderDishsSelectionBox() {
-        const { getFieldDecorator } = this.props.form;
         return (
             <FormItem
                 label="赠送菜品"
@@ -293,22 +238,21 @@ class BuyGiveDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectStatus}
                 help={this.state.dishsSelectStatus == 'success' ? null : '赠送菜品不可为空'}
             >
-                <EditBoxForDishes onChange={(value) => {
-                    this.onDishesChange(value);
-                }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes onChange={this.onDishesChange} />
+                    ) : (
+                        <ConnectedPriceListSelector onChange={this.onDishesChange} />
+                    )
+                }
+                
             </FormItem>
         )
     }
-    onDishesChange(value) {
-        // console.log(value)
-        let { dishes } = this.state;
-        dishes = value;
+    onDishesChange = (value) => {
         this.setState({
-            dishes,
+            dishes: [...value],
             dishsSelectStatus: value.length > 0 ? 'success' : 'error',
-        }, () => {
-            // console.log(this.state.dishsSelectStatus)
         });
     }
     renderAdvancedSettingButton() {
@@ -329,7 +273,10 @@ class BuyGiveDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
                     {this.renderGiveDishNumInput()}
@@ -343,11 +290,9 @@ class BuyGiveDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
@@ -355,13 +300,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

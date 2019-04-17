@@ -59,7 +59,6 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
-import PromotionDetail from './PromotionDetail';
 import ActivityMain from '../activityMain';
 import PromotionNameSelect from '../common/PromotionNameSelect';
 
@@ -71,7 +70,6 @@ import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reduce
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
-import { steps as sale_steps } from '../../../redux/modules/steps';
 import {throttle, isEqual} from 'lodash'
 import {
     BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
@@ -167,7 +165,6 @@ const mapDispatchToProps = (dispatch) => {
     sale_saleCenter_NEW,
     sale_giftInfoNew,
     sale_mySpecialActivities_NEW,
-    sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MyActivitiesShop extends React.Component {
@@ -212,7 +209,6 @@ class MyActivitiesShop extends React.Component {
 
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
-        this.renderModals = this.renderModals.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
@@ -702,39 +698,6 @@ class MyActivitiesShop extends React.Component {
         );
     }
 
-    renderModals() {
-        const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
-        const checkDetailInfo = this.checkDetailInfo;
-        let renderContentOfTheModal;
-            if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
-                renderContentOfTheModal = (
-                    <div className={styles.spinFather}>
-                        <Spin size="large" />
-                    </div>)
-            }
-            if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
-                renderContentOfTheModal = (
-                    <div className={styles.spinFather}>
-                        查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
-                    </div>
-                );
-            }
-            if (promotionDetailInfo.status === 'success') {
-                renderContentOfTheModal = (<PromotionDetail record={promotionDetailInfo.data.promotionInfo} />);
-            }
-
-        return (
-            <Modal
-                title="活动详情"
-                visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>关闭</Button>}
-                closable={false}
-            >
-                {renderContentOfTheModal}
-            </Modal>
-        );
-    }
-
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
@@ -893,9 +856,6 @@ class MyActivitiesShop extends React.Component {
         if (Immutable.List.isList($brands)) {
             brands = $brands.toJS();
         }
-        // let categories = this.props.promotionBasicInfo.getIn(['$categoryList', 'data']).toJS(),
-        //     tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']).toJS(),
-        //     brands = this.props.promotionScopeInfo.getIn(["refs", "data", "brands"]).toJS();
 
         if (this.state.expand) {
             return (
@@ -1274,7 +1234,6 @@ class MyActivitiesShop extends React.Component {
                         {this.renderTables()}
                     </div>
                 </div>
-                {/*{this.renderModals()}*/}
                 {this.renderModifyRecordInfoModal(0)}
             </div>
         );

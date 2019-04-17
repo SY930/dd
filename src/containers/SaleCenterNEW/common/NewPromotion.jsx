@@ -14,7 +14,6 @@ import { jumpPage } from '@hualala/platform-base'
 import PromotionBasicInfo from './promotionBasicInfo';
 import PromotionScopeInfo from './promotionScopeInfo';
 import CustomProgressBar from './CustomProgressBar';
-import { saleCenterAddNewActivityAC, saleCenterUpdateNewActivityAC } from '../../../redux/actions/saleCenterNEW/promotion.action';
 import {
     promotionBasicDataAdapter,
     promotionScopeInfoAdapter,
@@ -47,10 +46,6 @@ class NewPromotion extends React.Component {
 
         const isActive = detailInfo.isActive;
         let userType = detailInfo.userSetting;
-        // userType = basicInfo.promotionType == 'RETURN_POINT' ? 'CUSTOMER_ONLY' : userType;
-        // userType = basicInfo.promotionType == 'RETURN_GIFT' && detailInfo.rule.gainCodeMode == '0' ? 'CUSTOMER_ONLY' : userType;
-        // userType = (basicInfo.promotionType == 'BILL_CUMULATION_FREE' || basicInfo.promotionType == 'FOOD_CUMULATION_GIVE')
-        //     && userType == 'ALL_USER' ? 'CUSTOMER_ONLY' : userType;// 累计减免赠送
         const subjectType = detailInfo.subjectType == '0' ? '0' : '1';
         const sharedPromotionIDLst = detailInfo.mutexPromotions || [];
         const excludedSubjectLst = typeof detailInfo.mutexSubjects === 'object' ? detailInfo.mutexSubjects.join(',') : detailInfo.mutexSubjects;
@@ -63,9 +58,8 @@ class NewPromotion extends React.Component {
             }
         }) : []
         const opts = {
-            groupID: this.props.user.toJS().accountInfo.groupID,
-            // shopID: this.props.user.toJS().shopID ? this.props.user.toJS().shopID : '0',
-            maintenanceLevel: this.props.user.toJS().shopID ? '1' : '0',
+            groupID: this.props.user.getIn(['accountInfo', 'groupID']),
+            maintenanceLevel: this.props.user.get('shopID') ? '1' : '0',
             ...basicInfo,
             ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
@@ -77,34 +71,6 @@ class NewPromotion extends React.Component {
             shareLst,
             usageMode: scopeInfo.usageMode,
         };
-        // 存储普通菜品分类和单品（非套餐），scopeLst过滤掉线上菜品，priceLst过滤套餐
-        const categoryNames = [];
-        const singleFoods = [];
-        promotionDetailInfo.toJS().foodCategoryCollection.forEach((cat) => {
-            cat.foodCategoryName.forEach((catName) => {
-                categoryNames.push(catName.foodCategoryID);
-                catName.foods.forEach((food) => {
-                    // 加价换购放开套餐限制
-                    if (basicInfo.promotionType === '1070' && food.isTempFood != '1' && food.isTempSetFood != '1') {
-                        singleFoods.push(String(food.itemID))
-                    } else if (food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1') {
-                        singleFoods.push(String(food.itemID))
-                    }
-                })
-            })
-        });
-        // console.log(categoryNames, singleFoods);
-        const scopeLst = opts.scopeLst.filter((cat) => {
-            if (cat.scopeType == '1') {
-                return categoryNames.includes(cat.targetID)
-            }
-            return cat
-        })
-        const priceLst = basicInfo.promotionType === '5010' || basicInfo.promotionType === '1010' ?
-            opts.priceLst :
-            (opts.priceLst || []).filter((price) => {
-                return singleFoods.includes(String(price.foodUnitID))
-            })
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
@@ -147,8 +113,8 @@ class NewPromotion extends React.Component {
                 needSyncToAliPay: detailInfo.needSyncToAliPay,
             },
             timeLst: opts.timeLst,
-            priceLst,
-            scopeLst,
+            priceLst: opts.priceLst,
+            scopeLst: opts.scopeLst,
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }
@@ -171,13 +137,15 @@ class NewPromotion extends React.Component {
                         loading: false,
                     });
                 },
-                complete: () => {
-                    // TODO:
+                sameCode: () => {
+                    message.error('活动编码重复');
+                    this.setState({
+                        loading: false,
+                    });
                 },
             });
         } else {
             this.props.addNewPromotion({
-                // data: {...opts,createBy:this.props.user.toJS().accountInfo.userName},
                 data: { promotionInfo },
                 success: () => {
                     cb();

@@ -11,17 +11,12 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, TreeSelect } from 'antd';
 import { connect } from 'react-redux'
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import ReturnGift from './returnGift'; // 可增删的输入框 组件
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -94,14 +89,9 @@ class ReturnGiftDetailInfo extends React.Component {
             },
             needSyncToAliPay: 0,
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.renderRuleDetail = this.renderRuleDetail.bind(this);
         this.handleFinish = this.handleFinish.bind(this);
         this.handlePre = this.handlePre.bind(this);
         this.getRule = this.getRule.bind(this);
-        this.renderPrintCode = this.renderPrintCode.bind(this);
     }
 
 
@@ -109,8 +99,7 @@ class ReturnGiftDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleFinish,
         });
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         this.setState({
             display,
             needSyncToAliPay: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'needSyncToAliPay']),
@@ -500,7 +489,6 @@ class ReturnGiftDetailInfo extends React.Component {
                 maxCount={this.state.rule.type == '2' ? 3 : 1}
                 value={this.state.rule.data}
                 onChange={(val) => {
-                    console.log('val: ', val)
                     const { rule } = this.state;
                     if (val !== undefined) {
                         rule.data = val;
@@ -532,7 +520,10 @@ class ReturnGiftDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} stashSome={this.state.rule.gainCodeMode == '0'} /> : null}
                 </Form>
@@ -543,11 +534,8 @@ class ReturnGiftDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

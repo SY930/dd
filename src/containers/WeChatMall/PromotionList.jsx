@@ -5,47 +5,22 @@ import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
     Input,
-    TreeSelect,
-    Spin,
 } from 'antd';
-import { jumpPage } from '@hualala/platform-base'
 import Authority from '../../components/common/Authority'
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
 import ActivityMain from './WeChatMaLLActivityMain';
-import {Iconlist} from "../../components/basic/IconsFont/IconsFont";
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from '../../constants/entryCodes';
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {
-    fetchPromotionCategoriesAC,
     fetchPromotionTagsAC,
-    saleCenterResetBasicInfoAC,
 } from '../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
 import {
-    fetchPromotionScopeInfo,
-    saleCenterResetScopeInfoAC,
-} from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import {
-    saleCenterResetDetailInfoAC,
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import {
-    fetchPromotionDetail,
-    resetPromotionDetail,
-    fetchPromotionDetailCancel,
-} from '../../redux/actions/saleCenterNEW/promotion.action';
-import {
-    ACTIVITY_CATEGORIES,
-    SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST,
-    getPromotionIdx,
-    promotionBasicDataAdapter,
-    promotionScopeInfoAdapter,
-    promotionDetailInfoAdapter,
-    TRIPLE_STATE,
-} from '../../redux/actions/saleCenterNEW/types';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import {throttle, isEqual, debounce} from 'lodash'
 import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';

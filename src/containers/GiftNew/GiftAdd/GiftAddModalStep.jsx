@@ -1,8 +1,7 @@
 ﻿import React, {createRef} from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { jumpPage } from '@hualala/platform-base'
-import { fetchData, axiosData } from '../../../helpers/util';
+import { axiosData } from '../../../helpers/util';
 import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';

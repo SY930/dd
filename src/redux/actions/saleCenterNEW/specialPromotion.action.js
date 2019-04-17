@@ -318,11 +318,8 @@ export const addSpecialPromotion = opts => {
     }
 }
 
-
-// export const updateSpecialPromotion = opts => ({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START, payload: opts });
 const updateSpecialPromotionSuccess = payload => ({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_OK, payload });
 const updateSpecialPromotionFail = payload => ({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_FAIL, payload });
-export const updateSpecialPromotionCancel = () => ({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_CANCEL });
 export const updateSpecialPromotionTimeout = () => ({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_TIMEOUT });
 
 export const updateSpecialPromotion = opts => {

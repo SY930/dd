@@ -1,48 +1,26 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   xf
- * @Last modified time: 2017-03-02T14:31:40+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, Input, message } from 'antd';
 import { connect } from 'react-redux'
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 
 const FormItem = Form.Item;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
-import ProjectEditBox from '../../../components/basic/ProjectEditBox/ProjectEditBox';
 import { NDiscount } from './NDiscount'; // 可增删的输入框 组件
 
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import FoodBox from "../../GiftNew/GiftAdd/FoodBox";
+import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
+
 
 const Immutable = require('immutable');
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
-
 
 class NDiscountDetailInfo extends React.Component {
     constructor(props) {
@@ -71,22 +49,6 @@ class NDiscountDetailInfo extends React.Component {
         const display = !this.props.isNew;
         const priceLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
         this.setState({priceLst, display});
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) {
-            if (Immutable.List.isList(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']))) {
-                const priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
-                this.setState({
-                    priceLst
-                });
-            }
-        }
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-            this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            this.initRule(nextProps);
-        }
     }
 
     initRule(props = this.props) {
@@ -198,6 +160,7 @@ class NDiscountDetailInfo extends React.Component {
             foodUnitCode: food.foodKey,
             foodName: food.foodName,
             foodUnitName: food.unit,
+            brandID: food.brandID || '0',
             price: food.prePrice==-1?food.price:food.prePrice}));
         this.setState({priceLst})
     }
@@ -212,20 +175,35 @@ class NDiscountDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <PromotionDetailSetting radioLabel="适用菜品选择方式" />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     <NDiscount
                         onChange={this.handleDiscountTypeChange}
                         form={this.props.form}
                         stageType={this.state.stageType}
                         value={this.state.nDiscount}
                     />
-                    {this.state.stageType === '1' && <FoodBox categoryOrDish={0}
-                                                              dishOnly={true}
-                                                              boxLabel="第二份菜品"
-                                                              noExclude={true}
-                                                              onChange={this.handleDishesChange}
-                                                              catOrFoodValue={_priceLst}
-                                                              disabledFetch={true} />}
+                    {
+                        this.state.stageType === '1' && (
+                            this.props.isShopFoodSelectorMode ? (
+                                <FoodBox
+                                    categoryOrDish={0}
+                                    dishOnly={true}
+                                    boxLabel="第二份菜品"
+                                    noExclude={true}
+                                    onChange={this.handleDishesChange}
+                                    catOrFoodValue={_priceLst}
+                                    disabledFetch={true}
+                                />
+                            ) : (
+                                <FormItem required={true} label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                    <ConnectedPriceListSelector onChange={(dishes) => this.handleDishesChange({dishes})} />
+                                </FormItem>
+                            )
+                        )
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
@@ -236,9 +214,9 @@ class NDiscountDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

@@ -9,15 +9,16 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
+import {
+    Form,
+    Select,
+    Radio,
+} from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 
 const RadioGroup = Radio.Group;
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -33,18 +34,12 @@ const Immutable = require('immutable');
 
 import EditBoxForDishes from '../common/EditBoxForDishes';
 
+
 import {
     saleCenterSetPromotionDetailAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
+import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
@@ -97,8 +92,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
-        let { display } = this.state;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         let ruleType = _scopeLst.size > 0 ? 1 : 0;
         if (Number(_rule.stageStyle) === 1) {
             ruleType += 2;
@@ -115,36 +109,37 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-        nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-            })
-        }
-
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-            const _dish = [];
-            _priceLst.map((price) => {
-                foodMenuList.map((food) => {
-                    // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                        _dish.push(food)
-                    }
+        if (this.props.isShopFoodSelectorMode) { // 摆脱原有菜品组件逻辑
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+                nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
+                this.setState({
+                    foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
+                    foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
+                })
+            }
+            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
+                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
+                const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
+                const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
+                    nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
+                const _dish = [];
+                _priceLst.map((price) => {
+                    foodMenuList.map((food) => {
+                        // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
+                        if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
+                            _dish.push(food)
+                        }
+                    });
                 });
-            });
-            _dish.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-            }));
-            this.setState({
-                foodMenuList,
-                dishes: _dish,
-            });
+                _dish.map(((item) => {
+                    item.id = item.foodID;
+                    item.content = item.foodName;
+                }));
+                this.setState({
+                    foodMenuList,
+                    dishes: _dish,
+                });
+            }
         }
     }
 
@@ -176,19 +171,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     },
                 ],
             }
-
-            const dish = dishes.map((dish) => {
-                return foodMenuList.find((menu) => {
-                    // return dish.id === menu.foodID
-                    return dish.itemID == menu.itemID
-                })
-            });
-            const priceLst = dish.map((price) => {
+            const priceLst = dishes.map((price) => {
                 return {
                     foodUnitID: price.itemID,
                     foodUnitCode: price.foodKey,
                     foodName: price.foodName,
                     foodUnitName: price.unit,
+                    brandID: price.brandID || '0',
                     price: price.price,
                 }
             });
@@ -206,7 +195,6 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     rule, priceLst,
                 });
             }
-
             return true
         }
         const errElement = document.querySelector('.ant-form-explain');
@@ -302,12 +290,22 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectionFlag ? 'success' : 'error'}
                 help={this.state.dishsSelectionFlag ? null : '请选择换购菜品'}
             >
-                <EditBoxForDishes
-                    type='1070'
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <EditBoxForDishes
+                            type='1070'
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <ConnectedPriceListSelector
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    )
+                }        
             </FormItem>
         )
     }
@@ -413,7 +411,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
-                            <PromotionDetailSetting />
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
                     }
                     {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
@@ -427,11 +426,10 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 
@@ -439,13 +437,6 @@ function mapDispatchToProps(dispatch) {
     return {
         setPromotionDetail: (opts) => {
             dispatch(saleCenterSetPromotionDetailAC(opts))
-        },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
-        },
-
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
         },
     }
 }

@@ -47,9 +47,6 @@ import ReturnPointDetailInfo from './returnPoint/returnPointDetailInfo';
 import NewGroupTicketActivity from './groupTicket/NewGroupTicketActivity'; // 团购券
 import GroupTicketDetailInfo from './groupTicket/groupTicketDetailInfo';
 
-import NewVoucherActivity from './voucher/NewVoucherActivity'; // 代金券？
-import VoucherDetailInfo from './voucher/voucherDetailInfo';
-
 import NewRandomCutActivity from './randomCut/NewRandomCutActivity'; // 随机立减
 import RandomCutDetailInfo from './randomCut/randomCutDetailInfo';
 

@@ -1,52 +1,20 @@
-
-/**
- * @Author: chenshuang
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-08T13:17:43+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
-import { connect } from 'react-redux'
-import ReactDOM from 'react-dom';
-
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
-import styles from '../ActivityPage.less';
+import { Col, Form, Icon, Row, Select } from 'antd';
+import React from 'react';
+import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
-
-const FormItem = Form.Item;
-
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
-
-import {
-    saleCenterSetPromotionDetailAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-
+import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import styles from '../ActivityPage.less';
 const Immutable = require('immutable');
-
-const client = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
-];
-
 const type = [
     { value: '2', name: '消费满一定金额即赠送相应积分' },
     { value: '1', name: '消费每满一定金额即赠送相应积分' },
 ];
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 class ReturnPointDetailInfo extends React.Component {
     constructor(props) {
@@ -67,11 +35,6 @@ class ReturnPointDetailInfo extends React.Component {
 
             ruleType: '2',
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderRulesComponent = this.renderRulesComponent.bind(this);
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
         this.addRule = this.addRule.bind(this);
         this.deleteRule = this.deleteRule.bind(this);
@@ -93,44 +56,6 @@ class ReturnPointDetailInfo extends React.Component {
         if (Object.keys(_rule).length > 0) {
             let { display } = this.state;
             display = !this.props.isNew;
-            let _ruleInfo;
-            if (_rule.returnPointStage !== undefined) {
-                _ruleInfo = _rule.returnPointStage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.pointStageAmount,
-                        end: stageInfo.givePointRate,
-                        validationStatus: 'success',
-                        helpMsg: null,
-                    }
-                })
-            } else {
-                _ruleInfo = [{
-                    start: _rule.pointStageAmount,
-                    end: _rule.givePointRate,
-                    validationStatus: 'success',
-                    helpMsg: null,
-                }]
-            }
-            this.setState({
-                display,
-                ruleType: _rule.returnPointStageType,
-                ruleInfo: _ruleInfo,
-            });
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) !==
-        nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) {
-            let _rule = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-            if (_rule === null || _rule === undefined) {
-                return null;
-            }
-            _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-            // default value
-            _rule = Object.assign({}, _rule);
-            let { display } = this.state;
-            display = !nextProps.isNew;
             let _ruleInfo;
             if (_rule.returnPointStage !== undefined) {
                 _ruleInfo = _rule.returnPointStage.map((stageInfo) => {
@@ -407,7 +332,10 @@ class ReturnPointDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    <PromotionDetailSetting />
+                    {
+                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                        <ConnectedScopeListSelector/>
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} /> : null}
                 </Form>
@@ -418,10 +346,8 @@ class ReturnPointDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 

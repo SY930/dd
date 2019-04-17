@@ -41,7 +41,10 @@ import registerPage from '../../../index';
 import { SPECIAL_PAGE, NEW_SPECIAL } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
-import { promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer';
+import {
+    promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW,
+    shopSchema_New as sale_shopSchema_New,
+ } from '../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer';
 import { fullCut_NEW as sale_fullCut_NEW } from '../../../redux/reducer/saleCenterNEW/fullCut.reducer';
 import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
@@ -49,7 +52,6 @@ import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
-import { steps as sale_steps } from '../../../redux/modules/steps';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
@@ -59,7 +61,6 @@ import {
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
-import {isFormalRelease} from "../../../utils/index";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 
 const confirm = Modal.confirm;
@@ -126,10 +127,10 @@ const mapDispatchToProps = (dispatch) => {
     sale_myActivities_NEW,
     sale_saleCenter_NEW,
     sale_giftInfoNew,
+    sale_shopSchema_New,
     sale_mySpecialActivities_NEW,
     sale_specialPromotion_NEW,
     sale_crmCardTypeNew,
-    sale_steps,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MySpecialActivities extends React.Component {

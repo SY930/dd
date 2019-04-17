@@ -8,18 +8,17 @@
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
 
-import React, { Component } from 'react'
-import { Row, Col, Form, message, Radio, Input, InputNumber } from 'antd';
+import React from 'react'
+import {
+    Row,
+    Col,
+    Form,
+    message,
+} from 'antd';
 import { connect } from 'react-redux'
 import { saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
-
 import AddGifts from '../common/AddGifts';
-
-const Immutable = require('immutable');
 const moment = require('moment');
 
 
@@ -253,7 +252,6 @@ class SpecialDetailInfo extends React.Component {
                 }
             } else {
                 // 固定期限
-                console.log('giftInfo.giftEffectiveTime: ', giftInfo.giftEffectiveTime)
                 gifts = {
                     effectType: '2',
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
@@ -428,11 +426,8 @@ class SpecialDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
 
     }

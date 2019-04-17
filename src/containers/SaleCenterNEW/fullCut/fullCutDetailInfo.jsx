@@ -1,26 +1,12 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-08T13:17:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, Icon } from 'antd';
 import { connect } from 'react-redux'
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less')
-}
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
 import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-import RangeInput from '../../../containers/SaleCenterNEW/common/RangeInput';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
 const FormItem = Form.Item;
@@ -29,24 +15,9 @@ const Option = Select.Option;
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 
 const Immutable = require('immutable');
-
-const client = [
-    {
-        key: '0',
-        value: '0',
-        name: '不限制',
-    }, {
-        key: '1',
-        value: '1',
-        name: '仅会员',
-    }, {
-        key: '2',
-        value: '2',
-        name: '非会员',
-    },
-];
 
 const type = [
     {
@@ -155,46 +126,6 @@ class FullCutDetailInfo extends React.Component {
         return true
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (JSON.stringify(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule'])) !==
-            JSON.stringify(nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'rule']))) {
-            const _promotionDetail = nextProps.promotionDetailInfo.get('$promotionDetail').toJS();
-            const _rule = Object.assign({}, _promotionDetail.rule);
-
-
-            let ruleInfo,
-                maxCount,
-                ruleType = _rule.stageType;
-            if (_rule.stage !== undefined && _rule.stage instanceof Array) {
-                ruleInfo = _rule.stage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.stageAmount,
-                        end: stageInfo.freeAmount,
-                        validationStatus: 'success',
-                        helpMsg: null,
-                    }
-                });
-                maxCount = 3;
-            } else {
-                // 初始值
-                ruleInfo = [{
-                    start: _rule.stageAmount,
-                    end: _rule.freeAmount,
-                    validationStatus: 'success',
-                    helpMsg: null,
-                }];
-                maxCount = 1;
-            }
-
-            // TODO: set state
-            this.setState({
-                ruleType,
-                ruleInfo,
-                maxCount,
-            });
-        }
-    }
-
     // next is 0, finish is 1
     handleSubmit() {
         const { ruleInfo, ruleType } = this.state;
@@ -242,8 +173,6 @@ class FullCutDetailInfo extends React.Component {
         // TODO: add a message tips here
         this.setState({ ruleInfo });
     }
-
-    componentWillUnmount() {}
 
     onChangeClick = () => {
         this.setState({
@@ -489,7 +418,12 @@ class FullCutDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType != '1' && this.state.ruleType != '2' && <PromotionDetailSetting />}
+                    {this.state.ruleType != '1' && this.state.ruleType != '2' ? 
+                        (
+                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
+                            <ConnectedScopeListSelector/>
+                        ) : null
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display
                         ? <AdvancedPromotionDetailSetting payLimit={true} />
@@ -502,11 +436,9 @@ class FullCutDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        stepInfo: state.sale_steps.toJS(),
-        fullCut: state.sale_fullCut_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        PromotionBasicInfo: state.sale_promotionBasicInfo_NEW,
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 }
 

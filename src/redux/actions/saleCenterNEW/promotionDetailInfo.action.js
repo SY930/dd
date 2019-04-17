@@ -18,11 +18,15 @@ import { message } from 'antd';
 export const SALE_CENTER_SET_PROMOTION_DETAIL = 'sale center:: set promotion detail new';
 export const SALE_CENTER_FETCH_FOOD_CATEGORY = 'sale center:: fetch food category new';
 export const SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS = 'sale center :: fetch food category success new';
+export const SALE_CENTER_FETCH_RAW_FOOD_CATEGORY_SUCCESS = 'sale center :: SALE_CENTER_FETCH_RAW_FOOD_CATEGORY_SUCCESS';
 export const SALE_CENTER_FETCH_FOOD_CATEGORY_FAILED = 'sale center :: fetch food category failed new';
 
 export const SALE_CENTER_FETCH_FOOD_MENU = 'sale center:: fetch food menu new';
 export const SALE_CENTER_FETCH_FOOD_MENU_SUCCESS = 'sale center:: fetch food menu success new';
+export const SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS = 'sale center:: SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS';
 export const SALE_CENTER_FETCH_FOOD_MENU_FAILED = 'sale center:: fetch food menu failed new';
+
+export const SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE = 'sale center:: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE';
 
 export const SALE_CENTER_FETCH_PROMOTION_LIST = 'sale center:: fetch promotion list new';
 export const SALE_CENTER_FETCH_PROMOTION_LIST_SUCCESS = 'sale center:: fetch promotion list success new';
@@ -71,8 +75,12 @@ const fetchGiftListFailed = (opts) => {
         payload: opts,
     };
 };
-
-const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
+/**
+ * 带分类合并处理的菜品分类action
+ * @param {opts}: {records: Category[]} 原始菜品分类信息
+ * 2018年7月左右，营销在此方法中按照分类名称对多品牌分类进行合并
+ */
+const getFoodCategorySuccessToProcess = (opts) => {
     const categoryIdMap = new Map();
     opts.records.filter(cat => cat.foodCount > 0).forEach(cat => {
         if (!categoryIdMap.has(cat.foodCategoryName) || cat.foodCategoryID > categoryIdMap.get(cat.foodCategoryName)) {
@@ -93,6 +101,16 @@ const fetchFoodCategorySuccess = (opts) => { //opts : {records: Category[]}
         payload: {records: Array.from(uniqMap.values())},
     }
 };
+/**
+ * 原始菜品分类信息请求成功action
+ * @param {opts}: {records: Category[]} 原始菜品分类信息
+ */
+const getRawFoodCatgorySuccess = ({ records }) => {
+    return {
+        type: SALE_CENTER_FETCH_RAW_FOOD_CATEGORY_SUCCESS,
+        payload: {records},
+    }
+}
 
 const fetchFoodCategoryFailed = (opts) => {
     return {
@@ -105,16 +123,23 @@ const fetchFoodCategoryFailed = (opts) => {
 export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: opts.shopID && opts.shopID > 0
+            })
             if (opts.shopID && opts.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
-                    dispatch(fetchFoodCategorySuccess({records: res}))
+                    dispatch(getFoodCategorySuccessToProcess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodCategoryFailed(e));
                 });
             } else {
                 return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'})
                     .then(
-                        (records = []) => dispatch(fetchFoodCategorySuccess({records: records})),
+                        (records = []) => {
+                            dispatch(getFoodCategorySuccessToProcess({records: records}))
+                            dispatch(getRawFoodCatgorySuccess({records: records}))
+                        },
                         error => dispatch(fetchFoodCategoryFailed(error))
                     )
                     .catch(e => {
@@ -124,6 +149,10 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
         }
     }
     return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: opts.shopID && opts.shopID > 0
+        })
         dispatch(fetchFoodCategoryStart());
 
         // let config = getSpecifiedUrlConfig('getFoodCategory_NEW', {...opts,bookID:0});
@@ -149,7 +178,8 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
         }).then((responseJSON) => {
             // if(responseJSON.resultcode === '000'){
             if (responseJSON.code === '000') {
-                dispatch(fetchFoodCategorySuccess(responseJSON.data))
+                dispatch(getFoodCategorySuccessToProcess(responseJSON.data));
+                dispatch(getRawFoodCatgorySuccess(responseJSON.data))
             } else {
                 dispatch(fetchFoodCategoryFailed(responseJSON.resultmsg));
             }
@@ -159,10 +189,15 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
     }
 };
 
-// 菜品去重
+/**
+ * 带分类合并处理的菜品单品action
+ * @param {opts}: { pageHeader: Object, records: Food[] } 原始菜品分类信息
+ * 2018年7月左右，营销在此方法中按照菜品名+规格对多品牌菜品进行合并
+ */
 const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records: Food[] }
     // TODO: 这种去重操作不应该由前端进行, 而且返回的每个对象中属性过多, 如果日后出现性能问题, 建议基本档优化接口
     let records = opts ? opts.records : [];
+    !Array.isArray(records) && (records = []);
     const categoryIdMap = new Map();
     records.forEach(food => {
         if (!categoryIdMap.has(food.foodCategoryName) || food.foodCategoryID > categoryIdMap.get(food.foodCategoryName)) {
@@ -188,6 +223,16 @@ const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records:
         payload: {records: Array.from(uniqMap.values())},
     }
 };
+/**
+ * 原始菜品单品信息请求成功action
+ * @param {opts}: { pageHeader: Object, records: Food[] } 原始菜品单品信息
+ */
+const getRawFoodMenuSuccess = ({ records }) => {
+    return {
+        type: SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS,
+        payload: {records},
+    }
+}
 
 const fetchFoodMenuFailed = () => {
     return {
@@ -198,6 +243,10 @@ const fetchFoodMenuFailed = () => {
 export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: params.shopID && params.shopID > 0
+            })
             if (params.shopID && params.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
                     dispatch(fetchFoodMenuSuccess({records: res}))
@@ -207,7 +256,10 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             } else {
                 return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'})
                     .then(
-                        (records = []) => dispatch(fetchFoodMenuSuccess({records})),
+                        (records = []) => {
+                            dispatch(fetchFoodMenuSuccess({records}));
+                            dispatch(getRawFoodMenuSuccess({records}));
+                        },
                         error => dispatch(fetchFoodMenuFailed(error))
                     )
                     .catch(e => {
@@ -217,6 +269,10 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         }
     }
     return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: params.shopID && params.shopID > 0
+        })
         if (params.shopID && params.shopID > 0) {
             return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
                 dispatch(fetchFoodMenuSuccess(res))
@@ -226,7 +282,10 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         } else {
             return axiosData('/shopapi/queryGroupFoodSubinfo.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
-                        records => dispatch(fetchFoodMenuSuccess(records)),
+                        records => {
+                            dispatch(fetchFoodMenuSuccess(records));
+                            dispatch(getRawFoodMenuSuccess(records));
+                        },
                         error => dispatch(fetchFoodMenuFailed(error))
                     )
                     .catch(e => {

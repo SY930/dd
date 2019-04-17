@@ -30,15 +30,7 @@ const RadioGroup = Radio.Group;
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/common/ShopSelector';
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
-import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
-
-
 import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import EditBoxForShops from './EditBoxForShops';
 
 const Immutable = require('immutable');
 
@@ -556,16 +548,6 @@ class PromotionScopeInfo extends React.Component {
                 </RadioGroup>
             </Form.Item>
         )
-    }
-
-    // only the promotionScopeInfo change cause the render operation of the component
-    shouldComponentUpdate(nextProps, nextState) {
-        // if(this.props.promotionScopeInfo !== nextProps.promotionScopeInfo) {
-        //     return true;
-        // }
-        //
-        // return false;
-        return true;
     }
 
     render() {
