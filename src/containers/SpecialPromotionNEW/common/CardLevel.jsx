@@ -28,12 +28,13 @@ import ExcludeCardTable from './ExcludeCardTable';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-const Immutable = require('immutable');
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
+const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
+    '20',
+    '21',
+    '22',
+    '30',
+    '65',
+];
 
 class CardLevel extends React.Component {
     constructor(props) {
@@ -284,7 +285,7 @@ class CardLevel extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 {
-                    this.props.type != '61' ?
+                    this.props.type != '61' && this.props.type != '65' ?
                         <FormItem label={this.props.label || '会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
                                 <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel || '全部会员'}</Radio>
@@ -340,7 +341,7 @@ class CardLevel extends React.Component {
                         </div>
                 }
                 {
-                    this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
+                    DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS.includes(`${this.props.type}`) ?
                         this.renderDefaultCardType() : null
                 }
             </Form>

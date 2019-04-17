@@ -71,7 +71,6 @@ const defaultData = {
         msg: null,
     },
 };
-const moment = require('moment');
 
 
 class AddGifts extends React.Component {

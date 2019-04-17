@@ -402,6 +402,7 @@ class SpecialDetailInfo extends React.Component {
         }
     }
     render() {
+        console.log('this.state.data', this.state.data);
         return (
             <div >
                 <Row>
