@@ -9,16 +9,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 
-import { Row, Col, Icon, DatePicker, Button, Radio, Form, Input, InputNumber } from 'antd';
+import {
+    Row,
+    Col,
+    Radio,
+    Form,
+} from 'antd';
 import styles from '../ActivityPage.less';
-const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import EditBoxForDishes from './EditBoxForDishes';
-import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
+import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
+const FormItem = Form.Item;
 
 class AddGrade extends React.Component {
     constructor(props) {
@@ -33,7 +37,7 @@ class AddGrade extends React.Component {
             selectedDishes: [],
             foodCategoryCollection: [], // 存储所有相关数据
 
-            data: {
+            data: this.props.value || {
                 0: {
                     stageAmount: '',
                     giftType: '0',
@@ -53,18 +57,13 @@ class AddGrade extends React.Component {
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onFoodCountChange = this.onFoodCountChange.bind(this);
     }
-    componentDidMount() {
-        this.setState({
-            data: this.props.value,
-        });
-    }
+
     componentWillReceiveProps(nextProps) {
         if (this.props.foodCountFlag != nextProps.foodCountFlag) {
             this.setState({
                 foodCountFlag: nextProps.foodCountFlag,
             })
         }
-
         if (this.props.ruleType != nextProps.ruleType) { // 活动方式改变
             if (nextProps.ruleType !== '2' && nextProps.ruleType !== '3') {
                 this.uuid = 0;
@@ -85,7 +84,6 @@ class AddGrade extends React.Component {
                 foodCategoryCollection: nextProps.foodCategoryCollection,
             });
         }
-
         if (this.props.value != nextProps.value) {
             this.setState({
                 data: nextProps.value,

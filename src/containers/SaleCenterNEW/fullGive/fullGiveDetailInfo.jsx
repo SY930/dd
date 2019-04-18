@@ -41,46 +41,63 @@ class FullGiveDetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.defaultRun = '0';
+        const { data, ruleType } = this.initState();
         this.state = {
             foodCategoryCollection: [],
-            display: false,
-            ruleType: '0',
+            display: !this.props.isNew,
+            ruleType,
             priceLst: [],
             foodMenuList: [],
-            data: {
-                0: {
-                    stageAmount: '',
-                    giftType: '0',
-                    dishes: [],
-                    // giftName:null,
-                    giftName: 'qqq',
-                    foodCount: '',
-                    foodCountFlag: true,
-                    dishesFlag: true,
-                    StageAmountFlag: true,
-                },
-            },
+            data,
+            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
+                this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
+            foodMenuList: this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records ?
+                this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records : [],
         };
-
-        this.renderPromotionRule = this.renderPromotionRule.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
     }
 
     componentDidMount() {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+        if (this.props.isShopFoodSelectorMode) {
+            this.sortData(this.state.priceLst, this.state.foodMenuList)
+        }
+    }
+    initState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
-            return null;
+            return  {
+                ruleType: '0',
+                data: {
+                    0: {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: 'qqq',
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    },
+                },
+            };
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        // default value
         _rule = Object.assign({}, _rule);
-
-        let { data, ruleType, display } = this.state;
-        display = !this.props.isNew;
-        ruleType = _rule.stageType || '0';
+        let ruleType = _rule.stageType || '0';
+        let data = {
+            0: {
+                stageAmount: '',
+                giftType: '0',
+                dishes: [],
+                giftName: 'qqq',
+                foodCount: '',
+                foodCountFlag: true,
+                dishesFlag: true,
+                StageAmountFlag: true,
+            },
+        };
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
         if (_rule.stageType == 0) {
             // 下单即赠送
@@ -119,16 +136,10 @@ class FullGiveDetailInfo extends React.Component {
                 data[index].stageAmount = stage.stageAmount || '';
             })
         }
-        this.setState({
+        return {
             data,
             ruleType,
-            display,
-            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
-            foodMenuList: this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records ?
-                this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records : [],
-        }, () => {
-            this.sortData(this.state.priceLst, this.state.foodMenuList)
-        });
+        }
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.isShopFoodSelectorMode) {
@@ -150,14 +161,11 @@ class FullGiveDetailInfo extends React.Component {
         const _dish = [];
         _priceLst.map((price, i) => {
             const dish = foodMenu.find((food) => {
-                // 返回菜单里的某个成员，非新对象哒
                 return food.itemID == price.foodUnitID;
             });
             const cDish = _.cloneDeep(dish);
             if (cDish) {
                 cDish.stageNo = price.stageNo;
-                // dish.stageNo = price.stageNo;
-                // 当用户选择的三个档位都选了一个菜（成员），浅拷贝会覆盖上次的值
                 _dish.push(cDish);
             }
         });
@@ -170,7 +178,6 @@ class FullGiveDetailInfo extends React.Component {
         _dish.forEach((dish) => {
             _dishes[dish.stageNo].push(dish);
         });
-
         Object.keys(_dishes).map((key) => {
             if (_dishes[key].length > 0) {
                 if (!data[key]) {
@@ -381,9 +388,7 @@ class FullGiveDetailInfo extends React.Component {
                             ruleType={this.state.ruleType}
                             value={this.state.data}
                             onChange={(value) => {
-                                let { data } = this.state;
-                                data = value;
-                                this.setState({ data });
+                                this.setState({ data: value });
                             }
                             }
                         />

@@ -216,7 +216,10 @@ class SpecialDishesTableWithBrand extends Component {
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
         const dishObjects = v.reduce((acc, curr) => {
             const dishObj = dishes.find(item => item.value === curr);
-            dishObj && acc.push(dishObj);
+            if (dishObj) {
+                const reservedDish = this.state.data.find(item => item.value === dishObj.value);
+                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice} : dishObj)
+            }
             return acc;
         }, [])
         this.setState({
