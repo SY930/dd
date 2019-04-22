@@ -681,6 +681,20 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '65',
         },
+        {
+            idx: 16,
+            title: '膨胀大礼包',
+            text: '参与活动领礼品，邀请好友助力礼品更丰厚',
+            example: '',
+            key: '66',
+        },
+        {
+            idx: 17,
+            title: '桌边砍',
+            text: '针对买单环节发起邀请同行好友砍价, 沉淀高价值的到店用户',
+            example: '',
+            key: '67',
+        },
     ];
     return basic;
 }());

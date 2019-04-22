@@ -48,11 +48,28 @@ const options = WEEK_OPTIONS;
 const days = MONTH_OPTIONS;
 
 const fullOptionSmsGate = [ // 选项有5种
-    '53', '61', '62', '63', '70'
+    '53',
+    '61',
+    '62',
+    '63',
+    '70',
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
-    '21', '20', '30', '60', '23', '64', '65'
+    '21',
+    '20',
+    '30',
+    '60',
+    '23',
+    '64',
+    '65',
+    '66',
+    '67',
+];
+
+const ATSEnabledTypes = [ // advanced time settings enabled promotion types
+    '30',
+    '67',
 ];
 
 class StepOneWithDateRange extends React.Component {
@@ -322,7 +339,7 @@ class StepOneWithDateRange extends React.Component {
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
-            if (this.props.type == '30') {
+            if (ATSEnabledTypes.includes(`${this.props.type}`)) {
                 const {
                     validCycleType,
                     selectMonthValue,
@@ -990,7 +1007,7 @@ class StepOneWithDateRange extends React.Component {
                             </div> : null
                     }
                     {
-                        this.props.type == '30' && this.renderAdvancedDateSettings()
+                        ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
                     }
 
                     <FormItem

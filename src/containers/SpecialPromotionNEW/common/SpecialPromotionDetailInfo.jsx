@@ -9,77 +9,103 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, message, Radio, Input, InputNumber } from 'antd';
+import {
+    Row,
+    Col,
+    Form,
+    message,
+    Radio,
+    Upload,
+    Icon,
+    Input,
+} from 'antd';
 import { connect } from 'react-redux'
-import { saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-
+import styles from '../../SaleCenterNEW/ActivityPage.less';
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterSetSpecialGiftInfoAC,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    fetchGiftListInfoAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import AddGifts from '../common/AddGifts';
-
+import ENV from "../../../helpers/env";
+import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 const moment = require('moment');
+const FormItem = Form.Item;
 
+const getDefaultGiftData = (sendType = 0) => ({
+    // 礼品数量
+    giftCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 礼品数量
+    giftTotalCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 礼品ID和name
+    giftInfo: {
+        giftName: null,
+        giftItemID: null,
+        validateStatus: 'success',
+        msg: null,
+    },
+    effectType: '1',
+    // 礼品生效时间
+    giftEffectiveTime: {
+        value: '0',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 礼品有效期
+    giftValidDays: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    giftOdds: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    sendType,
+})
 
-class SpecialDetailInfo extends React.Component {
+const shareInfoEnabledTypes = [
+    '65',
+    '66',
+]
+
+class SpecialDetailInfo extends Component {
     constructor(props) {
         super(props);
         this.handlePrev = this.handlePrev.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
+        const { data } = this.initState();
         this.state = {
-            data: [
-                {
-                    // 礼品数量
-                    giftCount: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品数量
-                    giftTotalCount: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品ID和name
-                    giftInfo: {
-                        giftName: null,
-                        giftItemID: null,
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    effectType: '1',
-                    // 礼品生效时间
-                    giftEffectiveTime: {
-                        value: '0',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品有效期
-                    giftValidDays: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-
-                    giftOdds: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                },
-            ],
+            data,
+            shareImagePath: this.props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
+            shareTitle: this.props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
         }
     }
-
     componentDidMount() {
         this.props.getSubmitFn({
             prev: this.handlePrev,
-            // prev: undefined,
             next: undefined,
             finish: this.handleSubmit,
             cancel: undefined,
         });
+        this.props.fetchGiftListInfo();
+    }
+
+    initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
-        const { data } = this.state;
+        const data = this.props.type == '65' ? [getDefaultGiftData(), getDefaultGiftData(1)] : [getDefaultGiftData()];
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
                 data[index].effectType = `${gift.effectType}`,
@@ -94,45 +120,7 @@ class SpecialDetailInfo extends React.Component {
                 }
                 data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             } else {
-                data[index] = {
-                    // 礼品数量
-                    giftCount: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品数量
-                    giftTotalCount: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品ID和name
-                    giftInfo: {
-                        giftName: null,
-                        giftItemID: null,
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品生效时间
-                    giftEffectiveTime: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                    // 礼品有效期
-                    giftValidDays: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-
-                    giftOdds: {
-                        value: '',
-                        validateStatus: 'success',
-                        msg: null,
-                    },
-                };
+                data[index] = getDefaultGiftData(gift.sendType);
                 data[index].effectType = `${gift.effectType}`,
                 data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                 data[index].giftInfo.giftName = gift.giftName;
@@ -146,96 +134,14 @@ class SpecialDetailInfo extends React.Component {
                 data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             }
         })
-        this.setState({
+        return {
             data,
-        })
+        };
     }
-
-
-    componentWillReceiveProps(nextProps) {
-        // 是否更新礼品信息
-        if ((this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo')) &&
-            nextProps.specialPromotion.get('$giftInfo').size > 0
-        ) {
-            // let giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
-            const giftInfo = nextProps.specialPromotion.get('$giftInfo').toJS();
-            const { data } = this.state;
-            giftInfo.forEach((gift, index) => {
-                if (data[index] !== undefined) {
-                    data[index].effectType = `${gift.effectType}`,
-                    data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
-                    data[index].giftInfo.giftName = gift.giftName;
-                    data[index].giftInfo.giftItemID = gift.giftID;
-                    data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                    if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
-                        data[index].giftCount.value = gift.giftCount;
-                    } else {
-                        data[index].giftTotalCount.value = gift.giftTotalCount;
-                    }
-                    data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-                } else {
-                    data[index] = {
-                        // 礼品数量
-                        giftCount: {
-                            value: '',
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-                        // 礼品数量
-                        giftTotalCount: {
-                            value: '',
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-                        // 礼品ID和name
-                        giftInfo: {
-                            giftName: null,
-                            giftItemID: null,
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-                        // 礼品生效时间
-                        giftEffectiveTime: {
-                            value: '',
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-                        // 礼品有效期
-                        giftValidDays: {
-                            value: '',
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-
-                        giftOdds: {
-                            value: '',
-                            validateStatus: 'success',
-                            msg: null,
-                        },
-                    };
-                    data[index].effectType = `${gift.effectType}`,
-                    data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
-                    data[index].giftInfo.giftName = gift.giftName;
-                    data[index].giftInfo.giftItemID = gift.giftID;
-                    data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                    if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
-                        data[index].giftCount.value = gift.giftCount;
-                    } else {
-                        data[index].giftTotalCount.value = gift.giftTotalCount;
-                    }
-                    data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-                }
-            })
-            this.setState({
-                data,
-            })
-        }
-    }
-
 
     // 拼出礼品信息
     getGiftInfo(data) {
-        const giftObj = data.map((giftInfo, index) => {
+        const giftArr = data.map((giftInfo, index) => {
             let gifts;
             if (giftInfo.effectType != '2') {
                 // 相对期限
@@ -248,7 +154,6 @@ class SpecialDetailInfo extends React.Component {
                 }
             } else {
                 // 固定期限
-                console.log('giftInfo.giftEffectiveTime: ', giftInfo.giftEffectiveTime)
                 gifts = {
                     effectType: '2',
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
@@ -265,9 +170,10 @@ class SpecialDetailInfo extends React.Component {
             if (this.props.type == '20') {
                 gifts.giftOdds = giftInfo.giftOdds.value;
             }
+            gifts.sendType = giftInfo.sendType || 0;
             return gifts
         });
-        return giftObj;
+        return giftArr;
     }
 
     handlePrev() {
@@ -275,9 +181,17 @@ class SpecialDetailInfo extends React.Component {
     }
     handleSubmit(isPrev) {
         if (isPrev) return true;
-        let { data } = this.state;
+        let flag = true;
+        this.props.form.validateFieldsAndScroll((error, basicValues) => {
+            if (error) {
+                flag = false;
+            }
+        });
+        if (!flag) {
+            return false;
+        }
+        let { data, shareImagePath, shareTitle } = this.state;
         const { type } = this.props;
-
         // 校验礼品数量
         function checkgiftTotalCount(giftTotalCount) {
             const _value = parseFloat(giftTotalCount.value);
@@ -310,7 +224,6 @@ class SpecialDetailInfo extends React.Component {
             }
             return {
                 msg: '请输入正确有效期',
-                // validateStatus: data[index].effectType == '1' ? 'error' : 'success',
                 validateStatus: 'error',
                 value: '',
             }
@@ -388,35 +301,155 @@ class SpecialDetailInfo extends React.Component {
             }
             const giftInfo = this.getGiftInfo(data);
             this.props.setSpecialBasicInfo(giftInfo);
+            this.props.setSpecialBasicInfo({
+                shareImagePath,
+                shareTitle,
+            });
             this.props.setSpecialGiftInfo(giftInfo);
             return true;
         }
         return false;
     }
 
-    gradeChange(val) {
-        let { data } = this.state;
-        if (val !== undefined) {
-            data = val;
-            this.setState({ data });
-        }
+    gradeChange(gifts, sendType) {
+        if (!Array.isArray(gifts)) return;
+        const { data } = this.state;
+        this.setState({
+            data: [...data.filter(item => item.sendType !== sendType), ...gifts]
+        })
+    }
+    handleShareTitleChange = ({ target: { value }}) => {
+        this.setState({
+            shareTitle: value,
+        })
+    }
+    renderImgUrl = () => {
+        const props = {
+            name: 'myFile',
+            showUploadList: false,
+            action: '/api/common/imageUpload',
+            className: styles1.avatarUploader,
+            accept: 'image/*',
+            beforeUpload: file => {
+                const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
+                if (!isAllowed) {
+                    message.error('仅支持png和jpeg/jpg格式的图片');
+                }
+                const isLt1M = file.size / 1024 / 1024 < 1;
+                if (!isLt1M) {
+                    message.error('图片不要大于1MB');
+                }
+                return isAllowed && isLt1M;
+            },
+            onChange: (info) => {
+                const status = info.file.status;
+                if (status === 'done' && info.file.response && info.file.response.url) {
+                    message.success(`${info.file.name} 上传成功`);
+                    this.setState({
+                        shareImagePath: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
+                    })
+                } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
+                    message.error(`${info.file.name} 上传失败`);
+                }
+            },
+        };
+        return (
+            <Row>
+                <Col>
+                    <FormItem>
+                        <Upload
+                            {...props}
+                        >
+                            {
+                                this.state.shareImagePath ?
+                                    <img src={this.props.shareImagePath} alt="" className={styles1.avatar} /> :
+                                    <Icon
+                                        type="plus"
+                                        className={styles1.avatarUploaderTrigger}
+                                    />
+                            }
+                        </Upload>
+                        <p className="ant-upload-hint">
+                            点击上传图片，图片格式为jpg、png, 小于1MB
+                            <br/>
+                            建议尺寸: 520*416像素
+                        </p>
+                    </FormItem>
+                </Col>
+            </Row>
+        )
+    }
+    renderShareInfo() {
+        return (
+            <div>
+                <FormItem
+                    label="小程序分享标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareTitle', {
+                        rules: [
+                            { max: 50, message: '最多50个字符' },
+                        ],
+                        initialValue: this.state.shareTitle,
+                        onChange: this.handleShareTitleChange,
+                    })(
+                        <Input placeholder="不填写则显示默认标题" />
+                    )}
+                </FormItem>
+                <FormItem
+                        label="小程序分享图片"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                        style={{ position: 'relative' }}
+                    >
+                        {this.renderImgUrl()}
+                    </FormItem>
+            </div>
+            
+        )
     }
     render() {
-        console.log('this.state.data', this.state.data);
         return (
             <div >
+                {
+                    shareInfoEnabledTypes.includes(`${this.props.type}`) && this.renderShareInfo()
+                }
+                {
+                    this.props.type == '65' && <p style={{padding: '10px 18px'}}>邀请人礼品获得礼品列表：</p>
+                }
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
                             maxCount={this.props.type == '21' || this.props.type == '30' ? 1 : 10}
                             type={this.props.type}
                             isNew={this.props.isNew}
-                            value={this.state.data}
-                            onChange={this.gradeChange}
+                            value={this.state.data.filter(gift => gift.sendType === 0)}
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
                 </Row>
-
+                {
+                   this.props.type == '65' && <p style={{padding: '10px 18px'}}>被邀请人礼品获得礼品列表：</p>
+                }
+                {
+                    this.props.type == '65' && (
+                        <Row>
+                            <Col span={17} offset={4}>
+                                <AddGifts
+                                    maxCount={10}
+                                    sendType={1}
+                                    type={this.props.type}
+                                    isNew={this.props.isNew}
+                                    value={this.state.data.filter(gift => gift.sendType === 1)}
+                                    onChange={(gifts) => this.gradeChange(gifts, 1)}
+                                />
+                            </Col>
+                        </Row>
+                    )
+                }
             </div>
         )
     }
@@ -430,7 +463,6 @@ function mapStateToProps(state) {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
-
     }
 }
 
@@ -441,6 +473,9 @@ function mapDispatchToProps(dispatch) {
         },
         setSpecialGiftInfo: (opts) => {
             dispatch(saleCenterSetSpecialGiftInfoAC(opts));
+        },
+        fetchGiftListInfo: (opts) => {
+            dispatch(fetchGiftListInfoAC(opts));
         },
     }
 }

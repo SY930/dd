@@ -109,6 +109,25 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 5,
         bottom: 7,
     },
+    {
+        title: '膨胀大礼包',
+        isSpecial: true,
+        tags: ['小程序'],
+        text: '参与活动领礼品，邀请好友助力礼品更丰厚',
+        example: '',
+        key: '66',
+        right: 5,
+        bottom: 7,
+    },
+    {
+        title: '桌边砍',
+        isSpecial: true,
+        text: '针对买单环节发起邀请同行好友砍价，沉淀高价值的到店用户',
+        example: '',
+        key: '67',
+        right: 5,
+        bottom: 7,
+    },
 ];
 
 /**

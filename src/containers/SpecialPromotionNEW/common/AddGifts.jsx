@@ -1,15 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import { DatePicker, Radio, Form, Select, Input, Icon } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import ExpandTree from './ExpandTree';
-import {
-    fetchGiftListInfoAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import _ from 'lodash';
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
@@ -100,36 +96,7 @@ class AddGifts extends React.Component {
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
     }
 
-    componentDidMount() {
-        // 第一次加载需将默认值传给父组件
-        this.setState({
-            infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
-        }, () => {
-            if (this.props.value === null) {
-                this.props.onChange && this.props.onChange(this.state.infos);
-            }
-        });
-
-        this.props.fetchGiftListInfo({
-            groupID: this.props.user.accountInfo.groupID,
-
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-        /*if (this.props.maxCount !== nextProps.maxCount) {
-            this.setState({
-                infos: [JSON.parse(JSON.stringify(defaultData))],
-                maxCount: nextProps.maxCount,
-            });
-        }
-
-        if (this.props.value != nextProps.value) {
-            this.setState({
-                infos: nextProps.value,
-            });
-        }*/
-
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
             // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
@@ -178,7 +145,7 @@ class AddGifts extends React.Component {
 
     add() {
         const _infos = this.state.infos;
-        _infos.push(JSON.parse(JSON.stringify(defaultData)));
+        _infos.push({...JSON.parse(JSON.stringify(defaultData)), sendType: this.props.sendType});
         this.setState({
             infos: _infos,
         }, () => {
@@ -188,7 +155,7 @@ class AddGifts extends React.Component {
 
     render() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
-        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，礼物不可编辑，加蒙层
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
         return (
             <div className={styles.giftWrap}>
                 {this.renderItems()}
@@ -474,7 +441,7 @@ class AddGifts extends React.Component {
         }
         const disabledDate = (current) => {
             // Can not select days before today
-            return current && current.format('YYYYMMDD') < this.props.specialPromotion.toJS().$eventInfo.eventStartDate;
+            return current && current.format('YYYYMMDD') < this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
         }
         return (
             <FormItem
@@ -637,15 +604,10 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setSpecialBasicInfo: (opts) => {
-            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
-        },
-        fetchGiftListInfo: (opts) => {
-            dispatch(fetchGiftListInfoAC(opts));
-        },
-    };
+AddGifts.defaultProps = {
+    sendType: 0,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddGifts));
+AddGifts.propTypes = {
+    sendType: PropTypes.number,
+};
+export default connect(mapStateToProps)(Form.create()(AddGifts));

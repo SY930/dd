@@ -29,6 +29,7 @@ import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
 import ShareGifts from './shareGifts';
+import ExpansionGifts from './expansionGifts';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -97,6 +98,7 @@ class ActivityMain extends React.Component {
             NewColorsEggCat, // 评价送礼，复用彩蛋猫
             GiveGiftsToNewFollowers, // 关注送礼 key 31
             ShareGifts,
+            ExpansionGifts,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
