@@ -71,6 +71,15 @@ const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '30',
     '67',
 ];
+const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类型
+    '61',
+    '62',
+    '63',
+    '65',
+    '66',
+    '23',
+    '70',
+]
 
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
@@ -753,8 +762,8 @@ class StepOneWithDateRange extends React.Component {
         }
         const promotionTypeConfig = categorys.find(v => v.key == this.props.type);
         const tip = (
-            <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
+            <div style={{ display: this.state.tipDisplay, minHeight: 135, width: 470 }} className={styles.tip}>
+                <p style={{ whiteSpace: 'pre-line', lineHeight: 1.5 }}>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -959,7 +968,7 @@ class StepOneWithDateRange extends React.Component {
                                                 <RangePicker
                                                     className={styles.ActivityDateDayleft}
                                                     style={{ width: '100%' }}
-                                                    disabledDate={this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23' || this.props.type == '70' ? disabledDate : null}
+                                                    disabledDate={dateLimitedTypes.includes(`${this.props.type}`) ? disabledDate : null}
                                                 />
                                             )}
                                         </Col>

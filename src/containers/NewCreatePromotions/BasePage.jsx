@@ -34,6 +34,10 @@ import {
 } from "../../constants/projectHuatianConf";
 import {isFormalRelease} from "../../utils/index";
 
+const UNRELEASED_PROMOTION_TYPES = [
+    '67',
+]
+
 class BasePage extends Component {
 
     constructor(props) {
@@ -65,9 +69,11 @@ class BasePage extends Component {
 
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
+        if (UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
+            return message.success('活动尚未开放，敬请期待');
+        }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
-            console.log('specialIndex', specialIndex)
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);

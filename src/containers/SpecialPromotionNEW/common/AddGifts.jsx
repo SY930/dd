@@ -28,6 +28,12 @@ const VALIDATE_TYPE = Object.freeze([{
 { key: 1, value: '2', name: '固定有效期' }]);
 
 const defaultData = {
+    // 膨胀所需人数
+    needCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     // 礼品数量
     giftCount: {
         value: '',
@@ -199,10 +205,31 @@ class AddGifts extends React.Component {
                 <Form className={styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
                         <span className={styles.CategoryTitle}>{this.props.type == '20' ? `礼品【${arr[index]}】` : `礼品${index + 1}`}</span>
-                        {this.renderBlockHeader(index)}
+                        {this.props.type != '66' && this.renderBlockHeader(index)}
                     </div>
 
                     <div className={styles.CategoryBody}>
+                        {/* 膨胀需要人数, 只有膨胀大礼包的2 3 档需要 */}
+                        {
+                            (this.props.type == '66' && index > 0)  && (
+                                <FormItem
+                                    className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
+                                    labelCol={{ span: 0 }}
+                                    wrapperCol={{ span: 24 }}
+                                    validateStatus={info.needCount.validateStatus}
+                                    help={info.needCount.msg}
+                                >
+                                    <PriceInput
+                                        addonBefore="膨胀需要人数"
+                                        maxNum={5}
+                                        value={{ number: info.needCount.value }}
+                                        onChange={val => this.handleGiftNeedCountChange(val, index)}
+                                        addonAfter="人"
+                                        modal="int"
+                                    />
+                                </FormItem>
+                            )
+                        }
                         {/* 礼品名称 */}
                         <FormItem
                             label="礼品名称"
@@ -332,6 +359,24 @@ class AddGifts extends React.Component {
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
             _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+    handleGiftNeedCountChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].needCount.value = val.number;
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 1000) {
+            _infos[index].needCount.validateStatus = 'success';
+            _infos[index].needCount.msg = null;
+        } else {
+            _infos[index].needCount.validateStatus = 'error';
+            _infos[index].needCount.msg = '膨胀需要人数必须大于0, 小于1000';
         }
         this.setState({
             infos: _infos,

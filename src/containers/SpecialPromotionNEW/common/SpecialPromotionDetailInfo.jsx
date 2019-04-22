@@ -35,6 +35,12 @@ const moment = require('moment');
 const FormItem = Form.Item;
 
 const getDefaultGiftData = (sendType = 0) => ({
+    // 膨胀所需人数
+    needCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     // 礼品数量
     giftCount: {
         value: '',
@@ -103,9 +109,19 @@ class SpecialDetailInfo extends Component {
         this.props.fetchGiftListInfo();
     }
 
+    initiateDefaultGifts = () => {
+        const type = `${this.props.type}`;
+        switch (type) {
+            case '65': return [getDefaultGiftData(), getDefaultGiftData(1)];
+            case '66': return [getDefaultGiftData(), getDefaultGiftData(), getDefaultGiftData()];
+            default: return [getDefaultGiftData()]
+        }
+
+    }
+
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
-        const data = this.props.type == '65' ? [getDefaultGiftData(), getDefaultGiftData(1)] : [getDefaultGiftData()];
+        const data = this.initiateDefaultGifts();
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
                 data[index].effectType = `${gift.effectType}`,
@@ -113,6 +129,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
+                data[index].needCount.value = gift.needCount;
                 if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
                 } else {
@@ -150,6 +167,7 @@ class SpecialDetailInfo extends Component {
                     giftEffectTimeHours: giftInfo.giftEffectiveTime.value,
                     giftValidUntilDayCount: giftInfo.giftValidDays.value,
                     giftID: giftInfo.giftInfo.giftItemID,
+                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             } else {
@@ -159,6 +177,7 @@ class SpecialDetailInfo extends Component {
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
                     validUntilDate: giftInfo.giftEffectiveTime.value[1] && giftInfo.giftEffectiveTime.value[1] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[1].format('YYYYMMDD')) : '',
                     giftID: giftInfo.giftInfo.giftItemID,
+                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             }
@@ -175,7 +194,18 @@ class SpecialDetailInfo extends Component {
         });
         return giftArr;
     }
-
+    checkNeedCount = (needCount, index) => {
+        const _value = parseFloat(needCount.value);
+        // 只有膨胀大礼包校验此字段
+        if (this.props.type != '66' || index === 0 || _value > 0 && _value < 1000) {
+            return needCount;
+        }
+        return {
+            msg: '膨胀需要人数必须大于0, 小于1000',
+            validateStatus: 'error',
+            value: '',
+        }
+    }
     handlePrev() {
         return this.handleSubmit(true)
     }
@@ -265,7 +295,7 @@ class SpecialDetailInfo extends Component {
                     giftCount: checkgiftCount(ruleInfo.giftCount),
                     giftInfo: checkGiftInfo(ruleInfo.giftInfo),
                     giftOdds: checkGiftOdds(ruleInfo.giftOdds),
-                    // giftValidDays: checkGiftValidDays(ruleInfo.giftValidDays, index)
+                    needCount: this.checkNeedCount(ruleInfo.needCount, index),
                     [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
                 });
             }
@@ -273,7 +303,7 @@ class SpecialDetailInfo extends Component {
                 giftTotalCount: checkgiftTotalCount(ruleInfo.giftTotalCount),
                 giftInfo: checkGiftInfo(ruleInfo.giftInfo),
                 giftOdds: checkGiftOdds(ruleInfo.giftOdds),
-                // giftValidDays: checkGiftValidDays(ruleInfo.giftValidDays, index)
+                needCount: this.checkNeedCount(ruleInfo.needCount, index),
                 [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
@@ -362,7 +392,7 @@ class SpecialDetailInfo extends Component {
                         >
                             {
                                 this.state.shareImagePath ?
-                                    <img src={this.props.shareImagePath} alt="" className={styles1.avatar} /> :
+                                    <img src={this.state.shareImagePath} alt="" className={styles1.avatar} /> :
                                     <Icon
                                         type="plus"
                                         className={styles1.avatarUploaderTrigger}
@@ -415,9 +445,6 @@ class SpecialDetailInfo extends Component {
         return (
             <div >
                 {
-                    shareInfoEnabledTypes.includes(`${this.props.type}`) && this.renderShareInfo()
-                }
-                {
                     this.props.type == '65' && <p style={{padding: '10px 18px'}}>邀请人礼品获得礼品列表：</p>
                 }
                 <Row>
@@ -449,6 +476,9 @@ class SpecialDetailInfo extends Component {
                             </Col>
                         </Row>
                     )
+                }
+                {
+                    shareInfoEnabledTypes.includes(`${this.props.type}`) && this.renderShareInfo()
                 }
             </div>
         )
