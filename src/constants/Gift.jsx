@@ -132,6 +132,11 @@ const GiftCfg = {
         { label: '晚餐', value: '4' },
         { label: '夜宵', value: '5' },
     ],
+    usingDateType: [
+        { label: '工作日可用', value: '2' },
+        { label: '法定节假日可用', value: '1' },
+        { label: '周末可用', value: '0' },
+    ],
     supportOrderType: [
         { label: '全部支持', value: '2' },
         { label: '堂食', value: '0' },
@@ -145,8 +150,9 @@ const GiftCfg = {
         { label: '自提', value: '21' },
     ],
     isOfflineCanUsing: [
-        { label: '支持', value: 'true' },
-        { label: '不支持', value: 'false' },
+        { label: '不限制', value: '1' },
+        { label: '仅线上使用', value: '0' },
+        { label: '仅线下使用', value: '2' },
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },

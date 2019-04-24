@@ -874,6 +874,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             'channel': _channel ? _channel.value : '0',
             'voucherVerify': ruleJson.voucherVerify,
             'voucherVerifyChannel': ruleJson.voucherVerifyChannel,
+            'invoice': ruleJson.invoice || '0',
             'points': ruleJson.points,
             'evidence': ruleJson.evidence,
             'usageMode': source.usageMode || 1,

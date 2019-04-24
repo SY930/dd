@@ -152,7 +152,7 @@ class PhonePreview extends PureComponent {
             moneyLimitType,
             moenyLimitValue,
             giftRemark = '',
-            isOfflineCanUsing = 'true',
+            isOfflineCanUsing = '1',
             supportOrderType = '2',
             contentHeight,
             scrollPercent,
@@ -215,7 +215,7 @@ class PhonePreview extends PureComponent {
                 {giftType !== '30' && (
                     <div className={styles.ruleSection}>
                         <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                        <p>{`本券适用于${this.supportOrderTypeString()}的订单，${isOfflineCanUsing === 'true' ? '支持' : '不支持'}到店使用`}</p>
+                        <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
                         <p>{this.shareTypeString()}</p>
                         {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
                         {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
@@ -463,7 +463,6 @@ function mapStateToProps(state) {
     return {
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
-        usingTimeType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'usingTimeType']), // 使用时段
         giftShareType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftShareType']), // 共享类型
         shareIDs: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shareIDs']), // 可共享券
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),

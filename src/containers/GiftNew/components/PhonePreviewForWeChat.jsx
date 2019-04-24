@@ -12,6 +12,7 @@ class PhonePreviewForWeChat extends PureComponent {
         switch (+currentType) {
             case 1: {
                 switch (lineNo) {
+                    case 0: return '内容 : 微信核销-代金券（2张），微信核销-会员权益券（3张）'
                     case 1: return '来源 : 系统发送'
                     case 2: return '过期时间 : 2019-10-20'
                     case 3: return '使用说明 : 请点击查看使用详情'
@@ -90,6 +91,9 @@ class PhonePreviewForWeChat extends PureComponent {
                             </div>
                             <div>
                                 {title || DEFAULT_WECHAT_TEMPLATE_CONFIG[currentType].title}
+                            </div>
+                            <div>
+                                {this.getPreviewLine(currentType, 0)}
                             </div>
                             <div>
                                 {this.getPreviewLine(currentType, 1)}

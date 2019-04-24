@@ -248,9 +248,7 @@ class ReturnGift extends React.Component {
                 _giftInfo.push({
                     giftType: giftTypes.giftType,
                     index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
-                    crmGifts: filterOffLine ? giftTypes.crmGifts.filter((gift) => {
-                        return offlineCanUseGiftTypes.includes(String(giftTypes.giftType)) ? true : gift.isOfflineCanUsing // 为true表示支持到店
-                    }) : giftTypes.crmGifts,
+                    crmGifts: giftTypes.crmGifts,
                 })
             }
         });

@@ -292,11 +292,11 @@ class PromotionBasicInfo extends React.Component {
                     {getFieldDecorator('description', {
                         rules: [
                             { required: true, message: '活动说明不能为空' },
-                            { max: 200, message: '最多200个字符' },
+                            { max: 1000, message: '最多1000个字符' },
                         ],
                         initialValue: this.state.description,
                     })(
-                        <Input type="textarea" placeholder="请输入活动说明, 最多200个字符" onChange={this.handleDescriptionChange} />
+                        <Input type="textarea" placeholder="请输入活动说明, 最多1000个字符" onChange={this.handleDescriptionChange} />
                         )}
                 </FormItem>
 

@@ -24,6 +24,7 @@ const $initialState = Immutable.fromJS({
         voucherVerifyChannel: '1',
         points: '1',
         evidence: '0',
+        invoice: '0',
         usageMode: 1,
     },
     // 从服务器端拉取的数据
