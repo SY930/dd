@@ -463,7 +463,6 @@ function mapStateToProps(state) {
     return {
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
-        usingTimeType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'usingTimeType']), // 使用时段
         giftShareType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftShareType']), // 共享类型
         shareIDs: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shareIDs']), // 可共享券
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),

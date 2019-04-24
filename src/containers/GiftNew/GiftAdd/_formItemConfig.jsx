@@ -23,18 +23,18 @@ const FORMITEMS = {
         defaultValue: 0,
         options: GiftCfg.goldGift,
     },
-    isHolidaysUsing: {
+    isHolidaysUsing: { // 废弃
         label: '节假日是否可用',
         type: 'radio',
         defaultValue: '0',
         options: GiftCfg.isHolidaysUsing,
     },
-    usingTimeType: {
-        label: '使用餐段',
+    usingDateType: {
+        label: '节假日是否可用',
         type: 'checkbox',
-        defaultValue: ['1', '2', '3', '4', '5'],
-        options: GiftCfg.usingTimeType,
-        rules: [{ type: 'array', required: true, message: '请选择使用时段' }],
+        defaultValue: ['2', '1', '0'],
+        options: GiftCfg.usingDateType,
+        rules: [{ type: 'array', required: true, message: '请设置节假日是否可用' }],
     },
     supportOrderType: {
         label: '业务支持',
@@ -345,7 +345,7 @@ const SECOND_KEYS = (() => ({
                 'TrdTemplate',
                 'goldGift',
                 'transferType',
-                'isHolidaysUsing',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -366,7 +366,7 @@ const SECOND_KEYS = (() => ({
             keys: [
                 'TrdTemplate',
                 'transferType',
-                'isHolidaysUsing',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -386,7 +386,7 @@ const SECOND_KEYS = (() => ({
             keys: [
                 'TrdTemplate',
                 'transferType',
-                'isHolidaysUsing',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -448,7 +448,7 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'isHolidaysUsing',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -467,7 +467,7 @@ const SECOND_KEYS = (() => ({
             keys: [
                 'TrdTemplate',
                 'transferType',
-                'isHolidaysUsing',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
