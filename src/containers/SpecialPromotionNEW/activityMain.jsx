@@ -30,6 +30,7 @@ import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; 
 import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
 import ShareGifts from './shareGifts';
 import ExpansionGifts from './expansionGifts';
+import InstantDiscount from './instantDiscount';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -99,6 +100,7 @@ class ActivityMain extends React.Component {
             GiveGiftsToNewFollowers, // 关注送礼 key 31
             ShareGifts,
             ExpansionGifts,
+            InstantDiscount,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {

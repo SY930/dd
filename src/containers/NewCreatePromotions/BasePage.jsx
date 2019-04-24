@@ -29,13 +29,14 @@ import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
 import {
-    BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
-    isGroupOfHuaTianGroupList, isHuaTian, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
+    BASIC_PROMOTION_CREATE_DISABLED_TIP,
+    isBrandOfHuaTianGroupList,
+    isHuaTian,
+    SPECIAL_PROMOTION_CREATE_DISABLED_TIP,
 } from "../../constants/projectHuatianConf";
-import {isFormalRelease} from "../../utils/index";
 
 const UNRELEASED_PROMOTION_TYPES = [
-    '67',
+    // '67',
 ]
 
 class BasePage extends Component {

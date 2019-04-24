@@ -63,7 +63,6 @@ const simpleOptionSmsGate = [ // 选项有2种
     '23',
     '64',
     '65',
-    '66',
     '67',
 ];
 
