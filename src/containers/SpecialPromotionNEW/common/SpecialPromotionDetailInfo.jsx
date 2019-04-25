@@ -18,6 +18,7 @@ import {
     Upload,
     Icon,
     Input,
+    Select,
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -31,6 +32,7 @@ import {
 import AddGifts from '../common/AddGifts';
 import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
+import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 const moment = require('moment');
 const FormItem = Form.Item;
 
@@ -95,8 +97,25 @@ class SpecialDetailInfo extends Component {
         const { data } = this.initState();
         this.state = {
             data,
-            shareImagePath: this.props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
-            shareTitle: this.props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
+            /** 小程序分享相关 */
+            shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
+            shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
+            /** 小程序分享相关结束 */
+            /** 桌边砍相关 */
+            moneyLimitType: props.specialPromotion.getIn(['$eventInfo', 'moneyLimitType']) || 0,
+            moneyLimitValue: props.specialPromotion.getIn(['$eventInfo', 'moneyLimitValue']),
+            eventValidTime: props.specialPromotion.getIn(['$eventInfo', 'eventValidTime']) || 10,
+            discountType: props.specialPromotion.getIn(['$eventInfo', 'discountType']) || 0,
+            discountWay: props.specialPromotion.getIn(['$eventInfo', 'discountWay']) || 0,
+            discountAmount: props.specialPromotion.getIn(['$eventInfo', 'discountAmount']),
+            discountMinAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMinAmount']),
+            discountMaxAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMaxAmount']),
+            discountRate: props.specialPromotion.getIn(['$eventInfo', 'discountRate']),
+            discountMinRate: props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']),
+            discountMaxRate: props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']),
+            discountMaxLimitRate: props.specialPromotion.getIn(['$eventInfo', 'discountMaxLimitRate']),
+            inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']),
+            /** 桌边砍相关结束 */
         }
     }
     componentDidMount() {
@@ -112,7 +131,9 @@ class SpecialDetailInfo extends Component {
     initiateDefaultGifts = () => {
         const type = `${this.props.type}`;
         switch (type) {
+            /** 分享裂变有邀请人和被邀请人两种类型的礼品 */
             case '65': return [getDefaultGiftData(), getDefaultGiftData(1)];
+            /** 膨胀大礼包固定3个礼品，不加减数量 */
             case '66': return [getDefaultGiftData(), getDefaultGiftData(), getDefaultGiftData()];
             default: return [getDefaultGiftData()]
         }
@@ -353,6 +374,11 @@ class SpecialDetailInfo extends Component {
             shareTitle: value,
         })
     }
+    handleMoneyLimitTypeChange = (value) => {
+        this.setState({
+            moneyLimitType: +value,
+        })
+    }
     renderImgUrl = () => {
         const props = {
             name: 'myFile',
@@ -441,16 +467,97 @@ class SpecialDetailInfo extends Component {
             
         )
     }
+    renderInstantDiscountForm() {
+        const {
+            moneyLimitType,
+            moneyLimitValue,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        return (
+            <div
+                style={{
+                    marginBottom: 20,
+                }}
+            >
+                <FormItem
+                    label="账单限制"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        moneyLimitType === 0 ? (
+                            <Select
+                                value={`${moneyLimitType}`}
+                                onChange={this.handleMoneyLimitTypeChange}
+                            >
+                                <Select.Option value="0">不限制</Select.Option>
+                                <Select.Option value="1">满</Select.Option>
+                            </Select>
+                        ) : getFieldDecorator('moneyLimitValue', {
+                            onChange: this.handleMoneyLimitValueChange,
+                            initialValue: { number: moneyLimitValue },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || !v.number) {
+                                            return cb('账单限制不能为空');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonBefore={(
+                                    <Select
+                                        value={`${moneyLimitType}`}
+                                        onChange={this.handleMoneyLimitTypeChange}
+                                    >
+                                        <Select.Option value="0">不限制</Select.Option>
+                                        <Select.Option value="1">满</Select.Option>
+                                    </Select>
+                                )}
+                                addonAfter={'元'}
+                                maxNum={8}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="活动类型"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        value={`${moneyLimitType}`}
+                        onChange={this.handleMoneyLimitTypeChange}
+                    >
+                        <Select.Option value="0">不限制</Select.Option>
+                        <Select.Option value="1">满</Select.Option>
+                    </Select>
+                </FormItem>
+            </div>
+        )
+    }
     render() {
+        const { type } = this.props;
         return (
             <div >
+                {type == '67' && this.renderInstantDiscountForm()}
                 {
-                    this.props.type == '65' && <p style={{padding: '10px 18px'}}>邀请人礼品获得礼品列表：</p>
+                    type == '65' && <p style={{padding: '10px 18px'}}>邀请人礼品获得礼品列表：</p>
                 }
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
-                            maxCount={this.props.type == '21' || this.props.type == '30' ? 1 : 10}
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
                             type={this.props.type}
                             isNew={this.props.isNew}
                             value={this.state.data.filter(gift => gift.sendType === 0)}
@@ -459,16 +566,16 @@ class SpecialDetailInfo extends Component {
                     </Col>
                 </Row>
                 {
-                   this.props.type == '65' && <p style={{padding: '10px 18px'}}>被邀请人礼品获得礼品列表：</p>
+                   type == '65' && <p style={{padding: '10px 18px'}}>被邀请人礼品获得礼品列表：</p>
                 }
                 {
-                    this.props.type == '65' && (
+                    type == '65' && (
                         <Row>
                             <Col span={17} offset={4}>
                                 <AddGifts
                                     maxCount={10}
                                     sendType={1}
-                                    type={this.props.type}
+                                    type={type}
                                     isNew={this.props.isNew}
                                     value={this.state.data.filter(gift => gift.sendType === 1)}
                                     onChange={(gifts) => this.gradeChange(gifts, 1)}
@@ -478,7 +585,7 @@ class SpecialDetailInfo extends Component {
                     )
                 }
                 {
-                    shareInfoEnabledTypes.includes(`${this.props.type}`) && this.renderShareInfo()
+                    shareInfoEnabledTypes.includes(`${type}`) && this.renderShareInfo()
                 }
             </div>
         )
