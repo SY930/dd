@@ -24,7 +24,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
-import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchShopCardLevel, queryTagDetailList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
@@ -68,6 +68,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
         data.shopIDs = shopsIDs.join(',')
         this.props.fetchShopCardLevel({ data })
+        this.props.fetchTagList({
+            groupID: this.props.user.accountInfo.groupID
+        })
         // 获取会员等级信息
         const { groupCardTypeList = fromJS([]) } = this.props
         this.setState({
@@ -382,7 +385,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
     }
     renderCardLeval = () => {
-        const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType, tagList } = this.state;
         const boxData = []
         // cardScopeType=1 // @mock
         cardScopeIDs.forEach((id) => {
@@ -395,6 +398,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             })
         })
+        console.log(tagList);
         return (
             <div>
                 <FormItem
@@ -541,6 +545,7 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        tagList: state.sale_mySpecialActivities_NEW.getIn('tagList'),
         user: state.user.toJS(),
     }
 };
@@ -565,6 +570,9 @@ const mapDispatchToProps = (dispatch) => {
         fetchShopCardLevel: (opts) => {
             dispatch(fetchShopCardLevel(opts));
         },
+        fetchTagList: (opt) => {
+            dispatch(queryTagDetailList(opt))
+        }
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AdvancedPromotionDetailSetting);
