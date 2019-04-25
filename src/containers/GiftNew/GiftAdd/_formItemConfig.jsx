@@ -50,7 +50,7 @@ const FORMITEMS = {
         rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
     },
     isOfflineCanUsing: {
-        label: '到店使用',
+        label: '使用场景',
         type: 'radio',
         defaultValue: '1',
         options: GiftCfg.isOfflineCanUsing,
