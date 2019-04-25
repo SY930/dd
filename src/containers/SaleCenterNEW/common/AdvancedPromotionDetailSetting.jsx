@@ -24,7 +24,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
-import { fetchShopCardLevel, queryTagDetailList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
@@ -69,7 +69,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         data.shopIDs = shopsIDs.join(',')
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
-            groupID: this.props.user.accountInfo.groupID
+            groupID: this.props.user.accountInfo.groupID,
+            pageNo: 1,
+            pageSize: 10000,
         })
         // 获取会员等级信息
         const { groupCardTypeList = fromJS([]) } = this.props
@@ -385,7 +387,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
     }
     renderCardLeval = () => {
-        const { cardInfo = [], cardScopeIDs = [], cardScopeType, tagList } = this.state;
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
         const boxData = []
         // cardScopeType=1 // @mock
         cardScopeIDs.forEach((id) => {
@@ -398,7 +400,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             })
         })
-        console.log(tagList);
+        const { tagList } = this.props
         return (
             <div>
                 <FormItem
@@ -445,7 +447,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 }}
                             >
                                 {
-                                    cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
+                                    tagList.map(type => <Option key={type.itemID} value={type.itemID}>{type.tagName}</Option>)
 
                                 }
                             </Select>
@@ -545,7 +547,8 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
-        tagList: state.sale_mySpecialActivities_NEW.getIn('tagList'),
+        tagList: state.sale_mySpecialActivities_NEW.toJS().tagList,
+        tagGroupList: state.sale_mySpecialActivities_NEW.toJS().tagGroupList,
         user: state.user.toJS(),
     }
 };
@@ -572,6 +575,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchTagList: (opt) => {
             dispatch(queryTagDetailList(opt))
+        },
+        fetchTagGroupList: (opt) => {
+            dispatch(queryAllTagGroupList(opt))
         }
     }
 };

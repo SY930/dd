@@ -66,6 +66,7 @@ export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch 
 
 export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new';
 export const GHT_TAGLIST_SUCCESS = 'sale center: get tagList'
+export const GHT_TAGGROUPLIST_SUCCESS = 'sale center: get tagRroupList'
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
@@ -561,15 +562,36 @@ export const queryGroupMembersList = (opts) => {
 // 获取会员标签
 export const queryTagDetailList = (opt) =>{
     return (dispatch) =>{
-        fetchData('/tag/tagManagementService_queryTagDetailList.ajax', opt, null, { path: 'data' })
+        axiosData('/tag/tagManagementService_queryTagDetailList.ajax', opt, null, { path: 'data' })
             .then((res) => {
-                dispatch({
-                    type: GHT_TAGLIST_SUCCESS,
-                    payload: res.tagList
-                })
+                const { code, response } = res
+                if(code === '000') {
+                    dispatch({
+                        type: GHT_TAGLIST_SUCCESS,
+                        payload: response.tagList
+                    })
+                }
             })
             .catch(err => {
-                console.log(err);
+                // console.log(err);
+            })
+    }
+}
+// 获取会员标签组
+export const queryAllTagGroupList = (opt) =>{
+    return (dispatch) =>{
+        axiosData('/tag/tagManagementService_queryAllTagGroupList.ajax', opt, null, { path: 'data' })
+            .then((res) => {
+                const { code, response } = res
+                if(code === '000') {
+                    dispatch({
+                        type: GHT_TAGGROUPLIST_SUCCESS,
+                        payload: response.tagGroupList
+                    })
+                }
+            })
+            .catch(err => {
+                // console.log(err);
             })
     }
 }
