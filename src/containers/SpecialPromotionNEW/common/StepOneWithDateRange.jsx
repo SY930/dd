@@ -24,6 +24,7 @@ import {
     saleCenterGetShopOfEventByDate,
     queryFsmGroupEquityAccount,
     getEventExcludeCardTypes,
+    querySMSSignitureList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import {SEND_MSG, NOTIFICATION_FLAG, FULL_CUT_ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
@@ -112,6 +113,7 @@ class StepOneWithDateRange extends React.Component {
             tipDisplay: 'none',
             isLoadingWeChatOccupiedInfo: props.occupiedWeChatInfo.get('isLoading'),
             occupiedWeChatIDs: props.occupiedWeChatInfo.get('occupiedIDs').toJS(),
+            signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             isAllWeChatIDOccupied: props.occupiedWeChatInfo.get('isAllOccupied'),
             selectedIDs: props.specialPromotion.getIn(['$eventInfo', 'mpIDList']).toJS(),
             allWeChatIDList: props.allWeChatIDList,
@@ -177,7 +179,8 @@ class StepOneWithDateRange extends React.Component {
             specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
                 this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
                 :
-                this.props.queryFsmGroupEquityAccount()
+                this.props.queryFsmGroupEquityAccount();
+            this.props.querySMSSignitureList();
         }
         // 活动名称auto focus
         try {
@@ -304,6 +307,7 @@ class StepOneWithDateRange extends React.Component {
                     eventName: this.state.name,
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
+                    signID: this.state.signID,
                 })
             } else if (this.props.type == '61' || this.props.type == '62') {
                 this.props.setSpecialBasicInfo({
@@ -312,6 +316,7 @@ class StepOneWithDateRange extends React.Component {
                     eventRemark: this.state.description,
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
+                    signID: this.state.signID,
                 });
             } else {
                 this.props.setSpecialBasicInfo({
@@ -320,6 +325,7 @@ class StepOneWithDateRange extends React.Component {
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
+                    signID: this.state.signID,
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
@@ -617,6 +623,11 @@ class StepOneWithDateRange extends React.Component {
     handlesmsGateChange(val) {
         this.setState({
             smsGate: val,
+        })
+    }
+    handleSignIDChange = (val) => {
+        this.setState({
+            signID: val,
         })
     }
     onTimePickerChange(time) {
@@ -923,6 +934,29 @@ class StepOneWithDateRange extends React.Component {
                             </FormItem> : null
                     }
                     {
+                        (this.props.type == '50' || this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4) && (
+                            <FormItem
+                                label="短信签名"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Select size="default"
+                                        value={`${this.state.signID}`}
+                                        onChange={this.handleSignIDChange}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    <Option value={''} key={''}>默认签名</Option>
+                                    {
+                                        this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
+                                            return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
+                                        })
+                                    }
+                                </Select>
+                            </FormItem>
+                        )
+                    }
+                    {
                         this.props.type != '53' && this.props.type != '50' && this.props.type != '60' || this.props.type == '70' ?
                             <div>
                                 <FormItem
@@ -1056,6 +1090,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo(opts))
+        },
+        querySMSSignitureList: () => {
+            dispatch(querySMSSignitureList())
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
