@@ -36,7 +36,7 @@ import {
 } from "../../constants/projectHuatianConf";
 
 const UNRELEASED_PROMOTION_TYPES = [
-    // '67',
+    '67',
 ]
 
 class BasePage extends Component {
@@ -70,7 +70,7 @@ class BasePage extends Component {
 
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
-        if (UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
+        if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success('活动尚未开放，敬请期待');
         }
         if (isSpecial) {

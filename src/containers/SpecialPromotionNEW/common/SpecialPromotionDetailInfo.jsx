@@ -20,7 +20,8 @@ import {
     Input,
     Select,
 } from 'antd';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -29,12 +30,16 @@ import {
 import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import AddGifts from '../common/AddGifts';
 import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 const moment = require('moment');
 const FormItem = Form.Item;
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const getDefaultGiftData = (sendType = 0) => ({
     // 膨胀所需人数
@@ -95,6 +100,11 @@ class SpecialDetailInfo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
         const { data } = this.initState();
+        const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
+        const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
+        const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
+        const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
+        const discountMaxLimitRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxLimitRate']);
         this.state = {
             data,
             /** 小程序分享相关 */
@@ -110,11 +120,13 @@ class SpecialDetailInfo extends Component {
             discountAmount: props.specialPromotion.getIn(['$eventInfo', 'discountAmount']),
             discountMinAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMinAmount']),
             discountMaxAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMaxAmount']),
-            discountRate: props.specialPromotion.getIn(['$eventInfo', 'discountRate']),
-            discountMinRate: props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']),
-            discountMaxRate: props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']),
-            discountMaxLimitRate: props.specialPromotion.getIn(['$eventInfo', 'discountMaxLimitRate']),
-            inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']),
+            discountRate: discountRatio ? discountRatio * 100 : discountRatio,
+            discountMinRate: discountMinRatio ? discountMinRatio * 100 : discountMinRatio,
+            discountMaxRate: discountMaxRatio ? discountMaxRatio * 100 : discountMaxRatio,
+            discountMaxLimitRate: discountMaxLimitRatio ? discountMaxLimitRatio * 100 : discountMaxLimitRatio,
+            inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']) || 0,
+            defaultCardType: props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']),
+            mpIDList: selectedMpId ? [ selectedMpId ] : [],
             /** 桌边砍相关结束 */
         }
     }
@@ -126,6 +138,18 @@ class SpecialDetailInfo extends Component {
             cancel: undefined,
         });
         this.props.fetchGiftListInfo();
+        if (this.props.type == 67) {
+            const user = this.props.user;
+            const opts = {
+                _groupID: user.accountInfo.groupID,
+                _role: user.accountInfo.roleType,
+                _loginName: user.accountInfo.loginName,
+                _groupLoginName: user.accountInfo.groupLoginName,
+            };
+            this.props.fetchSpecialCardLevel({
+                data: opts,
+            });
+        }
     }
 
     initiateDefaultGifts = () => {
@@ -241,7 +265,16 @@ class SpecialDetailInfo extends Component {
         if (!flag) {
             return false;
         }
-        let { data, shareImagePath, shareTitle } = this.state;
+        let {
+            data,
+            shareImagePath,
+            shareTitle,
+            discountMinRate,
+            discountMaxRate,
+            discountRate,
+            discountMaxLimitRate,
+            ...instantDiscountState,
+        } = this.state;
         const { type } = this.props;
         // 校验礼品数量
         function checkgiftTotalCount(giftTotalCount) {
@@ -355,6 +388,11 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialBasicInfo({
                 shareImagePath,
                 shareTitle,
+                discountMinRate: discountMinRate ? discountMinRate / 100 : discountMinRate,
+                discountMaxRate: discountMaxRate ? discountMaxRate / 100 : discountMaxRate,
+                discountRate: discountRate ? discountRate / 100 : discountRate,
+                discountMaxLimitRate: discountMaxLimitRate ? discountMaxLimitRate / 100 : discountMaxLimitRate,
+                ...instantDiscountState,
             });
             this.props.setSpecialGiftInfo(giftInfo);
             return true;
@@ -377,6 +415,71 @@ class SpecialDetailInfo extends Component {
     handleMoneyLimitTypeChange = (value) => {
         this.setState({
             moneyLimitType: +value,
+        })
+    }
+    handleInviteTypeChange = (value) => {
+        this.setState({
+            inviteType: +value,
+        })
+    }
+    handleDiscountTypeChange = (value) => {
+        this.setState({
+            discountType: +value,
+        })
+    }
+    handleMpIdChange = (value) => {
+        this.setState({
+            mpIDList: [value],
+        })
+    }
+    handleDefaultCardTypeChange = (value) => {
+        this.setState({
+            defaultCardType: value,
+        })
+    }
+    handleDiscountRateChange = ({ number }) => {
+        this.setState({
+            discountRate: number,
+        })
+    }
+    handleDiscountMinRateChange = ({ number }) => {
+        this.setState({
+            discountMinRate: number,
+        }, () => this.props.form.setFieldsValue({discountMaxRate: {number: this.state.discountMaxRate}} ))
+    }
+    handleDiscountMaxRateChange = ({ number }) => {
+        this.setState({
+            discountMaxRate: number,
+        }, () => this.props.form.setFieldsValue({discountMinRate: {number: this.state.discountMinRate}} ))
+    }
+    handleDiscountAmountChange = ({ number }) => {
+        this.setState({
+            discountAmount: number,
+        })
+    }
+    handleDiscountMinAmountChange = ({ number }) => {
+        this.setState({
+            discountMinAmount: number,
+        }, () => this.props.form.setFieldsValue({discountMaxAmount: {number: this.state.discountMaxAmount}} ))
+    }
+    handleDiscountMaxAmountChange = ({ number }) => {
+        this.setState({
+            discountMaxAmount: number,
+        }, () => this.props.form.setFieldsValue({discountMinAmount: {number: this.state.discountMinAmount}} ))
+    }
+    handleDiscountMaxLimitRateChange = ({ number }) => {
+        this.setState({
+            discountMaxLimitRate: number,
+        })
+    }
+    handleEventValidTimeChange = ({ number }) => {
+        this.setState({
+            eventValidTime: number,
+        })
+    }
+    handleDiscountWayChange = ({ target : { value } }) => {
+        this.setState({
+            discountWay: +value,
         })
     }
     renderImgUrl = () => {
@@ -455,22 +558,28 @@ class SpecialDetailInfo extends Component {
                     )}
                 </FormItem>
                 <FormItem
-                        label="小程序分享图片"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                        style={{ position: 'relative' }}
-                    >
-                        {this.renderImgUrl()}
-                    </FormItem>
+                    label="小程序分享图片"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: 'relative' }}
+                >
+                    {this.renderImgUrl()}
+                </FormItem>
             </div>
             
         )
     }
-    renderInstantDiscountForm() {
+    renderFlexFormControl() {
         const {
-            moneyLimitType,
-            moneyLimitValue,
+            discountWay,
+            discountType,
+            discountAmount,
+            discountMaxAmount,
+            discountMinAmount,
+            discountRate,
+            discountMinRate,
+            discountMaxRate,
         } = this.state;
         const {
             form: {
@@ -478,14 +587,276 @@ class SpecialDetailInfo extends Component {
             },
         } = this.props;
         return (
+            <div style={{ display: 'flex' }}>
+                <FormItem
+                    label="邀请一人"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 10 }}
+                    wrapperCol={{ span: 12 }}
+                    style={{ width: '40%' }}
+                >
+                    <RadioGroup
+                        onChange={this.handleDiscountWayChange}
+                        value={`${discountWay}`}
+                    >
+                        <RadioButton value="0">减免</RadioButton>
+                        <RadioButton value="1">减折</RadioButton>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    (discountType === 0 && discountWay === 0) && (
+                        <FormItem
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 19 }}
+                            style={{ width: '60%' }}
+                        >
+                            {
+                                getFieldDecorator('discountAmount', {
+                                    onChange: this.handleDiscountAmountChange,
+                                    initialValue: { number: discountAmount },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免金额必须大于0');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="元"
+                                        maxNum={8}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    )
+                }
+                {
+                    (discountType === 0 && discountWay === 1) && (
+                        <FormItem
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 19 }}
+                            style={{ width: '60%' }}
+                        >
+                            {
+                                getFieldDecorator('discountRate', {
+                                    onChange: this.handleDiscountRateChange,
+                                    initialValue: { number: discountRate },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免折扣必须大于0');
+                                                } else if (v.number > 100) {
+                                                    return cb('减免折扣不能超过100%');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="%"
+                                        maxNum={4}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    )
+                }
+                {
+                    (discountType === 1 && discountWay === 1) && (
+                        <div
+                            style={{ width: '48%'}}
+                            className={styles.flexFormControl}
+                        >
+                            <FormItem
+                            className={styles.FormItemStyle}
+                            wrapperCol={{ span: 24 }}
+                            style={{ width: '40%' }}
+                        >
+                            {
+                                getFieldDecorator('discountMinRate', {
+                                    onChange: this.handleDiscountMinRateChange,
+                                    initialValue: { number: discountMinRate },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免折扣必须大于0');
+                                                } else if (v.number > 100) {
+                                                    return cb('减免折扣不能超过100%');
+                                                } else if (v.number > discountMaxRate) {
+                                                    return cb('不能大于最高折扣');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="%"
+                                        maxNum={4}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                        至
+                        <FormItem
+                            className={styles.FormItemStyle}
+                            wrapperCol={{ span: 24 }}
+                            style={{ width: '40%' }}
+                        >
+                            {
+                                getFieldDecorator('discountMaxRate', {
+                                    onChange: this.handleDiscountMaxRateChange,
+                                    initialValue: { number: discountMaxRate },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免折扣必须大于0');
+                                                } else if (v.number > 100) {
+                                                    return cb('减免折扣不能超过100%');
+                                                } else if (v.number < discountMinRate) {
+                                                    return cb('不能小于最低折扣');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="%"
+                                        maxNum={4}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                        </div>
+                        
+                    )
+                }           
+                {
+                    (discountType === 1 && discountWay === 0) && (
+                        <div
+                            style={{ width: '48%'}}
+                            className={styles.flexFormControl}
+                        >
+                            <FormItem
+                            className={styles.FormItemStyle}
+                            wrapperCol={{ span: 24 }}
+                            style={{ width: '40%' }}
+                        >
+                            {
+                                getFieldDecorator('discountMinAmount', {
+                                    onChange: this.handleDiscountMinAmountChange,
+                                    initialValue: { number: discountMinAmount },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免金额必须大于0');
+                                                } else if (v.number > discountMaxAmount) {
+                                                    return cb('不能大于最高减免');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="元"
+                                        maxNum={8}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                        至
+                        <FormItem
+                            className={styles.FormItemStyle}
+                            wrapperCol={{ span: 24 }}
+                            style={{ width: '40%' }}
+                        >
+                            {
+                                getFieldDecorator('discountMaxAmount', {
+                                    onChange: this.handleDiscountMaxAmountChange,
+                                    initialValue: { number: discountMaxAmount },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('减免金额必须大于0');
+                                                } else if (v.number < discountMinAmount) {
+                                                    return cb('不能小于最低减免');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="元"
+                                        maxNum={8}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                        </div> 
+                    )
+                }           
+            </div>
+        )
+    }
+    renderInstantDiscountForm() {
+        const {
+            moneyLimitType,
+            moneyLimitValue,
+            eventValidTime,
+            discountType,
+            discountMaxLimitRate,
+            inviteType,
+            mpIDList,
+            defaultCardType,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+            groupCardTypeList,
+            allWeChatAccountList,
+        } = this.props;
+        const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
+        const cardTypeList = Immutable.List.isList(groupCardTypeList) ? groupCardTypeList.toJS() : [];
+        return (
             <div
                 style={{
                     marginBottom: 20,
                 }}
             >
                 <FormItem
+                    label="活动方式"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <p>支付账单时, 根据用户达成目标的阶梯, 进行相应的折扣或减免</p>
+                </FormItem>
+                <FormItem
                     label="账单限制"
                     className={styles.FormItemStyle}
+                    required={moneyLimitType === 1}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
@@ -493,6 +864,7 @@ class SpecialDetailInfo extends Component {
                         moneyLimitType === 0 ? (
                             <Select
                                 value={`${moneyLimitType}`}
+                                getPopupContainer={(node) => node.parentNode}
                                 onChange={this.handleMoneyLimitTypeChange}
                             >
                                 <Select.Option value="0">不限制</Select.Option>
@@ -516,6 +888,7 @@ class SpecialDetailInfo extends Component {
                                 addonBefore={(
                                     <Select
                                         value={`${moneyLimitType}`}
+                                        getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleMoneyLimitTypeChange}
                                     >
                                         <Select.Option value="0">不限制</Select.Option>
@@ -536,13 +909,158 @@ class SpecialDetailInfo extends Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <Select
-                        value={`${moneyLimitType}`}
-                        onChange={this.handleMoneyLimitTypeChange}
+                        value={`${discountType}`}
+                        getPopupContainer={(node) => node.parentNode}
+                        onChange={this.handleDiscountTypeChange}
                     >
-                        <Select.Option value="0">不限制</Select.Option>
-                        <Select.Option value="1">满</Select.Option>
+                        <Select.Option value="0">每邀请一人优惠固定数额</Select.Option>
+                        <Select.Option value="1">每邀请一人优惠随机数额</Select.Option>
                     </Select>
                 </FormItem>
+                {
+                    this.renderFlexFormControl()
+                }
+                <FormItem
+                    label="优惠上限"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator('discountMaxLimitRate', {
+                            onChange: this.handleDiscountMaxLimitRateChange,
+                            initialValue: { number: discountMaxLimitRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('优惠上限必须大于0');
+                                        } else if (v.number > 100) {
+                                            return cb('优惠上限不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonBefore="账单金额的"
+                                addonAfter="%"
+                                maxNum={4}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="活动限时"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator('eventValidTime', {
+                            onChange: this.handleEventValidTimeChange,
+                            initialValue: { number: eventValidTime },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('活动限时必须大于0');
+                                        } else if (v.number > 10) {
+                                            return cb('活动限时不能超过10分钟');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="分钟"
+                                maxNum={3}
+                                modal="int"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="邀请规则"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        value={`${inviteType}`}
+                        getPopupContainer={(node) => node.parentNode}
+                        onChange={this.handleInviteTypeChange}
+                    >
+                        <Select.Option value="0">被邀请人关注公众号即完成邀请</Select.Option>
+                        <Select.Option value="1">被邀请人注册会员即完成邀请</Select.Option>
+                    </Select>
+                </FormItem>
+                {
+                    inviteType === 0 ? (
+                        <FormItem
+                            label="公众号"
+                            className={styles.FormItemStyle}
+                            required
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {
+                                getFieldDecorator('mpId', {
+                                    rules: [
+                                        { required: true, message: '必须选择一个公众号' }
+                                    ],
+                                    initialValue: mpIDList.length ? mpIDList[0] : undefined,
+                                    onChange: this.handleMpIdChange,
+                                })(
+                                    <Select
+                                        placeholder="请选择被邀请人需要关注的公众号"
+                                        getPopupContainer={(node) => node.parentNode}
+                                    >
+                                        {
+                                            mpInfoList.map(({mpID, mpName}) => (
+                                                <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )
+                            }
+                            
+                        </FormItem>
+                    ) : (
+                        <FormItem
+                            label="会员卡类型"
+                            className={styles.FormItemStyle}
+                            required
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {
+                                getFieldDecorator('defaultCardType', {
+                                    rules: [
+                                        { required: true, message: '必须选择一个卡类型' }
+                                    ],
+                                    initialValue: defaultCardType,
+                                    onChange: this.handleDefaultCardTypeChange,
+                                })(
+                                    <Select
+                                        showSearch={true}
+                                        placeholder="请选择被邀请人需要注册的会员卡类型"
+                                        getPopupContainer={(node) => node.parentNode}
+                                    >
+                                        {
+                                            cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
+                                        }
+                                    </Select>
+                                )
+                            }
+                        </FormItem>
+                    )
+                }
             </div>
         )
     }
@@ -600,6 +1118,8 @@ function mapStateToProps(state) {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
     }
 }
 
@@ -613,6 +1133,9 @@ function mapDispatchToProps(dispatch) {
         },
         fetchGiftListInfo: (opts) => {
             dispatch(fetchGiftListInfoAC(opts));
+        },
+        fetchSpecialCardLevel: (opts) => {
+            dispatch(fetchSpecialCardLevel(opts));
         },
     }
 }

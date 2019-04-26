@@ -106,8 +106,8 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
         example: '',
         key: '65',
-        right: 5,
-        bottom: 7,
+        right: 13,
+        bottom: 0,
     },
     {
         title: '膨胀大礼包',
@@ -116,8 +116,8 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         text: '参与活动领礼品，邀请好友助力礼品更丰厚',
         example: '',
         key: '66',
-        right: 5,
-        bottom: 7,
+        right: 13,
+        bottom: 0,
     },
     {
         title: '桌边砍',
@@ -125,8 +125,8 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         text: '针对买单环节发起邀请同行好友砍价，沉淀高价值的到店用户',
         example: '',
         key: '67',
-        right: 5,
-        bottom: 7,
+        right: 13,
+        bottom: 0,
     },
 ];
 
