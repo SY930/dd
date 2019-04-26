@@ -421,7 +421,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     >
                         <Radio key={0} value={0}>卡类别</Radio >
                         <Radio key={1} value={1}>卡等级</Radio >
-                        <Radio key={2} value={2}>会员标签</Radio >
+                        {
+                            this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
+                            <Radio key={2} value={2}>会员标签</Radio > : null
+                        }
                     </RadioGroup >
                 </FormItem>
                 {

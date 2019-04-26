@@ -564,13 +564,10 @@ export const queryTagDetailList = (opt) =>{
     return (dispatch) =>{
         axiosData('/tag/tagManagementService_queryTagDetailList.ajax', opt, null, { path: 'data' })
             .then((res) => {
-                const { code, response } = res
-                if(code === '000') {
-                    dispatch({
-                        type: GHT_TAGLIST_SUCCESS,
-                        payload: response.tagList
-                    })
-                }
+                dispatch({
+                    type: GHT_TAGLIST_SUCCESS,
+                    payload: res.tagList
+                })
             })
             .catch(err => {
                 // console.log(err);
