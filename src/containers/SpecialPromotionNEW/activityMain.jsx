@@ -80,7 +80,6 @@ class ActivityMain extends React.Component {
      */
     componentDidMount() {
         const activityCategories = this.state.promotionType;
-        console.log('activityCategories', activityCategories)
         const _pages = [
             NewBirthdayGift, // 生日赠送
             NewCardGive, // 开卡赠送

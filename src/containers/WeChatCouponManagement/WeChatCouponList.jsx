@@ -347,7 +347,6 @@ class WeChatCouponList extends Component {
                 },
             },
         ];
-        console.log('tableHeight: ', tableHeight)
         return (
             <div style={{ padding: 20, height: 'calc(100% - 75px)' }} ref={e => this.bodyRef = e}>
                 { /* 后端不支持这些查询, 先把div高置为0 */ }

@@ -693,7 +693,7 @@ class SpecialDetailInfo extends Component {
                                                     return cb('减免折扣必须大于0');
                                                 } else if (v.number > 100) {
                                                     return cb('减免折扣不能超过100%');
-                                                } else if (v.number > discountMaxRate) {
+                                                } else if (v.number > +discountMaxRate) { // 字符串和字符串做比较，有坑
                                                     return cb('不能大于最高折扣');
                                                 }
                                                 cb()
@@ -726,7 +726,7 @@ class SpecialDetailInfo extends Component {
                                                     return cb('减免折扣必须大于0');
                                                 } else if (v.number > 100) {
                                                     return cb('减免折扣不能超过100%');
-                                                } else if (v.number < discountMinRate) {
+                                                } else if (v.number < +discountMinRate) {
                                                     return cb('不能小于最低折扣');
                                                 }
                                                 cb()
@@ -766,7 +766,7 @@ class SpecialDetailInfo extends Component {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
                                                     return cb('减免金额必须大于0');
-                                                } else if (v.number > discountMaxAmount) {
+                                                } else if (v.number > +discountMaxAmount) {
                                                     return cb('不能大于最高减免');
                                                 }
                                                 cb()
@@ -797,7 +797,7 @@ class SpecialDetailInfo extends Component {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
                                                     return cb('减免金额必须大于0');
-                                                } else if (v.number < discountMinAmount) {
+                                                } else if (v.number < +discountMinAmount) {
                                                     return cb('不能小于最低减免');
                                                 }
                                                 cb()
