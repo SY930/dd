@@ -10,14 +10,15 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import {
     Form,
     Select,
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import CardLevel from '../common/CardLevel'
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput'; // 编辑
+import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 
 const FormItem = Form.Item;
@@ -29,7 +30,7 @@ class StepTwo extends React.Component {
         this.state = {
             needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
             partInTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'partInTimes']) || undefined, // 不想显示0
-            defaultCardType: '',
+            defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
         }
     }
 
@@ -40,6 +41,7 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        this.props.fetchCrmCardTypeLst({});
     }
 
     handleSubmit = () => {
@@ -60,7 +62,7 @@ class StepTwo extends React.Component {
         return flag;
     }
 
-    onCardLevelChange = ({ defaultCardType = '' }) => {
+    handleDefaultCardTypeChange = (defaultCardType) => {
         this.setState({
             defaultCardType
         })
@@ -79,14 +81,37 @@ class StepTwo extends React.Component {
     }
 
     render() {
+        let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
+        cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
         return (
             <Form className={styles.cardLevelTree}>
-                <CardLevel
-                        cardLevelRangeType={'0'}
-                        onChange={this.onCardLevelChange}
-                        type={'65'}
-                        form={this.props.form}
-                    />
+                <FormItem
+                    label="新用户注册成为会员的卡类选择"
+                    className={styles.FormItemStyle}
+                    required
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 13 }}
+                >
+                    {
+                        this.props.form.getFieldDecorator('defaultCardType', {
+                            rules: [
+                                { required: true, message: '必须选择一个卡类型' }
+                            ],
+                            initialValue: this.state.defaultCardType,
+                            onChange: this.handleDefaultCardTypeChange,
+                        })(
+                            <Select
+                                showSearch={true}
+                                placeholder="请选择新用户注册成为会员的卡类型"
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
+                                }
+                            </Select>
+                        )
+                    }
+                </FormItem>
                 <FormItem
                     label={'参与人数'}
                     className={styles.FormItemStyle}
@@ -142,6 +167,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.toJS(),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
+        crmCardTypeNew: state.sale_crmCardTypeNew,
     };
 };
 
@@ -149,6 +175,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
+        fetchCrmCardTypeLst: (opts) => {
+            dispatch(FetchCrmCardTypeLst(opts));
         },
     };
 };

@@ -33,7 +33,6 @@ const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
     '21',
     '22',
     '30',
-    '65',
 ];
 
 class CardLevel extends React.Component {
@@ -285,7 +284,7 @@ class CardLevel extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 {
-                    this.props.type != '61' && this.props.type != '65' ?
+                    this.props.type != '61' ?
                         <FormItem label={this.props.label || '会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
                                 <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel || '全部会员'}</Radio>
