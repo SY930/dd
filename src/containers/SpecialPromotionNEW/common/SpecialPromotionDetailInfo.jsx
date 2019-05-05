@@ -35,6 +35,7 @@ import AddGifts from '../common/AddGifts';
 import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import { doRedirect } from '../../../../src/helpers/util';
 const moment = require('moment');
 const FormItem = Form.Item;
 
@@ -385,7 +386,8 @@ class SpecialDetailInfo extends Component {
             }
             const giftInfo = this.getGiftInfo(data);
             this.props.setSpecialBasicInfo(giftInfo);
-            this.props.setSpecialBasicInfo({
+            this.props.setSpecialBasicInfo(
+                this.props.type == '67' ? {
                 shareImagePath,
                 shareTitle,
                 discountMinRate: discountMinRate ? discountMinRate / 100 : discountMinRate,
@@ -393,6 +395,9 @@ class SpecialDetailInfo extends Component {
                 discountRate: discountRate ? discountRate / 100 : discountRate,
                 discountMaxLimitRate: discountMaxLimitRate ? discountMaxLimitRate / 100 : discountMaxLimitRate,
                 ...instantDiscountState,
+            } : {
+                shareImagePath,
+                shareTitle,
             });
             this.props.setSpecialGiftInfo(giftInfo);
             return true;
@@ -472,6 +477,11 @@ class SpecialDetailInfo extends Component {
             discountMaxLimitRate: number,
         })
     }
+    handleMoneyLimitValueChange = ({ number }) => {
+        this.setState({
+            moneyLimitValue: number,
+        })
+    }
     handleEventValidTimeChange = ({ number }) => {
         this.setState({
             eventValidTime: number,
@@ -508,7 +518,14 @@ class SpecialDetailInfo extends Component {
                         shareImagePath: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
                     })
                 } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
-                    message.error(`${info.file.name} 上传失败`);
+                    if (info.file.response.code === '0011111100000001') {
+                        message.warning('因长时间未操作，会话已过期，请重新登陆');
+                        setTimeout(() => {
+                            doRedirect()
+                        }, 2000)
+                    } else {
+                        message.error(`${info.file.name} 上传失败`);
+                    }
                 }
             },
         };
