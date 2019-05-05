@@ -85,6 +85,22 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
+        if (this.props.basicPromotion) {
+            return axiosData('/crmimport/crmExportService_doExportPromotionInfo.ajax', {}, null, { path: 'data' })
+            .then(_records => {
+                setTimeout(() => {
+                    this.getExportRecords();
+                }, 500)
+            })
+        }
+        if (this.props.specialPromotion) {
+            return axiosData('/crmimport/crmExportService_doExportEventInfo.ajax', {}, null, { path: 'data' })
+            .then(_records => {
+                setTimeout(() => {
+                    this.getExportRecords();
+                }, 500)
+            })
+        }
         if (this.props._key) {
             this.exportRecords(this.props.giftItemID, this.props._key)
         } else if (this.props.newExport) {
@@ -127,6 +143,12 @@ export default class ExportModal extends Component {
         }
         if (this.props.newExport) {
             data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
+        }
+        if (this.props.basicPromotion) {
+            data.exportQuotaType = '9';
+        }
+        if (this.props.specialPromotion) {
+            data.exportQuotaType = '8';
         }
         axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
             .then(data => {
