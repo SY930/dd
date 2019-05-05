@@ -176,6 +176,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
                 data[index].needCount.value = gift.needCount;
+                data[index].sendType = gift.sendType || 0;
                 if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
                 } else {
