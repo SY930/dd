@@ -63,6 +63,34 @@ export const GIFT_MAP = {
  */
 export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
+        title: '分享裂变',
+        isSpecial: true,
+        text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
+        example: '',
+        key: '65',
+        right: 13,
+        bottom: 0,
+    },
+    {
+        title: '膨胀大礼包',
+        isSpecial: true,
+        tags: ['小程序'],
+        text: '参与活动领礼品，邀请好友助力礼品更丰厚',
+        example: '',
+        key: '66',
+        right: 13,
+        bottom: 0,
+    },
+    {
+        title: '桌边砍',
+        isSpecial: true,
+        text: '针对买单环节发起邀请同行好友砍价，沉淀高价值的到店用户',
+        example: '',
+        key: '67',
+        right: 13,
+        bottom: 0,
+    },
+    {
         title: '免费领取',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         tags: ['微信'],
@@ -99,34 +127,6 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '52',
         right: 5,
         bottom: 7,
-    },
-    {
-        title: '分享裂变',
-        isSpecial: true,
-        text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
-        example: '',
-        key: '65',
-        right: 13,
-        bottom: 0,
-    },
-    {
-        title: '膨胀大礼包',
-        isSpecial: true,
-        tags: ['小程序'],
-        text: '参与活动领礼品，邀请好友助力礼品更丰厚',
-        example: '',
-        key: '66',
-        right: 13,
-        bottom: 0,
-    },
-    {
-        title: '桌边砍',
-        isSpecial: true,
-        text: '针对买单环节发起邀请同行好友砍价，沉淀高价值的到店用户',
-        example: '',
-        key: '67',
-        right: 13,
-        bottom: 0,
     },
 ];
 
