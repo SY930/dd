@@ -320,21 +320,6 @@ class GiftAddModalStep extends React.PureComponent {
                     })
                 }
                 break;
-
-            case 'TrdTemplate':
-                // FIXME: 先按以前格式临时支持上折扣券, 以后改成type判断
-                if (describe === '代金券' || describe === '菜品优惠券' || describe === '菜品兑换券' || describe === '折扣券' || describe === '活动券') {
-                    if (value) {
-                        newKeys.includes('validityDays') ? null : newKeys.splice(-1, 0, 'validityDays')
-                    } else {
-                        newKeys.includes('validityDays') ? newKeys.splice(-2, 1) : null
-                        delete values.validityDays
-                    }
-                    secondKeys[describe][0].keys = [...newKeys];
-                    this.setState({ secondKeys });
-                }
-                break;
-
             default:
                 break;
         }
@@ -413,7 +398,6 @@ class GiftAddModalStep extends React.PureComponent {
                     return value == '' || value == undefined ? 0 : Number(value);
                 case 'promotionID':
                     return value && value instanceof Array && value[0] && value[0].promotionIDStr;
-
                 default:
                     return value !== undefined ? value : '';
             }
@@ -424,8 +408,15 @@ class GiftAddModalStep extends React.PureComponent {
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
-            // console.log('表单value：', formValues);
-            let params = _.assign({}, values, formValues, { giftType: value });
+            let params = _.assign(
+                {
+                    effectTime: data.effectTime,
+                    validityDays: data.validityDays,
+                },
+                values,
+                formValues,
+                { giftType: value },
+            );
             params = this.formatFormData(params);
             let shopNames = '',
                 shopIDs = '',
