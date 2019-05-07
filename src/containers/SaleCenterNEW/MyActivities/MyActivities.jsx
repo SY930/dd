@@ -73,6 +73,7 @@ import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import {axiosData, getAccountInfo} from "../../../helpers/util";
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
+import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import {
     openPromotionAutoRunListModal,
     queryPromotionAutoRunList
@@ -851,6 +852,14 @@ class MyActivities extends React.Component {
                         <li>
                             <a onClick={this.toggleExpandState}>高级查询 {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
                         </li>
+                        <li>
+                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                                <Button
+                                    type="ghost"
+                                    onClick={() => this.setState({ exportVisible: true })}
+                                ><Icon type="export" />导出</Button>
+                            </Authority>
+                        </li>
 
                     </ul>
                 </div>
@@ -1278,6 +1287,13 @@ class MyActivities extends React.Component {
             </div>
             {this.renderModifyRecordInfoModal(0)}
             <PromotionAutoRunModal/>
+            {
+                !this.state.exportVisible ? null :
+                    <ExportModal
+                        basicPromotion
+                        handleClose={() => this.setState({ exportVisible: false })}
+                    />
+            }
         </div>
         );
     }
