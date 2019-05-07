@@ -93,7 +93,7 @@ class SpecialPromotionDetail extends React.Component {
                         <InviteeModal
                             eventID={this.state.eventInfo.data.itemID}
                             inviterID={this.state.selectedInviter.customerID}
-                            inviterName={this.state.selectedInviter.customerName}
+                            inviterName={this.state.selectedInviter.name}
                             onClose={() => this.setState({
                                 inviteeModalVisble: false,
                                 selectedInviter: null,

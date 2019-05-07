@@ -3,6 +3,7 @@ import {
     Modal,
     Table,
     Button,
+    Tooltip,
 } from 'antd';
 import { axiosData } from '../../../../src/helpers/util';
 
@@ -47,8 +48,8 @@ export default class InviteeModal extends Component {
             },
             {
                 title: '受邀请人姓名',
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'customerName',
+                key: 'customerName',
                 className: 'TableTxtCenter',
                 width: 100,
                 render:(text)=> {
@@ -124,7 +125,7 @@ export default class InviteeModal extends Component {
                 visible={true}
                 onCancel={handleModalClose}
                 maskClosable={false}
-                width={750}
+                width={900}
                 footer={[<Button key="0" type="ghost" onClick={handleModalClose}>关闭</Button>]}
             >
                 <Table
