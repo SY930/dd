@@ -21,6 +21,8 @@ import {
     SALE_CENTER_CHECK_BIRTHDAY_SUCCESS,
     SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS,
 
+    SALE_CENTER_QUERY_SMS_SIGN_SUCCESS,
+
     SALE_CENTER_RESET_SPECIAL_PROMOTION,
     SALE_CENTER_FSM_SETTLE_UNIT,
     SALE_CENTER_GET_EXCLUDE_EVENT_LIST, SALE_CENTER_FSM_EQUITY_UNIT, SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
@@ -59,7 +61,7 @@ const $initialState = Immutable.fromJS({
         status: null,
         availableShopQueryStatus: 'success', // 线上餐厅送礼专用, 表示限制店铺的查询情况
     },
-
+    SMSSignList: [], // 短信签名列表
 });
 
 
@@ -130,6 +132,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FSM_EQUITY_UNIT:
             return $$state.setIn(['$eventInfo', 'equityAccountInfoList'], Immutable.fromJS(action.payload))
+        case SALE_CENTER_QUERY_SMS_SIGN_SUCCESS:
+            return $$state.setIn(['SMSSignList'], Immutable.fromJS(action.payload))
 
         case SALE_CENTER_GET_EXCLUDE_EVENT_LIST:
             return $$state.setIn(['$eventInfo', 'getExcludeEventList'], action.payload.excludeEventModelList)
