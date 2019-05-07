@@ -193,6 +193,12 @@ export default class ExportModal extends Component {
         if (this.props.newExport) {
             data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
         }
+        if (this.props.basicPromotion) {
+            data.exportQuotaType = '9';
+        }
+        if (this.props.specialPromotion) {
+            data.exportQuotaType = '8';
+        }
         axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
                 message.success('删除成功');
