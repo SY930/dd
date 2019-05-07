@@ -28,7 +28,7 @@ const COLUMNS = [{
     title: '名称',
     dataIndex: 'recordName',
     className: 'TableTxtCenter',
-    width: 230,
+    width: 200,
     render: (text) => {
         return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
     },
@@ -36,7 +36,7 @@ const COLUMNS = [{
     title: '时间',
     dataIndex: 'createStamp',
     className: 'TableTxtCenter',
-    width: 80,
+    width: 110,
 }, {
     title: '状态',
     dataIndex: 'exportStatus',
