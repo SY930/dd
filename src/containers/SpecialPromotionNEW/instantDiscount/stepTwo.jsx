@@ -87,6 +87,7 @@ class StepTwo extends React.Component {
             this.props.setSpecialBasicInfo({
                 supportOrderTypes: supportOrderTypes.join(','),
                 shopIDList,
+                shopRange: shopIDList.length > 0 ? 1 : 2,
             });
         }
         return flag;

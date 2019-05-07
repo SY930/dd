@@ -106,6 +106,7 @@ class SpecialDetailInfo extends Component {
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
         const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
         const discountMaxLimitRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxLimitRate']);
+        const defaultCardType = props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']);
         this.state = {
             data,
             /** 小程序分享相关 */
@@ -126,7 +127,7 @@ class SpecialDetailInfo extends Component {
             discountMaxRate: discountMaxRatio ? discountMaxRatio * 100 : discountMaxRatio,
             discountMaxLimitRate: discountMaxLimitRatio ? discountMaxLimitRatio * 100 : discountMaxLimitRatio,
             inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']) || 0,
-            defaultCardType: props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']),
+            defaultCardType: defaultCardType > 0 ? defaultCardType : undefined,
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
             /** 桌边砍相关结束 */
         }
@@ -421,16 +422,25 @@ class SpecialDetailInfo extends Component {
     handleMoneyLimitTypeChange = (value) => {
         this.setState({
             moneyLimitType: +value,
+            moneyLimitValue: undefined,
         })
     }
     handleInviteTypeChange = (value) => {
         this.setState({
             inviteType: +value,
+            mpIDList: [],
+            defaultCardType: undefined,
         })
     }
     handleDiscountTypeChange = (value) => {
         this.setState({
             discountType: +value,
+            discountAmount: undefined,
+            discountMaxAmount: undefined,
+            discountMinAmount: undefined,
+            discountRate: undefined,
+            discountMinRate: undefined,
+            discountMaxRate: undefined,
         })
     }
     handleMpIdChange = (value) => {
@@ -491,6 +501,12 @@ class SpecialDetailInfo extends Component {
     handleDiscountWayChange = ({ target : { value } }) => {
         this.setState({
             discountWay: +value,
+            discountAmount: undefined,
+            discountMaxAmount: undefined,
+            discountMinAmount: undefined,
+            discountRate: undefined,
+            discountMinRate: undefined,
+            discountMaxRate: undefined,
         })
     }
     renderImgUrl = () => {
