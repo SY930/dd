@@ -19,6 +19,7 @@ import {
     Icon,
     Input,
     Select,
+    Switch,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -129,6 +130,7 @@ class SpecialDetailInfo extends Component {
             inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']) || 0,
             defaultCardType: defaultCardType > 0 ? defaultCardType : undefined,
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
+            disabledGifts: props.isNew ? false : this.props.specialPromotion.get('$giftInfo').size === 0,
             /** 桌边砍相关结束 */
         }
     }
@@ -276,9 +278,25 @@ class SpecialDetailInfo extends Component {
             discountMaxRate,
             discountRate,
             discountMaxLimitRate,
+            disabledGifts,
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
+        // 桌边砍可以不启用礼品
+        if (flag && type == 67 && disabledGifts) {
+            this.props.setSpecialBasicInfo(
+            {
+                shareImagePath,
+                shareTitle,
+                discountMinRate: discountMinRate ? discountMinRate / 100 : discountMinRate,
+                discountMaxRate: discountMaxRate ? discountMaxRate / 100 : discountMaxRate,
+                discountRate: discountRate ? discountRate / 100 : discountRate,
+                discountMaxLimitRate: discountMaxLimitRate ? discountMaxLimitRate / 100 : discountMaxLimitRate,
+                ...instantDiscountState,
+            });
+            this.props.setSpecialGiftInfo([]);
+            return true;
+        }
         // 校验礼品数量
         function checkgiftTotalCount(giftTotalCount) {
             const _value = parseFloat(giftTotalCount.value);
@@ -1095,6 +1113,19 @@ class SpecialDetailInfo extends Component {
                         </FormItem>
                     )
                 }
+                <FormItem
+                    label="礼品启用状态"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Switch
+                        checked={!this.state.disabledGifts}
+                        checkedChildren="开启"
+                        unCheckedChildren="关闭"
+                        onChange={(bool) => this.setState({disabledGifts: !bool})}
+                    ></Switch>
+                </FormItem>
             </div>
         )
     }
@@ -1110,6 +1141,7 @@ class SpecialDetailInfo extends Component {
                     <Col span={17} offset={4}>
                         <AddGifts
                             maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
                             type={this.props.type}
                             isNew={this.props.isNew}
                             value={this.state.data.filter(gift => gift.sendType === 0)}

@@ -162,10 +162,12 @@ class AddGifts extends React.Component {
     render() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
+        // 桌边砍可以主动加蒙层
+        const disabledGifts = this.props.disabledGifts;
         return (
             <div className={styles.giftWrap}>
                 {this.renderItems()}
-                <div className={userCount > 0 ? styles.opacitySet : null}></div>
+                <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div>
             </div>
         );
     }
