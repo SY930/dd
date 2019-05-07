@@ -37,8 +37,8 @@ import {
 } from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import {
     saleCenterResetDetailInfoAC,
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
+    getGoodsCategoryList,
+    getGoodsList,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {
     toggleIsUpdateAC,
@@ -71,11 +71,11 @@ function mapDispatchToProps(dispatch) {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
+        getGoodsCategoryList: (opts) => {
+            dispatch(getGoodsCategoryList(opts))
         },
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+        getGoodsList: (opts) => {
+            dispatch(getGoodsList(opts))
         },
     };
 }
@@ -223,12 +223,9 @@ class NewActivity extends React.Component {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
         }
-        const opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID,
-        };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        const shopID = this.props.user.shopID;
+        this.props.getGoodsList(shopID);
+        this.props.getGoodsCategoryList(shopID);
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,

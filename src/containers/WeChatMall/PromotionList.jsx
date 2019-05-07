@@ -19,8 +19,8 @@ import {
     fetchPromotionTagsAC,
 } from '../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
 import {
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
+    getGoodsCategoryList,
+    getGoodsList,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import {throttle, isEqual, debounce} from 'lodash'
@@ -50,11 +50,11 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
+        getGoodsCategoryList: (opts) => {
+            dispatch(getGoodsCategoryList(opts))
         },
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+        getGoodsList: (opts) => {
+            dispatch(getGoodsList(opts))
         },
     };
 };
@@ -684,12 +684,9 @@ export class WeChatMallPromotionList extends React.Component {
      * @param isUpdate  true 为编辑, false 为查看
      */
     handleEdit(record, isUpdate) {
-        const opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID,
-        };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        const shopID = this.props.user.shopID;
+        this.props.getGoodsList(shopID);
+        this.props.getGoodsCategoryList(shopID);
         this.props.toggleIsUpdate(isUpdate);
         this.setState({
             selectedRecord: record,
