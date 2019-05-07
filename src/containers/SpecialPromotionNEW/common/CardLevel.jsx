@@ -250,7 +250,7 @@ class CardLevel extends React.Component {
                     // 若互斥卡等级数组不包含该等级 && !(是升级送礼 && 是默认卡等级)，就加到children渲染
                     if (!getExcludeCardLevelIds.includes(card.cardLevelID) && !(this.props.type == '61' && card.isDefaultLevel)) {
                         children.push({
-                            label: `${cardType.cardTypeName}-${card.cardLevelName}`,
+                            label: card.cardLevelName,
                             value: card.cardLevelID,
                             key: card.cardLevelID,
                         });
