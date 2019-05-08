@@ -1060,6 +1060,7 @@ const apiCfg = [
     // 第三方外卖评价相关
     ['getComment', '/api/shopcenter/takeevalution/getComment', { method: 'GET', type: 'json' }], // 获取评论
     ['postReply', '/api/shopcenter/takeevalution/postReply', { type: 'json' }], // 提交店铺回复
+    ['/tag/tagManagementService_queryTagDetailList.ajax', '/tag/tagManagementService_queryTagDetailList.ajax', { type: 'json' }]
 ]
 /* eslint-enable max-len */
 
