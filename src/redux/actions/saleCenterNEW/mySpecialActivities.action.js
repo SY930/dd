@@ -562,7 +562,9 @@ export const queryGroupMembersList = (opts) => {
 // 获取会员标签
 export const queryTagDetailList = (opt) =>{
     return (dispatch) =>{
-        axiosData('/tag/tagManagementService_queryTagDetailList.ajax', opt, null, { path: 'data' })
+        axiosData('/tag/tagManagementService_queryTagDetailList.ajax', opt, {
+          needThrow: true
+        }, { path: 'data' })
             .then((res) => {
                 dispatch({
                     type: GHT_TAGLIST_SUCCESS,
