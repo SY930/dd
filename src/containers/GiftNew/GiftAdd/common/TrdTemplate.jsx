@@ -92,12 +92,14 @@ class TrdTemplate extends React.Component {
         // 新建时
         this.validatorTemp().then((TrdTemplateStatus) => {
             const { defaultChecked, channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
-            const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined
-            const trdTemplateIDLabel = trdTemplateID ? trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID).trdGiftName : undefined
-
+            const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined;
+            const trdTemplateEntity = trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID);
+            const trdTemplateIDLabel = trdTemplateEntity ? trdTemplateEntity.trdGiftName : undefined
             const values = {
                 TrdTemplateStatus,
                 extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
+                validityDays: trdTemplateEntity.validityDays || 0,
+                effectTime: trdTemplateEntity.startDate || '',
                 trdChannelID,
                 trdTemplateID,
             }
@@ -145,13 +147,18 @@ class TrdTemplate extends React.Component {
                         } = dateInfo;
                         // 固定有效期类型
                         if (type === 'DATE_TYPE_FIX_TIME_RANGE') {
-                            const startTimeString = moment.unix(beginTimestamp).format('YYYY/MM/DD');
-                            const endTimeString = moment.unix(endTimestamp).format('YYYY/MM/DD');
-                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${startTimeString}~${endTimeString})`
+                            const startMoment = moment.unix(beginTimestamp);
+                            const endMoment = moment.unix(endTimestamp);
+                            const startTimeString = startMoment.format('YYYY/MM/DD');
+                            const endTimeString = endMoment.format('YYYY/MM/DD');
+                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${startTimeString}~${endTimeString})`;
+                            entity.startDate = startMoment.format('YYYYMMDD');
+                            entity.validityDays = endMoment.diff(startMoment, 'days') + 1;
                         }
                         // 相对有效期类型
                         if (type === 'DATE_TYPE_FIX_TERM') {
-                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${fixedTerm}天)`
+                            entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${fixedTerm}天)`;
+                            entity.validityDays = fixedTerm || 0;
                         }
                     } catch (e) {
                     }

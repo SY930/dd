@@ -89,7 +89,7 @@ class ExcludeCardTable extends React.Component {
                         cardInfo.map((cardType, index) => {
                             cardType.cardTypeLevelList.map((card, i) => {
                                 if (card.cardLevelID == cardLevelID) {
-                                    excludeEvent.idNames.push(`${cardType.cardTypeName}类-${card.cardLevelName}`)
+                                    excludeEvent.idNames.push(card.cardLevelName)
                                 }
                             });
                         });

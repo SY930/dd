@@ -11,6 +11,7 @@ import {throttle, isEqual} from 'lodash';
 import { jumpPage } from '@hualala/platform-base'
 import moment from 'moment';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -372,6 +373,13 @@ class MySpecialActivities extends React.Component {
                 </div>
                 {this.renderModals()}
                 {this.renderUpdateModals()}
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            specialPromotion
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </div>
         );
     }
@@ -537,6 +545,14 @@ class MySpecialActivities extends React.Component {
                         <li>
                             <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                            </Authority>
+                        </li>
+                        <li>
+                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                                <Button
+                                    type="ghost"
+                                    onClick={() => this.setState({ exportVisible: true })}
+                                ><Icon type="export" />导出</Button>
                             </Authority>
                         </li>
 

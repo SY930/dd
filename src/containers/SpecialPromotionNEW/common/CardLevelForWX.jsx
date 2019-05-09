@@ -123,7 +123,7 @@ class CardLevelForWX extends React.Component {
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
             const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
-                acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
+                acc.push(...(curr.shopIDList || []).map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
                 return acc;
             }, []);
             this.setState({ occupiedShops })

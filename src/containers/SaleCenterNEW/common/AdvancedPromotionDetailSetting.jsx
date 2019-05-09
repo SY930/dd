@@ -24,7 +24,7 @@ import {
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
 } from '../../../redux/actions/saleCenterNEW/types.js';
-import { fetchShopCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
@@ -68,6 +68,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
         data.shopIDs = shopsIDs.join(',')
         this.props.fetchShopCardLevel({ data })
+        this.props.fetchTagList({
+            groupID: this.props.user.accountInfo.groupID,
+            pageNo: 1,
+            pageSize: 10000,
+        })
         // 获取会员等级信息
         const { groupCardTypeList = fromJS([]) } = this.props
         this.setState({
@@ -395,6 +400,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             })
         })
+        const { tagList } = this.props
         return (
             <div>
                 <FormItem
@@ -415,18 +421,22 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     >
                         <Radio key={0} value={0}>卡类别</Radio >
                         <Radio key={1} value={1}>卡等级</Radio >
+                        {
+                            this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
+                            <Radio key={2} value={2}>会员标签</Radio > : null
+                        }
                     </RadioGroup >
                 </FormItem>
-                <FormItem
-                    label={`适用${cardScopeType == 0 ? '卡类' : '卡等级'}`}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    {
-                        cardScopeType == 0
-                            ?
-                            (<Select
+                {
+                    cardScopeType === 2 ? 
+                    (
+                        <FormItem
+                            label={'会员标签'}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                           <Select
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
@@ -440,35 +450,67 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 }}
                             >
                                 {
-                                    cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
+                                    tagList.map(type => <Option key={type.itemID} value={type.itemID}>{type.tagName}</Option>)
 
                                 }
-                            </Select>)
-                            :
-                            (<BaseHualalaModal
-                                outLabel={'卡等级'} //   外侧选项+号下方文案
-                                outItemName="cardLevelName" //   外侧已选条目选项的label
-                                outItemID="cardLevelID" //   外侧已选条目选项的value
-                                innerleftTitle={'全部卡类'} //   内部左侧分类title
-                                innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
-                                leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
-                                innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
-                                innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                                innerBottomTitle={'已选卡等级'} //   内部底部box的title
-                                innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
-                                itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
-                                treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
-                                data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
-                                onChange={(value) => {
-                                    // 组件内部已选条目数组【{}，{}，{}】,向外传递值
-                                    const _value = value.map(level => level.cardLevelID)
-                                    this.handleCardScopeList({
-                                        cardScopeIDs: _value,
-                                    });
-                                }}
-                            />)
-                    }
-                </FormItem>
+                            </Select>
+                        </FormItem>
+                    ): 
+                    (
+                        <FormItem
+                            label={`适用${cardScopeType == 0 ? '卡类' : '卡等级'}`}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {
+                                cardScopeType == 0
+                                    ?
+                                    (<Select
+                                        size={'default'}
+                                        multiple={true}
+                                        showSearch={true}
+                                        value={cardScopeIDs}
+                                        className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                                        getPopupContainer={(node) => node.parentNode}
+                                        onChange={(val) => {
+                                            this.handleCardScopeList({
+                                                cardScopeIDs: val,
+                                            });
+                                        }}
+                                    >
+                                        {
+                                            cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
+        
+                                        }
+                                    </Select>)
+                                    :
+                                    (<BaseHualalaModal
+                                        outLabel={'卡等级'} //   外侧选项+号下方文案
+                                        outItemName="cardLevelName" //   外侧已选条目选项的label
+                                        outItemID="cardLevelID" //   外侧已选条目选项的value
+                                        innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                        innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                                        leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                                        innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                        innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                        innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                        innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                        itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
+                                        treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                        data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                        onChange={(value) => {
+                                            // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                            const _value = value.map(level => level.cardLevelID)
+                                            this.handleCardScopeList({
+                                                cardScopeIDs: _value,
+                                            });
+                                        }}
+                                    />)
+                            }
+                        </FormItem>         
+                    )
+                }
                 {
                     cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
                 }
@@ -508,6 +550,8 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        tagList: state.sale_mySpecialActivities_NEW.toJS().tagList,
+        tagGroupList: state.sale_mySpecialActivities_NEW.toJS().tagGroupList,
         user: state.user.toJS(),
     }
 };
@@ -532,6 +576,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchShopCardLevel: (opts) => {
             dispatch(fetchShopCardLevel(opts));
         },
+        fetchTagList: (opt) => {
+            dispatch(queryTagDetailList(opt))
+        },
+        fetchTagGroupList: (opt) => {
+            dispatch(queryAllTagGroupList(opt))
+        }
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AdvancedPromotionDetailSetting);

@@ -212,7 +212,7 @@ class SpecialRangeInfo extends React.Component {
             } else if (opts.cardLevelIDList.length > 0) { // 没选店铺 但选了卡类 卡等级
                 const canUseShop = this.props.canUseShopIDs.toJS();
                 const excludeShopIDs = this.props.excludeCardTypeAndShopIDs.toJS().reduce((acc, curr) => {
-                    acc.push(...curr.shopIDList.map(id => `${id}`));
+                    acc.push(...(curr.shopIDList || []).map(id => `${id}`));
                     return acc;
                 }, []);
                 opts.shopIDList = canUseShop.filter(id => !excludeShopIDs.includes(id))

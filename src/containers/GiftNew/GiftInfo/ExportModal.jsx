@@ -28,7 +28,7 @@ const COLUMNS = [{
     title: '名称',
     dataIndex: 'recordName',
     className: 'TableTxtCenter',
-    width: 230,
+    width: 200,
     render: (text) => {
         return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
     },
@@ -36,7 +36,7 @@ const COLUMNS = [{
     title: '时间',
     dataIndex: 'createStamp',
     className: 'TableTxtCenter',
-    width: 80,
+    width: 110,
 }, {
     title: '状态',
     dataIndex: 'exportStatus',
@@ -85,6 +85,22 @@ export default class ExportModal extends Component {
     }
 
     componentDidMount() {
+        if (this.props.basicPromotion) {
+            return axiosData('/crmimport/crmExportService_doExportPromotionInfo.ajax', {}, null, { path: 'data' })
+            .then(_records => {
+                setTimeout(() => {
+                    this.getExportRecords();
+                }, 500)
+            })
+        }
+        if (this.props.specialPromotion) {
+            return axiosData('/crmimport/crmExportService_doExportEventInfo.ajax', {}, null, { path: 'data' })
+            .then(_records => {
+                setTimeout(() => {
+                    this.getExportRecords();
+                }, 500)
+            })
+        }
         if (this.props._key) {
             this.exportRecords(this.props.giftItemID, this.props._key)
         } else if (this.props.newExport) {
@@ -128,6 +144,12 @@ export default class ExportModal extends Component {
         if (this.props.newExport) {
             data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
         }
+        if (this.props.basicPromotion) {
+            data.exportQuotaType = '9';
+        }
+        if (this.props.specialPromotion) {
+            data.exportQuotaType = '8';
+        }
         axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
             .then(data => {
                 const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
@@ -170,6 +192,12 @@ export default class ExportModal extends Component {
         }
         if (this.props.newExport) {
             data.exportQuotaType = this.props.activeKey === 'used' ? '5' : '7';
+        }
+        if (this.props.basicPromotion) {
+            data.exportQuotaType = '9';
+        }
+        if (this.props.specialPromotion) {
+            data.exportQuotaType = '8';
         }
         axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
