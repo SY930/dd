@@ -54,6 +54,8 @@ import {
 
     SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK,
     SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED, SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY,
+    GHT_TAGLIST_SUCCESS,
+    GHT_TAGGROUPLIST_SUCCESS,
 } from '../../actions/saleCenterNEW/mySpecialActivities.action'
 
 const $initialState = Immutable.fromJS({
@@ -84,9 +86,21 @@ const $initialState = Immutable.fromJS({
         status: 'start',
     },
     $groupMembers: {},
+    tagList: [],
+    tagGroupList: [],
 });
 export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
+        // 会员标签
+        case GHT_TAGLIST_SUCCESS: 
+            return $$state.merge({
+                tagList: action.payload
+            });
+        // 会员标签组
+        case GHT_TAGGROUPLIST_SUCCESS: 
+            return $$state.merge({
+                tagGroupList: action.payload
+            });    
         // list
         case SPECIAL_PROMOTION_FETCH_PROMOTION_LIST:
             return $$state.setIn(['$specialPromotionList', 'status'], 'pending');

@@ -7,10 +7,10 @@ import {
 import { message } from 'antd';
 
 import 'rxjs';
-import moment from 'moment';
 import axios from 'axios'
 import { fetchFilterShopsSuccess } from './promotionBasicInfo.action'
 import {axiosData} from "../../../helpers/util";
+import { getStore } from '@hualala/platform-base/lib';
 
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO = 'sale center: set special promotion event info new';
@@ -44,6 +44,7 @@ export const SALE_CENTER_FETCH_GROUP_MEMBER_TIMEOUT = 'sale center: fetch group 
 export const SALE_CENTER_FETCH_GROUP_MEMBER_CANCEL = 'sale center: fetch group member cancel new';
 export const SALE_CENTER_FSM_SETTLE_UNIT = 'sale center: query fsm group settle unit new';
 export const SALE_CENTER_FSM_EQUITY_UNIT = 'sale center: query fsm group equity unit new';
+export const SALE_CENTER_QUERY_SMS_SIGN_SUCCESS = 'sale center: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude event list new';
 export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS = 'sale center: sale_center_query_online_restaurant_shops_status';
 
@@ -190,15 +191,44 @@ export const saveCurrentCanUseShops = (arr) => {
 // 获取短信权益账户
 export const queryFsmGroupEquityAccount = () => {
     return (dispatch) => {
-        axiosData('/specialPromotion/queryFsmGroupEquityAccount.ajax', {}, { }, {path: 'accountInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then(res => {
-                dispatch({
-                    type: SALE_CENTER_FSM_EQUITY_UNIT,
-                    payload: Array.isArray(res) ? res : [],
-                });
-            })
+        axiosData(
+            '/specialPromotion/queryFsmGroupEquityAccount.ajax',
+            {},
+            {},
+            {path: 'accountInfoList'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        )
+        .then(res => {
+            dispatch({
+                type: SALE_CENTER_FSM_EQUITY_UNIT,
+                payload: Array.isArray(res) ? res : [],
+            });
+        })
     }
 }
+/**
+ * 获取短信签名
+ */
+export const querySMSSignitureList = () => {
+    return (dispatch) => {
+        return axiosData(
+            `/promotion/message/query.ajax?groupID=${getStore().getState().user.getIn(['accountInfo', 'groupID'])}`,
+            {},
+            null,
+            {path: 'records'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        )
+        .then((records = []) => {
+            dispatch({
+                type: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS,
+                payload: Array.isArray(records) ? records : [],
+            });
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+};
  // 获取短信结算主体
 export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
     return (dispatch) => {

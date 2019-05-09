@@ -38,7 +38,7 @@ class AccountNoSelector extends Component {
                     {accountInfoList.map((accountInfo) => (<Select.Option value={String(accountInfo.accountNo)} key={accountInfo.accountNo}>{accountInfo.accountName}</Select.Option>))}
                 </Select>
                 {index > -1 && (
-                    <div key={accountInfoList[index].accountNo}  style={{ margin: '8px 8px 0', color: accountInfoList[index].smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfoList[index].smsCount}条`}</div>
+                    <div key={accountInfoList[index].accountNo}  style={{ margin: '8px 8px 0', color: accountInfoList[index].smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfoList[index].smsCount || 0}条`}</div>
                 )}
             </div>
         )

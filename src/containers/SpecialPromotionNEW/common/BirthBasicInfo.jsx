@@ -17,7 +17,9 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterGetExcludeCardLevelIds,
-    saleCenterQueryFsmGroupSettleUnit, queryFsmGroupEquityAccount,
+    saleCenterQueryFsmGroupSettleUnit,
+    queryFsmGroupEquityAccount,
+    querySMSSignitureList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
@@ -35,6 +37,7 @@ class PromotionBasicInfo extends React.Component {
             sendMsg: '1',
             name: '',
             tipDisplay: 'none',
+            signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +79,7 @@ class PromotionBasicInfo extends React.Component {
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
             :
             this.props.queryFsmGroupEquityAccount();
+        this.props.querySMSSignitureList();
         // 活动名称auto focus
         try {
             this.promotionNameInputRef.focus()
@@ -104,6 +108,7 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
+                        signID: this.state.signID,
                     })
                 }
             } else {
@@ -115,6 +120,7 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
+                        signID: this.state.signID,
                     })
                 }
             }
@@ -147,6 +153,11 @@ class PromotionBasicInfo extends React.Component {
         this.setState({
             name: e.target.value,
         });
+    }
+    handleSignIDChange = (val) => {
+        this.setState({
+            signID: val,
+        })
     }
 
     renderPromotionType() {
@@ -283,6 +294,29 @@ class PromotionBasicInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
+                {
+                    (this.state.sendMsg == 1 || this.state.sendMsg == 3 || this.state.sendMsg == 4) && (
+                        <FormItem
+                            label="短信签名"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <Select size="default"
+                                    value={`${this.state.signID}`}
+                                    onChange={this.handleSignIDChange}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option value={''} key={''}>默认签名</Option>
+                                {
+                                    this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
+                                        return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                    )
+                }
                 <FormItem
                     label="活动说明"
                     className={styles.FormItemStyle}
@@ -328,6 +362,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryWechatMpInfo: (opts) => {
             dispatch(queryWechatMpInfo(opts))
+        },
+        querySMSSignitureList: () => {
+            dispatch(querySMSSignitureList())
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
