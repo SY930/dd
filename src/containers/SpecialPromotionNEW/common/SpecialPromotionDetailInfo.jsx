@@ -680,7 +680,7 @@ class SpecialDetailInfo extends Component {
                                 })(
                                     <PriceInput
                                         addonAfter="元"
-                                        maxNum={8}
+                                        maxNum={3}
                                         modal="float"
                                     />
                                 )
@@ -706,7 +706,7 @@ class SpecialDetailInfo extends Component {
                                                 if (!v || !(v.number > 0)) {
                                                     return cb('减免折扣必须大于0');
                                                 } else if (v.number > 100) {
-                                                    return cb('减免折扣不能超过100%');
+                                                    return cb('比例不超过100%');
                                                 }
                                                 cb()
                                             },
@@ -732,7 +732,7 @@ class SpecialDetailInfo extends Component {
                             <FormItem
                             className={styles.FormItemStyle}
                             wrapperCol={{ span: 24 }}
-                            style={{ width: '40%' }}
+                            style={{ width: '45%' }}
                         >
                             {
                                 getFieldDecorator('discountMinRate', {
@@ -744,7 +744,7 @@ class SpecialDetailInfo extends Component {
                                                 if (!v || !(v.number > 0)) {
                                                     return cb('减免折扣必须大于0');
                                                 } else if (v.number > 100) {
-                                                    return cb('减免折扣不能超过100%');
+                                                    return cb('比例不超过100%');
                                                 } else if (v.number > +discountMaxRate) { // 字符串和字符串做比较，有坑
                                                     return cb('不能大于最高折扣');
                                                 }
@@ -765,7 +765,7 @@ class SpecialDetailInfo extends Component {
                         <FormItem
                             className={styles.FormItemStyle}
                             wrapperCol={{ span: 24 }}
-                            style={{ width: '40%' }}
+                            style={{ width: '45%' }}
                         >
                             {
                                 getFieldDecorator('discountMaxRate', {
@@ -777,7 +777,7 @@ class SpecialDetailInfo extends Component {
                                                 if (!v || !(v.number > 0)) {
                                                     return cb('减免折扣必须大于0');
                                                 } else if (v.number > 100) {
-                                                    return cb('减免折扣不能超过100%');
+                                                    return cb('比例不超过100%');
                                                 } else if (v.number < +discountMinRate) {
                                                     return cb('不能小于最低折扣');
                                                 }
@@ -807,7 +807,7 @@ class SpecialDetailInfo extends Component {
                             <FormItem
                             className={styles.FormItemStyle}
                             wrapperCol={{ span: 24 }}
-                            style={{ width: '40%' }}
+                            style={{ width: '45%' }}
                         >
                             {
                                 getFieldDecorator('discountMinAmount', {
@@ -828,7 +828,7 @@ class SpecialDetailInfo extends Component {
                                 })(
                                     <PriceInput
                                         addonAfter="元"
-                                        maxNum={8}
+                                        maxNum={3}
                                         modal="float"
                                     />
                                 )
@@ -838,7 +838,7 @@ class SpecialDetailInfo extends Component {
                         <FormItem
                             className={styles.FormItemStyle}
                             wrapperCol={{ span: 24 }}
-                            style={{ width: '40%' }}
+                            style={{ width: '45%' }}
                         >
                             {
                                 getFieldDecorator('discountMaxAmount', {
@@ -859,7 +859,7 @@ class SpecialDetailInfo extends Component {
                                 })(
                                     <PriceInput
                                         addonAfter="元"
-                                        maxNum={8}
+                                        maxNum={3}
                                         modal="float"
                                     />
                                 )
