@@ -104,7 +104,6 @@ class AddGifts extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
-            // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
                 giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
@@ -370,12 +369,46 @@ class AddGifts extends React.Component {
     }
 
     handleGiftNeedCountChange = (val, index) => {
-        const _infos = this.state.infos;
+        const _infos = this.state.infos.slice();
         _infos[index].needCount.value = val.number;
         const _value = val.number || 0;
         if (_value > 0 && _value <= 1000) {
-            _infos[index].needCount.validateStatus = 'success';
-            _infos[index].needCount.msg = null;
+            if (index === 1) {
+                const higherLevelValue =  _infos[2].needCount.value;
+                if (higherLevelValue > 0 && higherLevelValue <= 1000) {
+                    if (_value >= +higherLevelValue) {
+                        _infos[index].needCount.validateStatus = 'error';
+                        _infos[index].needCount.msg = '此档位所需人数必须小于下一档位';
+                    } else {
+                        _infos[index].needCount.validateStatus = 'success';
+                        _infos[index].needCount.msg = null;
+                        _infos[2].needCount.validateStatus = 'success';
+                        _infos[2].needCount.msg = null;
+                    }
+                } else {
+                    _infos[index].needCount.validateStatus = 'success';
+                    _infos[index].needCount.msg = null;
+                }
+            }
+            if (index === 2) {
+                const lowerLevelValue =  _infos[1].needCount.value;
+                if (lowerLevelValue > 0 && lowerLevelValue <= 1000) {
+                    if (_value <= +lowerLevelValue) {
+                        console.log('_value', _value)
+                        console.log('lowerLevelValue', lowerLevelValue)
+                        _infos[index].needCount.validateStatus = 'error';
+                        _infos[index].needCount.msg = '此档位所需人数必须大于上一档位';
+                    } else {
+                        _infos[index].needCount.validateStatus = 'success';
+                        _infos[index].needCount.msg = null;
+                        _infos[1].needCount.validateStatus = 'success';
+                        _infos[1].needCount.msg = null;
+                    }    
+                } else {
+                    _infos[index].needCount.validateStatus = 'success';
+                    _infos[index].needCount.msg = null;
+                }
+            }
         } else {
             _infos[index].needCount.validateStatus = 'error';
             _infos[index].needCount.msg = '膨胀需要人数必须大于0, 小于1000';

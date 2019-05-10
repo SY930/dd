@@ -178,7 +178,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftInfo.giftName = gift.giftName;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                data[index].needCount.value = gift.needCount;
+                data[index].needCount.value = gift.needCount || 0;
                 data[index].sendType = gift.sendType || 0;
                 if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
@@ -1144,7 +1144,11 @@ class SpecialDetailInfo extends Component {
                             disabledGifts={type == '67' && this.state.disabledGifts}
                             type={this.props.type}
                             isNew={this.props.isNew}
-                            value={this.state.data.filter(gift => gift.sendType === 0)}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
