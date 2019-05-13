@@ -1185,6 +1185,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         specialPromotion: state.sale_specialPromotion_NEW,
+        user: state.user.toJS(),
         allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
     }
