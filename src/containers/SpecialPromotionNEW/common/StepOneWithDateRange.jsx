@@ -64,6 +64,7 @@ const simpleOptionSmsGate = [ // 选项有2种
     '64',
     '65',
     '67',
+    '68',
 ];
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
@@ -77,6 +78,7 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '65',
     '66',
     '67',
+    '68',
     '23',
     '70',
 ]

@@ -14,23 +14,27 @@ import Immutable from 'immutable';
 import {
     Form,
     Select,
+    Radio,
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput'; // 编辑
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
+        const $mpIDList = props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']);
         this.state = {
-            needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
-            partInTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'partInTimes']) || undefined, // 不想显示0
+            autoRegister: props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']) || 0,
+            recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) || undefined,
+            recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
+            mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
         }
     }
 
@@ -67,24 +71,89 @@ class StepTwo extends React.Component {
             defaultCardType
         })
     }
-
-    handlePartInTimesChange = ({ number }) => {
+    handleRecommendRuleChange = (recommendRule) => {
         this.setState({
-            partInTimes: number,
+            recommendRule,
+        })
+    }
+    handleMpIDListChange = (mpIDList) => {
+        this.setState({
+            mpIDList,
         })
     }
 
-    handleNeedCountChange = ({ number }) => {
+    handleAutoRegisterChange = ({ target: { value } }) => {
         this.setState({
-            needCount: number,
+            autoRegister: +value,
+        })
+    }
+    handleRecommendRangeChange = ({ target: { value } }) => {
+        this.setState({
+            recommendRange: +value,
         })
     }
 
     render() {
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
+        const {
+            recommendRange,
+            recommendRule,
+            autoRegister,
+            mpIDList,
+        } = this.state;
+        const {
+            allWeChatAccountList,
+        } = this.props;
+        const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
         return (
             <Form className={styles.cardLevelTree}>
+                <FormItem
+                    label="适用公众号"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        placeholder="请选择活动展现公众号"
+                        multiple
+                        value={mpIDList}
+                        onChange={this.handleMpIDListChange}
+                        getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            mpInfoList.map(({mpID, mpName}) => (
+                                <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
+                            ))
+                        }
+                    </Select>
+                </FormItem>
+                <FormItem
+                    label="活动规则"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    required
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        this.props.form.getFieldDecorator('recommendRule', {
+                            rules: [
+                                { required: true, message: '必须选择一种活动规则' }
+                            ],
+                            initialValue: recommendRule !== undefined ? `${recommendRule}` : undefined,
+                            onChange: this.handleRecommendRuleChange,
+                        })(
+                            <Select
+                                placeholder="请选择活动规则"
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Select.Option value="1">注册开卡后获得奖励</Select.Option>
+                                <Select.Option value="2">储值后获得奖励</Select.Option>
+                                <Select.Option value="3">消费后获得奖励</Select.Option>
+                            </Select>
+                        )
+                    }
+                </FormItem>
                 <FormItem
                     label="新用户注册成为会员的卡类选择"
                     className={styles.FormItemStyle}
@@ -113,51 +182,32 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 <FormItem
-                    label={'参与人数'}
+                    label={'是否静默注册'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    required
                     wrapperCol={{ span: 17 }}
                 >
-                    {this.props.form.getFieldDecorator('needCount', {
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (!v || (!v.number && v.number !== 0)) {
-                                            return cb('参与人数为必填项');
-                                        } else if (v.number === 0) {
-                                            return cb('参与人数必须大于0');
-                                        }
-                                        cb()
-                                    },
-                                }
-                            ],
-                            initialValue: {number: this.state.needCount},
-                            onChange: this.handleNeedCountChange
-                        })(
-                            <PriceInput
-                                addonAfter="人"
-                                placeholder="邀请好友人数达到参与人数配置方可获得礼品"
-                                modal="int"
-                                maxNum={6}
-                            />
-                        )
-                    } 
+                    <RadioGroup
+                        onChange={this.handleAutoRegisterChange}
+                        value={`${autoRegister}`}
+                    >
+                        <Radio value="1">无需用户填写注册信息</Radio>
+                        <Radio value="0">用户需填写注册信息</Radio>
+                    </RadioGroup>
                 </FormItem>
                 <FormItem
-                    label={'邀请人参与次数'}
+                    label={'参与范围'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <PriceInput
-                        addonAfter="次"
-                        value={{ number: this.state.partInTimes }}
-                        onChange={this.handlePartInTimesChange}
-                        placeholder="邀请人数每达到参与人数要求时，邀请人可多次获得礼品，为空表示不限次数"
-                        modal="int"
-                        maxNum={6}
-                    />
+                    <RadioGroup
+                        onChange={this.handleRecommendRangeChange}
+                        value={`${recommendRange}`}
+                    >
+                        <Radio value="0">仅直接推荐人参与</Radio>
+                        <Radio value="1">直接和间接推荐人同时参与</Radio>
+                    </RadioGroup>
                 </FormItem>
             </Form>
         );
@@ -168,6 +218,7 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
     };
 };
 

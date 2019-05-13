@@ -31,6 +31,7 @@ import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
 import ShareGifts from './shareGifts';
 import ExpansionGifts from './expansionGifts';
 import InstantDiscount from './instantDiscount';
+import RecommendGifts from './recommendGifts';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -100,6 +101,7 @@ class ActivityMain extends React.Component {
             ShareGifts,
             ExpansionGifts,
             InstantDiscount,
+            RecommendGifts,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
