@@ -34,46 +34,32 @@ import {
     fetchSpecialUserList
 } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
+import InviteeModal from './InviteeModal';
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
         super(props);
-
+        const record = this.props.record;
         this.state = {
             keyword: '',
-            eventInfo: {
+            eventInfo: record.eventInfo || {
                 data: {},
                 gifts: [],
             },
-            userInfo: [],
-            pageNo: 1,
             pageSize: 10,
-            total: 0,
+            userInfo: record.userInfo.list,
+            pageNo: record.userInfo.pageNo || 1,
+            total: record.userInfo.totalSize || 0,
+            inviteeModalVisble: false,
+            selectedInviter: null,
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
-        this.renderBaseInfo = this.renderBaseInfo.bind(this);
-        this.renderActivityDetailInfo = this.renderActivityDetailInfo.bind(this);
-        this.renderGiftInfoTable = this.renderGiftInfoTable.bind(this);
-        this.renderSearch = this.renderSearch.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.query = this.query.bind(this);
         this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
     }
 
-    componentDidMount() {
-        const record = this.props.record;
-        if (record.eventInfo) {
-            this.setState({
-                eventInfo: record.eventInfo,
-            })
-        }
-        this.setState({
-            userInfo: record.userInfo.list,
-            pageNo: record.userInfo.pageNo || 1,
-            total: record.userInfo.totalSize || 0,
-        })
-    }
     componentWillReceiveProps(nextProps) {
         if (this.props.record !== nextProps.record) {
             if (nextProps.record.eventInfo) {
@@ -102,6 +88,19 @@ class SpecialPromotionDetail extends React.Component {
             <div className={styles.showInfo}>
                 {this.renderBaseInfo()}
                 {this.renderActivityDetailInfo()}
+                {
+                    this.state.inviteeModalVisble && (
+                        <InviteeModal
+                            eventID={this.state.eventInfo.data.itemID}
+                            inviterID={this.state.selectedInviter.customerID}
+                            inviterName={this.state.selectedInviter.name}
+                            onClose={() => this.setState({
+                                inviteeModalVisble: false,
+                                selectedInviter: null,
+                            })}
+                        />
+                    )
+                }
             </div>
         );
     }
@@ -310,8 +309,16 @@ class SpecialPromotionDetail extends React.Component {
         this.setState({pageNo: 1, pageSize}, () => this.query(true));
     }
 
+    handleInviteeModalOpen = (record) => {
+        this.setState({
+            inviteeModalVisble: true,
+            selectedInviter: record,
+        })
+    }
+
     // 活动参与表格
     renderActivityInfoTable() {
+        const eventWay = this.state.eventInfo.data.eventWay;
         const columns = [
             {
                 title: '序号',
@@ -334,7 +341,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: '姓名',
+                title: eventWay == 65 ? '邀请人姓名' : '姓名',
                 dataIndex: 'name',
                 key: 'name',
                 className: 'TableTxtCenter',
@@ -348,7 +355,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'telephoneNo',
                 key: 'telephoneNo',
                 className: 'TableTxtRight',
-                width: 140,
+                width: 100,
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
@@ -361,6 +368,18 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
         ];
+        eventWay == 65 && columns.push({
+            title: '参与次数',
+            dataIndex: 'joinCount',
+            key: 'joinCount',
+            className: 'TableTxtCenter',
+            render:(text, record)=> {
+                if (text > 0) {
+                    return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+                }
+                return text
+            }
+        })
         const userInfo = this.state.userInfo || [];
         const dataSource = userInfo.map((user, index) => {
             return {
@@ -370,6 +389,7 @@ class SpecialPromotionDetail extends React.Component {
                 telephoneNo: user.customerMobile,
                 customerID: user.customerID,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
+                joinCount: user.joinCount || 0,
 
             }
         });

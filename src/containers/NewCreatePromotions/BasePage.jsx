@@ -29,10 +29,15 @@ import NewPromotionCard from "./NewPromotionCard";
 import {checkPermission} from "../../helpers/util";
 import {BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE} from "../../constants/authorityCodes";
 import {
-    BASIC_PROMOTION_CREATE_DISABLED_TIP, isBrandOfHuaTianGroupList,
-    isGroupOfHuaTianGroupList, isHuaTian, SPECIAL_PROMOTION_CREATE_DISABLED_TIP
+    BASIC_PROMOTION_CREATE_DISABLED_TIP,
+    isBrandOfHuaTianGroupList,
+    isHuaTian,
+    SPECIAL_PROMOTION_CREATE_DISABLED_TIP,
 } from "../../constants/projectHuatianConf";
-import {isFormalRelease} from "../../utils/index";
+
+const UNRELEASED_PROMOTION_TYPES = [
+    '67',
+]
 
 class BasePage extends Component {
 
@@ -65,6 +70,9 @@ class BasePage extends Component {
 
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
+        if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
+            return message.success('活动尚未开放，敬请期待');
+        }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)

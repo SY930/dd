@@ -28,12 +28,12 @@ import ExcludeCardTable from './ExcludeCardTable';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-const Immutable = require('immutable');
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
+const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
+    '20',
+    '21',
+    '22',
+    '30',
+];
 
 class CardLevel extends React.Component {
     constructor(props) {
@@ -281,25 +281,6 @@ class CardLevel extends React.Component {
                 }
             })
         }
-        const columns = [{
-            title: '活动名称',
-            dataIndex: 'eventName',
-            key: 'eventName',
-            className: 'TableTxtCenter',
-        }, {
-            title: this.props.catOrCard == 'card' ? '占用卡等级信息' : '占用卡类信息',
-            dataIndex: 'idNames',
-            key: 'idNames',
-            className: 'TableTxtCenter',
-            render: (text, record, index) => {
-                return record.idNames.map((idName, i) => {
-                    return (
-                        <div key={`idName${i}`}><h5 className={styles.cardName} key={`cardName${i}`}>{idName}</h5></div>
-                    )
-                })
-            },
-        },
-        ];
         return (
             <Form className={styles.cardLevelTree}>
                 {
@@ -359,7 +340,7 @@ class CardLevel extends React.Component {
                         </div>
                 }
                 {
-                    this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
+                    DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS.includes(`${this.props.type}`) ?
                         this.renderDefaultCardType() : null
                 }
             </Form>

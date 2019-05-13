@@ -27,16 +27,16 @@ import NewWakeUpReturnGift from './wakeUpReturnGift/NewWakeUpReturnGift'; // 唤
 import NewOnLineReturnGift from './onLineReturnGift/NewOnLineReturnGift'; // 线上送礼
 import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
-import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper'; // 左侧展示信息
+import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
+import ShareGifts from './shareGifts';
+import ExpansionGifts from './expansionGifts';
+import InstantDiscount from './instantDiscount';
+import RecommendGifts from './recommendGifts';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
     CHARACTERISTIC_CATEGORIES,
 } from '../../redux/actions/saleCenterNEW/types';
-
-if (process.env.__CLIENT__ === true) {
-    require('../../components/common/components.less');
-}
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
 class ActivityMain extends React.Component {
     constructor(props) {
@@ -97,7 +97,11 @@ class ActivityMain extends React.Component {
             // NewColorsEggCat, 彩蛋猫活动下线 key 70
             NewWakeUpReturnGift, // 唤醒送礼
             NewColorsEggCat, // 评价送礼，复用彩蛋猫
-            GiveGiftsToNewFollowers, // 关注送礼 ket 31
+            GiveGiftsToNewFollowers, // 关注送礼 key 31
+            ShareGifts,
+            ExpansionGifts,
+            InstantDiscount,
+            RecommendGifts,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
