@@ -31,6 +31,7 @@ import {
 import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import CloseableTip from '../../../components/common/CloseableTip/index';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import AddGifts from '../common/AddGifts';
 import ENV from "../../../helpers/env";
@@ -127,7 +128,7 @@ class SpecialDetailInfo extends Component {
             discountMinRate: discountMinRatio ? discountMinRatio * 100 : discountMinRatio,
             discountMaxRate: discountMaxRatio ? discountMaxRatio * 100 : discountMaxRatio,
             discountMaxLimitRate: discountMaxLimitRatio ? discountMaxLimitRatio * 100 : discountMaxLimitRatio,
-            inviteType: props.specialPromotion.getIn(['$eventInfo', 'inviteType']) || 0,
+            inviteType: 1, // 需求变更，固定为1
             defaultCardType: defaultCardType > 0 ? defaultCardType : undefined,
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
             disabledGifts: props.isNew ? false : this.props.specialPromotion.get('$giftInfo').size === 0,
@@ -441,13 +442,6 @@ class SpecialDetailInfo extends Component {
         this.setState({
             moneyLimitType: +value,
             moneyLimitValue: undefined,
-        })
-    }
-    handleInviteTypeChange = (value) => {
-        this.setState({
-            inviteType: +value,
-            mpIDList: [],
-            defaultCardType: undefined,
         })
     }
     handleDiscountTypeChange = (value) => {
@@ -1004,6 +998,21 @@ class SpecialDetailInfo extends Component {
                             />
                         )
                     }
+                    <CloseableTip
+                        style={{
+                            position: 'absolute',
+                            right: '-23px',
+                            top: '5px'
+                        }}
+                        width="100%"
+                        content={
+                            <div>
+                                <p>优惠上限</p>
+                                <br/>
+                                <p>当参与活动人数已帮砍的金额达到了优惠上限,则在活动时限内,依然会每新增一人帮砍0.01元。</p>
+                            </div>
+                        }
+                    />
                 </FormItem>
                 <FormItem
                     label="活动限时"
@@ -1046,73 +1055,82 @@ class SpecialDetailInfo extends Component {
                     <Select
                         value={`${inviteType}`}
                         getPopupContainer={(node) => node.parentNode}
-                        onChange={this.handleInviteTypeChange}
+                        disabled
                     >
-                        <Select.Option value="0">被邀请人关注公众号即完成邀请</Select.Option>
+                        {/* <Select.Option value="0">被邀请人关注公众号即完成邀请</Select.Option> */}
                         <Select.Option value="1">被邀请人注册会员即完成邀请</Select.Option>
                     </Select>
+                    <CloseableTip
+                        style={{
+                            position: 'absolute',
+                            right: '-23px',
+                            top: '5px'
+                        }}
+                        width="100%"
+                        content={
+                            <div>
+                                <p>活动规则</p>
+                                <br/>
+                                <p>被邀请人需要关注公众号,关注后会推送选定的会员卡类型的领卡链接,被邀请人注册会员后,发起人即完成砍价任务</p>
+                            </div>
+                        }
+                    />
                 </FormItem>
-                {
-                    inviteType === 0 ? (
-                        <FormItem
-                            label="公众号"
-                            className={styles.FormItemStyle}
-                            required
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            {
-                                getFieldDecorator('mpId', {
-                                    rules: [
-                                        { required: true, message: '必须选择一个公众号' }
-                                    ],
-                                    initialValue: mpIDList.length ? mpIDList[0] : undefined,
-                                    onChange: this.handleMpIdChange,
-                                })(
-                                    <Select
-                                        placeholder="请选择被邀请人需要关注的公众号"
-                                        getPopupContainer={(node) => node.parentNode}
-                                    >
-                                        {
-                                            mpInfoList.map(({mpID, mpName}) => (
-                                                <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
-                                            ))
-                                        }
-                                    </Select>
-                                )
-                            }
-                            
-                        </FormItem>
-                    ) : (
-                        <FormItem
-                            label="会员卡类型"
-                            className={styles.FormItemStyle}
-                            required
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            {
-                                getFieldDecorator('defaultCardType', {
-                                    rules: [
-                                        { required: true, message: '必须选择一个卡类型' }
-                                    ],
-                                    initialValue: defaultCardType,
-                                    onChange: this.handleDefaultCardTypeChange,
-                                })(
-                                    <Select
-                                        showSearch={true}
-                                        placeholder="请选择被邀请人需要注册的会员卡类型"
-                                        getPopupContainer={(node) => node.parentNode}
-                                    >
-                                        {
-                                            cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
-                                        }
-                                    </Select>
-                                )
-                            }
-                        </FormItem>
-                    )
-                }
+                <FormItem
+                    label="公众号"
+                    className={styles.FormItemStyle}
+                    required
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator('mpId', {
+                            rules: [
+                                { required: true, message: '必须选择一个公众号' }
+                            ],
+                            initialValue: mpIDList.length ? mpIDList[0] : undefined,
+                            onChange: this.handleMpIdChange,
+                        })(
+                            <Select
+                                placeholder="请选择被邀请人需要关注的公众号"
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    mpInfoList.map(({mpID, mpName}) => (
+                                        <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
+                                    ))
+                                }
+                            </Select>
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="会员卡类型"
+                    className={styles.FormItemStyle}
+                    required
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator('defaultCardType', {
+                            rules: [
+                                { required: true, message: '必须选择一个卡类型' }
+                            ],
+                            initialValue: defaultCardType,
+                            onChange: this.handleDefaultCardTypeChange,
+                        })(
+                            <Select
+                                showSearch={true}
+                                placeholder="请选择被邀请人需要注册的会员卡类型"
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
+                                }
+                            </Select>
+                        )
+                    }
+                </FormItem>
                 <FormItem
                     label="礼品启用状态"
                     className={styles.FormItemStyle}
