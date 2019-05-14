@@ -83,7 +83,7 @@ class StepTwo extends React.Component {
     render() {
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
-        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
