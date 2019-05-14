@@ -83,6 +83,7 @@ class StepTwo extends React.Component {
     render() {
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -137,7 +138,7 @@ class StepTwo extends React.Component {
                         })(
                             <PriceInput
                                 addonAfter="人"
-                                disabled={!this.props.isNew}
+                                disabled={userCount > 0}
                                 placeholder="邀请好友人数达到参与人数配置方可获得礼品"
                                 modal="int"
                                 maxNum={6}
