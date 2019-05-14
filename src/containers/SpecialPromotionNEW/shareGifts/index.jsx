@@ -46,6 +46,7 @@ class ShareGiftsWrapper extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        isNew={this.props.isNew}
                     />
                 ),
             },

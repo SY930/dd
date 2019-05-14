@@ -137,6 +137,7 @@ class StepTwo extends React.Component {
                         })(
                             <PriceInput
                                 addonAfter="人"
+                                disabled={!this.props.isNew}
                                 placeholder="邀请好友人数达到参与人数配置方可获得礼品"
                                 modal="int"
                                 maxNum={6}
