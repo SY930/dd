@@ -1147,8 +1147,18 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    renderRecommendGiftsDetail() {
+        return (
+            <div>
+                
+            </div>
+        )
+    }
     render() {
         const { type } = this.props;
+        if (type == '68') { // 推荐有礼的render与其它活动相差较大
+            return this.renderRecommendGiftsDetail();
+        }
         return (
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
