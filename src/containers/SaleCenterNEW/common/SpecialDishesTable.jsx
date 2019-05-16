@@ -627,7 +627,7 @@ class SpecialDishesTable extends React.Component {
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     maskClosable={false}
-                    width="922px"
+                    width={1000}
                     title={`        ${this.props.isWeChatMall ? '选择特价商品' : '选择特价菜品'}`}
                 >
                     <div style={{ width: '100%' }}>
