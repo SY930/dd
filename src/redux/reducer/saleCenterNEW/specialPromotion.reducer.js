@@ -57,6 +57,7 @@ const $initialState = Immutable.fromJS({
         validCycle: null, // 可选择每日、每周、每月，每一项的第一位表示周期类型w-周,m-月,第二位之后表示周期内值,如w1表示每周一,m2表示每周二，m1表示每月1号，当表示每日时该字段为null
     },
     $giftInfo: [],
+    $eventRecommendSettings: [],
     addStatus: {
         status: null,
         availableShopQueryStatus: 'success', // 线上餐厅送礼专用, 表示限制店铺的查询情况
@@ -72,15 +73,18 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             if (action.payload.data && (action.payload.data.status == 21 || action.payload.data.status == 5) && action.payload.data.smsTemplate ) {
                 action.payload.data.smsTemplate = '';
             }
-            if (action.payload.data && action.payload.gifts) {
+            if (action.payload.data && action.payload.gifts) { // 旧reducer 靠gifts 字段判断是否是直接从server请求来的数据
                 return $$state.mergeIn(['$eventInfo'], Immutable.fromJS({ ...action.payload.data }))
-                    .mergeIn(['$giftInfo'], Immutable.fromJS(action.payload.gifts));
+                    .mergeIn(['$giftInfo'], Immutable.fromJS(action.payload.gifts))
+                    .mergeIn(['$eventRecommendSettings'], Immutable.fromJS(action.payload.eventRecommendSettings || []));
             }
             return $$state.mergeIn(['$eventInfo'], Immutable.fromJS(action.payload.data || action.payload));
 
 
         case SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO:
             return $$state.set('$giftInfo', Immutable.fromJS(action.payload));
+        // case SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTING_INFO:
+        //     return $$state.set('$eventRecommendSettings', Immutable.fromJS(action.payload));
 
         case SALE_CENTER_ADD_SPECIAL_PROMOTION_START:
             return $$state.setIn(['addStatus', 'status'], 'pending');
