@@ -690,7 +690,13 @@ export function axiosData(api, params, opts, {
         data: reqParams
     })
         .then(json => {
-            const { code, message } = json;
+            let { code, message, result } = json;
+            if (!code) {
+                code = (result || {}).code;
+            }
+            if (!message) {
+                message = (result || {}).message;
+            }
             if (code !== '000') {
                 const {redirect, msg} = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {

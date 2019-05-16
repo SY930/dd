@@ -512,17 +512,6 @@ class SpecialDishesTable extends React.Component {
                     return <span title={text}>{text}</span>
                 },
             },
-            {
-                title: '分类',
-                dataIndex: 'foodCategoryName',
-                key: 'foodCategoryName',
-                width: 100,
-                className: 'TableTxtCenter',
-                render: (text, record, index) => {
-                    return <span title={text}>{text}</span>
-                },
-            },
-
         ];
         const specificColumns = this.props.isWeChatMall ? [
             {
@@ -571,6 +560,16 @@ class SpecialDishesTable extends React.Component {
             },
 
         ] : [
+            {
+                title: '分类',
+                dataIndex: 'foodCategoryName',
+                key: 'foodCategoryName',
+                width: 100,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <span title={text}>{text}</span>
+                },
+            },
             {
                 title: '原价格(元)',
                 dataIndex: 'price',

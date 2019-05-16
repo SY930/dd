@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { jumpPage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
@@ -18,8 +19,8 @@ import {
     fetchPromotionTagsAC,
 } from '../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
 import {
-    fetchFoodCategoryInfoAC,
-    fetchFoodMenuInfoAC,
+    getGoodsCategoryList,
+    getGoodsList,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import {throttle, isEqual, debounce} from 'lodash'
@@ -27,7 +28,6 @@ import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/s
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import Cfg from "../../constants/SpecialPromotionCfg";
 import {BASIC_PROMOTION_QUERY} from "../../constants/authorityCodes";
-import upgradeImg from '../../assets/upgrade.png'
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -50,11 +50,11 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        fetchFoodCategoryInfo: (opts) => {
-            dispatch(fetchFoodCategoryInfoAC(opts))
+        getGoodsCategoryList: (opts) => {
+            dispatch(getGoodsCategoryList(opts))
         },
-        fetchFoodMenuInfo: (opts) => {
-            dispatch(fetchFoodMenuInfoAC(opts))
+        getGoodsList: (opts) => {
+            dispatch(getGoodsList(opts))
         },
     };
 };
@@ -110,7 +110,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
     }
 
-    /*componentDidMount() {
+    componentDidMount() {
         this.handleQuery();
         this.props.fetchPromotionTags({
             groupID: this.props.user.accountInfo.groupID,
@@ -123,7 +123,7 @@ export class WeChatMallPromotionList extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
-    }*/
+    }
 
     handleDisableClickEvent(record) { // toggle, 2 关闭 1开启 3终止, 2时点击启用status传1, 1时点击禁用status传2, 3时只能查看
         const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
@@ -345,7 +345,7 @@ export class WeChatMallPromotionList extends React.Component {
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         商城活动信息
-                        {/*<Button
+                        <Button
                             type="ghost"
                             icon="plus"
                             className={styles.jumpToCreate}
@@ -353,7 +353,7 @@ export class WeChatMallPromotionList extends React.Component {
                                 () => {
                                     jumpPage({ menuID: WECHAT_MALL_CREATE })
                                 }
-                            }>新建</Button>*/}
+                            }>新建</Button>
                     </span>
                 </div>
             </div>
@@ -684,12 +684,9 @@ export class WeChatMallPromotionList extends React.Component {
      * @param isUpdate  true 为编辑, false 为查看
      */
     handleEdit(record, isUpdate) {
-        const opts = {
-            _groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID,
-        };
-        this.props.fetchFoodCategoryInfo({ ...opts });
-        this.props.fetchFoodMenuInfo({ ...opts });
+        const shopID = this.props.user.shopID;
+        this.props.getGoodsList(shopID);
+        this.props.getGoodsCategoryList(shopID);
         this.props.toggleIsUpdate(isUpdate);
         this.setState({
             selectedRecord: record,
@@ -700,17 +697,12 @@ export class WeChatMallPromotionList extends React.Component {
 
     render() {
         return (
-            <div style={{backgroundColor: '#F3F3F3', height: '100%'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
                     {this.renderHeader()}
                 </div>
 
-                <div className={styles.emptyBodyContainer} style={{ height: 'calc(100% - 79px)' }}>
-                    <img src={upgradeImg} alt=""/>
-                    <span className={styles.upgradeTip}>活动升级中, 敬请期待</span>
-                </div>
-
-                {/*<div>
+                <div>
                     <div className={styles.pageContentWrapper}>
                         <div style={{padding: 0}} className="layoutsHeader">
                             {this.renderFilterBar()}
@@ -718,7 +710,7 @@ export class WeChatMallPromotionList extends React.Component {
                         </div>
                         {this.renderTables()}
                     </div>
-                </div>*/}
+                </div>
                 {this.renderModifyRecordInfoModal(0)}
             </div>
         );
