@@ -57,7 +57,7 @@ class StepTwo extends React.Component {
         const $shopIDList = props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList']);
         const supportOrderTypes = props.specialPromotionInfo.getIn(['$eventInfo', 'supportOrderTypes']);
         this.state = {
-            shopIDList: Immutable.List.isList($shopIDList) ? $shopIDList.toJS() : [],
+            shopIDList: Immutable.List.isList($shopIDList) ? $shopIDList.toJS().map(idNumber => `${idNumber}`) : [],
             supportOrderTypes: supportOrderTypes ? supportOrderTypes.split(',') : ['0']
         }
     }
@@ -94,6 +94,7 @@ class StepTwo extends React.Component {
     }
 
     handleShopChange = (v) => {
+        console.log('v', v)
         this.setState({
             shopIDList: v,
         })

@@ -44,7 +44,7 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const getDefaultGiftData = (sendType = 0) => ({
+const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     // 膨胀所需人数
     needCount: {
         value: '',
@@ -88,7 +88,7 @@ const getDefaultGiftData = (sendType = 0) => ({
         validateStatus: 'success',
         msg: null,
     },
-    sendType,
+    [typePropertyName]: typeValue,
 })
 
 const shareInfoEnabledTypes = [
@@ -111,6 +111,7 @@ class SpecialDetailInfo extends Component {
         const defaultCardType = props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']);
         this.state = {
             data,
+            eventRecommendSettings: props.specialPromotion.getIn(['$eventInfo']),
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
@@ -164,6 +165,8 @@ class SpecialDetailInfo extends Component {
             case '65': return [getDefaultGiftData(), getDefaultGiftData(1)];
             /** 膨胀大礼包固定3个礼品，不加减数量 */
             case '66': return [getDefaultGiftData(), getDefaultGiftData(), getDefaultGiftData()];
+            /** 推荐有礼活动，是靠recommendType 字段划分礼品类型的 */
+            case '68': return [getDefaultGiftData(1, 'recommendType'), getDefaultGiftData(2, 'recommendType'), getDefaultGiftData(0, 'recommendType')];
             default: return [getDefaultGiftData()]
         }
 
@@ -181,6 +184,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftValidDays.value = gift.giftValidUntilDayCount;
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].sendType = gift.sendType || 0;
+                data[index].recommendType = gift.recommendType || 0;
                 if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                     data[index].giftCount.value = gift.giftCount;
                 } else {
@@ -188,7 +192,9 @@ class SpecialDetailInfo extends Component {
                 }
                 data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             } else {
-                data[index] = getDefaultGiftData(gift.sendType);
+                const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType'
+                const typeValue = this.props.type == '68' ? gift.recommendType : gift.sendType;
+                data[index] = getDefaultGiftData(typeValue, typePropertyName);
                 data[index].effectType = `${gift.effectType}`,
                 data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
                 data[index].giftInfo.giftName = gift.giftName;
@@ -241,6 +247,7 @@ class SpecialDetailInfo extends Component {
                 gifts.giftOdds = giftInfo.giftOdds.value;
             }
             gifts.sendType = giftInfo.sendType || 0;
+            gifts.recommendType = giftInfo.recommendType || 0;
             return gifts
         });
         return giftArr;
@@ -426,11 +433,12 @@ class SpecialDetailInfo extends Component {
         return false;
     }
 
-    gradeChange(gifts, sendType) {
+    gradeChange(gifts, typeValue) {
+        const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType';
         if (!Array.isArray(gifts)) return;
         const { data } = this.state;
         this.setState({
-            data: [...data.filter(item => item.sendType !== sendType), ...gifts]
+            data: [...data.filter(item => item[typePropertyName] !== typeValue), ...gifts]
         })
     }
     handleShareTitleChange = ({ target: { value }}) => {
@@ -1148,9 +1156,59 @@ class SpecialDetailInfo extends Component {
         )
     }
     renderRecommendGiftsDetail() {
+        const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
+        const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
+        const { type } = this.props;
         return (
             <div>
-                
+                <p className={styles.coloredBorderedLabel}>直接推荐人奖励：</p>
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={10}
+                            typeValue={1}
+                            typePropertyName={'recommendType'}
+                            type={type}
+                            isNew={this.props.isNew}
+                            value={this.state.data.filter(gift => gift.recommendType === 1)}
+                            onChange={(gifts) => this.gradeChange(gifts, 1)}
+                        />
+                    </Col>
+                </Row>
+                {
+                    recommendRange > 0 && (
+                        <div>
+                            <p className={styles.coloredBorderedLabel}>间接推荐人奖励：</p>
+                            <Row>
+                                <Col span={17} offset={4}>
+                                    <AddGifts
+                                        maxCount={10}
+                                        typeValue={2}
+                                        typePropertyName={'recommendType'}
+                                        type={type}
+                                        isNew={this.props.isNew}
+                                        value={this.state.data.filter(gift => gift.recommendType === 2)}
+                                        onChange={(gifts) => this.gradeChange(gifts, 1)}
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                }
+                <p className={styles.coloredBorderedLabel}>被推荐人奖励：</p>
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={10}
+                            typeValue={0}
+                            typePropertyName={'recommendType'}
+                            type={type}
+                            isNew={this.props.isNew}
+                            value={this.state.data.filter(gift => gift.recommendType === 0)}
+                            onChange={(gifts) => this.gradeChange(gifts, 1)}
+                        />
+                    </Col>
+                </Row>
             </div>
         )
     }
@@ -1163,7 +1221,7 @@ class SpecialDetailInfo extends Component {
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
                 {
-                    type == '65' && <p style={{padding: '10px 18px'}}>邀请人礼品获得礼品列表：</p>
+                    type == '65' && <p className={styles.coloredBorderedLabel}>邀请人礼品获得礼品列表：</p>
                 }
                 <Row>
                     <Col span={17} offset={4}>
@@ -1182,7 +1240,7 @@ class SpecialDetailInfo extends Component {
                     </Col>
                 </Row>
                 {
-                   type == '65' && <p style={{padding: '10px 18px'}}>被邀请人礼品获得礼品列表：</p>
+                   type == '65' && <p className={styles.coloredBorderedLabel}>被邀请人礼品获得礼品列表：</p>
                 }
                 {
                     type == '65' && (
@@ -1190,7 +1248,7 @@ class SpecialDetailInfo extends Component {
                             <Col span={17} offset={4}>
                                 <AddGifts
                                     maxCount={10}
-                                    sendType={1}
+                                    typeValue={1}
                                     type={type}
                                     isNew={this.props.isNew}
                                     value={this.state.data.filter(gift => gift.sendType === 1)}
