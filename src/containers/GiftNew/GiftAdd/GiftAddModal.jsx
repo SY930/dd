@@ -366,6 +366,12 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => this.renderGiftImagePath(decorator),
             },
+            showGiftRule: {
+                label: '显示系统生成规则',
+                type: 'radio',
+                defaultValue: 0,
+                options: GiftCfg.showGiftRule,
+            },
             giftRule: {
                 label: '使用规则',
                 type: 'custom',
@@ -398,6 +404,7 @@ class GiftAddModal extends React.Component {
                         'shopNames',
                         'giftImagePath',
                         'giftRule',
+                        'showGiftRule',
                         'isSynch'
                     ]
                 }
@@ -414,6 +421,7 @@ class GiftAddModal extends React.Component {
                         'cardTypeList',
                         'giftRemark',
                         'giftRule',
+                        'showGiftRule',
                     ]
                 }
             ],
@@ -429,6 +437,7 @@ class GiftAddModal extends React.Component {
                         'cardTypeList',
                         'giftRemark',
                         'giftRule',
+                        'showGiftRule',
                     ]
                 }
             ],
@@ -444,7 +453,8 @@ class GiftAddModal extends React.Component {
                         'price',
                         'giftRemark',
                         'giftRule',
-                        'isSynch'
+                        'showGiftRule',
+                        'isSynch',
                     ]
                 }
             ],
