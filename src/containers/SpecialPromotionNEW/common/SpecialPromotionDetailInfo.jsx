@@ -44,6 +44,14 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+const getDefaultRecommendSetting = (recommendType = 1) => ({
+    recommendType,
+    rechargeRate: undefined,
+    consumeRate: undefined,
+    pointRate: undefined,
+    rewardRange: 0,
+})
+
 const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     // 膨胀所需人数
     needCount: {
@@ -103,6 +111,7 @@ class SpecialDetailInfo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
         const { data } = this.initState();
+        const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
@@ -111,7 +120,7 @@ class SpecialDetailInfo extends Component {
         const defaultCardType = props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']);
         this.state = {
             data,
-            eventRecommendSettings: props.specialPromotion.getIn(['$eventInfo']),
+            eventRecommendSettings,
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
@@ -169,7 +178,6 @@ class SpecialDetailInfo extends Component {
             case '68': return [getDefaultGiftData(1, 'recommendType'), getDefaultGiftData(2, 'recommendType'), getDefaultGiftData(0, 'recommendType')];
             default: return [getDefaultGiftData()]
         }
-
     }
 
     initState = () => {
@@ -211,6 +219,13 @@ class SpecialDetailInfo extends Component {
         return {
             data,
         };
+    }
+
+    initEventRecommendSettings = () => {
+        const eventRecommendSettings = this.props.specialPromotion.get('$eventRecommendSettings').toJS();
+        if (eventRecommendSettings.length === 2) return eventRecommendSettings;
+        if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
+        return [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
     }
 
     // 拼出礼品信息
@@ -1155,60 +1170,114 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+
+    renderRecommendGifts = (recommendType) => (
+        <Row>
+            <Col span={17} offset={4}>
+                <AddGifts
+                    maxCount={10}
+                    typeValue={recommendType}
+                    typePropertyName={'recommendType'}
+                    type={this.props.type}
+                    isNew={this.props.isNew}
+                    value={this.state.data.filter(gift => gift.recommendType === recommendType)}
+                    onChange={(gifts) => this.gradeChange(gifts, recommendType)}
+                />
+            </Col>
+        </Row>
+    )
+    renderRechargeReward = (recommendType) => {
+        return (
+            <div>
+                <FormItem
+                    label="储值金额比例"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator(`recharge${recommendType}`, {
+                            onChange: this.handleEventValidTimeChange,
+                            initialValue: { number: eventValidTime },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || !(v.number >= 0)) {
+                                            return cb('储值金额比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('储值金额比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="积分比例"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        getFieldDecorator(`point${recommendType}`, {
+                            onChange: this.handleEventValidTimeChange,
+                            initialValue: { number: eventValidTime },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || !(v.number >= 0)) {
+                                            return cb('积分比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('积分比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+            </div>
+        )
+    }
     renderRecommendGiftsDetail() {
         const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
         const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
-        const { type } = this.props;
+        let renderRecommentReward;
+        switch (+recommendRule) {
+            case 1: renderRecommentReward = this.renderRecommendGifts; break;
+            case 2: renderRecommentReward = this.renderRecommendGifts; break;
+            case 3: renderRecommentReward = this.renderRecommendGifts; break;
+            default: renderRecommentReward = this.renderRecommendGifts;
+        }
         return (
             <div>
                 <p className={styles.coloredBorderedLabel}>直接推荐人奖励：</p>
-                <Row>
-                    <Col span={17} offset={4}>
-                        <AddGifts
-                            maxCount={10}
-                            typeValue={1}
-                            typePropertyName={'recommendType'}
-                            type={type}
-                            isNew={this.props.isNew}
-                            value={this.state.data.filter(gift => gift.recommendType === 1)}
-                            onChange={(gifts) => this.gradeChange(gifts, 1)}
-                        />
-                    </Col>
-                </Row>
+                {renderRecommentReward(1)}
                 {
                     recommendRange > 0 && (
                         <div>
                             <p className={styles.coloredBorderedLabel}>间接推荐人奖励：</p>
-                            <Row>
-                                <Col span={17} offset={4}>
-                                    <AddGifts
-                                        maxCount={10}
-                                        typeValue={2}
-                                        typePropertyName={'recommendType'}
-                                        type={type}
-                                        isNew={this.props.isNew}
-                                        value={this.state.data.filter(gift => gift.recommendType === 2)}
-                                        onChange={(gifts) => this.gradeChange(gifts, 1)}
-                                    />
-                                </Col>
-                            </Row>
+                            {renderRecommentReward(2)}
                         </div>
                     )
                 }
                 <p className={styles.coloredBorderedLabel}>被推荐人奖励：</p>
-                <Row>
-                    <Col span={17} offset={4}>
-                        <AddGifts
-                            maxCount={10}
-                            typeValue={0}
-                            typePropertyName={'recommendType'}
-                            type={type}
-                            isNew={this.props.isNew}
-                            value={this.state.data.filter(gift => gift.recommendType === 0)}
-                            onChange={(gifts) => this.gradeChange(gifts, 1)}
-                        />
-                    </Col>
-                </Row>
+                {this.renderRecommendGifts(0)}
             </div>
         )
     }
