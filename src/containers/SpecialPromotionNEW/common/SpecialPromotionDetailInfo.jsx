@@ -533,6 +533,19 @@ class SpecialDetailInfo extends Component {
             eventValidTime: number,
         })
     }
+    handleRecommendSettingsChange = (index, propertyName) => (val) => {
+        const eventRecommendSettings = this.state.eventRecommendSettings.slice();
+        let value;
+        if (typeof val === 'object') {
+            value = val.number;
+        } else {
+            value = val;
+        }
+        eventRecommendSettings[index][propertyName] = value;
+        this.setState({
+            eventRecommendSettings,
+        })
+    }
     handleDiscountWayChange = ({ target : { value } }) => {
         this.setState({
             discountWay: +value,
@@ -635,8 +648,7 @@ class SpecialDetailInfo extends Component {
                 >
                     {this.renderImgUrl()}
                 </FormItem>
-            </div>
-            
+            </div>  
         )
     }
     renderFlexFormControl() {
@@ -1187,22 +1199,31 @@ class SpecialDetailInfo extends Component {
         </Row>
     )
     renderRechargeReward = (recommendType) => {
+        const {
+            eventRecommendSettings,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        const index = recommendType - 1;
         return (
             <div>
                 <FormItem
                     label="储值金额比例"
                     className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
                 >
                     {
                         getFieldDecorator(`recharge${recommendType}`, {
-                            onChange: this.handleEventValidTimeChange,
-                            initialValue: { number: eventValidTime },
+                            onChange: this.handleRecommendSettingsChange(index, 'rechargeRate'),
+                            initialValue: { number: eventRecommendSettings[index].rechargeRate },
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || !(v.number >= 0)) {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
                                             return cb('储值金额比例不得为空');
                                         } else if (v.number > 100) {
                                             return cb('储值金额比例不能超过100%');
@@ -1223,17 +1244,17 @@ class SpecialDetailInfo extends Component {
                 <FormItem
                     label="积分比例"
                     className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
                 >
                     {
                         getFieldDecorator(`point${recommendType}`, {
-                            onChange: this.handleEventValidTimeChange,
-                            initialValue: { number: eventValidTime },
+                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
+                            initialValue: { number: eventRecommendSettings[index].pointRate },
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || !(v.number >= 0)) {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
                                             return cb('积分比例不得为空');
                                         } else if (v.number > 100) {
                                             return cb('积分比例不能超过100%');
@@ -1254,14 +1275,107 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    renderConsumptionReward = (recommendType) => {
+        const {
+            eventRecommendSettings,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        const index = recommendType - 1;
+        return (
+            <div>
+                <FormItem
+                    label="消费金额比例"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`consumption${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'consumeRate'),
+                            initialValue: { number: eventRecommendSettings[index].consumeRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('消费金额比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('消费金额比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="积分比例"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`point${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
+                            initialValue: { number: eventRecommendSettings[index].pointRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('积分比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('积分比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="奖励范围"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    <Select
+                        value={`${eventRecommendSettings[index].rewardRange}`}
+                        getPopupContainer={(node) => node.parentNode}
+                        onChange={this.handleRecommendSettingsChange(index, 'rewardRange')}
+                    >
+                        <Select.Option value="0">仅会员现金卡值消费部分</Select.Option>
+                        <Select.Option value="1">包含会员卡值的全部账单金额</Select.Option>
+                        <Select.Option value="2">不包含会员卡值的账单金额</Select.Option>
+                    </Select>
+                </FormItem>
+            </div>
+        )
+    }
     renderRecommendGiftsDetail() {
         const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
         const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
         let renderRecommentReward;
         switch (+recommendRule) {
             case 1: renderRecommentReward = this.renderRecommendGifts; break;
-            case 2: renderRecommentReward = this.renderRecommendGifts; break;
-            case 3: renderRecommentReward = this.renderRecommendGifts; break;
+            case 2: renderRecommentReward = this.renderRechargeReward; break;
+            case 3: renderRecommentReward = this.renderConsumptionReward; break;
             default: renderRecommentReward = this.renderRecommendGifts;
         }
         return (
