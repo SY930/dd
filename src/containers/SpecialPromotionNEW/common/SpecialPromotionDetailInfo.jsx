@@ -27,6 +27,7 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialGiftInfoAC,
+    saleCenterSetSpecialRecommendSettingsInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
     fetchGiftListInfoAC,
@@ -43,6 +44,14 @@ const FormItem = Form.Item;
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+
+const getDefaultRecommendSetting = (recommendType = 1) => ({
+    recommendType,
+    rechargeRate: undefined,
+    consumeRate: undefined,
+    pointRate: undefined,
+    rewardRange: 0,
+})
 
 const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     // 膨胀所需人数
@@ -103,6 +112,7 @@ class SpecialDetailInfo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
         const { data } = this.initState();
+        const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
@@ -111,7 +121,7 @@ class SpecialDetailInfo extends Component {
         const defaultCardType = props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']);
         this.state = {
             data,
-            eventRecommendSettings: props.specialPromotion.getIn(['$eventInfo']),
+            eventRecommendSettings,
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
@@ -166,10 +176,9 @@ class SpecialDetailInfo extends Component {
             /** 膨胀大礼包固定3个礼品，不加减数量 */
             case '66': return [getDefaultGiftData(), getDefaultGiftData(), getDefaultGiftData()];
             /** 推荐有礼活动，是靠recommendType 字段划分礼品类型的 */
-            case '68': return [getDefaultGiftData(1, 'recommendType'), getDefaultGiftData(2, 'recommendType'), getDefaultGiftData(0, 'recommendType')];
+            case '68': return [];
             default: return [getDefaultGiftData()]
         }
-
     }
 
     initState = () => {
@@ -208,9 +217,33 @@ class SpecialDetailInfo extends Component {
                 data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             }
         })
+        if (this.props.type == '68') { // 小数组，重复为了代码方便重复遍历的
+            if (data.every(gift => gift.recommendType != 1)) {
+                data.push(getDefaultGiftData(1, 'recommendType'))
+            }
+            if (data.every(gift => gift.recommendType != 2)) {
+                data.push(getDefaultGiftData(2, 'recommendType'))
+            }
+            if (data.every(gift => gift.recommendType != 0)) {
+                data.push(getDefaultGiftData(0, 'recommendType'))
+            }
+        }
         return {
             data,
         };
+    }
+
+    initEventRecommendSettings = () => {
+        let eventRecommendSettings = this.props.specialPromotion.get('$eventRecommendSettings').toJS();
+        eventRecommendSettings = eventRecommendSettings.map(setting => ({
+            ...setting,
+            pointRate: (+setting.pointRate || 0) * 100,
+            consumeRate: (+setting.consumeRate || 0) * 100,
+            rechargeRate: (+setting.rechargeRate || 0) * 100,
+        }))
+        if (eventRecommendSettings.length === 2) return eventRecommendSettings;
+        if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
+        return [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
     }
 
     // 拼出礼品信息
@@ -370,7 +403,19 @@ class SpecialDetailInfo extends Component {
             }
             return giftInfo;
         }
-
+        if (this.props.type == '68') {
+            const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
+            const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
+            if (recommendRule != 1) {
+                data = data.filter(item => item.recommendType == 0)
+                console.log('data', data)
+            }
+            if (recommendRule == 1 && recommendRange == 0) {
+                data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
+                console.log('data', data)
+            }
+        }
+        console.log('data', data)
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
@@ -390,6 +435,7 @@ class SpecialDetailInfo extends Component {
                 [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
+        console.log('validatedRuleData', validatedRuleData)
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                 .reduce((flag, key) => {
@@ -428,6 +474,37 @@ class SpecialDetailInfo extends Component {
                 shareTitle,
             });
             this.props.setSpecialGiftInfo(giftInfo);
+            if (this.props.type == '68') {
+                let { eventRecommendSettings } = this.state;
+                const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
+                const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
+                if (recommendRule == 1) {
+                    eventRecommendSettings = [];
+                }
+                if (recommendRule == 2) {
+                    eventRecommendSettings = eventRecommendSettings
+                        .map(setting => ({
+                            ...setting,
+                            rechargeRate: setting.rechargeRate / 100,
+                            pointRate: setting.pointRate / 100,
+                            consumeRate: 0,
+                            rewardRange: 0,
+                        }))
+                }
+                if (recommendRule == 3) {
+                    eventRecommendSettings = eventRecommendSettings
+                        .map(setting => ({
+                            ...setting,
+                            pointRate: setting.pointRate / 100,
+                            consumeRate: setting.consumeRate / 100,
+                            rechargeRate: 0,
+                        }))
+                }
+                if (recommendRange == 0) {
+                    eventRecommendSettings = eventRecommendSettings.filter(setting => setting.recommendType == 1)
+                }
+                this.props.setSpecialRecommendSettings(eventRecommendSettings)
+            }
             return true;
         }
         return false;
@@ -516,6 +593,19 @@ class SpecialDetailInfo extends Component {
     handleEventValidTimeChange = ({ number }) => {
         this.setState({
             eventValidTime: number,
+        })
+    }
+    handleRecommendSettingsChange = (index, propertyName) => (val) => {
+        const eventRecommendSettings = this.state.eventRecommendSettings.slice();
+        let value;
+        if (typeof val === 'object') {
+            value = val.number;
+        } else {
+            value = val;
+        }
+        eventRecommendSettings[index][propertyName] = value;
+        this.setState({
+            eventRecommendSettings,
         })
     }
     handleDiscountWayChange = ({ target : { value } }) => {
@@ -620,8 +710,7 @@ class SpecialDetailInfo extends Component {
                 >
                     {this.renderImgUrl()}
                 </FormItem>
-            </div>
-            
+            </div>  
         )
     }
     renderFlexFormControl() {
@@ -1155,60 +1244,227 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+
+    renderRecommendGifts = (recommendType) => {
+        let filteredGifts = this.state.data.filter(gift => gift.recommendType === recommendType);
+        if (!filteredGifts.length) {
+            filteredGifts = [getDefaultGiftData(recommendType, 'recommendType')]
+        }
+        return (
+            <Row>
+                <Col span={17} offset={4}>
+                    <AddGifts
+                        maxCount={10}
+                        typeValue={recommendType}
+                        typePropertyName={'recommendType'}
+                        type={this.props.type}
+                        isNew={this.props.isNew}
+                        value={filteredGifts}
+                        onChange={(gifts) => this.gradeChange(gifts, recommendType)}
+                    />
+                </Col>
+            </Row>
+        )
+    }
+    
+    renderRechargeReward = (recommendType) => {
+        const {
+            eventRecommendSettings,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        const index = recommendType - 1;
+        return (
+            <div>
+                <FormItem
+                    label="储值金额比例"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`recharge${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'rechargeRate'),
+                            initialValue: { number: eventRecommendSettings[index].rechargeRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('储值金额比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('储值金额比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="积分比例"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`point${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
+                            initialValue: { number: eventRecommendSettings[index].pointRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('积分比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('积分比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+            </div>
+        )
+    }
+    renderConsumptionReward = (recommendType) => {
+        const {
+            eventRecommendSettings,
+        } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        const index = recommendType - 1;
+        return (
+            <div>
+                <FormItem
+                    label="消费金额比例"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`consumption${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'consumeRate'),
+                            initialValue: { number: eventRecommendSettings[index].consumeRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('消费金额比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('消费金额比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="积分比例"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    {
+                        getFieldDecorator(`point${recommendType}`, {
+                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
+                            initialValue: { number: eventRecommendSettings[index].pointRate },
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || v.number === '' || !(v.number >= 0)) {
+                                            return cb('积分比例不得为空');
+                                        } else if (v.number > 100) {
+                                            return cb('积分比例不能超过100%');
+                                        }
+                                        cb()
+                                    },
+                                },
+                            ],
+                        })(
+                            <PriceInput
+                                addonAfter="%"
+                                maxNum={3}
+                                modal="float"
+                            />
+                        )
+                    }
+                </FormItem>
+                <FormItem
+                    label="奖励范围"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4, offset: 3 }}
+                    wrapperCol={{ span: 12 }}
+                >
+                    <Select
+                        value={`${eventRecommendSettings[index].rewardRange}`}
+                        getPopupContainer={(node) => node.parentNode}
+                        onChange={this.handleRecommendSettingsChange(index, 'rewardRange')}
+                    >
+                        <Select.Option value="0">仅会员现金卡值消费部分</Select.Option>
+                        <Select.Option value="1">包含会员卡值的全部账单金额</Select.Option>
+                        <Select.Option value="2">不包含会员卡值的账单金额</Select.Option>
+                    </Select>
+                </FormItem>
+            </div>
+        )
+    }
     renderRecommendGiftsDetail() {
         const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
         const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
-        const { type } = this.props;
+        let renderRecommentReward;
+        switch (+recommendRule) {
+            case 1: renderRecommentReward = this.renderRecommendGifts; break;
+            case 2: renderRecommentReward = this.renderRechargeReward; break;
+            case 3: renderRecommentReward = this.renderConsumptionReward; break;
+            default: renderRecommentReward = this.renderRecommendGifts;
+        }
         return (
             <div>
                 <p className={styles.coloredBorderedLabel}>直接推荐人奖励：</p>
-                <Row>
-                    <Col span={17} offset={4}>
-                        <AddGifts
-                            maxCount={10}
-                            typeValue={1}
-                            typePropertyName={'recommendType'}
-                            type={type}
-                            isNew={this.props.isNew}
-                            value={this.state.data.filter(gift => gift.recommendType === 1)}
-                            onChange={(gifts) => this.gradeChange(gifts, 1)}
-                        />
-                    </Col>
-                </Row>
+                {renderRecommentReward(1)}
                 {
                     recommendRange > 0 && (
                         <div>
                             <p className={styles.coloredBorderedLabel}>间接推荐人奖励：</p>
-                            <Row>
-                                <Col span={17} offset={4}>
-                                    <AddGifts
-                                        maxCount={10}
-                                        typeValue={2}
-                                        typePropertyName={'recommendType'}
-                                        type={type}
-                                        isNew={this.props.isNew}
-                                        value={this.state.data.filter(gift => gift.recommendType === 2)}
-                                        onChange={(gifts) => this.gradeChange(gifts, 1)}
-                                    />
-                                </Col>
-                            </Row>
+                            {renderRecommentReward(2)}
                         </div>
                     )
                 }
                 <p className={styles.coloredBorderedLabel}>被推荐人奖励：</p>
-                <Row>
-                    <Col span={17} offset={4}>
-                        <AddGifts
-                            maxCount={10}
-                            typeValue={0}
-                            typePropertyName={'recommendType'}
-                            type={type}
-                            isNew={this.props.isNew}
-                            value={this.state.data.filter(gift => gift.recommendType === 0)}
-                            onChange={(gifts) => this.gradeChange(gifts, 1)}
-                        />
-                    </Col>
-                </Row>
+                {this.renderRecommendGifts(0)}
             </div>
         )
     }
@@ -1284,6 +1540,9 @@ function mapDispatchToProps(dispatch) {
         },
         setSpecialGiftInfo: (opts) => {
             dispatch(saleCenterSetSpecialGiftInfoAC(opts));
+        },
+        setSpecialRecommendSettings: (opts) => {
+            dispatch(saleCenterSetSpecialRecommendSettingsInfoAC(opts));
         },
         fetchGiftListInfo: (opts) => {
             dispatch(fetchGiftListInfoAC(opts));
