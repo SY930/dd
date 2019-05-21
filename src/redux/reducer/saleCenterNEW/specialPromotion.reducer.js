@@ -18,6 +18,7 @@ import {
 
     SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO,
     SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO,
+    SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO,
     SALE_CENTER_CHECK_BIRTHDAY_SUCCESS,
     SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS,
 
@@ -83,8 +84,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO:
             return $$state.set('$giftInfo', Immutable.fromJS(action.payload));
-        // case SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTING_INFO:
-        //     return $$state.set('$eventRecommendSettings', Immutable.fromJS(action.payload));
+        case SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO:
+            return $$state.set('$eventRecommendSettings', Immutable.fromJS(action.payload));
 
         case SALE_CENTER_ADD_SPECIAL_PROMOTION_START:
             return $$state.setIn(['addStatus', 'status'], 'pending');

@@ -15,6 +15,7 @@ import { getStore } from '@hualala/platform-base/lib';
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO = 'sale center: set special promotion event info new';
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO = 'sale center: set special promotion gift info new';
+export const SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO = 'sale center: set special promotion recommend settings info new';
 
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST = 'sale center: check birthday exist new';
 export const SALE_CENTER_CHECK_BIRTHDAY_SUCCESS = 'sale center: check birthday exist success new';
@@ -63,6 +64,12 @@ export const saleCenterQueryOnlineRestaurantStatus = (opts) => {
 export const saleCenterSetSpecialGiftInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO,
+        payload: opts,
+    };
+};
+export const saleCenterSetSpecialRecommendSettingsInfoAC = (opts) => {
+    return {
+        type: SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO,
         payload: opts,
     };
 };
@@ -387,7 +394,11 @@ export const updateSpecialPromotion = opts => {
                     }, 0);
                     return dispatch(updateSpecialPromotionSuccess(response));
                 }
-                opts.fail && opts.fail(response.message);
+                setTimeout(
+                    () => {
+                        opts.fail && opts.fail(response.message);
+                    }
+                );
                 return dispatch(updateSpecialPromotionFail(response.code));
             })
             .catch((err) => {

@@ -73,6 +73,7 @@ export default class NewPromotion extends React.Component {
                 userName: user.accountInfo.userName,
             },
             gifts: specialPromotion.$giftInfo,
+            eventRecommendSettings: specialPromotion.$eventRecommendSettings,
         };
         if (this.props.isNew === false) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
