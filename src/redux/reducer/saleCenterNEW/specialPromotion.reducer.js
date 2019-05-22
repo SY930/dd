@@ -26,8 +26,12 @@ import {
 
     SALE_CENTER_RESET_SPECIAL_PROMOTION,
     SALE_CENTER_FSM_SETTLE_UNIT,
-    SALE_CENTER_GET_EXCLUDE_EVENT_LIST, SALE_CENTER_FSM_EQUITY_UNIT, SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
-    SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP, SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
+    SALE_CENTER_GET_EXCLUDE_EVENT_LIST,
+    SALE_CENTER_FSM_EQUITY_UNIT,
+    SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
+    SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP,
+    SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
+    SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
 } from '../../actions/saleCenterNEW/specialPromotion.action';
 
 const $initialState = Immutable.fromJS({
@@ -142,7 +146,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_GET_EXCLUDE_EVENT_LIST:
             return $$state.setIn(['$eventInfo', 'getExcludeEventList'], action.payload.excludeEventModelList)
-
+        case SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT:
+            return $$state.setIn(['customerCount'], action.payload.customerCount)
         default:
             return $$state;
     }
