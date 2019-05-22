@@ -16,14 +16,14 @@ class NewPromotionCard extends Component {
                 example,
                 key,
                 right = 0,
-                bottom = 0
+                bottom = 0,
+                isNew,
             },
             index,
             onCardClick
         } = this.props;
         let backgroundImageString;
         switch (index % 4) {
-            case 0: backgroundImageString = bg0; break;
             case 1: backgroundImageString = bg1; break;
             case 2: backgroundImageString = bg2; break;
             case 3: backgroundImageString = bg3; break;
@@ -36,6 +36,13 @@ class NewPromotionCard extends Component {
                 <div className={styles.cardTitle}>
                     {title}
                 </div>
+                {
+                    isNew && (
+                        <div className={styles.cardNewTag}>
+                            NEW
+                        </div>
+                    )
+                }
                 <div className={styles.tagsContainer}>
                     {tags.map(tag => (<div className={styles.tag} key={tag}>{tag}</div>))}
                 </div>

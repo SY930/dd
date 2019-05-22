@@ -75,11 +75,12 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: '推荐有礼',
         isSpecial: true,
+        isNew: true,
         tags: ['新微信'],
         text: '老客户推荐新用户，双方都能拿到礼品返还，适合长期会员拉新使用',
         example: '',
         key: '68',
-        right: 13,
+        right: 11,
         bottom: 0,
     },
     {
