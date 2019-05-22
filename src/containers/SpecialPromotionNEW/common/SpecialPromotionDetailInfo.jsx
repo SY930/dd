@@ -1281,7 +1281,6 @@ class SpecialDetailInfo extends Component {
             <div>
                 <FormItem
                     label="储值金额比例"
-                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4, offset: 3 }}
                     wrapperCol={{ span: 12 }}
@@ -1293,8 +1292,11 @@ class SpecialDetailInfo extends Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || v.number === '' || !(v.number >= 0)) {
-                                            return cb('储值金额比例不得为空');
+                                        if (v.number === '' || v.number === undefined) {
+                                            return cb();
+                                        }
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('储值金额比例必须大于0');
                                         } else if (v.number > 100) {
                                             return cb('储值金额比例不能超过100%');
                                         }
@@ -1313,7 +1315,6 @@ class SpecialDetailInfo extends Component {
                 </FormItem>
                 <FormItem
                     label="积分比例"
-                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4, offset: 3 }}
                     wrapperCol={{ span: 12 }}
@@ -1325,8 +1326,11 @@ class SpecialDetailInfo extends Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || v.number === '' || !(v.number >= 0)) {
-                                            return cb('积分比例不得为空');
+                                        if (v.number === '' || v.number === undefined) {
+                                            return cb();
+                                        }
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('积分比例必须大于0');
                                         } else if (v.number > 100) {
                                             return cb('积分比例不能超过100%');
                                         }
