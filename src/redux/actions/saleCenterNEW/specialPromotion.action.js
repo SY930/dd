@@ -47,6 +47,7 @@ export const SALE_CENTER_FSM_EQUITY_UNIT = 'sale center: query fsm group equity 
 export const SALE_CENTER_QUERY_SMS_SIGN_SUCCESS = 'sale center: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude event list new';
 export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS = 'sale center: sale_center_query_online_restaurant_shops_status';
+export const SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT = 'sale center: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
@@ -174,6 +175,23 @@ export const getEventExcludeCardTypes = (opts) => {
                     payload: {
                         excludeCardTypeIDs: Array.isArray(excludeCardTypeIDs) ? excludeCardTypeIDs : [],
                         excludeCardTypeShops: Array.isArray(excludeCardTypeShops) ? excludeCardTypeShops : []
+                    },
+                });
+            })
+    }
+}
+/**
+ * 查询集团所有会员的数量
+ */
+export const getGroupCRMCustomAmount = () => {
+    return (dispatch) => {
+        axiosData('/specialPromotion/queryCrmCustomerCount.ajax', {}, {needThrow: true}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then(res => {
+                console.log('res', res)
+                dispatch({
+                    type: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
+                    payload: {
+                        customerCount: res.customerCount
                     },
                 });
             })
