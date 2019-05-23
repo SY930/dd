@@ -6,7 +6,6 @@ import {NEW_CUSTOMER_PROMOTION_TYPES} from "../../constants/promotionType";
 import {NEW_CUSTOMER} from "../../constants/entryCodes";
 
 const preReleaseTypes = [
-    '66',
     '67',
     '68',
 ]
