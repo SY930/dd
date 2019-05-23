@@ -15,8 +15,10 @@ import {
     Form,
     Select,
     Radio,
+    Tooltip,
+    Icon,
 } from 'antd';
-import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
@@ -104,6 +106,9 @@ class StepTwo extends React.Component {
         } = this.state;
         const {
             allWeChatAccountList,
+            isAllOccupied,
+            occupiedIDs,
+            isQuerying,
         } = this.props;
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
         return (
@@ -123,10 +128,28 @@ class StepTwo extends React.Component {
                     >
                         {
                             mpInfoList.map(({mpID, mpName}) => (
-                                <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
+                                <Select.Option
+                                    key={mpID}
+                                    value={mpID}
+                                    disabled={isAllOccupied || isQuerying || occupiedIDs.includes(mpID)}
+                                >
+                                    {mpName}
+                                </Select.Option>
                             ))
                         }
                     </Select>
+                    <Tooltip title={
+                        <p>
+                            <p>对于非公众号使用场景的情况下，不用选择适用公众号</p>
+                            <p>对于公众号使用场景情况下，同一时间一个公众号只能配置一个推荐有礼活动</p>
+                        </p>
+                    }>
+                        <Icon
+                            type={'question-circle'}
+                            style={{ color: '#787878' }}
+                            className={styles.cardLevelTreeIcon}
+                        />
+                    </Tooltip>
                 </FormItem>
                 <FormItem
                     label="活动规则"
@@ -219,6 +242,9 @@ const mapStateToProps = (state) => {
         specialPromotionInfo: state.sale_specialPromotion_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
         allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
+        occupiedIDs: state.queryWeixinAccounts.get('occupiedIDs'),
+        isAllOccupied: state.queryWeixinAccounts.get('isAllOccupied'),
+        isQuerying: state.queryWeixinAccounts.get('isLoading')
     };
 };
 

@@ -144,6 +144,7 @@ class SpecialDetailInfo extends Component {
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
             disabledGifts: props.isNew ? false : this.props.specialPromotion.get('$giftInfo').size === 0,
             /** 桌边砍相关结束 */
+            helpMessageArray: ['', ''],
         }
     }
     componentDidMount() {
@@ -165,6 +166,15 @@ class SpecialDetailInfo extends Component {
             this.props.fetchSpecialCardLevel({
                 data: opts,
             });
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.specialPromotion.getIn(['$eventInfo', 'recommendRule']) !==
+        this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule'])) {
+            this.setState({
+                helpMessageArray: ['', ''],
+            })
         }
     }
 
@@ -235,11 +245,12 @@ class SpecialDetailInfo extends Component {
 
     initEventRecommendSettings = () => {
         let eventRecommendSettings = this.props.specialPromotion.get('$eventRecommendSettings').toJS();
+        // 后端是按比率存的（0.11），前端是按百分比显示（11%）的
         eventRecommendSettings = eventRecommendSettings.map(setting => ({
             ...setting,
-            pointRate: (+setting.pointRate || 0) * 100,
-            consumeRate: (+setting.consumeRate || 0) * 100,
-            rechargeRate: (+setting.rechargeRate || 0) * 100,
+            pointRate: setting.pointRate ? (+setting.pointRate) * 100 : undefined,
+            consumeRate: setting.pointRate ? (+setting.consumeRate) * 100 : undefined,
+            rechargeRate: setting.pointRate ? (+setting.rechargeRate) * 100 : undefined,
         }))
         if (eventRecommendSettings.length === 2) return eventRecommendSettings;
         if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
@@ -306,6 +317,50 @@ class SpecialDetailInfo extends Component {
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
             if (error) {
                 flag = false;
+            }
+            // 推荐有礼特有校验逻辑：两个输入框至少要有1个
+            if (this.props.type == '68') {
+                const { helpMessageArray } = this.state;
+                if (basicValues['recharge1']) {
+                    if ((basicValues['recharge1'].number === '' || basicValues['recharge1'].number == undefined) &&
+                        (basicValues['point1'].number === '' || basicValues['point1'].number == undefined)
+                    ) {
+                        helpMessageArray[0] = '储值比例与积分比例至少要设置一项';
+                        flag = false;
+                    } else {
+                        helpMessageArray[0] = '';
+                    }
+                }
+                if (basicValues['consumption1']) {
+                    if ((basicValues['consumption1'].number === '' || basicValues['consumption1'].number == undefined) &&
+                        (basicValues['point1'].number === '' || basicValues['point1'].number == undefined)
+                    ) {
+                        helpMessageArray[0] = '消费比例与积分比例至少要设置一项';
+                        flag = false;
+                    } else {
+                        helpMessageArray[0] = '';
+                    }
+                }
+                if (basicValues['recharge2']) {
+                    if ((basicValues['recharge2'].number === '' || basicValues['recharge2'].number == undefined) &&
+                        (basicValues['point2'].number === '' || basicValues['point2'].number == undefined)
+                    ) {
+                        helpMessageArray[1] = '储值比例与积分比例至少要设置一项';
+                        flag = false;
+                    } else {
+                        helpMessageArray[1] = '';
+                    }
+                }
+                if (basicValues['consumption2']) {
+                    if ((basicValues['consumption2'].number === '' || basicValues['consumption2'].number == undefined) &&
+                        (basicValues['point2'].number === '' || basicValues['point2'].number == undefined)
+                    ) {
+                        helpMessageArray[1] = '消费比例与积分比例至少要设置一项';
+                        flag = false;
+                    } else {
+                        helpMessageArray[1] = '';
+                    }
+                }
             }
         });
         if (!flag) {
@@ -408,14 +463,11 @@ class SpecialDetailInfo extends Component {
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
             if (recommendRule != 1) {
                 data = data.filter(item => item.recommendType == 0)
-                console.log('data', data)
             }
             if (recommendRule == 1 && recommendRange == 0) {
                 data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
-                console.log('data', data)
             }
         }
-        console.log('data', data)
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
@@ -435,7 +487,6 @@ class SpecialDetailInfo extends Component {
                 [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
-        console.log('validatedRuleData', validatedRuleData)
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                 .reduce((flag, key) => {
@@ -597,15 +648,18 @@ class SpecialDetailInfo extends Component {
     }
     handleRecommendSettingsChange = (index, propertyName) => (val) => {
         const eventRecommendSettings = this.state.eventRecommendSettings.slice();
+        const { helpMessageArray } = this.state;
         let value;
         if (typeof val === 'object') {
             value = val.number;
+            helpMessageArray[index] = '';
         } else {
             value = val;
         }
         eventRecommendSettings[index][propertyName] = value;
         this.setState({
             eventRecommendSettings,
+            helpMessageArray,
         })
     }
     handleDiscountWayChange = ({ target : { value } }) => {
@@ -1364,7 +1418,6 @@ class SpecialDetailInfo extends Component {
             <div>
                 <FormItem
                     label="消费金额比例"
-                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4, offset: 3 }}
                     wrapperCol={{ span: 12 }}
@@ -1376,8 +1429,11 @@ class SpecialDetailInfo extends Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || v.number === '' || !(v.number >= 0)) {
-                                            return cb('消费金额比例不得为空');
+                                        if (v.number === '' || v.number === undefined) {
+                                            return cb();
+                                        }
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('消费金额比例必须大于0');
                                         } else if (v.number > 100) {
                                             return cb('消费金额比例不能超过100%');
                                         }
@@ -1396,7 +1452,6 @@ class SpecialDetailInfo extends Component {
                 </FormItem>
                 <FormItem
                     label="积分比例"
-                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4, offset: 3 }}
                     wrapperCol={{ span: 12 }}
@@ -1408,8 +1463,11 @@ class SpecialDetailInfo extends Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || v.number === '' || !(v.number >= 0)) {
-                                            return cb('积分比例不得为空');
+                                        if (v.number === '' || v.number === undefined) {
+                                            return cb();
+                                        }
+                                        if (!v || !(v.number > 0)) {
+                                            return cb('积分比例必须大于0');
                                         } else if (v.number > 100) {
                                             return cb('积分比例不能超过100%');
                                         }
@@ -1454,15 +1512,22 @@ class SpecialDetailInfo extends Component {
             case 2: renderRecommentReward = this.renderRechargeReward; break;
             case 3: renderRecommentReward = this.renderConsumptionReward; break;
             default: renderRecommentReward = this.renderRecommendGifts;
-        }
+        };
+        const { helpMessageArray } = this.state;
         return (
             <div>
-                <p className={styles.coloredBorderedLabel}>直接推荐人奖励：</p>
+                <p className={styles.coloredBorderedLabel}>
+                    直接推荐人奖励： 
+                    <span style={{color: '#f04134'}}>{helpMessageArray[0]}</span>
+                </p>
                 {renderRecommentReward(1)}
                 {
                     recommendRange > 0 && (
                         <div>
-                            <p className={styles.coloredBorderedLabel}>间接推荐人奖励：</p>
+                            <p className={styles.coloredBorderedLabel}>
+                                间接推荐人奖励：
+                                <span style={{color: '#f04134'}}>{helpMessageArray[1]}</span>
+                            </p>
                             {renderRecommentReward(2)}
                         </div>
                     )
