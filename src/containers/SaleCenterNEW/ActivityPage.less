@@ -1968,6 +1968,11 @@
     left: 10px;
     color: rgb(240, 65, 52);
 }
+.coloredBorderedLabel {
+    border-left: 2px solid #63a6d6;
+    padding-left: 18px;
+    margin: 10px 0 10px 20px;
+}
 .emptyBodyContainer {
     overflow: hidden;
     display: flex;
@@ -1987,13 +1992,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-.rightAlign{
-    text-align: right;
-    :global{
-        .ant-input{
-            padding-left: 0!important;
-            text-align: right;
+    .rightAlign{
+        text-align: right;
+        :global{
+            .ant-input{
+                padding-left: 0!important;
+                text-align: right;
+            }
         }
     }
 }

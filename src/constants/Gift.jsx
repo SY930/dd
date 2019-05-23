@@ -159,6 +159,10 @@ const GiftCfg = {
         { label: '与部分券共用', value: '2'},
         { label: '不共用', value: '0'},
     ],
+    showGiftRule: [
+        { label: '显示', value: 0 },
+        { label: '不显示', value: 1 },
+    ],
     moneyLimitType: [
         { label: '不限', value: '0' },
         { label: '每满', value: '1' },

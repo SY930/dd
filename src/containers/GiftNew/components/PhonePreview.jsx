@@ -155,7 +155,7 @@ class PhonePreview extends PureComponent {
             isOfflineCanUsing = '1',
             supportOrderType = '2',
             contentHeight,
-            scrollPercent,
+            showGiftRule,
             giftDiscountRate
         } = this.props;
         return (
@@ -204,24 +204,29 @@ class PhonePreview extends PureComponent {
                 <div className={styles.greenButton}>
                     查看全部券密码
                 </div>
-                <div className={styles.sectionHeader}>
-                    使用规则
-                </div>
-                {giftType === '30' && (
-                    <div className={styles.ruleSection}>
-                        <p>顾客在获取实物礼品券后，礼品具体领取方式请联系商家，商家会在核对信息无误后进行赠送。</p>
-                    </div>
-                )}
-                {giftType !== '30' && (
-                    <div className={styles.ruleSection}>
-                        <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                        <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
-                        <p>{this.shareTypeString()}</p>
-                        {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
-                        {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
-                    </div>
-                )}
-
+                {
+                    showGiftRule !== 1 && (
+                        <div>
+                            <div className={styles.sectionHeader}>
+                                使用规则
+                            </div>
+                            {giftType === '30' && (
+                                <div className={styles.ruleSection}>
+                                    <p>顾客在获取实物礼品券后，礼品具体领取方式请联系商家，商家会在核对信息无误后进行赠送。</p>
+                                </div>
+                            )}
+                            {giftType !== '30' && (
+                                <div className={styles.ruleSection}>
+                                    <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
+                                    <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
+                                    <p>{this.shareTypeString()}</p>
+                                    {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
+                                    {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
                 <div className={styles.sectionHeader}>
                     活动详情
                 </div>
@@ -243,6 +248,7 @@ class PhonePreview extends PureComponent {
             giftName,
             giftValue,
             giftType,
+            showGiftRule,
             giftRemark = '',
         } = this.props;
         return (
@@ -274,24 +280,30 @@ class PhonePreview extends PureComponent {
                         height: 416,
                     }}
                 >
-                    <div
-                        style={{
-                            paddingLeft: 10,
-                            width: 200,
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        使用规则
-                    </div>
-                    <div className={styles.ruleSection} style={{ lineHeight: 1.5 }}>
-                        {
-                            giftType === '40' ? (
-                                <p>顾客在获取会员充值券后，可以充入其会员卡中当卡值使用</p>
-                            ) : (
-                                <p>顾客在获取会员积分券后，可以充入其会员卡中进行使用</p>
-                            )
-                        }
-                    </div>
+                    {
+                        showGiftRule !== 1 && (
+                            <div>
+                                <div
+                                    style={{
+                                        paddingLeft: 10,
+                                        width: 200,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    使用规则
+                                </div>
+                                <div className={styles.ruleSection} style={{ lineHeight: 1.5 }}>
+                                    {
+                                        giftType === '40' ? (
+                                            <p>顾客在获取会员充值券后，可以充入其会员卡中当卡值使用</p>
+                                        ) : (
+                                            <p>顾客在获取会员积分券后，可以充入其会员卡中进行使用</p>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        )                
+                    }
                     <div
                         style={{
                             paddingLeft: 10,
@@ -315,7 +327,7 @@ class PhonePreview extends PureComponent {
             giftName,
             giftValue,
             giftType,
-            giftDiscountRate,
+            showGiftRule,
             hasPrivilegeOfWait,
             isCustomerPrice,
             isDiscountRate,
@@ -368,23 +380,29 @@ class PhonePreview extends PureComponent {
                     </div>
                 </div>
                 <div className={styles.interestGiftBody}>
-                    <div
-                        style={{
-                            paddingLeft: 10,
-                            width: 200,
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        使用规则
-                    </div>
-                    <div className={styles.ruleSection} style={{ lineHeight: 1.5 }}>
-                        {isCustomerPrice && <p>享受会员价</p>}
-                        {hasPrivilegeOfWait && <p>享受插队</p>}
-                        {isDiscountEnabled && <p>享受折扣</p>}
-                        {isPointRateEnabled && <p>享受积分（{pointRate > 1 ? `消费1元等于${+(+pointRate).toFixed(2)}积分`
-                            : `消费${+(1 / pointRate).toFixed(2)}元等于1积分`}）</p>}
+                    {
+                        showGiftRule !== 1 && (
+                            <div>
+                                <div
+                                    style={{
+                                        paddingLeft: 10,
+                                        width: 200,
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    使用规则
+                                </div>
+                                <div className={styles.ruleSection} style={{ lineHeight: 1.5 }}>
+                                    {isCustomerPrice && <p>享受会员价</p>}
+                                    {hasPrivilegeOfWait && <p>享受插队</p>}
+                                    {isDiscountEnabled && <p>享受折扣</p>}
+                                    {isPointRateEnabled && <p>享受积分（{pointRate > 1 ? `消费1元等于${+(+pointRate).toFixed(2)}积分`
+                                        : `消费${+(1 / pointRate).toFixed(2)}元等于1积分`}）</p>}
 
-                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
                     <div
                         style={{
                             paddingLeft: 10,
@@ -482,6 +500,7 @@ function mapStateToProps(state) {
         isCustomerPrice: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isCustomerPrice']),
         isDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isDiscountRate']),
         isPointRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isPointRate']),
+        showGiftRule: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'showGiftRule']),
         couponPeriodSettings: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'couponPeriodSettings']),
         giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']), // PriceInput 给出的是{number: xxx}
         discountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate']), // antd input 给出的是str

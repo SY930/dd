@@ -150,7 +150,11 @@ class AddGifts extends React.Component {
 
     add() {
         const _infos = this.state.infos;
-        _infos.push({...JSON.parse(JSON.stringify(defaultData)), sendType: this.props.sendType});
+        const {
+            typePropertyName,
+            typeValue,
+        } = this.props;
+        _infos.push({...JSON.parse(JSON.stringify(defaultData)), [typePropertyName]: typeValue});
         this.setState({
             infos: _infos,
         }, () => {
@@ -685,9 +689,11 @@ const mapStateToProps = (state) => {
     };
 };
 AddGifts.defaultProps = {
-    sendType: 0,
+    typeValue: 0,
+    typePropertyName: 'sendType'
 };
 AddGifts.propTypes = {
-    sendType: PropTypes.number,
+    typeValue: PropTypes.number,
+    typePropertyName: PropTypes.string,
 };
 export default connect(mapStateToProps)(Form.create()(AddGifts));

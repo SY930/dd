@@ -12,8 +12,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Radio, message } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-// import styles from '../../SaleCenterNEW/ActivityPage.less';
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    getGroupCRMCustomAmount,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import {queryGroupMembersList} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
@@ -108,6 +110,9 @@ class StepTwo extends React.Component {
                 // cardLevelIDList: specialPromotion.cardLevelIDList,
             })
         }
+        if (!this.props.specialPromotion.get('customerCount')) {
+            this.props.getGroupCRMCustomAmount()
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -146,6 +151,7 @@ class StepTwo extends React.Component {
     }
 
     renderMemberGroup() {
+        const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         return (
             <FormItem
                 label="会员群体"
@@ -166,7 +172,7 @@ class StepTwo extends React.Component {
                         getPopupContainer={(node) => node.parentNode}
                         onChange={this.handleSelectChange}
                     >
-                        <Option key={'0'}>全部会员</Option>
+                        <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
                         {this.renderOptions()}
                     </Select>
                 )}
@@ -283,6 +289,7 @@ const mapDispatchToProps = (dispatch) => {
         queryGroupMembersList: (opts) => {
             dispatch(queryGroupMembersList(opts));
         },
+        getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
     };
 };
 

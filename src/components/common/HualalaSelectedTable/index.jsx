@@ -11,7 +11,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import styles from './treeSelect.less';
-import { Input, Icon, Table, Select } from 'antd';
+import {
+    Table,
+    Select,
+    Tooltip,
+} from 'antd';
 import PriceInputIcon from '../../../containers/SaleCenterNEW/common/PriceInputIcon'; // 编辑
 
 const Option = Select.Option;
@@ -19,13 +23,11 @@ const Option = Select.Option;
 export default class HualalaSelectedTable extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             data: [],
             filterPrice: 'newPrice',
             filterDropdownVisible: false,
         };
-
         this.onClear = this.onClear.bind(this);
     }
 
@@ -224,7 +226,7 @@ export default class HualalaSelectedTable extends React.Component {
                 dataIndex: 'displayName',
                 key: 'displayName',
                 fixed: 'left',
-                width: 220,
+                width: 200,
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -234,7 +236,7 @@ export default class HualalaSelectedTable extends React.Component {
                 title: '分类',
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
-                width: 120,
+                width: 100,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <span title={text}>{text}</span>
@@ -285,17 +287,20 @@ export default class HualalaSelectedTable extends React.Component {
                 title: '积分/现金售价',
                 dataIndex: 'prePrice1',
                 key: 'prePrice1',
-                width: 100,
+                width: 150,
                 className: 'TableTxtRight',
                 render: (text, record, index) => {
+                    let res;
                     if (record.price >= 0 && record.foodScore >= 0) {
-                        return `${record.foodScore}积分+${record.price}元`
+                        res = `${record.foodScore}积分+${record.price}元`
                     } else if (record.price >= 0) {
-                        return `${record.price}元`
+                        res = `${record.price}元`
                     } else if (record.foodScore >= 0) {
-                        return `${record.foodScore}积分`
+                        res = `${record.foodScore}积分`
+                    } else {
+                        res = '--'
                     }
-                    return '--'
+                    return <Tooltip title={res}>{res}</Tooltip>
                 },
             },
             {
@@ -345,7 +350,7 @@ export default class HualalaSelectedTable extends React.Component {
                         <span>{this.props.selectdTitle}</span>
                     </div>
 
-                    <Table bordered={true} dataSource={data} columns={columns} pagination={false} scroll={{ x: 570, y: 170 }} />
+                    <Table bordered={true} dataSource={data} columns={columns} pagination={false} scroll={{ y: 170 }} />
                 </div>
                 <div onClick={this.onClear} className={styles.Tclear}>清空</div>
             </div>
