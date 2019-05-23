@@ -24,7 +24,10 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    getGroupCRMCustomAmount,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
@@ -152,6 +155,9 @@ class StepTwo extends React.Component {
             this.setState({
                 shopsData: this.preProShops($shops),
             });
+        }
+        if (!this.props.specialPromotion.get('customerCount')) {
+            this.props.getGroupCRMCustomAmount()
         }
     }
 
@@ -343,6 +349,7 @@ class StepTwo extends React.Component {
             lastTimeProps.disabled = true;
             lastTimeProps.value = '';
         }
+        const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         return (
             <Form>
                 <FormItem
@@ -364,7 +371,7 @@ class StepTwo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
-                            <Option key={'0'}>全部会员</Option>
+                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
                             {this.renderOptions()}
                         </Select>
                     )
@@ -427,6 +434,7 @@ const mapDispatchToProps = (dispatch) => {
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
+        getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
     };
 };
 

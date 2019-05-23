@@ -49,12 +49,40 @@ const options = WEEK_OPTIONS;
 const days = MONTH_OPTIONS;
 
 const fullOptionSmsGate = [ // 选项有5种
-    '53', '61', '62', '63', '70'
+    '53',
+    '61',
+    '62',
+    '63',
+    '70',
 ];
 
 const simpleOptionSmsGate = [ // 选项有2种
-    '21', '20', '30', '60', '23', '64'
+    '21',
+    '20',
+    '30',
+    '60',
+    '23',
+    '64',
+    '65',
+    '67',
+    '68',
 ];
+
+const ATSEnabledTypes = [ // advanced time settings enabled promotion types
+    '30',
+    '67',
+];
+const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类型
+    '61',
+    '62',
+    '63',
+    '65',
+    '66',
+    '67',
+    '68',
+    '23',
+    '70',
+]
 
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
@@ -84,7 +112,6 @@ class StepOneWithDateRange extends React.Component {
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
         } catch (e) {
-            console.log('e: ', e)
             validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
@@ -329,7 +356,7 @@ class StepOneWithDateRange extends React.Component {
                     lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
-            if (this.props.type == '30') {
+            if (ATSEnabledTypes.includes(`${this.props.type}`)) {
                 const {
                     validCycleType,
                     selectMonthValue,
@@ -748,8 +775,8 @@ class StepOneWithDateRange extends React.Component {
         }
         const promotionTypeConfig = categorys.find(v => v.key == this.props.type);
         const tip = (
-            <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
+            <div style={{ display: this.state.tipDisplay, minHeight: 135, width: 470 }} className={styles.tip}>
+                <p style={{ whiteSpace: 'pre-line', lineHeight: 1.5 }}>{promotionTypeConfig ? promotionTypeConfig.tip : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -977,7 +1004,7 @@ class StepOneWithDateRange extends React.Component {
                                                 <RangePicker
                                                     className={styles.ActivityDateDayleft}
                                                     style={{ width: '100%' }}
-                                                    disabledDate={this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '23' || this.props.type == '70' ? disabledDate : null}
+                                                    disabledDate={dateLimitedTypes.includes(`${this.props.type}`) ? disabledDate : null}
                                                 />
                                             )}
                                         </Col>
@@ -1025,7 +1052,7 @@ class StepOneWithDateRange extends React.Component {
                             </div> : null
                     }
                     {
-                        this.props.type == '30' && this.renderAdvancedDateSettings()
+                        ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
                     }
 
                     <FormItem

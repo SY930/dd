@@ -16,7 +16,11 @@ import {
     message,
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
-import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterGetShopOfEventByDate,
+    getGroupCRMCustomAmount,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
@@ -133,6 +137,9 @@ class StepTwo extends React.Component {
         if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
             (this.props.type == '70' || this.props.type == '64')) {
             this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
+        }
+        if (!this.props.specialPromotion.get('customerCount')) {
+            this.props.getGroupCRMCustomAmount()
         }
     }
 
@@ -356,6 +363,7 @@ class StepTwo extends React.Component {
     }
     render() {
         const sendFlag = true;
+        const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? '累计金额不得少于0元' : '累计次数不得少于3次'
         const smsGate = this.props.specialPromotion.getIn(['$eventInfo', 'smsGate']);
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，giveSelect不可编辑
@@ -421,7 +429,7 @@ class StepTwo extends React.Component {
                                             getPopupContainer={(node) => node.parentNode}
                                             onChange={this.handleSelectChange}
                                         >
-                                            <Option key={'0'}>全部会员</Option>
+                                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
                                             {this.renderOptions()}
                                         </Select>
                                     )
@@ -494,6 +502,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
         getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
+        getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
     };
 };
 

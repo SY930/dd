@@ -766,7 +766,7 @@ class MyActivities extends React.Component {
                 allowClear: true,
             };
         return (
-            <TreeSelect {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} />
+            <TreeSelect showSearch {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} />
         );
     }
 

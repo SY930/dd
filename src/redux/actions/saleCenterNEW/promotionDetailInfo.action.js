@@ -118,7 +118,84 @@ const fetchFoodCategoryFailed = (opts) => {
         payload: opts,
     }
 };
+/**
+ * 商品接口以前和菜品是同一个接口，后来商品相关所有接口都迁移到了微信商城组，
+ * 需要将商城提供的新接口数据适配给原菜品选择组件
+ * @param {Array} categoryList 
+ */
+const fetchGoodsCategorySuccess = (categoryList) => {
+    const records = categoryList.map(item => ({
+        ...item,
+        foodCategoryID: item.categoryID,
+        foodCategoryKey: item.categoryKey,
+        foodCategoryName: item.categoryName,
+    }))
+    return {
+        type: SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS,
+        payload: {records},
+    }
+}
+const fetchGoodsSuccess = (goodsList) => {
+    const records = goodsList.reduce((acc, curr) => {
+        const goodsWithUnit = curr.goodUnitInfo.map(unit => ({
+            ...curr,
+            foodID: curr.goodID,
+            foodKey: curr.goodKey,
+            foodCode: curr.goodCode,
+            foodName: curr.goodName,
+            foodCategoryID: curr.categoryID,
+            isActive: curr.isPutaway,
+            imgePath: curr.masterImagePath,
+            foodType: curr.goodType,
+            templateID: curr.deliveryTemplateID,
+            itemID: unit.unitID,
+            foodScore: unit.sellPoint,
+            foodMnemonicCode: curr.goodName,
+            price: unit.sellPrice,
+            prePrice: unit.prePrice,
+            vipPrice: unit.vipPrice,
+            unit: `${unit.unitName1}${unit.unitName2 || ''}${unit.unitName3 || ''}`
+        }));
+        acc.push(...goodsWithUnit);
+        return acc;
+    }, [])
+    return {
+        type: SALE_CENTER_FETCH_FOOD_MENU_SUCCESS,
+        payload: {records},
+    }
+}
 
+export const getGoodsCategoryList = (shopID) => {
+    return (dispatch) => {
+        dispatch(fetchFoodCategoryStart());
+        axiosData(
+            'store/base/good/queryGoodCategory',
+            { shopID },
+            {},
+            { path: 'goodCategoryInfos'},
+            'HTTP_SERVICE_URL_MALLAPI',
+        ).then(res => {
+            dispatch(fetchGoodsCategorySuccess(res))
+        }).catch(err => {
+            dispatch(fetchFoodCategoryFailed(err))
+        })
+    }
+}
+export const getGoodsList = (shopID) => {
+    return (dispatch) => {
+        axiosData(
+            'store/base/good/queryShopGood',
+            { shopID },
+            {},
+            { path: 'goodInfos'},
+            'HTTP_SERVICE_URL_MALLAPI',
+        ).then(res => {
+            dispatch(fetchGoodsSuccess(res))
+        }).catch(err => {
+            dispatch(fetchFoodMenuFailed(err))
+        })
+    }
+}
 
 export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
     if (isHuaTian) {
@@ -154,8 +231,6 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
             payload: opts.shopID && opts.shopID > 0
         })
         dispatch(fetchFoodCategoryStart());
-
-        // let config = getSpecifiedUrlConfig('getFoodCategory_NEW', {...opts,bookID:0});
         const url = opts.shopID && opts.shopID > 0 ? 'queryShopFoodClass' : 'getFoodCategory_NEW';
         const config = getSpecifiedUrlConfig(url, { ...opts, bookID: 0, type: '0' });
 

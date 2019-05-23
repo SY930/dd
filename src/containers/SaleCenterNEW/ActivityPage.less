@@ -59,7 +59,7 @@
 .FormItemStyle{
     p{
         display: inline-block;
-        line-height: 32px!important;
+        line-height: 32px;
     }
 
     .inputLabel{
@@ -1608,7 +1608,6 @@
     position: absolute;
     background: #fff;
     width: 486px;
-    height: 175px;
     z-index: 9999;
     top: 28px;
     // left: 90px;
@@ -1969,6 +1968,11 @@
     left: 10px;
     color: rgb(240, 65, 52);
 }
+.coloredBorderedLabel {
+    border-left: 2px solid #63a6d6;
+    padding-left: 18px;
+    margin: 10px 0 10px 20px;
+}
 .emptyBodyContainer {
     overflow: hidden;
     display: flex;
@@ -1984,12 +1988,17 @@
         margin-top: 30px;
     }
 }
-.rightAlign{
-    text-align: right;
-    :global{
-        .ant-input{
-            padding-left: 0!important;
-            text-align: right;
+.flexFormControl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .rightAlign{
+        text-align: right;
+        :global{
+            .ant-input{
+                padding-left: 0!important;
+                text-align: right;
+            }
         }
     }
 }

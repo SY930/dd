@@ -15,6 +15,7 @@ import { getStore } from '@hualala/platform-base/lib';
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO = 'sale center: set special promotion event info new';
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO = 'sale center: set special promotion gift info new';
+export const SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO = 'sale center: set special promotion recommend settings info new';
 
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST = 'sale center: check birthday exist new';
 export const SALE_CENTER_CHECK_BIRTHDAY_SUCCESS = 'sale center: check birthday exist success new';
@@ -47,6 +48,7 @@ export const SALE_CENTER_FSM_EQUITY_UNIT = 'sale center: query fsm group equity 
 export const SALE_CENTER_QUERY_SMS_SIGN_SUCCESS = 'sale center: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude event list new';
 export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS = 'sale center: sale_center_query_online_restaurant_shops_status';
+export const SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT = 'sale center: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
@@ -63,6 +65,12 @@ export const saleCenterQueryOnlineRestaurantStatus = (opts) => {
 export const saleCenterSetSpecialGiftInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO,
+        payload: opts,
+    };
+};
+export const saleCenterSetSpecialRecommendSettingsInfoAC = (opts) => {
+    return {
+        type: SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO,
         payload: opts,
     };
 };
@@ -174,6 +182,23 @@ export const getEventExcludeCardTypes = (opts) => {
                     payload: {
                         excludeCardTypeIDs: Array.isArray(excludeCardTypeIDs) ? excludeCardTypeIDs : [],
                         excludeCardTypeShops: Array.isArray(excludeCardTypeShops) ? excludeCardTypeShops : []
+                    },
+                });
+            })
+    }
+}
+/**
+ * 查询集团所有会员的数量
+ */
+export const getGroupCRMCustomAmount = () => {
+    return (dispatch) => {
+        axiosData('/specialPromotion/queryCrmCustomerCount.ajax', {}, {needThrow: true}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then(res => {
+                console.log('res', res)
+                dispatch({
+                    type: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
+                    payload: {
+                        customerCount: res.customerCount
                     },
                 });
             })
@@ -387,7 +412,11 @@ export const updateSpecialPromotion = opts => {
                     }, 0);
                     return dispatch(updateSpecialPromotionSuccess(response));
                 }
-                opts.fail && opts.fail(response.message);
+                setTimeout(
+                    () => {
+                        opts.fail && opts.fail(response.message);
+                    }
+                );
                 return dispatch(updateSpecialPromotionFail(response.code));
             })
             .catch((err) => {

@@ -7,6 +7,7 @@ import {
     Form,
     Tooltip,
     Popconfirm,
+    Select,
 } from 'antd';
 import {
     memoizedExpandCategoriesAndDishes,
@@ -40,112 +41,9 @@ class SpecialDishesTableWithBrand extends Component {
         }
         this.state = {
             selectorModalVisible: false,
+            priceFilterType: 'price',
             priceLst,
             data: [],
-            resultTableColumns: [
-                {
-                    title: '序号',
-                    dataIndex: 'index',
-                    key: 'index',
-                    width: 50,
-                    className: 'TableTxtCenter',
-                    render: (text) => `${text + 1}`,
-                },
-                {
-                    title: '操作',
-                    dataIndex: 'operation',
-                    key: 'operation',
-                    width: 50,
-                    className: 'TableTxtCenter',
-                    render: (text, record, index) => {
-                        return (
-                            <div className="editable-row-operations">
-                                <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
-                                    <a title="删除" alt="删除">删除</a>
-                                </Popconfirm>
-                            </div>
-                        );
-                    },
-                },
-                {
-                    title: '品牌',
-                    dataIndex: 'brandName',
-                    key: 'brandName',
-                    width: 72,
-                    className: 'TableTxtCenter',
-                    render: (text, record, index) => {
-                        return <Tooltip title={text}>{text}</Tooltip>
-                    },
-                },
-                {
-                    title: '分类',
-                    dataIndex: 'foodCategoryName',
-                    key: 'foodCategoryName',
-                    width: 90,
-                    className: 'TableTxtCenter',
-                    render: (text, record, index) => {
-                        return <Tooltip title={text}>{text}</Tooltip>
-                    },
-                },
-                {
-                    title: '菜品',
-                    dataIndex: 'foodName',
-                    key: 'foodName',
-                    width: 90,
-                    className: 'TableTxtLeft',
-                    render: (text, record, index) => {
-                        return <Tooltip title={text}>{text}</Tooltip>
-                    },
-                },
-                {
-                    title: '单位',
-                    dataIndex: 'unit',
-                    key: 'unit',
-                    width: 50,
-                    className: 'TableTxtCenter',
-                    render: (text, record, index) => {
-                        return <Tooltip title={text}>{text}</Tooltip>
-                    },
-                },
-                {
-                    title: '特价(元)',
-                    width: 80,
-                    dataIndex: 'newPrice',
-                    key: 'newPrice',
-                    className: 'noPadding',
-                    render: (text, record, index) => {
-                        return (
-                            <span className={styles.rightAlign}>
-                                <PriceInputIcon
-                                    type="text"
-                                    modal="float"
-                                    placeholder="空表示0"
-                                    value={{ number: record.newPrice }}
-                                    index={index}
-                                    onChange={(val) => { this.onCellChange(val, record) }}
-                                />
-                            </span>
-                        )
-                    },
-                },
-                {
-                    // 本组件接收到的售价已经是处理过的了
-                    title: '售价(元)',
-                    dataIndex: 'price',
-                    key: 'price',
-                    width: 72,
-                    className: 'TableTxtRight',
-                },
-                {
-                    title: '折扣',
-                    dataIndex: 'salePercent',
-                    key: 'salePercent',
-                    className: 'TableTxtCenter',
-                    render: (text, record, index) => {
-                        return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : '不打折'
-                    },
-                },
-            ],
         }
     }
     componentDidMount() {
@@ -189,17 +87,16 @@ class SpecialDishesTableWithBrand extends Component {
         return dishArray.filter(fish => fish.isSetFood != '1' && fish.isTempFood != '1' && fish.isTempSetFood != '1')
     }
     onCellChange = (val, {index}) => {
-        const record = this.state.data[index];
-        if (val.number > record.price) {// 特价不超过售价价
+        const data = [...this.state.data];
+        const record = data[index];
+        if (val.number > +record.price) {// 特价不超过售价价
             val.number = record.price;
         }else if (val.number < 0) {// 特价不小于0
             val.number = 0;
         }
         record.newPrice = val.number;
-        this.setState({data: this.state.data }, () => {
-            this.props.onChange(data)
-        })
-
+        this.setState({data});
+        this.props.onChange(data);
     }
     handleDel = (record) => {
         const data = [...this.state.data];
@@ -267,10 +164,134 @@ class SpecialDishesTableWithBrand extends Component {
     }
     render() {
         const {
-            resultTableColumns,
             selectorModalVisible,
             data,
         } = this.state;
+        const resultTableColumns = [
+            {
+                title: '序号',
+                dataIndex: 'index',
+                key: 'index',
+                width: 50,
+                className: 'TableTxtCenter',
+                render: (text) => `${text + 1}`,
+            },
+            {
+                title: '操作',
+                dataIndex: 'operation',
+                key: 'operation',
+                width: 50,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return (
+                        <div className="editable-row-operations">
+                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
+                                <a title="删除" alt="删除">删除</a>
+                            </Popconfirm>
+                        </div>
+                    );
+                },
+            },
+            {
+                title: '品牌',
+                dataIndex: 'brandName',
+                key: 'brandName',
+                width: 72,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
+            },
+            {
+                title: '分类',
+                dataIndex: 'foodCategoryName',
+                key: 'foodCategoryName',
+                width: 90,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
+            },
+            {
+                title: '菜品',
+                dataIndex: 'foodName',
+                key: 'foodName',
+                width: 90,
+                className: 'TableTxtLeft',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
+            },
+            {
+                title: '单位',
+                dataIndex: 'unit',
+                key: 'unit',
+                width: 50,
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
+            },
+            {
+                title: '特价(元)',
+                width: 80,
+                dataIndex: 'newPrice',
+                key: 'newPrice',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                type="text"
+                                modal="float"
+                                placeholder="空表示0"
+                                value={{ number: record.newPrice }}
+                                index={index}
+                                onChange={(val) => { this.onCellChange(val, record) }}
+                            />
+                        </span>
+                    )
+                },
+                filterDropdown: (
+                    <div className="custom-filter-dropdown">
+                        <Select
+                            style={{ width: 86, left: -63 }}
+                            value={this.state.priceFilterType}
+                            getPopupContainer={(node) => node.parentNode}
+                            onChange={v => {
+                                const newData = this.state.data.map(food => {
+                                    food.newPrice = food[v] >= 0 ? food[v] : food.price; // 将newPrice变为对应option价
+                                    return food
+                                })
+                                this.setState({ priceFilterType: v, data: newData })
+                            }}
+                        >
+                            <Select.Option key='price' value="price">售价</Select.Option>
+                            <Select.Option key='vipPrice' value="vipPrice">会员价</Select.Option>
+                        </Select>
+                    </div>
+                ),
+                filterDropdownVisible: this.state.filterDropdownVisible,
+                onFilterDropdownVisibleChange: visible => this.setState({ filterDropdownVisible: visible }),
+            },
+            {
+                // 本组件接收到的售价已经是处理过的了
+                title: '售价(元)',
+                dataIndex: 'price',
+                key: 'price',
+                width: 72,
+                className: 'TableTxtRight',
+            },
+            {
+                title: '折扣',
+                dataIndex: 'salePercent',
+                key: 'salePercent',
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : '不打折'
+                },
+            },
+        ];
         const displayDataSource = data.map((item, index) => ({...item, index}))
         return (
             <FormItem className={styles.FormItemStyle}>

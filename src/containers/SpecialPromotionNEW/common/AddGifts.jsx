@@ -1,15 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import { DatePicker, Radio, Form, Select, Input, Icon } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import ExpandTree from './ExpandTree';
-import {
-    fetchGiftListInfoAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import _ from 'lodash';
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
@@ -32,6 +28,12 @@ const VALIDATE_TYPE = Object.freeze([{
 { key: 1, value: '2', name: '固定有效期' }]);
 
 const defaultData = {
+    // 膨胀所需人数
+    needCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     // 礼品数量
     giftCount: {
         value: '',
@@ -71,7 +73,6 @@ const defaultData = {
         msg: null,
     },
 };
-const moment = require('moment');
 
 
 class AddGifts extends React.Component {
@@ -101,38 +102,8 @@ class AddGifts extends React.Component {
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
     }
 
-    componentDidMount() {
-        // 第一次加载需将默认值传给父组件
-        this.setState({
-            infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
-        }, () => {
-            if (this.props.value === null) {
-                this.props.onChange && this.props.onChange(this.state.infos);
-            }
-        });
-
-        this.props.fetchGiftListInfo({
-            groupID: this.props.user.accountInfo.groupID,
-
-        });
-    }
-
     componentWillReceiveProps(nextProps) {
-        /*if (this.props.maxCount !== nextProps.maxCount) {
-            this.setState({
-                infos: [JSON.parse(JSON.stringify(defaultData))],
-                maxCount: nextProps.maxCount,
-            });
-        }
-
-        if (this.props.value != nextProps.value) {
-            this.setState({
-                infos: nextProps.value,
-            });
-        }*/
-
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
-            // let giftInfo = nextProps.promotionDetailInfo.getIn(["$giftInfo", "data"]).toJS();
             let giftInfo;
             try {
                 giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
@@ -179,7 +150,11 @@ class AddGifts extends React.Component {
 
     add() {
         const _infos = this.state.infos;
-        _infos.push(JSON.parse(JSON.stringify(defaultData)));
+        const {
+            typePropertyName,
+            typeValue,
+        } = this.props;
+        _infos.push({...JSON.parse(JSON.stringify(defaultData)), [typePropertyName]: typeValue});
         this.setState({
             infos: _infos,
         }, () => {
@@ -189,11 +164,13 @@ class AddGifts extends React.Component {
 
     render() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
-        const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;// 当有人领取礼物后，礼物不可编辑，加蒙层
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
+        // 桌边砍可以主动加蒙层
+        const disabledGifts = this.props.disabledGifts;
         return (
             <div className={styles.giftWrap}>
                 {this.renderItems()}
-                <div className={userCount > 0 ? styles.opacitySet : null}></div>
+                <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div>
             </div>
         );
     }
@@ -233,10 +210,31 @@ class AddGifts extends React.Component {
                 <Form className={styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
                         <span className={styles.CategoryTitle}>{this.props.type == '20' ? `礼品【${arr[index]}】` : `礼品${index + 1}`}</span>
-                        {this.renderBlockHeader(index)}
+                        {this.props.type != '66' && this.renderBlockHeader(index)}
                     </div>
 
                     <div className={styles.CategoryBody}>
+                        {/* 膨胀需要人数, 只有膨胀大礼包的2 3 档需要 */}
+                        {
+                            (this.props.type == '66' && index > 0)  && (
+                                <FormItem
+                                    className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
+                                    labelCol={{ span: 0 }}
+                                    wrapperCol={{ span: 24 }}
+                                    validateStatus={info.needCount.validateStatus}
+                                    help={info.needCount.msg}
+                                >
+                                    <PriceInput
+                                        addonBefore="膨胀需要人数"
+                                        maxNum={5}
+                                        value={{ number: info.needCount.value }}
+                                        onChange={val => this.handleGiftNeedCountChange(val, index)}
+                                        addonAfter="人"
+                                        modal="int"
+                                    />
+                                </FormItem>
+                            )
+                        }
                         {/* 礼品名称 */}
                         <FormItem
                             label="礼品名称"
@@ -374,6 +372,58 @@ class AddGifts extends React.Component {
         });
     }
 
+    handleGiftNeedCountChange = (val, index) => {
+        const _infos = this.state.infos.slice();
+        _infos[index].needCount.value = val.number;
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 1000) {
+            if (index === 1) {
+                const higherLevelValue =  _infos[2].needCount.value;
+                if (higherLevelValue > 0 && higherLevelValue <= 1000) {
+                    if (_value >= +higherLevelValue) {
+                        _infos[index].needCount.validateStatus = 'error';
+                        _infos[index].needCount.msg = '此档位所需人数必须小于下一档位';
+                    } else {
+                        _infos[index].needCount.validateStatus = 'success';
+                        _infos[index].needCount.msg = null;
+                        _infos[2].needCount.validateStatus = 'success';
+                        _infos[2].needCount.msg = null;
+                    }
+                } else {
+                    _infos[index].needCount.validateStatus = 'success';
+                    _infos[index].needCount.msg = null;
+                }
+            }
+            if (index === 2) {
+                const lowerLevelValue =  _infos[1].needCount.value;
+                if (lowerLevelValue > 0 && lowerLevelValue <= 1000) {
+                    if (_value <= +lowerLevelValue) {
+                        console.log('_value', _value)
+                        console.log('lowerLevelValue', lowerLevelValue)
+                        _infos[index].needCount.validateStatus = 'error';
+                        _infos[index].needCount.msg = '此档位所需人数必须大于上一档位';
+                    } else {
+                        _infos[index].needCount.validateStatus = 'success';
+                        _infos[index].needCount.msg = null;
+                        _infos[1].needCount.validateStatus = 'success';
+                        _infos[1].needCount.msg = null;
+                    }    
+                } else {
+                    _infos[index].needCount.validateStatus = 'success';
+                    _infos[index].needCount.msg = null;
+                }
+            }
+        } else {
+            _infos[index].needCount.validateStatus = 'error';
+            _infos[index].needCount.msg = '膨胀需要人数必须大于0, 小于1000';
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
     handleGiftEffectiveTimeChange(val, index) {
         const _infos = this.state.infos;
         _infos[index].giftEffectiveTime.value = val;
@@ -475,7 +525,7 @@ class AddGifts extends React.Component {
         }
         const disabledDate = (current) => {
             // Can not select days before today
-            return current && current.format('YYYYMMDD') < this.props.specialPromotion.toJS().$eventInfo.eventStartDate;
+            return current && current.format('YYYYMMDD') < this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
         }
         return (
             <FormItem
@@ -638,15 +688,12 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setSpecialBasicInfo: (opts) => {
-            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
-        },
-        fetchGiftListInfo: (opts) => {
-            dispatch(fetchGiftListInfoAC(opts));
-        },
-    };
+AddGifts.defaultProps = {
+    typeValue: 0,
+    typePropertyName: 'sendType'
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(AddGifts));
+AddGifts.propTypes = {
+    typeValue: PropTypes.number,
+    typePropertyName: PropTypes.string,
+};
+export default connect(mapStateToProps)(Form.create()(AddGifts));

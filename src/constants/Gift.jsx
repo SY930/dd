@@ -159,6 +159,10 @@ const GiftCfg = {
         { label: '与部分券共用', value: '2'},
         { label: '不共用', value: '0'},
     ],
+    showGiftRule: [
+        { label: '显示', value: 0 },
+        { label: '不显示', value: 1 },
+    ],
     moneyLimitType: [
         { label: '不限', value: '0' },
         { label: '每满', value: '1' },
@@ -199,6 +203,9 @@ const GiftCfg = {
         { value: '101', label: '购买权益包' },
         { value: '102', label: '消费赠送' },
         { value: '103', label: '商城售卖' },
+        { value: '104', label: '分享裂变' },
+        { value: '105', label: '膨胀大礼包' },
+        { value: '106', label: '桌边砍' },
         { value: '112', label: '完善资料送礼' },
         { value: '111', label: '升级送礼' },
         { value: '113', label: '累计消费送礼' },
