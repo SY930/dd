@@ -31,8 +31,9 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         const $mpIDList = props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']);
+        const autoRegister = props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']);
         this.state = {
-            autoRegister: props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']) || 1,
+            autoRegister: autoRegister === undefined ? 1 : autoRegister,
             recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) || undefined,
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
