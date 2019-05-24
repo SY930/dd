@@ -51,6 +51,15 @@ class StepTwo extends React.Component {
         this.props.fetchCrmCardTypeLst({});
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.specialPromotionInfo.getIn(['$eventInfo', 'eventStartDate']) !== this.props.specialPromotionInfo.getIn(['$eventInfo', 'eventStartDate'])
+            || prevProps.specialPromotionInfo.getIn(['$eventInfo', 'eventEndDate']) !== this.props.specialPromotionInfo.getIn(['$eventInfo', 'eventEndDate'])) {
+                this.setState({
+                    mpIDList: [],
+                })
+            }
+    }
+
     handleSubmit = () => {
         let flag = true;
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
