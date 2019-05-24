@@ -31,8 +31,9 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         const $mpIDList = props.specialPromotionInfo.getIn(['$eventInfo', 'mpIDList']);
+        const autoRegister = props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']);
         this.state = {
-            autoRegister: props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']) || 1,
+            autoRegister: autoRegister === undefined ? 1 : autoRegister,
             recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) || undefined,
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
@@ -48,6 +49,15 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         this.props.fetchCrmCardTypeLst({});
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.specialPromotionInfo.getIn(['$eventInfo', 'eventStartDate']) !== this.props.specialPromotionInfo.getIn(['$eventInfo', 'eventStartDate'])
+            || prevProps.specialPromotionInfo.getIn(['$eventInfo', 'eventEndDate']) !== this.props.specialPromotionInfo.getIn(['$eventInfo', 'eventEndDate'])) {
+                this.setState({
+                    mpIDList: [],
+                })
+            }
     }
 
     handleSubmit = () => {

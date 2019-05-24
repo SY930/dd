@@ -380,12 +380,12 @@ export const updateSpecialPromotionTimeout = () => ({ type: SALE_CENTER_UPDATE_S
 export const updateSpecialPromotion = opts => {
     return dispatch => {
         // 微信推送mpID，在编辑时清空
-        const { event, gifts } = opts.data;
+        const { event, ...rest } = opts.data;
         event.pushMessageMpID = '';
         dispatch({ type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START, payload: opts });
         fetch('/api/specialPromotion/updateEvent_NEW', {
             method: 'POST',
-            body: JSON.stringify({ event, gifts }),
+            body: JSON.stringify({ event, ...rest }),
             credentials: 'include',
             headers: {
                 'Accept': 'application/json; charset=UTF-8',

@@ -11,7 +11,7 @@ export default class InviteeModal extends Component {
 
     state = {
         inviteeList: [],
-        pageSize: 20,
+        pageSize: 10,
         pageNo: 1,
         total: 0,
         loading: false,
