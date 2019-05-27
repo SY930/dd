@@ -174,7 +174,9 @@ class SpecialDetailInfo extends Component {
         this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule'])) {
             this.setState({
                 helpMessageArray: ['', ''],
-            })
+                eventRecommendSettings: [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)],
+            });
+            this.props.form.resetFields();
         }
     }
 
@@ -1403,6 +1405,7 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
+                                placeholder="请输入储值金额比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
@@ -1437,6 +1440,7 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
+                                placeholder="请输入积分比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
@@ -1487,6 +1491,7 @@ class SpecialDetailInfo extends Component {
                             <PriceInput
                                 addonAfter="%"
                                 maxNum={3}
+                                placeholder="请输入消费金额比例数值"
                                 modal="float"
                             />
                         )
@@ -1520,6 +1525,7 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
+                                placeholder="请输入积分比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
