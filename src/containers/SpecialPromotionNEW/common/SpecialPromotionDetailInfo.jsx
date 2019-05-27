@@ -251,8 +251,8 @@ class SpecialDetailInfo extends Component {
         eventRecommendSettings = eventRecommendSettings.map(setting => ({
             ...setting,
             pointRate: setting.pointRate ? (+setting.pointRate) * 100 : undefined,
-            consumeRate: setting.pointRate ? (+setting.consumeRate) * 100 : undefined,
-            rechargeRate: setting.pointRate ? (+setting.rechargeRate) * 100 : undefined,
+            consumeRate: setting.consumeRate ? (+setting.consumeRate) * 100 : undefined,
+            rechargeRate: setting.rechargeRate ? (+setting.rechargeRate) * 100 : undefined,
         }))
         if (eventRecommendSettings.length === 2) return eventRecommendSettings;
         if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
