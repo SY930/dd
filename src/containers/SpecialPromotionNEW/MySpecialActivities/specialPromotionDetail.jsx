@@ -257,13 +257,6 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
             {
-                title: '发出数量',
-                dataIndex: 'EGiftSendCount',
-                key: 'EGiftSendCount',
-                className: 'TableTxtRight',
-                width: 160,
-            },
-            {
                 title: '间接推荐人金额奖励总计',
                 dataIndex: 'indirectRecommendTotalMoney',
                 key: 'indirectRecommendTotalMoney',
@@ -312,7 +305,7 @@ class SpecialPromotionDetail extends React.Component {
                 columns={columns}
                 bordered={true}
                 pagination={false}
-                scroll={{ x: 1920 }}
+                scroll={{ x: 1800 }}
             />
         );
     }
@@ -524,7 +517,7 @@ class SpecialPromotionDetail extends React.Component {
             columns.pop();
             columns.push(...[
                 {
-                    title: '参与次数',
+                    title: '邀请人数',
                     dataIndex: 'joinCount',
                     key: 'joinCount',
                     className: 'TableTxtCenter',
