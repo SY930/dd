@@ -405,16 +405,36 @@ class SpecialDetailInfo extends Component {
                 value: '',
             }
         }
-        function checkgiftCount(giftCount) {
+        function checkgiftCount(giftCount, index, giftInfoArray) {
             const _value = parseFloat(giftCount.value);
-            if (_value > 0 && _value < 51) {
-                return giftCount;
+            if (!(_value > 0 && _value < 51)) {
+                return {
+                    msg: '礼品个数必须在1到50之间',
+                    validateStatus: 'error',
+                    value: '',
+                }
+            }
+            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+                let hasDuplica;
+                for (let i = 0; i < index; i++) {
+                    if (giftInfoArray[i]) {
+                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                    }
+                }
+                if (hasDuplica) {
+                    return {
+                        ...giftCount,
+                        validateStatus: 'error',
+                        msg: '礼品种类与个数不能完全重复',
+                    }
+                }
             }
             return {
-                msg: '礼品个数必须在1到50之间',
-                validateStatus: 'error',
-                value: '',
-            }
+                ...giftCount,
+                validateStatus: 'success',
+                msg: '',
+            };
         }
 
         // 有效天数
@@ -447,7 +467,7 @@ class SpecialDetailInfo extends Component {
         }
 
         // 校验礼品信息
-        function checkGiftInfo(giftInfo) {
+        function checkGiftInfo(giftInfo, index, giftInfoArray) {
             if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
                 return {
                     giftItemID: null,
@@ -456,7 +476,27 @@ class SpecialDetailInfo extends Component {
                     msg: '必须选择礼券',
                 }
             }
-            return giftInfo;
+            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+                let hasDuplica;
+                for (let i = 0; i < index; i++) {
+                    if (giftInfoArray[i]) {
+                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                    }
+                }
+                if (hasDuplica) {
+                    return {
+                        ...giftInfo,
+                        validateStatus: 'error',
+                        msg: '礼品种类与个数不能完全重复',
+                    }
+                }
+            }
+            return {
+                ...giftInfo,
+                validateStatus: 'success',
+                msg: '',
+            };
         }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
@@ -471,10 +511,10 @@ class SpecialDetailInfo extends Component {
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
-                // check total count
+                // check gift count
                 return Object.assign(ruleInfo, {
-                    giftCount: checkgiftCount(ruleInfo.giftCount),
-                    giftInfo: checkGiftInfo(ruleInfo.giftInfo),
+                    giftCount: checkgiftCount(ruleInfo.giftCount, index, data),
+                    giftInfo: checkGiftInfo(ruleInfo.giftInfo, index, data),
                     giftOdds: checkGiftOdds(ruleInfo.giftOdds),
                     needCount: this.checkNeedCount(ruleInfo.needCount, index),
                     [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
