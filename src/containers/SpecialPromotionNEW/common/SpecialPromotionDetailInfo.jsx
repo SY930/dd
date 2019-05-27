@@ -51,7 +51,9 @@ const getDefaultRecommendSetting = (recommendType = 1) => ({
     consumeRate: undefined,
     pointRate: undefined,
     rewardRange: 0,
-})
+});
+
+const roundToDecimal = (number, bit = 2) => +number.toFixed(bit)
 
 const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     // 膨胀所需人数
@@ -135,10 +137,10 @@ class SpecialDetailInfo extends Component {
             discountAmount: props.specialPromotion.getIn(['$eventInfo', 'discountAmount']),
             discountMinAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMinAmount']),
             discountMaxAmount: props.specialPromotion.getIn(['$eventInfo', 'discountMaxAmount']),
-            discountRate: discountRatio ? discountRatio * 100 : discountRatio,
-            discountMinRate: discountMinRatio ? discountMinRatio * 100 : discountMinRatio,
-            discountMaxRate: discountMaxRatio ? discountMaxRatio * 100 : discountMaxRatio,
-            discountMaxLimitRate: discountMaxLimitRatio ? discountMaxLimitRatio * 100 : discountMaxLimitRatio,
+            discountRate: discountRatio ? roundToDecimal(discountRatio * 100) : discountRatio,
+            discountMinRate: discountMinRatio ? roundToDecimal(discountMinRatio * 100) : discountMinRatio,
+            discountMaxRate: discountMaxRatio ? roundToDecimal(discountMaxRatio * 100) : discountMaxRatio,
+            discountMaxLimitRate: discountMaxLimitRatio ? roundToDecimal(discountMaxLimitRatio * 100) : discountMaxLimitRatio,
             inviteType: 1, // 需求变更，固定为1
             defaultCardType: defaultCardType > 0 ? defaultCardType : undefined,
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
@@ -250,9 +252,9 @@ class SpecialDetailInfo extends Component {
         // 后端是按比率存的（0.11），前端是按百分比显示（11%）的
         eventRecommendSettings = eventRecommendSettings.map(setting => ({
             ...setting,
-            pointRate: setting.pointRate ? (+setting.pointRate) * 100 : undefined,
-            consumeRate: setting.consumeRate ? (+setting.consumeRate) * 100 : undefined,
-            rechargeRate: setting.rechargeRate ? (+setting.rechargeRate) * 100 : undefined,
+            pointRate: setting.pointRate ? roundToDecimal(setting.pointRate * 100) : undefined,
+            consumeRate: setting.consumeRate ? roundToDecimal(setting.consumeRate * 100) : undefined,
+            rechargeRate: setting.rechargeRate ? roundToDecimal(setting.rechargeRate * 100) : undefined,
         }))
         if (eventRecommendSettings.length === 2) return eventRecommendSettings;
         if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
