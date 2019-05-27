@@ -66,7 +66,7 @@ class SpecialPromotionDetail extends React.Component {
         const eventEntity = this.props.record.eventInfo.data;
         if (eventEntity.eventWay == 68) {
             axiosData(
-                '',
+                '/specialPromotion/queryRecommendEventData.ajax',
                 {eventID: eventEntity.itemID},
                 {needThrow: true},
                 {path: ''},
@@ -233,6 +233,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'directRecommends',
                 key: 'directRecommends',
                 className: 'TableTxtCenter',
+                render: num => `${num || 0}`,
                 width: 160,
             },
             {
@@ -254,55 +255,49 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'indirectRecommends',
                 key: 'indirectRecommends',
                 className: 'TableTxtCenter',
-                width: 160,
-            },
-            {
-                title: '发出数量',
-                dataIndex: 'EGiftSendCount',
-                key: 'EGiftSendCount',
-                className: 'TableTxtRight',
+                render: num => `${num || 0}`,
                 width: 160,
             },
             {
                 title: '间接推荐人金额奖励总计',
                 dataIndex: 'indirectRecommendTotalMoney',
                 key: 'indirectRecommendTotalMoney',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
             {
                 title: '间接推荐人积分奖励总计',
                 dataIndex: 'indirectRecommendTotalPoint',
                 key: 'indirectRecommendTotalPoint',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
             {
                 title: '已领取金额统计',
                 dataIndex: 'receivedTotalMoney',
                 key: 'receivedTotalMoney',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
             {
                 title: '待领取金额统计',
                 dataIndex: 'unclaimedTotalMoney',
                 key: 'unclaimedTotalMoney',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
             {
                 title: '已领取积分统计',
                 dataIndex: 'receivedTotalPoint',
                 key: 'receivedTotalPoint',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
             {
                 title: '待领取积分统计',
                 dataIndex: 'unclaimedTotalPoint',
                 key: 'unclaimedTotalPoint',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 160,
             },
         ];
@@ -312,7 +307,7 @@ class SpecialPromotionDetail extends React.Component {
                 columns={columns}
                 bordered={true}
                 pagination={false}
-                scroll={{ x: 1920 }}
+                scroll={{ x: 1800 }}
             />
         );
     }
@@ -524,7 +519,7 @@ class SpecialPromotionDetail extends React.Component {
             columns.pop();
             columns.push(...[
                 {
-                    title: '参与次数',
+                    title: '邀请人数',
                     dataIndex: 'joinCount',
                     key: 'joinCount',
                     className: 'TableTxtCenter',
