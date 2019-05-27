@@ -66,7 +66,7 @@ class SpecialPromotionDetail extends React.Component {
         const eventEntity = this.props.record.eventInfo.data;
         if (eventEntity.eventWay == 68) {
             axiosData(
-                '',
+                '/specialPromotion/queryRecommendEventData.ajax',
                 {eventID: eventEntity.itemID},
                 {needThrow: true},
                 {path: ''},
