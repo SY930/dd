@@ -5,6 +5,7 @@ import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import styles from './GiftInfo.less';
 import SendCard from './SendCard';
 import QuotaCardBatchSold from './QuatoCardBatchSold';
+import GenerateBatchQRCodes from '../../GiftNew/components/GenerateBatchQRCodes';
 import {
     UpdateTabKey,
 } from '../_action';
@@ -46,6 +47,7 @@ class QuatoCardDetailModalTabs extends React.Component {
             { label: '已制卡明细', key: 'made' },
             { label: '卡汇总', key: 'sum' },
             { label: '批量售卖', key: 'batchSold' },
+            { label: '批量生成二维码', key: 'batchQRCode' },
         ];
         const { data } = this.props;
         const { activeKey: activeK, formData } = this.state;
@@ -62,6 +64,16 @@ class QuatoCardDetailModalTabs extends React.Component {
                                 return (<TabPane tab={tab.label} key={tab.key}>
                                     <QuotaCardBatchSold data={data} />
                                 </TabPane>)
+                            }
+                            if (tab.key === 'batchQRCode') {
+                                return (
+                                    <TabPane tab={tab.label} key={tab.key}>
+                                        <GenerateBatchQRCodes
+                                            data={data}
+                                            giftItemID={data.giftItemID}
+                                        />
+                                    </TabPane>
+                                )
                             }
                             return (<TabPane tab={tab.label} key={tab.key}>
                                 <SendCard
