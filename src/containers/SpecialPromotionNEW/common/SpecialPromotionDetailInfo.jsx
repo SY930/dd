@@ -471,6 +471,7 @@ class SpecialDetailInfo extends Component {
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
+                // check total count
                 return Object.assign(ruleInfo, {
                     giftCount: checkgiftCount(ruleInfo.giftCount),
                     giftInfo: checkGiftInfo(ruleInfo.giftInfo),
@@ -479,6 +480,7 @@ class SpecialDetailInfo extends Component {
                     [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
                 });
             }
+            // check total count
             return Object.assign(ruleInfo, {
                 giftTotalCount: checkgiftTotalCount(ruleInfo.giftTotalCount),
                 giftInfo: checkGiftInfo(ruleInfo.giftInfo),
