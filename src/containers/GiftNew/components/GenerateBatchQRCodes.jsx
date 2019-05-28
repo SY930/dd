@@ -48,9 +48,7 @@ class GenerateBatchQRCodes extends Component {
 
     componentDidMount(){
         this.props.queryWechatMpInfo();
-        if (!this.props.$$batchNoInfo.size) {
-            this.props.fetchQuotaCardBatchNo({giftItemID: this.props.giftItemID})
-        }
+        this.props.fetchQuotaCardBatchNo({giftItemID: this.props.giftItemID})
         this.handleQuery()
     }
 
@@ -555,7 +553,7 @@ class GenerateBatchQRCodes extends Component {
                 {this.renderTable()}
                 <Modal
                     key="批量生成二维码"
-                    title="批量生二维码"
+                    title="批量生成二维码"
                     maskClosable={false}
                     visible={this.state.modalVisible}
                     confirmLoading={this.state.confirmLoading}
