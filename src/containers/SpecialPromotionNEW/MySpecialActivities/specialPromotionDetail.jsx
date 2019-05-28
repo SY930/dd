@@ -273,28 +273,28 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
             {
-                title: '已领取金额统计',
+                title: '已领取金额总计',
                 dataIndex: 'receivedTotalMoney',
                 key: 'receivedTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '待领取金额统计',
+                title: '待领取金额总计',
                 dataIndex: 'unclaimedTotalMoney',
                 key: 'unclaimedTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '已领取积分统计',
+                title: '已领取积分总计',
                 dataIndex: 'receivedTotalPoint',
                 key: 'receivedTotalPoint',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '待领取积分统计',
+                title: '待领取积分总计',
                 dataIndex: 'unclaimedTotalPoint',
                 key: 'unclaimedTotalPoint',
                 className: 'TableTxtCenter',
@@ -531,7 +531,7 @@ class SpecialPromotionDetail extends React.Component {
                     }
                 },
                 {
-                    title: '累计获得奖励金额',
+                    title: '累计获得金额奖励',
                     dataIndex: 'accumulativeMoney',
                     key: 'accumulativeMoney',
                     className: 'TableTxtRight',
