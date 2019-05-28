@@ -17,8 +17,7 @@
     },
     "author": "C. <chenhuangfang@hualala.com>",
     "dependencies": {
-        "@hualala/platform-base": "4.5.2",
-        "@hualala/platform-components": "^1.5.5",
+        "@hualala/platform-base": "5.0.9",
         "@hualala/react-lazyload": "^2.3.0",
         "memoize-one": "^5.0.0",
         "valid-url": "^1.0.9"
@@ -29,7 +28,10 @@
         "prop-types": "^15.6.0",
         "react": "^15.6.2",
         "react-dom": "^15.6.2",
-        "rimraf": "^2.6.3"
+        "rimraf": "^2.6.3",
+        "babel-plugin-react-intl": "2.4.0",
+        "babel-plugin-react-intl-auto": "^1.6.0",
+        "babel-plugin-react-intl-id-hash": "^2.0.0"
     },
     "engines": {
         "node": ">=6.2.2",
