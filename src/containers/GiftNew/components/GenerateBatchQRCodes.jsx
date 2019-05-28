@@ -60,6 +60,7 @@ class GenerateBatchQRCodes extends Component {
         });
         const params = {
             giftItemID: this.props.giftItemID,
+            batchType: 3,
         };
         if (this.state.queryDateRange[0] && this.state.queryDateRange[1]) {// Moment[]
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
@@ -132,20 +133,16 @@ class GenerateBatchQRCodes extends Component {
         });
     }
 
+    handleDescriptionChange = (event) => {
+        this.setState({
+            description: event.target.value,
+        });
+    }
+
     handleEndNoChange = (val) => {
         this.setState({
             endNo: val.number,
         });
-    }
-
-    handleExport = (record) => {
-        const { itemID } = record;
-        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', {itemID, giftItemID: this.props.giftItemID}, {}, {path: 'data'}, )
-            .then(res => {
-                this.handleQuery()
-            })
-            .catch(err => {
-            })
     }
 
     mapStateToRequestParams = () => {
@@ -191,7 +188,7 @@ class GenerateBatchQRCodes extends Component {
             confirmLoading: true,
         });
         const params = this.mapStateToRequestParams();
-        axiosData('/coupon/couponEntityService_banchGenGiftCode.ajax', params, {}, {path: 'data'}, )
+        axiosData('/coupon/couponQuotaService_genQRCode.ajax', params, {}, {path: 'data'}, )
             .then(res => {
                 this.setState({
                     confirmLoading: false,
@@ -284,16 +281,6 @@ class GenerateBatchQRCodes extends Component {
                 },
             },
             {
-                title: '张数',
-                className: 'TableTxtCenter',
-                width: 50,
-                dataIndex: 'totalNum',
-                key: 'num',
-                render: (text, record, index) => {
-                    return record.status == 6 ? Number(text || 0) : text == undefined ? '--' : text;
-                },
-            },
-            {
                 title: '制码时间',
                 className: 'TableTxtCenter',
                 width: 120,
@@ -307,7 +294,7 @@ class GenerateBatchQRCodes extends Component {
                 title: '备注',
                 className: 'TableTxtCenter',
                 dataIndex: 'remark',
-                width: 90,
+                width: 160,
                 key: 'key3',
                 render: text => {
                     return <span title={text}>{text}</span> ;
@@ -316,7 +303,7 @@ class GenerateBatchQRCodes extends Component {
             {
                 title: '操作员',
                 className: 'TableTxtCenter',
-                width: 60,
+                width: 100,
                 dataIndex: 'createBy',
                 key: 'key4',
             },
@@ -352,14 +339,6 @@ class GenerateBatchQRCodes extends Component {
                 render: (text, record, index) => {
                     if (record.status == 6 && text) {
                         return <a download target="_blank" href={text}>下载</a>
-                    } else if (record.status == 4 || record.status == 7) {
-                        return (
-                            <a
-                                onClick={() => {
-                                    this.handleExport(record)
-                                }}
-                            >重试</a>
-                        )
                     }
                     return '--'
                 },
