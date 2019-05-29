@@ -8,6 +8,7 @@ import QuotaCardBatchSold from './QuatoCardBatchSold';
 import GenerateBatchQRCodes from '../../GiftNew/components/GenerateBatchQRCodes';
 import {
     UpdateTabKey,
+    FetchQuotaCardBatchNo,
 } from '../_action';
 
 const TabPane = Tabs.TabPane;
@@ -27,6 +28,9 @@ class QuatoCardDetailModalTabs extends React.Component {
             formData.batchNO = batchNO;
         }
         const { UpdateTabKey } = this.props;
+        if (activeKey === batchQRCode) {
+            this.props.fetchQuotaCardBatchNo({giftItemID: this.props.data.giftItemID})
+        }
         UpdateTabKey({
             key: activeKey,
         });
@@ -132,6 +136,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         UpdateTabKey: opts => dispatch(UpdateTabKey(opts)),
+        fetchQuotaCardBatchNo: opts => dispatch(FetchQuotaCardBatchNo(opts)),
     }
 }
 
