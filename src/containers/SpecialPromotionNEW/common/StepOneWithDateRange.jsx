@@ -177,9 +177,14 @@ class StepOneWithDateRange extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
-        if (this.props.type === '31' && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
+        if ((this.props.type === '31' || this.props.type === '68') && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
-            this.props.queryOccupiedWeixinAccounts({ eventStartDate: specialPromotion.eventStartDate, eventEndDate: specialPromotion.eventEndDate, eventWay: '31', itemID });
+            this.props.queryOccupiedWeixinAccounts({
+                eventStartDate: specialPromotion.eventStartDate,
+                eventEndDate: specialPromotion.eventEndDate,
+                eventWay: this.props.type,
+                itemID,
+            });
         }
         if (specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
             specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
@@ -439,8 +444,8 @@ class StepOneWithDateRange extends React.Component {
                     })
                 })
             }
-            if (this.props.type === '31') {
-                this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: '31', itemID: opts.itemID });
+            if (this.props.type === '31' || this.props.type === '68') {
+                this.props.queryOccupiedWeixinAccounts({ ...opts, eventWay: this.props.type, itemID: opts.itemID });
             }
         }
         this.setState({

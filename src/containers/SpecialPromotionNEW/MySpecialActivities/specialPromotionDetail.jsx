@@ -35,6 +35,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
+import { axiosData } from '../../../helpers/util';
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -52,12 +53,31 @@ class SpecialPromotionDetail extends React.Component {
             total: record.userInfo.totalSize || 0,
             inviteeModalVisble: false,
             selectedInviter: null,
+            recommendStatitics: [],
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.query = this.query.bind(this);
         this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
+    }
+
+    componentDidMount() {
+        const eventEntity = this.props.record.eventInfo.data;
+        if (eventEntity.eventWay == 68) {
+            axiosData(
+                '/specialPromotion/queryRecommendEventData.ajax',
+                {eventID: eventEntity.itemID},
+                {needThrow: true},
+                {path: ''},
+                'HTTP_SERVICE_URL_PROMOTION_NEW',
+            ).then(res => {
+                this.setState({
+                    recommendStatitics: [res],
+                })
+            })
+        }
+        
     }
 
     componentWillReceiveProps(nextProps) {
@@ -158,13 +178,43 @@ class SpecialPromotionDetail extends React.Component {
 
     // 统计信息
     renderActivityDetailInfo() {
+        let records = []
+        try {
+            records = this.props.mySpecialActivities.data.eventInfo.gifts || [];
+        } catch (e) {
+            records = []
+        }
+        const way = this.state.eventInfo.data.eventWay;
+        if (way == 68) {
+            return (
+                <div>
+                    <h5><span></span>统计信息</h5>
+                    <div>邀请人奖励统计</div>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType !== 0))}
+                    </Col>
+                    <div>&nbsp;</div>
+                    <Col span={24}>
+                        {this.renderRecommendStatisticsTable()}
+                    </Col>
+                    <div>被邀请人奖励统计</div>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
+                    </Col>
+    
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         return (
             <div>
                 <h5><span></span>统计信息</h5>
                 <Col span={24}>
-                    {this.renderGiftInfoTable()}
+                    {this.renderGiftInfoTable(records)}
                 </Col>
-
                 {this.renderSearch()}
                 <Col span={24}>
                     {this.renderActivityInfoTable()}
@@ -172,8 +222,97 @@ class SpecialPromotionDetail extends React.Component {
             </div>
         )
     }
+    /**
+     * 推荐有礼活动专有统计表格
+     */
+    renderRecommendStatisticsTable() {
+        const dataSource = this.state.recommendStatitics;
+        const columns = [
+            {
+                title: '直接拉动注册人数',
+                dataIndex: 'directRecommends',
+                key: 'directRecommends',
+                className: 'TableTxtCenter',
+                render: num => `${num || 0}`,
+                width: 160,
+            },
+            {
+                title: '直接推荐人金额奖励总计',
+                dataIndex: 'directRecommendTotalMoney',
+                key: 'directRecommendTotalMoney',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '直接推荐人积分奖励总计',
+                dataIndex: 'directRecommendTotalPoint',
+                key: 'directRecommendTotalPoint',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '间接拉动注册人数',
+                dataIndex: 'indirectRecommends',
+                key: 'indirectRecommends',
+                className: 'TableTxtCenter',
+                render: num => `${num || 0}`,
+                width: 160,
+            },
+            {
+                title: '间接推荐人金额奖励总计',
+                dataIndex: 'indirectRecommendTotalMoney',
+                key: 'indirectRecommendTotalMoney',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '间接推荐人积分奖励总计',
+                dataIndex: 'indirectRecommendTotalPoint',
+                key: 'indirectRecommendTotalPoint',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '已领取金额总计',
+                dataIndex: 'receivedTotalMoney',
+                key: 'receivedTotalMoney',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '待领取金额总计',
+                dataIndex: 'unclaimedTotalMoney',
+                key: 'unclaimedTotalMoney',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '已领取积分总计',
+                dataIndex: 'receivedTotalPoint',
+                key: 'receivedTotalPoint',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+            {
+                title: '待领取积分总计',
+                dataIndex: 'unclaimedTotalPoint',
+                key: 'unclaimedTotalPoint',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+        ];
+        return (
+            <Table
+                dataSource={dataSource}
+                columns={columns}
+                bordered={true}
+                pagination={false}
+                scroll={{ x: 1800 }}
+            />
+        );
+    }
     // 礼品信息表格
-    renderGiftInfoTable() {
+    renderGiftInfoTable(records) {
         const way = this.state.eventInfo.data.eventWay;
         const columns = [
             {
@@ -225,13 +364,7 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
             },
         ];
-        let record = []
-        try {
-            record = this.props.mySpecialActivities.data.eventInfo.gifts || [];
-        } catch (e) {
-            record = []
-        }
-        const dataSource = record.map((gift, index) => {
+        const dataSource = records.map((gift, index) => {
             let days;
             if (!gift.giftValidUntilDayCount > 0) {
                 const start = Moment(gift.effectTime, 'YYYYMMDDHHmmss').unix();// gift.effectTime:'20171030120000'
@@ -368,29 +501,88 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
         ];
-        eventWay == 65 && columns.push({
-            title: '参与次数',
-            dataIndex: 'joinCount',
-            key: 'joinCount',
-            className: 'TableTxtCenter',
-            render:(text, record)=> {
-                if (text > 0) {
-                    return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+        if (eventWay == 65) { // 分享裂变活动表格不太一样
+            columns.push({
+                title: '参与次数',
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtCenter',
+                render:(text, record)=> {
+                    if (text > 0) {
+                        return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+                    }
+                    return text
                 }
-                return text
-            }
-        })
+            })
+        }
+        if (eventWay == 68) { // 推荐有礼活动表格不一样
+            columns.pop();
+            columns.push(...[
+                {
+                    title: '邀请人数',
+                    dataIndex: 'joinCount',
+                    key: 'joinCount',
+                    className: 'TableTxtCenter',
+                    render:(text, record)=> {
+                        if (text > 0) {
+                            return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+                        }
+                        return text
+                    }
+                },
+                {
+                    title: '累计获得金额奖励',
+                    dataIndex: 'accumulativeMoney',
+                    key: 'accumulativeMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: '待领取金额奖励',
+                    dataIndex: 'unclaimedMoney',
+                    key: 'unclaimedMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: '已领取金额奖励',
+                    dataIndex: 'receivedMoney',
+                    key: 'receivedMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: '累计获得积分奖励',
+                    dataIndex: 'accumulativePoint',
+                    key: 'accumulativePoint',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: '待领取积分奖励',
+                    dataIndex: 'unclaimedPoint',
+                    key: 'unclaimedPoint',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: '已领取积分奖励',
+                    dataIndex: 'receivedPoint',
+                    key: 'receivedPoint',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+            ]);
+        }
         const userInfo = this.state.userInfo || [];
         const dataSource = userInfo.map((user, index) => {
             return {
+                ...user,
                 key: `${index}`,
                 name: user.customerName,
-                cardNo: user.cardNO,
                 telephoneNo: user.customerMobile,
-                customerID: user.customerID,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
                 joinCount: user.joinCount || 0,
-
             }
         });
 
@@ -399,6 +591,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns}
                 bordered={true}
+                scroll={eventWay == 68 ? {x: 1550} : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
