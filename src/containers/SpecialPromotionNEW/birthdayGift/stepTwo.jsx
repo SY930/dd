@@ -11,12 +11,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Radio, message } from 'antd';
+import {isEqual, uniq, isEmpty} from 'lodash';
+import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { saleCenterSetSpecialBasicInfoAC, saveCurrentCanUseShops, getEventExcludeCardTypes } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import {queryGroupMembersList} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+import {
+  getPromotionShopSchema
+} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import ShopSelector from "../../../components/common/ShopSelector";
 const RadioGroup = Radio.Group;
 
 const FormItem = Form.Item;
@@ -26,6 +32,7 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         let cardLevelRangeType = props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (cardLevelRangeType === undefined) {
             cardLevelRangeType = props.type == '51' ? '5' : '0';
         }
@@ -37,6 +44,11 @@ class StepTwo extends React.Component {
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             groupMembersList: [],
             cardLevelRangeType: cardLevelRangeType,
+            shopSchema,
+            cardTypeShopList: {},
+            canUseShops: [],
+            canUseShopsAll: [],
+            occupiedShops: [] // 已经被占用的卡类适用店铺id
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -85,7 +97,21 @@ class StepTwo extends React.Component {
         return flag;
     }
     onCardLevelChange(obj) {
-        this.setState(obj)
+        this.setState(obj, () => {
+          if(obj && obj.cardLevelIDList) {
+            // 根据卡类筛选店铺
+            const { cardLevelIDList, cardTypeShopList, canUseShopsAll } = this.state
+            let shopIDs = []
+            cardLevelIDList.forEach(item => {
+              shopIDs.push(...cardTypeShopList[item])
+            })
+            this.setState({
+              canUseShops: shopIDs.length === 0 ? canUseShopsAll : shopIDs // 没有选卡类所有店铺都可选
+            })
+            // 清空当前选择的店铺
+            this.props.saveCurrentCanUseShops([])
+          }
+        })
     }
     componentDidMount() {
         this.props.getSubmitFn({
@@ -102,6 +128,14 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         };
         this.props.queryGroupMembersList(opts);
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        this.props.getEventExcludeCardTypes({
+          groupID: this.props.user.accountInfo.groupID,
+          eventEndDate: "20000625",
+          eventStartDate: "21000531",
+          eventWay: '52'
+        });
+        this.queryCanuseShops()
         if (Object.keys(specialPromotion).length > 10) {
             this.setState({
                 message: specialPromotion.smsTemplate,
@@ -111,6 +145,29 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
+        if (!isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+            });
+        }
+        // 遍历所有排除卡
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
+            // true全部占用
+            this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {
+              const { getExcludeCardLevelIds } = this.state
+              this.filterHasCardShop(getExcludeCardLevelIds)
+            })
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
+            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
+            const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
+                acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
+                return acc;
+            }, []);
+            this.setState({ occupiedShops })
+        }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) &&
             nextProps.specialPromotion.get('$eventInfo').size > 10) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
@@ -214,8 +271,107 @@ class StepTwo extends React.Component {
             </div>
         )
     }
-
+    editBoxForShopsChange = (shops) => {
+      // 保存适用店铺
+      this.props.saveCurrentCanUseShops(shops)
+      // console.log(shops);
+    }
+    // 过滤已有卡类的店铺
+    filterHasCardShop = (cardList) => {
+      const { cardTypeShopList } = this.state
+      cardList.forEach(item => {
+        delete cardTypeShopList[item];
+      })
+      let shopIDs = []
+      Object.keys(cardTypeShopList).forEach((item) => {
+        shopIDs.push(...cardTypeShopList[item])
+      })
+      this.setState({
+        cardTypeShopList,
+        canUseShops: [...shopIDs],
+        canUseShopsAll: [...shopIDs],
+      })
+    }
+    // 查询已选卡类型的可用店铺
+    queryCanuseShops = () => {
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            queryCardType: 1// questArr.length === 0 ? 0 : 1,
+        }, null, { path: 'data.cardTypeShopList' })
+            .then(cardTypeShopList => {
+              let obj = {}
+              let canUseShopsAll = []
+              cardTypeShopList.forEach(item => {
+                let shopIDs = []
+                item.cardTypeShopResDetailList.forEach(element => {
+                  shopIDs.push(String(element.shopID))
+                  canUseShopsAll.push(String(element.shopID))
+                })
+                obj[String(item.cardTypeID)] = shopIDs
+              })
+              this.setState({
+                cardTypeShopList: obj,
+                canUseShops: [...canUseShopsAll],
+                canUseShopsAll
+              })
+            }).catch(err => {
+            })
+    }
+    filterAvailableShops() {
+      let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
+      if (dynamicShopSchema.shops.length === 0) {
+          return dynamicShopSchema;
+      }
+      const { canUseShops, occupiedShops } = this.state;
+      dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShops.includes(`${shop.shopID}`));
+      const shops = dynamicShopSchema.shops;
+      const availableCities = uniq(shops.map(shop => shop.cityID));
+      const availableBM = uniq(shops.map(shop => shop.businessModel));
+      const availableBrands = uniq(shops.map(shop => shop.brandID));
+      const availableCategories = uniq(shops.map(shop => shop.shopCategoryID)
+          .reduce((accumulateArr, currentCategoryIDString) => {
+              accumulateArr.push(...(currentCategoryIDString || '').split(','));
+              return accumulateArr;
+          }, []));
+      dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel)) : [];
+      dynamicShopSchema.citys = dynamicShopSchema.citys && dynamicShopSchema.citys instanceof Array ? dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID)) : [];
+      dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories && dynamicShopSchema.shopCategories instanceof Array ? dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID)) : [];
+      dynamicShopSchema.brands = dynamicShopSchema.brands && dynamicShopSchema.brands instanceof Array ? dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID)) : [];
+      return dynamicShopSchema;
+    }
+    renderShopsOptions() {
+        // 当有人领取礼物后，礼物不可编辑，加蒙层
+        const selectedShopIdStrings = this.props.specialPromotion.toJS().$eventInfo.canUseShopIDs.map(shopIdNum => String(shopIdNum));
+        // //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
+        // const noSelected64 = this.props.type == 64 &&
+        //     this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
+        //     this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
+        //     this.state.selections.length === 0;
+        // const selectedShopIdStrings = this.state.selections.map(shopIdNum => String(shopIdNum));
+        return (
+            // <div className={styles.giftWrap}>
+                <Form.Item
+                    label="适用店铺"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    // validateStatus={noSelected64 ? 'error' : 'success'}
+                    // help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
+                >
+                    <ShopSelector
+                        value={selectedShopIdStrings}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                        schemaData={this.filterAvailableShops()}
+                    />
+                </Form.Item>
+                // {/* <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div> */}
+            // </div>
+        );
+    }
     render() {
+        const { cardLevelRangeType } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         return (
@@ -243,6 +399,9 @@ class StepTwo extends React.Component {
                         form={this.props.form}
                     />
                 )}
+                {
+                    this.props.type == '52' && cardLevelRangeType === '2' ? this.renderShopsOptions() : null
+                }
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
@@ -272,6 +431,7 @@ const mapStateToProps = (state) => {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        shopSchemaInfo: state.sale_shopSchema_New,
     };
 };
 
@@ -283,6 +443,13 @@ const mapDispatchToProps = (dispatch) => {
         queryGroupMembersList: (opts) => {
             dispatch(queryGroupMembersList(opts));
         },
+        getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
+        saveCurrentCanUseShops: (opts) => {
+            dispatch(saveCurrentCanUseShops(opts))
+        },
+        getEventExcludeCardTypes: (opts) => {
+          dispatch(getEventExcludeCardTypes(opts))
+      },
     };
 };
 
