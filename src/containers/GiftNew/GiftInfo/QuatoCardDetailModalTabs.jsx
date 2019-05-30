@@ -28,7 +28,7 @@ class QuatoCardDetailModalTabs extends React.Component {
             formData.batchNO = batchNO;
         }
         const { UpdateTabKey } = this.props;
-        if (activeKey === batchQRCode) {
+        if (activeKey === 'batchQRCode') {
             this.props.fetchQuotaCardBatchNo({giftItemID: this.props.data.giftItemID})
         }
         UpdateTabKey({
