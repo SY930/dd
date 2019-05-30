@@ -94,7 +94,6 @@ class StepTwo extends React.Component {
     }
 
     handleShopChange = (v) => {
-        console.log('v', v)
         this.setState({
             shopIDList: v,
         })
