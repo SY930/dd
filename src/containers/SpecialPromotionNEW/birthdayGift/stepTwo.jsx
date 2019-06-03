@@ -96,7 +96,7 @@ class StepTwo extends React.Component {
         }
         // 开卡增礼品加适用店铺
         if(this.props.type == '52') {
-          opts.shopIDList = this.handleCardAndShops()
+          opts.shopIDList = this.state.shopIDList
           opts.canUseShopIDs = this.state.canUseShopIDs
         }
         this.props.setSpecialBasicInfo(opts);
@@ -289,15 +289,6 @@ class StepTwo extends React.Component {
         shopIDList: shops
       })
       // console.log(shops);
-    }
-    // 处理卡类和店铺的选择情况
-    handleCardAndShops = () => {
-      const { shopIDList, canUseShopIDs} = this.state
-      // 有卡类没有店铺
-      if(shopIDList.length === 0) {
-        return canUseShopIDs
-      }
-      return shopIDList
     }
     // 过滤已有卡类的店铺
     filterHasCardShop = (cardList) => {
