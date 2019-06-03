@@ -49,7 +49,7 @@ class StepTwo extends React.Component {
             canUseShopIDs: [],
             canUseShopIDsAll: [],
             occupiedShops: [], // 已经被占用的卡类适用店铺id
-            shopIDList: []
+            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -96,7 +96,7 @@ class StepTwo extends React.Component {
         }
         // 开卡增礼品加适用店铺
         if(this.props.type == '52') {
-          opts.shopIDList = this.state.shopIDList
+          opts.shopIDList = this.handleCardAndShops()
           opts.canUseShopIDs = this.state.canUseShopIDs
         }
         this.props.setSpecialBasicInfo(opts);
@@ -290,6 +290,15 @@ class StepTwo extends React.Component {
       })
       // console.log(shops);
     }
+    // 处理卡类和店铺的选择情况
+    handleCardAndShops = () => {
+      const { shopIDList, canUseShopIDs} = this.state
+      // 有卡类没有店铺
+      if(shopIDList.length === 0) {
+        return canUseShopIDs
+      }
+      return shopIDList
+    }
     // 过滤已有卡类的店铺
     filterHasCardShop = (cardList) => {
       const { cardTypeShopList } = this.state
@@ -409,7 +418,7 @@ class StepTwo extends React.Component {
                     />
                 )}
                 {
-                    this.props.type == '52' && cardLevelRangeType === '2' ? this.renderShopsOptions() : null
+                    this.props.type == '52' && cardLevelRangeType == '2' ? this.renderShopsOptions() : null
                 }
                 <SendMsgInfo
                     sendFlag={sendFlag}
