@@ -327,9 +327,23 @@ class StepTwo extends React.Component {
                 cardTypeShopList: obj,
                 canUseShopIDs: [...canUseShopIDsAll],
                 canUseShopIDsAll
+              }, () =>{
+                this.initShopData()
               })
             }).catch(err => {
             })
+    }
+    // 初始化店铺数据
+    initShopData = () => {
+      // 根据卡类筛选店铺
+      const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
+      let shopIDs = []
+      cardLevelIDList.forEach(item => {
+        shopIDs.push(...cardTypeShopList[item])
+      })
+      this.setState({
+        canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs // 没有选卡类所有店铺都可选
+      })
     }
     filterAvailableShops() {
       let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
