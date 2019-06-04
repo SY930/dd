@@ -109,15 +109,19 @@ class StepTwo extends React.Component {
             const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
             let shopIDs = []
             cardLevelIDList.forEach(item => {
-              shopIDs.push(...cardTypeShopList[item])
+              if(cardTypeShopList[item]) {
+                shopIDs.push(...cardTypeShopList[item])
+              }
             })
             this.setState({
               canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs // 没有选卡类所有店铺都可选
             })
-            // 清空当前选择的店铺
-            this.setState({
-              shopIDList: []
-            })
+            // if(this.props.isNew) {
+            //   // 清空当前选择的店铺
+            //   this.setState({
+            //     shopIDList: []
+            //   })
+            // }
           }
         })
     }
@@ -292,7 +296,7 @@ class StepTwo extends React.Component {
     }
     // 过滤已有卡类的店铺
     filterHasCardShop = (cardList) => {
-      const { cardTypeShopList } = this.state
+      const { cardTypeShopList, canUseShopIDsAll } = this.state
       cardList.forEach(item => {
         delete cardTypeShopList[item];
       })
@@ -302,8 +306,12 @@ class StepTwo extends React.Component {
       })
       this.setState({
         cardTypeShopList,
-        canUseShopIDs: [...shopIDs],
         canUseShopIDsAll: [...shopIDs],
+      }, () => {
+        // 新增页面初始化店铺数据
+        if(this.props.isNew) {
+          this.initShopData(2)
+        }
       })
     }
     // 查询已选卡类型的可用店铺
@@ -325,21 +333,22 @@ class StepTwo extends React.Component {
               })
               this.setState({
                 cardTypeShopList: obj,
-                canUseShopIDs: [...canUseShopIDsAll],
                 canUseShopIDsAll
               }, () =>{
-                this.initShopData()
+                this.initShopData(1)
               })
             }).catch(err => {
             })
     }
     // 初始化店铺数据
-    initShopData = () => {
+    initShopData = (v) => {
       // 根据卡类筛选店铺
       const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
       let shopIDs = []
       cardLevelIDList.forEach(item => {
-        shopIDs.push(...cardTypeShopList[item])
+        if(cardTypeShopList[item]) {
+          shopIDs.push(...cardTypeShopList[item])
+        }
       })
       this.setState({
         canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs // 没有选卡类所有店铺都可选
@@ -350,6 +359,7 @@ class StepTwo extends React.Component {
       if (dynamicShopSchema.shops.length === 0) {
           return dynamicShopSchema;
       }
+      
       const { canUseShopIDs, occupiedShops } = this.state;
       dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShopIDs.includes(`${shop.shopID}`));
       const shops = dynamicShopSchema.shops;
