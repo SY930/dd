@@ -149,7 +149,8 @@ class StepTwo extends React.Component {
           groupID: this.props.user.accountInfo.groupID,
           eventEndDate: "20000625",
           eventStartDate: "21000531",
-          eventWay: '52'
+          eventWay: '52',
+          itemID: specialPromotion.itemID || ''
         });
         this.querycanUseShopIDs()
         if (Object.keys(specialPromotion).length > 10) {
