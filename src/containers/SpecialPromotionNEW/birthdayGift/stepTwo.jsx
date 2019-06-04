@@ -14,7 +14,7 @@ import { Form, Select, Radio, message } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import { saleCenterSetSpecialBasicInfoAC, saveCurrentcanUseShopIDs, getEventExcludeCardTypes } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { saleCenterSetSpecialBasicInfoAC, saveCurrentcanUseShopIDs, getEventExcludeCardTypes, getGroupCRMCustomAmount } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
@@ -496,8 +496,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saveCurrentcanUseShopIDs(opts))
         },
         getEventExcludeCardTypes: (opts) => {
-          dispatch(getEventExcludeCardTypes(opts))
-      },
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
     };
 };
 
