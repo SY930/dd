@@ -55,6 +55,7 @@ class StepTwo extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
+        this.onHandleSelect = this.onHandleSelect.bind(this);
     }
 
     handleSubmit() {
@@ -103,27 +104,26 @@ class StepTwo extends React.Component {
         return flag;
     }
     onCardLevelChange(obj) {
-        this.setState(obj, () => {
-          if(obj && obj.cardLevelIDList) {
-            // 根据卡类筛选店铺
-            const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
-            let shopIDs = []
-            cardLevelIDList.forEach(item => {
-              if(cardTypeShopList[item]) {
-                shopIDs.push(...cardTypeShopList[item])
-              }
-            })
-            this.setState({
-              canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs // 没有选卡类所有店铺都可选
-            })
-            // if(this.props.isNew) {
-            //   // 清空当前选择的店铺
-            //   this.setState({
-            //     shopIDList: []
-            //   })
-            // }
+        this.setState(obj)
+    }
+    onHandleSelect(obj) {
+      if(obj && obj.cardLevelIDList) {
+        // 根据卡类筛选店铺
+        const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
+        let shopIDs = []
+        cardLevelIDList.forEach(item => {
+          if(cardTypeShopList[item]) {
+            shopIDs.push(...cardTypeShopList[item])
           }
         })
+        this.setState({
+          canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs // 没有选卡类所有店铺都可选
+        })
+        // 清空当前选择的店铺
+        this.setState({
+          shopIDList: []
+        })
+      }
     }
     componentDidMount() {
         this.props.getSubmitFn({
@@ -427,6 +427,7 @@ class StepTwo extends React.Component {
                 {this.props.type == '51' ? this.renderBirthDayGroupSelector() : (
                     <CardLevel
                         onChange={this.onCardLevelChange}
+                        onHandleSelect={this.onHandleSelect}
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}

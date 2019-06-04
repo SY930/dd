@@ -190,6 +190,7 @@ class CardLevel extends React.Component {
             this.props.form.setFieldsValue({ 'treeSelect': _value });
         })
         this.props.onChange && this.props.onChange({ cardLevelIDList: _value, defaultCardType })
+        this.props.onHandleSelect && this.props.onHandleSelect({ cardLevelIDList: _value, defaultCardType })
     }
     handleRadioChange(e) {
         const opts = {
