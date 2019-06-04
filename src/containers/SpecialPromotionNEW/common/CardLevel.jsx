@@ -237,7 +237,14 @@ class CardLevel extends React.Component {
     }
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
+        // const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
+        const { cardInfo = [] } = this.state;
+        let getExcludeCardLevelIds = []
+        if(this.props.type == '52') {
+          getExcludeCardLevelIds = this.props.getExcludeCardLevelIds
+        }else {
+          getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
+        }
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];

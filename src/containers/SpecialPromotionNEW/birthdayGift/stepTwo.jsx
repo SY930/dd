@@ -37,6 +37,7 @@ class StepTwo extends React.Component {
             cardLevelRangeType = props.type == '51' ? '5' : '0';
         }
         this.state = {
+            getExcludeCardLevelIds: [],
             message: '',
             settleUnitID: '',
             accountNo: '',
@@ -108,8 +109,15 @@ class StepTwo extends React.Component {
     }
     onHandleSelect(obj) {
       if(obj && obj.cardLevelIDList) {
+        const { cardLevelIDList } = obj
         // 根据卡类筛选店铺
-        const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
+        const { cardTypeShopList, canUseShopIDsAll } = this.state
+        if(cardLevelIDList.length === 0) {
+          this.setState({
+            canUseShopIDs: canUseShopIDsAll
+          })
+          return
+        }
         let shopIDs = []
         cardLevelIDList.forEach(item => {
           if(cardTypeShopList[item]) {
@@ -405,7 +413,7 @@ class StepTwo extends React.Component {
         );
     }
     render() {
-        const { cardLevelRangeType } = this.state;
+        const { cardLevelRangeType, getExcludeCardLevelIds = [] } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         return (
@@ -432,6 +440,7 @@ class StepTwo extends React.Component {
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}
+                        getExcludeCardLevelIds={getExcludeCardLevelIds}
                     />
                 )}
                 {
