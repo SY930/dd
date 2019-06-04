@@ -28,9 +28,6 @@ const SpecialPromotionCfg = {
         { value: '0', label: '未启用' },
         { value: '1', label: '已启用' },
     ],
-    weChatMallEvents: [
-        { value: '7010', label: '商城秒杀' },
-    ]
 }
 
 export default SpecialPromotionCfg

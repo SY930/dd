@@ -1,14 +1,3 @@
-/**
- * @Author: Xiao Feng Wang  <xf>
- * @Date:   2017-03-28T09:30:53+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: NewActivity.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-05T15:22:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
@@ -23,8 +12,10 @@ import {
     Button,
 } from 'antd';
 import { checkPermission } from '../../helpers/util';
+import {
+    WECHAT_MALL_ACTIVITIES,
+} from '../../constants/promotionType';
 import { saleCenter_NEW as sale_saleCenter_NEW } from '../../redux/reducer/saleCenterNEW/saleCenter.reducer';
-
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo';
 import ActivityMain from './WeChatMaLLActivityMain';
 import Authority from './../../components/common/Authority';
@@ -91,12 +82,6 @@ class NewActivity extends React.Component {
             index: 0,
             contentHeight: document.documentElement.clientHeight || document.body.clientHeight,
         };
-
-        this.renderActivityButtons = this._renderActivityButtons.bind(this);
-        this.onButtonClicked = this._onButtonClicked.bind(this);
-        this.renderModal = this._renderModal.bind(this);
-        this.clear = this.clear.bind(this);
-        this.setModal1Visible = this.setModal1Visible.bind(this);
         this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentDidMount() {
@@ -113,11 +98,11 @@ class NewActivity extends React.Component {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 40;
         this.setState({ contentHeight });
     }
-    setModal1Visible(modal1Visible) {
+    setModal1Visible = (modal1Visible) => {
         this.setState({ modal1Visible });
     }
 
-    clear() {
+    clear = () => {
         this.setState({ modal1Visible : false });
     }
 
@@ -161,36 +146,39 @@ class NewActivity extends React.Component {
     }
 
 
-    _renderActivityButtons() {
-        const saleCenter = this.props.saleCenter;
+    renderActivityButtons = () => {
         return (
-            saleCenter.get('weChatMallPromotions').map((activity, index) => {
+            WECHAT_MALL_ACTIVITIES.map((activity, index) => {
                 return (
                     <li
                         onClick={() => {
                             this.props.toggleIsUpdate(true);
                             this.onButtonClicked(index, activity);
                         }}
-                        key={`NewActivity${index}`}
+                        key={activity.key}
                         style={{
                             listStyle: 'none',
                         }}
                     >
                         <Authority rightCode={BASIC_PROMOTION_CREATE}>
-                            <ActivityLogo index={index}　tags={activity.get('tags')} titletext={activity.get('title')} example={activity.get('example')} spantext={activity.get('text')} />
+                            <ActivityLogo
+                                index={index}
+                                tags={activity.tags}
+                                titletext={activity.title}
+                                example={activity.example}
+                                spantext={activity.text}
+                            />
                         </Authority>
                     </li>
                 );
-            }).toJS()
+            })
         );
     }
 
-    _renderModal() {
-        const promotionType = this.props.saleCenter.get('weChatMallPromotions').toJS()[this.state.index].title;
-
+    renderModal = () => {
+        const promotionType = WECHAT_MALL_ACTIVITIES[this.state.index].title;
         return (
             <Modal
-
                 wrapClassName="progressBarModal"
                 title={`创建${promotionType}活动`}
                 maskClosable={false}
@@ -218,7 +206,7 @@ class NewActivity extends React.Component {
         );
     }
 
-    _onButtonClicked(index, activity) {
+    onButtonClicked = (index, activity) => {
         if (!checkPermission("marketing.jichuyingxiaoxin.create")) {
             message.warn('您没有新建活动的权限，请联系管理员');
             return;
