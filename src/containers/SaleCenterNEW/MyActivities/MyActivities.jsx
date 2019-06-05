@@ -428,9 +428,6 @@ class MyActivities extends React.Component {
             }
         }
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState) || this.props.myActivities.getIn(['$promotionDetailInfo', 'status']) !== nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
-    }
     getParams = () => {
         const {
             promotionType,
