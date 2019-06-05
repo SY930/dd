@@ -55,7 +55,8 @@ class StepTwo extends React.Component {
             canUseShopIDs: [],
             canUseShopIDsAll: [],
             occupiedShops: [], // 已经被占用的卡类适用店铺id
-            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || []
+            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || [],
+            excludeCardTypeShops: [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -123,7 +124,10 @@ class StepTwo extends React.Component {
                 acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
                 return acc;
             }, []);
-            this.setState({ occupiedShops })
+            this.setState({ 
+              occupiedShops,
+              excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
+            })
         }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) &&
             nextProps.specialPromotion.get('$eventInfo').size > 10) {
@@ -375,8 +379,17 @@ class StepTwo extends React.Component {
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
         }
-        
-        const { canUseShopIDs, occupiedShops } = this.state;
+        let occupiedShops = []
+        const { canUseShopIDs, excludeCardTypeShops, cardLevelIDList } = this.state;
+        if(cardLevelIDList.length !== 0){
+          cardLevelIDList.forEach((item) => {
+            excludeCardTypeShops.forEach((excludeShop) => {
+              if(excludeShop.cardTypeID === item) {
+                occupiedShops.push(...excludeShop.shopIDList.map(id => `${id}`))
+              }
+            })
+          })
+        }
         dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShopIDs.includes(`${shop.shopID}`));
         const shops = dynamicShopSchema.shops;
         const availableCities = uniq(shops.map(shop => shop.cityID));
