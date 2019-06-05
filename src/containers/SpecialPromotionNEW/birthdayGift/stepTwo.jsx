@@ -218,7 +218,7 @@ class StepTwo extends React.Component {
         }
         // 开卡增礼品加适用店铺
         if (this.props.type == '52') {
-            opts.shopIDList = this.state.shopIDList
+            opts.shopIDList = this.state.shopIDList.length === 0 ? this.state.canUseShopIDs : this.state.shopIDList
             opts.canUseShopIDs = this.state.canUseShopIDs
         }
         this.props.setSpecialBasicInfo(opts);
