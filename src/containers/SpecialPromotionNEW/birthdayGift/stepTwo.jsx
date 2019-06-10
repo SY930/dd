@@ -177,7 +177,6 @@ class StepTwo extends React.Component {
                     shopIDs.push(...cardTypeShopList[item])
                 }
             })
-            console.log(cardLevelIDList);
             this.setState({
                 canUseShopIDs: shopIDs, // 没有选卡类所有店铺都可选
             })
@@ -226,9 +225,10 @@ class StepTwo extends React.Component {
         }
         // 开卡增礼品加适用店铺
         if (this.props.type == '52') {
-            const { shopIDList, canUseShopIDs, occupiedShops } = this.state
-            opts.shopIDList = shopIDList.length === 0 ? canUseShopIDs.filter(shop => !occupiedShops.includes(`${shop}`)) : shopIDList
+            const { shopIDList, canUseShopIDs } = this.state
+            opts.shopIDList = shopIDList
             opts.canUseShopIDs = this.state.canUseShopIDs
+            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
         }
         this.props.setSpecialBasicInfo(opts);
         return flag;
