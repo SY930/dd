@@ -1147,18 +1147,6 @@ class PromotionBasicInfo extends React.Component {
             </Form>
         )
     }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        // if(this.props.promotionBasicInfo === nextProps.promotionBasicInfo){
-        //     return false;
-        // }
-        //
-        // if(this.props.fullCut === nextProps.fullCut){
-        //     return false;
-        // }
-
-        return true;
-    }
 }
 
 

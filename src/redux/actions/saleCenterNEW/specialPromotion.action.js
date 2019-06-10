@@ -194,7 +194,6 @@ export const getGroupCRMCustomAmount = () => {
     return (dispatch) => {
         axiosData('/specialPromotion/queryCrmCustomerCount.ajax', {}, {needThrow: true}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(res => {
-                console.log('res', res)
                 dispatch({
                     type: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
                     payload: {

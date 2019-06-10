@@ -83,9 +83,6 @@ class SpecialDishesTableWithBrand extends Component {
         this.setState({ data })
         this.props.onChange(data)
     }
-    dishFilter = (dishArray) => {
-        return dishArray.filter(fish => fish.isSetFood != '1' && fish.isTempFood != '1' && fish.isTempSetFood != '1')
-    }
     onCellChange = (val, {index}) => {
         const data = [...this.state.data];
         const record = data[index];
@@ -148,7 +145,6 @@ class SpecialDishesTableWithBrand extends Component {
             categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
             dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
         }
-        dishes = this.dishFilter(dishes)
         const initialValue = this.state.data.map((item) => `${item.brandID || 0}__${item.foodName}${item.unit}`);
         return (
             <FoodSelectModal

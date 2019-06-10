@@ -122,10 +122,6 @@ class NewActivity extends React.Component {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return !Immutable.is(Immutable.fromJS(this.state), Immutable.fromJS(nextState))
-        // return true
-    }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
     }
