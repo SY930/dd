@@ -28,8 +28,7 @@ import {
 } from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import {
     saleCenterResetDetailInfoAC,
-    getGoodsCategoryList,
-    getGoodsList,
+    getMallGoodsAndCategories,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {
     toggleIsUpdateAC,
@@ -62,11 +61,8 @@ function mapDispatchToProps(dispatch) {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        getGoodsCategoryList: (opts) => {
-            dispatch(getGoodsCategoryList(opts))
-        },
-        getGoodsList: (opts) => {
-            dispatch(getGoodsList(opts))
+        getMallGoodsAndCategories: (opts) => {
+            dispatch(getMallGoodsAndCategories(opts))
         },
     };
 }
@@ -212,8 +208,7 @@ class NewActivity extends React.Component {
             return;
         }
         const shopID = this.props.user.shopID;
-        this.props.getGoodsList(shopID);
-        this.props.getGoodsCategoryList(shopID);
+        this.props.getMallGoodsAndCategories(shopID);
         this.setState({
             updateModalVisible: true,
             currentPromotionID: arguments[1].promotionIDStr,

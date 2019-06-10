@@ -19,8 +19,7 @@ import {
     WECHAT_MALL_ACTIVITIES,
 } from '../../constants/promotionType';
 import {
-    getGoodsCategoryList,
-    getGoodsList,
+    getMallGoodsAndCategories,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import {throttle, isEqual, debounce} from 'lodash'
@@ -44,11 +43,8 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
-        getGoodsCategoryList: (opts) => {
-            dispatch(getGoodsCategoryList(opts))
-        },
-        getGoodsList: (opts) => {
-            dispatch(getGoodsList(opts))
+        getMallGoodsAndCategories: (opts) => {
+            dispatch(getMallGoodsAndCategories(opts))
         },
     };
 };
@@ -588,8 +584,7 @@ export class WeChatMallPromotionList extends React.Component {
      */
     handleEdit(record, isUpdate) {
         const shopID = this.props.user.shopID;
-        this.props.getGoodsList(shopID);
-        this.props.getGoodsCategoryList(shopID);
+        this.props.getMallGoodsAndCategories(shopID);
         this.props.toggleIsUpdate(isUpdate);
         this.setState({
             selectedRecord: record,

@@ -7,6 +7,7 @@ import {
     Icon,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import SingleGoodSelector from '../../../components/common/GoodSelector'
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
@@ -34,6 +35,7 @@ class SettingInfo extends React.Component {
             bannerUrl: props.data.bannerUrl,
             advancedAnnouncingTime: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? advancedAnnouncingTimeInHour / 24 : advancedAnnouncingTimeInHour : undefined,
             dayOrHour: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? '天' : '小时' : '小时',
+            selectedGood: null,
         };
     }
 
@@ -80,6 +82,11 @@ class SettingInfo extends React.Component {
             dayOrHour: event.target.value,
         });
     }
+    handleGoodChange = (good) => {
+        this.setState({
+            selectedGood: good,
+        })
+    }
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -117,6 +124,20 @@ class SettingInfo extends React.Component {
                             placeholder="预留时间为3 ~ 120 分钟"
                         />
                     )}
+                </FormItem>
+                <FormItem
+                    label="选择商品"
+                    required
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <SingleGoodSelector
+                        allDishes={this.props.goods.toJS()}
+                        allCategories={this.props.goodCategories.toJS()}
+                        value={this.state.selectedGood ? this.state.selectedGood.value : undefined}
+                        onChange={this.handleGoodChange}
+                    />
                 </FormItem>
                 <FormItem
                     label="首页提前宣传时长"
@@ -173,6 +194,8 @@ class SettingInfo extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
+        goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories'),
+        goods: state.sale_promotionDetailInfo_NEW.get('goods'),
     };
 };
 

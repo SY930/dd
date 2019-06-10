@@ -47,6 +47,7 @@ import {
     SALE_CENTER_FETCH_SUBJECT_LIST,
     SALE_CENTER_FETCH_SUBJECT_LIST_SUCCESS,
     SALE_CENTER_FETCH_SUBJECT_LIST_FAILED,
+    SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS,
 
 } from '../../actions/saleCenterNEW/promotionDetailInfo.action';
 
@@ -119,8 +120,9 @@ const $initialState = Immutable.fromJS({
         upGradeDishes: [], // 例如：升级换新的加价前商品
         needSyncToAliPay: 0,
     },
-
     foodCategoryCollection: [],
+    goodCategories: [],
+    goods: [],
 });
 
 function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $foodMenuListInfo) {
@@ -416,8 +418,10 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_SUBJECT_LIST_FAILED:
             return $$state;
-
-
+        case SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS:
+                    console.log('action', action)
+            return $$state.set('goodCategories', Immutable.fromJS(action.payload.categories))
+                    .set('goods', Immutable.fromJS(action.payload.goods))
         default:
             return $$state;
     }
