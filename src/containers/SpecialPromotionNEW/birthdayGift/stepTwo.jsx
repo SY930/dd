@@ -175,7 +175,7 @@ class StepTwo extends React.Component {
                 }
             })
             this.setState({
-                canUseShopIDs: shopIDs, // 没有选卡类所有店铺都可选
+                canUseShopIDs: shopIDs,
             })
             // 清空当前选择的店铺
             this.setState({
@@ -371,7 +371,7 @@ class StepTwo extends React.Component {
             }
         })
         this.setState({
-            canUseShopIDs: shopIDs.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
+            canUseShopIDs: shopIDs.length === 0 && cardLevelIDList.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
         })
     }
     filterAvailableShops() {
