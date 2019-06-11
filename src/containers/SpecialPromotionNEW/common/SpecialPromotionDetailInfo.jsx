@@ -1082,6 +1082,7 @@ class SpecialDetailInfo extends Component {
         } = this.props;
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
         const cardTypeList = Immutable.List.isList(groupCardTypeList) ? groupCardTypeList.toJS() : [];
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑
         return (
             <div
                 style={{
@@ -1337,6 +1338,7 @@ class SpecialDetailInfo extends Component {
                     <Switch
                         checked={!this.state.disabledGifts}
                         checkedChildren="开启"
+                        disabled={userCount > 0}
                         unCheckedChildren="关闭"
                         onChange={(bool) => this.setState({disabledGifts: !bool})}
                     ></Switch>
