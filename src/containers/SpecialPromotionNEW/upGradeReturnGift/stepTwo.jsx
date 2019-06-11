@@ -187,13 +187,6 @@ class StepTwo extends React.Component {
                 })
             }
         }
-        if (this.props.type == '70' || this.props.type == '64') {
-            if (this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'shopIDList'])) {
-                const specialPromotion = nextProps.specialPromotion.get('$eventInfo');
-                const selections = specialPromotion.shopIDList || [];
-                this.setState({selections});
-            }
-        }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
             const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
             this.setState({cardLevelRangeType: type === undefined ? '5' : type});
