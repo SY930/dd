@@ -4,6 +4,8 @@ import {
     Form,
     Select,
     DatePicker,
+    Row,
+    Col,
 } from 'antd';
 import { connect } from 'react-redux';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -16,6 +18,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const moment = require('moment');
+const DATE_FORMAT = 'YYYYMMDD';
 
 class BasicInfo extends React.Component {
     constructor(props) {
@@ -60,13 +63,21 @@ class BasicInfo extends React.Component {
 
     handleDateRangeChange = (value, dateString) => { // value: Selected Time, dateString: Formatted Selected Time
         if (value.length > 1) {
-            const startTime = value[0].format('YYYYMMDDHHmmss');
-            const endTime = value[1].format('YYYYMMDDHHmmss');
+            const startTime = value[0].format(DATE_FORMAT);
+            const endTime = value[1].format(DATE_FORMAT);
             this.setState({
                 startTime,
                 endTime,
             });
         }
+    }
+
+    getDateCount = () => {
+        if (undefined == this.state.startTime || undefined == this.state.endTime) {
+            return 0
+        }
+        return moment(this.state.endTime, DATE_FORMAT)
+            .diff(moment(this.state.startTime, DATE_FORMAT), 'days') + 1;
     }
 
     handleNameChange = (e) => {
@@ -83,7 +94,7 @@ class BasicInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <p>{'商城秒杀'}</p>
+                <p>{'拼团活动'}</p>
             </FormItem>
         )
     }
@@ -112,27 +123,40 @@ class BasicInfo extends React.Component {
                     )}
                 </FormItem>
                 <FormItem
-                    label="活动起止时间"
+                    label="活动起止日期"
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('rangePicker', {
-                        rules: [{
-                            required: true,
-                            message: '请选择活动起止时间',
-                        }],
-                        onChange: this.handleDateRangeChange,
-                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, 'YYYYMMDDHHmmss'), moment(this.state.endTime, 'YYYYMMDDHHmmss')] : [],
-                    })(
-                        <RangePicker
-                            showTime={{ format: 'HH:mm:ss' }}
-                            className={styles.ActivityDateDayleft}
-                            style={{ width: '100%' }}
-                            format="YYYY-MM-DD HH:mm:ss"
-                            placeholder={['开始时间', '结束时间']}
-                        />
-                    )}
+                    <Row>
+                        <Col span={21}>
+                            {getFieldDecorator('rangePicker', {
+                            rules: [{
+                                required: true,
+                                message: '请选择活动起止时间',
+                            }],
+                            onChange: this.handleDateRangeChange,
+                            initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
+                        })(
+                            <RangePicker
+                                className={styles.ActivityDateDayleft}
+                                style={{ width: '100%' }}
+                                format="YYYY-MM-DD"
+                                placeholder={['开始日期', '结束日期']}
+                            />
+                        )}
+                        </Col>
+                        <Col offset={1} span={2}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {
+                                        this.getDateCount()
+                                    }
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
                 </FormItem>
                 <FormItem
                     label="活动说明"

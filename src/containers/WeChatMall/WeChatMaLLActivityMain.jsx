@@ -22,7 +22,7 @@ class ActivityMain extends React.Component {
     renderSideBar() {
         return (
             <div className={styles.promotionTip}>
-                <div style={{ marginBottom: 20 }}>{this.props.eventWay ? WECHAT_MALL_ACTIVITIES.find(type => type.key == this.props.eventWay).text || '' : ''}</div>
+                <div style={{ marginBottom: 20 }}>{WECHAT_MALL_ACTIVITIES[this.props.index].text || ''}</div>
             </div>
         );
     }
