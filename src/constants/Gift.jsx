@@ -206,6 +206,7 @@ const GiftCfg = {
         { value: '104', label: '分享裂变' },
         { value: '105', label: '膨胀大礼包' },
         { value: '106', label: '桌边砍' },
+        { value: '107', label: '推荐有礼' },
         { value: '112', label: '完善资料送礼' },
         { value: '111', label: '升级送礼' },
         { value: '113', label: '累计消费送礼' },

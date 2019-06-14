@@ -355,10 +355,6 @@ class MySpecialActivities extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState)
-    }
-
     render() {
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>

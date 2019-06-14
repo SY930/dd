@@ -4,8 +4,9 @@ import BasePage from "./BasePage";
 import registerPage from '../../../index';
 import {NEW_CUSTOMER_PROMOTION_TYPES} from "../../constants/promotionType";
 import {NEW_CUSTOMER} from "../../constants/entryCodes";
+import { axiosData } from '../../helpers/util';
 
-const preReleaseTypes = [
+const limitedTypes = [
     '67',
     '68',
 ]
@@ -15,14 +16,42 @@ const preReleaseTypes = [
 @connect(mapStateToProps, mapDispatchToProps)
 class NewCustomerPage extends Component {
 
+    state = {
+        whiteList: [],
+    }
+
+    componentDidMount() {
+        axiosData(
+            '/promotionWhiteList/queryAllData.ajax',
+            { requestType: '10', },
+            { needThrow: true },
+            { path: 'allData' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(dataStr => {
+            const dataArr = JSON.parse(dataStr);
+            const { whiteList } = this.state;
+            dataArr.forEach(item => {
+                if (item.isWhiteList) {
+                    whiteList.push(`${item.specialType}`)
+                }
+            })
+            this.setState({ whiteList });
+        })
+    }
+
+    promotionFilter = (promotionType) => {
+        const index = limitedTypes.indexOf(promotionType);
+        if (index === -1) return true;
+        return this.state.whiteList.includes(promotionType);
+    }
+
     render() {
         return (
             <BasePage
                 categoryTitle="会员拉新"
                 promotions={
                     NEW_CUSTOMER_PROMOTION_TYPES
-                    .filter(item => HUALALA.ENVIRONMENT !== 'production-release'
-                        || preReleaseTypes.indexOf(item.key) === -1)
+                    .filter(item => this.promotionFilter(item.key))
                 }
             />
         )
