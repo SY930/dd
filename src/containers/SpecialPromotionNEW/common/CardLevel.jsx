@@ -190,6 +190,7 @@ class CardLevel extends React.Component {
             this.props.form.setFieldsValue({ 'treeSelect': _value });
         })
         this.props.onChange && this.props.onChange({ cardLevelIDList: _value, defaultCardType })
+        this.props.onHandleSelect && this.props.onHandleSelect({ cardLevelIDList: _value, defaultCardType })
     }
     handleRadioChange(e) {
         const opts = {
@@ -236,7 +237,14 @@ class CardLevel extends React.Component {
     }
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
+        // const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
+        const { cardInfo = [] } = this.state;
+        let getExcludeCardLevelIds = []
+        if(this.props.type == '52') {
+          getExcludeCardLevelIds = this.props.getExcludeCardLevelIds
+        }else {
+          getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
+        }
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];

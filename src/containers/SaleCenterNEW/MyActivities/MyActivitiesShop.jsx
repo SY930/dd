@@ -350,10 +350,6 @@ class MyActivitiesShop extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(this.state, nextState) || this.props.myActivities.getIn(['$promotionDetailInfo', 'status']) !== nextProps.myActivities.getIn(['$promotionDetailInfo', 'status']);
-    }
-
     componentWillReceiveProps(nextProps) {
         if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);

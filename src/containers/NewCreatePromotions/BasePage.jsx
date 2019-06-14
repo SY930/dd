@@ -36,7 +36,6 @@ import {
 } from "../../constants/projectHuatianConf";
 
 const UNRELEASED_PROMOTION_TYPES = [
-    '67',
 ]
 
 class BasePage extends Component {
