@@ -32,7 +32,7 @@ const FORMITEMS = {
     usingDateType: {
         label: '节假日是否可用',
         type: 'checkbox',
-        defaultValue: ['2', '1', '0'],
+        defaultValue: ['2', '1'],
         options: GiftCfg.usingDateType,
         rules: [{ type: 'array', required: true, message: '请设置节假日是否可用' }],
     },

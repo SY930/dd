@@ -135,7 +135,6 @@ const GiftCfg = {
     usingDateType: [
         { label: '工作日可用', value: '2' },
         { label: '法定节假日可用', value: '1' },
-        { label: '周末可用', value: '0' },
     ],
     supportOrderType: [
         { label: '全部支持', value: '2' },
