@@ -6,13 +6,17 @@ import {
     DatePicker,
     Row,
     Col,
+    Tooltip,
+    Icon,
 } from 'antd';
 import { connect } from 'react-redux';
+import ReadableTimeSetter from '../../../components/common/ReadableTimeSetter'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
 import {
     saleCenterAddPhrase,
 } from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
+import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -157,6 +161,19 @@ class BasicInfo extends React.Component {
                             </div>
                         </Col>
                     </Row>
+                </FormItem>
+                <FormItem
+                    label="拼团有效期"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <PriceInput
+                        modal="int"
+                        addonAfter="分钟"
+                        placeholder="请输入拼团有效期"
+                        maxNum={6}
+                    />
                 </FormItem>
                 <FormItem
                     label="活动说明"

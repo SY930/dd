@@ -8,6 +8,8 @@ import {
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import SingleGoodSelector from '../../../components/common/GoodSelector'
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -15,13 +17,11 @@ const RadioGroup = Radio.Group;
 
 const RADIO_OPTIONS = Object.freeze([
     {
-        key: '小时',
-        value: '小时',
-        name: '小时',
+        value: 0,
+        name: '普通拼团',
     }, {
-        key: '天',
-        value: '天',
-        name: '天',
+        value: 1,
+        name: '老带新拼团',
     },
 ]);
 
@@ -30,7 +30,8 @@ class SettingInfo extends React.Component {
         super(props);
         const advancedAnnouncingTimeInHour = props.data.advancedAnnouncingTime;
         this.state = {
-            reservationTime: props.data.reservationTime,
+            activeType: props.data.activeType || 0,
+            selectedGood: null,
             bannerUrl: props.data.bannerUrl,
             advancedAnnouncingTime: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? advancedAnnouncingTimeInHour / 24 : advancedAnnouncingTimeInHour : undefined,
             dayOrHour: advancedAnnouncingTimeInHour ? advancedAnnouncingTimeInHour >= 24 && advancedAnnouncingTimeInHour % 24 === 0 ? '天' : '小时' : '小时',
@@ -75,9 +76,15 @@ class SettingInfo extends React.Component {
         this.setState({advancedAnnouncingTime: value.number});
     }
 
-    handleDayOrHourChange = (event) => {
+    handleGoodChange = (good) => {
         this.setState({
-            dayOrHour: event.target.value,
+            selectedGood: good,
+        })
+    }
+
+    handleActiveTypeChange = (event) => {
+        this.setState({
+            activeType: event.target.value,
         });
     }
 
@@ -86,56 +93,33 @@ class SettingInfo extends React.Component {
         return (
             <Form>
                 <FormItem
-                    label={
-                        <span>
-                           商品预留时间
-                        </span>
-                    }
+                    label="拼团类型"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{span: 17 }}
+                >
+                    <RadioGroup
+                        value={this.state.activeType}
+                        onChange={this.handleActiveTypeChange}
+                    >
+                        {RADIO_OPTIONS.map((type) => {
+                            return (<Radio key={`${type.value}`} value={type.value}>{type.name}</Radio >);
+                        })}
+                    </RadioGroup >
+                </FormItem>
+                <FormItem
+                    label="选择商品"
+                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('reservation', {
-                        rules: [
-                            {
-                                required: true,
-                                message: '不得为空',
-                            },
-                            {
-                                validator: (rule, v, cb) => {
-                                    Number(v && v.number ? v.number : 0) >= 3 &&  Number(v && v.number ? v.number : 0) <= 120 ? cb() : cb(rule.message);
-                                },
-                                message: '预留时间为3 ~ 120 分钟',
-                            },
-                        ],
-                        initialValue: this.state.reservationTime ? {number: this.state.reservationTime} : undefined,
-                        onChange: this.onReservationChange,
-                    })(
-                        <PriceInput
-                            addonAfter={'分钟'}
-                            modal={'int'}
-                            placeholder="预留时间为3 ~ 120 分钟"
-                        />
-                    )}
-                </FormItem>
-                <FormItem
-                    label="首页提前宣传时长"
-                    className={styles.FormItemStyle}
-                    labelCol={{
-                        span: 4,
-                    }}
-                    wrapperCol={{
-                        span: 17,
-                    }}
-                >
-                    <RadioGroup
-                        value={this.state.dayOrHour}
-                        onChange={this.handleDayOrHourChange}
-                    >
-                        {RADIO_OPTIONS.map((type) => {
-                            return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
-                        })}
-                    </RadioGroup >
+                    <SingleGoodSelector
+                        allDishes={this.props.goods.toJS()}
+                        allCategories={this.props.goodCategories.toJS()}
+                        value={this.state.selectedGood ? this.state.selectedGood.value : undefined}
+                        onChange={this.handleGoodChange}
+                    />
                 </FormItem>
                 <FormItem
                     label="提前"
@@ -173,6 +157,8 @@ class SettingInfo extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
+        goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories'),
+        goods: state.sale_promotionDetailInfo_NEW.get('goods'),
     };
 };
 
