@@ -1,10 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col } from 'antd';
+import {
+    Row,
+    Col,
+    message,
+} from 'antd';
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo'; // 活动logo
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import WeChatMallSale from './miaosha/Wrapper';
 import WeChatMallGroupSale from './groupSale/Wrapper';
+import { axiosData, getAccountInfo } from '../../helpers/util';
 
 import {
     WECHAT_MALL_ACTIVITIES,
@@ -15,8 +20,12 @@ class ActivityMain extends React.Component {
         super(props);
         this.state = {
             current: 0, // 模态框当前步骤
-            pages: [],
+            confirmLoading: false,
         };
+        this._pages = [
+            WeChatMallSale, // 商城秒杀
+            WeChatMallGroupSale, // 拼团活动
+        ];
     }
 
     renderSideBar() {
@@ -27,35 +36,51 @@ class ActivityMain extends React.Component {
         );
     }
 
-    /**
-     * 加载所有的营销活动页，并转换对应的React组件存放到 state属性 pages中存储。
-     * 用户点击对应的index加载对应的页面内容（营销活动）
-     */
-    componentDidMount() {
-        const _pages = [
-            WeChatMallSale, // 商城秒杀
-            WeChatMallGroupSale, // 拼团活动
-        ];
-        const pages = _pages.map((promotion, index) => {
-            return React.createElement(promotion, {
-                callbacktwo: (arg) => {
-                    this.props.callbackthree(arg);
-                },
-                key: index,
-                isNew: this.props.isNew,
-                previousData: this.props.data,
-                promotionType: WECHAT_MALL_ACTIVITIES[index].key,
-                component: promotion,
-            });
-        });
-        this.setState({
-            pages,
-        });
-    }
-
     // 渲染对应的营销活动页面
     renderActivityTags() {
-        return this.state.pages[this.props.index];
+        const { index } = this.props;
+        const promotion = this._pages[index];
+        return React.createElement(promotion, {
+            key: index,
+            isNew: this.props.isNew,
+            confirmLoading: this.state.confirmLoading,
+            previousData: this.props.data,
+            promotionType: WECHAT_MALL_ACTIVITIES[index].key,
+            callbacktwo: (arg) => {
+                this.props.callbackthree(arg);
+            },
+            onFinish: (cb) => (data) => {
+                this.setState({
+                    confirmLoading: true,
+                });
+                const url = this.props.data ? '/promotion/extra/extraEventService_updateExtraEvent.ajax'
+                : '/promotion/extra/extraEventService_addExtraEvent.ajax';
+                const params = {
+                    ...data,
+                    extraEventType: WECHAT_MALL_ACTIVITIES[index].key,
+                    shopID: this.props.user.shopID
+                };
+                const userName = getAccountInfo().userName
+                if (this.props.data && this.props.data.itemID) {
+                    params.itemID = data.itemID;
+                    params.modifiedBy = userName;
+                } else {
+                    params.createBy = userName;
+                }
+                axiosData(url, params, null, {}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                    .then(() => {
+                        this.setState({
+                            confirmLoading: false,
+                        });
+                        message.success(`活动${this.props.data ? '更新' : '创建'}完成`);
+                        cb && cb();
+                    }, err => {
+                        this.setState({
+                            confirmLoading: false,
+                        });
+                    })
+            },
+        });
     }
     render() {
         const index = this.props.index;
@@ -82,6 +107,7 @@ class ActivityMain extends React.Component {
 function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
+        user: state.user.toJS(),
     };
 }
 

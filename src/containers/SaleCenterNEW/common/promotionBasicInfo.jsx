@@ -37,7 +37,7 @@ import {
 
 import {
     CYCLE_TYPE,
-    FULL_CUT_ACTIVITY_CYCLE_TYPE,
+    ACTIVITY_CYCLE_TYPE,
 } from '../../../redux/actions/saleCenterNEW/types';
 
 
@@ -209,7 +209,7 @@ class PromotionBasicInfo extends React.Component {
 
             excludeDateArray: Immutable.fromJS([]),
 
-            validCycleType: FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY,
+            validCycleType: ACTIVITY_CYCLE_TYPE.EVERYDAY,
             selectWeekValue: ['1'], //
             dateRange: Array(2),
             selectMonthValue: ['1'],
@@ -698,7 +698,6 @@ class PromotionBasicInfo extends React.Component {
     }
 
     renderTimeSlot() {
-        const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },

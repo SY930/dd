@@ -80,8 +80,6 @@ class GoodSelectModal extends Component {
         let filteredDishesOptions = selectedCategories.length ?
             allDishes.filter(({categoryID}) => selectedCategories.includes(categoryID)) :
             allDishes;
-            console.log('filteredDishesOptions', filteredDishesOptions)        
-
         // 单选模式，禁用掉其它
         if (!multiple && selectedGoodResults.length) {
             filteredDishesOptions = filteredDishesOptions.map(dish => ({...dish, disabled: !selectedGoodResults.includes(dish.value)}))

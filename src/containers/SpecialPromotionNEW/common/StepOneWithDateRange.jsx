@@ -26,7 +26,7 @@ import {
     getEventExcludeCardTypes,
     querySMSSignitureList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import {SEND_MSG, NOTIFICATION_FLAG, FULL_CUT_ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
+import {SEND_MSG, NOTIFICATION_FLAG, ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
@@ -97,22 +97,22 @@ class StepOneWithDateRange extends React.Component {
             excludeDateArray = eventInfo.excludedDate.map(item => moment(item, 'YYYYMMDD'))
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle) {
-                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
+                validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
                 selectWeekValue = ['1'];
                 selectMonthValue = ['1'];
             }else if (eventInfo.validCycle[0].startsWith('m')) {
                 expand = true;
-                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY;
+                validCycleType = ACTIVITY_CYCLE_TYPE.MONTHLY;
                 selectWeekValue = ['1'];
                 selectMonthValue = eventInfo.validCycle.map(item => item.substring(1));
             }else if (eventInfo.validCycle[0].startsWith('w')) {
                 expand = true;
-                validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY;
+                validCycleType = ACTIVITY_CYCLE_TYPE.WEEKLY;
                 selectMonthValue = ['1'];
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
         } catch (e) {
-            validCycleType = FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY;
+            validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
             selectMonthValue = ['1'];
@@ -369,10 +369,10 @@ class StepOneWithDateRange extends React.Component {
                 } = this.state;
                 let validCycle;
                 switch (validCycleType) {
-                    case FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY:
+                    case ACTIVITY_CYCLE_TYPE.MONTHLY:
                         validCycle = selectMonthValue.map(item => `m${item}`);
                         break;
-                    case FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY:
+                    case ACTIVITY_CYCLE_TYPE.WEEKLY:
                         validCycle = selectWeekValue.map(item => `w${item}`);
                         break;
                     default: validCycle = null;
@@ -473,7 +473,7 @@ class StepOneWithDateRange extends React.Component {
     }
 
     renderPromotionCycleDetailSetting() {
-        if (this.state.validCycleType === FULL_CUT_ACTIVITY_CYCLE_TYPE.WEEKLY) {
+        if (this.state.validCycleType === ACTIVITY_CYCLE_TYPE.WEEKLY) {
             return (
                 <div className={styles.SeniorDateWeek}>
                     <CheckboxGroup
@@ -484,7 +484,7 @@ class StepOneWithDateRange extends React.Component {
                     />
                 </div>
             )
-        } else if (this.state.validCycleType === FULL_CUT_ACTIVITY_CYCLE_TYPE.MONTHLY) {
+        } else if (this.state.validCycleType === ACTIVITY_CYCLE_TYPE.MONTHLY) {
             return (
                 <div className={styles.SeniorDateMonth}>
                     <CheckboxGroup

@@ -11,7 +11,7 @@
 
 const Moment = require('moment');
 
-export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
+export const ACTIVITY_CYCLE_TYPE = Object.freeze({
     EVERYDAY: '0',
     WEEKLY: '1',
     MONTHLY: '2',

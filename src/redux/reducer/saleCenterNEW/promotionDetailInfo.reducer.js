@@ -419,7 +419,6 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_FETCH_SUBJECT_LIST_FAILED:
             return $$state;
         case SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS:
-                    console.log('action', action)
             return $$state.set('goodCategories', Immutable.fromJS(action.payload.categories))
                     .set('goods', Immutable.fromJS(action.payload.goods))
         default:

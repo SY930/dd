@@ -22,7 +22,7 @@ import {
     getMallGoodsAndCategories,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../SaleCenterNEW/ActivityPage.less';
-import {throttle, isEqual, debounce} from 'lodash'
+import { debounce } from 'lodash'
 import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import {BASIC_PROMOTION_QUERY} from "../../constants/authorityCodes";
@@ -94,7 +94,6 @@ export class WeChatMallPromotionList extends React.Component {
         this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
         this.renderModifyRecordInfoModal = this.renderModifyRecordInfoModal.bind(this);
         this.onDateQualificationChange = this.onDateQualificationChange.bind(this);
-        this.onTreeSelect = this.onTreeSelect.bind(this);
         this.handleQuery = debounce(this.handleQuery.bind(this), 500);
         this.showNothing = this.showNothing.bind(this);
     }
@@ -109,10 +108,14 @@ export class WeChatMallPromotionList extends React.Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
 
-    handleDisableClickEvent(record) { // toggle, 2 关闭 1开启 3终止, 2时点击启用status传1, 1时点击禁用status传2, 3时只能查看
-        const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
-        const status = record.status == 1 ? isOngoing ? 3 : 2 : 1;
-        axiosData('/promotion/extra/extraEventService_toggleExtraEvent.ajax', {itemID: record.itemID, shopID: this.props.user.shopID, status}, null, {path: 'data.extraEventList'})
+    handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
+        axiosData(
+            '/promotion/extra/extraEventService_toggleExtraEvent.ajax',
+            {itemID: record.itemID, shopID: this.props.user.shopID, status},
+            null,
+            {path: 'data.extraEventList'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            )
             .then(() => {
                 message.success('使用状态修改成功');
                 this.handleQuery(this.state.pageNo)
@@ -204,15 +207,20 @@ export class WeChatMallPromotionList extends React.Component {
             return;
         }
         const params = {...opts, shopID };
-
-        axiosData('/promotion/extra/extraEventService_getExtraEvents.ajax', params, null, {path: 'data'})
-            .then((data) => {
+        axiosData(
+            '/promotion/extra/extraEventService_getExtraEvents.ajax',
+            params,
+            null,
+            {path: ''},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            )
+            .then((res) => {
                 this.setState({
                     loading: false,
-                    dataSource: (data.extraEventList || []).map((item, index) => ({...item, index: index + 1})),
-                    pageNo: data.page.pageNo || 1,
-                    pageSizes: data.page.pageSize || 30,
-                    total: data.page.totalSize || 0,
+                    dataSource: (res.extraEventList || []).map((item, index) => ({...item, index: index + 1})),
+                    pageNo: res.pageNo || 1,
+                    pageSizes: res.pageSize || 30,
+                    total: res.totalSize || 0,
                 });
             }, err => {
                 this.setState({
@@ -236,39 +244,9 @@ export class WeChatMallPromotionList extends React.Component {
 
     // date qualification
     onDateQualificationChange(value) {
-        console.log(value);
         this.setState({
             promotionDateRange: value,
         });
-    }
-
-    onTreeSelect(value, treeData) {
-        const shopsInfo = [];
-        treeData.forEach((td) => {
-            if (td.children) {
-                td.children.map((tdc) => {
-                    shopsInfo.push(tdc);
-                })
-            }
-        });
-        if (value != undefined) {
-            if (value.match(/[-]/g).length != 2) {
-                return null;
-            }
-            const selectedShopID = shopsInfo.find((si) => {
-                return si.value === value;
-            }).shopID;
-
-            this.setState({
-                selectedShop: value,
-                promotionShop: selectedShopID,
-            });
-        } else {
-            this.setState({
-                selectedShop: null,
-                promotionShop: value,
-            });
-        }
     }
 
     // 切换每页显示条数
@@ -279,16 +257,6 @@ export class WeChatMallPromotionList extends React.Component {
             this.handleQuery(1, pageSize)
         })
     };
-
-    /**
-     * Render promotion update Modal
-     * wrapped normally.
-     * @param {Bool} isNew A bool value identify the current operation is update or create.
-     */
-
-    renderContentOfThisModal() {
-        return <div>123</div>;
-    }
 
     renderModifyRecordInfoModal() {
         const { selectedRecord } = this.state;
@@ -399,7 +367,7 @@ export class WeChatMallPromotionList extends React.Component {
                         </li>
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.loading}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={() => this.handleQuery()} disabled={this.state.loading}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
                     </ul>
@@ -430,31 +398,37 @@ export class WeChatMallPromotionList extends React.Component {
                 render: (text, record, index) => {
                     const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
                     const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
-                    const buttonText = (record.status == 1 ? isOngoing ? '终止' : '禁用' : '启用');
-                    const isGroupPro = record.maintenanceLevel == '0';
+                    const buttonText = (record.status == 1 ? '禁用' : '启用');
                     return (<span>
                         <a
                             href="#"
                             disabled={isExpired || record.status == 3}
                             onClick={isExpired || record.status == 3 ? null : () => {
-                                this.handleDisableClickEvent(text, record, index);
+                                this.handleDisableClickEvent(record, record.status == 1 ? 2 : 1);
                             }}
                         >{buttonText}</a>
-                            <a
-                                href="#"
-                                onClick={() => {
-                                    this.handleEdit(record, false)
-                                }}
-                            >
-                                查看
-                            </a>
-                            <a
-                                href="#"
-                                disabled={isGroupPro || record.status == 1 || isExpired || record.status == 3}
-                                onClick={isGroupPro || record.status == 1 || isExpired || record.status == 3 ? null : () => {
-                                    this.handleEdit(record, true)
-                                }}
-                            >编辑</a>
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.handleEdit(record, false)
+                            }}
+                        >
+                            查看
+                        </a>
+                        <a
+                            href="#"
+                            disabled={record.status == 1 || isOngoing || isExpired || record.status == 3}
+                            onClick={record.status == 1 || isOngoing || isExpired || record.status == 3 ? null : () => {
+                                this.handleEdit(record, true)
+                            }}
+                        >编辑</a>
+                        <a
+                            href="#"
+                            disabled={isExpired || record.status == 3}
+                            onClick={isExpired || record.status == 3 ? null : () => {
+                                this.handleDisableClickEvent(record, 3);
+                            }}
+                        >终止</a>
                     </span>
 
                     );
@@ -476,13 +450,13 @@ export class WeChatMallPromotionList extends React.Component {
                 },
             },
             {
-                title: '活动时间',
+                title: '有效时间',
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
                 width: 200,
                 render: (validDate, record) => {
-                    return `${moment(record.startTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD HH:mm')} - ${moment(record.endTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD HH:mm')}`;
+                    return `${moment(record.startTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD')} - ${moment(record.endTime, 'YYYYMMDDHHmm').format('YYYY-MM-DD')}`;
                 },
             },
 
@@ -551,7 +525,7 @@ export class WeChatMallPromotionList extends React.Component {
                     dataSource={this.state.dataSource}
                     loading={
                         {
-                            delay: 500,
+                            delay: 200,
                             spinning: this.state.loading,
                         }
                     }

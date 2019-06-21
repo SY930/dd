@@ -9,20 +9,19 @@ import {
     Tooltip,
     Icon,
 } from 'antd';
-import { connect } from 'react-redux';
-import ReadableTimeSetter from '../../../components/common/ReadableTimeSetter'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-import {
-    saleCenterAddPhrase,
-} from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const moment = require('moment');
-const DATE_FORMAT = 'YYYYMMDD';
+const DATE_FORMAT = 'YYYYMMDD000000';
+const disabledDate = (current) => {
+    // Can not select days before today
+    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+}
 
 class BasicInfo extends React.Component {
     constructor(props) {
@@ -32,6 +31,7 @@ class BasicInfo extends React.Component {
             startTime: props.data.startTime,
             endTime: props.data.endTime,
             name: props.data.name,
+            reservationTime: props.data.reservationTime,
         };
     }
 
@@ -53,8 +53,7 @@ class BasicInfo extends React.Component {
         });
         // 存到wrapper
         if (nextFlag) {
-            const {description, name, endTime, startTime} = this.state;
-            this.props.onChange && this.props.onChange({startTime, endTime, name, description});
+            this.props.onChange({...this.state});
         }
         return nextFlag;
     }
@@ -62,6 +61,11 @@ class BasicInfo extends React.Component {
     handleDescriptionChange = (e) => {
         this.setState({
             description: e.target.value,
+        });
+    }
+    handleReservationTimeChange = ({ number }) => {
+        this.setState({
+            reservationTime: number,
         });
     }
 
@@ -101,6 +105,18 @@ class BasicInfo extends React.Component {
                 <p>{'拼团活动'}</p>
             </FormItem>
         )
+    }
+
+    getTimeDesc = () => {
+        const {
+            reservationTime: time,
+        } = this.state;
+        if (!time) return '0天0小时0分钟';
+        const days = Math.floor(time / 1440);
+        const leftTime = time % 1440;
+        const hours = Math.floor(leftTime / 60);
+        const minutes = time % 60;
+        return `${days}天${hours}小时${minutes}分钟`
     }
 
     render() {
@@ -144,6 +160,7 @@ class BasicInfo extends React.Component {
                         })(
                             <RangePicker
                                 className={styles.ActivityDateDayleft}
+                                disabledDate={disabledDate}
                                 style={{ width: '100%' }}
                                 format="YYYY-MM-DD"
                                 placeholder={['开始日期', '结束日期']}
@@ -153,9 +170,7 @@ class BasicInfo extends React.Component {
                         <Col offset={1} span={2}>
                             <div className={styles.ActivityDateDay}>
                                 <span>
-                                    {
-                                        this.getDateCount()
-                                    }
+                                    {this.getDateCount()}
                                 </span>
                                 <span>天</span>
                             </div>
@@ -164,25 +179,65 @@ class BasicInfo extends React.Component {
                 </FormItem>
                 <FormItem
                     label="拼团有效期"
+                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
+                    wrapperCol={{ span: 12 }}
+                    style={{ position: 'relative' }}
                 >
-                    <PriceInput
-                        modal="int"
-                        addonAfter="分钟"
-                        placeholder="请输入拼团有效期"
-                        maxNum={6}
-                    />
+                    {
+                        getFieldDecorator('reservationTime', {
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || (!v.number && v.number !== 0)) {
+                                            return cb('拼团有效期为不得为空');
+                                        } else if (v.number > this.getDateCount() * 1440) {
+                                            return cb('拼团有效期不能超过活动持续时间');
+                                        }
+                                        cb()
+                                    },
+                                }
+                            ],
+                            initialValue: {number: this.state.reservationTime},
+                            onChange: this.handleReservationTimeChange
+                        })(
+                            <PriceInput
+                                addonAfter="分钟"
+                                disabled={!this.state.startTime || !this.state.endTime}
+                                placeholder="请输入拼团有效期"
+                                modal="int"
+                                maxNum={6}
+                            />
+                        )
+                    }
+                    <span
+                        style={{
+                            position: 'absolute',
+                            right: -120,
+                            color: '#787878',
+                            top: 6,
+                        }}
+                    >
+                        {this.getTimeDesc()}
+                        &nbsp;
+                        <Tooltip title={`用户开团后，需要在${this.getTimeDesc()}内成团，超时则拼团失败`}>
+                            <Icon
+                                type="question-circle"
+                            />
+                        </Tooltip>
+                    </span>
                 </FormItem>
                 <FormItem
                     label="活动说明"
+                    required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('description', {
                         rules: [
+                            { required: true, message: '活动说明不得为空' },
                             { max: 200, message: '最多200个字符' },
                         ],
                         initialValue: this.state.description,
@@ -196,19 +251,4 @@ class BasicInfo extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
-        user: state.user.toJS(),
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addPhrase: (opts) => {
-            dispatch(saleCenterAddPhrase(opts))
-        },  
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(BasicInfo));
+export default Form.create()(BasicInfo);
