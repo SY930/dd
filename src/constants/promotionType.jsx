@@ -86,7 +86,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: '免费领取',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        tags: ['微信'],
+        tags: ['微信', '小程序'],
         text: '限时免费领取礼品，达到短期拉新的效果',
         example: '',
         key: '21',
@@ -105,7 +105,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: '线上餐厅送礼',
         isSpecial: true,
-        tags: ['新微信', '微信'],
+        tags: ['新微信', '微信', '小程序'],
         text: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。',
         example: '',
         key: '23',
@@ -131,7 +131,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: '摇奖活动',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        tags: ['微信'],
+        tags: ['微信', '小程序'],
         text: '人人都希望中奖，意外的礼品总是刺激着顾客的就餐神经',
         example: '',
         key: '20',
@@ -140,7 +140,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     },
     {
         title: '评价送礼',
-        tags: ['新微信'],
+        tags: ['新微信', '小程序'],
         isSpecial: true,
         text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
         example: '',
@@ -195,7 +195,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: '消费返礼品',
-        tags: ['pos', '新微信', '微信'],
+        tags: ['pos', '新微信', '微信', '小程序'],
         isSpecial: false,
         text: '消费后获得奖励将使顾客下次光临的时间大大提前',
         example: '例如:消费满100元送1张10元代金券',
@@ -205,7 +205,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: '消费返积分',
-        tags: ['pos', '新微信', '微信'],
+        tags: ['pos', '新微信', '微信', '小程序'],
         isSpecial: false,
         text: '会员消费满X元送积分,积分可兑换礼品或抵现',
         example: '例如:消费每满1元返1分',
@@ -290,6 +290,7 @@ export const LOYALTY_PROMOTION_TYPES = [
     {
         title: '完善资料送礼',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        tags: ['小程序'],
         text: '获取会员更详细的资料，例如生日，住址，手机号，邮箱等资料，与会员建立更多维度的维系渠道',
         example: '',
         key: '60',
@@ -379,7 +380,7 @@ export const SALE_PROMOTION_TYPES = [
         title: '满减/每满减',
         text: '顾客只要消费满一定金额即可得到一定的减价优惠',
         example: '例如:菜金满100减10元/酒水每满100减5元',
-        tags: ['pos', '新微信', '微信'],
+        tags: ['pos', '新微信', '微信', '小程序'],
         key: '2010',
         right: 14,
         bottom: 5,
@@ -389,7 +390,7 @@ export const SALE_PROMOTION_TYPES = [
         title: '满赠/每满赠',
         text: '顾客消费满足条件,商家即赠送菜品',
         example: '例如:菜金满100赠可乐一瓶',
-        tags: ['pos', '新微信'],
+        tags: ['pos', '新微信', '小程序'],
         key: '1030',
         right: 16,
         bottom: 11,
@@ -399,7 +400,7 @@ export const SALE_PROMOTION_TYPES = [
         title: '买赠',
         text: '顾客买X赠送Y,常用于单品推新的促销和曝光度',
         example: '例如:点新菜品2份以上可免费送可乐一瓶',
-        tags: ['pos', '新微信', '微信'],
+        tags: ['pos', '新微信', '微信', '小程序'],
         key: '1020',
         right: 19,
         bottom: 7,
