@@ -501,6 +501,7 @@ class GiftAddModalStep extends React.PureComponent {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
+            Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
             // 对旧字段的兼容透传
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             // foodbxs数据,目前代金券和折扣券用
