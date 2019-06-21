@@ -448,7 +448,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         title: '低价促销',
         text: '消费一定的菜品, 可对价格最低菜品进行减免、折扣、特定售价等优惠活动',
-        example: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠',
+        example: '',
         tags: ['pos'],
         key: '2080',
         right: 25,
