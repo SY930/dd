@@ -1550,6 +1550,7 @@ class SpecialDetailInfo extends Component {
                         <Select.Option value="0">仅会员现金卡值消费部分</Select.Option>
                         <Select.Option value="1">包含会员卡值的全部账单金额</Select.Option>
                         <Select.Option value="2">不包含会员卡值的账单金额</Select.Option>
+                        <Select.Option value="3">仅账单实收金额</Select.Option>
                     </Select>
                 </FormItem>
             </div>
