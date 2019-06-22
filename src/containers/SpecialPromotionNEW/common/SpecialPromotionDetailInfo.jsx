@@ -189,6 +189,8 @@ class SpecialDetailInfo extends Component {
             this.setState({
                 helpMessageArray: ['', ''],
                 eventRecommendSettings: [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)],
+                saveMoneySetIds: [],
+                saveMoneySetType: '0',
             });
             this.props.form.resetFields();
         }
@@ -1615,7 +1617,7 @@ class SpecialDetailInfo extends Component {
                                     rules: [
                                         { required: true, message: '至少要选择一个储值套餐' }
                                     ],
-                                    initialValue: this.saveMoneySetIds,
+                                    initialValue: this.state.saveMoneySetIds,
                                     onChange: this.handleSaveMoneySetIdsChange,
                                 })(
                                     <Select
