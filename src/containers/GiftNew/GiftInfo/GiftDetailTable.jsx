@@ -166,6 +166,7 @@ class GiftDetailTable extends Component {
             g.num = i + 1 + (_pageSize * (_pageNo - 1));
             g.usingTimeType = (g.usingTimeType || '').split(',');
             g.usingDateType = (g.usingDateType || '').split(',');
+            g.usingWeekType = (g.usingWeekType || '').split(',');
             g.supportOrderTypeLst = g.supportOrderTypeLst ? (g.supportOrderTypeLst).split(',') : undefined;
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             g.isDiscountRate = g.discountRate < 1;
