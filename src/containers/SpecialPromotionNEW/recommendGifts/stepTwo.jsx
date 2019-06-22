@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import SendMsgInfo from '../common/SendMsgInfo';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 
@@ -38,6 +39,9 @@ class StepTwo extends React.Component {
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
             mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
+            message: props.specialPromotionInfo.getIn(['$eventInfo', 'smsTemplate']) || '',
+            settleUnitID: '',
+            accountNo: '',
         }
     }
 
@@ -71,8 +75,32 @@ class StepTwo extends React.Component {
             flag = false;
         }
         if (flag) {
+            const smsGate = this.props.specialPromotionInfo.getIn(['$eventInfo', 'smsGate']);
+            const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
+            const {
+                message,
+                settleUnitID,
+                accountNo,
+                ...restState,
+            } = this.state;
+            const opts = {
+                smsTemplate: sendFlag ? message : '',
+                ...restState,
+            };
+            if (sendFlag) {
+                if (settleUnitID > 0 || accountNo > 0) {
+                    opts.settleUnitID = settleUnitID;
+                    opts.accountNo = accountNo;
+                } else {
+                    message.warning('短信权益账户不得为空')
+                    return false;
+                }
+            } else {
+                opts.settleUnitID = '0';
+                opts.accountNo = '0';
+            }
             this.props.setSpecialBasicInfo({
-                ...this.state,
+                ...opts,
             });
         }
         return flag;
@@ -121,6 +149,8 @@ class StepTwo extends React.Component {
             isQuerying,
         } = this.props;
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
+        const smsGate = this.props.specialPromotionInfo.getIn(['$eventInfo', 'smsGate']);
+        const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -242,6 +272,26 @@ class StepTwo extends React.Component {
                         <Radio value="1">直接和间接推荐人同时参与</Radio>
                     </RadioGroup>
                 </FormItem>
+                <SendMsgInfo
+                    sendFlag={sendFlag}
+                    form={this.props.form}
+                    value={this.state.message}
+                    settleUnitID={this.state.settleUnitID}
+                    onChange={
+                        (val) => {
+                            if (val instanceof Object) {
+                                if (val.settleUnitID) {
+                                    this.setState({ settleUnitID: val.settleUnitID })
+                                }
+                                if (val.accountNo) {
+                                    this.setState({ accountNo: val.accountNo })
+                                }
+                            } else {
+                                this.setState({ message: val });
+                            }
+                        }
+                    }
+                />
             </Form>
         );
     }
