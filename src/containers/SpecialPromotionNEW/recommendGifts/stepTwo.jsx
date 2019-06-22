@@ -17,6 +17,7 @@ import {
     Radio,
     Tooltip,
     Icon,
+    message as messageAlert,
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -40,7 +41,6 @@ class StepTwo extends React.Component {
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
             mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
             message: props.specialPromotionInfo.getIn(['$eventInfo', 'smsTemplate']) || '',
-            settleUnitID: '',
             accountNo: '',
         }
     }
@@ -79,7 +79,6 @@ class StepTwo extends React.Component {
             const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
             const {
                 message,
-                settleUnitID,
                 accountNo,
                 ...restState,
             } = this.state;
@@ -88,15 +87,20 @@ class StepTwo extends React.Component {
                 ...restState,
             };
             if (sendFlag) {
-                if (settleUnitID > 0 || accountNo > 0) {
-                    opts.settleUnitID = settleUnitID;
-                    opts.accountNo = accountNo;
+                if (accountNo > 0) {
+                    const equityAccountInfoList = this.props.specialPromotionInfo.getIn(['$eventInfo', 'equityAccountInfoList']).toJS();
+                    const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === accountNo) || {};
+                    if (!selectedAccount.smsCount) { // 校验一下所选账户的可用条数
+                        messageAlert.warning('所选权益账户可用短信条数为0，无法创建活动');
+                        return false;
+                    } else {
+                        opts.accountNo = accountNo;
+                    }
                 } else {
-                    message.warning('短信权益账户不得为空')
+                    messageAlert.warning('短信权益账户不得为空')
                     return false;
                 }
             } else {
-                opts.settleUnitID = '0';
                 opts.accountNo = '0';
             }
             this.props.setSpecialBasicInfo({
@@ -276,13 +280,9 @@ class StepTwo extends React.Component {
                     sendFlag={sendFlag}
                     form={this.props.form}
                     value={this.state.message}
-                    settleUnitID={this.state.settleUnitID}
                     onChange={
                         (val) => {
                             if (val instanceof Object) {
-                                if (val.settleUnitID) {
-                                    this.setState({ settleUnitID: val.settleUnitID })
-                                }
                                 if (val.accountNo) {
                                     this.setState({ accountNo: val.accountNo })
                                 }
