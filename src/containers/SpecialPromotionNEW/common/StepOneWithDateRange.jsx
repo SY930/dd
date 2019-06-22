@@ -53,6 +53,7 @@ const fullOptionSmsGate = [ // 选项有5种
     '61',
     '62',
     '63',
+    '68',
     '70',
 ];
 
@@ -65,7 +66,6 @@ const simpleOptionSmsGate = [ // 选项有2种
     '64',
     '65',
     '67',
-    '68',
 ];
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
@@ -206,8 +206,8 @@ class StepOneWithDateRange extends React.Component {
                 description: specialPromotion.eventRemark || this.state.description,
             })
         }
-        if (this.props.type == '50' || this.props.type == '53' || this.props.type == '60'
-            || this.props.type == '61' || this.props.type == '62' || this.props.type == '63' || this.props.type == '70') {
+        // 群发短信以及其它可发短信的活动，要查权益账户和短信签名
+        if (this.props.type == '50' || fullOptionSmsGate.includes(`${this.props.type}`)) {
             specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
                 this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
                 :

@@ -377,18 +377,6 @@ class StepTwo extends React.Component {
                     )
                     }
                 </FormItem>
-                {/* <FormItem
-                    label="其他限制"
-                    className={[styles.noPadding, styles.firstRadio].join(' ')}
-                    wrapperCol={{ span: 17 }}
-                    labelCol={{ span: 4 }}
-                >
-                    <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={`${this.state.isVipBirthdayMonth}`}>
-                        <Radio value={'0'} key={0}>不限制</Radio>
-                        <Radio value={'1'} key={1}>仅限本月生日的会员参与</Radio>
-                    </RadioGroup>
-                </FormItem> */}
-
                 <SendMsgInfo
                     sendFlag={sendFlag}
                     form={this.props.form}
