@@ -456,3 +456,28 @@ export const SALE_PROMOTION_TYPES = [
     },
 ];
 
+/**
+ * 线上营销
+ * @type {Array}
+ */
+export const ONLINE_PROMOTION_TYPES = [
+    {
+        title: '满减活动',
+        isSpecial: false,
+        text: '用户下单满足条件后可享受减免优惠',
+        tags: ['小程序'],
+        key: '2060',
+        right: 14,
+        bottom: 5,
+    },
+    {
+        title: '特价商品',
+        isSpecial: false,
+        text: '用户购买指定商品可享受特价优惠',
+        tags: ['小程序'],
+        key: '1100',
+        right: 10,
+        bottom: 0,
+    },
+];
+

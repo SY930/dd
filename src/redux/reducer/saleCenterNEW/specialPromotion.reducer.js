@@ -2,7 +2,6 @@
 import Immutable from 'immutable';
 import Moment from 'moment';
 
-import { ACTIVITY_CATEGORIES } from '../../actions/saleCenterNEW/types';
 import {
     SALE_CENTER_ADD_SPECIAL_PROMOTION_START,
     SALE_CENTER_ADD_SPECIAL_PROMOTION_OK,

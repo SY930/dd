@@ -12,14 +12,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'antd';
 import styles from './ActivityPage.less'
-
-if (process.env.__CLIENT__ === true) {
-    require('../../components/common/components.less');
-}
-
-import {
-    ACTIVITY_CATEGORIES,
-} from '../../redux/actions/saleCenterNEW/types';
 import { ActivityLogo } from './ActivityLogo/ActivityLogo'; // 活动logo
 import NewReturnGiftActivity from './returnGift/newReturnGiftActivity'; // 消费返礼品
 
@@ -89,12 +81,10 @@ class ActivityMain extends React.Component {
             current: 0, // 模态框当前步骤
             pages: [],
         };
-
-        this.renderActivityTags = this.renderActivityTags.bind(this);
-        this.renderSideBar = this.renderSideBar.bind(this);
     }
 
     renderSideBar() {
+        const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         switch (this.state.current) {
             case 1:
                 return (
@@ -112,8 +102,8 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).text || '': ''}</div>
-                        <div>{this.props.promotionType ? ACTIVITY_CATEGORIES.find(type => type.key === this.props.promotionType).example || '' : ''}</div>
+                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).text || '': ''}</div>
+                        <div>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).example || '' : ''}</div>
                     </div>
                 );
         }
@@ -184,6 +174,14 @@ class ActivityMain extends React.Component {
             }, {
                 wrapper: LowPriceSaleActivity,
                 child: LowPriceDetailInfo,
+            },
+            {
+                wrapper: NewFullCutActivity,
+                child: FullCutDetailInfo,
+            },
+            {
+                wrapper: NewSpecialActivity,
+                child: SpecialDetailInfo,
             },
         ]
         const pages = pagesArr.map((promotion, index) => {

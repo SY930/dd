@@ -10,9 +10,13 @@
 import Immutable from 'immutable';
 
 import { ACTIVITY_CATEGORIES, CHARACTERISTIC_CATEGORIES, WECHAT_MALL_ACTIVITIES } from '../../actions/saleCenterNEW/types';
+import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 
 const $initialState = Immutable.fromJS({
-    activityCategories: ACTIVITY_CATEGORIES,
+    activityCategories: [
+        ...ACTIVITY_CATEGORIES,
+        ...ONLINE_PROMOTION_TYPES,
+    ],
     characteristicCategories: CHARACTERISTIC_CATEGORIES,
     weChatMallPromotions: WECHAT_MALL_ACTIVITIES
 

@@ -380,9 +380,6 @@ export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
         value: '30',
     },
 ]);
-// process.env.NODE_ENV !== 'production'
-
-export const ACTIVITY_CATEGORIESs = process.env.NODE_ENV !== 'production';
 
 export const ACTIVITY_CATEGORIES = (function () {
     const basic = [{

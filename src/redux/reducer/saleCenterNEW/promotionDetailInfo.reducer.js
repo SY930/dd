@@ -207,7 +207,6 @@ function constructTreeDataContainsPromotion(data) {
         return accumulator;
     }, treeDataForPromotionSelectionBoxs);
     let promotionTypes;
-    // promotionTypes = Object.keys(treeDataForPromotionSelectionBoxs) 排序杂乱，换下面的方式
     promotionTypes = ACTIVITY_CATEGORIES.map(pro => pro.key)
         .map((key, index) => {
             const promotionType = {

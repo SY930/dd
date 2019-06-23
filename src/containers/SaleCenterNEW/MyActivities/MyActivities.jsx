@@ -20,7 +20,10 @@ import {
 import {throttle, isEqual} from 'lodash'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import {SALE_CENTER_PAGE} from '../../../constants/entryCodes';
+import {
+    SALE_CENTER_PAGE,
+    ONLINE_PROMOTION_MANAGEMENT_GROUP,
+} from '../../../constants/entryCodes';
 
 import {
     initializationOfMyActivities,
@@ -87,6 +90,7 @@ import {
     isMine
 } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
+import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -172,7 +176,7 @@ const mapDispatchToProps = (dispatch) => {
         }
     };
 };
-@registerPage([SALE_CENTER_PAGE], {
+@registerPage([SALE_CENTER_PAGE, ONLINE_PROMOTION_MANAGEMENT_GROUP], {
     sale_promotionBasicInfo_NEW,
     sale_promotionDetailInfo_NEW,
     sale_promotionScopeInfo_NEW,
@@ -381,9 +385,10 @@ class MyActivities extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076001") {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey
+            && nextProps.user.activeTabKey === this.props.entryCode) {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("1000076001")) {
+            if (tabArr.includes(this.props.entryCode)) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
                 this.tryToUpdateNameList();
             }
@@ -404,12 +409,6 @@ class MyActivities extends React.Component {
                     });
                     break;
                 case 'success':
-                    const _envIsVip = HUALALA.ENVIRONMENT == 'production-release';
-                    // let data = _envIsVip ? _promoitonList.data.filter((activity) => {
-                    //     //隐藏基础营销组合减免，买三免一（这两个活动先实现活动共享后再实现）
-                    //     return activity.promotionType != 'BILL_COMBINE_FREE' && activity.promotionType != 'FOOD_BUY_THEN_FREE' &&
-                    //         activity.promotionType != 'BILL_CUMULATION_FREE' && activity.promotionType != 'FOOD_CUMULATION_GIVE'
-                    // }) : _promoitonList.data;
                     const data = _promoitonList.data;
                     this.setState({
                         loading: false,
@@ -492,6 +491,7 @@ class MyActivities extends React.Component {
             pageSize: this.state.pageSizes,
             pageNo,
             usageMode: -1,
+            sourceType: +this.isOnlinePromotionPage(),
             ..._opt,
         };
         opt.cb = this.showNothing;
@@ -578,6 +578,25 @@ class MyActivities extends React.Component {
             pageSizes: pageSize,
         })
     };
+    isOnlinePromotionPage = () => {
+        return this.props.entryCode === ONLINE_PROMOTION_MANAGEMENT_GROUP;
+    }
+    getAllPromotionTypes = () => {
+        const all = {
+            key: 'ALL',
+            title: '全部',
+        }
+        if (this.isOnlinePromotionPage) { // 基础营销集团视角
+            return [
+                all,
+                ...ONLINE_PROMOTION_TYPES,
+            ]
+        }
+        return [
+            all,
+            ...ACTIVITY_CATEGORIES,
+        ]
+    }
 
     successFn = (responseJSON) => {
         const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
@@ -694,8 +713,6 @@ class MyActivities extends React.Component {
     }
 
     renderModifyRecordInfoModal() {
-        // TODO: remove the const 0, fixed with corresponding promotionType
-
         return (
             <Modal
                 wrapClassName="progressBarModal"
@@ -716,14 +733,16 @@ class MyActivities extends React.Component {
         const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
         const {
             queryPromotionAutoRunList,
-            openPromotionAutoRunListModal
+            openPromotionAutoRunListModal,
         } = this.props;
         return (
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
-                    <span className={styles.customHeader}>基础营销信息</span>
+                    <span className={styles.customHeader}>
+                        {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'}
+                    </span>
                     {
-                        !isHuaTian() && (
+                        !isHuaTian() && !this.isOnlinePromotionPage() && (
                             <Authority rightCode={AUTO_RUN_QUERY}>
                                 <Button
                                     onClick={() => {
@@ -796,12 +815,9 @@ class MyActivities extends React.Component {
                                 }}
                             >
                                 {
-                                    [{
-                                        value: 'ALL',
-                                        title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].map((activity, index) => {
+                                    this.getAllPromotionTypes().map((activity, index) => {
                                         return (
-                                            <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
+                                            <Option value={`${activity.key}`} key={`${activity.key}`}>{activity.title}</Option>
                                         );
                                     })
                                 }
@@ -849,15 +865,18 @@ class MyActivities extends React.Component {
                         <li>
                             <a onClick={this.toggleExpandState}>高级查询 {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
                         </li>
-                        <li>
-                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button
-                                    type="ghost"
-                                    onClick={() => this.setState({ exportVisible: true })}
-                                ><Icon type="export" />导出</Button>
-                            </Authority>
-                        </li>
-
+                        {
+                            !this.isOnlinePromotionPage() && (
+                                <li>
+                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                                        <Button
+                                            type="ghost"
+                                            onClick={() => this.setState({ exportVisible: true })}
+                                        ><Icon type="export" />导出</Button>
+                                    </Authority>
+                                </li>
+                            )
+                        }
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}
@@ -884,9 +903,6 @@ class MyActivities extends React.Component {
         if (Immutable.List.isList($brands)) {
             brands = $brands.toJS();
         }
-        // let categories = this.props.promotionBasicInfo.getIn(['$categoryList', 'data']).toJS(),
-        //     tags = this.props.promotionBasicInfo.getIn(['$tagList', 'data']).toJS(),
-        //     brands = this.props.promotionScopeInfo.getIn(["refs", "data", "brands"]).toJS();
 
         if (this.state.expand) {
             return (
@@ -913,7 +929,6 @@ class MyActivities extends React.Component {
                                     });
                                 }}
                             >
-
                                 <Option key="0" value={'0'}>全部</Option>
                                 <Option key="1" value={'1'}>未开始</Option>
                                 <Option key="2" value={'2'}>执行中</Option>
@@ -1030,7 +1045,6 @@ class MyActivities extends React.Component {
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 50,
-                // fixed:'left',
                 key: 'key',
                 render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
@@ -1041,7 +1055,6 @@ class MyActivities extends React.Component {
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
-                // fixed: 'left',
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1114,7 +1127,6 @@ class MyActivities extends React.Component {
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
-                // fixed:'left',
                 render: (text, record, index) => {
                     const canNotSortUp = this.state.pageNo == 1 && index == 0;
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
@@ -1133,9 +1145,8 @@ class MyActivities extends React.Component {
                 dataIndex: 'promotionType',
                 key: 'promotionType',
                 width: 120,
-                // fixed:'left',
                 render: (promotionType) => {
-                    const promotion = ACTIVITY_CATEGORIES.filter((promotion) => {
+                    const promotion = this.getAllPromotionTypes().filter((promotion) => {
                         return promotion.key === promotionType;
                     });
                     return promotion.length ? promotion[0].title : '--';
@@ -1147,7 +1158,6 @@ class MyActivities extends React.Component {
                 dataIndex: 'promotionName',
                 key: 'promotionName',
                 width: 200,
-                // fixed:'left',
                 render: (promotionName) => {
                     let text = promotionName;
                     if (promotionName === undefined || promotionName === null || promotionName === '') {
@@ -1214,7 +1224,6 @@ class MyActivities extends React.Component {
                     return `${moment(new Date(parseInt(record.createTime))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionTime))).format('YYYY-MM-DD HH:mm:ss')}`;
                 },
             },
-
             {
                 title: '使用状态',
                 dataIndex: 'isActive',
@@ -1226,7 +1235,6 @@ class MyActivities extends React.Component {
                 },
             },
         ];
-
         return (
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
@@ -1254,8 +1262,6 @@ class MyActivities extends React.Component {
                                 usageMode: -1,
                                 ...this.getParams(),
                                 fail: () => message.error('出错了，请稍后再试'),
-                                // start: () => this.setState({loading: true}),
-                                // end: () => this.setState({loading: false}),
                             };
                             opt.cb = this.showNothing;
                             this.props.query(opt);
@@ -1282,7 +1288,7 @@ class MyActivities extends React.Component {
                     {this.renderTables()}
                 </div>
             </div>
-            {this.renderModifyRecordInfoModal(0)}
+            {this.renderModifyRecordInfoModal()}
             <PromotionAutoRunModal/>
             {
                 !this.state.exportVisible ? null :

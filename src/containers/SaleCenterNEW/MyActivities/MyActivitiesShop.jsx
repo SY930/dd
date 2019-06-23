@@ -21,7 +21,11 @@ import { jumpPage } from '@hualala/platform-base'
 import {axiosData, getAccountInfo} from '../../../helpers/util'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import {PROMOTION_CALENDAR_SHOP, SALE_CENTER_PAGE_SHOP} from '../../../constants/entryCodes';
+import {
+    PROMOTION_CALENDAR_SHOP,
+    SALE_CENTER_PAGE_SHOP,
+    ONLINE_PROMOTION_MANAGEMENT_SHOP,
+} from '../../../constants/entryCodes';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -80,6 +84,8 @@ import {
     isMine
 } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
+import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
+
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
@@ -156,7 +162,7 @@ const mapDispatchToProps = (dispatch) => {
         },
     };
 };
-@registerPage([SALE_CENTER_PAGE_SHOP], {
+@registerPage([SALE_CENTER_PAGE_SHOP, ONLINE_PROMOTION_MANAGEMENT_SHOP], {
     sale_promotionBasicInfo_NEW,
     sale_promotionDetailInfo_NEW,
     sale_promotionScopeInfo_NEW,
@@ -232,7 +238,6 @@ class MyActivitiesShop extends React.Component {
     }
     componentDidMount() {
         const {
-            promotionBasicInfo,
             fetchPromotionCategories,
             fetchPromotionTags,
             promotionScopeInfo,
@@ -293,6 +298,23 @@ class MyActivitiesShop extends React.Component {
         });
     }
 
+    getAllPromotionTypes = () => {
+        const all = {
+            key: 'ALL',
+            title: '全部',
+        }
+        if (this.isOnlinePromotionPage) { // 基础营销集团视角
+            return [
+                all,
+                ...ONLINE_PROMOTION_TYPES,
+            ]
+        }
+        return [
+            all,
+            ...ACTIVITY_CATEGORIES.filter(activity => activity.key !== '5010')
+        ]
+    }
+
     tryToRefresh = () => {
         try {
             this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
@@ -351,9 +373,10 @@ class MyActivitiesShop extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "shop.dianpu.promotion") {
+        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey
+            && nextProps.user.activeTabKey === this.props.entryCode) {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("shop.dianpu.promotion")) {
+            if (tabArr.includes(this.props.entryCode)) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
                 this.tryToUpdateNameList();
             }
@@ -374,12 +397,6 @@ class MyActivitiesShop extends React.Component {
                     });
                     break;
                 case 'success':
-                    const _envIsVip = HUALALA.ENVIRONMENT == 'production-release';
-                    // let data = _envIsVip ? _promoitonList.data.filter((activity) => {
-                    //     //隐藏基础营销组合减免，买三免一（这两个活动先实现活动共享后再实现）
-                    //     return activity.promotionType != 'BILL_COMBINE_FREE' && activity.promotionType != 'FOOD_BUY_THEN_FREE' &&
-                    //         activity.promotionType != 'BILL_CUMULATION_FREE' && activity.promotionType != 'FOOD_CUMULATION_GIVE'
-                    // }) : _promoitonList.data;
                     const data = _promoitonList.data;
                     this.setState({
                         loading: false,
@@ -700,7 +717,7 @@ class MyActivitiesShop extends React.Component {
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
-                        基础营销信息
+                        {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'}
                         <Button
                             type="ghost"
                             icon="plus"
@@ -771,15 +788,11 @@ class MyActivitiesShop extends React.Component {
                                 }}
                             >
                                 {
-                                    [{
-                                        value: 'ALL',
-                                        title: '全部',
-                                    }, ...ACTIVITY_CATEGORIES].filter(pro => pro.key !== '5010')
-                                        .map((activity, index) => {
-                                            return (
-                                                <Option value={`${activity.key}`} key={`${index}`}>{activity.title}</Option>
-                                            );
-                                        })
+                                    this.getAllPromotionTypes().map((activity, index) => {
+                                        return (
+                                            <Option value={`${activity.key}`} key={`${activity.key}`}>{activity.title}</Option>
+                                        );
+                                    })
                                 }
                             </Select>
                         </li>
@@ -1086,7 +1099,7 @@ class MyActivitiesShop extends React.Component {
                 width: 120,
                 // fixed:'left',
                 render: (promotionType) => {
-                    const promotion = ACTIVITY_CATEGORIES.filter((promotion) => {
+                    const promotion = this.getAllPromotionTypes().filter((promotion) => {
                         return promotion.key === promotionType;
                     });
                     return promotion.length ? promotion[0].title : '--';

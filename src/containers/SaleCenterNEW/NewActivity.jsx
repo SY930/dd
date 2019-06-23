@@ -217,7 +217,6 @@ class NewActivity extends React.Component {
                                 }}
                                 index={index}
                             />
-                            {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
                         </Authority>
                     </div>
                 );

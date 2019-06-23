@@ -15,6 +15,7 @@ export { default as RepeatPromotionPage } from './NewCreatePromotions/RepeatProm
 export { default as SalePromotionPage } from './NewCreatePromotions/SalePromotionPage';
 export { default as LoyaltyPromotionPage } from './NewCreatePromotions/LoyaltyPromotionPage';
 export { default as FansInteractivityPage } from './NewCreatePromotions/FansInteractivityPage';
+export { default as OnlinePromotionPage } from './NewCreatePromotions/OnlinePromotionPage';
 export { default as ShareRules } from './ShareRules';
 export { default as PromotionCalendar } from './PromotionCalendar';
 export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
