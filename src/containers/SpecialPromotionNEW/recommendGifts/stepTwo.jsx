@@ -155,6 +155,7 @@ class StepTwo extends React.Component {
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
         const smsGate = this.props.specialPromotionInfo.getIn(['$eventInfo', 'smsGate']);
         const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
+        const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);// 当有人参与后，规则不可切换
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -212,6 +213,7 @@ class StepTwo extends React.Component {
                         })(
                             <Select
                                 placeholder="请选择活动规则"
+                                disabled={userCount > 0}
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 <Select.Option value="1">注册开卡后获得奖励</Select.Option>
