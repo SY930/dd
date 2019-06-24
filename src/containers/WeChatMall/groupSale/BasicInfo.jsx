@@ -31,7 +31,8 @@ class BasicInfo extends React.Component {
             startTime: props.data.startTime,
             endTime: props.data.endTime,
             name: props.data.name,
-            reservationTime: props.data.reservationTime,
+            // 后端是分钟，前端是小时
+            reservationTime: Math.floor((props.data.reservationTime || 0) / 60),
         };
     }
 
@@ -53,7 +54,10 @@ class BasicInfo extends React.Component {
         });
         // 存到wrapper
         if (nextFlag) {
-            this.props.onChange({...this.state});
+            this.props.onChange({
+                ...this.state,
+                reservationTime: this.state.reservationTime * 60,
+            });
         }
         return nextFlag;
     }
@@ -111,12 +115,10 @@ class BasicInfo extends React.Component {
         const {
             reservationTime: time,
         } = this.state;
-        if (!time) return '0天0小时0分钟';
-        const days = Math.floor(time / 1440);
-        const leftTime = time % 1440;
-        const hours = Math.floor(leftTime / 60);
-        const minutes = time % 60;
-        return `${days}天${hours}小时${minutes}分钟`
+        if (!time) return '0天0小时';
+        const days = Math.floor(time / 24);
+        const leftTime = time % 24;
+        return `${days}天${leftTime}小时`
     }
 
     render() {
@@ -190,9 +192,9 @@ class BasicInfo extends React.Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || (!v.number && v.number !== 0)) {
-                                            return cb('拼团有效期为不得为空');
-                                        } else if (v.number > this.getDateCount() * 1440) {
+                                        if (!v || (!v.number)) {
+                                            return cb('拼团有效期必须大于0');
+                                        } else if (v.number > this.getDateCount() * 24) {
                                             return cb('拼团有效期不能超过活动持续时间');
                                         }
                                         cb()
@@ -203,7 +205,7 @@ class BasicInfo extends React.Component {
                             onChange: this.handleReservationTimeChange
                         })(
                             <PriceInput
-                                addonAfter="分钟"
+                                addonAfter="小时"
                                 disabled={!this.state.startTime || !this.state.endTime}
                                 placeholder="请输入拼团有效期"
                                 modal="int"
@@ -214,7 +216,7 @@ class BasicInfo extends React.Component {
                     <span
                         style={{
                             position: 'absolute',
-                            right: -120,
+                            right: -90,
                             color: '#787878',
                             top: 6,
                         }}
