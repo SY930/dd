@@ -108,6 +108,16 @@ export class WeChatMallPromotionList extends React.Component {
         window.removeEventListener('resize', this.onWindowResize);
     }
 
+    componentDidUpdate(previousProps) {
+        if (this.props.user.activeTabKey !== previousProps.user.activeTabKey
+            && this.props.user.activeTabKey === WECHAT_MALL_LIST) {
+            const tabArr = this.props.user.tabList.map((tab) => tab.value);
+            if (tabArr.includes(WECHAT_MALL_LIST)) {
+                this.handleQuery(); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
+            }
+        }
+    }
+
     handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
         axiosData(
             '/promotion/extra/extraEventService_toggleExtraEvent.ajax',
@@ -435,12 +445,21 @@ export class WeChatMallPromotionList extends React.Component {
                 },
             },
             {
+                title: '活动类型',
+                dataIndex: 'extraEventType',
+                key: 'extraEventType',
+                className: 'TableTxtCenter',
+                width: 100,
+                render: (promotionType) => {
+                    const text = WECHAT_MALL_ACTIVITIES.find(({key}) => key === `${promotionType}`).title
+                    return (<span title={text}>{text}</span>);
+                },
+            },
+            {
                 title: '活动名称',
                 dataIndex: 'name',
                 key: 'name',
-                className: 'TableTxtCenter',
                 width: 200,
-                // fixed:'left',
                 render: (promotionName) => {
                     let text = promotionName;
                     if (promotionName === undefined || promotionName === null || promotionName === '') {

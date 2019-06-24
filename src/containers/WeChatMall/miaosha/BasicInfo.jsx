@@ -88,9 +88,9 @@ class BasicInfo extends React.Component {
                 validCycle: props.data.validCycle.split(','),
             }
             excludeDateArray = eventInfo.excludedDate.split(',').map(item => moment(item, 'YYYYMMDD'))
-            timeRangeInfo = eventInfo.timeLst.map((time) => ({
-                start: Moment(time.startTime, 'HHmm'),
-                end: Moment(time.endTime, 'HHmm'),
+            timeRangeInfo = eventInfo.timeLst.filter(time => time.start && time.end).map((time) => ({
+                start: moment(time.startTime, 'HHmm'),
+                end: moment(time.endTime, 'HHmm'),
             }))           
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle) {
@@ -109,6 +109,7 @@ class BasicInfo extends React.Component {
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
         } catch (e) {
+            console.log('e', e)
             validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
