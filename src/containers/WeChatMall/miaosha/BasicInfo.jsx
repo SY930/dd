@@ -88,7 +88,7 @@ class BasicInfo extends React.Component {
                 validCycle: props.data.validCycle.split(','),
             }
             excludeDateArray = eventInfo.excludedDate.split(',').map(item => moment(item, 'YYYYMMDD'))
-            timeRangeInfo = eventInfo.timeLst.filter(time => time.start && time.end).map((time) => ({
+            timeRangeInfo = eventInfo.timeLst.filter(time => time.startTime && time.endTime).map((time) => ({
                 start: moment(time.startTime, 'HHmm'),
                 end: moment(time.endTime, 'HHmm'),
             }))           
