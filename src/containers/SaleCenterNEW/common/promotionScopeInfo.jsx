@@ -346,6 +346,7 @@ class PromotionScopeInfo extends React.Component {
     }
 
     renderChannelList() {
+        if (this.props.isOnline) return null
         return (
             <FormItem
                 label="适用场景"
@@ -401,6 +402,7 @@ class PromotionScopeInfo extends React.Component {
     }
 
     renderBusinessOptions() {
+        if (this.props.isOnline) return null;
         return (
             <Form.Item
                 label="适用业务"

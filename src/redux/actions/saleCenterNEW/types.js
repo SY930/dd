@@ -8,7 +8,7 @@
  * @Last modified time: 2017-04-08T17:28:14+08:00
  * @Copyright: Copyright(c) 2017-2020 Hualala Co.,Ltd.
  */
-
+import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType'
 const Moment = require('moment');
 
 export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
@@ -1044,13 +1044,12 @@ export const getPromotionIdx = function (promotionKey) {
         throw new Error(`'promotionKey' should be a String type. Which is '${promotionKey}'`);
     }
 
-    const _promotionInfo = ACTIVITY_CATEGORIES.filter((promotionInfo) => {
-        return promotionInfo.key === promotionKey;
-    });
+    const index = [
+        ...ACTIVITY_CATEGORIES,
+        ...ONLINE_PROMOTION_TYPES,
+    ].findIndex(promotionInfo => promotionInfo.key === promotionKey)
 
-    if (_promotionInfo.length && _promotionInfo.length === 1) {
-        return _promotionInfo[0].idx;
-    }
+    if (index >= 0) return index;
     throw new Error(`There is not promotion with the specified promotionKey ${promotionKey}`);
 };
 

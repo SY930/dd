@@ -16,10 +16,66 @@ import { initialFullCutDataAC } from '../../../redux/actions/saleCenterNEW/fullC
 import { saleCenterResetBasicInfoAC } from '../../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
 import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { saleCenterResetScopeInfoAC } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import PromotionBasicInfo from '../common/promotionBasicInfo';
+import CustomProgressBar from '../common/CustomProgressBar';
 
 class NewSpecialActivity extends NewPromotion {
     constructor(props) {
         super(props);
+    }
+
+    render() { // 基类还有一个render方法
+        const {
+            isNew,
+            isOnline,
+            user,
+        } = this.props;
+        const isOnlieAndShopMode = isOnline &&  user.get('shopID') > 0;
+        if (!isOnlieAndShopMode) {
+            return super.render();
+        } 
+        const steps = [
+            {
+                title: '基本信息',
+                content: (
+                    <PromotionBasicInfo
+                        isNew={isNew}
+                        getSubmitFn={(handles) => {
+                            this.handles[0] = handles;
+                        }}
+                    />
+                ),
+            },
+            {
+                title: '活动内容',
+                content: React.createElement(
+                    this.props.component,
+                    {
+                        getSubmitFn: (handles) => {
+                            this.handles[1] = handles;
+                        },
+                        onChange: (rule) => {
+                            this.setState({ rule });
+                        },
+                        isNew,
+                        isOnline,
+                    }
+                ),
+            },
+        ];
+        return (
+            <CustomProgressBar
+                steps={steps}
+                loading={this.state.loading}
+                callback={(arg) => {
+                    this.props.callbacktwo(arg);
+                }}
+                onNext={this.handleNext}
+                onFinish={this.handleFinish}
+                onPrev={this.handlePrev}
+                onCancel={this.handleCancel}
+            />
+        );
     }
 }
 

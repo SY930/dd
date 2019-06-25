@@ -19,7 +19,12 @@ import {
     promotionScopeInfoAdapter,
     promotionDetailInfoAdapter,
 } from '../../../redux/actions/saleCenterNEW/types';
-
+import {
+    SALE_CENTER_PAGE_SHOP,
+    SALE_CENTER_PAGE,
+    ONLINE_PROMOTION_MANAGEMENT_GROUP,
+    ONLINE_PROMOTION_MANAGEMENT_SHOP,
+} from '../../../constants/entryCodes';
 
 class NewPromotion extends React.Component {
     constructor(props) {
@@ -36,7 +41,7 @@ class NewPromotion extends React.Component {
     }
 
     onFinish(cb) {
-        const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, user } = this.props;
+        const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline } = this.props;
 
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
@@ -81,6 +86,7 @@ class NewPromotion extends React.Component {
             master: {
                 groupID,
                 shopID,
+                sourceType: +isOnline,
                 promotionName,
                 promotionShowName,
                 categoryName,
@@ -121,7 +127,6 @@ class NewPromotion extends React.Component {
         if (this.props.isNew === false) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
-                // data: {...opts,modifiedBy:this.props.user.toJS().accountInfo.userName},
                 data: { promotionInfo },
                 success: () => {
                     message.success('活动更新成功', 5);
@@ -154,10 +159,16 @@ class NewPromotion extends React.Component {
                         loading: false,
                     });
                     this.props.clear();
-                    const menuID = this.props.user.get('shopID') ?
-                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === 'shop.dianpu.promotion').menuID
-                        :
-                        this.props.user.get('menuList').toJS().find(tab => tab.entryCode === '1000076001').menuID
+                    let target;
+                    if (this.props.user.get('shopID')) {
+                        target = isOnline ? ONLINE_PROMOTION_MANAGEMENT_SHOP :
+                        SALE_CENTER_PAGE_SHOP;
+                    } else {
+                        target = isOnline ? ONLINE_PROMOTION_MANAGEMENT_GROUP :
+                        SALE_CENTER_PAGE;
+                    }
+                    const menuList = this.props.user.get('menuList').toJS();
+                    const menuID = menuList.find(tab => tab.entryCode === target).menuID
                     jumpPage({ menuID })
                 },
                 fail: () => {
@@ -227,25 +238,32 @@ class NewPromotion extends React.Component {
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
-
+        const {
+            isNew,
+            isOnline,
+        } = this.props;
         const steps = [
-
-
             {
                 title: '基本信息',
-                content: (<PromotionBasicInfo
-                    isNew={this.props.isNew}
-                    getSubmitFn={(handles) => {
-                        this.handles[0] = handles;
-                    }}
-                />),
+                content: (
+                    <PromotionBasicInfo
+                        isNew={isNew}
+                        getSubmitFn={(handles) => {
+                            this.handles[0] = handles;
+                        }}
+                    />
+                ),
             },
             {
                 title: '活动范围',
-                content: (<PromotionScopeInfo getSubmitFn={(handles) => {
-                    this.handles[1] = handles;
-                }}
-                />),
+                content: (
+                    <PromotionScopeInfo
+                        getSubmitFn={(handles) => {
+                            this.handles[1] = handles;
+                        }}
+                        isOnline={isOnline}
+                    />
+                ),
             },
             {
                 title: '活动内容',
@@ -258,12 +276,12 @@ class NewPromotion extends React.Component {
                         onChange: (rule) => {
                             this.setState({ rule });
                         },
-                        isNew: this.props.isNew,
+                        isNew,
+                        isOnline,
                     }
                 ),
             },
         ];
-
         return (
             <CustomProgressBar
                 steps={steps}

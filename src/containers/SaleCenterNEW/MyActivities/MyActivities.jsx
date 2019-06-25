@@ -473,6 +473,7 @@ class MyActivities extends React.Component {
             opt.promotionName = promotionName;
         }
         opt.groupID = this.props.user.accountInfo.groupID;
+        opt.sourceType = +this.isOnlinePromotionPage();
         return opt
     }
     handleQuery(thisPageNo) {

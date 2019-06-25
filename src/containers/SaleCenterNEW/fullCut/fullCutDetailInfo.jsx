@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Icon } from 'antd';
+import { Row, Col, Form, Select, Tooltip, Icon } from 'antd';
 import { connect } from 'react-redux'
 
 
@@ -42,20 +42,18 @@ class FullCutDetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.defaultRun = '0';
+        const {
+            display,
+            ruleType,
+            ruleInfo,
+            maxCount,
+        } = this.initState();
         this.state = {
-            display: false,
-            ruleType: '2',
+            display,
+            ruleType,
             // 最多创建的档
-            maxCount: 3,
-            ruleInfo: [
-                {
-                    validationStatus: 'success',
-                    helpMsg: null,
-                    start: null,
-                    end: null,
-
-                },
-            ],
+            maxCount: props.isOnline ? 5 : maxCount,
+            ruleInfo,
         };
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
@@ -74,7 +72,8 @@ class FullCutDetailInfo extends React.Component {
             finish: this.handleSubmit,
             prev: this.handlePrev,
         });
-
+    }
+    initState = () => {
         // restore data from redux to state
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
@@ -84,10 +83,11 @@ class FullCutDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         // default value
         _rule = Object.assign({}, _rule);
-        let { display, ruleType } = this.state;
+
         let ruleInfo,
+            ruleType,
             maxCount;
-        display = !this.props.isNew;
+        const display = !this.props.isNew;
         if (_rule.stage !== undefined && _rule.stage instanceof Array) {
             ruleInfo = _rule.stage.map((stageInfo) => {
                 return {
@@ -114,12 +114,12 @@ class FullCutDetailInfo extends React.Component {
         } else {
             ruleType = _scopeLst.size == 0 ? '2' : '3';
         }
-        this.setState({
+        return {
             display,
             ruleType,
             ruleInfo,
             maxCount,
-        });
+        }
     }
 
     handlePrev(cb, index) {
@@ -237,7 +237,6 @@ class FullCutDetailInfo extends React.Component {
                 >
                     <p>任意或指定消费满或每满一定金额即可得到一定的减价优惠</p>
                 </FormItem>
-
                 {
                     this.renderRulesComponent()
                 }
@@ -323,6 +322,37 @@ class FullCutDetailInfo extends React.Component {
             )
         }))
     }
+    renderOnlinePromotionRule() {
+        return (this.state.ruleInfo.map((ruleInfo, index) => {
+            const _value = {
+                start: ruleInfo.start || null,
+                end: ruleInfo.end || null,
+            };
+            return (
+                <Row key={index}>
+                    <Col>
+                        <FormItem
+                            label=""
+                            className={styles.FormItemStyle}
+                            validateStatus={ruleInfo.validationStatus}
+                            help={ruleInfo.helpMsg}
+                            style={{ marginLeft: '109px', width: '70.5%' }}
+                        > 
+                            <CustomRangeInput
+                                value={_value}
+                                onChange={(value) => {
+                                    this.onCustomRangeInputChange(value, index);
+                                }}
+                            />
+                        </FormItem>
+                    </Col>
+                    <Col>
+                        { this.renderOperationIcon(index)}
+                    </Col>
+                </Row>
+            )
+        }))
+    }
 
     addRule() {
         const _tmp = this.state.ruleInfo;
@@ -349,11 +379,9 @@ class FullCutDetailInfo extends React.Component {
 
     renderOperationIcon(index) {
         const _len = this.state.ruleInfo.length;
-        //
         if (this.state.maxCount == 1) {
             return null;
         }
-
         if (_len == 1 && this.state.maxCount > _len) {
             return (
                 <span className={styles.iconsStyle}>
@@ -361,7 +389,6 @@ class FullCutDetailInfo extends React.Component {
                 </span>
             )
         }
-
         if (_len == this.state.maxCount && index == this.state.maxCount - 1) {
             return (
                 <span className={styles.iconsStyle}>
@@ -376,10 +403,10 @@ class FullCutDetailInfo extends React.Component {
                 </span>
             )
         }
-        if (index == _len - 1 && _len == this.state.maxCount - 1) {
+        if (index == _len - 1 && _len < this.state.maxCount) {
             return (
                 <span className={styles.iconsStyle}>
-                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addRule} />
+                    <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.addRule} />
                     <Icon
                         className={styles.deleteIcon}
                         type="minus-circle-o"
@@ -411,9 +438,30 @@ class FullCutDetailInfo extends React.Component {
             </FormItem>
         )
     }
-
-    // TODO: add value and onChange props to PromotionDetailSetting
     render() {
+        const { isOnline } = this.props;
+        if (isOnline) {
+            return (
+                <Form className={styles.FormStyle}>
+                    <FormItem
+                        label={
+                            <span>
+                                满减优惠&nbsp;
+                                <Tooltip title="满减优惠不包含运费，所有商品适用，最大可设置5级满减">
+                                    <Icon type="question-circle-o"></Icon>
+                                </Tooltip>                             
+                            </span>
+                        }
+                        className={styles.FormItemStyle}
+                        labelCol={{span: 4}}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        
+                    </FormItem>
+                    {this.renderOnlinePromotionRule()}
+                </Form>
+            )
+        }
         return (
             <div>
                 <Form className={styles.FormStyle}>

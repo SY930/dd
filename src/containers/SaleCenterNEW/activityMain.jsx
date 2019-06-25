@@ -72,6 +72,8 @@ import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActi
 import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
 import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
 import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
+import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
+
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 class ActivityMain extends React.Component {
@@ -85,6 +87,19 @@ class ActivityMain extends React.Component {
 
     renderSideBar() {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
+        if (this.isOnline()) {
+            return (
+                <div className={styles.promotionTip}>
+                    <div style={{fontSize: 18 }}>
+                        活动说明
+                    </div>
+                    <div style={{ marginBottom: 20, whiteSpace: 'pre-line' }}>
+                        {this.props.promotionType ?
+                            activityCategories.find(type => type.key === this.props.promotionType).desc || '': ''}
+                    </div>
+                </div>
+            );
+        }
         switch (this.state.current) {
             case 1:
                 return (
@@ -195,6 +210,7 @@ class ActivityMain extends React.Component {
                 key: index,
                 isNew: this.props.isNew,
                 component: promotion.child,
+                isOnline: this.isOnline(),
             });
         });
         this.setState({
@@ -204,6 +220,9 @@ class ActivityMain extends React.Component {
     renderActivityTags() {
         return this.state.pages[this.props.index];
     }
+    isOnline = () => {
+        return ONLINE_PROMOTION_TYPES.map(item => `${item.key}`).includes(`${this.props.promotionType}`)
+    }   
     render() {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         const index = this.props.index;
@@ -211,7 +230,10 @@ class ActivityMain extends React.Component {
             <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: 0 }}>
                 <Row>
                     <Col span={6} className={styles.activityMainLeft}>
-                        <ActivityLogo index={index} titletext={activityCategories[index].title} activityMain={true} />
+                        <ActivityLogo
+                            index={index}
+                            titletext={activityCategories[index].title}
+                            activityMain={true} />
                         <br />
                         {
                             this.renderSideBar()

@@ -297,6 +297,9 @@ class MyActivitiesShop extends React.Component {
             cb: this.toggleStateCallBack,
         });
     }
+    isOnlinePromotionPage = () => {
+        return this.props.entryCode === ONLINE_PROMOTION_MANAGEMENT_SHOP;
+    }
 
     getAllPromotionTypes = () => {
         const all = {
@@ -498,6 +501,7 @@ class MyActivitiesShop extends React.Component {
         }
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.shopID = this.props.user.shopID;
+        opt.sourceType = +this.isOnlinePromotionPage();
         return opt
     }
     handleQuery(thisPageNo) {
@@ -718,16 +722,20 @@ class MyActivitiesShop extends React.Component {
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'}
-                        <Button
-                            type="ghost"
-                            icon="plus"
-                            className={styles.jumpToCreate}
-                            onClick={
-                                () => {
-                                    const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
-                                    jumpPage({ menuID })
-                                }
-                            }>新建</Button>
+                        {
+                            !this.isOnlinePromotionPage() && (
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles.jumpToCreate}
+                                    onClick={
+                                        () => {
+                                            const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
+                                            jumpPage({ menuID })
+                                        }
+                                    }>新建</Button>
+                            )
+                        }      
                     </span>
                 </div>
             </div>

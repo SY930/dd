@@ -125,13 +125,6 @@ export const initializationOfMyActivities = (opts) => {
                 opts.cb && opts.cb(records.promotionLst);
             })
             .catch(err => opts.fail && opts.fail());
-        /*fetchData('getPromotionList_NEW', { ..._opts }, null, { path: '' })
-            .then((records) => {
-                opts.end && opts.end();
-                dispatch(initializationOfMyActivitiesSucceed(records));
-                opts.cb && opts.cb(records.promotionLst);
-            })
-            .catch(err => opts.fail && opts.fail());*/
     }
 };
 
