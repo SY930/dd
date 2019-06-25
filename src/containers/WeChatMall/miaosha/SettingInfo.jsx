@@ -199,12 +199,12 @@ class SettingInfo extends React.Component {
                     flag = false;
                     break;
                 }
-                if (good.point > good.sellPoint) {
+                if (good.point > +good.sellPoint) {
                     message.warning(`规格：【${good.unitName1}】所设置的秒杀积分不能大于积分售价`)
                     flag = false;
                     break;
                 }
-                if (good.price > good.sellPrice) {
+                if (good.price > +good.sellPrice) {
                     message.warning(`规格：【${good.unitName1}】所设置的秒杀现金不能大于现金售价`)
                     flag = false;
                     break;
