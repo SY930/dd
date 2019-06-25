@@ -151,22 +151,22 @@ class SettingInfo extends React.Component {
             cancel: undefined,
         });
     }
-    componentWillReceiveProps(prevProps) {
-        if (prevProps.goods !== this.props.goods) {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.goods !== this.props.goods) {
             const {
                 good,
                 unitInfo,
-            } = this.getInitialGoodAndUnitInfo();
+            } = this.getInitialGoodAndUnitInfo(nextProps);
             this.setState({
-                good,
-                unitInfo,
+                selectedGood: good,
+                goodsList: unitInfo,
             })
         }
     }
 
-    getInitialGoodAndUnitInfo = () => {
-        const goods = this.props.goods.toJS();
-        const { goodsList = [] } = this.props.data;
+    getInitialGoodAndUnitInfo = (props = this.props) => {
+        const goods = props.goods.toJS();
+        const { goodsList = [] } = props.data;
         if (!goods.length || !goodsList.length) {
             return {
                 good: null,
