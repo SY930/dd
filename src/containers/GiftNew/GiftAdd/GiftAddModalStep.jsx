@@ -29,6 +29,7 @@ import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
+import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PushMessageMpID from "../components/PushMessageMpID";
@@ -1273,6 +1274,11 @@ class GiftAddModalStep extends React.PureComponent {
                 rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID/>),
+            },
+            giftImagePath: {
+                label: '礼品图样',
+                type: 'custom',
+                render: decorator => decorator({})(<GiftImagePath/>),
             },
             selectBrands: {
                 label: '所属品牌',
