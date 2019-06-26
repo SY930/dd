@@ -47,7 +47,6 @@ class StepTwo extends React.Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleVipBirthdayMonthChange = this.handleVipBirthdayMonthChange.bind(this);
         this.preProShops = this.preProShops.bind(this);
         this.renderOptions = this.renderOptions.bind(this);
     }
@@ -174,13 +173,6 @@ class StepTwo extends React.Component {
                 shopsData: this.preProShops($shops),
             });
         }
-    }
-
-    // isVipBirthdayMonth change
-    handleVipBirthdayMonthChange(e) {
-        this.setState({
-            isVipBirthdayMonth: e.target.value,
-        });
     }
     // 拼接treeSelect数据
     preProShops(data) {
