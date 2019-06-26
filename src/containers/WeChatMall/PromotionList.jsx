@@ -72,7 +72,7 @@ export class WeChatMallPromotionList extends React.Component {
             selectedShop: null,
             loading: false,
             // 以下是用于查询的条件
-            promotionType: '',
+            extraEventType: '',
             editPromotionType: '',
             promotionDateRange: '',
             promotionValid: '',
@@ -173,7 +173,7 @@ export class WeChatMallPromotionList extends React.Component {
     getParams = () => {
         const {
             promotionDateRange,
-            promotionTags,
+            extraEventType,
             promotionName,
             status,
         } = this.state;
@@ -183,8 +183,8 @@ export class WeChatMallPromotionList extends React.Component {
             opt.appointedStartTime = promotionDateRange[0].format('YYYYMMDDHHmm');
             opt.appointedEndTime = promotionDateRange[1].format('YYYYMMDDHHmm');
         }
-        if (promotionTags !== '' && promotionTags != '0') {
-            opt.tag = promotionTags;
+        if (extraEventType) {
+            opt.extraEventType = extraEventType;
         }
         if (promotionName !== '' && promotionName !== undefined) {
             opt.name = promotionName;
@@ -341,6 +341,29 @@ export class WeChatMallPromotionList extends React.Component {
                                 placeholder={['开始时间', '结束时间']}
                                 onChange={this.onDateQualificationChange}
                             />
+                        </li>
+                        <li>
+                            <h5>活动类型</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: '160px' }}
+                                value={this.state.extraEventType}
+                                placeholder="全部"
+                                onChange={(value) => {
+                                    this.setState({
+                                        extraEventType: value,
+                                    });
+                                }}
+                            >
+                                {
+                                    [{key: '', title: '全部'}, ...WECHAT_MALL_ACTIVITIES].map(item => (
+                                        <Option key={item.key} value={item.key}>
+                                            {item.title}
+                                        </Option>
+                                    ))
+                                }
+                            </Select>
                         </li>
                         <li>
                             <h5>使用状态</h5>
