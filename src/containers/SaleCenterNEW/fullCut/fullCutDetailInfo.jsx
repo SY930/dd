@@ -74,13 +74,28 @@ class FullCutDetailInfo extends React.Component {
         });
     }
     initState = () => {
+        if (this.props.isNew) {
+            return {
+                display: false,
+                ruleType: '2',
+                maxCount: 3,
+                ruleInfo: [
+                    {
+                        validationStatus: 'success',
+                        helpMsg: null,
+                        start: null,
+                        end: null,
+
+                    },
+                ],
+            }
+        }
         // restore data from redux to state
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         // default value
         _rule = Object.assign({}, _rule);
-
         let ruleInfo,
             ruleType,
             maxCount;
