@@ -77,9 +77,6 @@ class FullCutDetailInfo extends React.Component {
         // restore data from redux to state
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        if (_rule === null || _rule === undefined) {
-            return null;
-        }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         // default value
         _rule = Object.assign({}, _rule);
