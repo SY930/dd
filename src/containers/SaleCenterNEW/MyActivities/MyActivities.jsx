@@ -587,7 +587,7 @@ class MyActivities extends React.Component {
             key: 'ALL',
             title: '全部',
         }
-        if (this.isOnlinePromotionPage) { // 基础营销集团视角
+        if (this.isOnlinePromotionPage()) { // 基础营销集团视角
             return [
                 all,
                 ...ONLINE_PROMOTION_TYPES,
@@ -635,8 +635,16 @@ class MyActivities extends React.Component {
     handleUpdateOpe() {
         const _record = arguments[1];
         if ( _record && _record.maintenanceLevel !== '1') { // 集团
-            this.props.fetchFoodCategoryInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
-            this.props.fetchFoodMenuInfo({ _groupID: this.props.user.accountInfo.groupID }, isHuaTian(), _record.subGroupID);
+            this.props.fetchFoodCategoryInfo({
+                _groupID: this.props.user.accountInfo.groupID },
+                isHuaTian(),
+                _record.subGroupID
+            );
+            this.props.fetchFoodMenuInfo({
+                _groupID: this.props.user.accountInfo.groupID },
+                isHuaTian(),
+                _record.subGroupID
+            );
         }
         this.props.fetchPromotionDetail_NEW({
             data: {

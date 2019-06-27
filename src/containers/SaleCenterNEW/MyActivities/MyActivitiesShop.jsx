@@ -306,7 +306,7 @@ class MyActivitiesShop extends React.Component {
             key: 'ALL',
             title: '全部',
         }
-        if (this.isOnlinePromotionPage) { // 基础营销集团视角
+        if (this.isOnlinePromotionPage()) { // 基础营销集团视角
             return [
                 all,
                 ...ONLINE_PROMOTION_TYPES,
