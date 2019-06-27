@@ -53,9 +53,11 @@ import {
     SALE_CENTER_FETCH_CARD_LEVEL_CANCEL,
 
     SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_OK,
-    SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED, SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY,
+    SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED,
+    SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY,
     GHT_TAGLIST_SUCCESS,
     GHT_TAGGROUPLIST_SUCCESS,
+    SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
 } from '../../actions/saleCenterNEW/mySpecialActivities.action'
 
 const $initialState = Immutable.fromJS({
@@ -88,6 +90,7 @@ const $initialState = Immutable.fromJS({
     $groupMembers: {},
     tagList: [],
     tagGroupList: [],
+    $saveMoneySetList: [],
 });
 export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
@@ -243,7 +246,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED:
             return $$state.setIn(['$groupMembers'], Immutable.fromJS(action.payload));
-
+        case SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS:
+            return $$state.setIn(['$saveMoneySetList'], Immutable.fromJS(action.payload));
         default:
             return $$state;
     }

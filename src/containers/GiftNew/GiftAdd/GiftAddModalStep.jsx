@@ -29,6 +29,7 @@ import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "../../../components/common/ShopSelector";
 import IsSync from "./common/IsSync";
+import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PushMessageMpID from "../components/PushMessageMpID";
@@ -501,6 +502,7 @@ class GiftAddModalStep extends React.PureComponent {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
+            Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
             // 对旧字段的兼容透传
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             // foodbxs数据,目前代金券和折扣券用
@@ -1272,6 +1274,11 @@ class GiftAddModalStep extends React.PureComponent {
                 rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID/>),
+            },
+            giftImagePath: {
+                label: '礼品图样',
+                type: 'custom',
+                render: decorator => decorator({})(<GiftImagePath/>),
             },
             selectBrands: {
                 label: '所属品牌',

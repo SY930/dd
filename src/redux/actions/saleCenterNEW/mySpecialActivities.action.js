@@ -15,7 +15,6 @@
 
 import {
     fetchData,
-    generateXWWWFormUrlencodedParams,
     axiosData,
     parseResponseJson,
     doRedirect
@@ -23,7 +22,6 @@ import {
 
 import 'rxjs';
 import { Modal } from 'antd';
-import Rx from 'rxjs/Rx';
 import _ from 'lodash';
 
 export const SPECIAL_SALE_CENTER_MY_ACTIVITIES_TOGGLE_SELECTED_RECORD_STATE = 'special sale center:: my activities: toggle selected record state new';
@@ -67,6 +65,7 @@ export const SALE_CENTER_MY_ACTIVITIES_DELETE_RECORD_FAIL = 'sale center: fetch 
 export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group memebers filled new';
 export const GHT_TAGLIST_SUCCESS = 'sale center: get tagList'
 export const GHT_TAGGROUPLIST_SUCCESS = 'sale center: get tagRroupList'
+export const SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS';
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
@@ -591,6 +590,28 @@ export const queryAllTagGroupList = (opt) =>{
             })
             .catch(err => {
                 // console.log(err);
+            })
+    }
+}
+
+/**
+ * 查询所有储值套餐
+ */
+export const queryAllSaveMoneySet = () => {
+    return (dispatch) =>{
+        axiosData(
+            '/crm/crmSaveMoneySetService_queryCrmSaveMoneySets.ajax',
+            {sourceType: 60},
+            null,
+            { path: 'data.payCrmSaveMoneySetList' })
+            .then(data => {
+                dispatch({
+                    type: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
+                    payload: Array.isArray(data) ? data.filter(item => item.saveMoneySetType != 2) : [],
+                })   
+            })
+            .catch(err => {
+                // oops
             })
     }
 }

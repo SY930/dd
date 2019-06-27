@@ -33,7 +33,10 @@ import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CloseableTip from '../../../components/common/CloseableTip/index';
-import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import {
+    fetchSpecialCardLevel,
+    queryAllSaveMoneySet,
+} from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import AddGifts from '../common/AddGifts';
 import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
@@ -121,6 +124,9 @@ class SpecialDetailInfo extends Component {
         const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
         const discountMaxLimitRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxLimitRate']);
         const defaultCardType = props.specialPromotion.getIn(['$eventInfo', 'defaultCardType']);
+        const $saveMoneySetIds = props.specialPromotion.getIn(['$eventInfo', 'saveMoneySetIds']);
+        const saveMoneySetIds = Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
+        ? $saveMoneySetIds.toJS() : [];
         this.state = {
             data,
             eventRecommendSettings,
@@ -140,13 +146,16 @@ class SpecialDetailInfo extends Component {
             discountRate: discountRatio ? roundToDecimal(discountRatio * 100) : discountRatio,
             discountMinRate: discountMinRatio ? roundToDecimal(discountMinRatio * 100) : discountMinRatio,
             discountMaxRate: discountMaxRatio ? roundToDecimal(discountMaxRatio * 100) : discountMaxRatio,
-            discountMaxLimitRate: discountMaxLimitRatio ? roundToDecimal(discountMaxLimitRatio * 100) : discountMaxLimitRatio,
+            discountMaxLimitRate: discountMaxLimitRatio ? roundToDecimal(discountMaxLimitRatio * 100)
+                : discountMaxLimitRatio,
             inviteType: 1, // 需求变更，固定为1
             defaultCardType: defaultCardType > 0 ? defaultCardType : undefined,
             mpIDList: selectedMpId ? [ selectedMpId ] : [],
             disabledGifts: props.isNew ? false : this.props.specialPromotion.get('$giftInfo').size === 0,
             /** 桌边砍相关结束 */
             helpMessageArray: ['', ''],
+            saveMoneySetIds,
+            saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
         }
     }
     componentDidMount() {
@@ -169,6 +178,9 @@ class SpecialDetailInfo extends Component {
                 data: opts,
             });
         }
+        if (this.props.type == 68) {
+            this.props.queryAllSaveMoneySet()
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -177,6 +189,8 @@ class SpecialDetailInfo extends Component {
             this.setState({
                 helpMessageArray: ['', ''],
                 eventRecommendSettings: [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)],
+                saveMoneySetIds: [],
+                saveMoneySetType: '0',
             });
             this.props.form.resetFields();
         }
@@ -231,7 +245,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             }
         })
-        if (this.props.type == '68') { // 小数组，重复为了代码方便重复遍历的
+        if (this.props.type == '68') { // 小数组，为了代码方便重复遍历的
             if (data.every(gift => gift.recommendType != 1)) {
                 data.push(getDefaultGiftData(1, 'recommendType'))
             }
@@ -379,6 +393,7 @@ class SpecialDetailInfo extends Component {
             discountRate,
             discountMaxLimitRate,
             disabledGifts,
+            saveMoneySetIds,
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
@@ -567,6 +582,7 @@ class SpecialDetailInfo extends Component {
                 discountMaxLimitRate: discountMaxLimitRate ? discountMaxLimitRate / 100 : discountMaxLimitRate,
                 ...instantDiscountState,
             } : {
+                saveMoneySetIds,
                 shareImagePath,
                 shareTitle,
             });
@@ -708,7 +724,7 @@ class SpecialDetailInfo extends Component {
             helpMessageArray,
         })
     }
-    handleDiscountWayChange = ({ target : { value } }) => {
+    handleDiscountWayChange = ({ target: { value } }) => {
         this.setState({
             discountWay: +value,
             discountAmount: undefined,
@@ -717,6 +733,17 @@ class SpecialDetailInfo extends Component {
             discountRate: undefined,
             discountMinRate: undefined,
             discountMaxRate: undefined,
+        })
+    }
+    handleSaveMoneySetTypeChange = ({ target: { value } }) => {
+        this.setState({
+            saveMoneySetType: value,
+            saveMoneySetIds: [],
+        })
+    }
+    handleSaveMoneySetIdsChange = (val) => {
+        this.setState({
+            saveMoneySetIds: val,
         })
     }
     renderImgUrl = () => {
@@ -1550,9 +1577,70 @@ class SpecialDetailInfo extends Component {
                         <Select.Option value="0">仅会员现金卡值消费部分</Select.Option>
                         <Select.Option value="1">包含会员卡值的全部账单金额</Select.Option>
                         <Select.Option value="2">不包含会员卡值的账单金额</Select.Option>
+                        <Select.Option value="3">仅账单实收金额</Select.Option>
                     </Select>
                 </FormItem>
             </div>
+        )
+    }
+    renderSaveMoneySetSelector() {
+        const {
+            saveMoneySetType,
+        } = this.state;
+        const saveMoneySetList = this.props.saveMoneySetList.toJS();
+        return (
+            <div>
+                <FormItem
+                    label="储值场景限制"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        onChange={this.handleSaveMoneySetTypeChange}
+                        value={saveMoneySetType}
+                    >
+                        <Radio key={'0'} value={'0'}>所有储值场景</Radio>
+                        <Radio key={'1'} value={'1'}>仅储值套餐</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    saveMoneySetType == 1 && (
+                        <FormItem
+                            label="储值套餐"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {
+                                this.props.form.getFieldDecorator('saveMoneySetIds', {
+                                    rules: [
+                                        { required: true, message: '至少要选择一个储值套餐' }
+                                    ],
+                                    initialValue: this.state.saveMoneySetIds,
+                                    onChange: this.handleSaveMoneySetIdsChange,
+                                })(
+                                    <Select
+                                        showSearch={true}
+                                        multiple
+                                        placeholder="请选择活动适用的储值套餐"
+                                        getPopupContainer={(node) => node.parentNode}
+                                    >
+                                        {
+                                            saveMoneySetList.map(set => (
+                                                <Select.Option key={set.saveMoneySetID} value={set.saveMoneySetID}>
+                                                    {set.setName}
+                                                </Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )
+                            }
+                        </FormItem>
+                    )
+                }
+            </div>
+            
         )
     }
     renderRecommendGiftsDetail() {
@@ -1568,6 +1656,7 @@ class SpecialDetailInfo extends Component {
         const { helpMessageArray } = this.state;
         return (
             <div>
+                {recommendRule == 2 && this.renderSaveMoneySetSelector()}
                 <p className={styles.coloredBorderedLabel}>
                     直接推荐人奖励： 
                     <span style={{color: '#f04134'}}>{helpMessageArray[0]}</span>
@@ -1650,7 +1739,9 @@ function mapStateToProps(state) {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
         allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
-        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW
+            .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
     }
 }
 
@@ -1670,6 +1761,9 @@ function mapDispatchToProps(dispatch) {
         },
         fetchSpecialCardLevel: (opts) => {
             dispatch(fetchSpecialCardLevel(opts));
+        },
+        queryAllSaveMoneySet: () => {
+            dispatch(queryAllSaveMoneySet());
         },
     }
 }
