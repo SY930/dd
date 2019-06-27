@@ -218,7 +218,7 @@ class SpecialDishesTable extends React.Component {
                     <div className={styles.proRight}>
                         <div className={styles.projectIco}>
 
-                            {!this.props.isWeChatMall && <Checkbox style={{ marginLeft:2,position:'relative',top:-5 }} onChange={this.onOnlyVipChange}>{`    只显示有会员价的菜品`}</Checkbox>}
+                            {!this.props.isWeChatMall && <Checkbox onChange={this.onOnlyVipChange}>{`    只显示有会员价的菜品`}</Checkbox>}
                             <HualalaTreeSelect level1Title={this.props.isWeChatMall ? '全部商品': '全部菜品'}>
                                 <HualalaSearchInput onChange={(value) => {
                                     this.handleFoodSearchInputChange(value)
