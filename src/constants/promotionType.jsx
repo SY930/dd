@@ -464,7 +464,7 @@ export const WECHAT_MALL_ACTIVITIES = [
         text: '在微信商城可设置商品限时限量购的秒杀活动',
         example: '',
         tags: ['微信商城'],
-        key: '11000',
+        key: '72',
     },
     {
         title: '拼团活动',
@@ -472,6 +472,6 @@ export const WECHAT_MALL_ACTIVITIES = [
         text: '邀请好友来拼团，也可直接购买',
         example: '',
         tags: ['微信商城'],
-        key: '10000',
+        key: '71',
     },
 ];
