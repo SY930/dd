@@ -1,29 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { jumpPage } from '@hualala/platform-base'
 import _ from 'lodash';
-import { fetchData, axiosData } from '../../../helpers/util';
-import axios from 'axios';
-import { Row, Col, Modal, Form, Button, Select, Input, Upload, message, Icon, Radio } from 'antd';
+import { axiosData } from '../../../helpers/util';
+import {
+    Row,
+    Col,
+    message,
+} from 'antd';
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
-import ENV from '../../../helpers/env';
 import GiftCfg from '../../../constants/Gift';
 import {
     cancelCreateOrEditGift, changeGiftFormKeyValue, endSaving,
     FetchGiftList, startSaving,
 } from '../_action';
-import IsSync from "./common/IsSync";
+import IsSync from './common/IsSync';
+import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
 import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
 import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import SelectBrands from "../components/SelectBrands";
 import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
-
-const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioGroup = Radio.Group;
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -34,10 +32,7 @@ class GiftAddModal extends React.Component {
             groupTypes: [],
             shopsData: [],
             shopSchema, // 后台请求来的值
-            giftImagePath: '',
             values: {},
-            finishLoading: false,
-            imageUrl: '',
             transferType: 0,
             isUpdate: true,
         };
@@ -49,16 +44,7 @@ class GiftAddModal extends React.Component {
     }
     componentDidMount() {
         const { getPromotionShopSchema} = this.props;
-
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
-        const { gift: { data: { groupID, giftImagePath } }, type } = this.props;
-        if (type == 'edit') {
-            if (giftImagePath) {
-                this.setState({
-                    imageUrl: giftImagePath,
-                })
-            }
-        }
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
         })
@@ -90,7 +76,7 @@ class GiftAddModal extends React.Component {
         }
     }
     handleSubmit() {
-        const { groupTypes, imageUrl } = this.state;
+        const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
@@ -111,7 +97,6 @@ class GiftAddModal extends React.Component {
             }
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
-            params.giftImagePath = imageUrl;
             // 定额卡工本费
             if (value == '90') {
                 params.giftCost = `${Number(params.giftCost || 0)}`;
@@ -154,8 +139,6 @@ class GiftAddModal extends React.Component {
         this.setState({
             current: 0,
             values: {},
-            finishLoading: false,
-            imageUrl: '',
         });
         this.props.onCancel();
     }
@@ -179,49 +162,6 @@ class GiftAddModal extends React.Component {
         )
     }
 
-    renderGiftImagePath = (decorator) => {
-        const props = {
-            name: 'myFile',
-            showUploadList: false,
-            action: '/api/common/imageUpload',
-            className: styles.avatarUploader,
-            onChange: (info) => {
-                const status = info.file.status;
-                const fileList = info.fileList;
-                const giftImagePath = fileList.length > 0 ? fileList[0].name : ''
-                this.setState({
-                    giftImagePath,
-                })
-                if (status !== 'uploading') {
-                    // console.log(info.file, info.fileList);
-                }
-                if (status === 'done') {
-                    message.success(`${info.file.name} 上传成功`);
-                    this.setState({
-                        imageUrl: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
-                    })
-                } else if (status === 'error') {
-                    message.error(`${info.file.name} 上传失败`);
-                }
-            },
-        };
-        return (
-            <Row>
-                <Col>
-                    <FormItem style={{ height: 200 }}>
-                        <Upload {...props}>
-                            {
-                                this.state.imageUrl ?
-                                    <img src={this.state.imageUrl} alt="" className={styles.avatar} /> :
-                                    <Icon type="plus" className={styles.avatarUploaderTrigger} />
-                            }
-                        </Upload>
-                        <p className="ant-upload-hint">点击上传图片，图片格式为jpg、png</p>
-                    </FormItem>
-                </Col>
-            </Row>
-        )
-    }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品价值';
@@ -364,7 +304,7 @@ class GiftAddModal extends React.Component {
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => this.renderGiftImagePath(decorator),
+                render: decorator => decorator({})(<GiftImagePath/>),
             },
             showGiftRule: {
                 label: '显示系统生成规则',
@@ -422,6 +362,7 @@ class GiftAddModal extends React.Component {
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
+                        'giftImagePath',
                     ]
                 }
             ],
@@ -438,6 +379,7 @@ class GiftAddModal extends React.Component {
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
+                        'giftImagePath',
                     ]
                 }
             ],
