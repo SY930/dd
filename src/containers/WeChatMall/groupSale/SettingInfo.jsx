@@ -314,7 +314,8 @@ class SettingInfo extends React.Component {
                     label="拼团类型"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{span: 17 }}
+                    wrapperCol={{span: 7 }}
+                    style={{position: 'relative'}}
                 >
                     <RadioGroup
                         value={this.state.activeType}
@@ -324,6 +325,17 @@ class SettingInfo extends React.Component {
                             return (<Radio key={`${type.value}`} value={type.value}>{type.name}</Radio >);
                         })}
                     </RadioGroup >
+                    <Tooltip title="所有用户都能开团，但新会员才能参团">
+                        <Icon
+                            type="question-circle"
+                            style={{
+                                position: 'absolute',
+                                color: '#787878',
+                                right: 5,
+                                top: 8,
+                            }}
+                        />
+                    </Tooltip>
                 </FormItem>
                 <FormItem
                     label="选择商品"
