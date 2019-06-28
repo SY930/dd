@@ -124,14 +124,14 @@ export const getMallGoodsAndCategories = (shopID) => {
         Promise.all([
             axiosData(
                 'store/base/good/queryGoodCategory',
-                { shopID },
+                { shopID, isActive: 1 },
                 {},
                 { path: 'goodCategoryInfos'},
                 'HTTP_SERVICE_URL_MALLAPI',
             ),
             axiosData(
                 'store/base/good/queryShopGood',
-                { shopID },
+                { shopID, isPutaway: 1 },
                 {},
                 { path: 'goodInfos'},
                 'HTTP_SERVICE_URL_MALLAPI',
