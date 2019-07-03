@@ -286,6 +286,7 @@ const FIRST_KEYS = {
                 'giftValue',
                 'price',
                 'validityDays',
+                'cardTypeList',
                 'giftRemark',
             ],
         },
