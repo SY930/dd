@@ -13,7 +13,6 @@ import {
     getSpecifiedUrlConfig,
 } from '../../../helpers/apiConfig';
 import { fetchData, axiosData } from '../../../helpers/util';
-import { message } from 'antd';
 
 export const SALE_CENTER_SET_PROMOTION_DETAIL = 'sale center:: set promotion detail new';
 export const SALE_CENTER_FETCH_FOOD_CATEGORY = 'sale center:: fetch food category new';
@@ -48,6 +47,7 @@ export const SALE_CENTER_FETCH_GIFT_LIST_FAILED = 'sale center:: fetch gift info
 export const SALE_CENTER_FETCH_SUBJECT_LIST = 'sale center : get subjec info new';
 export const SALE_CENTER_FETCH_SUBJECT_LIST_SUCCESS = 'sale center:: fetch subject info success new';
 export const SALE_CENTER_FETCH_SUBJECT_LIST_FAILED = 'sale center:: fetch subject info failed new';
+export const SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS = 'sale center:: SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS';
 export const saleCenterSetPromotionDetailAC = (opts) => {
     return {
         type: SALE_CENTER_SET_PROMOTION_DETAIL,
@@ -118,81 +118,44 @@ const fetchFoodCategoryFailed = (opts) => {
         payload: opts,
     }
 };
-/**
- * 商品接口以前和菜品是同一个接口，后来商品相关所有接口都迁移到了微信商城组，
- * 需要将商城提供的新接口数据适配给原菜品选择组件
- * @param {Array} categoryList 
- */
-const fetchGoodsCategorySuccess = (categoryList) => {
-    const records = categoryList.map(item => ({
-        ...item,
-        foodCategoryID: item.categoryID,
-        foodCategoryKey: item.categoryKey,
-        foodCategoryName: item.categoryName,
-    }))
-    return {
-        type: SALE_CENTER_FETCH_FOOD_CATEGORY_SUCCESS,
-        payload: {records},
-    }
-}
-const fetchGoodsSuccess = (goodsList) => {
-    const records = goodsList.reduce((acc, curr) => {
-        const goodsWithUnit = curr.goodUnitInfo.map(unit => ({
-            ...curr,
-            foodID: curr.goodID,
-            foodKey: curr.goodKey,
-            foodCode: curr.goodCode,
-            foodName: curr.goodName,
-            foodCategoryID: curr.categoryID,
-            isActive: curr.isPutaway,
-            imgePath: curr.masterImagePath,
-            foodType: curr.goodType,
-            templateID: curr.deliveryTemplateID,
-            itemID: unit.unitID,
-            foodScore: unit.sellPoint,
-            foodMnemonicCode: curr.goodName,
-            price: unit.sellPrice,
-            prePrice: unit.prePrice,
-            vipPrice: unit.vipPrice,
-            unit: `${unit.unitName1}${unit.unitName2 || ''}${unit.unitName3 || ''}`
-        }));
-        acc.push(...goodsWithUnit);
-        return acc;
-    }, [])
-    return {
-        type: SALE_CENTER_FETCH_FOOD_MENU_SUCCESS,
-        payload: {records},
-    }
-}
 
-export const getGoodsCategoryList = (shopID) => {
+export const getMallGoodsAndCategories = (shopID) => {
     return (dispatch) => {
-        dispatch(fetchFoodCategoryStart());
-        axiosData(
-            'store/base/good/queryGoodCategory',
-            { shopID },
-            {},
-            { path: 'goodCategoryInfos'},
-            'HTTP_SERVICE_URL_MALLAPI',
-        ).then(res => {
-            dispatch(fetchGoodsCategorySuccess(res))
+        Promise.all([
+            axiosData(
+                'store/base/good/queryGoodCategory',
+                { shopID, isActive: 1 },
+                {},
+                { path: 'goodCategoryInfos'},
+                'HTTP_SERVICE_URL_MALLAPI',
+            ),
+            axiosData(
+                'store/base/good/queryShopGood',
+                { shopID, isPutaway: 1 },
+                {},
+                { path: 'goodInfos'},
+                'HTTP_SERVICE_URL_MALLAPI',
+            ),
+        ])
+        .then(([categories, goods]) => {
+            dispatch({
+                type: SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS,
+                payload: {
+                    categories: Array.isArray(categories) ? categories.map(cat => ({
+                        ...cat,
+                        value: `${cat.categoryID}`,
+                        label: cat.categoryName,
+                    })) : [],
+                    goods: Array.isArray(goods) ? goods.map(good => ({
+                        ...good,
+                        value: `${good.goodID}`,
+                        label: good.goodName,
+                        py: good.goodMnemonicCode,
+                    })) : [],
+                },
+            })
         }).catch(err => {
-            dispatch(fetchFoodCategoryFailed(err))
-        })
-    }
-}
-export const getGoodsList = (shopID) => {
-    return (dispatch) => {
-        axiosData(
-            'store/base/good/queryShopGood',
-            { shopID },
-            {},
-            { path: 'goodInfos'},
-            'HTTP_SERVICE_URL_MALLAPI',
-        ).then(res => {
-            dispatch(fetchGoodsSuccess(res))
-        }).catch(err => {
-            dispatch(fetchFoodMenuFailed(err))
+            console.log('err: ', err)
         })
     }
 }

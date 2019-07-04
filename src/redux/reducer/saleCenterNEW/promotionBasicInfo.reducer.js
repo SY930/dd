@@ -27,7 +27,7 @@ import {
 } from '../../actions/saleCenterNEW/promotionBasicInfo.action.js';
 
 import {
-    FULL_CUT_ACTIVITY_CYCLE_TYPE,
+    ACTIVITY_CYCLE_TYPE,
 } from '../../actions/saleCenterNEW/types';
 
 const Immutable = require('immutable');
@@ -59,7 +59,7 @@ const $initialState = Immutable.fromJS({
 
         // 高级设置项
         activityCycle: {
-            type: FULL_CUT_ACTIVITY_CYCLE_TYPE.EVERYDAY,
+            type: ACTIVITY_CYCLE_TYPE.EVERYDAY,
             selectValue: ['1'],
         },
         timeSlot: null,

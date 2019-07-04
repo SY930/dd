@@ -3,45 +3,139 @@ import {
     Input,
     Form,
     Select,
-    Icon,
-    Button,
     DatePicker,
+    Checkbox,
     message,
+    Tag,
+    Row,
+    Col,
+    Icon,
 } from 'antd';
-import { connect } from 'react-redux';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import '../../../components/common/ColorPicker.less';
-import {
-    fetchPromotionTagsAC,
-    saleCenterAddPhrase, saleCenterDeletePhrase
-} from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
-import {AddCategorys} from "../../SaleCenterNEW/common/promotionBasicInfo";
-import {axiosData} from "../../../helpers/util";
+import CustomTimeRangeInput from '../../../containers/SaleCenterNEW/common/CustomTimeRangeInput';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
+const DATE_FORMAT = 'YYYYMMDDHHmm00';
+const disabledDate = (current) => {
+    // Can not select days before today
+    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+}
+const ACTIVITY_CYCLE_TYPE = {
+    EVERYDAY: '0',
+    WEEKLY: '1',
+    MONTHLY: '2',
+};
+
+const WEEK_OPTIONS = [
+    {
+        label: '日',
+        value: '7',
+    },
+    {
+        label: '一',
+        value: '1',
+    },
+    {
+        label: '二',
+        value: '2',
+    },
+    {
+        label: '三',
+        value: '3',
+    },
+    {
+        label: '四',
+        value: '4',
+    },
+    {
+        label: '五',
+        value: '5',
+    },
+    {
+        label: '六',
+        value: '6',
+    },
+];
+
+const MONTH_OPTIONS = ((start, end) => {
+    return Array(end - start).fill(0).map((v, index) => {
+        return {
+            label: `${index + 1}`,
+            value: `${index + 1}`,
+        };
+    });
+})(0, 31);
+const options = WEEK_OPTIONS;
+const days = MONTH_OPTIONS;
 
 class BasicInfo extends React.Component {
     constructor(props) {
         super(props);
+        let excludeDateArray;
+        let selectWeekValue;
+        let selectMonthValue;
+        let validCycleType;
+        let expand;
+        let timeRangeInfo;
+        try {
+            const eventInfo = {
+                ...props.data,
+                validCycle: props.data.validCycle.split(','),
+            }
+            excludeDateArray = eventInfo.excludedDate.split(',').map(item => moment(item, 'YYYYMMDD'))
+            timeRangeInfo = eventInfo.timeLst.filter(time => time.startTime && time.endTime).map((time) => ({
+                start: moment(time.startTime, 'HHmm'),
+                end: moment(time.endTime, 'HHmm'),
+            }))           
+            expand = !!excludeDateArray.length;
+            if (!eventInfo.validCycle) {
+                validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
+                selectWeekValue = ['1'];
+                selectMonthValue = ['1'];
+            }else if (eventInfo.validCycle[0].startsWith('m')) {
+                expand = true;
+                validCycleType = ACTIVITY_CYCLE_TYPE.MONTHLY;
+                selectWeekValue = ['1'];
+                selectMonthValue = eventInfo.validCycle.map(item => item.substring(1));
+            }else if (eventInfo.validCycle[0].startsWith('w')) {
+                expand = true;
+                validCycleType = ACTIVITY_CYCLE_TYPE.WEEKLY;
+                selectMonthValue = ['1'];
+                selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
+            }
+        } catch (e) {
+            console.log('e', e)
+            validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
+            excludeDateArray = [];
+            selectWeekValue = ['1'];
+            selectMonthValue = ['1'];
+            timeRangeInfo = [
+                {
+                    start: undefined,
+                    end: undefined,
+                },
+            ];
+        }
         this.state = {
             description: props.data.description,
             startTime: props.data.startTime,
             endTime: props.data.endTime,
-            tags: props.data.tag ? props.data.tag.split(',') : [],
             name: props.data.name,
-            loading: false,
-            tipDisplay: 'none',
+            // advanced time setting
+            expand: !!expand,
+            validCycleType,
+            excludeDateArray,
+            selectWeekValue,
+            selectMonthValue,
+            // advanced time setting
+            timeRangeInfo,
+            maxCount: 3,
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleDeletePhrase = this.handleDeletePhrase.bind(this);
-        this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
-        this.renderPromotionType = this.renderPromotionType.bind(this);
-        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
     }
 
     componentDidMount() {
@@ -51,132 +145,364 @@ class BasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        const { promotionBasicInfo, fetchPromotionTags } = this.props;
-        fetchPromotionTags({
-            groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-            phraseType: '1',
-        });
-
-        if (promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
-            this.setState({
-                tagList: promotionBasicInfo.getIn(['$tagList', 'data']) ? promotionBasicInfo.getIn(['$tagList', 'data']).toJS() : [],
-                tagName: promotionBasicInfo.getIn(['$tagList', 'data']) ? promotionBasicInfo.getIn(['$tagList', 'data'])
-                    .map((tags) => {
-                        return {
-                            value: tags.get('name'),
-                        }
-                    })
-                    .toJS() : [],
-            })
-        }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionBasicInfo.getIn(['$tagList', 'initialized'])) {
-            this.setState({
-                tagList: nextProps.promotionBasicInfo.getIn(['$tagList', 'data']) ? nextProps.promotionBasicInfo.getIn(['$tagList', 'data']).toJS() : [],
-                tagName: nextProps.promotionBasicInfo.getIn(['$tagList', 'data']) ? nextProps.promotionBasicInfo.getIn(['$tagList', 'data'])
-                    .map((tags) => {
-                        return {
-                            value: tags.get('name'),
-                        }
-                    })
-                    .toJS() : [],
-            });
-        }
-    }
-
-    handleSubmit() {
+    handleSubmit = () => {
         let nextFlag = true;
-        if (this.props.form.getFieldError('rangePicker')) {
-            return false;
-        }
-        this.props.form.validateFieldsAndScroll((err1) => {
-            if (err1) {
+        this.props.form.validateFieldsAndScroll((err) => {
+            if (err) {
                 nextFlag = false;
             }
         });
         // 存到wrapper
+        const {
+            description,
+            startTime,
+            endTime,
+            name,
+            validCycleType,
+            selectWeekValue,
+            selectMonthValue,
+            excludeDateArray,
+            timeRangeInfo,
+        } = this.state;
+        const timeLst = timeRangeInfo.filter(item => item.start && item.end).map((r) => {
+            return {
+                timeType: 'CONSUME_TIME',
+                startTime: r.start.format('HHmm'),
+                endTime: r.end.format('HHmm'),
+            };
+        });
+        const excludedDate = excludeDateArray.map((d) => {
+            return d.format('YYYYMMDD');
+        }).join(',');
+        let validCycle = null;
+        if (validCycleType === ACTIVITY_CYCLE_TYPE.WEEKLY) {
+            validCycle = selectWeekValue.map((week) => {
+                return `w${week}`;
+            }).join(',');
+        } else if (validCycleType === ACTIVITY_CYCLE_TYPE.MONTHLY) {
+            validCycle = selectMonthValue.map((month) => {
+                return `m${month}`;
+            }).join(',');
+        }
         if (nextFlag) {
-            const {description, name, tags, endTime, startTime} = this.state;
-            const tag = tags.join(',');
-            this.props.onChange && this.props.onChange({startTime, endTime, name, description, tag});
+            this.props.onChange({
+                timeLst,
+                validCycle,
+                excludedDate,
+                description,
+                startTime,
+                endTime,
+                name,
+            });
         }
         return nextFlag;
     }
 
-    handleDescriptionChange(e) {
+    handleDescriptionChange = (e) => {
         this.setState({
             description: e.target.value,
         });
     }
 
-    handleDateRangeChange(value, dateString) { // value: Selected Time, dateString: Formatted Selected Time
+    handleDateRangeChange = (value, dateString) => { // value: Selected Time, dateString: Formatted Selected Time
         if (value.length > 1) {
-            const startTime = value[0].format('YYYYMMDDHHmm');
-            const endTime = value[1].format('YYYYMMDDHHmm');
+            const startTime = value[0].format(DATE_FORMAT);
+            const endTime = value[1].format(DATE_FORMAT);
             this.setState({
                 startTime,
                 endTime,
-            }); // this.queryExtraEventsByTime(startTime, endTime)
+            });
         }
     }
 
-    queryExtraEventsByTime(startTime, endTime) {
-        const shopID = this.props.user.shopID;
-        if (shopID == undefined || shopID === 'undefined' || !(shopID > 0)) {
-            return;
-        }
-        this.setState({
-            loading: true,
-        });
-        const params = {startTime, endTime, shopID, pageNo: 1, pageSize: 10};
-        if (this.props.itemID) {
-            params.itemID = this.props.itemID;
-        }
-        axiosData('/promotion/extra/extraEventService_getExtraEventsByTime.ajax', params, null, {path: 'data.page'}).then(res => {
-            this.setState({
-                loading: false,
-            });
-            if (res && res.totalSize) {
-                this.props.form.setFields({
-                    rangePicker: {
-                        errors: [new Error('该商城在所选日期段内已有秒杀活动正在进行, 请重新选择日期')],
-                    },
-                })
-            }
-        }, err => {
-            this.setState({
-                loading: false,
-            });
-        })
-    }
-
-    handleNameChange(e) {
+    handleNameChange = (e) => {
         this.setState({
             name: e.target.value,
         });
     }
 
-    renderPromotionType() {
-        const tip = (
-            <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{'同一时间一个商城的秒杀活动只能有一个，即不允许同一时间一个商城存在两个都处于启用状态的秒杀活动'}</p>
-                <div>
-                    <div className={styles.tipBtn}>
-                        <Button
-                            type="ghost"
-                            style={{ color: '#787878' }}
-                            onClick={() => {
-                                this.setState({ tipDisplay: 'none' });
-                            }}
-                        >我知道了
-                        </Button>
-                    </div>
-                </div>
+    unselectExcludeDate = (index) => { // 删除排除日期
+        const excludeDateArray = this.state.excludeDateArray.slice();
+        excludeDateArray.splice(index, 1);
+        this.setState({
+            excludeDateArray,
+        });
+        const { onChange } = this.props;
+        if (onChange) {
+            onChange(this.state);
+        }
+    }
+
+    toggleAdvancedDateSettings = () => {
+        this.setState(({ expand }) => {
+            return ({
+                expand: !expand
+            })
+        })
+    }
+
+    addTimeRange = () => {
+        const _tmp = this.state.timeRangeInfo;
+        _tmp.push({
+            start: undefined,
+            end: undefined,
+        });
+
+        this.setState({
+            'timeRangeInfo': _tmp,
+        });
+    }
+
+    deleteTimeRange = (index, e) => {
+        const _tmp = this.state.timeRangeInfo;
+        _tmp.splice(index, 1);
+
+        this.setState({
+            'timeRangeInfo': _tmp,
+        })
+    }
+
+    onDateWeekChange = (value) => {
+        if (!value.length) {
+            return message.warning('至少要选择1天')
+        }
+        this.setState({
+            selectWeekValue: value,
+        });
+    }
+
+    onDateMonthChange = (value) => {
+        if (!value.length) {
+            return message.warning('至少要选择1天')
+        }
+        this.setState({
+            selectMonthValue: value,
+        });
+    }
+
+    setPromotionCycle = (value) => {
+        this.setState({
+            validCycleType: value,
+        });
+    }
+
+    renderOperationIcon(index) {
+        const _len = this.state.timeRangeInfo.length;
+
+        if (_len == 1 && this.state.maxCount > _len) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addTimeRange} />
+                </span>
+            )
+        }
+        if (_len == this.state.maxCount && index == this.state.maxCount - 1) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon
+                        className={styles.deleteIconLeft}
+                        type="minus-circle-o"
+                        onClick={(e) => {
+                            const _index = index;
+                            this.deleteTimeRange(_index, e)
+                        }}
+                    />
+                </span>
+            )
+        }
+        if (index == _len - 1 && _len == this.state.maxCount - 1) {
+            return (
+                <span className={styles.iconsStyle}>
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addTimeRange} />
+                    <Icon
+                        className={styles.deleteIcon}
+                        type="minus-circle-o"
+                        onClick={(e) => {
+                            const _index = index;
+                            this.deleteTimeRange(_index, e)
+                        }}
+                    />
+                </span>
+            )
+        }
+        return null
+    }
+
+    handleTimeRangeInfo = (value, index) => {
+        const _timeRangeInfo = this.state.timeRangeInfo;
+        _timeRangeInfo[index] = value;
+        this.setState({
+            timeRangeInfo: _timeRangeInfo,
+        });
+    }
+
+    renderAdvancedDateSettings() {
+        return (
+            <div>
+                <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
+                    <span className={styles.gTip}>更多活动日期与时间的设置请使用</span>
+                    <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>高级日期设置</span>
+                </FormItem>
+                {this.state.expand && this.renderTimeSlot()}
+                {this.state.expand && this.renderPromotionCycleSetting()}
+                {this.state.expand && this.renderExcludedDatePicker()}
             </div>
-        );
+        )
+    }
+
+    renderTimeSlot() {
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+
+        const _timeRangeInfo = this.state.timeRangeInfo.map((timeRangeInfo, index) => {
+            let _label = '活动时段';
+            if (index) {
+                _label = ' ';
+            }
+            return (
+                <Row key={`${index}`}>
+                    <Col>
+                        <FormItem
+                            label={_label}
+                            className={styles.FormItemStyle}
+                            validateStatus={this.state.timeRangeInfo[index].validateStatus}
+                            help={this.state.timeRangeInfo[index].errMsg}
+                            {...formItemLayout}
+                        >
+                            <CustomTimeRangeInput
+                                onChange={(value) => {
+                                    const _index = index;
+                                    this.handleTimeRangeInfo(value, _index);
+                                }}
+                                value={Object.assign({}, this.state.timeRangeInfo[index])}
+                                format="HH:mm"
+                            />
+                        </FormItem>
+                    </Col>
+                    <Col>
+                        {this.renderOperationIcon(index)}
+                    </Col>
+                </Row>
+            )
+        })
+        return (
+            <div>
+                {_timeRangeInfo}
+            </div>
+        )
+    }
+
+    excludeDatePicker = (date, dateString) => { // 排除日期
+        if (date === null || dateString === '') {
+            return null;
+        }
+        const dateStr = date.format('YYYY-MM-DD');
+        const excludeDateArray = this.state.excludeDateArray.slice();
+        if (excludeDateArray.some(item => item.format('YYYY-MM-DD') === dateStr)) {
+            return null;
+        }
+        excludeDateArray.push(date)
+        this.setState({
+            excludeDateArray,
+        });
+    }
+
+    renderExcludedDate() {
+        return this.state.excludeDateArray.map((date, index) => {
+            const callback = (e) => {
+                e.preventDefault();
+                this.unselectExcludeDate(index);
+            };
+
+            return (
+                <Tag key={`${index}`} closable={true} onClose={callback}>{date.format('YYYY-MM-DD')}</Tag>
+            );
+        });
+    }
+
+    renderExcludedDatePicker() {
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
+                <DatePicker onChange={
+                    (moment, dateString) => {
+                        this.excludeDatePicker(moment, dateString);
+                    }
+                }
+                />
+                {
+                    this.state.excludeDateArray.length > 0 ? (
+                        <div className={styles.showExcludeDate}>{this.renderExcludedDate()}</div>
+                    ) : null
+                }
+            </FormItem>
+        )
+    }
+
+    renderPromotionCycleSetting() {
+        const formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 17 },
+        };
+        return (
+            <FormItem label="选择周期" className={styles.FormItemStyle} {...formItemLayout}>
+                <Select
+                    size="default"
+                    placeholder="请选择周期"
+                    getPopupContainer={(node) => node.parentNode}
+                    defaultValue={this.state.validCycleType}
+                    onChange={(arg) => {
+                        this.setPromotionCycle(arg);
+                    }}
+                >
+                    <Option value="0">每日</Option>
+                    <Option value="1">每周</Option>
+                    <Option value="2">每月</Option>
+                </Select>
+                <div className={styles.SeniorDateMain}>
+                    {this.renderPromotionCycleDetailSetting()}
+                </div>
+
+            </FormItem>
+        )
+    }
+
+    renderPromotionCycleDetailSetting() {
+        if (this.state.validCycleType === ACTIVITY_CYCLE_TYPE.WEEKLY) {
+            return (
+                <div className={styles.SeniorDateWeek}>
+                    <CheckboxGroup
+                        options={options}
+                        defaultValue={this.state.selectWeekValue}
+                        value={this.state.selectWeekValue}
+                        onChange={this.onDateWeekChange}
+                    />
+                </div>
+            )
+        } else if (this.state.validCycleType === ACTIVITY_CYCLE_TYPE.MONTHLY) {
+            return (
+                <div className={styles.SeniorDateMonth}>
+                    <CheckboxGroup
+                        options={days}
+                        defaultValue={this.state.selectMonthValue}
+                        onChange={this.onDateMonthChange}
+                        value={this.state.selectMonthValue}
+                    />
+                </div>
+            )
+        }
+        return null
+    }
+    /** 高级日期设置结束 TODO: 再有类似高级日期设置，考虑抽离成组件 */
+
+    renderPromotionType() {
         return (
             <FormItem
                 label={'活动类型'}
@@ -185,110 +511,12 @@ class BasicInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <p>{'商城秒杀'}</p>
-                {
-                    <Icon
-                        type="question-circle-o"
-                        className={styles.question}
-                        style={{ marginLeft: 6 }}
-                        onMouseOver={() => {
-                            this.setState({ tipDisplay: 'block' })
-                        }}
-                    />
-                }
-                {tip}
             </FormItem>
         )
     }
 
-    handleDeletePhrase(phraseType, name, itemID) {
-        this.props.deletePhrase({
-            data: {
-                groupID: this.props.user.accountInfo.groupID,
-                shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                phraseType,
-                name,
-                itemID,
-            },
-            success: () => {
-                const type = phraseType == '0' ? 'fetchPromotionCategories' : 'fetchPromotionTags';
-                this.props[type]({
-                    groupID: this.props.user.accountInfo.groupID,
-                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType,
-                });
-                message.success('删除成功');
-            },
-        });
-        if (phraseType == '0' && this.state.category == name) {
-            // 手动删除已选添加类别（而不是加载时），清空已选类别
-            this.setState({ category: '' })
-        }
-        if (phraseType == '1' && this.state.tags.includes(name)) {
-            // 手动删除已选添加标签（而不是加载时），清空已选
-            const set = new Set(this.state.tags);
-            set.delete(name);
-            this.setState({ tags: Array.from(set) })
-        }
-    }
-
-    rendertags() {
-        if (this.state.tagName === undefined) {
-            return (<Option value={'0'} key={'0'} disabled={true}>数据加载中...</Option >);
-        } else if (typeof this.state.tagName === 'object' && this.state.tagName.length == 0) {
-            return (<Option value={'0'} key={'0'} disabled={true}>暂无标签,输入新建</Option >);
-        }
-        return this.state.tagName
-            .map((tag, index) => {
-                return (<Option value={tag.value} key={`${index}`}>{tag.value}</Option >)
-            })
-    }
-
-    handleTagsChange = (value) => {
-        const _value = value.map((val, index) => {
-            return val.replace(/[^\u4E00-\u9FA5A-Za-z0-9\s\.]/g, '');
-        })
-        this.setState({
-            tags: _value,
-        }, () => { this.handleAutoAddTags() });
-    };
-
-    handleAutoAddTags() {
-        const excludeTags = [];
-        const tagNameArr = (this.state.tagList || []).map((tagObj) => {
-            return tagObj.name
-        });
-        this.state.tags.map((tag) => {
-            if (!tagNameArr.includes(tag)) {
-                excludeTags.push(tag)
-            }
-        });
-        if (excludeTags.length > 0) {
-            this.props.addPhrase({
-                data: {
-                    groupID: this.props.user.accountInfo.groupID,
-                    shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                    phraseType: '1',
-                    nameList: excludeTags,
-                },
-                success: () => {
-                    this.props.fetchPromotionTags({
-                        groupID: this.props.user.accountInfo.groupID,
-                        shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
-                        phraseType: '1',
-                    });
-                },
-            })
-        }
-    }
-
     render() {
         const { getFieldDecorator } = this.props.form;
-        const tagList = {
-            placeholder: '请选择活动标签',
-            tags: true,
-            allowClear: true,
-            className: styles.linkSelectorRight,
-        };
         return (
             <Form className={styles.FormStyle}>
                 {this.renderPromotionType()}
@@ -310,7 +538,6 @@ class BasicInfo extends React.Component {
                         <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
                     )}
                 </FormItem>
-
                 <FormItem
                     label="活动起止时间"
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
@@ -323,48 +550,19 @@ class BasicInfo extends React.Component {
                             message: '请选择活动起止时间',
                         }],
                         onChange: this.handleDateRangeChange,
-                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, 'YYYYMMDDHHmm'), moment(this.state.endTime, 'YYYYMMDDHHmm')] : [],
+                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
                     })(
                         <RangePicker
                             showTime={{ format: 'HH:mm' }}
                             className={styles.ActivityDateDayleft}
+                            disabledDate={disabledDate}
                             style={{ width: '100%' }}
                             format="YYYY-MM-DD HH:mm"
                             placeholder={['开始时间', '结束时间']}
                         />
                     )}
                 </FormItem>
-                <FormItem label="活动标签"
-                          className={styles.FormItemStyle}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 17 }}
-                >
-                    <Select
-                        {...tagList}
-                        onChange={this.handleTagsChange}
-                        getPopupContainer={(node) => node.parentNode}
-                        value={this.state.tags}
-                        size="default"
-                        placeholder="汉字、字母、数字组成"
-                    >
-                        {this.rendertags()}
-                    </Select>
-                    <AddCategorys
-                        catOrtag={'tag'}
-                        categoryName={this.state.tagName}
-                        addPhrase={this.props.addPhrase}
-                        fetchPromotionTags={this.props.fetchPromotionTags}
-                        user={this.props.user}
-                        callback={(arg) => {
-                            this.setState({
-                                tagName: arg,
-                            })
-                        }}
-                        list={this.state.tagList || []}
-                        onTagClose={this.handleDeletePhrase}
-                    />
-                </FormItem>
-
+                { this.renderAdvancedDateSettings() }
                 <FormItem
                     label="活动说明"
                     className={styles.FormItemStyle}
@@ -381,32 +579,9 @@ class BasicInfo extends React.Component {
                         <Input type="textarea" placeholder="活动说明最多200个字符"/>
                     )}
                 </FormItem>
-
             </Form>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        saleCenter: state.sale_saleCenter_NEW,
-        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
-        user: state.user.toJS(),
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchPromotionTags: (opts) => {
-            dispatch(fetchPromotionTagsAC(opts));
-        },
-        addPhrase: (opts) => {
-            dispatch(saleCenterAddPhrase(opts))
-        },
-        deletePhrase: (opts) => {
-            dispatch(saleCenterDeletePhrase(opts));
-        },
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(BasicInfo));
+export default Form.create()(BasicInfo);
