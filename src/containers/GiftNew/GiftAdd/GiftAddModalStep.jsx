@@ -2,7 +2,17 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { axiosData } from '../../../helpers/util';
-import { Row, Spin, Col, Modal, Form, Select, Input, message, TreeSelect, Checkbox, Radio } from 'antd';
+import {
+    Row,
+    Col,
+    Form,
+    Select,
+    Input,
+    message,
+    Radio,
+    Tooltip,
+    Icon,
+} from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
 import BaseForm from '../../../components/common/BaseForm';
@@ -195,7 +205,6 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({ secondKeys });
                 break;
             case 'discountType':
-                // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
                 const keys = [...firstKeys[describe][0].keys];
                 const discountTypeIndex = _.findIndex(keys, item => item == 'disCountTypeAndValue');
                 const foodSelectorIndex = _.findIndex(keys, item => item == 'foodsboxs');
@@ -686,7 +695,11 @@ class GiftAddModalStep extends React.PureComponent {
                         getPopupContainer={(node) => node.parentNode}
                     >
                         {
-                            [{ label: '整单折扣', value: '0' }, { label: '指定菜品折扣', value: '1' }].map((t) => {
+                            [
+                            { label: '整单折扣', value: '0' },
+                            { label: '指定菜品折扣', value: '1' },
+                            { label: '单品折扣', value: '2' },
+                        ].map((t) => {
                                 return <Option key={t.label} value={t.value}>{t.label}</Option>
                             })
                         }
@@ -754,48 +767,6 @@ class GiftAddModalStep extends React.PureComponent {
                 modal="int"
                 maxNum={4}
             />
-        )
-    }
-
-    renderDisCountStages(decorator) {
-        const { discountType } = this.state.values
-        return (
-            <Row style={{ marginTop: -6 }}>
-                <Col span={discountType == 0 ? 24 : 12}>
-                    <FormItem>
-                        {decorator({
-                            key: 'discountType',
-                            initialValue: discountType || 0,
-                        })(<Select getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                [{ label: '无门槛折扣', value: 0 }, { label: '指定菜品消费满', value: 1 }].map((t) => {
-                                    return <Option key={t.label} value={t.value}>{t.label}</Option>
-                                })
-                            }
-                        </Select>)}
-                    </FormItem>
-                </Col>
-                {
-                    discountType == 0 ? null :
-                        <Col span={12}>
-                            <FormItem style={{ marginTop: 2 }}>
-                                {decorator({
-                                    key: 'discountRate',
-                                    rules: [{ required: true, message: '不得为空' }, {
-                                        validator: (rule, v, cb) => {
-                                            if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
-                                                cb(rule.message);
-                                            }
-                                            cb();
-                                        },
-                                        message: '整数不超过8位，小数不超过2位',
-                                    }],
-                                })(<Input size="large" addonAfter="元" />)}
-                            </FormItem>
-                        </Col>
-                }
-            </Row>
         )
     }
     renderDisCountRate(decorator) {
@@ -1587,13 +1558,21 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => this.renderStages(decorator),
             },
-            disCountStages: {
-                label: '活动条件',
-                type: 'custom',
-                render: decorator => this.renderDisCountStages(decorator),
-            },
             disCountTypeAndValue: {
-                label: '折扣',
+                label: (
+                    <span>
+                        折扣&nbsp;
+                        <Tooltip title={
+                            <p>
+                                指定菜品折扣可以对在适用范围内的菜品都参与打折；
+                                <br/>
+                                单品折扣仅对适用范围内菜品价格最高的一道菜参与打折
+                            </p>
+                        }>
+                            <Icon type="question-circle" />
+                        </Tooltip>
+                    </span>
+                ),
                 type: 'custom',
                 render: decorator => this.renderDiscountTypeAndValue(decorator),
             },
