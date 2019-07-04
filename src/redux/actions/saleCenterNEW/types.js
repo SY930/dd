@@ -11,7 +11,7 @@
 
 const Moment = require('moment');
 
-export const FULL_CUT_ACTIVITY_CYCLE_TYPE = Object.freeze({
+export const ACTIVITY_CYCLE_TYPE = Object.freeze({
     EVERYDAY: '0',
     WEEKLY: '1',
     MONTHLY: '2',
@@ -547,21 +547,6 @@ export const ACTIVITY_CATEGORIES = (function () {
     },
     ];
     return basic;
-}());
-
-export const WECHAT_MALL_ACTIVITIES = (function () {
-    const activities = [{
-        idx: 0,
-        title: '商城秒杀',
-        color: '#84aac6',
-        text: '在微信商城可设置商品限时限量购的秒杀活动',
-        example: '',
-        tags: ['微信商城'],
-        key: '7010',
-        tip: '同一时间一个商城的秒杀活动只能有一个，即不允许同一时间一个商城存在两个都处于启用状态的秒杀活动',
-    },
-    ];
-    return activities;
 }());
 
 export const CHARACTERISTIC_CATEGORIES = (function () {

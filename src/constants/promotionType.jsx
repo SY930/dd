@@ -457,3 +457,21 @@ export const SALE_PROMOTION_TYPES = [
     },
 ];
 
+export const WECHAT_MALL_ACTIVITIES = [
+    {
+        title: '商城秒杀',
+        color: '#84aac6',
+        text: '在微信商城可设置商品限时限量购的秒杀活动',
+        example: '',
+        tags: ['微信商城'],
+        key: '72',
+    },
+    {
+        title: '拼团活动',
+        color: '#84aac6',
+        text: '邀请好友来拼团，也可直接购买',
+        example: '',
+        tags: ['微信商城'],
+        key: '71',
+    },
+];

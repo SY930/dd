@@ -2,6 +2,7 @@ import React from 'react';
 import BasicInfo from './BasicInfo';
 import SettingInfo from './SettingInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
+
 class Wrapper extends React.Component {
     constructor(props) {
         super(props);
