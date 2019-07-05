@@ -115,7 +115,6 @@ class CustomProgressBar extends React.Component {
                     {
                         this.state.current > 0 && (
                             <Button
-                                style={{ marginLeft: 8 }}
                                 type="primary"
                                 onClick={() => this.prev(current)}
                             >
@@ -126,7 +125,6 @@ class CustomProgressBar extends React.Component {
                     {
                         this.state.current < steps.length - 1 &&
                         <Button
-                            style={{ marginLeft: 8 }}
                             type="primary"
                             onClick={() => this.next(current)}
                             htmlType="submit"
@@ -136,7 +134,7 @@ class CustomProgressBar extends React.Component {
                     {
                         this.state.current === steps.length - 1 &&
                         <Button
-                            style={{ marginLeft: 8, display: this.props.isUpdate ? 'inline-block' : 'none' }}
+                            style={{ display: this.props.isUpdate ? 'inline-block' : 'none' }}
                             type="primary"
                             loading={this.props.loading}
                             disabled={this.props.loading}
