@@ -51,6 +51,10 @@ const availableMsgType = [
 const availableUrlType = [
     {
         value: '1',
+        label: '我的优惠券',
+    },
+    {
+        value: '4',
         label: '我的优惠券（仅显示绑定店铺适用的优惠券）',
     },
     {
