@@ -164,7 +164,7 @@ class SpecialDetailInfo extends React.Component {
                     }                   
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                            {isOnline ? '每单限购' : '单笔订单同一菜品最多使用数量限制'}
+                            同一商品每单限制
                         </div>
                         <div style={{width: '300px'}}>
                             <Col  span={this.state.isLimited == 0 ? 24 : 8}>
