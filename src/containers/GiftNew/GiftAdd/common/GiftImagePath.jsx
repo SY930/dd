@@ -21,12 +21,24 @@ class GiftImagePath extends Component {
     }
 
     render() {
+        const modifierClassName = this.props.modifierClassName;
         const props = {
             name: 'myFile',
             showUploadList: false,
             action: '/api/common/imageUpload',
             accept: 'image/png,image/jpeg',
-            className: styles.avatarUploader,
+            className: [styles.avatarUploader, styles[modifierClassName]].join(' '),
+            beforeUpload: (file) => {
+                let isRightSize = true;
+                const limit = this.props.limit;
+                if (limit) {
+                    isRightSize = file.size / 1024 <= limit;
+                    if (!isRightSize) {
+                        message.error(`图片不要大于${Math.floor(limit / 1024)}MB`);
+                    }
+                }
+                return isRightSize;
+            },
             onChange: (info) => {
                 const status = info.file.status;
                 if (status === 'done') {
@@ -44,21 +56,33 @@ class GiftImagePath extends Component {
         return (
             <Row>
                 <Col>
-                    <FormItem style={{ height: 240 }}>
+                    <FormItem style={{ height: this.props.wrapperHeight }}>
                         <Upload {...props}>
                             {
                                 this.props.value ?
-                                    <img src={this.props.value} alt="" className={styles.avatar} /> :
-                                    <Icon type="plus" className={styles.avatarUploaderTrigger} />
+                                    <img
+                                        src={this.props.value}
+                                        alt=""
+                                        className={[styles.avatar, styles[modifierClassName]].join(' ')}
+                                    /> :
+                                    <Icon
+                                        type="plus"
+                                        className={[styles.avatarUploaderTrigger, styles[modifierClassName]].join(' ')}
+                                    />
                             }
                         </Upload>
                         <p className="ant-upload-hint">点击上传图片，图片格式为jpg、png</p>
-                        <p className="ant-upload-hint">不上传则显示默认图片</p>
+                        <p className="ant-upload-hint">{this.props.hint}</p>
                     </FormItem>
                 </Col>
             </Row>
         )
     }
 }
+GiftImagePath.defaultProps = {
+    hint: '不上传则显示默认图片',
+    wrapperHeight: 240,
+    modifierClassName: ''
+};
 
 export default GiftImagePath;

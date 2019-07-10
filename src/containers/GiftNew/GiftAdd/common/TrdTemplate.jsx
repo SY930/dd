@@ -11,7 +11,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Select, Form, Switch, Input, Spin } from 'antd';
+import {
+    Select,
+    Form,
+    Switch,
+    Input,
+    Spin,
+    Radio,
+    DatePicker,
+    Popover,
+    Icon,
+} from 'antd';
 import { fetchData } from '../../../../helpers/util';
 import GiftCfg from '../../../../constants/Gift';
 import {
@@ -21,9 +31,15 @@ import {
 import {
     queryWechatMpInfo,
 } from '../../_action';
+import PriceInput from '../../../SaleCenterNEW/common/PriceInput'
+import styles from '../Crm.less';
+import selfStyle from './selfStyle.less';
+import GiftImagePath from './GiftImagePath';
+const RangePicker = DatePicker.RangePicker;
 
 const FormItem = Form.Item
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 const itemStyle = {
     labelCol: { span: 6 },
     wrapperCol: { span: 18 },
@@ -33,6 +49,52 @@ const itemStyle = {
 // 这些第三方渠道的对接, 不需要渲染选择券码的Select
 const SIMPLE_TRD_CHANNEL_IDS = [
     20, 30, 40
+];
+// 微信第三方券，固定时长类型（相对有效期
+const FIX_TERM = 'DATE_TYPE_FIX_TERM';
+// 微信第三方券，固定有效期范围类型
+const FIX_TIME_RANGE = 'DATE_TYPE_FIX_TIME_RANGE';
+const AVAILABLE_WECHAT_COLORS = [
+    {
+        value: 'Color010',
+        styleValue: '#63B359',
+    },
+    {
+        value: 'Color020',
+        styleValue: '#2C9F67',
+    },
+    {
+        value: 'Color030',
+        styleValue: '#509FC9',
+    },
+    {
+        value: 'Color040',
+        styleValue: '#5885CF',
+    },
+    {
+        value: 'Color050',
+        styleValue: '#9062C0',
+    },
+    {
+        value: 'Color060',
+        styleValue: '#D09A45',
+    },
+    {
+        value: 'Color070',
+        styleValue: '#E4B138',
+    },
+    {
+        value: 'Color080',
+        styleValue: '#EE903C',
+    },
+    {
+        value: 'Color090',
+        styleValue: '#DD6549',
+    },
+    {
+        value: 'Color100',
+        styleValue: '#CC463D',
+    },
 ]
 class TrdTemplate extends React.Component {
     constructor(props) {
@@ -45,6 +107,13 @@ class TrdTemplate extends React.Component {
             mpIDStatus: true,
             trdGiftItemIDStatus: true,
             loading: false,
+            color: 'Color010',
+            bindType: 0,
+            notice: undefined,
+            type: FIX_TERM,
+            fixedBeginTerm: '0',
+            fixedTerm: undefined,
+            logoUrl: '',
         };
     }
     componentDidMount() {
@@ -121,6 +190,9 @@ class TrdTemplate extends React.Component {
         this.setState({ channelIDStatus, mpIDStatus, trdGiftItemIDStatus })
         return Promise.resolve(TrdTemplateStatus)
     }
+    handleBindTypeChange = ({ target: { value } }) => {
+        this.setState({ bindType: value })
+    }
     // 第三方券模版
     queryTrdTemplate = (mpID, appID, trdChannelID) => {
         if (trdChannelID == 10 && !appID) return
@@ -146,7 +218,7 @@ class TrdTemplate extends React.Component {
                             fixedTerm,
                         } = dateInfo;
                         // 固定有效期类型
-                        if (type === 'DATE_TYPE_FIX_TIME_RANGE') {
+                        if (type === FIX_TIME_RANGE) {
                             const startMoment = moment.unix(beginTimestamp);
                             const endMoment = moment.unix(endTimestamp);
                             const startTimeString = startMoment.format('YYYY/MM/DD');
@@ -156,7 +228,7 @@ class TrdTemplate extends React.Component {
                             entity.validityDays = endMoment.diff(startMoment, 'days') + 1;
                         }
                         // 相对有效期类型
-                        if (type === 'DATE_TYPE_FIX_TERM') {
+                        if (type === FIX_TERM) {
                             entity.trdGiftName = `${entity.trdGiftName || ''} (有效期: ${fixedTerm}天)`;
                             entity.validityDays = fixedTerm || 0;
                         }
@@ -235,9 +307,282 @@ class TrdTemplate extends React.Component {
             this.propsChange() // 向父传递
         })
     }
+    handleNoticeChange = ({ target: { value } }) => {
+        this.setState({ notice: value }, () => {
+            this.propsChange()
+        })
+    }
+    handleTimeTypeChange = ({ target: { value } }) => {
+        this.setState({ type: value }, () => {
+            this.propsChange()
+        })
+    }
+    handleColorChange = (value) => {
+        this.setState({ color: value }, () => {
+            this.propsChange()
+        })
+    }
+    handleLogoUrlChange = (value) => {
+        this.setState({ logoUrl: value }, () => {
+            this.propsChange()
+        })
+    }
+    renderWxCouponCreateForm() {
+        const {
+            mpList,
+            mpID,
+            mpIDStatus,
+            color,
+            notice,
+            logoUrl,
+            type, // 微信
+        } = this.state;
+        const edit = this.props.type === 'edit';
+        const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue
+        return (
+            <div>
+                <FormItem
+                    label='微信公众号选择'
+                    {...itemStyle}
+                    validateStatus={mpIDStatus ? 'success' : 'error'}
+                    help={mpIDStatus ? null : '不得为空'}
+                >
+                    <Select value={mpID}
+                            onChange={this.handleMpSelect}
+                            disabled={edit}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            mpList.map(mp => {
+                                return <Option value={mp.mpID}>{mp.mpName}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                <FormItem
+                    label='优惠券颜色'
+                    {...itemStyle}
+                    className={selfStyle.customColorPickerWrapper}
+                    required={false}
+                >
+                    <Popover arrowPointAtCenter trigger="click" placement="topLeft" content={(
+                        <div className={selfStyle.colorPaletteWrapper}>
+                            {AVAILABLE_WECHAT_COLORS.map(({value, styleValue}) => (
+                                <div
+                                    key={value}
+                                    onClick={() => this.handleColorChange(value)}
+                                    className={selfStyle.colorBlock}
+                                    style={{ background: styleValue }}
+                                >
+                                    {value === color && (
+                                        <Icon style={{ fontSize: 14, color: '#fff' }} type="check" />
+                                    ) }
+                                </div>
+                            ))}
+                        </div>
+                    )}>
+                        <div className={selfStyle.smallColorBlockWrapper}>
+                            <div
+                                className={selfStyle.smallColorBlock}
+                                style={{ background: styleColor }}
+                            />
+                        </div>
+                    </Popover>
+                </FormItem>
+                {/* <Icon className={style.checkIcon} type="check" /> */}
+                <FormItem
+                    label='操作提示'
+                    {...itemStyle}
+                    style={{ position: 'relative' }}
+                >
+                    <Input
+                        value={notice}
+                        onChange={this.handleNoticeChange}
+                        placeholder="请输入操作提示，长度不要超过16"
+                    />
+                    <span style={{ position: 'absolute', top: 0, right: 8, color: '#787878' }}>
+                        {`${(notice || '').length} / 16`}
+                    </span>
+                </FormItem>
+                <FormItem
+                    label='封面图片'
+                    {...itemStyle}
+                    style={{ position: 'relative' }}
+                >
+                    <GiftImagePath
+                        wrapperHeight={200}
+                        modifierClassName="horizontalModifier"
+                        limit={2048}
+                        hint="图片建议尺寸：850像素 x 350像素，大小不超过2MB"
+                        value={logoUrl}
+                        onChange={this.handleLogoUrlChange}
+                    />
+                </FormItem>
+                <FormItem
+                    label="生效方式"
+                    {...itemStyle}
+                    required={false}
+                >
+                    <RadioGroup onChange={this.handleTimeTypeChange} value={type}>
+                        <Radio value={FIX_TERM}>相对有效期</Radio>
+                        <Radio value={FIX_TIME_RANGE}>固定有效期</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    type === FIX_TIME_RANGE && (
+                        <FormItem
+                            label="固定有效期"
+                            {...itemStyle}
+                        >
+                            <RangePicker format="YYYY-MM-DD" disabledDate={
+                                (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                            } />
+                        </FormItem>
+                    )
+                }
+                {
+                    type === FIX_TERM && (
+                        <FormItem
+                            label="何时生效"
+                            {...itemStyle}
+                            required={false}
+                        >
+                            <Select value={mpID}
+                                    onChange={this.handleMpSelect}
+                                    disabled={edit}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    mpList.map(mp => {
+                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                    )
+                }
+                {
+                    type === FIX_TERM && (
+                        <FormItem
+                            label="有效天数"
+                            {...itemStyle}
+                        >
+                            <PriceInput
+                                modal="int"
+                                placeholder="请设置有效天数"
+                                addonAfter="天"
+                                maxNum={5}
+                            />
+                        </FormItem>
+                    )
+                }
+
+            </div>
+        )
+    }
+    renderDefaultTrdForm() {
+        const {
+            channelID = 10,
+            mpList,
+            mpID,
+            trdTemplateInfoList,
+            trdGiftItemID,
+            channelIDStatus,
+            mpIDStatus,
+            trdGiftItemIDStatus,
+        } = this.state;
+        const edit = this.props.type === 'edit';
+        return (
+            <div>
+                <FormItem
+                    label='第三方渠道'
+                    {...itemStyle}
+                    validateStatus={channelIDStatus ? 'success' : 'error'}
+                    help={channelIDStatus ? null : '不得为空'}
+                >
+                    <Select value={channelID}
+                            onChange={this.handleTrdChannelSelect}
+                            disabled={edit}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            GiftCfg.trdChannelIDs.map(trdChannel => {
+                                return <Option value={trdChannel.value}>{trdChannel.label}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                {
+                    channelID !== 10 ? null :
+                        (<FormItem
+                            label='微信公众号选择'
+                            {...itemStyle}
+                            validateStatus={mpIDStatus ? 'success' : 'error'}
+                            help={mpIDStatus ? null : '不得为空'}
+                        >
+                            <Select value={mpID}
+                                    onChange={this.handleMpSelect}
+                                    disabled={edit}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    mpList.map(mp => {
+                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>)
+                }
+                {
+                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
+                        <FormItem
+                            label='第三方券模板或活动'
+                            {...itemStyle}
+                            validateStatus={trdGiftItemIDStatus ? 'success' : 'error'}
+                            help={trdGiftItemIDStatus ? null : '不得为空'}
+                        >
+                            <Select onChange={this.handleTrdTemplate}
+                                    value={trdGiftItemID}
+                                    disabled={edit}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    trdTemplateInfoList.map(template => {
+                                        return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                    )
+                }
+                {
+                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
+                        <FormItem
+                            label='券模板或活动ID'
+                            {...itemStyle}
+                        >
+                            <Input disabled={true} value={trdGiftItemID} />
+                        </FormItem>
+                    )
+                }
+            </div>
+        )
+    }
     render() {
-        const { defaultChecked, channelID = 10, mpList, mpID, trdTemplateInfoList, trdGiftItemID, channelIDStatus, mpIDStatus, trdGiftItemIDStatus, loading } = this.state;
-        const edit = this.props.type === 'edit'
+        const {
+            defaultChecked,
+            channelID = 10,
+            mpList,
+            mpID,
+            trdTemplateInfoList,
+            trdGiftItemID,
+            channelIDStatus,
+            mpIDStatus,
+            trdGiftItemIDStatus,
+            loading,
+            bindType,
+        } = this.state;
+        const edit = this.props.type === 'edit';
         return (
             <div>
                 <Spin spinning={loading}>
@@ -255,80 +600,33 @@ class TrdTemplate extends React.Component {
                         />
                     </FormItem>
                     {
-                        !defaultChecked ? null :
-                            (<div>
-                                <FormItem
-                                    label='第三方渠道'
-                                    {...itemStyle}
-                                    validateStatus={channelIDStatus ? 'success' : 'error'}
-                                    help={channelIDStatus ? null : '不得为空'}
+                        defaultChecked && (
+                            <div>
+                                <div
+                                    style={{
+                                        lineHeight: 1.5,
+                                        margin: '20px 0 20px 34px',
+                                    }}
+                                    className={styles.logoGroupHeader}
                                 >
-                                    <Select value={channelID}
-                                            onChange={this.handleTrdChannelSelect}
-                                            disabled={edit}
-                                            getPopupContainer={(node) => node.parentNode}
-                                    >
-                                        {
-                                            GiftCfg.trdChannelIDs.map(trdChannel => {
-                                                return <Option value={trdChannel.value}>{trdChannel.label}</Option>
-                                            })
-                                        }
-                                    </Select>
+                                    关联第三方礼品
+                                </div>
+                                <FormItem
+                                    label="关联方式"
+                                    {...itemStyle}
+                                    required={false}
+                                >
+                                    <RadioGroup onChange={this.handleBindTypeChange} value={bindType}>
+                                        <Radio value={0}>关联第三方渠道</Radio>
+                                        <Radio value={1}>创建微信优惠券</Radio>
+                                    </RadioGroup>
                                 </FormItem>
                                 {
-                                    channelID !== 10 ? null :
-                                        (<FormItem
-                                            label='微信公众号选择'
-                                            {...itemStyle}
-                                            validateStatus={mpIDStatus ? 'success' : 'error'}
-                                            help={mpIDStatus ? null : '不得为空'}
-                                        >
-                                            <Select value={mpID}
-                                                    onChange={this.handleMpSelect}
-                                                    disabled={edit}
-                                                    getPopupContainer={(node) => node.parentNode}
-                                            >
-                                                {
-                                                    mpList.map(mp => {
-                                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormItem>)
+                                    bindType === 0 ? this.renderDefaultTrdForm()
+                                    : this.renderWxCouponCreateForm()
                                 }
-                                {
-                                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
-                                        <FormItem
-                                            label='第三方券模板或活动'
-                                            {...itemStyle}
-                                            validateStatus={trdGiftItemIDStatus ? 'success' : 'error'}
-                                            help={trdGiftItemIDStatus ? null : '不得为空'}
-                                        >
-                                            <Select onChange={this.handleTrdTemplate}
-                                                    value={trdGiftItemID}
-                                                    disabled={edit}
-                                                    getPopupContainer={(node) => node.parentNode}
-                                            >
-                                                {
-                                                    trdTemplateInfoList.map(template => {
-                                                        return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormItem>
-                                    )
-                                }
-                                {
-                                    SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID)) ? null : (
-                                        <FormItem
-                                            label='券模板或活动ID'
-                                            {...itemStyle}
-                                        >
-                                            <Input disabled={true} value={trdGiftItemID} />
-                                        </FormItem>
-                                    )
-                                }
-                            </div>)
+                            </div>
+                        )
                     }
                 </Spin>
             </div>
