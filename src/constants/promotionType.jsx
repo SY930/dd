@@ -475,3 +475,36 @@ export const WECHAT_MALL_ACTIVITIES = [
         key: '71',
     },
 ];
+/**
+ * 线上营销
+ * @type {Array}
+ */
+export const ONLINE_PROMOTION_TYPES = [
+    {
+        title: '满减活动',
+        isSpecial: false,
+        text: '用户下单满足条件后可享受减免优惠',
+        desc: `
+            用户下单满足条件后可享受减免优惠; 与特价菜活动互斥，不可同享;\r\n
+            同一时间如果有多个满减活动，仅执行一个活动，优先执行「活动创建日期较早」的活动
+        `,
+        tags: ['小程序'],
+        key: '2060',
+        right: 14,
+        bottom: 5,
+    },
+    {
+        title: '特价商品',
+        isSpecial: false,
+        text: '用户购买指定商品可享受特价优惠',
+        desc: `
+            用户购买指定商品可享受特价优惠;\r\n
+            活动不与满减同享;\r\n
+            同一时间同一商品只能参与一个特价活动。如果同一时间同一商品设置有多个特价活动，则按「活动创建日期较早」的活动设置价格参与;`,
+        tags: ['小程序'],
+        key: '1100',
+        right: 10,
+        bottom: 0,
+    },
+];
+

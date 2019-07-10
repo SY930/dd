@@ -147,6 +147,7 @@ class SpecialDetailInfo extends React.Component {
     }
 
     render() {
+        const { isOnline } = this.props;
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -160,12 +161,12 @@ class SpecialDetailInfo extends React.Component {
                                 onChange={this.dishesChange}
                             />
                         )
-                    }
-                    
+                    }                   
                     <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
-                        <div style={{lineHeight: '28px', marginRight: '14px'}}>{'单笔订单同一菜品最多使用数量限制'}</div>
+                        <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                            同一商品每单限制
+                        </div>
                         <div style={{width: '300px'}}>
-
                             <Col  span={this.state.isLimited == 0 ? 24 : 8}>
                                 <Select onChange={this.handleIsLimitedChange}
                                         value={String(this.state.isLimited)}
@@ -195,10 +196,8 @@ class SpecialDetailInfo extends React.Component {
                             }
                         </div>
                 </div>
-
-                    {/*</FormItem>*/}
-                    {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {!isOnline && this.renderAdvancedSettingButton()}
+                    {!isOnline && this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
             </div>
         )

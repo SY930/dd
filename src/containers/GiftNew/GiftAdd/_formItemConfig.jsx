@@ -1,4 +1,8 @@
 ﻿import React, { Component } from 'react';
+import {
+    Tooltip,
+    Icon,
+} from 'antd';
 import GiftCfg from '../../../constants/Gift';
 
 const FORMITEMS = {
@@ -69,7 +73,24 @@ const FORMITEMS = {
         options: GiftCfg.showGiftRule,
     },
     giftShareType: {
-        label: '券与券共用',
+        label: (
+            <span>
+                券与券共用&nbsp;
+                <Tooltip title={
+                    <p>
+                        使用说明：
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;对线上营销，与所有券共用设置不执行。所有券之间默认互斥，与活动默认同
+                        <br/>
+                        享。也就是说，一笔订单享受满减、特价商品等活动，当有满足账单使用情况时可以
+                        <br/>
+                        使用优惠券，但一笔订单只能使用一张券。
+                    </p>
+                }>
+                    <Icon type="question-circle" />
+                </Tooltip>
+            </span>
+        ),
         type: 'combo',
         defaultValue: '1',
         options: GiftCfg.shareType,
@@ -286,6 +307,7 @@ const FIRST_KEYS = {
                 'giftValue',
                 'price',
                 'validityDays',
+                'cardTypeList',
                 'giftRemark',
             ],
         },

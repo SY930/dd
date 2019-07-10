@@ -22,23 +22,6 @@ import {
     SALE_PROMOTION_TYPES,
 } from '../../constants/promotionType'
 import styles from './ActivityPage.less'
-
-const allBasicActivitiesArr = [
-    ...NEW_CUSTOMER_PROMOTION_TYPES,
-    ...FANS_INTERACTIVITY_PROMOTION_TYPES,
-    ...REPEAT_PROMOTION_TYPES,
-    ...LOYALTY_PROMOTION_TYPES,
-    ...SALE_PROMOTION_TYPES,
-].filter(item => !item.isSpecial);
-const allBasicActivitiesMap = allBasicActivitiesArr.reduce((acc, curr) => {
-    acc[curr.key] = curr;
-    return acc;
-}, {});
-
-if (process.env.__CLIENT__ === true) {
-    require('../../components/common/components.less');
-}
-
 import ActivityMain from './activityMain';
 import Authority from './../../components/common/Authority';
 import {
@@ -56,6 +39,9 @@ import {
 import {
     toggleIsUpdateAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {
+    ACTIVITY_CATEGORIES,
+} from '../../redux/actions/saleCenterNEW/types';
 import { jumpPage } from '@hualala/platform-base'
 import {
     SALE_CENTER_PAGE,
@@ -67,6 +53,17 @@ import {
     isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP,
     isHuaTian
 } from "../../constants/projectHuatianConf";
+const allBasicActivitiesArr = [
+    ...NEW_CUSTOMER_PROMOTION_TYPES,
+    ...FANS_INTERACTIVITY_PROMOTION_TYPES,
+    ...REPEAT_PROMOTION_TYPES,
+    ...LOYALTY_PROMOTION_TYPES,
+    ...SALE_PROMOTION_TYPES,
+].filter(item => !item.isSpecial);
+const allBasicActivitiesMap = allBasicActivitiesArr.reduce((acc, curr) => {
+    acc[curr.key] = curr;
+    return acc;
+}, {});
 
 const Immutable = require('immutable');
 function mapStateToProps(state) {
@@ -191,7 +188,6 @@ class NewActivity extends React.Component {
 
 
     _renderActivityButtons() {
-        const activities = this.props.saleCenter.get('activityCategories').toJS();
         return (
             <div
                 className={styles.scrollableMessageContainer}
@@ -199,7 +195,7 @@ class NewActivity extends React.Component {
                     marginBottom: 20
                 }}
             >
-                {activities.map((activity, index) => {
+                {ACTIVITY_CATEGORIES.map((activity, index) => {
                 return (
                     <div
                         key={`NewActivity${index}`}
@@ -217,7 +213,6 @@ class NewActivity extends React.Component {
                                 }}
                                 index={index}
                             />
-                            {/*<ActivityLogo index={index}　tags={activity.tags} titletext={activity.title} example={activity.example} spantext={activity.text} />*/}
                         </Authority>
                     </div>
                 );
@@ -227,7 +222,7 @@ class NewActivity extends React.Component {
     }
 
     _renderModal() {
-        const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.index].title;
+        const promotionType = ACTIVITY_CATEGORIES[this.state.index].title;
         return (
             <Modal
                 wrapClassName="progressBarModal"

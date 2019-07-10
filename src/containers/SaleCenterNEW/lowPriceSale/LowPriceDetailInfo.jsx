@@ -69,6 +69,7 @@ class LowPriceDetailInfo extends React.Component {
         }
 
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        const stageType = (_rule || {}).stageType;
         try {
             _rule = _rule.stage[0];
         } catch (e) {
@@ -77,10 +78,25 @@ class LowPriceDetailInfo extends React.Component {
         const _scopeLstLength = props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
         let display;
         display = !this.props.isNew;
-        const _ruleType = _scopeLstLength === 0 ? '1' : '2';
+        let ruleType;
+        if (_scopeLstLength) {// 指定菜品
+            if (stageType == 1) { // 每满
+                ruleType = '4'
+            } else {
+                ruleType = '2'
+            }
+        } else {// 任意菜品
+            if (stageType == 1) { // 每满
+                ruleType = '3'
+            } else {
+                ruleType = '1'
+            }
+        }
+        console.log('_rule', _rule)
+        console.log('ruleType', ruleType);
         this.setState({
             display,
-            ruleType: _ruleType,
+            ruleType,
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
@@ -94,6 +110,7 @@ class LowPriceDetailInfo extends React.Component {
             freeAmount,
             stageAmount,
             disType,
+            ruleType,
         } = this.state;
         let rule;
         if (Number(stageAmount || 0) <= 0) {
@@ -119,7 +136,7 @@ class LowPriceDetailInfo extends React.Component {
         }
 
         rule = {
-            stageType: '2',
+            stageType: ruleType === '1' || ruleType === '2' ? '2' : '1',
             stage:  [{
                     freeAmount,
                     disType,
@@ -251,7 +268,9 @@ class LowPriceDetailInfo extends React.Component {
                                 value={this.state.ruleType}
                             >
                                 <Option key="1" value='1'>任意消费满</Option>
+                                <Option key="3" value='3'>任意消费每满</Option>
                                 <Option key="2" value='2'>指定菜品消费满</Option>
+                                <Option key="4" value='4'>指定菜品消费每满</Option>
                             </Select>
                         </div>
 
@@ -336,11 +355,12 @@ class LowPriceDetailInfo extends React.Component {
 
 
     render() {
+        const { ruleType } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType === '2' ? this.props.isShopFoodSelectorMode ?
+                    {ruleType === '2' || ruleType === '4' ? this.props.isShopFoodSelectorMode ?
                         <PromotionDetailSetting /> : <ConnectedScopeListSelector/>
                     : null}
                     {this.renderAdvancedSettingButton()}
