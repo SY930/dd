@@ -545,12 +545,27 @@ class BasicInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('rangePicker', {
-                        rules: [{
-                            required: true,
-                            message: '请选择活动起止时间',
-                        }],
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择活动起止时间',
+                            },
+                            {
+                                validator: (rule, v, cb) => {
+                                    if (v.length === 2) {
+                                        const [startMoment, endMoment] = v;
+                                        if (endMoment.diff(startMoment, 'days', true) > 90) {
+                                            return cb(rule.message)
+                                        }
+                                    }
+                                    cb();
+                                },
+                                message: '活动起止时间跨度最多为90天',
+                            },
+                        ],
                         onChange: this.handleDateRangeChange,
-                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
+                        initialValue: this.state.startTime && this.state.endTime ?
+                            [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
                     })(
                         <RangePicker
                             showTime={{ format: 'HH:mm' }}
