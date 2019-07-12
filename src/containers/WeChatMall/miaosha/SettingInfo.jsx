@@ -25,7 +25,7 @@ class SettingInfo extends React.Component {
         } = this.getInitialGoodAndUnitInfo();
         this.state = {
             productsLimit: props.data.productsLimit > 0 ? props.data.productsLimit : undefined, // 不填写则默认不限
-            tag: props.data.tag || '秒杀', // 活动主题
+            tag: props.data.tag || undefined, // 活动主题, 后端如果返回'' ，还是希望显示placeholder
             goodsList: unitInfo,
             selectedGood: good,  
         };
@@ -313,7 +313,6 @@ class SettingInfo extends React.Component {
                     {
                         getFieldDecorator('tag', {
                             rules: [
-                                { required: true, message: '主题不能为空' },
                                 { max: 5, message: '主题不能超过5个字' },
                                 { min: 2, message: '主题不能少于2个字' },
                             ],

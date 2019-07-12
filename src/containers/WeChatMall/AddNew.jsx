@@ -151,7 +151,6 @@ class NewActivity extends React.Component {
                         key={activity.key}
                         style={{
                             listStyle: 'none',
-                            display: activity.key == 72 ? 'none' : 'inherit'
                         }}
                     >
                         <Authority rightCode={BASIC_PROMOTION_CREATE}>
