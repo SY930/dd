@@ -72,6 +72,7 @@ class GiftAddModalStep extends React.PureComponent {
         this.firstForm = null;
         this.secondForm = null;
         this.firstFormRefMap = null;
+        this.secondFormRefMap = null;
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
@@ -355,12 +356,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     handleSubmit = () => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
-            if (basicValues.TrdTemplate) {
-                const { TrdTemplateStatus } = basicValues.TrdTemplate;
-                if (!TrdTemplateStatus) {
-                    return false
-                }
-            }
             if (this.props.gift.value == '20' || this.props.gift.value == '21') {
                 if (this.validateFoodList(basicValues) === false) {
                     return false;
@@ -409,6 +404,16 @@ class GiftAddModalStep extends React.PureComponent {
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
+            if (formValues.TrdTemplate) {
+                const { TrdTemplateStatus } = formValues.TrdTemplate;
+                if (!TrdTemplateStatus) {
+                    try {
+                        this.secondFormRefMap.TrdTemplate.wrappedInstance.popIntoView()
+                    } catch (e) {
+                    }
+                    return false
+                }
+            }
             let params = _.assign(
                 {
                     effectTime: data.effectTime,
@@ -1456,7 +1461,11 @@ class GiftAddModalStep extends React.PureComponent {
                         }}
                         data={
                             (data.extraInfo && data.extraInfo !== '0') ?
-                            { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID }
+                            {
+                                extraInfo: data.extraInfo,
+                                trdChannelID: data.trdChannelID,
+                                trdTemplateID: data.trdTemplateID
+                            }
                             : undefined
                         }
                     />
@@ -1721,6 +1730,7 @@ class GiftAddModalStep extends React.PureComponent {
                     className={styles2.logoGroupHeader
                 }>使用规则</div>
                 <BaseForm
+                    getRefs={refs => this.secondFormRefMap = refs}
                     getForm={form => this.secondForm = form}
                     formItems={formItems}
                     formData={formData}

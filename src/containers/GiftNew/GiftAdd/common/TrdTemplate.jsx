@@ -96,6 +96,16 @@ const AVAILABLE_WECHAT_COLORS = [
         styleValue: '#CC463D',
     },
 ]
+const AVAILABLE_TIME_OPTIONS = (() => {
+    const options = (new Array(30))
+        .fill(0)
+        .map((_, index) => ({
+            value: `${index + 1}`,
+            label: `${index + 1}天后生效`
+        }));
+    options.unshift({value: '0', label: '立即生效'});
+    return options;
+})()
 class TrdTemplate extends React.Component {
     constructor(props) {
         super(props);
@@ -108,13 +118,17 @@ class TrdTemplate extends React.Component {
             trdGiftItemIDStatus: true,
             loading: false,
             color: 'Color010',
+            // 0 为把已创建的第三方券绑定到哗啦啦，1 为同步创建一张微信券
             bindType: 0,
             notice: undefined,
             type: FIX_TERM,
             fixedBeginTerm: '0',
             fixedTerm: undefined,
             logoUrl: '',
+            beginTimestamp: undefined,
+            endTimestamp: undefined,
         };
+        this.wrapperDOM = null;
     }
     componentDidMount() {
         let channelID = undefined;
@@ -140,14 +154,19 @@ class TrdTemplate extends React.Component {
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
         this.setState({ mpList: mpList || [] })
-        // 活动券新增时请求channelID: 1的未绑定过的基础营销活动，编辑时请求channelID: 用户已选择的
-        this.props.describe === '活动券' && this.props.queryUnbindCouponPromotion({ channelID: channelID ? channelID : 1 })
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.mpList !== nextProps.mpList) {
             const mpList = nextProps.mpList.toJS()
             this.setState({ mpList: mpList || [] })
+        }
+    }
+    popIntoView = () => {
+        try {
+            this.wrapperDOM.scrollIntoView(true)
+        } catch (e) {
+            // oops
         }
     }
     // 向父传递
@@ -159,21 +178,59 @@ class TrdTemplate extends React.Component {
             return
         }
         // 新建时
-        this.validatorTemp().then((TrdTemplateStatus) => {
-            const { defaultChecked, channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
-            const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined;
-            const trdTemplateEntity = trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID);
-            const trdTemplateIDLabel = trdTemplateEntity ? trdTemplateEntity.trdGiftName : undefined
-            const values = {
-                TrdTemplateStatus,
-                extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
-                validityDays: trdTemplateEntity.validityDays || 0,
-                effectTime: trdTemplateEntity.startDate || '',
-                trdChannelID,
-                trdTemplateID,
+        if (this.state.bindType === 0) {
+            this.validatorTemp().then((TrdTemplateStatus) => {
+                const { defaultChecked, channelID: trdChannelID, trdTemplateInfoList, trdGiftItemID: trdTemplateID, mpList, mpID } = this.state
+                const wechatMpName = mpID ? mpList.find(mp => mp.mpID === mpID).mpName : undefined;
+                const trdTemplateEntity = trdTemplateInfoList.find(template => template.trdGiftItemID === trdTemplateID);
+                const trdTemplateIDLabel = trdTemplateEntity ? trdTemplateEntity.trdGiftName : undefined
+                const values = {
+                    TrdTemplateStatus,
+                    extraInfo: JSON.stringify({ wechatMpName, trdTemplateIDLabel }),
+                    validityDays: trdTemplateEntity ? trdTemplateEntity.validityDays : 0,
+                    effectTime: trdTemplateEntity ? trdTemplateEntity.startDate : '',
+                    trdChannelID,
+                    trdTemplateID,
+                }
+                this.props.onChange(defaultChecked ? values : undefined)
+            })
+        } else {
+            let TrdTemplateStatus = true;
+            const {
+                defaultChecked,
+                mpID,
+                notice,
+                logoUrl,
+                type,
+                fixedBeginTerm,
+                fixedTerm,
+                color,
+                beginTimestamp,
+                endTimestamp,
+            } = this.state;
+            if (!mpID) TrdTemplateStatus = false;
+            if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
+            if (!logoUrl) TrdTemplateStatus = false;
+            if (type === FIX_TERM) {
+                !(fixedTerm > 0) && (TrdTemplateStatus = false)
+            } else {
+                if (!beginTimestamp || !endTimestamp) TrdTemplateStatus = false
             }
-            this.props.onChange(defaultChecked ? values : undefined)
-        })
+            this.props.onChange(defaultChecked ? {
+                TrdTemplateStatus,
+                wechatCouponTemplate: JSON.stringify({
+                    mpID,
+                    notice,
+                    logoUrl,
+                    color,
+                    type,
+                    fixedBeginTerm: type === FIX_TERM ? fixedBeginTerm : undefined,
+                    fixedTerm: type === FIX_TERM ? fixedTerm : undefined,
+                    beginTimestamp: type === FIX_TIME_RANGE ? beginTimestamp : undefined,
+                    endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
+                })
+            } : undefined)
+        }
     }
     // 校验表单
     validatorTemp = () => {
@@ -191,7 +248,9 @@ class TrdTemplate extends React.Component {
         return Promise.resolve(TrdTemplateStatus)
     }
     handleBindTypeChange = ({ target: { value } }) => {
-        this.setState({ bindType: value })
+        this.setState({ bindType: value, mpID: '', }, () => {
+            this.propsChange()
+        })
     }
     // 第三方券模版
     queryTrdTemplate = (mpID, appID, trdChannelID) => {
@@ -287,7 +346,7 @@ class TrdTemplate extends React.Component {
         }
     }
 
-    // 微信号选择
+    // 绑定第三方券微信号选择
     handleMpSelect = (value) => {
         const mpList = this.state.mpList;
         this.setState({
@@ -299,6 +358,14 @@ class TrdTemplate extends React.Component {
             this.propsChange() // 向父传递
             const mpAccount = mpList.find(item => String(item.mpID) === String(value));
             this.queryTrdTemplate(value, mpAccount? mpAccount.appID: undefined, 10) // 带着微信号查模板
+        })
+    }
+    // 正向绑定微信ID选择
+    handleMpIDChange = (value) => {
+        this.setState({
+            mpID: value,
+        }, () => {
+            this.propsChange() // 向父传递
         })
     }
     // 三方模板选择
@@ -327,34 +394,59 @@ class TrdTemplate extends React.Component {
             this.propsChange()
         })
     }
+    handleFixedBeginTermSelect = (value) => {
+        this.setState({ fixedBeginTerm: value }, () => {
+            this.propsChange()
+        })
+    }
+    handleFixedTermChange = (value) => { // value: {number: 123}
+        this.setState({ fixedTerm: value.number }, () => {
+            this.propsChange()
+        })
+    }
+    handleTimeRangeChange = ([beginMoment, endMoment]) => {
+        if (!beginMoment || !endMoment) return;
+        const beginTimestamp = beginMoment.set('hour', 0).set('minute', 0).set('second', 0).unix();
+        const endTimestamp = endMoment.set('hour', 23).set('minute', 59).set('second', 59).unix();
+        this.setState({
+            beginTimestamp,
+            endTimestamp,
+        }, () => {
+            this.propsChange()
+        })
+    }
     renderWxCouponCreateForm() {
         const {
             mpList,
             mpID,
-            mpIDStatus,
             color,
             notice,
             logoUrl,
+            fixedBeginTerm,
+            fixedTerm,
+            beginTimestamp,
+            endTimestamp,
             type, // 微信
         } = this.state;
         const edit = this.props.type === 'edit';
-        const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue
+        const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
+        const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
         return (
             <div>
                 <FormItem
                     label='微信公众号选择'
                     {...itemStyle}
-                    validateStatus={mpIDStatus ? 'success' : 'error'}
-                    help={mpIDStatus ? null : '不得为空'}
+                    validateStatus={mpID ? 'success' : 'error'}
+                    help={mpID ? null : '不得为空'}
                 >
                     <Select value={mpID}
-                            onChange={this.handleMpSelect}
+                            onChange={this.handleMpIDChange}
                             disabled={edit}
                             getPopupContainer={(node) => node.parentNode}
                     >
                         {
                             mpList.map(mp => {
-                                return <Option value={mp.mpID}>{mp.mpName}</Option>
+                                return <Option key={mp.mpID} value={mp.mpID}>{mp.mpName}</Option>
                             })
                         }
                     </Select>
@@ -381,7 +473,10 @@ class TrdTemplate extends React.Component {
                             ))}
                         </div>
                     )}>
-                        <div className={selfStyle.smallColorBlockWrapper}>
+                        <div
+                            onClick={edit && ((e) => e.stopimmediatepropagation())}
+                            className={selfStyle.smallColorBlockWrapper}
+                        >
                             <div
                                 className={selfStyle.smallColorBlock}
                                 style={{ background: styleColor }}
@@ -389,14 +484,16 @@ class TrdTemplate extends React.Component {
                         </div>
                     </Popover>
                 </FormItem>
-                {/* <Icon className={style.checkIcon} type="check" /> */}
                 <FormItem
                     label='操作提示'
                     {...itemStyle}
+                    validateStatus={isNoticeLengthAllowed ? 'success' : 'error'}
+                    help={isNoticeLengthAllowed ? null : '操作提示不得为空，长度不超过16'}
                     style={{ position: 'relative' }}
                 >
                     <Input
                         value={notice}
+                        disabled={edit}
                         onChange={this.handleNoticeChange}
                         placeholder="请输入操作提示，长度不要超过16"
                     />
@@ -407,9 +504,12 @@ class TrdTemplate extends React.Component {
                 <FormItem
                     label='封面图片'
                     {...itemStyle}
+                    validateStatus={logoUrl ? 'success' : 'error'}
+                    help={logoUrl ? null : '请上传封面图片'}
                     style={{ position: 'relative' }}
                 >
                     <GiftImagePath
+                        disabled={edit}
                         wrapperHeight={200}
                         modifierClassName="horizontalModifier"
                         limit={2048}
@@ -423,7 +523,11 @@ class TrdTemplate extends React.Component {
                     {...itemStyle}
                     required={false}
                 >
-                    <RadioGroup onChange={this.handleTimeTypeChange} value={type}>
+                    <RadioGroup
+                        onChange={this.handleTimeTypeChange}
+                        value={type}
+                        disabled={edit}
+                    >
                         <Radio value={FIX_TERM}>相对有效期</Radio>
                         <Radio value={FIX_TIME_RANGE}>固定有效期</Radio>
                     </RadioGroup>
@@ -434,9 +538,17 @@ class TrdTemplate extends React.Component {
                             label="固定有效期"
                             {...itemStyle}
                         >
-                            <RangePicker format="YYYY-MM-DD" disabledDate={
-                                (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                            } />
+                            <RangePicker
+                                disabled={edit}
+                                format="YYYY-MM-DD"
+                                value={beginTimestamp && endTimestamp ?
+                                    [moment.unix(beginTimestamp), moment.unix(endTimestamp)] : []
+                                }
+                                onChange={this.handleTimeRangeChange}
+                                disabledDate={
+                                    (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                                }
+                            />
                         </FormItem>
                     )
                 }
@@ -447,15 +559,15 @@ class TrdTemplate extends React.Component {
                             {...itemStyle}
                             required={false}
                         >
-                            <Select value={mpID}
-                                    onChange={this.handleMpSelect}
+                            <Select value={fixedBeginTerm}
+                                    onChange={this.handleFixedBeginTermSelect}
                                     disabled={edit}
                                     getPopupContainer={(node) => node.parentNode}
                             >
                                 {
-                                    mpList.map(mp => {
-                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
-                                    })
+                                    AVAILABLE_TIME_OPTIONS.map(({ value, label }) => (
+                                        <Option key={value} value={value}>{label}</Option>
+                                    ))
                                 }
                             </Select>
                         </FormItem>
@@ -466,9 +578,14 @@ class TrdTemplate extends React.Component {
                         <FormItem
                             label="有效天数"
                             {...itemStyle}
+                            validateStatus={fixedTerm > 0 ? 'success' : 'error'}
+                            help={fixedTerm > 0 ? null : '请设置有效天数'}
                         >
                             <PriceInput
                                 modal="int"
+                                disabled={edit}
+                                value={{number: fixedTerm}}
+                                onChange={this.handleFixedTermChange}
                                 placeholder="请设置有效天数"
                                 addonAfter="天"
                                 maxNum={5}
@@ -476,7 +593,6 @@ class TrdTemplate extends React.Component {
                         </FormItem>
                     )
                 }
-
             </div>
         )
     }
@@ -500,14 +616,18 @@ class TrdTemplate extends React.Component {
                     validateStatus={channelIDStatus ? 'success' : 'error'}
                     help={channelIDStatus ? null : '不得为空'}
                 >
-                    <Select value={channelID}
+                    <Select value={`${channelID}`}
                             onChange={this.handleTrdChannelSelect}
                             disabled={edit}
                             getPopupContainer={(node) => node.parentNode}
                     >
                         {
                             GiftCfg.trdChannelIDs.map(trdChannel => {
-                                return <Option value={trdChannel.value}>{trdChannel.label}</Option>
+                                return (
+                                    <Option key={`${trdChannel.value}`} value={`${trdChannel.value}`}>
+                                        {trdChannel.label}
+                                    </Option>
+                                )
                             })
                         }
                     </Select>
@@ -527,7 +647,7 @@ class TrdTemplate extends React.Component {
                             >
                                 {
                                     mpList.map(mp => {
-                                        return <Option value={mp.mpID}>{mp.mpName}</Option>
+                                        return <Option key={mp.mpID} value={mp.mpID}>{mp.mpName}</Option>
                                     })
                                 }
                             </Select>
@@ -548,7 +668,11 @@ class TrdTemplate extends React.Component {
                             >
                                 {
                                     trdTemplateInfoList.map(template => {
-                                        return <Option value={template.trdGiftItemID}>{template.trdGiftName}</Option>
+                                        return (
+                                            <Option key={template.trdGiftItemID} value={template.trdGiftItemID}>
+                                                {template.trdGiftName}
+                                            </Option>
+                                        )
                                     })
                                 }
                             </Select>
@@ -571,20 +695,12 @@ class TrdTemplate extends React.Component {
     render() {
         const {
             defaultChecked,
-            channelID = 10,
-            mpList,
-            mpID,
-            trdTemplateInfoList,
-            trdGiftItemID,
-            channelIDStatus,
-            mpIDStatus,
-            trdGiftItemIDStatus,
             loading,
             bindType,
         } = this.state;
         const edit = this.props.type === 'edit';
         return (
-            <div>
+            <div ref={e => this.wrapperDOM = e}>
                 <Spin spinning={loading}>
                     <FormItem
                         label='是否关联第三方券'
@@ -616,7 +732,11 @@ class TrdTemplate extends React.Component {
                                     {...itemStyle}
                                     required={false}
                                 >
-                                    <RadioGroup onChange={this.handleBindTypeChange} value={bindType}>
+                                    <RadioGroup
+                                        onChange={this.handleBindTypeChange}
+                                        value={bindType}
+                                        disabled={edit}
+                                    >
                                         <Radio value={0}>关联第三方渠道</Radio>
                                         <Radio value={1}>创建微信优惠券</Radio>
                                     </RadioGroup>
@@ -652,5 +772,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    {withRef: true}
 )(TrdTemplate)
