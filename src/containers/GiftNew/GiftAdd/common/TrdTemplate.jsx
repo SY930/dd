@@ -56,43 +56,43 @@ const FIX_TERM = 'DATE_TYPE_FIX_TERM';
 const FIX_TIME_RANGE = 'DATE_TYPE_FIX_TIME_RANGE';
 const AVAILABLE_WECHAT_COLORS = [
     {
-        value: 'Color010',
+        value: 'COLOR_010',
         styleValue: '#63B359',
     },
     {
-        value: 'Color020',
+        value: 'COLOR_020',
         styleValue: '#2C9F67',
     },
     {
-        value: 'Color030',
+        value: 'COLOR_030',
         styleValue: '#509FC9',
     },
     {
-        value: 'Color040',
+        value: 'COLOR_040',
         styleValue: '#5885CF',
     },
     {
-        value: 'Color050',
+        value: 'COLOR_050',
         styleValue: '#9062C0',
     },
     {
-        value: 'Color060',
+        value: 'COLOR_060',
         styleValue: '#D09A45',
     },
     {
-        value: 'Color070',
+        value: 'COLOR_070',
         styleValue: '#E4B138',
     },
     {
-        value: 'Color080',
+        value: 'COLOR_080',
         styleValue: '#EE903C',
     },
     {
-        value: 'Color090',
+        value: 'COLOR_090',
         styleValue: '#DD6549',
     },
     {
-        value: 'Color100',
+        value: 'COLOR_100',
         styleValue: '#CC463D',
     },
 ]
@@ -117,7 +117,7 @@ class TrdTemplate extends React.Component {
             mpIDStatus: true,
             trdGiftItemIDStatus: true,
             loading: false,
-            color: 'Color010',
+            color: 'COLOR_010',
             // 0 为把已创建的第三方券绑定到哗啦啦，1 为同步创建一张微信券
             bindType: 0,
             notice: undefined,
@@ -135,20 +135,27 @@ class TrdTemplate extends React.Component {
         // 编辑
         if (this.props.data) {
             this.propsChange(this.props.data)
-            const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
-            const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
-            channelID = trdChannelID
-            this.setState({
-                defaultChecked: true,
-                channelID,
-                mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
-                trdGiftItemID: trdTemplateID,
-                trdTemplateIDLabel,
-                trdTemplateInfoList: [{ // 不用查询了，直接根据返回的label和id拼装成只有一个选项的列表
-                    trdGiftName: trdTemplateIDLabel,
+            if (this.props.data.trdTemplateInfo) {
+                this.setState({
+                    defaultChecked: true,
+                    ...JSON.parse(this.props.data.trdTemplateInfo)
+                })
+            } else {
+                const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
+                const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
+                channelID = trdChannelID
+                this.setState({
+                    defaultChecked: true,
+                    channelID,
+                    mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
                     trdGiftItemID: trdTemplateID,
-                }],
-            })
+                    trdTemplateIDLabel,
+                    trdTemplateInfoList: [{ // 不用查询了，直接根据返回的label和id拼装成只有一个选项的列表
+                        trdGiftName: trdTemplateIDLabel,
+                        trdGiftItemID: trdTemplateID,
+                    }],
+                })
+            }
         }
         // 公众号
         const mpList = this.props.mpList.toJS()
@@ -218,7 +225,7 @@ class TrdTemplate extends React.Component {
             }
             this.props.onChange(defaultChecked ? {
                 TrdTemplateStatus,
-                wechatCouponTemplate: JSON.stringify({
+                trdTemplateInfo: JSON.stringify({
                     mpID,
                     notice,
                     logoUrl,

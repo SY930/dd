@@ -84,9 +84,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     componentDidMount() {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
-        // console.log('gift:', thisGift);
         const { getPromotionShopSchema} = this.props;
-
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { name, data, value } = thisGift;
         const { values } = this.state;
@@ -161,7 +159,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
-            switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+            switch (key) { // 这几个个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
                 case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
@@ -337,16 +335,12 @@ class GiftAddModalStep extends React.PureComponent {
             secondKeys: SECOND_KEYS,
             finishLoading: false,
             foodNameListStatus: 'success',
-            /*buyGiveSecondaryFoods: 'success',
-            foodNameListStatus: 'success'*/
         });
         cb && cb();
     }
 
     validateFoodList = (basicValues) => {
-        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length/* || !basicValues.foodNameList
-            || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)*/) {
+        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length) {
             message.warning('请至少选择一个菜品');
             this.setState({ foodNameListStatus: 'error' });
             return false;
@@ -1460,11 +1454,12 @@ class GiftAddModalStep extends React.PureComponent {
                             this.setState({ values })
                         }}
                         data={
-                            (data.extraInfo && data.extraInfo !== '0') ?
+                            ((data.extraInfo && data.extraInfo !== '0') || data.trdTemplateInfo) ?
                             {
                                 extraInfo: data.extraInfo,
                                 trdChannelID: data.trdChannelID,
-                                trdTemplateID: data.trdTemplateID
+                                trdTemplateID: data.trdTemplateID,
+                                trdTemplateInfo: data.trdTemplateInfo,
                             }
                             : undefined
                         }

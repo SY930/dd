@@ -24,6 +24,7 @@ class GiftImagePath extends Component {
         const modifierClassName = this.props.modifierClassName;
         const props = {
             name: 'myFile',
+            disabled: this.props.disabled,
             showUploadList: false,
             action: '/api/common/imageUpload',
             accept: 'image/png,image/jpeg',
