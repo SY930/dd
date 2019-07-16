@@ -301,6 +301,9 @@ class PromotionBasicInfo extends React.Component {
                 selectWeekValue: this.state.selectWeekValue,
                 excludeDateArray: this.state.excludeDateArray,
             });
+            if (this.props.shopIDLst > 0) {
+                this.props.saleCenterSetBasicInfo({shopIDLst: this.props.shopIDLst})
+            }
         }
 
         const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
