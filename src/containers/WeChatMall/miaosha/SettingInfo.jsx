@@ -194,7 +194,7 @@ class SettingInfo extends React.Component {
             return false;
         } else {
             for (const good of goodsList) {
-                if ((good.storage != null && good.storage !== '' && good.storage == 0)) {
+                if (!(good.storage > 0)) {
                     message.warning(`规格：【${good.unitName1}】所设置的库存要大于0`)
                     flag = false;
                     break;
