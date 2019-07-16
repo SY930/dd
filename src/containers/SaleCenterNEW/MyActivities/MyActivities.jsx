@@ -819,7 +819,7 @@ class MyActivities extends React.Component {
                                 defaultValue="全部"
                                 onChange={(value) => {
                                     this.setState({
-                                        promotionType: value === 'ALL' ? null : value,
+                                        promotionType: value === 'ALL' ? '' : value,
                                     });
                                 }}
                             >
