@@ -111,21 +111,23 @@ const getShopCreditListBegin = (opt) => {
 export const FetchCrmCardTypeLst = (opts) => {
     return (dispatch) => {
         dispatch(getShopCreditListBegin(true));
-        return fetchData('getCrmCardList_dkl', { ...opts }, null, {
-            path: 'data.cardTypeParamsDataList',
+        return axiosData(
+            '/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax',
+            { ...opts, isNeedWechatCardTypeInfo: true },
+            null,
+            {path: 'data.cardTypeBaseInfoList',}
+        ).then((records) => {
+            dispatch(GetCrmCardTypeLstSuccess({
+                payload: {
+                    dataSource: Array.isArray(records) ? records : [],
+                },
+            }));
+            dispatch(UpdateCrmCardTypeParams(opts));
+            return Promise.resolve(records);
         })
-            .then((records) => {
-                dispatch(GetCrmCardTypeLstSuccess({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                dispatch(UpdateCrmCardTypeParams(opts));
-                return Promise.resolve(records);
-            })
-            .catch(() => {
-                dispatch(getShopCreditListBegin(false));
-            })
+        .catch(() => {
+            dispatch(getShopCreditListBegin(false));
+        })
     }
 };
 
