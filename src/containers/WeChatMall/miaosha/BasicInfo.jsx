@@ -85,16 +85,16 @@ class BasicInfo extends React.Component {
         try {
             const eventInfo = {
                 ...props.data,
-                validCycle: props.data.validCycle.split(','),
+                validCycle: (props.data.validCycle || '').split(','),
             }
             excludeDateArray = (eventInfo.excludedDate || '')
                 .split(',').filter(str => !!str).map(item => moment(item, 'YYYYMMDD'))
-            timeRangeInfo = eventInfo.timeLst.filter(time => time.startTime && time.endTime).map((time) => ({
+            timeRangeInfo = (eventInfo.timeLst || []).filter(time => time.startTime && time.endTime).map((time) => ({
                 start: moment(time.startTime, 'HHmm'),
                 end: moment(time.endTime, 'HHmm'),
             }))           
             expand = !!excludeDateArray.length;
-            if (!eventInfo.validCycle) {
+            if (!eventInfo.validCycle[0]) {
                 validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
                 selectWeekValue = ['1'];
                 selectMonthValue = ['1'];
@@ -457,7 +457,7 @@ class BasicInfo extends React.Component {
                     size="default"
                     placeholder="请选择周期"
                     getPopupContainer={(node) => node.parentNode}
-                    defaultValue={this.state.validCycleType}
+                    value={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
                     }}
