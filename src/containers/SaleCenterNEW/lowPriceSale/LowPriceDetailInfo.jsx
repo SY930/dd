@@ -92,8 +92,6 @@ class LowPriceDetailInfo extends React.Component {
                 ruleType = '1'
             }
         }
-        console.log('_rule', _rule)
-        console.log('ruleType', ruleType);
         this.setState({
             display,
             ruleType,
@@ -160,8 +158,9 @@ class LowPriceDetailInfo extends React.Component {
     handleRuleTypeChange(val) {
         this.setState({
             ruleType: val,
-        }, () => {
-            val == 1 && this.props.setPromotionDetail({
+        })
+        if (val == 1 || val == 3) {
+            this.props.setPromotionDetail({
                 categoryOrDish: 0,
                 dishes: [],
                 excludeDishes: [],
@@ -169,7 +168,7 @@ class LowPriceDetailInfo extends React.Component {
                 priceLst: [],
                 scopeLst: [],
             })
-        })
+        }
     }
 
     handleStageAmountChange(val) {
