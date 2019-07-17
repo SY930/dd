@@ -89,10 +89,16 @@ class BasicInfo extends React.Component {
             }
             excludeDateArray = (eventInfo.excludedDate || '')
                 .split(',').filter(str => !!str).map(item => moment(item, 'YYYYMMDD'))
-            timeRangeInfo = (eventInfo.timeLst || []).filter(time => time.startTime && time.endTime).map((time) => ({
+            const validTimeList = (eventInfo.timeLst || []).filter(time => time.startTime && time.endTime)
+            timeRangeInfo = validTimeList.length ? validTimeList.map((time) => ({
                 start: moment(time.startTime, 'HHmm'),
                 end: moment(time.endTime, 'HHmm'),
-            }))           
+            })) : [
+                {
+                    start: undefined,
+                    end: undefined,
+                }
+            ]
             expand = !!excludeDateArray.length;
             if (!eventInfo.validCycle[0]) {
                 validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
@@ -166,7 +172,7 @@ class BasicInfo extends React.Component {
             excludeDateArray,
             timeRangeInfo,
         } = this.state;
-        const timeLst = timeRangeInfo.filter(item => item.start && item.end).map((r) => {
+        const timeLst = timeRangeInfo.filter(item => !!item.start && !!item.end).map((r) => {
             return {
                 timeType: 'CONSUME_TIME',
                 startTime: r.start.format('HHmm'),
