@@ -333,7 +333,7 @@ class GiftSendOrUsedCount extends React.Component {
                             columns={this.state.columns}
                             dataSource={dataSource}
                             loading={loading}
-                            scroll={{ x: 1600 }}
+                            scroll={{ x: 1800 }}
                             key={this.props.key}
                             pagination={{
                                 key: this.props.key,

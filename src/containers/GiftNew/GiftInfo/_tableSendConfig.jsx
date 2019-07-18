@@ -119,14 +119,6 @@ const BASE_COLUMNS = [
 ];
 const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
     {
-        title: '客户编号',
-        className:'TableTxtCenter',
-        dataIndex: 'customerID',
-        key: 'customerID',
-        width: 200,
-        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-    },
-    {
         title: '券编码',
         className:'TableTxtCenter',
         dataIndex: 'giftPWD',
@@ -152,14 +144,23 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
         render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
     },
     {
-    title: '状态',
-    dataIndex: 'giftStatus',
-    className:'TableTxtCenter',
-    key: 'giftStatus',
-    render: (value) => {
-        return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+        title: '状态',
+        dataIndex: 'giftStatus',
+        className:'TableTxtCenter',
+        key: 'giftStatus',
+        render: (value) => {
+            return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+        },
     },
-}, ...BASE_COLUMNS.slice(5),
+    {
+        title: '客户编号',
+        className:'TableTxtCenter',
+        dataIndex: 'customerID',
+        key: 'customerID',
+        width: 200,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    },
+    ...BASE_COLUMNS.slice(5),
     {
         title: '会员卡号',
         width: 120,
