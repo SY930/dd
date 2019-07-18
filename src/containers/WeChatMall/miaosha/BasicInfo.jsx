@@ -85,15 +85,22 @@ class BasicInfo extends React.Component {
         try {
             const eventInfo = {
                 ...props.data,
-                validCycle: props.data.validCycle.split(','),
+                validCycle: (props.data.validCycle || '').split(','),
             }
-            excludeDateArray = eventInfo.excludedDate.split(',').map(item => moment(item, 'YYYYMMDD'))
-            timeRangeInfo = eventInfo.timeLst.filter(time => time.startTime && time.endTime).map((time) => ({
+            excludeDateArray = (eventInfo.excludedDate || '')
+                .split(',').filter(str => !!str).map(item => moment(item, 'YYYYMMDD'))
+            const validTimeList = (eventInfo.timeLst || []).filter(time => time.startTime && time.endTime)
+            timeRangeInfo = validTimeList.length ? validTimeList.map((time) => ({
                 start: moment(time.startTime, 'HHmm'),
                 end: moment(time.endTime, 'HHmm'),
-            }))           
+            })) : [
+                {
+                    start: undefined,
+                    end: undefined,
+                }
+            ]
             expand = !!excludeDateArray.length;
-            if (!eventInfo.validCycle) {
+            if (!eventInfo.validCycle[0]) {
                 validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
                 selectWeekValue = ['1'];
                 selectMonthValue = ['1'];
@@ -109,7 +116,6 @@ class BasicInfo extends React.Component {
                 selectWeekValue = eventInfo.validCycle.map(item => item.substring(1));
             }
         } catch (e) {
-            console.log('e', e)
             validCycleType = ACTIVITY_CYCLE_TYPE.EVERYDAY;
             excludeDateArray = [];
             selectWeekValue = ['1'];
@@ -166,7 +172,7 @@ class BasicInfo extends React.Component {
             excludeDateArray,
             timeRangeInfo,
         } = this.state;
-        const timeLst = timeRangeInfo.filter(item => item.start && item.end).map((r) => {
+        const timeLst = timeRangeInfo.filter(item => !!item.start && !!item.end).map((r) => {
             return {
                 timeType: 'CONSUME_TIME',
                 startTime: r.start.format('HHmm'),
@@ -457,7 +463,7 @@ class BasicInfo extends React.Component {
                     size="default"
                     placeholder="请选择周期"
                     getPopupContainer={(node) => node.parentNode}
-                    defaultValue={this.state.validCycleType}
+                    value={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
                     }}
@@ -545,12 +551,27 @@ class BasicInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('rangePicker', {
-                        rules: [{
-                            required: true,
-                            message: '请选择活动起止时间',
-                        }],
+                        rules: [
+                            {
+                                required: true,
+                                message: '请选择活动起止时间',
+                            },
+                            {
+                                validator: (rule, v, cb) => {
+                                    if (v.length === 2) {
+                                        const [startMoment, endMoment] = v;
+                                        if (endMoment.diff(startMoment, 'days', true) > 90) {
+                                            return cb(rule.message)
+                                        }
+                                    }
+                                    cb();
+                                },
+                                message: '活动起止时间跨度最多为90天',
+                            },
+                        ],
                         onChange: this.handleDateRangeChange,
-                        initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
+                        initialValue: this.state.startTime && this.state.endTime ?
+                            [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
                     })(
                         <RangePicker
                             showTime={{ format: 'HH:mm' }}
