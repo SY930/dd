@@ -127,6 +127,8 @@ class TrdTemplate extends React.Component {
             logoUrl: '',
             beginTimestamp: undefined,
             endTimestamp: undefined,
+            appID: undefined,
+            brandName: undefined,
         };
         this.wrapperDOM = null;
     }
@@ -138,6 +140,7 @@ class TrdTemplate extends React.Component {
             if (this.props.data.trdTemplateInfo) {
                 this.setState({
                     defaultChecked: true,
+                    bindType: 1,
                     ...JSON.parse(this.props.data.trdTemplateInfo)
                 })
             } else {
@@ -145,6 +148,7 @@ class TrdTemplate extends React.Component {
                 const { wechatMpName, trdTemplateIDLabel } = JSON.parse(extraInfo);
                 channelID = trdChannelID
                 this.setState({
+                    bindType: 0,
                     defaultChecked: true,
                     channelID,
                     mpID: wechatMpName, // 不用找匹配了，直接渲染成name，因为mplist此时可能未回来
@@ -214,6 +218,8 @@ class TrdTemplate extends React.Component {
                 color,
                 beginTimestamp,
                 endTimestamp,
+                appID,
+                brandName,
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
@@ -226,6 +232,8 @@ class TrdTemplate extends React.Component {
             this.props.onChange(defaultChecked ? {
                 TrdTemplateStatus,
                 trdTemplateInfo: JSON.stringify({
+                    appID,
+                    brandName,
                     mpID,
                     notice,
                     logoUrl,
@@ -369,8 +377,11 @@ class TrdTemplate extends React.Component {
     }
     // 正向绑定微信ID选择
     handleMpIDChange = (value) => {
+        const mpInfo = this.state.mpList.find(item => item.mpID === value) || {};
         this.setState({
             mpID: value,
+            appID: mpInfo.appID,
+            brandName: mpInfo.mpName,
         }, () => {
             this.propsChange() // 向父传递
         })
@@ -469,7 +480,7 @@ class TrdTemplate extends React.Component {
                             {AVAILABLE_WECHAT_COLORS.map(({value, styleValue}) => (
                                 <div
                                     key={value}
-                                    onClick={() => this.handleColorChange(value)}
+                                    onClick={edit ? null : () => this.handleColorChange(value)}
                                     className={selfStyle.colorBlock}
                                     style={{ background: styleValue }}
                                 >
@@ -481,7 +492,6 @@ class TrdTemplate extends React.Component {
                         </div>
                     )}>
                         <div
-                            onClick={edit && ((e) => e.stopimmediatepropagation())}
                             className={selfStyle.smallColorBlockWrapper}
                         >
                             <div
