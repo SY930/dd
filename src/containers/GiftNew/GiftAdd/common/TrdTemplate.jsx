@@ -21,6 +21,7 @@ import {
     DatePicker,
     Popover,
     Icon,
+    Tooltip,
 } from 'antd';
 import { fetchData } from '../../../../helpers/util';
 import GiftCfg from '../../../../constants/Gift';
@@ -757,6 +758,17 @@ class TrdTemplate extends React.Component {
                                         <Radio value={0}>关联第三方渠道</Radio>
                                         <Radio value={1}>创建微信优惠券</Radio>
                                     </RadioGroup>
+                                    {
+                                        bindType === 0 ? (
+                                            <Icon type="question-circle-o" />
+                                        ) : (
+                                            <Tooltip
+                                                title="同步后，需要等待微信审核，预计一个工作日，审核通过后才能领取"
+                                            >
+                                                <Icon style={{ color: '#379ff1' }} type="question-circle-o" />
+                                            </Tooltip> 
+                                        )
+                                    }
                                 </FormItem>
                                 {
                                     bindType === 0 ? this.renderDefaultTrdForm()
