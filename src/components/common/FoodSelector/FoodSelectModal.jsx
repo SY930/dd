@@ -245,7 +245,7 @@ class FoodSelectModal extends Component {
             selectedDishResults,
         } = this.state;        
         const filteredCategoryOptions = allCategories
-            .filter(item => currentBrandID === `${item.brandID}`);
+            .filter(item => currentBrandID === `${item.brandID}` && allDishes.some(({localFoodCategoryID}) => localFoodCategoryID === item.value ));
         let filteredDishesOptions = selectedCategories.length ?
             allDishes.filter(({localFoodCategoryID}) => selectedCategories.includes(localFoodCategoryID)) :
             allDishes.filter(({brandID}) => currentBrandID === `${brandID}`);

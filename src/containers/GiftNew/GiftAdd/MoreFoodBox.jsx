@@ -544,7 +544,8 @@ class MoreFoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.map((item, index) => {
+                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
+                .map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -663,12 +664,16 @@ class MoreFoodBox extends React.Component {
         const treeData = [];
         if (this.state.foodCategorySelections.size > 0) {
             this.state.foodCategorySelections.forEach((item) => {
-                treeData.push(item)
+                if (Array.isArray(item.foods) && item.foods.length > 0) {
+                    treeData.push(item)
+                }
             });
         } else {
             this.state.foodCategoryCollection.forEach((item) => {
                 if (typeof item === 'object') {
-                    item.foodCategoryName.forEach((cate) => {
+                    item.foodCategoryName
+                    .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
+                    .forEach((cate) => {
                         treeData.push(cate)
                     })
                 }
@@ -768,7 +773,8 @@ class MoreFoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.map((item, index) => {
+                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
+                .map((item, index) => {
                     return typeof item === 'object' ? <TreeNode key={index} title={item.foodCategoryName} /> : null
                 });
             }
@@ -885,7 +891,9 @@ class MoreFoodBox extends React.Component {
         const treeData = [];
         this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.forEach((cate) => {
+                item.foodCategoryName
+                .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
+                .forEach((cate) => {
                     treeData.push(cate)
                 })
             }
