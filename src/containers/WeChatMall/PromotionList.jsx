@@ -474,7 +474,7 @@ export class WeChatMallPromotionList extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: (promotionType) => {
-                    const text = WECHAT_MALL_ACTIVITIES.find(({key}) => key === `${promotionType}`).title
+                    const text = (WECHAT_MALL_ACTIVITIES.find(({key}) => key === `${promotionType}`) || {}).title
                     return (<span title={text}>{text}</span>);
                 },
             },
