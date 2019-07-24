@@ -39,9 +39,17 @@ const RULE_TYPE = [
         label: '购买指定菜品满',
     },
     {
+        value: '4',
+        label: '购买指定菜品每满',
+    },
+    {
         value: '1',
         label: '购买同一菜品满',
-    }
+    },
+    {
+        value: '3',
+        label: '购买同一菜品每满',
+    },
 ]
 
 class BuyGiveDetailInfo extends React.Component {
@@ -50,7 +58,6 @@ class BuyGiveDetailInfo extends React.Component {
         this.defaultRun = '0';
         this.state = {
             display: false,
-            // TODO:存到state中了，页面中需要用到defaultValue的地方现在都是state代替的，要换成redux中的数据
             stageAmount: '',
             giveFoodCount: '',
             dishes: [],
