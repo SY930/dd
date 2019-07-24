@@ -118,14 +118,14 @@ class PhonePreview extends PureComponent {
         if (foodSelectType == 2 || (foodSelectType == 1 && !foodCategory.length) || (foodSelectType == 0 && !dishes.length)) {
             return '本券对店铺所有菜品适用'
         } else if (foodSelectType == 1) {
-            const categoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('，')} 类菜品`;
+            const categoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('、')} 类菜品`;
             if (excludeDishes.length) {
-                return categoryStr + `，对${excludeDishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('，')} 菜品不可用`;
+                return categoryStr + `，对${excludeDishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品不可用`;
             } else {
                 return categoryStr;
             }
         } else if (foodSelectType == 0) {
-            return `本券适用于${dishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('，')} 菜品`;
+            return `本券适用于${dishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品`;
         }
     }
 
