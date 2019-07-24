@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     Modal,
     Row,
+    Tooltip,
 } from 'antd';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -16,10 +17,10 @@ const DEFAULT_CATEGORY_COLUMNS = [
         dataIndex: 'brandName',
         key: 'brandName',
         fixed: 'left',
-        width: 200,
+        width: 160,
         className: 'TableTxtLeft',
-        render: (text, record, index) => {
-            return <span title={text}>{text}</span>
+        render: (text) => {
+            return <Tooltip title={text}>{text}</Tooltip>
         },
     },
     {
@@ -28,8 +29,8 @@ const DEFAULT_CATEGORY_COLUMNS = [
         key: 'foodCategoryName',
         fixed: 'left',
         className: 'TableTxtLeft',
-        render: (text, record, index) => {
-            return <span title={text}>{text}</span>
+        render: (text) => {
+            return <Tooltip title={text}>{text}</Tooltip>
         },
     },
 ];
@@ -39,10 +40,10 @@ const DEFAULT_FOOD_COLUMNS = [
         dataIndex: 'brandName',
         key: 'brandName',
         fixed: 'left',
-        width: 120,
+        width: 100,
         className: 'TableTxtLeft',
-        render: (text, record, index) => {
-            return <span title={text}>{text}</span>
+        render: (text) => {
+            return <Tooltip title={text}>{text}</Tooltip>
         },
     },
     {
@@ -50,10 +51,10 @@ const DEFAULT_FOOD_COLUMNS = [
         dataIndex: 'foodCategoryName',
         key: 'foodCategoryName',
         fixed: 'left',
-        width: 120,
+        width: 100,
         className: 'TableTxtLeft',
-        render: (text, record, index) => {
-            return <span title={text}>{text}</span>
+        render: (text) => {
+            return <Tooltip title={text}>{text}</Tooltip>
         },
     },
     {
@@ -68,7 +69,7 @@ const DEFAULT_FOOD_COLUMNS = [
                 unit
             } = record;
             const displayName = `${foodName}(${unit})`
-            return <span title={displayName}>{displayName}</span>
+            return <Tooltip title={displayName}>{displayName}</Tooltip>
         },
     },
 ];
