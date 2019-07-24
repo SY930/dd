@@ -16,49 +16,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID';
 
-
-class Tip extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-    render() {
-        const tip = (
-            <div style={{ display: this.state.tipDisplay || 'none', height: 140, width: 500, marginLeft: this.props.marginLeft }} className={styles.tip}>
-                {
-                    this.props.words.map(word => <p>{word}</p>)
-                }
-                <div>
-                    <div className={styles.tipBtn}>
-                        <Button
-                            type="ghost"
-                            style={{ color: '#787878' }}
-                            onClick={() => {
-                                this.setState({ tipDisplay: 'none' });
-                            }}
-                        >我知道了
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        );
-        return (
-            <div style={this.props.style}>
-                <Icon
-                    type="question-circle-o"
-                    className={styles.question}
-                    // style={{ marginLeft: 6 }}
-                    onMouseOver={() => {
-                        this.setState({ tipDisplay: 'block' })
-                    }}
-                />
-                <p>{tip}</p>
-            </div>
-        )
-    }
-}
-
+// 推荐菜品只有集团可以设置,若以后门店也可设置，菜品选择组件需要仔细修改!important
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -69,43 +27,20 @@ class RecommendFoodDetailInfo extends React.Component {
         const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
         const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })   
         this.state = {
-            handSetChecked: true,
-            autoSetChecked: true,
             priceLstHand,
             priceLstAuto,
             scopeLst: _scopeLst,
             stageType: 1,
-            recommendNum: '',
-            recommendTopNum: '',
-            recommendNumStatus: 'success',
-            recommendTopNumStatus: 'success',
         };
-        this.onHandSetChange = this.onHandSetChange.bind(this);
-        this.onAutoSetChange = this.onAutoSetChange.bind(this);
-        this.handDishesChange = this.handDishesChange.bind(this);
-        this.autoDishesChange = this.autoDishesChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        rule = rule ? rule.toJS() : {};
-        let { recommendNum = '', recommendTopNum = '' } = rule;
-        let { display } = this.state;
-        display = !this.props.isNew;
-        this.setState({
-            display,
-            handSetChecked: true,
-            autoSetChecked: true,
-            recommendNum,
-            recommendTopNum,
-        });
     }
 
-    handleSubmit() {
+    handleSubmit = () => {
         let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum, recommendNumStatus, recommendTopNumStatus } = this.state;
         let priceLst = [],
             scopeLst = [],
@@ -175,14 +110,6 @@ class RecommendFoodDetailInfo extends React.Component {
                 })
             })
         }
-        if (!handSetChecked && !autoSetChecked) {
-            nextFlag = false;
-            message.warning('请至少选择一种推荐方式');
-            return;
-        }
-        if (!(recommendNumStatus === 'success' && recommendTopNumStatus === 'success')) {
-            return;
-        }
         const rule = { stageType };
         recommendNum ? rule.recommendNum = recommendNum : null;
         recommendTopNum ? rule.recommendTopNum = recommendTopNum : null;
@@ -194,21 +121,15 @@ class RecommendFoodDetailInfo extends React.Component {
         return true;
     }
 
-    handDishesChange(val) {
+    handDishesChange = (val) => {
         this.setState({
             data: val,
         })
     }
-    autoDishesChange(val) {
+    autoDishesChange = (val) => {
         this.setState({
             priceLstAuto: val,
         })
-    }
-    onHandSetChange(e) {
-        // this.setState({ handSetChecked: e.target.checked })
-    }
-    onAutoSetChange(e) {
-        // this.setState({ autoSetChecked: e.target.checked })
     }
     render() {
         const { recommendNumStatus, recommendTopNumStatus } = this.state;
@@ -216,95 +137,20 @@ class RecommendFoodDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
-                        <Checkbox onChange={this.onHandSetChange} checked={this.state.handSetChecked}>手动设置推荐菜</Checkbox>
-                        <Tip
-                            style={{ position: 'absolute', top: 0, left: 120 }}
-                            marginLeft={-98}
-                            words={['推荐菜品的数量大于列表中推荐菜品数量，微信页面呈现会智能补齐剩余数量', '推荐菜品的数量小于列表中推荐菜品数量，以推荐菜品总数量为准']}
-                        />
-                    </FormItem>
-                    {
-                        this.state.handSetChecked ?
-                            <div>
-                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
-                                    validateStatus={recommendNumStatus}
-                                    help={recommendNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
-                                >
-                                    <Input
-                                        addonAfter='个'
-                                        value={this.state.recommendNum}
-                                        onChange={(e) => {
-                                            this.setState({
-                                                recommendNum: e.target.value,
-                                                recommendNumStatus: e.target.value > 50 ? 'error' : 'success',
-                                            })
-                                        }}
-                                    />
-                                </FormItem>
-                                <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-                                    {
-                                        isShopFoodSelectorMode ? (
-                                            <CollocationTable
-                                                onChange={this.handDishesChange}
-                                                priceLst={this.state.priceLstHand}
-                                                scopeLst={this.state.scopeLst}
-                                                type="5010"
-                                            />
-                                        ) : (
-                                            <CollocationTableWithBrandID
-                                                onChange={this.handDishesChange}
-                                            />
-                                        )
-                                    }
-                                    
-                                </FormItem>
-                            </div> : null
-                    }
-                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
-                        <Checkbox
-                            onChange={this.onAutoSetChange}
-                            checked={this.state.autoSetChecked}
-                            style={{ marginTop: 30 }}
-                        >热销推荐</Checkbox>
-                        <Tip
-                            style={{ position: 'absolute', top: 31, left: 134 }}
-                            marginLeft={-114}
-                            words={['热销推荐菜品数量大于所选菜品，微信页面呈现会智能补齐剩余数量', '热销推荐菜品的数量小于所选菜品，以填写的数量为准']}
-                        />
-                    </FormItem>
-                    {
-                        this.state.autoSetChecked ?
-                            <div>
-                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
-                                    validateStatus={recommendTopNumStatus}
-                                    help={recommendTopNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
-                                >
-                                    <Input
-                                        addonAfter='个'
-                                        value={this.state.recommendTopNum}
-                                        onChange={(e) => {
-                                            this.setState({
-                                                recommendTopNum: e.target.value,
-                                                recommendTopNumStatus: e.target.value > 50 ? 'error' : 'success',
-                                            })
-                                        }}
-                                    />
-                                </FormItem>
-                                <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
-                                    {
-                                        this.props.form.getFieldDecorator('priceLst', {
-                                            initialValue: this.state.priceLstAuto,
-                                        })(                                           
-                                            this.props.isShopFoodSelectorMode ? (
-                                                <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
-                                            ) : (
-                                                <ConnectedPriceListSelector onChange={this.autoDishesChange} />
-                                            )                                         
-                                        )}
-                                </FormItem>
-                            </div> : null
-                    }
+                    <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>      
+                        <CollocationTableWithBrandID
+                            onChange={this.handDishesChange}
+                        />             
+                    </FormItem>                  
+                    <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+                        {
+                            this.props.form.getFieldDecorator('priceLst', {
+                                initialValue: this.state.priceLstAuto,
+                            })(                                           
+                                <ConnectedPriceListSelector onChange={this.autoDishesChange} />                                        
+                            )
+                        }
+                    </FormItem>       
                 </Form>
             </div>
         )
@@ -315,7 +161,6 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
 
