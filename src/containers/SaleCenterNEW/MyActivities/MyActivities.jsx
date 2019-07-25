@@ -775,7 +775,6 @@ class MyActivities extends React.Component {
         const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData'])) ?
             this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']).toJS() :
             this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']);
-
         const tProps = this.state.selectedShop != null ?
             {
                 treeData,
@@ -791,7 +790,14 @@ class MyActivities extends React.Component {
                 allowClear: true,
             };
         return (
-            <TreeSelect showSearch {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} />
+            <TreeSelect
+                showSearch
+                {...tProps}
+                style={{ width: 150 }}
+                dropdownStyle={{ minWidth: 150 }}
+                dropdownMatchSelectWidth={false}
+                treeNodeFilterProp="label"
+            />
         );
     }
 
