@@ -1,6 +1,15 @@
 
 import React, { Component } from 'react'
-import { Form, Select, message, Checkbox, Input, Icon, Button } from 'antd';
+import {
+    Form,
+    Select,
+    message,
+    Checkbox,
+    Input,
+    Icon,
+    Button,
+    Popconfirm,
+} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import CollocationTable from '../common/CollocationTable'; // 表格
@@ -62,6 +71,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 nextFlag = false;
             }
         })
+        if (!nextFlag) return false;
         if (Array.isArray(data)) {
             const unCompleteIndex = data.findIndex(group => {
                 return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
@@ -159,6 +169,18 @@ class RecommendFoodDetailInfo extends React.Component {
             foodRuleList
         })
     }
+    handleTimeIntervalChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].rule = {...val};
+        this.setState({
+            foodRuleList,
+        })
+        for (let i = 0; i < foodRuleList.length; i++) {
+            if (i !== index) {
+                this.props.form.validateFields([`timeinfo${i}`])
+            }
+        }
+    }
     render() {
         const {
             foodRuleList,
@@ -182,12 +204,13 @@ class RecommendFoodDetailInfo extends React.Component {
                                     }
                                     {
                                         (foodRuleList.length > 1) && (
-                                            <Icon
-                                                onClick={() => this.removeRule(index)}
-                                                style={{ marginRight: 10 }}
-                                                className={selfStyle.deleteIcon}
-                                                type="minus-circle-o"
-                                            />
+                                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeRule(index)}>
+                                                <Icon
+                                                    style={{ marginRight: 10 }}
+                                                    className={selfStyle.deleteIcon}
+                                                    type="minus-circle-o"
+                                                />
+                                            </Popconfirm>
                                         )
                                     }
                                 </div>
@@ -199,7 +222,44 @@ class RecommendFoodDetailInfo extends React.Component {
                                         labelCol={{ span: 3 }}
                                         wrapperCol={{ span: 20 }}
                                     >      
-                                        <RecommendTimeInterval value={item.rule} onChange={() => {}} />
+                                        {
+                                            this.props.form.getFieldDecorator(`timeinfo${index}`, {
+                                                initialValue: item.rule, // {startTime: 'HHmm', endTime: 'HHmm'}
+                                                onChange: (val) => this.handleTimeIntervalChange(val, index),
+                                                rules: [
+                                                    {
+                                                        validator: (rule, v, cb) => {
+                                                            if (!v || !v.startTime || !v.endTime) {
+                                                                return cb('使用时段必须填写完整');
+                                                            }
+                                                            if (v.startTime > v.endTime) {
+                                                                return cb('结束时间不能早于开始时间');
+                                                            }
+                                                            for (let i = 0; i < index; i++) {
+                                                                const rule = foodRuleList[i].rule;
+                                                                if (!!rule.startTime && !!rule.endTime) {
+                                                                    // 时间段设置不可以重叠
+                                                                    if ((v.startTime >= rule.startTime
+                                                                        && v.startTime <= rule.endTime) || (
+                                                                            v.endTime >= rule.startTime
+                                                                            && v.endTime <= rule.endTime
+                                                                        ) || (rule.startTime >= v.startTime
+                                                                        && rule.startTime <= v.endTime) || (
+                                                                            rule.endTime >= v.startTime
+                                                                            && rule.endTime <= v.endTime
+                                                                    )) {
+                                                                        return cb('时段设置不能有交叉');
+                                                                    }
+                                                                }
+                                                            }
+                                                            cb()
+                                                        },
+                                                    },
+                                                ],
+                                            })(
+                                                <RecommendTimeInterval />
+                                            )
+                                        }
                                     </FormItem>
                                 </div>
                                 <FormItem
