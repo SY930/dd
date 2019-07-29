@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
-import CollocationTable from '../common/CollocationTable'; // 表格
+import CollocationTable from '../common/CollocationTable';
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 import selfStyle from './selfStyle.less'
@@ -27,29 +27,29 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const Immutable = require('immutable');
 
-// FIXME: 推荐菜品只有集团可以设置,若以后门店也可设置，菜品选择组件需要仔细修改!important
+// 推荐菜品只有集团可以设置,若以后门店也可设置，菜品选择组件需要仔细修改!important
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
-        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
-        const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
-        const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })   
-        this.state = {
-            priceLstHand,
-            priceLstAuto,
-            scopeLst: _scopeLst,
-            stageType: 1,
-            foodRuleList: [
-                {
-                    rule: {
-                        startTime: '0000',
-                        endTime: '2359',
-                    },
+        const { $foodRuleList } = this.props;
+        const foodRuleList = Immutable.List.isList($foodRuleList) ? $foodRuleList.toJS() : [];
+        if (!foodRuleList.length) { // 新建，给一组默认值
+            foodRuleList.push({
+                rule: {
+                    ruleType: 1,
+                    startTime: '0000',
+                    endTime: '2359',
                 },
-            ]
+                priceList: [],
+                scopeList: [],             
+            },)
+        } else { // 编辑，已经查询并存到了store，rule字段在后端存储是json string
+            foodRuleList.forEach(item => {
+                item.rule = JSON.parse(item.rule)
+            })
+        }
+        this.state = {
+            foodRuleList,
         };
     }
 
@@ -60,92 +60,108 @@ class RecommendFoodDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum, recommendNumStatus, recommendTopNumStatus } = this.state;
-        let priceLst = [],
-            scopeLst = [],
-            nextFlag = true,
-            dataFalg = true;
-        stageType = handSetChecked && !autoSetChecked ? 1 : !handSetChecked && autoSetChecked ? 2 : handSetChecked && autoSetChecked ? 0 : ''
+        let {
+            foodRuleList,
+        } = this.state;
+        let nextFlag = true;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
             }
         })
         if (!nextFlag) return false;
-        if (Array.isArray(data)) {
-            const unCompleteIndex = data.findIndex(group => {
-                return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
-                    (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
-                    ))
+        for (let i = 0; i < foodRuleList.length; i ++) {
+            let priceList = [],
+            scopeList = [];
+            const {
+                data = [],
+                priceListAuto = []
+            } = foodRuleList[i];
+            if (Array.isArray(data)) {
+                if (!data.length) {
+                    message.warning(`使用时段${i+1}中至少要有1个组合`)
+                    return false;
+                }
+                const unCompleteIndex = data.findIndex(group => {
+                    return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
+                        (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
+                        ))
+                });
+                if (unCompleteIndex > -1) {
+                    message.warning(`使用时段${i+1}中组合${unCompleteIndex + 1}没有搭配完整`)
+                    return false;
+                }
+            }
+            data.forEach((group, groupIdx) => {
+                if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
+                    group.free.forEach((free) => {
+                        priceList.push({
+                            foodUnitID: free.itemID,
+                            foodUnitCode: free.foodKey,
+                            foodName: free.foodName,
+                            foodUnitName: free.unit,
+                            brandID: free.brandID || '0',
+                            price: parseFloat(free.price),
+                            stageNo: groupIdx,
+                            num: group.freeCountInfo[free.value || free.itemID],
+                        })
+                    });
+                    group.foods.forEach((food) => {
+                        scopeList.push({
+                            scopeType: '2',
+                            targetID: food.itemID,
+                            targetCode: food.foodKey,
+                            brandID: food.brandID || '0',
+                            targetName: food.foodName,
+                            targetUnitName: food.unit,
+                            stageNo: groupIdx,
+                            num: group.foodsCountInfo[food.value || food.itemID],
+                        })
+                    });
+                } else {
+                    nextFlag = false;
+                }
             });
-            if (unCompleteIndex > -1) {
-                message.warning(`组合${unCompleteIndex + 1}没有搭配完整`)
-                return false;
-            }
-        }
-        data ? data.forEach((group, groupIdx) => {
-            if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
-                group.free.forEach((free) => {
-                    priceLst.push({
-                        foodUnitID: free.itemID,
-                        foodUnitCode: free.foodKey,
-                        foodName: free.foodName,
-                        foodUnitName: free.unit,
-                        brandID: free.brandID || '0',
-                        price: parseFloat(free.price),
-                        stageNo: groupIdx,
-                        num: group.freeCountInfo[free.value || free.itemID],
-                    })
-                });
-                group.foods.forEach((food) => {
-                    scopeLst.push({
-                        scopeType: '2',
-                        targetID: food.itemID,
-                        targetCode: food.foodKey,
-                        brandID: food.brandID || '0',
-                        targetName: food.foodName,
-                        targetUnitName: food.unit,
-                        stageNo: groupIdx,
-                        num: group.foodsCountInfo[food.value || food.itemID],
-                    })
-                });
-            } else {
-                nextFlag = false;
-                dataFalg = false;
-            }
-        }) : nextFlag = false;
-        priceLstAuto.map((free) => {
-            priceLst.push({
-                foodUnitID: free.foodUnitID || free.itemID,
-                foodUnitCode: free.foodKey || free.foodUnitCode,
-                foodName: free.foodName,
-                brandID: free.brandID || '0',
-                foodUnitName: free.unit || free.foodUnitName,
-                price: parseFloat(free.price),
-                stageNo: -1,
-                num: 1,
+            priceListAuto.map((free) => {
+                priceList.push({
+                    foodUnitID: free.foodUnitID || free.itemID,
+                    foodUnitCode: free.foodKey || free.foodUnitCode,
+                    foodName: free.foodName,
+                    brandID: free.brandID || '0',
+                    foodUnitName: free.unit || free.foodUnitName,
+                    price: parseFloat(free.price),
+                    stageNo: -1,
+                    num: 1,
+                })
             })
-        })
-        
-        const rule = { stageType };
-        recommendNum ? rule.recommendNum = recommendNum : null;
-        recommendTopNum ? rule.recommendTopNum = recommendTopNum : null;
+            foodRuleList[i].priceList = priceList;
+            foodRuleList[i].scopeList = scopeList;
+        }
+        if (!nextFlag) return false;
+        const rule = { stageType: 0 };
         this.props.setPromotionDetail({
-            priceLst,
-            scopeLst,
+            foodRuleList: foodRuleList.map(item => ({
+                rule: JSON.stringify(item.rule),
+                scopeList: item.scopeList,
+                priceList: item.priceList,
+            })),
             rule,
         });
         return true;
     }
 
-    handDishesChange = (val) => {
+    handDishesChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].data = val;
         this.setState({
-            data: val,
+            foodRuleList
         })
     }
-    autoDishesChange = (val) => {
+    autoDishesChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].priceListAuto = val;
         this.setState({
-            priceLstAuto: val,
+            foodRuleList
         })
     }
     addRule = () => {
@@ -154,9 +170,10 @@ class RecommendFoodDetailInfo extends React.Component {
             rule: {
                 startTime: undefined,
                 endTime: undefined,
+                ruleType: 1,
             },
-            priceLst: [],
-            scopeLst: [],
+            priceList: [],
+            scopeList: [],
         })
         this.setState({
             foodRuleList
@@ -177,7 +194,10 @@ class RecommendFoodDetailInfo extends React.Component {
         })
         for (let i = 0; i < foodRuleList.length; i++) {
             if (i !== index) {
-                this.props.form.validateFields([`timeinfo${i}`])
+                const value = foodRuleList[i].rule
+                this.props.form.setFields({
+                    [`timeinfo${i}`]: {value,}
+                })
             }
         }
     }
@@ -216,7 +236,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </div>
                                 <div className={selfStyle.blockHeader}>
                                     <FormItem
-                                        label="使用时段"
+                                        label={`使用时段${index + 1}`}
                                         colon={false}
                                         required={true}
                                         labelCol={{ span: 3 }}
@@ -256,37 +276,38 @@ class RecommendFoodDetailInfo extends React.Component {
                                                         },
                                                     },
                                                 ],
-                                            })(
-                                                <RecommendTimeInterval />
-                                            )
+                                            })(<RecommendTimeInterval />)
                                         }
                                     </FormItem>
                                 </div>
-                                <FormItem
-                                    label="猜你喜欢"
-                                    colon={false}
-                                    labelCol={{ span: 3 }}
-                                    wrapperCol={{ span: 20 }}
-                                >      
-                                    <CollocationTableWithBrandID
-                                        onChange={this.handDishesChange}
-                                    />             
-                                </FormItem>                  
-                                <FormItem
-                                    label="热销推荐"
-                                    colon={false}
-                                    style={{marginTop: 12}}
-                                    labelCol={{ span: 3 }}
-                                    wrapperCol={{ span: 20 }}
-                                >
-                                    {
-                                        this.props.form.getFieldDecorator(`priceLst${index}`, {
-                                            initialValue: this.state.priceLstAuto,
-                                        })(                                           
-                                            <ConnectedPriceListSelector onChange={this.autoDishesChange} />                                        
-                                        )
-                                    }
-                                </FormItem>
+                                <div className={selfStyle.blockContent}>
+                                    <FormItem
+                                        label="猜你喜欢"
+                                        colon={false}
+                                        labelCol={{ span: 3 }}
+                                        wrapperCol={{ span: 20 }}
+                                    >      
+                                        <CollocationTableWithBrandID
+                                            prices={item.priceList}
+                                            scopes={item.scopeList}
+                                            onChange={(val) => this.handDishesChange(val, index)}
+                                        />             
+                                    </FormItem>                  
+                                    <FormItem
+                                        label="热销推荐"
+                                        colon={false}
+                                        style={{marginTop: 12}}
+                                        labelCol={{ span: 3 }}
+                                        wrapperCol={{ span: 20 }}
+                                    >
+                                        {
+                                            this.props.form.getFieldDecorator(`priceList${index}`, {
+                                                initialValue: item.priceList.filter(item => item.stageNo == -1),
+                                                onChange: (val) =>  this.autoDishesChange(val, index)
+                                            })(<ConnectedPriceListSelector />)
+                                        }
+                                    </FormItem>
+                                </div>               
                             </div>
                         ))
                     }     
@@ -298,8 +319,7 @@ class RecommendFoodDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        $foodRuleList: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'foodRuleList']),
     }
 }
 

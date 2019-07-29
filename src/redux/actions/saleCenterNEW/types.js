@@ -913,6 +913,10 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.scopeLst) {
             scopeLst = source.scopeLst;
         }
+        let foodRuleList = [];
+        if (source.foodRuleList) {
+            foodRuleList = source.foodRuleList;
+        }
 
         // let ruleJson = source.master.ruleJson!=''?JSON.parse(source.master.ruleJson):'';
         // let ruleJson = source.master.ruleJson!=''&& source.master.ruleJson !=='stageType'? JSON.parse(source.master.ruleJson):{};
@@ -938,6 +942,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             role: arrayTransformAdapter(source.master.roleIDLst),
             priceLst,
             scopeLst,
+            foodRuleList,
             categoryOrDish: 0, // promotion advanced setting
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
@@ -1004,6 +1009,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         }
     }
     return {
+        foodRuleList: source.foodRuleList,
         scopeLst: scope,
         ruleJson: source.rule,
         priceLst: source.priceLst,
