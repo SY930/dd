@@ -377,7 +377,6 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'TrdTemplate',
                 'goldGift',
                 'transferType',
                 'usingDateType',
@@ -391,6 +390,7 @@ const SECOND_KEYS = (() => ({
                 'amountType',
                 'showGiftRule',
                 'giftImagePath',
+                'TrdTemplate',
                 'isSynch',
             ],
         },
@@ -402,7 +402,6 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'TrdTemplate',
                 'transferType',
                 'usingDateType',
                 'usingWeekType',
@@ -414,6 +413,7 @@ const SECOND_KEYS = (() => ({
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
+                'TrdTemplate',
                 'isSynch',
             ],
         },
@@ -425,7 +425,6 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'TrdTemplate',
                 'transferType',
                 'usingDateType',
                 'usingWeekType',
@@ -437,6 +436,7 @@ const SECOND_KEYS = (() => ({
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
+                'TrdTemplate',
                 'isSynch',
             ],
         },
@@ -514,7 +514,6 @@ const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'TrdTemplate',
                 'transferType',
                 'usingDateType',
                 'usingWeekType',
@@ -525,6 +524,7 @@ const SECOND_KEYS = (() => ({
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
+                'TrdTemplate',
                 'isSynch',
             ],
         },

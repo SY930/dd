@@ -82,6 +82,7 @@ class GiftAddModalStep extends React.PureComponent {
         this.firstForm = null;
         this.secondForm = null;
         this.firstFormRefMap = null;
+        this.secondFormRefMap = null;
         this.handleNameChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleRemarkChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
@@ -93,9 +94,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     componentDidMount() {
         const { FetchGiftSort, type, gift: thisGift } = this.props;
-        // console.log('gift:', thisGift);
         const { getPromotionShopSchema} = this.props;
-
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         const { name, data, value } = thisGift;
         const { values } = this.state;
@@ -170,7 +169,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
-            switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+            switch (key) { // 这几个个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
                 case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
@@ -345,16 +344,12 @@ class GiftAddModalStep extends React.PureComponent {
             secondKeys: SECOND_KEYS,
             finishLoading: false,
             foodNameListStatus: 'success',
-            /*buyGiveSecondaryFoods: 'success',
-            foodNameListStatus: 'success'*/
         });
         cb && cb();
     }
 
     validateFoodList = (basicValues) => {
-        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length/* || !basicValues.foodNameList
-            || (basicValues.foodNameList.categoryOrDish == 1 && basicValues.foodNameList.foodCategory.length == 0)
-            || (basicValues.foodNameList.categoryOrDish == 0 && basicValues.foodNameList.dishes.length == 0)*/) {
+        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length) {
             message.warning('请至少选择一个菜品');
             this.setState({ foodNameListStatus: 'error' });
             return false;
@@ -364,12 +359,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     handleSubmit = () => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
-            if (basicValues.TrdTemplate) {
-                const { TrdTemplateStatus } = basicValues.TrdTemplate;
-                if (!TrdTemplateStatus) {
-                    return false
-                }
-            }
             if (this.props.gift.value == '20' || this.props.gift.value == '21') {
                 if (this.validateFoodList(basicValues) === false) {
                     return false;
@@ -418,6 +407,16 @@ class GiftAddModalStep extends React.PureComponent {
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
+            if (formValues.TrdTemplate) {
+                const { TrdTemplateStatus } = formValues.TrdTemplate;
+                if (!TrdTemplateStatus) {
+                    try {
+                        this.secondFormRefMap.TrdTemplate.wrappedInstance.popIntoView()
+                    } catch (e) {
+                    }
+                    return false
+                }
+            }
             let params = _.assign(
                 {
                     effectTime: data.effectTime,
@@ -1425,7 +1424,16 @@ class GiftAddModalStep extends React.PureComponent {
                             this.secondForm.setFieldsValue({ promotionID: [] })
                             this.setState({ values })
                         }}
-                        data={(data.extraInfo && data.extraInfo !== '0') ? { extraInfo: data.extraInfo, trdChannelID: data.trdChannelID, trdTemplateID: data.trdTemplateID } : undefined}
+                        data={
+                            ((data.extraInfo && data.extraInfo !== '0') || data.trdTemplateInfo) ?
+                            {
+                                extraInfo: data.extraInfo,
+                                trdChannelID: data.trdChannelID,
+                                trdTemplateID: data.trdTemplateID,
+                                trdTemplateInfo: data.trdTemplateInfo,
+                            }
+                            : undefined
+                        }
                     />
                 )
             },
@@ -1696,6 +1704,7 @@ class GiftAddModalStep extends React.PureComponent {
                     className={styles2.logoGroupHeader
                 }>使用规则</div>
                 <BaseForm
+                    getRefs={refs => this.secondFormRefMap = refs}
                     getForm={form => this.secondForm = form}
                     formItems={formItems}
                     formData={formData}
