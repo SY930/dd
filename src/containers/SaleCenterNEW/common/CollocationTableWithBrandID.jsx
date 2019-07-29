@@ -97,10 +97,19 @@ class CollocationTableWithBrandID extends Component {
             allDishes,
             priceLst,
             scopeLst,
+            prices,
+            scopes,
+            type,
         } = this.props;
-        if (!scopeLst.size) return;
-        priceLst = priceLst.toJS();
-        scopeLst = scopeLst.toJS();
+        if (type === '5010') { // 菜品推荐活动，改为不直接从store取值，从父组件处理过后传递给本组件
+            priceLst = prices;
+            scopeLst = scopes;
+            if (!scopeLst.length) return;
+        } else {
+            if (!scopeLst.size) return;
+            priceLst = priceLst.toJS();
+            scopeLst = scopeLst.toJS();
+        }
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
         let data = [];
         priceLst.forEach((price) => {

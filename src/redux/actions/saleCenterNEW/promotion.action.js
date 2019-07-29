@@ -49,6 +49,7 @@ export const saleCenterAddNewActivityAC = (opts) => {
         const params = {
             ...opts.data.promotionInfo.master,
             priceLst: opts.data.promotionInfo.priceLst,
+            foodRuleList: opts.data.promotionInfo.foodRuleList,
             timeLst: opts.data.promotionInfo.timeLst,
             scopeLst: opts.data.promotionInfo.scopeLst,
             shareLst: opts.data.promotionInfo.shareLst,
@@ -90,6 +91,7 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
         const params = {
             ...opts.data.promotionInfo.master,
             priceLst: opts.data.promotionInfo.priceLst,
+            foodRuleList: opts.data.promotionInfo.foodRuleList,
             timeLst: opts.data.promotionInfo.timeLst,
             scopeLst: opts.data.promotionInfo.scopeLst,
             shareLst: opts.data.promotionInfo.shareLst,
