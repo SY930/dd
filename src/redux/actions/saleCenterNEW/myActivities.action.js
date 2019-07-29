@@ -118,7 +118,7 @@ export const initializationOfMyActivities = (opts) => {
     return (dispatch) => {
         opts.start && opts.start();
         dispatch(initializationOfMyActivitiesStart());
-        axiosData('/promotion/docPromotionService_query.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+        axiosData('/promotion/docPromotionService_query.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
             .then((records) => {
                 opts.end && opts.end();
                 dispatch(initializationOfMyActivitiesSucceed(records));
@@ -148,7 +148,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
             {...params, modifiedBy: getAccountInfo().userName},
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(toggleSelectedActivityStateSuccess(opts.record));
 
@@ -176,7 +176,7 @@ export const deleteSelectedRecordAC = (opts) => {
             params,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(deleteSelectedRecordSuccess({
                 promotionID: opts.promotionID,

@@ -160,7 +160,7 @@ export const fetchFilterShops = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            'HTTP_SERVICE_URL_CRM'
         ).then((responseJSON) => {
             dispatch(fetchFilterShopsSuccess(responseJSON))
         }, (error) => {
