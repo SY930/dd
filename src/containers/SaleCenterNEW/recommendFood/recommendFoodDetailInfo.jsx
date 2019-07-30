@@ -45,7 +45,19 @@ class RecommendFoodDetailInfo extends React.Component {
             },)
         } else { // 编辑，已经查询并存到了store，rule字段在后端存储是json string
             foodRuleList.forEach(item => {
-                item.rule = JSON.parse(item.rule)
+                let rule;
+                try {
+                    rule = JSON.parse(item.rule);
+                } catch (e) {
+                    rule = {
+                        ruleType: 1,
+                        startTime: '0000',
+                        endTime: '2359',
+                    };
+                }
+                item.rule = rule;
+                item.scopeList = Array.isArray(item.scopeList) ? item.scopeList : [];
+                item.priceList = Array.isArray(item.priceList) ? item.priceList : [];
             })
         }
         this.state = {
