@@ -458,13 +458,26 @@ class MoreFoodBox extends React.Component {
                 return item !== value.foodCategoryID;
             })
         }
-        this.clear('exclude');
+        if (value.length === 0) {
+            this.clear('exclude');
+            excludeCurrentSelections = [];
+            excludeOptions = [];
+        } else {
+            excludeSelections
+                .forEach((dish) => {
+                    if (dish.foodCategoryID == value.foodCategoryID) {
+                        excludeSelections.delete(dish);
+                        excludeCurrentSelections.splice(excludeCurrentSelections.indexOf(dish.foodCategoryID), 1);
+                        excludeOptions.splice(excludeCurrentSelections.indexOf(dish.foodCategoryID), 1);
+                    }
+                });
+        }
         this.setState({
             foodCategorySelections,
             foodCategoryCurrentSelections,
             excludeSelections,
             excludeCurrentSelections,
-            excludeOptions: [],
+            excludeOptions,
         });
         this.props.onChange && this.props.onChange({
             foodSelectType: 1,
