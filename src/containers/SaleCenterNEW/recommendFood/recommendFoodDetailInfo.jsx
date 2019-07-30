@@ -60,9 +60,7 @@ class RecommendFoodDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let {
-            foodRuleList,
-        } = this.state;
+        const { foodRuleList } = this.state;
         let nextFlag = true;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
@@ -77,20 +75,18 @@ class RecommendFoodDetailInfo extends React.Component {
                 data = [],
                 priceListAuto = []
             } = foodRuleList[i];
-            if (Array.isArray(data)) {
-                if (!data.length) {
-                    message.warning(`使用时段${i+1}中至少要有1个组合`)
-                    return false;
-                }
-                const unCompleteIndex = data.findIndex(group => {
-                    return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
-                        (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
-                        ))
-                });
-                if (unCompleteIndex > -1) {
-                    message.warning(`使用时段${i+1}中组合${unCompleteIndex + 1}没有搭配完整`)
-                    return false;
-                }
+            if (!data.length && !priceListAuto.length) {
+                message.warning(`使用时段${i+1}中猜你喜欢和热销推荐不能全部为空`)
+                return false;
+            }
+            const unCompleteIndex = data.findIndex(group => {
+                return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
+                    (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
+                    ))
+            });
+            if (unCompleteIndex > -1) {
+                message.warning(`使用时段${i+1}中组合${unCompleteIndex + 1}没有搭配完整`)
+                return false;
             }
             data.forEach((group, groupIdx) => {
                 if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
