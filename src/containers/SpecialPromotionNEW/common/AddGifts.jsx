@@ -12,10 +12,6 @@ import {
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 
-
-if (process.env.__CLIENT__ === true) {
-    require('../../../components/common/components.less');
-}
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;

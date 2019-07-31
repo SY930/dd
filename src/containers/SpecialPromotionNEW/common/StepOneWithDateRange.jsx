@@ -134,9 +134,7 @@ class StepOneWithDateRange extends React.Component {
             selectMonthValue,
 
             iconDisplay: false,
-            lastConsumeIntervalDays: '',
             getExcludeEventList: [],
-            lastConsumeIntervalDaysStatus: 'success',
             tipDisplay: 'none',
             isLoadingWeChatOccupiedInfo: props.occupiedWeChatInfo.get('isLoading'),
             occupiedWeChatIDs: props.occupiedWeChatInfo.get('occupiedIDs').toJS(),
@@ -194,8 +192,6 @@ class StepOneWithDateRange extends React.Component {
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
-                // getExcludeEventList:specialPromotion.getExcludeEventList||[],
-                lastConsumeIntervalDays: specialPromotion.lastConsumeIntervalDays,
             })
         } else {
             this.setState({
@@ -309,10 +305,6 @@ class StepOneWithDateRange extends React.Component {
                 nextFlag = false;
             }
         });
-        if (this.props.type == '63' && !this.state.lastConsumeIntervalDays > 0) {
-            nextFlag = false;
-            this.setState({ lastConsumeIntervalDaysStatus: 'error' });
-        }
         // 升级送礼,消费送礼
         if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
             nextFlag = false;
@@ -358,7 +350,6 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
-                    lastConsumeIntervalDays: this.state.lastConsumeIntervalDays,
                 })
             }
             if (ATSEnabledTypes.includes(`${this.props.type}`)) {
@@ -890,37 +881,6 @@ class StepOneWithDateRange extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row> : null
-                    }
-                    {
-                        this.props.type == '63' ?
-                            <FormItem
-                                label="距上次消费天数"
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                validateStatus={this.state.lastConsumeIntervalDaysStatus}
-                                help={this.state.lastConsumeIntervalDaysStatus == 'success' ? null : '请选择距上次消费天数'}
-                            >
-                                {getFieldDecorator('lastConsumeIntervalDays', {
-                                    rules: [{
-                                        required: true,
-                                        message: '请选择距上次消费天数',
-                                    }],
-                                    initialValue: { number: this.state.lastConsumeIntervalDays },
-                                })(
-                                    <PriceInput
-                                        // value={{ number: this.state.lastConsumeIntervalDays }}
-                                        onChange={(val) => {
-                                            this.setState({
-                                                lastConsumeIntervalDays: val.number,
-                                                lastConsumeIntervalDaysStatus: val.number > 0 ? 'success' : 'error',
-                                            })
-                                        }}
-                                        addonAfter="天"
-                                        modal="int"
-                                    />
-                                )}
-                            </FormItem> : null
                     }
                     {fullOptionSmsGate.includes(String(this.props.type))
                          ?
