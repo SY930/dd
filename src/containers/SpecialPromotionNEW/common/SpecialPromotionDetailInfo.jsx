@@ -247,7 +247,7 @@ class SpecialDetailInfo extends Component {
                 data[index].giftTotalCount.value = gift.giftTotalCount;
             }
             data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-            data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays ? `${lastConsumeIntervalDays}` : undefined;
+            data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays ? `${gift.lastConsumeIntervalDays}` : undefined;
         })
         if (this.props.type == '68') { // 小数组，为了代码方便重复遍历的
             if (data.every(gift => gift.recommendType != 1)) {
@@ -1778,34 +1778,38 @@ class SpecialDetailInfo extends Component {
                                 style={{ position: 'relative', marginBottom: 14 }}
                                 required
                             >
-                                <div style={{
-                                    position: 'absolute',
-                                    width: 65,
-                                    top: 3,
-                                    right: -70,
-                                }}>
-                                    {
-                                        (index === arr.length - 1 && index <= 9) && (
-                                            <Icon
-                                                onClick={this.addInterval}
-                                                style={{ marginRight: 5 }}
-                                                className={styles.plusIcon}
-                                                type="plus-circle-o"
-                                            />
-                                        )
-                                    }
-                                    {
-                                        (arr.length > 1) && (
-                                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeInterval(index)}>
-                                                <Icon
-                                                    style={{ marginRight: 5 }}
-                                                    className={styles.deleteIcon}
-                                                    type="minus-circle-o"
-                                                />
-                                            </Popconfirm>
-                                        )
-                                    }
-                                </div>
+                                {
+                                    userCount > 0 ? null : (
+                                        <div style={{
+                                            position: 'absolute',
+                                            width: 65,
+                                            top: 3,
+                                            right: -70,
+                                        }}>
+                                            {
+                                                (index === arr.length - 1 && index <= 9) && (
+                                                    <Icon
+                                                        onClick={this.addInterval}
+                                                        style={{ marginRight: 5 }}
+                                                        className={styles.plusIcon}
+                                                        type="plus-circle-o"
+                                                    />
+                                                )
+                                            }
+                                            {
+                                                (arr.length > 1) && (
+                                                    <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeInterval(index)}>
+                                                        <Icon
+                                                            style={{ marginRight: 5 }}
+                                                            className={styles.deleteIcon}
+                                                            type="minus-circle-o"
+                                                        />
+                                                    </Popconfirm>
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                }
                                 {
                                     getFieldDecorator(`intervalDays${key}`, {
                                         onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
