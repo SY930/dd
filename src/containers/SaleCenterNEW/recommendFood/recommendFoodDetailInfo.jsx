@@ -102,7 +102,7 @@ class RecommendFoodDetailInfo extends React.Component {
             }
             data.forEach((group, groupIdx) => {
                 if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
-                    group.free.forEach((free) => {
+                    group.free.filter(item => Object.keys(item).length !== 2).forEach((free) => {
                         priceList.push({
                             foodUnitID: free.itemID,
                             foodUnitCode: free.foodKey,
@@ -114,7 +114,7 @@ class RecommendFoodDetailInfo extends React.Component {
                             num: group.freeCountInfo[free.value || free.itemID],
                         })
                     });
-                    group.foods.forEach((food) => {
+                    group.foods.filter(item => Object.keys(item).length !== 2).forEach((food) => {
                         scopeList.push({
                             scopeType: '2',
                             targetID: food.itemID,
@@ -126,11 +126,9 @@ class RecommendFoodDetailInfo extends React.Component {
                             num: group.foodsCountInfo[food.value || food.itemID],
                         })
                     });
-                } else {
-                    nextFlag = false;
                 }
             });
-            priceListAuto.map((free) => {
+            priceListAuto.forEach((free) => {
                 priceList.push({
                     foodUnitID: free.foodUnitID || free.itemID,
                     foodUnitCode: free.foodKey || free.foodUnitCode,
