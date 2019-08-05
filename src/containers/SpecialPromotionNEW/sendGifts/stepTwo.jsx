@@ -260,6 +260,8 @@ class StepTwo extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
+                            showSearch
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             style={{ width: '100%' }}
                             placeholder="请选择会员群体"
                             getPopupContainer={(node) => node.parentNode}

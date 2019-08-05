@@ -418,6 +418,8 @@ class StepTwo extends React.Component {
                                     })(
                                         <Select
                                             style={{ width: '100%' }}
+                                            showSearch
+                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                             placeholder="请选择会员群体"
                                             getPopupContainer={(node) => node.parentNode}
                                             onChange={this.handleSelectChange}
