@@ -85,15 +85,16 @@ class SpecialDishesTableWithBrand extends Component {
     }
     onCellChange = (val, {index}) => {
         const data = [...this.state.data];
+        let num = val.number;
         const record = data[index];
         if (val.number > +record.price) {// 特价不超过售价价
-            val.number = record.price;
+            num = record.price;
         }else if (val.number < 0) {// 特价不小于0
-            val.number = 0;
+            num = '0';
         }
-        record.newPrice = val.number;
+        record.newPrice = num;
         this.setState({data});
-        this.props.onChange(data);
+        this.props.onChange(data.map(item => ({...item})));
     }
     handleDel = (record) => {
         const data = [...this.state.data];
