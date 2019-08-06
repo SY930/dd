@@ -429,8 +429,11 @@ export class WeChatMallPromotionList extends React.Component {
                 width: 140,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const isExpired = Date.now() > moment(record.endTime, 'YYYYMMDDHHmm');
-                    const isOngoing = Date.now() < moment(record.endTime, 'YYYYMMDDHHmm') && Date.now() > moment(record.startTime, 'YYYYMMDDHHmm');
+                    // 有点懒 sorry
+                    const format = record.extraEventType == 72 ? 'YYYYMMDDHHmm' : 'YYYYMMDD';
+                    const isExpired = moment().format(format) > moment(record.endTime, format).format(format);
+                    const isOngoing = moment().format(format) <= moment(record.endTime, format).format(format)
+                        && moment().format(format) >= moment(record.startTime, format).format(format);
                     const buttonText = (record.status == 1 ? '禁用' : '启用');
                     return (<span>
                         <a
@@ -509,9 +512,10 @@ export class WeChatMallPromotionList extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: (status, record) => {
-                    if (moment(record.endTime, 'YYYYMMDDHHmm') < Date.now()) {
+                    const format = record.extraEventType == 72 ? 'YYYYMMDDHHmm' : 'YYYYMMDD';
+                    if (moment(record.endTime, format).format(format) < moment().format(format)) {
                         return '已结束';
-                    } else if (moment(record.startTime, 'YYYYMMDDHHmm') > Date.now()) {
+                    } else if (moment(record.startTime, format).format(format) > moment().format(format)) {
                         return '未开始';
                     }
                     return '执行中'
