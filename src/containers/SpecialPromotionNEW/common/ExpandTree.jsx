@@ -6,9 +6,6 @@ import {
     SALE_CENTER_GIFT_TYPE,
 } from '../../../redux/actions/saleCenterNEW/types';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 class ExpandTree extends React.Component {

@@ -9,11 +9,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Immutable = require('immutable');
-// window.Immutable=Immutable;
 const TreeNode = Tree.TreeNode;
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
 class EditBoxForDishes extends React.Component {
     constructor(props) {
         super(props);
