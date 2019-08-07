@@ -265,6 +265,7 @@ class NewPromotion extends React.Component {
                             this.handles[1] = handles;
                         }}
                         isOnline={isOnline}
+                        isNew={isNew}
                     />
                 ),
             },
