@@ -36,10 +36,6 @@ import _ from 'lodash';
 
 const moment = require('moment');
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 const Immutable = require('immutable');
 
 class StepTwo extends React.Component {

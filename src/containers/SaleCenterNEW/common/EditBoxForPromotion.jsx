@@ -6,9 +6,6 @@ const TreeNode = Tree.TreeNode;
 
 import styles from '../ActivityPage.less';
 const Immutable = require('immutable');
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-};
 const DISABLED_PROMOTION_TYPE = [
     '消费返礼品', '消费返积分'
 ];

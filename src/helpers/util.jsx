@@ -115,7 +115,6 @@ function genPostParams(type, params = {}) {
  * @return {Object} 账户信息
  */
 export function getAccountInfo() {
-    // if (!process.env.__CLIENT__) return {};
     const state = getStore().getState();
     return state.user.get('accountInfo').toJS();
 }

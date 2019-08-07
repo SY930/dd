@@ -10,11 +10,6 @@ const CheckboxGroup = Checkbox.Group;
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-const Immutable = require('immutable');
-
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);

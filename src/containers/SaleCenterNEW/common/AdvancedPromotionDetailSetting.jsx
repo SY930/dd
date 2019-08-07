@@ -389,9 +389,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     renderCardLeval = () => {
         const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
         const boxData = []
-        // cardScopeType=1 // @mock
         cardScopeIDs.forEach((id) => {
-            // ['759692756909309952'].forEach((id) => { //  @mock
             cardInfo.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
