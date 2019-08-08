@@ -122,19 +122,25 @@ class PromotionScopeInfo extends React.Component {
             this.setState({ shopStatus: true })
         }
         if (flag) {
-            this.props.saleCenterSetScopeInfo({
+            const states = {
                 channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' ? 'WECHAT' : this.state.channel,
                 auto: this.state.auto,
                 orderType: this.state.orderType,
                 brands: this.state.brands,
-                shopsInfo: this.props.user.toJS().shopID > 0 ? [{ shopID: this.props.user.toJS().shopID }] : this.state.selections,
+                
                 voucherVerify: this.state.voucherVerify,
                 voucherVerifyChannel: this.state.voucherVerifyChannel,
                 points: this.state.points,
                 invoice: this.state.invoice,
                 evidence: this.state.evidence,
                 usageMode: this.state.usageMode,
-            });
+            }
+            if (this.props.user.toJS().shopID > 0 && this.props.isNew) {
+                states.shopsInfo =  [{ shopID: this.props.user.toJS().shopID }];
+            } else {
+                states.shopsInfo = this.state.selections;
+            }
+            this.props.saleCenterSetScopeInfo(states);
         }
         return flag || isPrev;
     }
@@ -272,7 +278,6 @@ class PromotionScopeInfo extends React.Component {
         dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories && dynamicShopSchema.shopCategories instanceof Array ? dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID)) : [];
         if (availableBrands instanceof Array && availableBrands.length > 0) {
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID));
-            // console.log('filteredBrands:', dynamicShopSchema.brands);
         } else {// all brands
             const allBrands = uniq(shops.map(shop => shop.brandID));
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));

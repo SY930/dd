@@ -115,6 +115,7 @@ const $initialState = Immutable.fromJS({
         role: [],
         priceLst: [],
         scopeLst: [],
+        foodRuleList: [],
         categoryOrDish: 0, // 0, 按分类 promotion advanced setting,
         isActive: '',
         upGradeDishes: [], // 例如：升级换新的加价前商品
@@ -150,7 +151,6 @@ function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $fo
             }
             const foodsOfTheCategory = $foods
                 .filter(($food) => {
-                    // return $food.get("foodCategoryID") === $category.get("foodCategoryID");
                     return String($food.get('foodCategoryID')) === String($category.get('foodCategoryID'));
                 })
                 .map(($food) => {

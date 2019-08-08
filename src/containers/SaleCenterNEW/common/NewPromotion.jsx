@@ -84,7 +84,7 @@ class NewPromotion extends React.Component {
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
-            maintenanceLevel, usageMode, shopID } = opts;
+            maintenanceLevel, usageMode, shopID, foodRuleList } = opts;
         const promotionInfo = {
             master: {
                 groupID,
@@ -124,6 +124,7 @@ class NewPromotion extends React.Component {
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
             scopeLst: opts.scopeLst,
+            foodRuleList,
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }
@@ -265,6 +266,7 @@ class NewPromotion extends React.Component {
                             this.handles[1] = handles;
                         }}
                         isOnline={isOnline}
+                        isNew={isNew}
                     />
                 ),
             },

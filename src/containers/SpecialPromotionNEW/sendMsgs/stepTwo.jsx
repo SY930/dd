@@ -36,10 +36,6 @@ import _ from 'lodash';
 
 const moment = require('moment');
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 const Immutable = require('immutable');
 
 class StepTwo extends React.Component {
@@ -367,6 +363,8 @@ class StepTwo extends React.Component {
                     })(
                         <Select
                             style={{ width: '100%' }}
+                            showSearch
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             placeholder="请选择会员群体"
                             getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}

@@ -9,11 +9,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Immutable = require('immutable');
-// window.Immutable=Immutable;
 const TreeNode = Tree.TreeNode;
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
 class EditBoxForDishes extends React.Component {
     constructor(props) {
         super(props);
@@ -160,7 +156,8 @@ class EditBoxForDishes extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.map((item, index) => {
+                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
+                .map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -315,7 +312,9 @@ class EditBoxForDishes extends React.Component {
         const treeData = [];
         this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName.forEach((cate) => {
+                item.foodCategoryName
+                .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
+                .forEach((cate) => {
                     treeData.push(cate)
                 })
             }

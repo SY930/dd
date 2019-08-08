@@ -204,9 +204,10 @@ class SpecialDishesTable extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.map((item, index) => {
+                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
+                .map((item, index) => {
                     if (typeof item === 'object') {
-                        return <TreeNode key={index} title={item.foodCategoryName} />;
+                        return <TreeNode style={{display: 'none'}} key={index} title={item.foodCategoryName} />;
                     }
                 });
             }
@@ -325,13 +326,16 @@ class SpecialDishesTable extends React.Component {
 
         const indexArray = parseInt(value[0]);
         const treeData = [];
-        this.state.foodCategoryCollection.map((item) => {
-            if (typeof item === 'object') {
-                item.foodCategoryName.map((cate) => {
-                    treeData.push(cate)
-                })
-            }
-        });
+        this.state.foodCategoryCollection
+            .map((item) => {
+                if (typeof item === 'object') {
+                    item.foodCategoryName
+                    .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
+                    .map((cate) => {
+                        treeData.push(cate)
+                    })
+                }
+            });
 
         const storeOptions = treeData[indexArray].foods.map((item) => {
             if (typeof item === 'object') {

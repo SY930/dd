@@ -29,10 +29,6 @@ import WeChatCouponCard from "../../WeChatCouponManagement/WeChatCouponCard";
 import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
 
 const moment = require('moment');
-
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
