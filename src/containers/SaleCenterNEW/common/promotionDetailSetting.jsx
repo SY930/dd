@@ -447,8 +447,7 @@ class PromotionDetailSetting extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-                .map((item, index) => {
+                return data.map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -519,8 +518,7 @@ class PromotionDetailSetting extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-                .map((item, index) => {
+                return data.map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -829,16 +827,12 @@ class PromotionDetailSetting extends React.Component {
         const treeData = [];
         if (this.state.foodCategorySelections.size > 0) {
             this.state.foodCategorySelections.forEach((item) => {
-                if (Array.isArray(item.foods) && item.foods.length > 0) {
-                    treeData.push(item)
-                }
+                treeData.push(item)
             });
         } else {
             this.state.foodCategoryCollection.map((item) => {
                 if (typeof item === 'object') {
-                    item.foodCategoryName
-                    .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
-                    .map((cate) => {
+                    item.foodCategoryName.map((cate) => {
                         treeData.push(cate)
                     })
                 }
@@ -975,9 +969,7 @@ class PromotionDetailSetting extends React.Component {
         const treeData = [];
         this.state.foodCategoryCollection.map((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName
-                .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
-                .map((cate) => {
+                item.foodCategoryName.map((cate) => {
                     treeData.push(cate)
                 })
             }

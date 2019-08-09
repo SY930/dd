@@ -194,12 +194,33 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
             payload: opts.shopID && opts.shopID > 0
         })
         dispatch(fetchFoodCategoryStart());
-        const url = opts.shopID && opts.shopID > 0 ?
-            '/shopapi/queryShopFoodClass.svc' : '/shopapi/queryGroupFoodCategory.svc';
-        axiosData(url, { ...opts, bookID: 0 }, {}, { path: 'data' }, 'HTTP_SERVICE_URL_SHOPAPI')
-        .then((data) => {
-            dispatch(getFoodCategorySuccessToProcess(data));
-            dispatch(getRawFoodCatgorySuccess(data))
+        const url = opts.shopID && opts.shopID > 0 ? 'queryShopFoodClass' : 'getFoodCategory_NEW';
+        const config = getSpecifiedUrlConfig(url, { ...opts, bookID: 0, type: '0' });
+
+        fetch(config.url, {
+            method: config.method,
+            body: config.params,
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+        }).then((response) => {
+            if (response.status >= 200 && response.status < 300) {
+                if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+                    return response.json();
+                }
+                return response.text();
+            }
+            return Promise.reject(new Error(response.statusText))
+        }).then((responseJSON) => {
+            // if(responseJSON.resultcode === '000'){
+            if (responseJSON.code === '000') {
+                dispatch(getFoodCategorySuccessToProcess(responseJSON.data));
+                dispatch(getRawFoodCatgorySuccess(responseJSON.data))
+            } else {
+                dispatch(fetchFoodCategoryFailed(responseJSON.resultmsg));
+            }
         }).catch((error) => {
             dispatch(fetchFoodCategoryFailed(error))
         });

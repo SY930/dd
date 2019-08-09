@@ -1,4 +1,4 @@
-import { fetchData, axiosData } from '../../../helpers/util';
+import { fetchData } from '../../../helpers/util';
 
 export const CRMCARD_LIST = 'crm card new:: CRMCARD_LIST';
 export const CRMCARD_PAGE_STYLE = 'crm card new:: CRMCARD_PAGE_STYLE';
@@ -111,23 +111,21 @@ const getShopCreditListBegin = (opt) => {
 export const FetchCrmCardTypeLst = (opts) => {
     return (dispatch) => {
         dispatch(getShopCreditListBegin(true));
-        return axiosData(
-            '/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax',
-            { ...opts, isNeedWechatCardTypeInfo: true },
-            null,
-            {path: 'data.cardTypeBaseInfoList',}
-        ).then((records) => {
-            dispatch(GetCrmCardTypeLstSuccess({
-                payload: {
-                    dataSource: Array.isArray(records) ? records : [],
-                },
-            }));
-            dispatch(UpdateCrmCardTypeParams(opts));
-            return Promise.resolve(records);
+        return fetchData('getCrmCardList_dkl', { ...opts }, null, {
+            path: 'data.cardTypeParamsDataList',
         })
-        .catch(() => {
-            dispatch(getShopCreditListBegin(false));
-        })
+            .then((records) => {
+                dispatch(GetCrmCardTypeLstSuccess({
+                    payload: {
+                        dataSource: records || [],
+                    },
+                }));
+                dispatch(UpdateCrmCardTypeParams(opts));
+                return Promise.resolve(records);
+            })
+            .catch(() => {
+                dispatch(getShopCreditListBegin(false));
+            })
     }
 };
 

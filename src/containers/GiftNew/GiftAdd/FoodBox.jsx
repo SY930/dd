@@ -409,10 +409,9 @@ class FoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-                .map((item, index) => {
+                return data.map((item, index) => {
                     if (typeof item === 'object') {
-                        return <TreeNode style={{display: 'none'}} key={index} title={item.foodCategoryName} />;
+                        return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
                 });
             }
@@ -481,8 +480,7 @@ class FoodBox extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-                .map((item, index) => {
+                return data.map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -903,15 +901,13 @@ class FoodBox extends React.Component {
         }
         const indexArray = parseInt(value[0]);
         const treeData = [];
-        this.state.foodCategoryCollection
-            .filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-            .forEach((item) => {
-                if (typeof item === 'object') {
-                    item.foodCategoryName.forEach((cate) => {
-                        treeData.push(cate)
-                    })
-                }
-            });
+        this.state.foodCategoryCollection.forEach((item) => {
+            if (typeof item === 'object') {
+                item.foodCategoryName.forEach((cate) => {
+                    treeData.push(cate)
+                })
+            }
+        });
 
         const storeOptions = treeData[indexArray].foods.map((item) => {
             if (typeof item === 'object') {

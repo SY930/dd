@@ -39,7 +39,6 @@ class NewSpecialActivity extends NewPromotion {
                 title: '基本信息',
                 content: (
                     <PromotionBasicInfo
-                        shopIDLst={user.get('shopID')}
                         isNew={isNew}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;

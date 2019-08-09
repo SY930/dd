@@ -151,8 +151,7 @@ class EditBoxForDishes extends React.Component {
 
         const loop = (data) => {
             if (data.length > 0) {
-                return data.filter(item => Array.isArray(item.foods) && item.foods.length > 0)
-                .map((item, index) => {
+                return data.map((item, index) => {
                     if (typeof item === 'object') {
                         return <TreeNode key={index} title={item.foodCategoryName} />;
                     }
@@ -307,9 +306,7 @@ class EditBoxForDishes extends React.Component {
         const treeData = [];
         this.state.foodCategoryCollection.forEach((item) => {
             if (typeof item === 'object') {
-                item.foodCategoryName
-                .filter(cat => Array.isArray(cat.foods) && cat.foods.length > 0)
-                .forEach((cate) => {
+                item.foodCategoryName.forEach((cate) => {
                     treeData.push(cate)
                 })
             }

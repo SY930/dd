@@ -40,7 +40,6 @@ class NewFullCutActivity extends NewPromotion {
                 content: (
                     <PromotionBasicInfo
                         isNew={isNew}
-                        shopIDLst={user.get('shopID')}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}

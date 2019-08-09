@@ -65,8 +65,8 @@ class NewPromotion extends React.Component {
         const opts = {
             groupID: this.props.user.getIn(['accountInfo', 'groupID']),
             maintenanceLevel: this.props.user.get('shopID') ? '1' : '0',
-            ...scopeInfo,
             ...basicInfo,
+            ...scopeInfo,
             ..._detailInfo, // include rule and priceLst
             userType,
             excludedSubjectLst,
@@ -76,9 +76,6 @@ class NewPromotion extends React.Component {
             shareLst,
             usageMode: scopeInfo.usageMode,
         };
-        if (!opts.shopIDLst && promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst']) > 0) {
-            opts.shopIDLst = promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst'])
-        }
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,

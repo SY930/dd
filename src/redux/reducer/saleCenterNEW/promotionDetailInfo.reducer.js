@@ -151,6 +151,7 @@ function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $fo
             }
             const foodsOfTheCategory = $foods
                 .filter(($food) => {
+                    // return $food.get("foodCategoryID") === $category.get("foodCategoryID");
                     return String($food.get('foodCategoryID')) === String($category.get('foodCategoryID'));
                 })
                 .map(($food) => {
