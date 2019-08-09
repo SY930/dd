@@ -8,10 +8,6 @@ import { Table, Icon, Popconfirm, Modal, Button, Switch, Input, Tag, Checkbox } 
 import { Iconlist } from '../../basic/IconsFont/IconsFont';
 import styles from './EditableTable.less';
 
-// if (process.env.__CLIENT__ === true) {
-//   require('../../../../client/components.less');
-// }
-
 class EditableCell extends React.Component {
   state = {
       value: this.props.value,

@@ -22,9 +22,6 @@ import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 const InputGroup = Input.Group;
 const Option = Select.Option;
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/components.less')
-}
 
 const FormItem = Form.Item;
 

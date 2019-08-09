@@ -20,6 +20,7 @@ import {
     Input,
     Select,
     Switch,
+    Popconfirm,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -57,6 +58,12 @@ const getDefaultRecommendSetting = (recommendType = 1) => ({
 });
 
 const roundToDecimal = (number, bit = 2) => +number.toFixed(bit)
+
+let uuid = 0;
+const getIntervalID = () => {
+    uuid += 1;
+    return uuid;
+}
 
 const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     // 膨胀所需人数
@@ -116,7 +123,10 @@ class SpecialDetailInfo extends Component {
         this.handlePrev = this.handlePrev.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
-        const { data } = this.initState();
+        const {
+            data,
+            wakeupSendGiftsDataArray, // 唤醒送礼专用
+        } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
@@ -129,6 +139,7 @@ class SpecialDetailInfo extends Component {
         ? $saveMoneySetIds.toJS() : [];
         this.state = {
             data,
+            wakeupSendGiftsDataArray,
             eventRecommendSettings,
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
@@ -199,6 +210,8 @@ class SpecialDetailInfo extends Component {
     initiateDefaultGifts = () => {
         const type = `${this.props.type}`;
         switch (type) {
+            /** 唤醒送礼活动，天数有档位设置 */
+            case '63': return [getDefaultGiftData(0, 'wakeupIntervalStageIndex')];
             /** 分享裂变有邀请人和被邀请人两种类型的礼品 */
             case '65': return [getDefaultGiftData(), getDefaultGiftData(1)];
             /** 膨胀大礼包固定3个礼品，不加减数量 */
@@ -214,36 +227,27 @@ class SpecialDetailInfo extends Component {
         const data = this.initiateDefaultGifts();
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
-                data[index].effectType = `${gift.effectType}`,
-                data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
-                data[index].giftInfo.giftName = gift.giftName;
-                data[index].giftInfo.giftItemID = gift.giftID;
-                data[index].giftValidDays.value = gift.giftValidUntilDayCount;
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
-                if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
-                    data[index].giftCount.value = gift.giftCount;
-                } else {
-                    data[index].giftTotalCount.value = gift.giftTotalCount;
-                }
-                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             } else {
                 const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType'
                 const typeValue = this.props.type == '68' ? gift.recommendType : gift.sendType;
-                data[index] = getDefaultGiftData(typeValue, typePropertyName);
-                data[index].effectType = `${gift.effectType}`,
-                data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')],
-                data[index].giftInfo.giftName = gift.giftName;
-                data[index].giftInfo.giftItemID = gift.giftID;
-                data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
-                    data[index].giftCount.value = gift.giftCount;
-                } else {
-                    data[index].giftTotalCount.value = gift.giftTotalCount;
-                }
-                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                data[index] = getDefaultGiftData(typeValue, typePropertyName); 
             }
+            data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours
+                : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
+            data[index].effectType = `${gift.effectType}`;
+            data[index].giftInfo.giftName = gift.giftName;
+            data[index].giftInfo.giftItemID = gift.giftID;
+            data[index].giftValidDays.value = gift.giftValidUntilDayCount;
+            if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
+                data[index].giftCount.value = gift.giftCount;
+            } else {
+                data[index].giftTotalCount.value = gift.giftTotalCount;
+            }
+            data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+            data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays ? `${gift.lastConsumeIntervalDays}` : undefined;
         })
         if (this.props.type == '68') { // 小数组，为了代码方便重复遍历的
             if (data.every(gift => gift.recommendType != 1)) {
@@ -256,8 +260,39 @@ class SpecialDetailInfo extends Component {
                 data.push(getDefaultGiftData(0, 'recommendType'))
             }
         }
+        let wakeupSendGiftsDataArray = [];
+        if (this.props.type == 63) {
+            const intervalDaysArray = data.reduce((acc, curr) => {
+                if (curr.lastConsumeIntervalDays > 0) {
+                    if (acc.indexOf(curr.lastConsumeIntervalDays) === -1) {
+                        acc.push(curr.lastConsumeIntervalDays);
+                    }
+                }
+                return acc;
+            }, []);
+            if (!intervalDaysArray.length) {
+                wakeupSendGiftsDataArray = [
+                    {
+                        key: getIntervalID(),
+                        intervalDays: undefined,
+                        gifts: [
+                            ...data,
+                        ]
+                    }
+                ];
+            } else {
+                wakeupSendGiftsDataArray = intervalDaysArray
+                    .sort((a, b) => a - b)
+                    .map(days => ({
+                        key: getIntervalID(),
+                        intervalDays: days,
+                        gifts: data.filter(gift => gift.lastConsumeIntervalDays === days)
+                    }))
+            }
+        }
         return {
             data,
+            wakeupSendGiftsDataArray,
         };
     }
 
@@ -310,6 +345,7 @@ class SpecialDetailInfo extends Component {
             }
             gifts.sendType = giftInfo.sendType || 0;
             gifts.recommendType = giftInfo.recommendType || 0;
+            gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             return gifts
         });
         return giftArr;
@@ -526,6 +562,15 @@ class SpecialDetailInfo extends Component {
             if (recommendRule == 1 && recommendRange == 0) {
                 data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
             }
+        }
+        if (this.props.type == '63') {
+            data = this.state.wakeupSendGiftsDataArray.reduce((acc, curr) => {
+                curr.gifts.forEach(gift => {
+                    gift.lastConsumeIntervalDays = curr.intervalDays;
+                })
+                acc.push(...curr.gifts);
+                return acc;
+            }, [])
         }
         const validatedRuleData = data.map((ruleInfo, index) => {
             const giftValidDaysOrEffect = ruleInfo.effectType != '2' ? 'giftValidDays' : 'giftEffectiveTime';
@@ -744,6 +789,40 @@ class SpecialDetailInfo extends Component {
     handleSaveMoneySetIdsChange = (val) => {
         this.setState({
             saveMoneySetIds: val,
+        })
+    }
+    handleIntervalDaysChange = (val, index) => {
+        const { wakeupSendGiftsDataArray } = this.state;
+        wakeupSendGiftsDataArray[index].intervalDays = val;
+        this.setState({
+            wakeupSendGiftsDataArray,
+        })
+    }
+    handleWakeupIntervalGiftsChange = (val, index) => {
+        const { wakeupSendGiftsDataArray } = this.state;
+        wakeupSendGiftsDataArray[index].gifts = val;
+        this.setState({
+            wakeupSendGiftsDataArray,
+        })
+    }
+    removeInterval = (index) => {
+        const { wakeupSendGiftsDataArray } = this.state;
+        wakeupSendGiftsDataArray.splice(index, 1);
+        this.setState({
+            wakeupSendGiftsDataArray,
+        })
+    }
+    addInterval = () => {
+        const { wakeupSendGiftsDataArray } = this.state;
+        wakeupSendGiftsDataArray.push({
+            key: getIntervalID(),
+            intervalDays: undefined,
+            gifts: [
+                getDefaultGiftData(),
+            ]
+        });
+        this.setState({
+            wakeupSendGiftsDataArray,
         })
     }
     renderImgUrl = () => {
@@ -1678,10 +1757,116 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    renderWakeupGiftsDetail() {
+        const { wakeupSendGiftsDataArray } = this.state;
+        const {
+            form: {
+                getFieldDecorator,
+            }
+        } = this.props;
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        return (
+            <div>
+                {
+                    wakeupSendGiftsDataArray.map(({intervalDays, gifts, key}, index, arr) => (
+                        <div key={`${key}`}>
+                            <FormItem
+                                label="距上次消费天数"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                style={{ position: 'relative', marginBottom: 14 }}
+                                required
+                            >
+                                {
+                                    userCount > 0 ? null : (
+                                        <div style={{
+                                            position: 'absolute',
+                                            width: 65,
+                                            top: 3,
+                                            right: -70,
+                                        }}>
+                                            {
+                                                (index === arr.length - 1 && arr.length < 5) && (
+                                                    <Icon
+                                                        onClick={this.addInterval}
+                                                        style={{ marginRight: 5 }}
+                                                        className={styles.plusIcon}
+                                                        type="plus-circle-o"
+                                                    />
+                                                )
+                                            }
+                                            {
+                                                (arr.length > 1) && (
+                                                    <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeInterval(index)}>
+                                                        <Icon
+                                                            style={{ marginRight: 5 }}
+                                                            className={styles.deleteIcon}
+                                                            type="minus-circle-o"
+                                                        />
+                                                    </Popconfirm>
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                }
+                                {
+                                    getFieldDecorator(`intervalDays${key}`, {
+                                        onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
+                                        initialValue: { number: intervalDays },
+                                        rules: [
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    if (!v || !(v.number > 0)) {
+                                                        return cb('距上次消费天数必须大于0');
+                                                    }
+                                                    for (let i = 0; i < index; i++) {
+                                                        const days = arr[i].intervalDays;
+                                                        if (days > 0) {
+                                                            // 时间段设置不可以重叠
+                                                            if (v.number <= +days) {
+                                                                return cb('档位天数需大于上一档位天数');
+                                                            }
+                                                        }
+                                                    }
+                                                    cb()
+                                                },
+                                            },
+                                        ],
+                                    })(
+                                        <PriceInput
+                                            disabled={userCount > 0}
+                                            addonAfter="天"
+                                            maxNum={5}
+                                            modal="int"
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                            <Row>
+                                <Col span={17} offset={4}>
+                                    <AddGifts
+                                        maxCount={10}
+                                        type={this.props.type}
+                                        isNew={this.props.isNew}
+                                        value={gifts}
+                                        onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, index)}
+                                    />
+                                </Col>
+                            </Row>
+                        </div>
+                    ))
+                }
+            </div>
+        )
+    }
     render() {
         const { type } = this.props;
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
+        }
+        if (type == '63') { // 唤醒送礼，多个天数档位设置需要去重
+            return this.renderWakeupGiftsDetail();
         }
         return (
             <div >

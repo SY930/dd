@@ -16,10 +16,6 @@ import { connect } from 'react-redux';
 import styles from './ActivitySidebar.less';
 import { SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST } from '../../../redux/actions/saleCenterNEW/types.js';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 const moment = require('moment');
 
 class ActivitySidebar extends React.Component {

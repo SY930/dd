@@ -235,7 +235,9 @@ class StepTwo extends React.Component {
     }
     // 会员群体Option
     renderOptions() {
-        return  this.state.groupMembersList.map((groupMembers, index) => <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>);
+        return  this.state.groupMembersList.map((groupMembers, index) => (
+            <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
+        ));
     }
     handleSelectChange(value) {
         this.setState({ groupMembersID: value });
@@ -258,6 +260,8 @@ class StepTwo extends React.Component {
                     initialValue: this.state.groupMembersID,
                 })(
                     <Select
+                        showSearch
+                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         style={{ width: '100%' }}
                         placeholder="请选择会员群体"
                         getPopupContainer={(node) => node.parentNode}

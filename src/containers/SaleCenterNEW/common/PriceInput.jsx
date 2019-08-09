@@ -84,7 +84,7 @@ class PriceInput extends React.Component {
         const value = e.target.value;
         if (value) {
             if (value.charAt(value.length - 1) === '.') {
-                this.handleNumberChange({ value: value.slice(0, -1) });
+                this.handleNumberChange({ target: { value: value.slice(0, -1) } });
             }
         } else {
             return;

@@ -32,10 +32,6 @@ import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/pr
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import _ from 'lodash';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 const Immutable = require('immutable');
 
 class ExcludeCardTable extends React.Component {

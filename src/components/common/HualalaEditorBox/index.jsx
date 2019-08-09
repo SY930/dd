@@ -23,9 +23,6 @@ import styles from './hualalaEditorBox.less';
 import { Iconlist } from '../../basic/IconsFont/IconsFont';
 import { toJSON, genAction, genFetchOptions, fetchData } from '../../../helpers/util';
 
-// if (process.env.__CLIENT__ === true) {
-//     require('../../../../client/components.less')
-// }
 class HualalaEditorBox extends React.Component {
     constructor(props) {
         super(props);

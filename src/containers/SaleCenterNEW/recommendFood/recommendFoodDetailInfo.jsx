@@ -1,138 +1,109 @@
 
 import React, { Component } from 'react'
-import { Form, Select, message, Checkbox, Input, Icon, Button } from 'antd';
+import {
+    Form,
+    Select,
+    message,
+    Checkbox,
+    Input,
+    Icon,
+    Button,
+    Popconfirm,
+} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
-import CollocationTable from '../common/CollocationTable'; // 表格
+import CollocationTable from '../common/CollocationTable';
 import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
-
-const FormItem = Form.Item;
-const Option = Select.Option;
-const Immutable = require('immutable');
+import selfStyle from './selfStyle.less'
 
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID';
+import RecommendTimeInterval from './RecommendTimeInterval';
 
+const FormItem = Form.Item;
+const Option = Select.Option;
+const Immutable = require('immutable');
 
-class Tip extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-    render() {
-        const tip = (
-            <div style={{ display: this.state.tipDisplay || 'none', height: 140, width: 500, marginLeft: this.props.marginLeft }} className={styles.tip}>
-                {
-                    this.props.words.map(word => <p>{word}</p>)
-                }
-                <div>
-                    <div className={styles.tipBtn}>
-                        <Button
-                            type="ghost"
-                            style={{ color: '#787878' }}
-                            onClick={() => {
-                                this.setState({ tipDisplay: 'none' });
-                            }}
-                        >我知道了
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        );
-        return (
-            <div style={this.props.style}>
-                <Icon
-                    type="question-circle-o"
-                    className={styles.question}
-                    // style={{ marginLeft: 6 }}
-                    onMouseOver={() => {
-                        this.setState({ tipDisplay: 'block' })
-                    }}
-                />
-                <p>{tip}</p>
-            </div>
-        )
-    }
-}
-
+// 推荐菜品只有集团可以设置,若以后门店也可设置，菜品选择组件需要仔细修改!important
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
-        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
-        const priceLstHand = _priceLst.filter((food) => { return food.stageNo > -1 })
-        const priceLstAuto = _priceLst.filter((food) => { return food.stageNo == -1 })   
+        const { $foodRuleList } = this.props;
+        const foodRuleList = Immutable.List.isList($foodRuleList) ? $foodRuleList.toJS() : [];
+        if (!foodRuleList.length) { // 新建，给一组默认值
+            foodRuleList.push({
+                rule: {
+                    ruleType: 1,
+                    startTime: '0000',
+                    endTime: '2359',
+                },
+                priceList: [],
+                scopeList: [],             
+            },)
+        } else { // 编辑，已经查询并存到了store，rule字段在后端存储是json string
+            foodRuleList.forEach(item => {
+                let rule;
+                try {
+                    rule = JSON.parse(item.rule);
+                } catch (e) {
+                    rule = {
+                        ruleType: 1,
+                        startTime: '0000',
+                        endTime: '2359',
+                    };
+                }
+                item.rule = rule;
+                item.scopeList = Array.isArray(item.scopeList) ? item.scopeList : [];
+                item.priceList = Array.isArray(item.priceList) ? item.priceList : [];
+            })
+        }
         this.state = {
-            handSetChecked: true,
-            autoSetChecked: true,
-            priceLstHand,
-            priceLstAuto,
-            scopeLst: _scopeLst,
-            stageType: 1,
-            recommendNum: '',
-            recommendTopNum: '',
-            recommendNumStatus: 'success',
-            recommendTopNumStatus: 'success',
+            foodRuleList,
         };
-        this.onHandSetChange = this.onHandSetChange.bind(this);
-        this.onAutoSetChange = this.onAutoSetChange.bind(this);
-        this.handDishesChange = this.handDishesChange.bind(this);
-        this.autoDishesChange = this.autoDishesChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        rule = rule ? rule.toJS() : {};
-        let { recommendNum = '', recommendTopNum = '' } = rule;
-        let { display } = this.state;
-        display = !this.props.isNew;
-        this.setState({
-            display,
-            handSetChecked: true,
-            autoSetChecked: true,
-            recommendNum,
-            recommendTopNum,
-        });
     }
 
-    handleSubmit() {
-        let { data, stageType, handSetChecked, autoSetChecked, priceLstAuto, recommendNum, recommendTopNum, recommendNumStatus, recommendTopNumStatus } = this.state;
-        let priceLst = [],
-            scopeLst = [],
-            nextFlag = true,
-            dataFalg = true;
-        stageType = handSetChecked && !autoSetChecked ? 1 : !handSetChecked && autoSetChecked ? 2 : handSetChecked && autoSetChecked ? 0 : ''
+    handleSubmit = () => {
+        const { foodRuleList } = this.state;
+        let nextFlag = true;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
             }
         })
-        if (handSetChecked) {
-            if (Array.isArray(data)) {
-                const unCompleteIndex = data.findIndex(group => {
-                    return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
-                        (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
-                        ))
-                });
-                if (unCompleteIndex > -1) {
-                    message.warning(`组合${unCompleteIndex + 1}没有搭配完整`)
-                    return false;
-                }
+        if (!nextFlag) return false;
+        for (let i = 0; i < foodRuleList.length; i ++) {
+            let priceList = [],
+            scopeList = [];
+            const {
+                data = [],
+                priceListAuto = []
+            } = foodRuleList[i];
+            if (!data.length && !priceListAuto.length) {
+                message.warning(`使用时段${i+1}中猜你喜欢和热销推荐不能全部为空`)
+                return false;
             }
-            data ? data.forEach((group, groupIdx) => {
+            const unCompleteIndex = data.findIndex(group => {
+                return ((Object.keys(group.free[0]).length === 2 && Object.keys(group.foods[0]).length !== 2) || (
+                    (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length === 2)
+                    ))
+            });
+            if (unCompleteIndex > -1) {
+                message.warning(`使用时段${i+1}中组合${unCompleteIndex + 1}没有搭配完整`)
+                return false;
+            }
+            data.forEach((group, groupIdx) => {
                 if (Object.keys(group.free[0]).length !== 2 && Object.keys(group.foods[0]).length !== 2) {
-                    group.free.forEach((free) => {
-                        priceLst.push({
+                    group.free.filter(item => Object.keys(item).length !== 2).forEach((free) => {
+                        priceList.push({
                             foodUnitID: free.itemID,
                             foodUnitCode: free.foodKey,
                             foodName: free.foodName,
@@ -143,8 +114,8 @@ class RecommendFoodDetailInfo extends React.Component {
                             num: group.freeCountInfo[free.value || free.itemID],
                         })
                     });
-                    group.foods.forEach((food) => {
-                        scopeLst.push({
+                    group.foods.filter(item => Object.keys(item).length !== 2).forEach((food) => {
+                        scopeList.push({
                             scopeType: '2',
                             targetID: food.itemID,
                             targetCode: food.foodKey,
@@ -155,15 +126,10 @@ class RecommendFoodDetailInfo extends React.Component {
                             num: group.foodsCountInfo[food.value || food.itemID],
                         })
                     });
-                } else {
-                    nextFlag = false;
-                    dataFalg = false;
                 }
-            }) : nextFlag = false
-        }
-        if (autoSetChecked) {
-            priceLstAuto.map((free) => {
-                priceLst.push({
+            });
+            priceListAuto.forEach((free) => {
+                priceList.push({
                     foodUnitID: free.foodUnitID || free.itemID,
                     foodUnitCode: free.foodKey || free.foodUnitCode,
                     foodName: free.foodName,
@@ -174,137 +140,183 @@ class RecommendFoodDetailInfo extends React.Component {
                     num: 1,
                 })
             })
+            foodRuleList[i].priceList = priceList;
+            foodRuleList[i].scopeList = scopeList;
         }
-        if (!handSetChecked && !autoSetChecked) {
-            nextFlag = false;
-            message.warning('请至少选择一种推荐方式');
-            return;
-        }
-        if (!(recommendNumStatus === 'success' && recommendTopNumStatus === 'success')) {
-            return;
-        }
-        const rule = { stageType };
-        recommendNum ? rule.recommendNum = recommendNum : null;
-        recommendTopNum ? rule.recommendTopNum = recommendTopNum : null;
+        if (!nextFlag) return false;
+        const rule = { stageType: 0 };
         this.props.setPromotionDetail({
-            priceLst,
-            scopeLst,
+            foodRuleList: foodRuleList.map(item => ({
+                rule: JSON.stringify(item.rule),
+                scopeList: item.scopeList,
+                priceList: item.priceList,
+            })),
             rule,
         });
         return true;
     }
 
-    handDishesChange(val) {
+    handDishesChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].data = val;
         this.setState({
-            data: val,
+            foodRuleList
         })
     }
-    autoDishesChange(val) {
+    autoDishesChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].priceListAuto = val;
         this.setState({
-            priceLstAuto: val,
+            foodRuleList
         })
     }
-    onHandSetChange(e) {
-        // this.setState({ handSetChecked: e.target.checked })
+    addRule = () => {
+        const { foodRuleList } = this.state;
+        foodRuleList.push({
+            rule: {
+                startTime: undefined,
+                endTime: undefined,
+                ruleType: 1,
+            },
+            priceList: [],
+            scopeList: [],
+        })
+        this.setState({
+            foodRuleList
+        })
     }
-    onAutoSetChange(e) {
-        // this.setState({ autoSetChecked: e.target.checked })
+    removeRule = (index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList.splice(index, 1)
+        this.setState({
+            foodRuleList
+        })
+    }
+    handleTimeIntervalChange = (val, index) => {
+        const { foodRuleList } = this.state;
+        foodRuleList[index].rule = {...val};
+        this.setState({
+            foodRuleList,
+        })
+        for (let i = 0; i < foodRuleList.length; i++) {
+            if (i !== index) {
+                const value = foodRuleList[i].rule
+                this.props.form.setFields({
+                    [`timeinfo${i}`]: {value,}
+                })
+            }
+        }
     }
     render() {
-        const { recommendNumStatus, recommendTopNumStatus } = this.state;
-        const { isShopFoodSelectorMode } = this.props;
+        const {
+            foodRuleList,
+        } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
-                        <Checkbox onChange={this.onHandSetChange} checked={this.state.handSetChecked}>手动设置推荐菜</Checkbox>
-                        <Tip
-                            style={{ position: 'absolute', top: 0, left: 120 }}
-                            marginLeft={-98}
-                            words={['推荐菜品的数量大于列表中推荐菜品数量，微信页面呈现会智能补齐剩余数量', '推荐菜品的数量小于列表中推荐菜品数量，以推荐菜品总数量为准']}
-                        />
-                    </FormItem>
                     {
-                        this.state.handSetChecked ?
-                            <div>
-                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
-                                    validateStatus={recommendNumStatus}
-                                    help={recommendNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
-                                >
-                                    <Input
-                                        addonAfter='个'
-                                        value={this.state.recommendNum}
-                                        onChange={(e) => {
-                                            this.setState({
-                                                recommendNum: e.target.value,
-                                                recommendNumStatus: e.target.value > 50 ? 'error' : 'success',
-                                            })
-                                        }}
-                                    />
-                                </FormItem>
-                                <FormItem label="猜你喜欢" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
+                        foodRuleList.map((item, index) => (
+                            <div className={selfStyle.blockWrapper}>
+                                <div className={selfStyle.iconArea}>
                                     {
-                                        isShopFoodSelectorMode ? (
-                                            <CollocationTable
-                                                onChange={this.handDishesChange}
-                                                priceLst={this.state.priceLstHand}
-                                                scopeLst={this.state.scopeLst}
-                                                type="5010"
-                                            />
-                                        ) : (
-                                            <CollocationTableWithBrandID
-                                                onChange={this.handDishesChange}
+                                        (index === foodRuleList.length - 1 && index < 99) && (
+                                            <Icon
+                                                onClick={this.addRule}
+                                                style={{ marginRight: 10 }}
+                                                className={selfStyle.plusIcon}
+                                                type="plus-circle-o"
                                             />
                                         )
                                     }
-                                    
-                                </FormItem>
-                            </div> : null
-                    }
-                    <FormItem style={{ marginLeft: 89, position: 'relative', display: 'none' }}>
-                        <Checkbox
-                            onChange={this.onAutoSetChange}
-                            checked={this.state.autoSetChecked}
-                            style={{ marginTop: 30 }}
-                        >热销推荐</Checkbox>
-                        <Tip
-                            style={{ position: 'absolute', top: 31, left: 134 }}
-                            marginLeft={-114}
-                            words={['热销推荐菜品数量大于所选菜品，微信页面呈现会智能补齐剩余数量', '热销推荐菜品的数量小于所选菜品，以填写的数量为准']}
-                        />
-                    </FormItem>
-                    {
-                        this.state.autoSetChecked ?
-                            <div>
-                                <FormItem label="" colon={false} labelCol={{ span: 0 }} wrapperCol={{ span: 0 }}
-                                    validateStatus={recommendTopNumStatus}
-                                    help={recommendTopNumStatus === 'success' ? null : '推荐菜品数量最大值为50'}
-                                >
-                                    <Input
-                                        addonAfter='个'
-                                        value={this.state.recommendTopNum}
-                                        onChange={(e) => {
-                                            this.setState({
-                                                recommendTopNum: e.target.value,
-                                                recommendTopNumStatus: e.target.value > 50 ? 'error' : 'success',
-                                            })
-                                        }}
-                                    />
-                                </FormItem>
-                                <FormItem label="热销推荐" colon={false} labelCol={{ span: 4 }} wrapperCol={{ span: 19 }}>
                                     {
-                                        this.props.form.getFieldDecorator('priceLst', {
-                                            initialValue: this.state.priceLstAuto,
-                                        })(                                           
-                                            this.props.isShopFoodSelectorMode ? (
-                                                <EditBoxForDishes onChange={this.autoDishesChange} type="5010" />
-                                            ) : (
-                                                <ConnectedPriceListSelector onChange={this.autoDishesChange} />
-                                            )                                         
-                                        )}
-                                </FormItem>
-                            </div> : null
-                    }
+                                        (foodRuleList.length > 1) && (
+                                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeRule(index)}>
+                                                <Icon
+                                                    style={{ marginRight: 10 }}
+                                                    className={selfStyle.deleteIcon}
+                                                    type="minus-circle-o"
+                                                />
+                                            </Popconfirm>
+                                        )
+                                    }
+                                </div>
+                                <div className={selfStyle.blockHeader}>
+                                    <FormItem
+                                        label={`使用时段${index + 1}`}
+                                        colon={false}
+                                        required={true}
+                                        labelCol={{ span: 3 }}
+                                        wrapperCol={{ span: 20 }}
+                                    >      
+                                        {
+                                            this.props.form.getFieldDecorator(`timeinfo${index}`, {
+                                                initialValue: item.rule, // {startTime: 'HHmm', endTime: 'HHmm'}
+                                                onChange: (val) => this.handleTimeIntervalChange(val, index),
+                                                rules: [
+                                                    {
+                                                        validator: (rule, v, cb) => {
+                                                            if (!v || !v.startTime || !v.endTime) {
+                                                                return cb('使用时段必须填写完整');
+                                                            }
+                                                            if (v.startTime > v.endTime) {
+                                                                return cb('结束时间不能早于开始时间');
+                                                            }
+                                                            for (let i = 0; i < index; i++) {
+                                                                const rule = foodRuleList[i].rule;
+                                                                if (!!rule.startTime && !!rule.endTime) {
+                                                                    // 时间段设置不可以重叠
+                                                                    if ((v.startTime >= rule.startTime
+                                                                        && v.startTime <= rule.endTime) || (
+                                                                            v.endTime >= rule.startTime
+                                                                            && v.endTime <= rule.endTime
+                                                                        ) || (rule.startTime >= v.startTime
+                                                                        && rule.startTime <= v.endTime) || (
+                                                                            rule.endTime >= v.startTime
+                                                                            && rule.endTime <= v.endTime
+                                                                    )) {
+                                                                        return cb('时段设置不能有交叉');
+                                                                    }
+                                                                }
+                                                            }
+                                                            cb()
+                                                        },
+                                                    },
+                                                ],
+                                            })(<RecommendTimeInterval />)
+                                        }
+                                    </FormItem>
+                                </div>
+                                <div className={selfStyle.blockContent}>
+                                    <FormItem
+                                        label="猜你喜欢"
+                                        colon={false}
+                                        labelCol={{ span: 3 }}
+                                        wrapperCol={{ span: 20 }}
+                                    >      
+                                        <CollocationTableWithBrandID
+                                            prices={item.priceList}
+                                            scopes={item.scopeList}
+                                            onChange={(val) => this.handDishesChange(val, index)}
+                                        />             
+                                    </FormItem>                  
+                                    <FormItem
+                                        label="热销推荐"
+                                        colon={false}
+                                        style={{marginTop: 12}}
+                                        labelCol={{ span: 3 }}
+                                        wrapperCol={{ span: 20 }}
+                                    >
+                                        {
+                                            this.props.form.getFieldDecorator(`priceList${index}`, {
+                                                initialValue: item.priceList.filter(item => item.stageNo == -1),
+                                                onChange: (val) =>  this.autoDishesChange(val, index)
+                                            })(<ConnectedPriceListSelector />)
+                                        }
+                                    </FormItem>
+                                </div>               
+                            </div>
+                        ))
+                    }     
                 </Form>
             </div>
         )
@@ -313,9 +325,7 @@ class RecommendFoodDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
-        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
-        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        $foodRuleList: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'foodRuleList']),
     }
 }
 

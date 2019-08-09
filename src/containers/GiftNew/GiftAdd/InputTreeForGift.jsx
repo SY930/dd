@@ -14,10 +14,6 @@ import {
 import GiftCfg from '../../../constants/Gift';
 import _ from 'lodash';
 
-if (process.env.__CLIENT__ === true) {
-    // require('../../../../client/componentsPage.less');
-}
-
 const shareableGiftType = [ 10, 20, 21, 110, 111];
 
 const TreeNode = Tree.TreeNode;
