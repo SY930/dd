@@ -520,18 +520,17 @@ class TrdTemplate extends React.Component {
                     </span>
                 </FormItem>
                 <FormItem
-                    label='封面图片'
+                    label='礼品logo图'
                     {...itemStyle}
                     validateStatus={logoUrl ? 'success' : 'error'}
-                    help={logoUrl ? null : '请上传封面图片'}
+                    help={logoUrl ? null : '请上传礼品logo图'}
                     style={{ position: 'relative' }}
                 >
                     <GiftImagePath
                         disabled={edit}
-                        wrapperHeight={200}
-                        modifierClassName="horizontalModifier"
-                        limit={2048}
-                        hint="图片建议尺寸：850像素 x 350像素，大小不超过2MB"
+                        wrapperHeight={240}
+                        limit={1024}
+                        hint="图片建议尺寸：300像素 x 300像素，大小不超过1MB"
                         value={logoUrl}
                         onChange={this.handleLogoUrlChange}
                     />
