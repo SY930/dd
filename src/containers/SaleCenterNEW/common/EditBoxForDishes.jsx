@@ -52,6 +52,7 @@ class EditBoxForDishes extends React.Component {
         })
     }
     initialState(foodList, foodCategoryCollection) {
+
         if (foodList === undefined || foodCategoryCollection === undefined) {
             return
         }
@@ -64,7 +65,11 @@ class EditBoxForDishes extends React.Component {
                         .forEach((category) => {
                             category.foods
                                 .forEach((foodInfo) => {
-                                    if (foodInfo.itemID == food.foodUnitID) {
+                                    if (
+                                        (foodInfo.itemID == food.foodUnitID) ||
+                                        (foodInfo.foodName + foodInfo.unit === food.foodName + food.foodUnitName) ||
+                                        (foodInfo.foodName + foodInfo.unit === food.targetName + food.targetUnitName) 
+                                    ) {
                                         if (this.props.stageNum === undefined) {
                                             _foodSelections.add(foodInfo);
                                         }
@@ -128,16 +133,6 @@ class EditBoxForDishes extends React.Component {
             _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
             this.setState({
                 priceLst:  _priceLst,
-            }, () => {
-                this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
-            })
-        }
-        if (
-            (nextProps.type === '5010' || nextProps.type === '1090') &&
-            !Immutable.is(Immutable.fromJS(this.props.value), Immutable.fromJS(nextProps.value))
-        ) {
-            this.setState({
-                priceLst: nextProps.value
             }, () => {
                 this.initialState(this.state.priceLst, this.state.foodCategoryCollection);
             })

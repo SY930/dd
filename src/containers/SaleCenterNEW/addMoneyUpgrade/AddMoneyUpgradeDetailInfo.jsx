@@ -80,10 +80,6 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             finish: this.handleSubmit,
         });
 
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            this.setState({ foodMenuList })
-        }
         let { display } = this.state;
         display = !this.props.isNew;
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
@@ -116,71 +112,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             giveFoodCount: _rule.giveFoodCount || '',
         });
     }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.isShopFoodSelectorMode) {
-            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized']) &&
-            !this.state.hadFoodMenuList) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                hadFoodMenuList: true,
-            })
-        }
-
-        if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) &&
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0 &&
-            (!this.state.hadSetWhenEdit ||
-                this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']) !== nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']))) {
-            const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-            const $promotionDetail = nextProps.promotionDetailInfo.getIn(['$promotionDetail']);
-            const _priceLst = $promotionDetail.getIn(['priceLst']) ?
-                $promotionDetail.getIn(['priceLst']).toJS() : [];
-            let _upGradeDishes = $promotionDetail.getIn(['scopeLst']).toJS().filter(scope => scope.scopeType == "5");
-            _upGradeDishes = _upGradeDishes.length > 0 ? _upGradeDishes : $promotionDetail.getIn(['upGradeDishes']).toJS();
-            const _dish = [];
-            _priceLst.map((price) => {
-                foodMenuList.map((food) => {
-                    if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                        _dish.push(food)
-                    }
-                });
-            });
-            _dish.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-                item.foodUnitID = item.itemID;
-            }));
-            const upGradeDishes = [];
-            _upGradeDishes.map((price) => {
-                foodMenuList.map((food) => {
-                    if (food.itemID == price.targetID || food.itemID == price.itemID) { // foodUnitID就是由itemID转换
-                        upGradeDishes.push(food)
-                    }
-                });
-            });
-            upGradeDishes.map(((item) => {
-                item.id = item.foodID;
-                item.content = item.foodName;
-                item.foodUnitID = item.itemID;
-            }));
-            this.setState({
-                upGradeDishes,
-                dishes: _dish,
-                hadSetWhenEdit: true,
-            });
-        }
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']) !== nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data'])) {
-            this.setState({
-                foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-            })
-        }
-    }
-    }
 
     handleSubmit = () => {
         let {
-            foodMenuList,
             countType,
             subjectType,
             stageCondition,
