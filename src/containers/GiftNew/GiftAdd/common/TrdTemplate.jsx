@@ -35,6 +35,7 @@ import {
 import PriceInput from '../../../SaleCenterNEW/common/PriceInput'
 import styles from '../Crm.less';
 import selfStyle from './selfStyle.less';
+import GiftImagePath from './GiftImagePath';
 const RangePicker = DatePicker.RangePicker;
 
 const FormItem = Form.Item
@@ -124,6 +125,7 @@ class TrdTemplate extends React.Component {
             type: FIX_TERM,
             fixedBeginTerm: '0',
             fixedTerm: undefined,
+            logoUrl: '',
             beginTimestamp: undefined,
             endTimestamp: undefined,
             appID: undefined,
@@ -210,6 +212,7 @@ class TrdTemplate extends React.Component {
                 defaultChecked,
                 mpID,
                 notice,
+                logoUrl,
                 type,
                 fixedBeginTerm,
                 fixedTerm,
@@ -221,6 +224,7 @@ class TrdTemplate extends React.Component {
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
+            if (!logoUrl) TrdTemplateStatus = false;
             if (type === FIX_TERM) {
                 !(fixedTerm > 0) && (TrdTemplateStatus = false)
             } else {
@@ -233,6 +237,7 @@ class TrdTemplate extends React.Component {
                     brandName,
                     mpID,
                     notice,
+                    logoUrl,
                     color,
                     type,
                     fixedBeginTerm: type === FIX_TERM ? fixedBeginTerm : undefined,
@@ -403,6 +408,11 @@ class TrdTemplate extends React.Component {
             this.propsChange()
         })
     }
+    handleLogoUrlChange = (value) => {
+        this.setState({ logoUrl: value }, () => {
+            this.propsChange()
+        })
+    }
     handleFixedBeginTermSelect = (value) => {
         this.setState({ fixedBeginTerm: value }, () => {
             this.propsChange()
@@ -430,6 +440,7 @@ class TrdTemplate extends React.Component {
             mpID,
             color,
             notice,
+            logoUrl,
             fixedBeginTerm,
             fixedTerm,
             beginTimestamp,
@@ -507,6 +518,23 @@ class TrdTemplate extends React.Component {
                     <span style={{ position: 'absolute', top: 0, right: 8, color: '#787878' }}>
                         {`${(notice || '').length} / 16`}
                     </span>
+                </FormItem>
+                <FormItem
+                    label='封面图片'
+                    {...itemStyle}
+                    validateStatus={logoUrl ? 'success' : 'error'}
+                    help={logoUrl ? null : '请上传封面图片'}
+                    style={{ position: 'relative' }}
+                >
+                    <GiftImagePath
+                        disabled={edit}
+                        wrapperHeight={200}
+                        modifierClassName="horizontalModifier"
+                        limit={2048}
+                        hint="图片建议尺寸：850像素 x 350像素，大小不超过2MB"
+                        value={logoUrl}
+                        onChange={this.handleLogoUrlChange}
+                    />
                 </FormItem>
                 <FormItem
                     label="生效方式"
