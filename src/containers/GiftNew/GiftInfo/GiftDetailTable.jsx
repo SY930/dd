@@ -277,6 +277,7 @@ class GiftDetailTable extends Component {
         gift.data.shareType = gift.data.shareType === undefined ? '' : String(gift.data.shareType);
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
+        gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
         const { FetchSharedGifts, queryCouponShopList } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         if (gift.value == 100) { //
