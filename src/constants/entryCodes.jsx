@@ -30,7 +30,9 @@ export const PROMOTION_CALENDAR_SHOP = 'promotion_calendar_shop'; // 营销日�
 export const PROMOTION_WECHAT_COUPON_LIST = '10000761000'; // 微信支付代金券 列表页
 export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页
 
-export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001';
-export const ONLINE_PROMOTION_CREATE_SHOP = '1000086002';
-export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001';
-export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003';
+export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角
+export const ONLINE_PROMOTION_CREATE_SHOP = '1000086002'; // 新建线上营销 店铺视角
+export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001'; // 线上营销管理 集团视角
+export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管理 店铺视角
+
+export const TRD_PROMOTION_INTERFACE = '100009992';
