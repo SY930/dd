@@ -118,6 +118,21 @@ const FORMITEMS = {
             message: '整数不超过8位，小数不超过2位，必须大于0',
         }],
     },
+    maxUseLimit: {
+        label: '一笔订单最多使用',
+        type: 'text',
+        placeholder: '不填表示不限制',
+        surfix: '张',
+        rules: [{
+            validator: (rule, v = '', cb) => {
+                if (/^(?:[1-9][0-9]{0,5})?$/.test(v)) {
+                    return cb()
+                }
+                cb(rule.message);
+            },
+            message: '张数范围1~999999'
+        }],
+    },
     isFoodCatNameList: {
         // label: '抵扣规则',
         // type: 'combo',
@@ -251,6 +266,7 @@ const FIRST_KEYS = {
                 'giftValue',
                 'price',
                 'foodNameList',
+                'priceSortRule',
                 'giftRemark',
             ],
         },
@@ -327,6 +343,7 @@ const FIRST_KEYS = {
                 'stageAmount',
                 'buyGiveSecondaryFoods',
                 'giveFoodCount',
+                'priceSortRule',
                 'price',
                 'giftRemark',
             ],
