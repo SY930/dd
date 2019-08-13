@@ -490,7 +490,8 @@ class MySpecialActivities extends React.Component {
                         <li>
                             <Select
                                 style={{ width: 160 }}
-                                showSearch={true}
+                                showSearch
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择活动类型"
                                 defaultValue="全部"
                                 onChange={(value) => {
