@@ -38,6 +38,7 @@ export const GIFT_NEW_CANCEL_CREATE_EDIT_GIFT = 'gift new :: 取消新建或编�
 export const GIFT_NEW_CANCEL_START_SAVING_GIFT = 'gift new :: 开始保存礼品模板(loading状态开始)';
 export const GIFT_NEW_CANCEL_END_SAVING_GIFT = 'gift new :: 保存礼品模板结束(loading状态结束)';
 export const GIFT_NEW_CHANGE_FORM_KEY_VALUE = 'gift new :: 礼品字段变更';
+export const GIFT_NEW_SAVE_BRANDS_TO_STORE = 'gift new :: GIFT_NEW_SAVE_BRANDS_TO_STORE';
 
 const getGiftListBegin = (opt) => {
     return {
@@ -556,6 +557,13 @@ export const endSaving = (opt) => {
 export const changeGiftFormKeyValue = (opt) => {// opt: {key: String, value: primitive?}
     return {
         type: GIFT_NEW_CHANGE_FORM_KEY_VALUE,
+        payload: opt,
+    }
+};
+
+export const saveBrandsToStore = (opt) => {
+    return {
+        type: GIFT_NEW_SAVE_BRANDS_TO_STORE,
         payload: opt,
     }
 };

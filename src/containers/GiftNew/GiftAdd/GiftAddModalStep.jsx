@@ -19,7 +19,6 @@ import BaseForm from '../../../components/common/BaseForm';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
 import FoodBox from './FoodBox';
-import MoreFoodBox from './MoreFoodBox';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
 import {
@@ -48,10 +47,73 @@ import AmountType from "./common/AmountType";
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 import SelectCardTypes from "../components/SelectCardTypes";
+import {
+    fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+
+const processFinalCategoryAndDishData = (params, property) => {
+    if (params.hasOwnProperty(property)) {
+        if (!params[property]) { // 用户没选择，默认全部信息
+            params.foodSelectType = 2;
+            params.isExcludeFood = '0';
+            params.excludeFoodScopes = [];
+            params.couponFoodScopes = [];
+        }
+        if (params[property] && params[property] instanceof Object) {
+            const {
+                categoryOrDish,
+                foodCategory = [],
+                excludeDishes = [],
+                dishes = [],
+            } = params[property];
+            // categoryOrDish 0 分类， 1 菜品
+            // foodSelectType 1 分类， 0 菜品， 2 全选
+            const foodSelectType = 1 - categoryOrDish;
+            if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
+                params.foodSelectType = 2
+            } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
+                params.foodSelectType = 2
+            } else {
+                params.foodSelectType = foodSelectType
+            }
+            params.isExcludeFood = excludeDishes && excludeDishes.length > 0 ? '1' : '0';
+            // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
+            params.couponFoodScopes = foodCategory.map((cat) => {
+                return {
+                    targetID: cat.foodCategoryID,
+                    targetCode: cat.foodCategoryCode,
+                    targetName: cat.foodCategoryName,
+                    brandID: cat.brandID || '0',
+                }
+            }).concat(dishes.map((food) => {
+                return {
+                    targetID: food.itemID,
+                    targetCode: food.foodCode,
+                    targetName: food.foodName,
+                    targetUnitName: food.unit || '',
+                    brandID: food.brandID || '0',
+                }
+            }));
+            params.excludeFoodScopes = excludeDishes.map((food) => {
+                return {
+                    targetID: food.itemID,
+                    targetCode: food.foodCode,
+                    targetName: food.foodName,
+                    targetUnitName: food.unit || '',
+                    brandID: food.brandID || '0',
+                }
+            })
+        }
+        delete params[property];
+    }
+}
 
 class GiftAddModalStep extends React.PureComponent {
     constructor(props) {
@@ -72,12 +134,7 @@ class GiftAddModalStep extends React.PureComponent {
             giftData: [],
             sharedGifts: [],
             isFoodCatNameList: '1',
-            foodNameList: [],
             scopeLst: [],
-            foodNameListStatus: 'success',
-            buyGiveSecondaryFoodsStatus: 'success',
-            buyGiveFoodsStatus: 'success',
-            // transferType:0
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -93,9 +150,21 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { FetchGiftSort, type, gift: thisGift } = this.props;
-        const { getPromotionShopSchema} = this.props;
-        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
+        const {
+            FetchGiftSort,
+            type,
+            gift: thisGift,
+            getPromotionShopSchema,
+            fetchFoodCategoryInfo,
+            fetchFoodMenuInfo,
+            accountInfo,
+        } = this.props;
+        const params = {
+            groupID: accountInfo.get('groupID'),
+        };
+        fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        getPromotionShopSchema(params);
         const { name, data, value } = thisGift;
         const { values } = this.state;
         if (type === 'edit' && value == '111') {
@@ -166,6 +235,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
+        values[key] = value;
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -187,10 +257,6 @@ class GiftAddModalStep extends React.PureComponent {
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
-
-        if (key !== 'foodNameList') {
-            values[key] = value;
-        }
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -204,15 +270,13 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({ secondKeys });
                 break;
             case 'discountType':
-                const keys = [...firstKeys[describe][0].keys];
-                const discountTypeIndex = _.findIndex(keys, item => item == 'disCountTypeAndValue');
-                const foodSelectorIndex = _.findIndex(keys, item => item == 'foodsboxs');
+                let keys = [...firstKeys[describe][1].keys];
                 if (value != 0) {
-                    foodSelectorIndex == -1 && keys.splice(discountTypeIndex + 1, 0, 'foodsboxs');
+                    keys.push('foodsboxs')
                 } else {
-                    foodSelectorIndex !== -1 && keys.splice(foodSelectorIndex, 1);
+                    keys = []
                 }
-                firstKeys[describe][0].keys = [...keys];
+                firstKeys[describe][1].keys = [...keys];
                 this.setState({ firstKeys });
                 break;
             case 'isDiscountRate':
@@ -278,57 +342,6 @@ class GiftAddModalStep extends React.PureComponent {
                     sharedGifts: value,
                 })
                 break;
-            case 'buyGiveFoods':
-                {
-                    if (!value) break;
-                    const {  dishes = [] } = value;
-                    if (dishes.length) {
-                        this.setState({ buyGiveFoodsStatus: 'success' });
-                    } else {
-                        this.setState({ buyGiveFoodsStatus: 'error' });
-                    }
-                    break;
-                }
-            case 'buyGiveSecondaryFoods':
-                {
-                    if (!value) break;
-                    const {  dishes = [] } = value;
-                    if (dishes.length) {
-                        this.setState({ buyGiveSecondaryFoodsStatus: 'success' });
-                    } else {
-                        this.setState({ buyGiveSecondaryFoodsStatus: 'error' });
-                    }
-                    break;
-                }
-            case 'foodNameList':
-                if (value instanceof Array && value.length > 0 && typeof (value[0]) === 'string') {// Array<T: String>
-                    // values.isFoodCatNameList = data.isFoodCatNameList;
-                    break;
-                }
-                if (value) {
-                    const { foodCategory = [], dishes = [], categoryOrDish = '1' } = value;
-                    if (foodCategory.length || dishes.length) {
-                        this.setState({ foodNameListStatus: 'success' });
-                    } else {
-                        this.setState({ foodNameListStatus: 'error' });
-                    }
-                    // 多存一份菜品, 菜品名与规格分开
-                    values.foodScopes = {
-                        foodCategory,
-                        dishes,
-                        categoryOrDish
-                    };
-                    const _foodCategory = foodCategory.map(cat => cat.foodCategoryName)
-                    const _dishes = dishes.map(dish => dish.foodName + dish.unit || dish.foodNameWithUnit)
-                    values.isFoodCatNameList = categoryOrDish;
-                    values.foodNameList = categoryOrDish == '1' ? _foodCategory : _dishes;
-                } else {
-                    this.setState({
-                        isFoodCatNameList: '1',
-                        foodNameList: [],
-                    })
-                }
-                break;
             default:
                 break;
         }
@@ -343,42 +356,12 @@ class GiftAddModalStep extends React.PureComponent {
             firstKeys: FIRST_KEYS,
             secondKeys: SECOND_KEYS,
             finishLoading: false,
-            foodNameListStatus: 'success',
         });
         cb && cb();
     }
 
-    validateFoodList = (basicValues) => {
-        if (!this.state.values.foodNameList || !this.state.values.foodNameList.length) {
-            message.warning('请至少选择一个菜品');
-            this.setState({ foodNameListStatus: 'error' });
-            return false;
-        }
-        this.setState({ foodNameListStatus: 'success' });
-        return true;
-    }
     handleSubmit = () => {
         this.firstForm.validateFieldsAndScroll((error, basicValues) => {
-            if (this.props.gift.value == '20' || this.props.gift.value == '21') {
-                if (this.validateFoodList(basicValues) === false) {
-                    return false;
-                }
-            }
-            if (this.props.gift.value == '110') {
-
-                if (!this.state.values.buyGiveFoods || !this.state.values.buyGiveFoods.dishes.length) {
-                    this.setState({ buyGiveFoodsStatus: 'error' });
-                    return false;
-                }
-                if (!this.state.values.buyGiveSecondaryFoods || !this.state.values.buyGiveSecondaryFoods.dishes.length) {
-                    this.setState({ buyGiveSecondaryFoodsStatus: 'error' });
-                    return false;
-                }
-                this.setState({
-                    buyGiveSecondaryFoodsStatus: 'success',
-                    buyGiveFoodsStatus: 'success',
-                });
-            }
             if (error) return false;
             this.handleFinish();
         })
@@ -457,10 +440,6 @@ class GiftAddModalStep extends React.PureComponent {
                 // 不传值0,1,2创建会报错
                 params.giftShareType = '0'
             }
-            if (params.giftShareType != '0' && params.giftShareType != '1' && params.giftShareType != '2') {
-                // 不传值0,1,2创建会报错
-                params.giftShareType = '0'
-            }
             if (!params.isDiscountRate && value != '111') {
                 params.discountRate = 1
             }
@@ -513,70 +492,14 @@ class GiftAddModalStep extends React.PureComponent {
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
             // 对旧字段的兼容透传
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
-            // foodbxs数据,目前代金券和折扣券用
-            if (params.hasOwnProperty('foodsboxs')) {
-                if (!params.foodsboxs) { // 用户没选择，默认全部信息
-                    params.foodSelectType = 2;
-                    params.isExcludeFood = '0';
-                    params.excludeFoodScopes = [];
-                    params.couponFoodScopes = [];
-                }
-                if (params.foodsboxs && params.foodsboxs instanceof Object) {
-                    const { foodSelectType, isExcludeFood, foodCategory = [], excludeDishes = [], dishes = [] } = params.foodsboxs;
-                    if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
-                        params.foodSelectType = 2
-                    } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
-                        params.foodSelectType = 2
-                    } else {
-                        params.foodSelectType = foodSelectType
-                    }
-                    params.isExcludeFood = excludeDishes && excludeDishes.length > 0 ? '1' : '0';
-                    // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
-                    params.couponFoodScopes = foodCategory.map((cat) => {
-                        return {
-                            targetID: cat.foodCategoryID,
-                            targetCode: cat.foodCategoryCode,
-                            targetName: cat.foodCategoryName,
-                        }
-                    }).concat(dishes.map((food) => {
-                        return {
-                            targetID: food.itemID,
-                            targetCode: food.foodCode,
-                            targetName: food.foodName,
-                            targetUnitName: food.unit || '',
-                        }
-                    }));
-                    params.excludeFoodScopes = excludeDishes.map((food) => {
-                        return {
-                            targetID: food.itemID,
-                            targetCode: food.foodCode,
-                            targetName: food.foodName,
-                            targetUnitName: food.unit || '',
-                        }
-                    })
-                }
-                delete params.foodsboxs;
-            }
-            // foodbxs数据,目前代金券和折扣券用
-            if (params.hasOwnProperty('foodScopes')) {
-                const { foodCategory = [], dishes = [], categoryOrDish = '1' } = params.foodScopes;
-                params.foodSelectType = Number(categoryOrDish);
-                params.excludeFoodScopes = [];
-                params.couponFoodScopes = foodCategory.map((cat) => {
-                    return {
-                        targetID: cat.foodCategoryID,
-                        targetCode: cat.foodCategoryCode,
-                        targetName: cat.foodCategoryName,
-                    }
-                }).concat(dishes.map((food) => {
-                    return {
-                        targetID: food.itemID,
-                        targetCode: food.foodCode,
-                        targetName: food.foodName,
-                        targetUnitName: food.unit || '',
-                    }
-                }));
-                delete params.foodScopes;
+            if (value == '20' || value == '21') {
+                processFinalCategoryAndDishData(params, 'foodScopes');
+                params.foodNameList = params.couponFoodScopes
+                    .map(target => `${target.targetName}${target.targetUnitName}`)
+                    .join(',');
+                params.isFoodCatNameList = params.foodSelectType;
+            } else { // foodbxs数据,目前代金券和折扣券用
+                processFinalCategoryAndDishData(params, 'foodsboxs');
             }
             if (value == '111') { // 折扣券
                 params.discountRate = params.discountRate.number;
@@ -596,6 +519,7 @@ class GiftAddModalStep extends React.PureComponent {
                         targetCode: food.foodCode,
                         targetName: food.foodName,
                         targetUnitName: food.unit || '',
+                        brandID: food.brandID || '0',
                     }
                 });
                 params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
@@ -605,6 +529,7 @@ class GiftAddModalStep extends React.PureComponent {
                         foodPrice: food.price,
                         foodName: food.foodName,
                         foodUnitName: food.unit || '',
+                        brandID: food.brandID || '0',
                     }
                 });
                 delete params.buyGiveFoods;
@@ -642,8 +567,6 @@ class GiftAddModalStep extends React.PureComponent {
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
-            params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
-            params.isFoodCatNameList = values.isFoodCatNameList;
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
@@ -1034,49 +957,45 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderFoodName(decorator, form) {
-        // const { getFieldValue } = form;
-        const formItemLayout = { labelCol: { span: 1 }, wrapperCol: { span: 23 } };
-        let _scopeLst = [];
-        if (this.props.type === 'edit') {
-            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
-            if (this.state.values.foodNameList) {
-                foodNameList = this.state.values.foodNameList;
-            }
-            const _foodNameList = foodNameList instanceof Array ? foodNameList : foodNameList.split(',');
-            _scopeLst = _foodNameList.map((name) => {
-                return isFoodCatNameList == '1' ? {
-                    'scopeType': '1',
-                    'foodCategoryName': name,
-                } :
-                    {
-                        'scopeType': '2',
-                        'foodNameWithUnit': name,
-                    }
-            })
+        const { gift: { data } } = this.props;
+        let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
+        let scopeList;
+        if (foodSelectType == 2) { // 全部菜品
+            scopeList = [];
+            foodSelectType = 1;
+        } else if (foodSelectType == 1) { // 按分类
+            scopeList = couponFoodScopeList.map(cat => ({scopeType: 1, ...cat})).concat(excludeFoodScopes.map(food => ({scopeType: 4, ...food})));
+            foodSelectType = 1;
+        } else { // 按单品
+            scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
+            foodSelectType = 0;
         }
-        const {isFoodCatNameList, subGroupID} = this.props.gift.data;
+        if (!scopeList.length) { // 历史数据，只有fooNameList，
+            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            scopeList = foodNameList.map(nameStr => ({
+                scopeType: isFoodCatNameList == 1 ? 1 : 2,
+                targetName: nameStr,
+                targetUnitName: '',
+            }))
+        }
         return (
             <FormItem
-                {...formItemLayout}
                 label={''}
-                className={styles.foodBox}
-                validateStatus={this.state.foodNameListStatus}
-                help={this.state.foodNameListStatus === 'success' ? null : '不可为空'}
+                style={{
+                    marginLeft: 8,
+                    width: '141.176%',
+                    marginBottom: 12,
+                }}
             >
                 {
                     decorator({})(
-                        <FoodBox
-                            categoryOrDish={Number(isFoodCatNameList)}
-                            radioLabel={'抵扣方式'}
-                            subGroupID={subGroupID}
-                            noExclude={true}
-                            catOrFoodValue={_scopeLst}
-                            autoFetch={true}
+                        <GiftCategoryAndFoodSelector
+                            showExludeDishes={false}
+                            scopeList={scopeList}
                         />
                     )
                 }
             </FormItem>
-
         )
     }
     renderisNeedCustomerInfo = (decorator) => {
@@ -1126,15 +1045,18 @@ class GiftAddModalStep extends React.PureComponent {
             foodSelectType = 0;
         }
         return (
-            <FormItem style={{ marginTop: -12, marginBottom: 0, display: this.isHuaTianSpecificCoupon() ? 'none' : 'block' }}>
+            <FormItem
+                style={{
+                    marginTop: -12,
+                    marginLeft: 8,
+                    width: '141.176%',
+                    marginBottom: 0,
+                    display: this.isHuaTianSpecificCoupon() ? 'none' : 'block',
+                }}>
                 {
                     decorator({})(
-                        <MoreFoodBox
-                            key="foodsboxs"
-                            subGroupID={data.subGroupID}
+                        <GiftCategoryAndFoodSelector
                             scopeLst={scopeList}
-                            foodSelectType={foodSelectType}
-                            isExcludeFood={'1'}
                         />)
                 }
             </FormItem>
@@ -1143,56 +1065,62 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
-        let { couponFoodScopeList = [], foodSelectType} = data;
+        let { couponFoodScopeList = []} = data;
         const scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
-        foodSelectType = 0;
-
         return (
-            <FormItem
-                style={{ marginTop: -12, marginBottom: 0 }}
-                validateStatus={this.state.buyGiveFoodsStatus}
-                help={this.state.buyGiveFoodsStatus === 'success' ? null : '不可为空'}
-            >
-                {
-                    decorator({})(
-                        <MoreFoodBox
-                            subGroupID={data.subGroupID}
-                            isBuyGive={true}
-                            key="buyGiveFoodsboxs"
-                            scopeLst={scopeList}
-                            foodSelectType={foodSelectType}
-                            isExcludeFood={'1'}
-                        />)
-                }
-            </FormItem>
+            decorator({
+                rules: [
+                    {
+                        required: true,
+                        validator: (rule, v, cb) => {
+                            const { dishes = [] } = v || {};
+                            if (!dishes.length) {
+                                return cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '不可为空',
+                    },
+                ],
+            })(
+                <GiftCategoryAndFoodSelector
+                    dishOnly
+                    priceLst={scopeList}
+                />
+            )
         )
     }
 
     renderBuyGiveSecondaryFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
-        let { couponFoodOfferList = [], foodSelectType} = data;
-        const scopeList = couponFoodOfferList.map(food => ({scopeType: 2, targetName: food.foodName, targetUnitName:food.foodUnitName,  ...food}));
-        foodSelectType = 0;
-
+        let { couponFoodOfferList = [] } = data;
+        const scopeList = couponFoodOfferList.map(food => ({
+            scopeType: 2,
+            targetName: food.foodName,
+            targetUnitName:food.foodUnitName,
+            ...food
+        }));
         return (
-            <FormItem
-                style={{ marginTop: -12, marginBottom: 0 }}
-                validateStatus={this.state.buyGiveSecondaryFoodsStatus}
-                help={this.state.buyGiveSecondaryFoodsStatus === 'success' ? null : '不可为空'}
-            >
-                {
-                    decorator({})(
-                        <MoreFoodBox
-                            subGroupID={data.subGroupID}
-                            isBuyGive={true}
-                            isSecondary={true}
-                            key="buyGiveSecondaryFoodsboxs"
-                            scopeLst={scopeList}
-                            foodSelectType={foodSelectType}
-                            isExcludeFood={'1'}
-                        />)
-                }
-            </FormItem>
+            decorator({
+                rules: [
+                    {
+                        required: true,
+                        validator: (rule, v, cb) => {
+                            const { dishes = [] } = v || {};
+                            if (!dishes.length) {
+                                return cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '不可为空',
+                    },
+                ],
+            })(
+                <GiftCategoryAndFoodSelector
+                    dishOnly
+                    priceLst={scopeList}
+                />
+            )
         )
     }
 
@@ -1330,13 +1258,6 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '可共用礼品券',
                 defaultValue: [],
                 render: decorator => this.renderGiftTree(decorator, data.giftItemID),
-            },
-            foodNameList: {
-                type: 'custom',
-                labelCol: { span: 0 },
-                wrapperCol: { span: 24 },
-                rules: [{ required: true, message: '不能为空' }],
-                render: (decorator, form) => this.renderFoodName(decorator, form),
             },
             numberOfTimeType: {
                 // label: '使用次数限制',
@@ -1599,19 +1520,26 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => this.renderDisCountRate(decorator),
             },
-            foodsboxs: {
-                label: this.isHuaTianSpecificCoupon() ? '' : '选择菜品',
+            foodsboxs: { // 代金券，折扣券
+                label: '',
                 type: 'custom',
                 render: decorator => this.renderFoodsboxs(decorator),
             },
+            foodScopes: { // 菜品优惠券，菜品兑换券
+                label: '',
+                type: 'custom',
+                render: (decorator, form) => this.renderFoodName(decorator, form),
+            },
             buyGiveFoods: {
                 type: 'custom',
-                label: ' ',
+                label: '适用菜品',
+                required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
             buyGiveSecondaryFoods: {
                 type: 'custom',
-                label: ' ',
+                label: '赠送菜品',
+                required: true,
                 render: decorator => this.renderBuyGiveSecondaryFoodsboxs(decorator),
             },
             giveLimits: {
@@ -1650,9 +1578,6 @@ class GiftAddModalStep extends React.PureComponent {
         let formData = data === undefined ? dates : values;
         if (type === 'edit') {
             formData = dates;
-            if (typeof(formData.foodNameList) === 'string') {
-                formData.foodNameList = formData.foodNameList.split(',')
-            }
         }
         if (this.props.gift.value == '20') {
             formItems.moneyLimitType.label = '账单金额';
@@ -1733,6 +1658,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        fetchFoodCategoryInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        },
+
+        fetchFoodMenuInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        },
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),

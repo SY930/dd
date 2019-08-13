@@ -196,9 +196,25 @@ const FIRST_KEYS = {
                 'pushMessageMpID',
                 'giftValue',
                 'price',
-                'foodsboxs',
-                'giftRemark',
             ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'foodsboxs',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
         },
         {
             col: {
@@ -223,7 +239,23 @@ const FIRST_KEYS = {
                 'pushMessageMpID',
                 'giftValue',
                 'price',
-                'foodNameList',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'foodScopes',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
                 'giftRemark',
             ],
         },
@@ -250,7 +282,23 @@ const FIRST_KEYS = {
                 'pushMessageMpID',
                 'giftValue',
                 'price',
-                'foodNameList',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'foodScopes',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
                 'giftRemark',
             ],
         },
@@ -353,6 +401,21 @@ const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessageMpID',
                 'disCountTypeAndValue',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [], // 为菜品组件预留位置
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
                 'discountOffMax',
                 'price',
                 'giftRemark',
