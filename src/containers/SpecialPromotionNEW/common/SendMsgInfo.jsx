@@ -51,7 +51,9 @@ class SendMsgInfo extends React.Component {
             )
         } else {
             this.setState(
-                {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (specialPromotion.equityAccountInfoList[0] || {accountNo: ''}).accountNo},
+                {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (
+                    specialPromotion.equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
+                ).accountNo},
                 () => {
                     this.props.onChange({ accountNo: this.state.accountNo });
                 }
@@ -75,7 +77,9 @@ class SendMsgInfo extends React.Component {
             const accountNo = nextProps.specialPromotion.getIn(['$eventInfo', 'accountNo']);
 
             this.setState({
-                accountNo: accountNo > 0 ? accountNo : (equityAccountInfoList[0] || {accountNo: ''}).accountNo,
+                accountNo: accountNo > 0 ? accountNo : ( // 找到第一个有权限的equityAccount
+                    equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
+                ).accountNo,
             }, () => {
                 this.props.onChange && this.props.onChange({ accountNo: this.state.accountNo });
             })
@@ -173,7 +177,14 @@ class SendMsgInfo extends React.Component {
                                         getPopupContainer={(node) => node.parentNode}
                                 >
                                     {(specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
-                                        return (<Option key={accountInfo.accountNo}>{accountInfo.accountName}</Option>)
+                                        return (
+                                            <Option
+                                                key={accountInfo.accountNo}
+                                                disabled={!accountInfo.hasPermission}
+                                            >
+                                                {accountInfo.accountName}
+                                            </Option>
+                                        )
                                     })}
                                 </Select>
                                 <div>

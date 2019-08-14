@@ -9,7 +9,10 @@ import { message } from 'antd';
 import 'rxjs';
 import axios from 'axios'
 import { fetchFilterShopsSuccess } from './promotionBasicInfo.action'
-import {axiosData} from "../../../helpers/util";
+import {
+    axiosData,
+    getAccountInfo,
+} from "../../../helpers/util";
 import { getStore } from '@hualala/platform-base/lib';
 
 
@@ -217,7 +220,7 @@ export const queryFsmGroupEquityAccount = () => {
     return (dispatch) => {
         axiosData(
             '/specialPromotion/queryFsmGroupEquityAccount.ajax',
-            {},
+            { accountID: getAccountInfo().accountID },
             {},
             {path: 'accountInfoList'},
             'HTTP_SERVICE_URL_PROMOTION_NEW'
