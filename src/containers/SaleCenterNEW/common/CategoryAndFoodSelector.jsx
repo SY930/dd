@@ -155,7 +155,6 @@ class CategoryAndFoodSelector extends Component {
             }
         }
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
-            console.log('object', this.props.selectedBrands.toJSON())
             if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
                 this.setState({
                     dishes: [],
@@ -238,6 +237,8 @@ class CategoryAndFoodSelector extends Component {
             allDishes,
             dishFilter,
             dishLabel,
+            showRequiredMark,
+            showEmptyTips,
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
@@ -263,17 +264,39 @@ class CategoryAndFoodSelector extends Component {
             )
         }
         return (
-            <FormItem label={dishLabel} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                <FoodSelector
-                    mode="dish"
-                    placeholder={`点击添加${dishLabel}`}
-                    allDishes={dishes}
-                    allCategories={categories}
-                    allBrands={brands}
-                    value={this.state.dishes}
-                    onChange={this.handleDishChange}
-                />
-            </FormItem>
+            <div>
+                <FormItem
+                    label={dishLabel}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={showRequiredMark}
+                >
+                    <FoodSelector
+                        mode="dish"
+                        placeholder={`点击添加${dishLabel}`}
+                        allDishes={dishes}
+                        allCategories={categories}
+                        allBrands={brands}
+                        value={this.state.dishes}
+                        onChange={this.handleDishChange}
+                    />
+                </FormItem>
+                {
+                    (showEmptyTips && this.state.dishes.length === 0) && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                            }}
+                        >
+                            未选择菜品时默认所有菜品适用
+                        </div>
+                    )
+                }
+            </div>
         )
     }
     renderCategorySelectionBox() {
@@ -283,6 +306,8 @@ class CategoryAndFoodSelector extends Component {
             allDishes,
             dishFilter,
             showExludeDishes,
+            showRequiredMark,
+            showEmptyTips,
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
@@ -304,7 +329,13 @@ class CategoryAndFoodSelector extends Component {
         }
         return (
             <div>
-                <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem
+                    label="适用菜品分类"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={showRequiredMark}
+                >
                     <FoodSelector
                         mode="category"
                         placeholder="点击添加适用分类"
@@ -315,6 +346,21 @@ class CategoryAndFoodSelector extends Component {
                         onChange={this.handleCategoryChange}
                     />
                 </FormItem>
+                {
+                    (showEmptyTips && this.state.categories.length === 0) && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                                marginBottom: 8,
+                            }}
+                        >
+                            未选择分类时默认所有分类适用
+                        </div>
+                    )
+                }
                 {
                     showExludeDishes && (
                         <FormItem label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
@@ -363,7 +409,7 @@ const mapStateToPropsForGift = (state) => {
         /** 礼品模版中设置的品牌 [{targetID: XXX, targetName: XXX}] */
         selectedBrands: state.sale_editGiftInfoNew
             .getIn(['createOrEditFormData', 'selectBrands'], Immutable.fromJS([]))
-            .map(item => item.get('targetID')),
+            .map(item => `${item.get('targetID')}`),
         /** 礼品模版中查询到的品牌 */
         allBrands: state.sale_editGiftInfoNew.get('allBrands'),
         allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
@@ -374,6 +420,10 @@ CategoryAndFoodSelector.defaultProps = {
     showExludeDishes: true,
     dishOnly: false,
     dishLabel: '适用菜品',
+    /** 分类/菜品框是否显示required红色星号 */
+    showRequiredMark: false,
+    /** 是否显示不选等于全选的文案 */
+    showEmptyTips: false,
 };
 
 export default connect(mapStateToPropsForPromotion)(CategoryAndFoodSelector)

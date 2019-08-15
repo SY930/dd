@@ -18,7 +18,6 @@ import styles2 from './Crm.less';
 import BaseForm from '../../../components/common/BaseForm';
 import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
 import InputTreeForGift from './InputTreeForGift';
-import FoodBox from './FoodBox';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
 import {
@@ -970,7 +969,7 @@ class GiftAddModalStep extends React.PureComponent {
             scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
             foodSelectType = 0;
         }
-        if (!scopeList.length) { // 历史数据，只有fooNameList，
+        if (!scopeList.length) { // 历史数据，只有fooNameList，兼容显示
             let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
             scopeList = foodNameList.map(nameStr => ({
                 scopeType: isFoodCatNameList == 1 ? 1 : 2,
@@ -979,23 +978,40 @@ class GiftAddModalStep extends React.PureComponent {
             }))
         }
         return (
-            <FormItem
-                label={''}
+            <div
                 style={{
                     marginLeft: 8,
+                    marginBottom: 24,
                     width: '141.176%',
-                    marginBottom: 12,
                 }}
+                className={styles.foodSelectorWrapper}
             >
                 {
-                    decorator({})(
+                    decorator({
+                        rules: [
+                            {
+                                validator: (rule, v, cb) => {
+                                    const {
+                                        dishes = [],
+                                        foodCategory = [],
+                                    } = v || {};
+                                    if (!dishes.length && !foodCategory.length) {
+                                        return cb(rule.message);
+                                    }
+                                    cb();
+                                },
+                                message: '不可为空',
+                            },
+                        ],
+                    })(
                         <GiftCategoryAndFoodSelector
                             showExludeDishes={false}
-                            scopeList={scopeList}
+                            scopeLst={scopeList}
+                            showRequiredMark={true}
                         />
                     )
                 }
-            </FormItem>
+            </div>
         )
     }
     renderisNeedCustomerInfo = (decorator) => {
@@ -1047,16 +1063,17 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <FormItem
                 style={{
-                    marginTop: -12,
                     marginLeft: 8,
                     width: '141.176%',
-                    marginBottom: 0,
+                    marginTop: -12,
+                    marginBottom: 5,
                     display: this.isHuaTianSpecificCoupon() ? 'none' : 'block',
                 }}>
                 {
                     decorator({})(
                         <GiftCategoryAndFoodSelector
                             scopeLst={scopeList}
+                            showEmptyTips={true}
                         />)
                 }
             </FormItem>
