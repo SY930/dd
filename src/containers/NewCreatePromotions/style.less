@@ -1,0 +1,41 @@
+.flexWrapper {
+    display: flex;
+}
+.centeredFlex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.menuArea {
+    flex-shrink: 0;
+    width: 160px;
+    background:rgba(248,248,248,1);
+    color:rgba(120,120,120,1);
+    .menuItem {
+        .centeredFlex();
+        height: 60px;
+        cursor: pointer;
+        &:hover {
+            .selectedMenuItem();
+        }
+    }
+    .selectedMenuItem {
+        font-weight:bold;
+        color:rgba(51,51,51,1);
+        background: #fff;
+    }
+}
+.contentArea {
+    height: 490px;
+    overflow-y: auto;
+    padding: 20px 0 0 20px;
+    .cardWrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .contentTitle {
+        font-size:14px;
+        color:rgba(51,51,51,1);
+        margin-bottom: 8px;
+    }
+}

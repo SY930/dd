@@ -20,3 +20,4 @@ export { default as ShareRules } from './ShareRules';
 export { default as PromotionCalendar } from './PromotionCalendar';
 export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
 export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCouponCreate';
+export { default as PromotionCalendarNew } from './PromotionCalendarNew';

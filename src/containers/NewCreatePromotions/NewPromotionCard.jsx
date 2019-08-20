@@ -20,7 +20,8 @@ class NewPromotionCard extends Component {
                 isNew,
             },
             index,
-            onCardClick
+            onCardClick,
+            size,
         } = this.props;
         let backgroundImageString;
         switch (index % 4) {
@@ -28,6 +29,26 @@ class NewPromotionCard extends Component {
             case 2: backgroundImageString = bg2; break;
             case 3: backgroundImageString = bg3; break;
             default: backgroundImageString = bg0;
+        }
+        if (size === 'small') {
+            return (
+                <div className={styles.smallContainer} onClick={() => {
+                    onCardClick(this.props.promotionEntity)
+                }}>
+                    <div className={styles.title}>
+                        {title}
+                    </div>
+                    <div className={styles.cardBackgroundImage}>
+                        <img src={backgroundImageString} alt="oops"/>
+                    </div>
+                    <div className={styles.cardLogo} style={{
+                        right: right * 0.62,
+                        bottom: bottom * 0.62,
+                    }}>
+                        <img src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                    </div>
+                </div>
+            )
         }
         return (
             <div className={styles.container} onClick={() => {
