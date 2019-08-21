@@ -280,6 +280,7 @@ class MyActivitiesShop extends React.Component {
         if (!opt.expand) {
             opt = {
                 ...opt,
+                selectedShop: undefined,
                 promotionCategory: undefined,
                 promotionTags: undefined,
                 promotionBrands: undefined,
