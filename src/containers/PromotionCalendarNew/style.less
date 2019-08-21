@@ -33,17 +33,98 @@
     overflow: hidden;
 }
 .calendarMain {
-    height: 500px;
+    height: ~"calc(100vh - 280px)";
+    width: ~"calc(100% - 108px)";
     overflow: auto;
     margin: 80px 0 0 108px;
     border-top: 1px solid rgba(227,227,227,1);
     border-left: 1px solid rgba(227,227,227,1);
 }
+.timelineWrapper {
+    position: absolute;
+    height: 80px;
+    width: ~"calc(100% - 80px)";
+    top: 0px;
+    left: 108px;
+    .timeline {
+        will-change: transform;
+        height: 80px;
+        display: flex;
+        .monthBlock {
+            position: relative;
+            font-size:14px;
+            color:rgba(102,102,102,1);
+            .dayMark {
+                position: absolute;
+                bottom: 15px;
+                border-radius: 50%;
+                background: rgba(194,194,194,1);
+                transform: translate(-50%, 50%);
+                z-index: 2;
+            }
+            .todayTag {
+                width:30px;
+                height:18px;
+                line-height: 18px;
+                background:rgba(55,159,241,1);
+                text-align: center;
+                border-radius:9px;
+                color: #fefefe;
+                position: absolute;
+                top: -22px;
+                left: -10px;
+            }
+            .todayLine {
+                width: 1px;
+                height: ~"calc(100vh - 265px)";
+                background:rgba(55,159,241,1);
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-0.5px);
+                z-index: 2;
+            }
+            .startOfMonthLine {
+                width: 1px;
+                height: ~"calc(100vh - 250px)";
+                background:#E3E3E3;
+                position: absolute;
+                top: -10px;
+                left: -16px;
+                transform: translate(-0.5px);
+                z-index: 1;
+            }
+        }
+    }
+}
+.menuWrapper {
+    overflow: hidden;
+    top: 80px;
+    left: 0px;
+    position: absolute;
+    height: ~"calc(100vh - 280px)";
+    width: 108px;
+    background: #fff;
+    z-index: 3;
+    .menu {
+        will-change: transform;
+        background: linear-gradient(#e66465, #000);
+        height: 2000px;
+        width: 108px;
+    }
+}
+
+.canvas {
+    background: linear-gradient(45deg, red, blue);
+    position: relative;
+    width: 2000px;
+    height: 2000px;
+}
 .buttonArea {
     position: absolute;
     top: 0;
     padding-top: 10px;
-    width: 108px;
+    width: 107px;
     height: 80px;
     z-index: 2;
     background: #fff;
