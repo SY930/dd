@@ -286,6 +286,7 @@ class MyActivities extends React.Component {
         if (!opt.expand) {
             opt = {
                 ...opt,
+                selectedShop: undefined,
                 promotionCategory: undefined,
                 promotionTags: undefined,
                 promotionBrands: undefined,
@@ -820,7 +821,8 @@ class MyActivities extends React.Component {
                         <li>
                             <Select
                                 style={{ width: '160px' }}
-                                showSearch={true}
+                                showSearch
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择类型"
                                 defaultValue="全部"
                                 onChange={(value) => {

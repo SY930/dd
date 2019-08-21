@@ -200,6 +200,14 @@ class GiftAddModalStep extends React.PureComponent {
                 } else {
                     moenyLimitValueIndex !== -1 && newKeys.splice(moenyLimitValueIndex, 1);
                 }
+                if (describe === '菜品兑换券') {
+                    const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
+                    if (value == 1) {
+                        maxUseLimitIndex == -1 && newKeys.splice(index + 2, 0, 'maxUseLimit')
+                    } else {
+                        maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
+                    }
+                }
                 secondKeys[describe][0].keys = [...newKeys];
                 this.setState({ secondKeys });
                 break;
@@ -645,6 +653,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.foodNameList = values.foodNameList instanceof Array ? values.foodNameList.join(',') : values.foodNameList;
             params.isFoodCatNameList = values.isFoodCatNameList;
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
+            params.maxUseLimit = params.maxUseLimit || '0';
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -1511,6 +1520,30 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '请输入整数，大于等于1, 小于等于36525',
                 }],
             },
+            priceSortRule: {
+                label: (
+                    <span>
+                        {`${value == 21 ? '兑换' : '赠送'}规则`}&nbsp;
+                        <Tooltip title={
+                            <p>
+                                {`当${value == 21 ? '兑换' : '赠送'}菜品包含多个菜品时，可通过设置控制${value == 21 ? '兑换' : '赠送'}其中一道高价菜品或者低价菜品。`}
+                            </p>
+                        }>
+                            <Icon type="question-circle" />
+                        </Tooltip>
+                    </span>
+                ),
+                type: 'custom',
+                defaultValue: 0,
+                render: (decorator) => {
+                    return decorator({})(
+                        <RadioGroup>
+                            <Radio value={0}>{`${value == 21 ? '兑换' : '赠送'}高价菜品`}</Radio>
+                            <Radio value={1}>{`${value == 21 ? '兑换' : '赠送'}低价菜品`}</Radio>
+                        </RadioGroup>
+                    )
+                },
+            },
             transferLimitType: {
                 label: '转赠设置',
                 type: 'custom',
@@ -1644,9 +1677,6 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => decorator({})(<AmountType/>),
             },
         };
-        // 菜品券金额限制暂时不可用每满选项
-        formItems.moneyLimitType.options[1].disabled = this.props.gift.value == '21';
-
         let formData = data === undefined ? dates : values;
         if (type === 'edit') {
             formData = dates;

@@ -1,0 +1,119 @@
+.contentBox{
+    width: 70%;
+    overflow-y: auto;
+    .badge{
+        border-left: 3px solid #18a786;
+        padding-left: 5px;
+        h5{
+            line-height: normal;
+            font-size: 14px;
+        }
+    }
+    .selectBox{
+        height: 40px;
+        width: 550px;
+        ul{
+            display: flex;
+            li{
+                margin: 10px 0 0 0;
+                &:nth-child(1){
+                    width: 100px;
+                }
+                &:nth-child(2){
+                    flex: 1px;
+                }
+                &:nth-child(3){
+                    width: 150px;
+                    padding: 5px 0 0 10px;
+                    color: #ed5565;
+                }
+            }
+        }
+        .btnLeft{
+            width: 100px;
+            float: left;
+            padding: 20px 0 0 0 ;
+        }
+        .btnRight{
+            float: left;
+            .accreditSuccess{
+                float: left;
+                padding: 20px 15px 0 0 ;
+                color: #18a786;
+            }
+            .accreditExpire{
+                float: left;
+                padding: 20px 15px 0 0 ;
+                color: #ed5565;
+            }
+            .unAccredit{
+                float: left;
+                padding: 20px 15px 0 0 ;
+                color: #ff9b05;
+            }
+            .accreditBtn{
+                float: left;
+                padding: 12px 0 0 0 ;
+            }
+        }
+    }
+}
+
+.boxBottom{
+    margin-top: 30px;
+    width: 575px;
+}
+
+.boxTop{
+    width: 575px;
+}
+
+.errBorder{
+    :global{
+        .ant-input{
+            border-color: #ed5565;
+        }
+        .ant-input:focus, .ant-input:hover{
+            border-color: #ed5565 !important;
+            box-shadow: 0 0 0 1px rgba(193, 27, 43, 0.2) !important;
+        }
+    }
+}
+
+.recommendTabs{
+    :global{
+        .ant-tabs-bar{
+            background-color: #1ab395;
+            padding: 0px;
+            .ant-tabs-nav {
+                .ant-tabs-tab{
+                    height: 100%;
+                    margin-top: 0px;
+                    border-right: 4px solid white;
+                }
+                .ant-tabs-tab-active{
+                    height: 100%;
+                    background-color:#1ab395!important;
+                    color: white;
+                    border-right: 4px solid white;
+                }
+            }
+            .ant-tabs.ant-tabs-editable-card>.ant-tabs-bar .ant-tabs-tab:not(.ant-tabs-tab-active):hover {
+                color: #787878;
+                border-right: 4px solid white;
+            }
+        }
+    }
+}
+.recommendTabsPro{
+    :global{
+        .ant-tabs-bar{
+            background-color: #379ff1;
+            .ant-tabs-nav {
+                .ant-tabs-tab-active{
+                    background-color: #379ff1!important;
+                }
+            }
+        }
+    }
+}
