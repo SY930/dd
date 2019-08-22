@@ -55,6 +55,7 @@ class CalendarList extends Component {
     }
 
     render() {
+        console.log('this.props.list', this.props.list)
         const { x, y } = this.state;
         const {
             monthsInfo,

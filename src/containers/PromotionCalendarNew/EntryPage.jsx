@@ -20,7 +20,11 @@ import {
     fetchPromotionScopeInfo,
 } from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import {
-
+    NEW_CUSTOMER_PROMOTION_TYPES,
+    FANS_INTERACTIVITY_PROMOTION_TYPES,
+    REPEAT_PROMOTION_TYPES,
+    LOYALTY_PROMOTION_TYPES,
+    SALE_PROMOTION_TYPES,
 } from '../../constants/promotionType';
 
 
@@ -63,6 +67,28 @@ const CHANNEL_LIST = [
         label: '饮食通',
     },
 ];
+const ALL_CATEGORIES = [
+    {
+        title: '会员拉新',
+        list: NEW_CUSTOMER_PROMOTION_TYPES,
+    },
+    {
+        title: '粉丝互动',
+        list: FANS_INTERACTIVITY_PROMOTION_TYPES,
+    },
+    {
+        title: '促进复购',
+        list: REPEAT_PROMOTION_TYPES,
+    },
+    {
+        title: '会员关怀',
+        list: LOYALTY_PROMOTION_TYPES,
+    },
+    {
+        title: '促进销量',
+        list: SALE_PROMOTION_TYPES,
+    },
+]
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -98,6 +124,28 @@ export default class EntryPage extends Component {
                 {"eventID": '950957556455571456',"eventName":"引擎满减","eventCategory":10,"eventType":2010,"eventStartDate":20000101,"eventEndDate":29991231},
             ],
         }
+    }
+
+    catalogPromotionListByEventType = () => {
+        const promotionMap = new Map();
+        const { promotionInfoList } = this.state;
+        promotionInfoList.forEach(promotionInfo => {
+            const subList = promotionMap.get(`${promotionInfo.eventType}`) || [];
+            subList.push(promotionInfo)
+            promotionMap.set(`${promotionInfo.eventType}`, subList)
+        })
+        const displayArray = [];
+        ALL_CATEGORIES.forEach(({title, list}) => {
+            if (list.some(({key}) => promotionMap.has(key))) {
+                displayArray.push({isCategoryPlaceHolder: true, title});
+                list.forEach(({key}) => {
+                    if (promotionMap.has(key)) {
+                        displayArray.push(...promotionMap.get(key))
+                    }
+                }) 
+            }
+        })
+        return displayArray;
     }
 
     handleQuery = () => {
@@ -266,7 +314,7 @@ export default class EntryPage extends Component {
         return (
             <div>
                 {this.renderFilterBar()}
-                <CalendarList />
+                <CalendarList list={this.catalogPromotionListByEventType()} />
                 {createModalVisible && (
                     <PromotionCreateModal onCancel={() => this.setState({createModalVisible: false})}/>
                 )}
