@@ -107,3 +107,10 @@
     cursor: not-allowed;
     z-index: 999;
 }
+.foodSelectorWrapper {
+    & + :global(.ant-form-explain) {
+        position: absolute;
+        bottom: -10px;
+        left: 25.67%;
+    }
+}

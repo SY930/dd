@@ -16,7 +16,6 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 
 import { saleCenterSetPromotionDetailAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
-import {isHuaTian} from "../../../constants/projectHuatianConf";
 
 
 const FormItem = Form.Item;
@@ -93,7 +92,6 @@ class MoreFoodBox extends React.Component {
         this.handleFoodSearchInputChange = this.handleFoodSearchInputChange.bind(this);
         this.clear = this.clear.bind(this);
         this.initialData = this.initialData.bind(this);
-        this.handleisExcludeFoodChange = this.handleisExcludeFoodChange.bind(this);
     }
     // 将props中的数据匹配到分类，单品，排除框中
     initialData(_scopeLst, foodCategoryCollection) {
@@ -485,41 +483,6 @@ class MoreFoodBox extends React.Component {
             dishes: [],
             isExcludeFood,
             excludeDishes: Array.from(excludeSelections),
-        })
-    }
-
-    // 渲染排除菜品radio
-    renderExcludeRange() {
-        // console.log('isExcludeFood', this.state.isExcludeFood)
-        return (
-            <FormItem style={{ marginBottom: -8, marginTop: 18 }}>
-                <RadioGroup
-                    value={this.state.isExcludeFood || '0'}
-                    onChange={this.handleisExcludeFoodChange}
-                >
-                    {EXCLUDE_OPTIONS.map((type) => {
-                        return (<Radio key={type.value} value={type.value}>{type.name}</Radio >);
-                    })}
-                </RadioGroup >
-            </FormItem>
-
-        );
-    }
-
-    // 点击排除菜品范围radio
-    handleisExcludeFoodChange(e) {
-        const { foodSelectType, foodCategorySelections, isExcludeFood, excludeSelections, } = this.state;
-        excludeSelections.clear();
-        this.setState({
-            isExcludeFood: e.target.value,
-            excludeSelections: new Set(),
-        });
-        this.props.onChange && this.props.onChange({
-            foodSelectType: 1,
-            foodCategory: Array.from(foodCategorySelections),
-            dishes: [],
-            isExcludeFood: e.target.value,
-            excludeDishes: [],
         })
     }
 
