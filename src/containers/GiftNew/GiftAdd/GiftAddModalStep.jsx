@@ -230,11 +230,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFormChange(key, value) {
+        if (key === 'selectBrands') {
+            console.log(value)
+        }
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        values[key] = value;
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -256,6 +258,7 @@ class GiftAddModalStep extends React.PureComponent {
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
+        values[key] = value;
         switch (key) {
             case 'moneyLimitType':
                 // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
@@ -494,7 +497,7 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '20' || value == '21') {
                 processFinalCategoryAndDishData(params, 'foodScopes');
                 params.foodNameList = params.couponFoodScopes
-                    .map(target => `${target.targetName}${target.targetUnitName}`)
+                    .map(target => `${target.targetName}${target.targetUnitName || ''}`)
                     .join(',');
                 params.isFoodCatNameList = params.foodSelectType;
             } else { // foodbxs数据,目前代金券和折扣券用
