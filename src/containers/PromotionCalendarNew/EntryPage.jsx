@@ -8,11 +8,16 @@ import {
 } from 'antd';
 import moment from 'moment';
 import Immutable from 'immutable';
-import { jumpPage } from '@hualala/platform-base';
+import { jumpPage, closePage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
-import { PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE } from '../../constants/entryCodes';
+import {
+    PROMOTION_CALENDAR_NEW,
+    SALE_CENTER_PAGE,
+    SPECIAL_PAGE,
+    ONLINE_PROMOTION_MANAGEMENT_GROUP,
+} from '../../constants/entryCodes';
 import style from './style.less';
 import PromotionCreateModal from '../NewCreatePromotions/PromotionCreateModal'
 import CalendarList from './CalendarList';
@@ -25,11 +30,16 @@ import {
     REPEAT_PROMOTION_TYPES,
     LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
+    ONLINE_PROMOTION_TYPES,
 } from '../../constants/promotionType';
-
 
 const Option = Select.Option;
 const { MonthPicker } = DatePicker;
+const disabledDate = current => {
+    const yearDiff = moment(moment().format('YYYY0101'), 'YYYYMMDD')
+        .diff(moment(current.format('YYYY0101'), 'YYYYMMDD'), 'years', true);
+    return Math.abs(yearDiff) > 1;
+}
 
 const SUPPORT_ORDER_TYPES = [
     {
@@ -88,6 +98,10 @@ const ALL_CATEGORIES = [
         title: '促进销量',
         list: SALE_PROMOTION_TYPES,
     },
+    {
+        title: '线上营销',
+        list: ONLINE_PROMOTION_TYPES,
+    },
 ]
 
 const mapDispatchToProps = (dispatch) => {
@@ -119,10 +133,8 @@ export default class EntryPage extends Component {
             channelList: [],
             supportOrderTypeList: [],
             startDate: moment(),
-            promotionInfoList: [
-                {"eventID":'6665094687050701717',"eventName":"0306完善资料送礼","eventCategory":20,"eventType":60,"eventStartDate":20000101,"eventEndDate":29991231},
-                {"eventID": '950957556455571456',"eventName":"引擎满减","eventCategory":10,"eventType":2010,"eventStartDate":20000101,"eventEndDate":29991231},
-            ],
+            intervalStartMonth: moment().format('YYYYMM'),
+            promotionInfoList: [],
         }
     }
 
@@ -138,9 +150,9 @@ export default class EntryPage extends Component {
         ALL_CATEGORIES.forEach(({title, list}) => {
             if (list.some(({key}) => promotionMap.has(key))) {
                 displayArray.push({isCategoryPlaceHolder: true, title});
-                list.forEach(({key}) => {
+                list.forEach(({key, title: subTitle}) => {
                     if (promotionMap.has(key)) {
-                        displayArray.push(...promotionMap.get(key))
+                        displayArray.push(...promotionMap.get(key).map(item => ({...item, title: subTitle})))
                     }
                 }) 
             }
@@ -167,12 +179,19 @@ export default class EntryPage extends Component {
                 startDate: startDate.format('YYYYMM01')
             },
             {},
-            { path: '' },
+            { path: 'promotionInfoList' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(data => {
-            console.log(data)
+            let list;
+            try {
+                list = JSON.parse(data)
+            } catch (e) {
+                list = []
+            }
             this.setState({
                 loading: false,
+                promotionInfoList: Array.isArray(list) ? list : [],
+                intervalStartMonth: startDate.format('YYYYMM'),
             })
         }).catch(err => {
             this.setState({
@@ -206,6 +225,22 @@ export default class EntryPage extends Component {
             supportOrderTypeList: v,
         })
     }
+    handlePromotionEditOrPreviewBtnClick = (entity, type) => {
+        const { eventType, eventCategory } = entity;
+        const typeStr = `${eventType}`;
+        if (ONLINE_PROMOTION_TYPES.map(item => item.key).includes(typeStr)) {
+            closePage()
+            jumpPage({pageID: ONLINE_PROMOTION_MANAGEMENT_GROUP})
+            return
+        }
+        if (eventCategory === 10) {
+            closePage()
+            jumpPage({pageID: SALE_CENTER_PAGE})
+        } else {
+            closePage()
+            jumpPage({pageID: SPECIAL_PAGE})
+        }
+    }
 
     onTreeSelect(value, treeData) {        
         const shopsInfo = [];
@@ -233,7 +268,7 @@ export default class EntryPage extends Component {
                 treeData,
                 value: this.state.selectedShops,
                 onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '请选择店铺',
+                placeholder: '全部店铺',
                 allowClear: true,
             };
         return (
@@ -264,6 +299,7 @@ export default class EntryPage extends Component {
                     allowClear={false}
                     style={{ width: 160, margin: '0 20px' }}
                     format="YYYY年MM月"
+                    disabledDate={disabledDate}
                     value={startDate}
                     onChange={this.handleMonthChange}
                 />
@@ -274,7 +310,7 @@ export default class EntryPage extends Component {
                     multiple={true}
                     style={{ width: 200, margin: '0 20px 0 10px' }}
                     value={channelList}
-                    placeholder="请选择场景"
+                    placeholder="全部"
                     onChange={this.handleChannelListChange}
                 >
                     {
@@ -288,7 +324,7 @@ export default class EntryPage extends Component {
                     multiple={true}
                     value={supportOrderTypeList}
                     style={{ width: 200, margin: '0 20px 0 10px' }}
-                    placeholder="请选择业务"
+                    placeholder="全部"
                     onChange={this.handleSupportOrderTypeChange}
                 >
                     {
@@ -310,11 +346,15 @@ export default class EntryPage extends Component {
     }
 
     renderBody() {
-        const { createModalVisible } = this.state;
+        const { createModalVisible, intervalStartMonth } = this.state;
         return (
             <div>
                 {this.renderFilterBar()}
-                <CalendarList list={this.catalogPromotionListByEventType()} />
+                <CalendarList
+                    list={this.catalogPromotionListByEventType()}
+                    startMonth={intervalStartMonth}
+                    onEditOrPreviewBtnClick={this.handlePromotionEditOrPreviewBtnClick}
+                />
                 {createModalVisible && (
                     <PromotionCreateModal onCancel={() => this.setState({createModalVisible: false})}/>
                 )}
