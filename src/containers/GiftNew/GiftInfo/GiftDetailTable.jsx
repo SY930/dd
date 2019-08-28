@@ -196,7 +196,7 @@ class GiftDetailTable extends Component {
     changeSortOrder(record, direction) {
         // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -306,7 +306,7 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
                     if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
@@ -331,6 +331,12 @@ class GiftDetailTable extends Component {
         if (giftType !== '90') {
             FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
             giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+            /*axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
+                path: 'data',
+            })
+                .then((records) => {
+                    this.setState({ usedTotalSize: records.totalSize })
+                });*/
         }
     }
 
