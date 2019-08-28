@@ -96,7 +96,12 @@
                 top: -10px;
                 left: -16px;
                 transform: translate(-0.5px);
-                z-index: 1;
+                // z-index: 1;
+            }
+            &:not(:first-child) {
+              .startOfMonthLine {
+                opacity: 0.5;
+              }
             }
         }
     }
@@ -146,6 +151,19 @@
 .timeLine {
 
 }
+.spinFather{
+  height: 565px;
+  line-height:540px;
+  text-align: center;
+  font-size:16px;
+}
+.categoryWrapper {
+  height: 30px;
+  border-top: 1px solid #E3E3E3;
+  &:not(:first-child) {
+    border-top: 1px solid rgba(227,227,227,.5);
+  }
+}
 .promotionWrapper {
     height: 50px;
     width: 100%;
@@ -158,6 +176,14 @@
     border-radius:8px;
     box-shadow:0px 4px 18px 0px rgba(51,51,51,0.17);
     cursor: pointer;
+}
+.leftSquareBorder {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.rightSquareBorder {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 .leftOverflowedName {
     position: absolute;
@@ -201,20 +227,23 @@
 .categoryMenuItem {
     height: 30px;
     background: rgba(246,246,246,1);
-    color: #666666;
-    .centeredFlex();
+    color: #333;
+    line-height: 30px;
+    padding-left: 12px;
 }
 .promotionMenuItem {
     height: 50px;
     color: #787878;
     background:rgba(253,253,253,1);
-    .centeredFlex();
+    line-height: 50px;
+    padding-left: 12px;
 }
 .actionArea {
   position: absolute;
   right: 0;
   bottom: 10px;
   width: 70px;
+  text-align: right;
   img {
     cursor: pointer;
     margin-right: 12px;
@@ -693,8 +722,8 @@
             cursor: not-allowed;
             color: #bcbcbc;
             background: #f3f3f3;
-            border-radius: 0;
-            width: auto;
+            border-radius: 20px!important;
+            // width: auto;
           }
           .rc-calendar-disabled-cell .rc-calendar-date:hover {
             background: #f3f3f3;
