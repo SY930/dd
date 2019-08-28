@@ -69,7 +69,7 @@ export const FetchGiftList = (opts, isAllGifts) => {
         dispatch(getGiftListBegin(true));
         return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 dispatch(
                     isAllGifts ?
@@ -293,7 +293,7 @@ export const FetchSendorUsedList = (opts) => {
         if (!opts.isSend) {
             sendOrUsageCountParam.giftStatus = 2;
         }
-        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
+        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(total => {
                 if (!opts.isSend) {
                     dispatch(getUsedTotalCountSuccessAC(total))
@@ -310,7 +310,7 @@ export const FetchSendorUsedList = (opts) => {
             })
         return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 if (opts.isSend) {
                     dispatch(getSendListSuccessAC({
@@ -395,7 +395,7 @@ export const FetchSharedGifts = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 dispatch(getSharedGiftsSuccessAC({
                     payload: {
