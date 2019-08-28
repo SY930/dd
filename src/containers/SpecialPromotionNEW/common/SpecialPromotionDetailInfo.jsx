@@ -21,6 +21,7 @@ import {
     Select,
     Switch,
     Popconfirm,
+    Tooltip,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -1752,7 +1753,12 @@ class SpecialDetailInfo extends Component {
                         </div>
                     )
                 }
-                <p className={styles.coloredBorderedLabel}>被推荐人奖励：</p>
+                <p className={styles.coloredBorderedLabel}>
+                    被推荐人奖励：
+                    <Tooltip title="被推荐人在且仅在被邀请成为会员时可以领取一次被推荐人奖励。">
+                        <Icon type="question-circle" />
+                    </Tooltip>
+                </p>
                 {this.renderRecommendGifts(0)}
             </div>
         )
