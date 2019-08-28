@@ -107,8 +107,10 @@ class CalendarList extends Component {
             }
             /** 计算活动起点位置 */
             let left;
+            let isLeftOverflow;
             if (startDate > eventStartDate) {
-                left = 0;
+                left = DAY_LENGTH_IN_PX;
+                isLeftOverflow = true;
             } else if (startDate == eventStartDate) {
                 left = DAY_LENGTH_IN_PX;
             } else {
@@ -124,7 +126,9 @@ class CalendarList extends Component {
             }
             /** 计算活动终点位置 */
             let right;
+            let isRightOverflow;
             if (eventEndDate >= endDate) {
+                (eventEndDate > endDate) && (isRightOverflow = true);
                 right = (totalDaysCount + monthsInfo.length) * DAY_LENGTH_IN_PX;
             } else {
                 let daysFromStart = Math.ceil(moment(`${eventEndDate}`, DAY_FORMAT).diff(startMoment, 'days', true));
@@ -167,6 +171,8 @@ class CalendarList extends Component {
                 ...item,
                 left,
                 right,
+                isLeftOverflow,
+                isRightOverflow,
                 process,
                 colorPercent,
             }
@@ -217,11 +223,7 @@ class CalendarList extends Component {
                         {this.memoGetPromotionListPositionInfo(monthsInfo, totalDaysCount, list, startMonth)
                         .map(item => {
                             if (item.isCategoryPlaceHolder) {
-                                return (
-                                    <div style={{ height: 30, borderTop: '1px solid #E3E3E3' }}>
-
-                                    </div>
-                                )
+                                return (<div className={style.categoryWrapper} />)
                             }
                             const {isOverflow: isNameOverflow, expectWidth} = isNameLengthLargerThanWidth(item);
                             return (
@@ -233,7 +235,7 @@ class CalendarList extends Component {
                                         placement="topLeft"
                                     >
                                         <div
-                                            className={style.promotionBar}
+                                            className={`${style.promotionBar} ${item.isLeftOverflow ? style.leftSquareBorder: ''} ${item.isRightOverflow ? style.rightSquareBorder: ''}`}
                                             style={{
                                                 left: item.left,
                                                 width: item.right - item.left,

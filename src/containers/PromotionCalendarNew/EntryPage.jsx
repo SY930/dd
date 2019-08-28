@@ -5,6 +5,11 @@ import {
     Select,
     Icon,
     TreeSelect,
+    message,
+    Spin,
+    Modal,
+    Row,
+    Col,
 } from 'antd';
 import moment from 'moment';
 import Immutable from 'immutable';
@@ -21,9 +26,7 @@ import {
 import style from './style.less';
 import PromotionCreateModal from '../NewCreatePromotions/PromotionCreateModal'
 import CalendarList from './CalendarList';
-import {
-    fetchPromotionScopeInfo,
-} from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { isHuaTian } from '../../constants/projectHuatianConf'
 import {
     NEW_CUSTOMER_PROMOTION_TYPES,
     FANS_INTERACTIVITY_PROMOTION_TYPES,
@@ -32,6 +35,46 @@ import {
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
 } from '../../constants/promotionType';
+import {
+    fetchPromotionList,
+    toggleIsUpdateAC,
+} from '../../redux/actions/saleCenterNEW/myActivities.action';
+import {
+    fetchPromotionScopeInfo,
+    saleCenterResetScopeInfoAC,
+} from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import {
+    saleCenterResetDetailInfoAC,
+    fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoAC,
+} from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import {
+    fetchPromotionDetail,
+    resetPromotionDetail,
+    fetchPromotionDetailCancel,
+} from '../../redux/actions/saleCenterNEW/promotion.action';
+import {
+    getPromotionIdx,
+    promotionBasicDataAdapter,
+    promotionScopeInfoAdapter,
+    promotionDetailInfoAdapter,
+} from '../../redux/actions/saleCenterNEW/types';
+import ActivityMain from '../SaleCenterNEW/activityMain';
+import SpecialActivityMain from '../SpecialPromotionNEW/activityMain';
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterResetDetailInfoAC as resetSpecialDetail,
+} from '../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    saleCenterResetBasicInfoAC,
+} from '../../redux/actions/saleCenterNEW/promotionBasicInfo.action';
+import {
+    fetchSpecialDetailAC,
+} from '../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import {
+    getSpecialPromotionIdx,
+    specialPromotionBasicDataAdapter,
+} from '../../redux/actions/saleCenterNEW/types';
 
 const Option = Select.Option;
 const { MonthPicker } = DatePicker;
@@ -110,12 +153,60 @@ const mapDispatchToProps = (dispatch) => {
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
+        // 查询活动详情
+        fetchPromotionDetail_NEW: (opts) => {
+            dispatch(fetchPromotionDetail(opts))
+        },
+        // 查询活动列表
+        fetchPromotionList: (opts) => {
+            dispatch(fetchPromotionList(opts))
+        },
+        // reset
+        saleCenterResetBasicInfo: (opts) => {
+            dispatch(saleCenterResetBasicInfoAC(opts));
+        },
+        // reset
+        saleCenterResetScopeInfo: (opts) => {
+            dispatch(saleCenterResetScopeInfoAC(opts));
+        },
+        // reset
+        saleCenterResetDetailInfo: (opts) => {
+            dispatch(saleCenterResetDetailInfoAC(opts));
+        },
+        // reset promotionDetail in myActivities.reducer $promotionDetailInfo
+        resetPromotionDetail: () => {
+            dispatch(resetPromotionDetail());
+        },
+        // cancel the promotion detail fetch operation
+        cancelFetchPromotionDetail: () => {
+            dispatch(fetchPromotionDetailCancel())
+        },
+        toggleIsUpdate: (opts) => {
+            dispatch(toggleIsUpdateAC(opts))
+        },
+        fetchFoodCategoryInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        },
+        fetchFoodMenuInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        },
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts))
+        },
+        fetchSpecialDetail: (opts) => {
+            dispatch(fetchSpecialDetailAC(opts))
+        },
     };
 };
 const mapStateToProps = (state) => {
     return {
+        myActivities: state.sale_myActivities_NEW,
+        mySpecialActivities: state.sale_mySpecialActivities_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         user: state.user,
+        groupID: state.user.getIn(['accountInfo','groupID']),
     };
 };
 
@@ -228,18 +319,16 @@ export default class EntryPage extends Component {
     handlePromotionEditOrPreviewBtnClick = (entity, type) => {
         const { eventType, eventCategory } = entity;
         const typeStr = `${eventType}`;
-        if (ONLINE_PROMOTION_TYPES.map(item => item.key).includes(typeStr)) {
-            closePage()
-            jumpPage({pageID: ONLINE_PROMOTION_MANAGEMENT_GROUP})
-            return
-        }
+        this.props.toggleIsUpdate(type === 'edit')
+        this.setState({
+            modalTitle: type === 'edit' ? '更新活动信息' : '查看活动信息',
+        })
         if (eventCategory === 10) {
-            closePage()
-            jumpPage({pageID: SALE_CENTER_PAGE})
+            this.handleUpdateOpe(entity);
         } else {
-            closePage()
-            jumpPage({pageID: SPECIAL_PAGE})
+            this.handleSpecialUpdateOpe(entity)
         }
+        
     }
 
     onTreeSelect(value, treeData) {        
@@ -258,6 +347,116 @@ export default class EntryPage extends Component {
             selectedShops: value,
             shopIDList,
         })
+    }
+
+    successFn = (responseJSON) => {
+        const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
+        const _serverToRedux = false;
+        if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
+            message.error('没有查询到相应数据');
+            return null;
+        }
+        if (responseJSON.promotionInfo.master.maintenanceLevel == '1') { // shop
+            const opts = {
+                _groupID: this.props.groupID,
+                shopID: responseJSON.promotionInfo.master.shopIDLst,
+            };
+            this.props.fetchFoodCategoryInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
+            this.props.fetchFoodMenuInfo({ ...opts }, isHuaTian(), responseJSON.promotionInfo.master.subGroupID);
+        }
+        // 把查询到的活动信息存到redux
+        this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
+        this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
+        this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
+
+        this.setState({
+            promotionInfo: responseJSON.promotionInfo,
+            isNew: false,
+            index: _promotionIdx,
+        });
+    };
+
+    failFn = () => {
+        message.error('啊哦,好像出了点问题~');
+    };
+
+    handleUpdateOpe(_record) {
+        if ( _record && _record.maintenanceLevel != '1') { // 集团
+            this.props.fetchFoodCategoryInfo({
+                _groupID: this.props.groupID },
+                isHuaTian(),
+                _record.subGroupID
+            );
+            this.props.fetchFoodMenuInfo({
+                _groupID: this.props.groupID },
+                isHuaTian(),
+                _record.subGroupID
+            );
+        }
+        this.props.fetchPromotionDetail_NEW({
+            data: {
+                promotionID: _record ? _record.eventID : this.state.currentPromotionID,
+                groupID: this.props.groupID,
+            },
+            success: this.successFn,
+            fail: this.failFn,
+        });
+        if (_record ) {
+            this.setState({
+                updateModalVisible: true,
+                editPromotionType: `${_record.eventType}`,
+                currentPromotionID: _record.eventID,
+            });
+        }
+    }
+
+    specialSuccessFn = (response) => {
+        const _serverToRedux = false;
+        const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
+        if (_promotionIdx === undefined) {
+            message.warning('出错了, 请刷新重试');
+            return;
+        }
+        if (response === undefined || response.data === undefined) {
+            message.error('没有查询到相应数据');
+            return null;
+        }
+        this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
+        this.setState({
+            specialIsNew: false,
+            specialIndex: _promotionIdx,
+        });
+    };
+
+    specialFailFn = () => {
+        message.error('啊哦,好像出了点问题~');
+    };
+
+
+    // 编辑
+    handleSpecialUpdateOpe(_record) {
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID: _record ? _record.eventID : this.state.currentItemID, // 点击重试时record为undefiend
+                groupID: this.props.groupID,
+            },
+            success: this.specialSuccessFn,
+            fail: this.specialFailFn,
+        });
+        if (_record) {
+            this.setState({
+                specialModalVisible: true,
+                editEventWay: `${_record.eventType}`,
+                currentItemID: _record.eventID || this.state.currentItemID,
+            });
+        }
+    }
+
+    // 关闭更新
+    handleDismissUpdateModal() {
+        this.setState({
+            specialModalVisible: false,
+        });
     }
 
     renderShopsInTreeSelectMode() {
@@ -389,12 +588,115 @@ export default class EntryPage extends Component {
         )
     }
 
+    renderSpecialPromotionEditOrPreviewModal() {
+        return (
+            <Modal
+                wrapClassName={'progressBarModal'}
+                title={this.state.modalTitle}
+                visible={this.state.specialModalVisible}
+                footer={false}
+                width={1000}
+                height="569px"
+                maskClosable={false}
+                onCancel={this.handleDismissUpdateModal}
+            >
+                {this.state.specialModalVisible ? this.renderContentOfThisModal() : null}
+            </Modal>
+        );
+    }
+
+    renderContentOfThisModal() {
+        const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
+        const _state = this.state;
+        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+            return (
+                <div className={style.spinFather}>
+                    <Spin size="large" />
+                </div>
+            )
+        }
+        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+            return (
+                <div className={style.spinFather}>
+                    查询详情出错!点击 <a onClick={() => this.handleSpecialUpdateOpe()}>重试</a>
+                </div>
+            );
+        }
+
+        if (mySpecialActivities.status === 'success') {
+            return (<SpecialActivityMain
+                isNew={_state.specialIsNew}
+                index={_state.specialIndex}
+                callbackthree={(arg) => {
+                    if (arg == 3) {
+                        this.handleDismissUpdateModal();
+                    }
+                }}
+            />);
+        }
+    }
+
+
+    renderBasicPromotionEditOrPreviewModal() {
+        return (
+            <Modal
+                wrapClassName="progressBarModal"
+                title={this.state.modalTitle}
+                visible={this.state.updateModalVisible}
+                footer={false}
+                width={1000}
+                height="569px"
+                maskClosable={false}
+                onCancel={this.handleDismissUpdateModal}
+            >
+                { this.state.updateModalVisible && this.renderContentOfBasicPromotionModal()}
+            </Modal>
+        );
+    }
+
+    renderContentOfBasicPromotionModal() {
+        const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
+        const _state = this.state;
+        if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
+            return (
+                <div className={style.spinFather}>
+                    <Spin size="large" />
+                </div>
+            )
+        }
+        if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
+            return (
+                <div className={style.spinFather}>
+                    查询详情出错!点击 <a onClick={() => this.handleUpdateOpe()}>重试</a>
+                </div>
+            );
+        }
+
+        if (promotionDetailInfo.status === 'success') {
+            return (<ActivityMain
+                isNew={_state.isNew}
+                index={_state.index}
+                steps={_state.steps}
+                callbackthree={(arg) => {
+                    if (arg == 3) {
+                        this.setState({
+                            updateModalVisible: false,
+                        });
+                        this.handleQuery();
+                    }
+                }}
+            />);
+        }
+    }
+
     render() {
         return (
             <div style={{ height: '100%' }}>
                 {this.renderHeader()}
                 <div className={style.blockLine} />
                 {this.renderBody()}
+                {this.renderBasicPromotionEditOrPreviewModal()}
+                {this.renderSpecialPromotionEditOrPreviewModal()}
             </div>
         )
     }

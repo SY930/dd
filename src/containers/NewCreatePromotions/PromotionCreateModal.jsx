@@ -38,6 +38,7 @@ import {
     REPEAT_PROMOTION_TYPES,
     LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
+    ONLINE_PROMOTION_TYPES,
 } from '../../constants/promotionType';
 import selfStyle from './style.less'
 
@@ -61,6 +62,10 @@ const ALL_PROMOTION_CATEGORIES = [
     {
         title: '促进销量',
         list: SALE_PROMOTION_TYPES,
+    },
+    {
+        title: '线上营销',
+        list: ONLINE_PROMOTION_TYPES,
     },
 ]
 
@@ -252,7 +257,7 @@ class PromotionCreateModal extends Component {
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
         return (
-            <div className={selfStyle.flexWrapper}>
+            <div className={[selfStyle.flexWrapper, selfStyle.contentWrapper].join(' ')}>
                 <div className={selfStyle.menuArea}>
                     {
                         allMenu.map((title, index) => (

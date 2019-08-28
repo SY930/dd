@@ -40,6 +40,33 @@ export default class DetailCard extends Component {
             })
         })
     }
+    displayEditButton() {
+        const {
+            title,
+            eventName,
+            eventType,
+            eventCategory,
+            process,
+            status,
+            maintenanceLevel,
+            isActive,
+        } = this.props.data;
+        if (eventCategory === 10) {
+            if (maintenanceLevel == 1 || process === '100%') {
+                return false
+            }
+        } else {
+            const statusState = (
+                (eventType == '50' || eventType == '53')
+                &&
+                (status != '0' && status != '1' && status != '5' && status != '21')
+            );
+            if (process === '100%' || statusState || isActive != '0') {
+                return false
+            }
+        }
+        return true;
+    }
     render() {
         const {
             title,
@@ -75,7 +102,11 @@ export default class DetailCard extends Component {
                     )
                 }
                 <div className={style.actionArea}>
-                    <img onClick={() => onEditOrPreviewBtnClick(this.props.data, 'edit')} src={editIcon} alt=""/>
+                    {
+                        this.displayEditButton() && (
+                            <img onClick={() => onEditOrPreviewBtnClick(this.props.data, 'edit')} src={editIcon} alt=""/>
+                        )
+                    }
                     <img onClick={() => onEditOrPreviewBtnClick(this.props.data, 'preview')} src={previewIcon} alt=""/>
                 </div>
                 
