@@ -453,9 +453,10 @@ export default class EntryPage extends Component {
     }
 
     // 关闭更新
-    handleDismissUpdateModal() {
+    handleDismissUpdateModal = () => {
         this.setState({
             specialModalVisible: false,
+            updateModalVisible: false,
         });
     }
 
