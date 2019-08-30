@@ -170,6 +170,7 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
             if (opts.shopID && opts.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
                     dispatch(getFoodCategorySuccessToProcess({records: res}))
+                    dispatch(getRawFoodCatgorySuccess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodCategoryFailed(e));
                 });
@@ -288,6 +289,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             if (params.shopID && params.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
                     dispatch(fetchFoodMenuSuccess({records: res}))
+                    dispatch(getRawFoodMenuSuccess({records: res}));
                 }).catch(e => {
                     dispatch(fetchFoodMenuFailed(e));
                 });
@@ -314,6 +316,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         if (params.shopID && params.shopID > 0) {
             return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
                 dispatch(fetchFoodMenuSuccess(res))
+                dispatch(getRawFoodMenuSuccess(res));
             }).catch(e => {
                 dispatch(fetchFoodMenuFailed(e));
             });
