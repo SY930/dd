@@ -95,7 +95,7 @@ class CalendarList extends Component {
             /** 计算活动日期进度 */
             let process;
             if (eventStartDate == 20000101 && eventEndDate == 29991231) {
-                process = 'N/A';
+                process = '进行中';
             } else if (eventStartDate > today) {
                 process = '0%';
             } else if (eventEndDate < today) {
