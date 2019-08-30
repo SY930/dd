@@ -17,6 +17,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
+import ShopSelector from "../../components/common/ShopSelector";
 import {
     PROMOTION_CALENDAR_NEW,
     SALE_CENTER_PAGE,
@@ -43,6 +44,7 @@ import {
     fetchPromotionScopeInfo,
     saleCenterResetScopeInfoAC,
 } from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import {getPromotionShopSchema} from '../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
 import {
     saleCenterResetDetailInfoAC,
     fetchFoodCategoryInfoAC,
@@ -122,24 +124,24 @@ const CHANNEL_LIST = [
 ];
 const ALL_CATEGORIES = [
     {
-        title: '会员拉新',
-        list: NEW_CUSTOMER_PROMOTION_TYPES,
+        title: '促进销量',
+        list: SALE_PROMOTION_TYPES,
     },
     {
-        title: '粉丝互动',
-        list: FANS_INTERACTIVITY_PROMOTION_TYPES,
+        title: '会员拉新',
+        list: NEW_CUSTOMER_PROMOTION_TYPES,
     },
     {
         title: '促进复购',
         list: REPEAT_PROMOTION_TYPES,
     },
     {
-        title: '会员关怀',
-        list: LOYALTY_PROMOTION_TYPES,
+        title: '粉丝互动',
+        list: FANS_INTERACTIVITY_PROMOTION_TYPES,
     },
     {
-        title: '促进销量',
-        list: SALE_PROMOTION_TYPES,
+        title: '会员关怀',
+        list: LOYALTY_PROMOTION_TYPES,
     },
     {
         title: '线上营销',
@@ -196,6 +198,9 @@ const mapDispatchToProps = (dispatch) => {
         fetchSpecialDetail: (opts) => {
             dispatch(fetchSpecialDetailAC(opts))
         },
+        getPromotionShopSchema: (opts) => {
+            dispatch(getPromotionShopSchema(opts));
+        },
     };
 };
 const mapStateToProps = (state) => {
@@ -205,6 +210,7 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        shopSchema: state.sale_shopSchema_New,
         user: state.user,
         groupID: state.user.getIn(['accountInfo','groupID']),
     };
@@ -214,12 +220,13 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class EntryPage extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
         this.state = {
+            shopSchema,
             createModalVisible: false,
             loading: false,
-            selectedShops: [],
             shopIDList: [],
             channelList: [],
             supportOrderTypeList: [],
@@ -296,6 +303,14 @@ export default class EntryPage extends Component {
             _groupID: this.props.user.getIn(['accountInfo','groupID'])
         });
         this.handleQuery();
+        const { getPromotionShopSchema, groupID} = this.props;
+        getPromotionShopSchema({groupID});
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
+            this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
+            });
+        }
     }
 
     openCreateModal = () => {
@@ -329,24 +344,6 @@ export default class EntryPage extends Component {
             this.handleSpecialUpdateOpe(entity)
         }
         
-    }
-
-    onTreeSelect(value, treeData) {        
-        const shopsInfo = [];
-        treeData.forEach((td) => {
-            if (td.children) {
-                td.children.map((tdc) => {
-                    shopsInfo.push(tdc);
-                })
-            }
-        });
-        const shopIDList = value.map(val => shopsInfo.find((si) => {
-                    return si.value === val;
-                }).shopID)
-        this.setState({
-            selectedShops: value,
-            shopIDList,
-        })
     }
 
     successFn = (responseJSON) => {
@@ -451,6 +448,11 @@ export default class EntryPage extends Component {
             });
         }
     }
+    handleShopSelectorChange = (v) => {
+        this.setState({
+            shopIDList: v
+        })
+    }
 
     // 关闭更新
     handleDismissUpdateModal = () => {
@@ -458,30 +460,6 @@ export default class EntryPage extends Component {
             specialModalVisible: false,
             updateModalVisible: false,
         });
-    }
-
-    renderShopsInTreeSelectMode() {
-        const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData'])) ?
-            this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']).toJS() :
-            this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']);
-        const tProps = {
-                treeData,
-                value: this.state.selectedShops,
-                onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '全部店铺',
-                allowClear: true,
-            };
-        return (
-            <TreeSelect
-                showSearch
-                multiple
-                {...tProps}
-                style={{ width: 160, margin: '0 20px 0 10px' }}
-                dropdownStyle={{ minWidth: 160 }}
-                dropdownMatchSelectWidth={false}
-                treeNodeFilterProp="label"
-            />
-        );
     }
 
     renderFilterBar() {
@@ -504,11 +482,21 @@ export default class EntryPage extends Component {
                     onChange={this.handleMonthChange}
                 />
                 <h5>适用店铺</h5>
-                {this.renderShopsInTreeSelectMode()}
+                <div style={{ width: 160, margin: '0 20px' }}>
+                    <ShopSelector
+                        size="small"
+                        value={shopIDList}
+                        onChange={
+                            this.handleShopSelectorChange
+                        }
+                        schemaData={this.state.shopSchema}
+                    />
+                </div>
+                
                 <h5>适用场景</h5>
                 <Select
                     multiple={true}
-                    style={{ width: 200, margin: '0 20px 0 10px' }}
+                    style={{ width: 220, margin: '0 20px 0 10px' }}
                     value={channelList}
                     placeholder="全部"
                     onChange={this.handleChannelListChange}

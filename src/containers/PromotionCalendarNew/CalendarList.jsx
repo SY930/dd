@@ -24,8 +24,7 @@ const isNameLengthLargerThanWidth = (item) => {
 
 const MONTH_FORMAT = 'YYYYMM';
 const DAY_FORMAT = 'YYYYMMDD';
-const DAY_LENGTH_IN_PX = 20;
-let timer = 0;
+const DAY_LENGTH_IN_PX = 15;
 class CalendarList extends Component {
     constructor() {
         super();
