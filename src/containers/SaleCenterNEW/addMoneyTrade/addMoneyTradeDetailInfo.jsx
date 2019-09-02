@@ -46,20 +46,13 @@ import AddMoneyTradeDishesTableWithoutBrand from './AddMoneyTradeDishesTableWith
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultRun = '0';
         this.state = {
-            display: false,
-            foodMenuList: [],
             previousRuleType: null, // 妥协后端奇妙的数据结构
             foodCategoryCollection: [],
-            freeAmount: '',
-            stageAmount: '',
-            stageCount: '',
-            stageType: 2,
             dishes: [],
             stageCountFlag: true,
             stageAmountFlag: true,
-            ruleType: '0',
+            ...this.getInitState(),
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -69,22 +62,18 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
     }
 
-    componentDidMount() {
-        this.props.getSubmitFn({
-            finish: this.handleSubmit,
-        });
-
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-
-            this.setState({
-                foodMenuList,
-            })
-        }
+    getInitState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        if (_rule === null || _rule === undefined) {
-            return null;
+        if (!_rule) {
+            return {
+                display: false,
+                stageType: 2,
+                stageAmount: '',
+                stageCount: '',
+                freeAmount: '',
+                ruleType: '0',
+            };
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
@@ -93,15 +82,19 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         if (Number(_rule.stageStyle) === 1) {
             ruleType += 2;
         }
-        // 根据ruleJson填充页面
-        this.setState({
+        return {
             display,
             stageType: _rule.stageType || 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-            //ruleType: _scopeLst.size > 0 ? '1' : '0',
             ruleType: String(ruleType)
+        }
+    }
+
+    componentDidMount() {
+        this.props.getSubmitFn({
+            finish: this.handleSubmit,
         });
     }
 
