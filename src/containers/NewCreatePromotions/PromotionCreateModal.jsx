@@ -45,7 +45,7 @@ import selfStyle from './style.less'
 const ALL_PROMOTION_CATEGORIES = [
     {
         title: '会员拉新',
-        list: NEW_CUSTOMER_PROMOTION_TYPES,
+        list: NEW_CUSTOMER_PROMOTION_TYPES.filter(item => item.key != 67 && item.key != 68),
     },
     {
         title: '粉丝互动',

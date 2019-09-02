@@ -50,6 +50,7 @@ import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
 } from '../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { saleCenterResetDetailInfoAC as resetSpecialDetailAC } from '../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
     fetchPromotionDetail,
     resetPromotionDetail,
@@ -200,6 +201,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getPromotionShopSchema: (opts) => {
             dispatch(getPromotionShopSchema(opts));
+        },
+        saleCenterResetSpecialDetailInfo: (opts) => {
+            dispatch(resetSpecialDetailAC(opts))
         },
     };
 };
@@ -459,6 +463,12 @@ export default class EntryPage extends Component {
         this.setState({
             specialModalVisible: false,
             updateModalVisible: false,
+        }, () => {
+            this.props.saleCenterResetBasicInfo();
+            this.props.saleCenterResetScopeInfo();
+            this.props.saleCenterResetDetailInfo();
+            this.props.cancelFetchPromotionDetail();
+            this.props.saleCenterResetSpecialDetailInfo();
         });
     }
 
