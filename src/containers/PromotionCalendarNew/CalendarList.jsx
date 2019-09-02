@@ -228,6 +228,7 @@ class CalendarList extends Component {
                             return (
                                 <div className={style.promotionWrapper}>
                                     <Popover
+                                        getPopupContainer={node => node.parentNode}
                                         content={<DetailCard onEditOrPreviewBtnClick={onEditOrPreviewBtnClick} data={item} />}
                                         title={false}
                                         trigger="click"

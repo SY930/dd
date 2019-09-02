@@ -169,6 +169,11 @@
     width: 100%;
     display: flex;
     align-items: center;
+    :global {
+      .ant-popover {
+        z-index: 1000!important;
+      }
+    }
 }
 .promotionBar {
     position: relative;
