@@ -186,7 +186,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return (
-                        <div className="editable-row-operations">
+                        <div>
                             <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
                                 <a title="删除" alt="删除">删除</a>
                             </Popconfirm>
