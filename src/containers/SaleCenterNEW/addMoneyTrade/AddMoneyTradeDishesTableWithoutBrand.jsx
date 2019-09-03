@@ -219,7 +219,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div
-                            style={record.payPrice > 0 ? {height: '100%'} : {height: '100%', border: '1px solid #f04134'}}
+                            style={(record.payPrice > 0) && (+record.payPrice <= +record.price) ? {height: '100%'} : {height: '100%', border: '1px solid #f04134'}}
                             className={styles.rightAlign}
                         >
                             <PriceInputIcon
