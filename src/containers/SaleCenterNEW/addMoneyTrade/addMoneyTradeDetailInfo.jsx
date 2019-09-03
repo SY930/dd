@@ -114,6 +114,10 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             message.warning('加价金额必须大于0')
             return false;
         }
+        if (dishes.some(dish => +dish.payPrice > +dish.price)) {
+            message.warning('加价金额不能超过售价')
+            return false;
+        }
         this.setState({ stageAmountFlag, stageCountFlag });
 
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag))) {
