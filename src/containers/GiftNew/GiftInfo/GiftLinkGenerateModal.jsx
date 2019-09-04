@@ -87,7 +87,7 @@ export default class GiftLinkGenerateModal extends Component {
         const { groupID } = this.props;
         let preFix;
         switch(HUALALA.ENVIRONMENT) {
-            case 'production-release': break;
+            case 'production-release': preFix = '';break;
             case 'production-pre': preFix = 'pre.';break;
             default: preFix = 'dohko.';break;
         }
