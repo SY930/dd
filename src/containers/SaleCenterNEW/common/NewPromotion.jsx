@@ -62,6 +62,7 @@ class NewPromotion extends React.Component {
                 sharedType: promotion.sharedType ? promotion.sharedType : '10',
             }
         }) : []
+        const giftList = detailInfo.giftList || [];
         const opts = {
             groupID: this.props.user.getIn(['accountInfo', 'groupID']),
             maintenanceLevel: this.props.user.get('shopID') ? '1' : '0',
@@ -74,6 +75,7 @@ class NewPromotion extends React.Component {
             roleIDLst: _roleIDLst,
             isActive,
             shareLst,
+            giftList,
             usageMode: scopeInfo.usageMode,
         };
         if (!opts.shopIDLst && promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst']) > 0) {
@@ -120,6 +122,7 @@ class NewPromotion extends React.Component {
                 maintenanceLevel,
                 usageMode,
                 needSyncToAliPay: detailInfo.needSyncToAliPay,
+                giftList,
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
