@@ -479,7 +479,7 @@ class ReturnGiftDetailInfo extends React.Component {
                             (!isMultiple) && (
                                 <div className={selfStyle.buttonArea}>
                                     {
-                                        (arr.length < 10 && index === arr.length - 1) && (
+                                        (arr.length < 5 && index === arr.length - 1) && (
                                             <Icon
                                                 onClick={this.addStage}
                                                 style={{ marginBottom: 10 }}
