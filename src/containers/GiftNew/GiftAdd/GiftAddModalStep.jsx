@@ -268,7 +268,7 @@ class GiftAddModalStep extends React.PureComponent {
                 } else {
                     moenyLimitValueIndex !== -1 && newKeys.splice(moenyLimitValueIndex, 1);
                 }
-                if (describe === '菜品兑换券') {
+                if (describe === '菜品兑换券' || describe === '代金券') {
                     const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
                     if (value == 1) {
                         maxUseLimitIndex == -1 && newKeys.splice(index + 2, 0, 'maxUseLimit')
