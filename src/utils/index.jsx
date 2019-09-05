@@ -14,6 +14,7 @@ export const isFormalRelease = () => {
     return flag;
 }
 /**
+ *  ** 集团视角/需品牌化菜品的组件调用，单店菜品调用下一个方法 **
  * 将原始数据扩展成营销考虑菜品品牌化后的数据
  * 1. 考虑品牌化上线前旧数据兼容性：先将所有的菜品分类、菜品根据名称进行去重，模拟一个‘不限品牌’的品牌
  * 2. 有许多分类、菜品的brandID为0，这是由于基本档品牌化上线前的老数据，需要将这些菜品与分类复制给每个品牌
@@ -141,5 +142,66 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
         brands: brands.sort((a, b) => a.brandID - b .brandID),
     }
 }
+/**
+ * 将原始数据扩展成营销考虑菜品品牌化后的数据
+ * 处理店铺分类与菜品，供给新菜品组件使用
+ * @param {Immutable.List} $rawCategories Immutable.List 直接从基本档请求来的所有店铺分类信息
+ * @param {Immutable.List} $rawDishes Immutable.List 直接从基本档请求来的所有店铺菜品信息
+ */
+const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
+    if (!$rawCategories.size || !$rawDishes.size) {
+        return {
+            categories: [],
+            dishes: [],
+        }
+    }
+    const rawCategories = $rawCategories.toJS();
+    const rawDishes = $rawDishes.toJS();
+    const uniqCatMap = new Map();
+    rawCategories.forEach(item => {
+        if (!uniqCatMap.has(item.foodCategoryName)) {
+            uniqCatMap.set(item.foodCategoryName, item)
+        }
+    })
+    const uniqDishMap = new Map();
+    rawDishes.forEach(food => {
+        if (uniqDishMap.has(`${food.foodName}${food.unit}`)) { // 产品层面决定 如果有名称+规格重复的菜品 保留售价高的那一个
+            const previousFood = uniqDishMap.get(`${food.foodName}${food.unit}`);
+            const previousPrice = previousFood.prePrice == -1 ? previousFood.price : previousFood.prePrice;
+            const newPrice = food.prePrice == -1 ? food.price : food.prePrice;
+            if (newPrice > previousPrice) {
+                uniqDishMap.set(`${food.foodName}${food.unit}`, food)
+            }
+        } else {
+            uniqDishMap.set(`${food.foodName}${food.unit}`, food)
+        }
+    })
+    const categories = Array.from(uniqCatMap.values()).reduce((acc, curr) => {
+        acc.push({
+            ...curr,
+            label: curr.foodCategoryName,
+            py: curr.foodCategoryMnemonicCode,
+            value: curr.foodCategoryName,
+        })
+        return acc;
+    }, []);
+    const dishes = Array.from(uniqDishMap.values()).reduce((acc, curr) => {
+            acc.push({
+                ...curr,
+                price: curr.prePrice == -1 ? curr.price : curr.prePrice,
+                newPrice: curr.prePrice == -1 ? curr.price : curr.prePrice,
+                label: `${curr.foodName}(${curr.unit})`,
+                py: curr.foodMnemonicCode,
+                localFoodCategoryID: `${curr.foodCategoryName}`,
+                value: `${curr.foodName}${curr.unit}`
+            })
+        return acc;
+    }, [])
+    return {
+        dishes: _.sortBy(dishes, [ 'foodCategoryName']),
+        categories: _.sortBy(categories, ['foodCategoryName']),
+    }
+}
 
 export const memoizedExpandCategoriesAndDishes = memoizeOne(expandCategoriesAndDishes)
+export const memoizedShopCategoriesAndDishes = memoizeOne(expandCategoriesAndDishesForShop)

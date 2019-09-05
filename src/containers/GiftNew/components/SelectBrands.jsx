@@ -7,8 +7,14 @@ import {
     Form
 } from 'antd';
 import {fetchData} from "../../../helpers/util";
+import { saveBrandsToStore } from '../_action'
 const Option = Select.Option;
 const FormItem = Form.Item;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        saveBrandsToStore: opt => dispatch(saveBrandsToStore(opt)),
+    }
+}
 
 class SelectBrands extends Component {
 
@@ -21,12 +27,14 @@ class SelectBrands extends Component {
     }
 
     componentDidMount() {
-        fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' }).then((data) => {
+        fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' })
+        .then((data) => {
             if (!data) return;
             const brands = [];
             data.map((d) => {
                 brands.push({ value: d.brandID, label: d.brandName })
             });
+            this.props.saveBrandsToStore(data);
             this.setState({ brands });
         });
     }
@@ -78,4 +86,4 @@ class SelectBrands extends Component {
     }
 }
 
-export default SelectBrands;
+export default connect(null, mapDispatchToProps)(SelectBrands);

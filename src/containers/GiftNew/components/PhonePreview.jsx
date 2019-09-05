@@ -94,14 +94,14 @@ class PhonePreview extends PureComponent {
         } else {
             const foodNames = foodNameList ? foodNameList.toJS() : [];
             if (foodNames instanceof Array) {
-                return `本券仅用于“${foodNames.join('，')}”等菜品`;
+                return `本券仅用于“${foodNames.join('，')}”菜品`;
             } else if (foodNames.categoryOrDish === '0') {
-                return `本券仅用于“${foodNames.dishes.map(food => `${food.foodName}（${food.unit}）`).join('，')}”等菜品`;
+                return `本券仅用于“${foodNames.dishes.map(food => `${food.foodName}（${food.unit}）`).join('，')}”菜品`;
             } else if (foodNames.categoryOrDish === '1') {
-                return `本券仅用于“${foodNames.foodCategory.map(food => food.foodCategoryName).join('，')}”等分类菜品`;
+                return `本券仅用于“${foodNames.foodCategory.map(food => food.foodCategoryName).join('，')}”分类菜品`;
             }
         }
-        return `本券仅用于“${foodNameString}”等菜品`;
+        return `本券仅用于“${foodNameString}”菜品`;
     }
 
     foodScopeString() {

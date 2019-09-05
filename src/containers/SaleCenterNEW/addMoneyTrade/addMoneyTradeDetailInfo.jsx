@@ -13,6 +13,7 @@ import {
     Form,
     Select,
     Radio,
+    message,
 } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
@@ -39,56 +40,40 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
-import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
+import AddMoneyTradeDishesTableWithBrand from './AddMoneyTradeDishesTableWithBrand'
+import AddMoneyTradeDishesTableWithoutBrand from './AddMoneyTradeDishesTableWithoutBrand'
 
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultRun = '0';
         this.state = {
-            display: false,
-            foodMenuList: [],
             previousRuleType: null, // 妥协后端奇妙的数据结构
             foodCategoryCollection: [],
-            freeAmount: '',
-            stageAmount: '',
-            stageCount: '',
-            stageType: 2,
             dishes: [],
-            freeAmountFlag: true,
             stageCountFlag: true,
             stageAmountFlag: true,
-            dishsSelectionFlag: true,
-            ruleType: '0',
+            ...this.getInitState(),
         };
 
-        this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
-        this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onRadioChange = this.onRadioChange.bind(this);
         this.onStageCountChange = this.onStageCountChange.bind(this);
-        this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
     }
 
-    componentDidMount() {
-        this.props.getSubmitFn({
-            finish: this.handleSubmit,
-        });
-
-        if (this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized'])) {
-            const foodMenuList = this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-
-            this.setState({
-                foodMenuList,
-            })
-        }
+    getInitState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        if (_rule === null || _rule === undefined) {
-            return null;
+        if (!_rule) {
+            return {
+                display: false,
+                stageType: 2,
+                stageAmount: '',
+                stageCount: '',
+                freeAmount: '',
+                ruleType: '0',
+            };
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
@@ -97,80 +82,45 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         if (Number(_rule.stageStyle) === 1) {
             ruleType += 2;
         }
-        // 根据ruleJson填充页面
-        this.setState({
+        return {
             display,
             stageType: _rule.stageType || 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-            //ruleType: _scopeLst.size > 0 ? '1' : '0',
             ruleType: String(ruleType)
-        });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.isShopFoodSelectorMode) { // 摆脱原有菜品组件逻辑
-            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-                nextProps.promotionDetailInfo.getIn(['$foodCategoryListInfo', 'initialized'])) {
-                this.setState({
-                    foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                    foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-                })
-            }
-            if (nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'initialized']) &&
-                nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).size > 0) {
-                const foodMenuList = nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records;
-                const _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ?
-                    nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-                const _dish = [];
-                _priceLst.map((price) => {
-                    foodMenuList.map((food) => {
-                        // if(food.foodKey === price.foodUnitCode){不唯一，一个菜会匹配多次，添加多次
-                        if (food.itemID == price.foodUnitID) { // foodUnitID就是由itemID转换
-                            _dish.push(food)
-                        }
-                    });
-                });
-                _dish.map(((item) => {
-                    item.id = item.foodID;
-                    item.content = item.foodName;
-                }));
-                this.setState({
-                    foodMenuList,
-                    dishes: _dish,
-                });
-            }
         }
     }
 
+    componentDidMount() {
+        this.props.getSubmitFn({
+            finish: this.handleSubmit,
+        });
+    }
+
     handleSubmit() {
-        let { stageAmount, stageType, stageCount, dishes, stageCountFlag, stageAmountFlag, foodMenuList, freeAmount, freeAmountFlag, dishsSelectionFlag, ruleType } = this.state;
+        let { stageAmount, stageType, stageCount, dishes, stageCountFlag, stageAmountFlag, freeAmount, ruleType } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
         if (stageCount == null || stageCount == '') {
             stageCountFlag = false;
         }
-        if (freeAmount == null || freeAmount == '') {
-            freeAmountFlag = false;
+        if (dishes.length === 0) {
+            message.warning('至少要设置一份活动菜品')
+            return false;
         }
-        if (dishes.length == 0) {
-            dishsSelectionFlag = false;
+        if (dishes.some(dish => !(dish.payPrice > 0))) {
+            message.warning('活动价必须大于0')
+            return false;
         }
-        this.setState({ freeAmountFlag, stageAmountFlag, stageCountFlag, dishsSelectionFlag });
+        if (dishes.some(dish => +dish.payPrice > +dish.price)) {
+            message.warning('活动价不能超过售价')
+            return false;
+        }
+        this.setState({ stageAmountFlag, stageCountFlag });
 
-        if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag)) && freeAmountFlag && dishsSelectionFlag) {
-            const rule = {
-                stageType,
-                stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
-                stage: [
-                    {
-                        stageCount: stageCount || 0,
-                        stageAmount: stageAmount || 0,
-                        freeAmount,
-                    },
-                ],
-            }
+        if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag))) {
             const priceLst = dishes.map((price) => {
                 return {
                     foodUnitID: price.itemID,
@@ -179,8 +129,20 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     foodUnitName: price.unit,
                     brandID: price.brandID || '0',
                     price: price.price,
+                    payPrice: price.payPrice,
                 }
             });
+            const rule = {
+                stageType,
+                stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
+                stage: [
+                    {
+                        stageCount: stageCount || 0,
+                        stageAmount: stageAmount || 0,
+                        freeAmount: priceLst[0].payPrice,
+                    },
+                ],
+            }
             if (ruleType == '0' || ruleType == '2') {
                 this.props.setPromotionDetail({
                     rule,
@@ -244,69 +206,24 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         this.setState({ stageCount, stageCountFlag });
     }
-    // 满金额
-    handleFreeAmountChange(value) {
-        let { freeAmount, freeAmountFlag } = this.state;
-        if (value.number == null || value.number == '') {
-            freeAmountFlag = false;
-            freeAmount = value.number;
-        } else {
-            freeAmountFlag = true;
-            freeAmount = value.number;
-        }
-        this.setState({ freeAmount, freeAmountFlag });
-    }
-
-    renderBuyDishNumInput() {
-        return (
-            <FormItem
-                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                wrapperCol={{ span: 17, offset: 4 }}
-                required={true}
-                validateStatus={this.state.freeAmountFlag ? 'success' : 'error'}
-                help={this.state.freeAmountFlag ? null : '请输入加价金额'}
-            >
-                <PriceInput
-                    addonBefore={'加价'}
-                    addonAfter={'元'}
-                    value={{ number: this.state.freeAmount }}
-                    defaultValue={{ number: this.state.freeAmount }}
-                    onChange={this.handleFreeAmountChange}
-                    modal="float"
-                />
-            </FormItem>
-        )
-    }
 
     renderDishsSelectionBox() {
         return (
-
-            <FormItem
-                label="换购菜品"
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-                required={true}
-                validateStatus={this.state.dishsSelectionFlag ? 'success' : 'error'}
-                help={this.state.dishsSelectionFlag ? null : '请选择换购菜品'}
-            >
-                {
-                    this.props.isShopFoodSelectorMode ? (
-                        <EditBoxForDishes
-                            type='1070'
-                            onChange={(value) => {
-                                this.onDishesChange(value);
-                            }}
-                        />
-                    ) : (
-                        <ConnectedPriceListSelector
-                            onChange={(value) => {
-                                this.onDishesChange(value);
-                            }}
-                        />
-                    )
-                }        
-            </FormItem>
+            this.props.isShopFoodSelectorMode ? (
+                <AddMoneyTradeDishesTableWithoutBrand
+                    legacyPayPrice={this.state.freeAmount}
+                    onChange={(value) => {
+                        this.onDishesChange(value);
+                    }}
+                />
+            ) : (
+                <AddMoneyTradeDishesTableWithBrand
+                    legacyPayPrice={this.state.freeAmount}
+                    onChange={(value) => {
+                        this.onDishesChange(value);
+                    }}
+                />
+            )    
         )
     }
     // 换购菜品onchange
@@ -414,7 +331,6 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
                             <ConnectedScopeListSelector/>
                     }
-                    {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}

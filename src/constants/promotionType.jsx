@@ -350,7 +350,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '任意或指定消费满X元再加Y元即可换购指定菜品',
         example: '例如:任意消费满100元加10元即可换购土豆丝一份',
-        tags: ['pos'],
+        tags: ['pos', '新微信'],
         key: '1070',
         right: 14,
         bottom: 12,

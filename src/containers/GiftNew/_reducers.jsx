@@ -31,8 +31,11 @@ import {
     GIFT_NEW_START_EDIT_GIFT,
     GIFT_NEW_CANCEL_START_SAVING_GIFT,
     GIFT_NEW_CANCEL_END_SAVING_GIFT,
-    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT, GIFT_NEW_CHANGE_FORM_KEY_VALUE, GIFT_NEW_FETCH_SEND_LIST_OK,
+    GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+    GIFT_NEW_CHANGE_FORM_KEY_VALUE,
+    GIFT_NEW_FETCH_SEND_LIST_OK,
     GIFT_NEW_FETCH_USED_LIST_OK,
+    GIFT_NEW_SAVE_BRANDS_TO_STORE,
 } from './_action';
 
 const $initialEditState = Immutable.fromJS({
@@ -41,7 +44,8 @@ const $initialEditState = Immutable.fromJS({
     operationType: 'add',
     loading: false,
     createOrEditFormData: {
-    }
+    },
+    allBrands: [],
 });
 const $initialState = Immutable.fromJS({
     loading: false,
@@ -114,6 +118,8 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
             return $$state
                 .setIn(['createOrEditFormData', action.payload.key], Immutable.fromJS(action.payload.value))
                 ;
+        case GIFT_NEW_SAVE_BRANDS_TO_STORE:
+            return $$state.set('allBrands', Immutable.fromJS(action.payload));
         default:
             return $$state
     }

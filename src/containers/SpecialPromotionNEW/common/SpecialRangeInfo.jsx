@@ -22,7 +22,7 @@ class SpecialRangeInfo extends React.Component {
         super(props);
         this.state = {
             joinRange: [],
-            freeGetJoinRange: ['0'],
+            freeGetJoinRange: ['0', '3'],
             deductPointsStatus: 'success',
             joinCount: '0',
             rewardOnly: 1, // 是否用于打赏
@@ -30,6 +30,7 @@ class SpecialRangeInfo extends React.Component {
             sendPoints: 0, // 赠送积分数
             wechatEventListCheck: '0', // 是否在微信会员卡活动列表领取
             wechatOrderCheck: '0', // 是否在微信点菜界面领取
+            giftLinkCheck: '0', // 是否可被投放链接
             sendPointsStatus: 'success',
             countCycleDays: 0, // 参与周期
             countCycleDaysStatus: 'success',
@@ -93,6 +94,9 @@ class SpecialRangeInfo extends React.Component {
             if (specialPromotion.wechatEventListCheck != '0') {
                 freeGetJoinRange.push('0');
             }
+            if (specialPromotion.giftLinkCheck != '0') {
+                freeGetJoinRange.push('3');
+            }
             if (specialPromotion.wechatOrderCheck != '0') {
                 freeGetJoinRange.push('1');
             }
@@ -153,15 +157,12 @@ class SpecialRangeInfo extends React.Component {
             rewardOnly, // 是否用于打赏
             deductPoints, // 扣减积分数
             sendPoints, // 赠送积分数
-            wechatEventListCheck, // 是否在微信会员卡活动列表领取
-            wechatOrderCheck, // 是否在微信点菜界面领取
             countCycleDays, // 参与周期
             partInTimes, // 最大参与次数
             partInTimesNoValid, // 最大参与次数
             isVipBirthdayMonth, // 是否本月生日才能使用
             maxPartInPerson, // 参与人数
             maxPartInPersonStatus,
-            freeGetJoinRangeStatus,
             autoRegister,
             defaultCardType,
             shopIDList,
@@ -240,6 +241,11 @@ class SpecialRangeInfo extends React.Component {
                 } else {
                     opts.wechatOrderCheck = '0';
                 }
+                if (freeGetJoinRange.indexOf('3') !== -1) {
+                    opts.giftLinkCheck = '1';// 是否在微信点菜界面领取
+                } else {
+                    opts.giftLinkCheck = '0';
+                }
             }
             if (joinRange.indexOf('1') !== -1) {
                 opts.deductPoints = deductPoints;
@@ -309,6 +315,7 @@ class SpecialRangeInfo extends React.Component {
             { label: '微信会员卡活动列表领取', value: '0' },
             // { label: '微信点菜界面领取', value: '1' },
             { label: '打赏活动领取', value: '2' },
+            { label: '礼品链接投放', value: '3' },
         ];
         // 因为开发线上领取新功能，去掉{ label: '微信点菜界面领取', value: '1' },
         const idx = this.state.freeGetJoinRange.findIndex((value) => {

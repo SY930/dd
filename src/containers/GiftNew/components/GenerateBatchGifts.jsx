@@ -22,7 +22,7 @@ const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 
-const BATCH_LIMIT = 10000;
+const BATCH_LIMIT = 100000;
 
 class GenerateBatchGifts extends Component {
 

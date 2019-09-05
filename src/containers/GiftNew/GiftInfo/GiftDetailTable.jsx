@@ -34,6 +34,7 @@ import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
+import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 const validUrl = require('valid-url');
@@ -41,6 +42,8 @@ class GiftDetailTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            linkModalVisible: false,
+            selectedRecord: null,
             visibleDetail: false,
             visibleEdit: false,
             createModalVisible: false,
@@ -52,7 +55,6 @@ class GiftDetailTable extends Component {
                 pageNo: 1,
                 pageSize: 20,
             },
-            // total为数据总数。并不是页数。
             total: 2,
             tableHeight: '100%',
             contentHeight: '100%',
@@ -283,9 +285,6 @@ class GiftDetailTable extends Component {
         if (gift.value == 100) { //
             return message.success('该券即将下线, 请使用折扣券');
         }
-        /*this.props.fetchAllPromotionList({// 请求获取promotionList--券活动
-            groupID: this.props.user.accountInfo.groupID,
-        }) : null;*/
         this.props.startEditGift({
             operationType,
             value: gift.data.giftType,
@@ -331,13 +330,19 @@ class GiftDetailTable extends Component {
         if (giftType !== '90') {
             FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
             giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
-            /*axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', opts, null, {
-                path: 'data',
-            })
-                .then((records) => {
-                    this.setState({ usedTotalSize: records.totalSize })
-                });*/
         }
+    }
+    handleGenerateLink(record) {
+        this.setState({
+            selectedRecord: record,
+            linkModalVisible: true,
+        })
+    }
+    onGenerateLinkModalClose = () => {
+        this.setState({
+            selectedRecord: null,
+            linkModalVisible: false,
+        })
     }
 
     handlePageChange = (pageNo, pageSize) => {
@@ -539,6 +544,15 @@ class GiftDetailTable extends Component {
                 >
                     <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
                 </Modal>
+                {
+                    this.state.linkModalVisible && (
+                        <GiftLinkGenerateModal
+                            groupID={this.props.user.accountInfo.groupID}
+                            entity={this.state.selectedRecord}
+                            onCancel={this.onGenerateLinkModalClose}
+                        />
+                    )
+                }
             </div>
         )
     }

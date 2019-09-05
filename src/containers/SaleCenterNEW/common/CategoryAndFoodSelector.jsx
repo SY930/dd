@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import {
     Form,
     Radio,
@@ -13,16 +14,7 @@ import {
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const mapStateToProps = (state) => {
-    return {
-        /** 基础营销活动范围中设置的品牌 */
-        selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
-        /** 基本档获取的所有品牌（由店铺schema接口获取，所以似乎品牌下没有店铺的话不会在这里？） */
-        allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
-        allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
-        allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
-    }
-}
+// 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
 const PROMOTION_OPTIONS = [
     {
         key: '0',
@@ -52,35 +44,11 @@ const getFoodInfoFromScopeList = (scopeList) => {
             categoryOrDish = scope.scopeType == 2 ? 1 : 0
         }
         if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
-            // dishes.push({
-            //     itemID: scope.targetID,
-            //     brandID: `${scope.brandID}` || '0',
-            //     foodName: scope.targetName,
-            //     foodKey: scope.targetCode,
-            //     unit: scope.targetUnitName,
-            //     value: `${scope.brandID}__${scope.targetName}${scope.targetUnitName}`,
-            // })
             dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         } else if (categoryOrDish === 0 && scope.scopeType != 2) {
-            // scope.scopeType == 1 && categories.push({
-            //     itemID: scope.targetID,
-            //     brandID: `${scope.brandID}` || '0',
-            //     foodCategoryKey: scope.targetCode,
-            //     foodCategoryName: scope.targetName,
-            //     value: `${scope.brandID}__${scope.targetName}`,
-            // })
             scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
-            // scope.scopeType == 4 && excludeDishes.push({
-            //     itemID: scope.targetID,
-            //     brandID: `${scope.brandID}` || '0',
-            //     foodName: scope.targetName,
-            //     foodKey: scope.targetCode,
-            //     unit: scope.targetUnitName,
-            //     value: `${scope.brandID}__${scope.targetName}${scope.targetUnitName}`,
-            // })
         }
-
     })
     return {
         categoryOrDish,
@@ -102,8 +70,7 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
     }
 }
 
-@connect(mapStateToProps)
-export default class CategoryAndFoodSelector extends Component {
+class CategoryAndFoodSelector extends Component {
 
     constructor(props) {
         super(props);
@@ -187,6 +154,8 @@ export default class CategoryAndFoodSelector extends Component {
                 this.mapSelectedValueToObjectsThenEmit()
             }
         }
+        console.log('prevProps.selectedBrands', prevProps.selectedBrands.toJS())
+        console.log('props.selectedBrands', this.props.selectedBrands.toJS())
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
             if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
                 this.setState({
@@ -269,6 +238,9 @@ export default class CategoryAndFoodSelector extends Component {
             allCategories,
             allDishes,
             dishFilter,
+            dishLabel,
+            showRequiredMark,
+            showEmptyTips,
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
@@ -284,7 +256,7 @@ export default class CategoryAndFoodSelector extends Component {
             return (
                 <FoodSelector
                     mode="dish"
-                    placeholder="点击添加适用菜品"
+                    placeholder={`点击添加${dishLabel}`}
                     allDishes={dishes}
                     allCategories={categories}
                     allBrands={brands}
@@ -294,17 +266,39 @@ export default class CategoryAndFoodSelector extends Component {
             )
         }
         return (
-            <FormItem label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                <FoodSelector
-                    mode="dish"
-                    placeholder="点击添加适用菜品"
-                    allDishes={dishes}
-                    allCategories={categories}
-                    allBrands={brands}
-                    value={this.state.dishes}
-                    onChange={this.handleDishChange}
-                />
-            </FormItem>
+            <div>
+                <FormItem
+                    label={dishLabel}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={showRequiredMark}
+                >
+                    <FoodSelector
+                        mode="dish"
+                        placeholder={`点击添加${dishLabel}`}
+                        allDishes={dishes}
+                        allCategories={categories}
+                        allBrands={brands}
+                        value={this.state.dishes}
+                        onChange={this.handleDishChange}
+                    />
+                </FormItem>
+                {
+                    (showEmptyTips && this.state.dishes.length === 0) && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                            }}
+                        >
+                            未选择菜品时默认所有菜品适用
+                        </div>
+                    )
+                }
+            </div>
         )
     }
     renderCategorySelectionBox() {
@@ -313,6 +307,9 @@ export default class CategoryAndFoodSelector extends Component {
             allCategories,
             allDishes,
             dishFilter,
+            showExludeDishes,
+            showRequiredMark,
+            showEmptyTips,
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
@@ -334,7 +331,13 @@ export default class CategoryAndFoodSelector extends Component {
         }
         return (
             <div>
-                <FormItem label="适用菜品分类" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem
+                    label="适用菜品分类"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={showRequiredMark}
+                >
                     <FoodSelector
                         mode="category"
                         placeholder="点击添加适用分类"
@@ -345,17 +348,36 @@ export default class CategoryAndFoodSelector extends Component {
                         onChange={this.handleCategoryChange}
                     />
                 </FormItem>
-                <FormItem label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                    <FoodSelector
-                        mode="dish"
-                        placeholder="点击添加排除菜品"
-                        allDishes={filteredDishes}
-                        allCategories={filteredCategories}
-                        allBrands={filteredBrands}
-                        value={this.state.excludeDishes}
-                        onChange={this.handleExcludeDishChange}
-                    />
-                </FormItem>
+                {
+                    (showEmptyTips && this.state.categories.length === 0) && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                                marginBottom: 8,
+                            }}
+                        >
+                            未选择分类时默认所有分类适用
+                        </div>
+                    )
+                }
+                {
+                    showExludeDishes && (
+                        <FormItem label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                            <FoodSelector
+                                mode="dish"
+                                placeholder="点击添加排除菜品"
+                                allDishes={filteredDishes}
+                                allCategories={filteredCategories}
+                                allBrands={filteredBrands}
+                                value={this.state.excludeDishes}
+                                onChange={this.handleExcludeDishChange}
+                            />
+                        </FormItem>
+                    )
+                }
             </div>
             
         )
@@ -374,3 +396,37 @@ export default class CategoryAndFoodSelector extends Component {
         );
     }
 }
+const mapStateToPropsForPromotion = (state) => {
+    return {
+        /** 基础营销活动范围中设置的品牌 */
+        selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
+        /** 基本档获取的所有品牌（由店铺schema接口获取，所以似乎品牌下没有店铺的话不会在这里？） */
+        allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
+        allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
+        allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
+    }
+}
+const mapStateToPropsForGift = (state) => {
+    return {
+        /** 礼品模版中设置的品牌 [{targetID: XXX, targetName: XXX}] */
+        selectedBrands: state.sale_editGiftInfoNew
+            .getIn(['createOrEditFormData', 'selectBrands'], Immutable.fromJS([]))
+            .map(item => `${item.get('targetID')}`),
+        /** 礼品模版中查询到的品牌 */
+        allBrands: state.sale_editGiftInfoNew.get('allBrands'),
+        allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
+        allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
+    }
+}
+CategoryAndFoodSelector.defaultProps = {
+    showExludeDishes: true,
+    dishOnly: false,
+    dishLabel: '适用菜品',
+    /** 分类/菜品框是否显示required红色星号 */
+    showRequiredMark: false,
+    /** 是否显示不选等于全选的文案 */
+    showEmptyTips: false,
+};
+
+export default connect(mapStateToPropsForPromotion)(CategoryAndFoodSelector)
+export const GiftCategoryAndFoodSelector = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)
