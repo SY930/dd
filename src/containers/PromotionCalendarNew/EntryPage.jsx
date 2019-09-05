@@ -284,15 +284,9 @@ export default class EntryPage extends Component {
             { path: 'promotionInfoList' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(data => {
-            let list;
-            try {
-                list = JSON.parse(data)
-            } catch (e) {
-                list = []
-            }
             this.setState({
                 loading: false,
-                promotionInfoList: Array.isArray(list) ? list : [],
+                promotionInfoList: Array.isArray(data) ? data : [],
                 intervalStartMonth: startDate.format('YYYYMM'),
             })
         }).catch(err => {
