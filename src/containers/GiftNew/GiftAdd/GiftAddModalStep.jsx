@@ -1639,6 +1639,8 @@ class GiftAddModalStep extends React.PureComponent {
                 { label: '不限', value: '0' },
                 { label: '满', value: '2' },
             ];
+        } else {
+            formItems.moneyLimitType.options = GiftCfg.moneyLimitType;
         }
         if (this.props.gift.value == '10' && (type === 'add' || values.amountType == 1)) {
             const {
