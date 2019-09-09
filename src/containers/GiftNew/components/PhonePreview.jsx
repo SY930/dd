@@ -86,25 +86,27 @@ class PhonePreview extends PureComponent {
         }
     }
 
-    foodNameListString() {
-        const { foodNameList } = this.props;
-        let foodNameString = ' ';
-        if (typeof foodNameList === 'string') {
-            return foodNameString = foodNameList;
-        } else {
-            const foodNames = foodNameList ? foodNameList.toJS() : [];
-            if (foodNames instanceof Array) {
-                return `本券仅用于“${foodNames.join('，')}”菜品`;
-            } else if (foodNames.categoryOrDish === '0') {
-                return `本券仅用于“${foodNames.dishes.map(food => `${food.foodName}（${food.unit}）`).join('，')}”菜品`;
-            } else if (foodNames.categoryOrDish === '1') {
-                return `本券仅用于“${foodNames.foodCategory.map(food => food.foodCategoryName).join('，')}”分类菜品`;
+    foodScopesString() {
+        const { foodScopes } = this.props;
+        const {
+            dishes = [],
+            excludeDishes = [],
+            foodCategory = [],
+            categoryOrDish = 0,
+        } = foodScopes ? foodScopes.toJS() : {};
+        if (categoryOrDish == 0) {
+            const categoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('、')} 菜品`;
+            if (excludeDishes.length) {
+                return categoryStr + `，对${excludeDishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品不可用`;
+            } else {
+                return categoryStr;
             }
+        } else if (categoryOrDish == 1) {
+            return `本券适用于${dishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品`;
         }
-        return `本券仅用于“${foodNameString}”菜品`;
     }
 
-    foodScopeString() {
+    foodsboxString() {
         const { foodsbox, discountType, giftType } = this.props;
         if (giftType == '111' && discountType == 0) {
             return '本券对店铺所有菜品适用'
@@ -113,18 +115,18 @@ class PhonePreview extends PureComponent {
             dishes = [],
             excludeDishes = [],
             foodCategory = [],
-            foodSelectType = 2
+            categoryOrDish = 0,
         } = foodsbox ? foodsbox.toJS() : {};
-        if (foodSelectType == 2 || (foodSelectType == 1 && !foodCategory.length) || (foodSelectType == 0 && !dishes.length)) {
+        if ((categoryOrDish == 0 && !foodCategory.length) || (categoryOrDish == 1 && !dishes.length)) {
             return '本券对店铺所有菜品适用'
-        } else if (foodSelectType == 1) {
-            const categoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('、')} 类菜品`;
+        } else if (categoryOrDish == 0) {
+            const categoryStr = `本券适用于${foodCategory.map(cat => cat.foodCategoryName).join('、')} 菜品`;
             if (excludeDishes.length) {
                 return categoryStr + `，对${excludeDishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品不可用`;
             } else {
                 return categoryStr;
             }
-        } else if (foodSelectType == 0) {
+        } else if (categoryOrDish == 1) {
             return `本券适用于${dishes.map(dish => `${dish.foodName}（${dish.unit}）`).join('、')} 菜品`;
         }
     }
@@ -220,8 +222,8 @@ class PhonePreview extends PureComponent {
                                     <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
                                     <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
                                     <p>{this.shareTypeString()}</p>
-                                    {(giftType == '20' || giftType == '21') && <p>{this.foodNameListString()}</p>}
-                                    {(giftType == '10' || giftType == '111') && <p>{this.foodScopeString()}</p>}
+                                    {(giftType == '20' || giftType == '21') && <p>{this.foodScopesString()}</p>}
+                                    {(giftType == '10' || giftType == '111') && <p>{this.foodsboxString()}</p>}
                                 </div>
                             )}
                         </div>
@@ -495,6 +497,7 @@ function mapStateToProps(state) {
         giftType: state.sale_editGiftInfoNew.get('currentGiftType'),
         discountType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountType']),
         foodsbox: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodsboxs']),
+        foodScopes: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'foodScopes']),
         pointRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'pointRate']),
         hasPrivilegeOfWait: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'hasPrivilegeOfWait']),
         isCustomerPrice: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isCustomerPrice']),

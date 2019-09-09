@@ -154,8 +154,6 @@ class CategoryAndFoodSelector extends Component {
                 this.mapSelectedValueToObjectsThenEmit()
             }
         }
-        console.log('prevProps.selectedBrands', prevProps.selectedBrands.toJS())
-        console.log('props.selectedBrands', this.props.selectedBrands.toJS())
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
             if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
                 this.setState({
