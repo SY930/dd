@@ -53,6 +53,7 @@ import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
+import { promotion_decoration as sale_promotion_decoration } from '../../../redux/reducer/decoration';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
@@ -132,6 +133,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_mySpecialActivities_NEW,
     sale_specialPromotion_NEW,
     sale_crmCardTypeNew,
+    sale_promotion_decoration,
 })
 @connect(mapStateToProps, mapDispatchToProps)
 class MySpecialActivities extends React.Component {
