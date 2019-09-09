@@ -902,8 +902,6 @@ export const promotionDetailInfoAdapter = function (source, dir) {
     if (!(source instanceof Object || typeof source === 'object')) {
         throw new Error(`The source should be object, which is ${source}`);
     }
-    // TODO:娶过来的数据没塞到页面里
-
     if (!dir) {
         let priceLst = [];
         if (source.priceLst) {
@@ -917,16 +915,12 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         if (source.foodRuleList) {
             foodRuleList = source.foodRuleList;
         }
-
-        // let ruleJson = source.master.ruleJson!=''?JSON.parse(source.master.ruleJson):'';
-        // let ruleJson = source.master.ruleJson!=''&& source.master.ruleJson !=='stageType'? JSON.parse(source.master.ruleJson):{};
         let ruleJson;
         try {
             ruleJson = source.master.ruleJson != '' && JSON.parse(source.master.ruleJson);
         } catch (err) {
             ruleJson = {};
         }
-        let isActive;
         return {
             rule: ruleJson,
             blackList: ruleJson.blackList || false,
@@ -943,6 +937,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             priceLst,
             scopeLst,
             foodRuleList,
+            giftList: source.giftList || [],
             categoryOrDish: 0, // promotion advanced setting
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
@@ -994,7 +989,6 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 });
             });
         }
-        // TODO: what is this ???
         if (source.upGradeDishes !== null) {
             (source.upGradeDishes || []).map((item) => {
                 scope.push({
