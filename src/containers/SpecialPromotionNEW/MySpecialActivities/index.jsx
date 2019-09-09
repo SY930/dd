@@ -582,21 +582,6 @@ class MySpecialActivities extends React.Component {
         })
     }
 
-    /**
-     * 立即执行
-     * @param eventID: record.itemID
-     */
-    activateNow(eventID) {
-        message.warning('立即执行功能暂时下线噜~');
-        /* axiosData('/crm/GroupEventService_runActivetes.ajax', {eventID}, {needThrow: true}, {path: undefined}).then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
-        }).catch(err => {
-            message.warning(err || 'sorry, 立即执行失败, 请稍后再试!');
-        }) */
-    }
-
     renderTables() {
         const SmsSendStatus = [
             { value: '0', label: '定义中' },
@@ -634,7 +619,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 300 : 250,
+                width: 250,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = (
@@ -747,17 +732,6 @@ class MySpecialActivities extends React.Component {
                             >
                                 活动跟踪</a>
                         </Authority>
-                        {this.props.user.accountInfo.groupID == TEMP_GROUP_ID && <a
-                                href="#"
-                                className={Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ?null : styles.textDisabled }
-                                onClick={() => {
-                                    if (Number(record.eventWay) === 53 && record.isActive == 0 && record.status == 1 ) {
-                                        this.activateNow(record.itemID)
-                                    }
-                                }}
-                            >
-                                立即执行</a>
-                        }
                     </span>
                     );
                 },
