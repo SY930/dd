@@ -39,7 +39,7 @@ import {
 import ActivityMain from '../activityMain';
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE, NEW_SPECIAL } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, PROMOTION_DECORATION } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import {
@@ -54,6 +54,7 @@ import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../.
 import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
 import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
 import { promotion_decoration as sale_promotion_decoration } from '../../../redux/reducer/decoration';
+import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {axiosData} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
@@ -76,10 +77,17 @@ const mapStateToProps = (state) => {
         user: state.user.toJS(),
     };
 };
-const TEMP_GROUP_ID = HUALALA.ENVIRONMENT === 'production-release' ? 1415 : 1155;
-
+const DECORATABLE_PROMOTIONS = [
+    '23', '64', '66'
+]
+const isDecorationAvailable = ({eventWay}) => {
+    return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
+}
 const mapDispatchToProps = (dispatch) => {
     return {
+        selectPromotionForDecoration: (opts) => {
+            dispatch(selectPromotionForDecoration(opts))
+        },
         query: (opts) => {
             dispatch(fetchSpecialPromotionList(opts));
         },
@@ -447,16 +455,6 @@ class MySpecialActivities extends React.Component {
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>特色营销信息</span>
-                    {/*<Button
-                        type="ghost"
-                        icon="plus"
-                        className={styles.jumpToCreate}
-                        onClick={
-                            () => {
-                                jumpPage({ menuID: NEW_SPECIAL })
-                            }
-                        }
-                    >新建</Button>*/}
                 </div>
             </div>
         );
@@ -621,7 +619,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                width: 250,
+                width: 280,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = (
@@ -717,6 +715,14 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             终止</a>
+                        <a
+                            href="#"
+                            className={ !isDecorationAvailable(record) ? styles.textDisabled : null}
+                            onClick={() => {
+                                isDecorationAvailable(record) && this.handleDecorationStart(record)
+                            }}
+                        >
+                            装修</a>
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
@@ -773,7 +779,7 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'eventName',
                 key: 'eventName',
                 // fixed:'left',
-                width: this.props.user.accountInfo.groupID == TEMP_GROUP_ID ? 150 : 200,
+                width: 200,
                 render: text => <span title={text}>{text}</span>,
             },
             // {
@@ -869,7 +875,7 @@ class MySpecialActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -978,6 +984,10 @@ class MySpecialActivities extends React.Component {
         message.error('啊哦,好像出了点问题~');
     };
 
+    handleDecorationStart = (record) => {
+        this.props.selectPromotionForDecoration(record);
+        jumpPage({menuID: PROMOTION_DECORATION})
+    }
 
     // 编辑
     handleUpdateOpe() {
