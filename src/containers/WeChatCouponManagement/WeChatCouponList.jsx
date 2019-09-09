@@ -49,55 +49,8 @@ export const BATCH_STATUS = [
 @registerPage([PROMOTION_WECHAT_COUPON_LIST])
 @connect(mapStateToProps)
 export default class EntryPage extends Component {
-    state = {
-        isShow: false,
-        isQuerying: false,
-    }
-    componentDidMount() {
-        this.queryAuth();
-    }
-    queryAuth = () => {
-        const groupID = this.props.user.accountInfo.groupID
-        this.setState({ isQuerying: true });
-        axiosData(
-            `/payCoupon/isShowThisPage?groupID=${groupID}`,
-            {},
-            {},
-            { path: 'isShow' },
-            'HTTP_SERVICE_URL_WECHAT'
-        ).then(isShow => {
-            this.setState({
-                isShow: isShow === true,
-                isQuerying: false,
-            })
-        }).catch(e => {
-            this.setState({ isQuerying: false })
-        })
-    }
     render() {
-        const {
-            isShow,
-            isQuerying,
-        } = this.state;
-        if (isShow) {
-            return <WeChatCouponList/>
-        }
-        return (
-            <div style={{ height: '100%' }}>
-                <div className={style.flexHeader} >
-                    <span className={style.title} >
-                        微信支付代金券
-                    </span>
-                    <div className={style.spacer} />
-                </div>
-                <div className={style.blockLine} />
-                <div className={style.emptyBodyContainer} style={{ height: 'calc(100% - 79px)' }}>
-                    {isQuerying && <Spin />}
-                    {!isQuerying && <img src={upgradeImg} alt=""/>}
-                    {!isQuerying && <span className={style.upgradeTip}>功能暂未开放, 敬请期待</span>}
-                </div>
-            </div>
-        )
+        return <WeChatCouponList/>
     }
 }
 
