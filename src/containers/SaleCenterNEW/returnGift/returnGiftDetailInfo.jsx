@@ -129,13 +129,13 @@ class ReturnGiftDetailInfo extends React.Component {
         let data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
         if (stageType) {
             parsedRule = {
-                type: stageType,
+                stageType,
                 gainCodeMode: $rule.get('gainCodeMode') || '1',
                 printCode: $rule.get('printCode') || 0,
             }
         } else {
             parsedRule = {
-                type: '2',
+                stageType: '2',
                 gainCodeMode: '1',
                 printCode: 0,
             }
@@ -373,10 +373,10 @@ class ReturnGiftDetailInfo extends React.Component {
                         placeholder="请选择活动类别"
                         className={`${styles.linkSelectorRight} returnGiftDetailMountClassJs`}
                         getPopupContainer={(node) => node.parentNode}
-                        value={this.state.rule.type}
+                        value={this.state.rule.stageType}
                         onChange={(val) => {
                             const { rule, data } = this.state;
-                            rule.type = val;
+                            rule.stageType = val;
                             this.setState({ rule, data: [data[0]] });
                         }
                         }
@@ -421,7 +421,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 getFieldDecorator,
             },
         } = this.props;
-        const isMultiple = this.state.rule.type == 1;
+        const isMultiple = this.state.rule.stageType == 1;
         return (
             this.state.data.map(({stageAmount, gifts}, index, arr) => (
                 <Row key={`${index}`}>
@@ -450,7 +450,7 @@ class ReturnGiftDetailInfo extends React.Component {
                                                                 return cb('金额必须大于0')
                                                             }
                                                             for (let i = 0; i < index; i ++) {
-                                                                if (arr[i].stageAmount >= v.number) {
+                                                                if (arr[i].stageAmount >= +v.number) {
                                                                     return cb('必须大于前一档位金额')
                                                                 }
                                                             }

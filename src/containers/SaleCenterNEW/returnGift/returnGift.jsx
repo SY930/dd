@@ -277,7 +277,7 @@ class ReturnGift extends React.Component {
                                 >
                                     
                                     <RadioGroup
-                                        value={info.giftValidType > 1 ? '0' : info.giftValidType}
+                                        value={info.giftValidType > 1 ? '0' : `${info.giftValidType}`}
                                         onChange={val => this.handleValidateTypeChange(val, index)}
                                     >
                                         {
@@ -298,9 +298,9 @@ class ReturnGift extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        if (info.giftValidType === '0' || info.giftValidType === '2') {
+        if (info.giftValidType == '0' || info.giftValidType == '2') {
             let arr;
-            if (info.giftValidType === '0') {
+            if (info.giftValidType == '0') {
                 arr = SALE_CENTER_GIFT_EFFICT_TIME;
             } else {
                 arr = SALE_CENTER_GIFT_EFFICT_DAY
@@ -333,7 +333,7 @@ class ReturnGift extends React.Component {
                             <Select
                                 style={{ width: 84 }}
                                 getPopupContainer={(node) => node.parentNode}
-                                value={info.giftValidType}
+                                value={`${info.giftValidType}`}
                                 onChange={v => {
                                     const infos = this.state.infos;
                                     if (v == 2 && infos[index].giftValidType != 2) {
@@ -534,11 +534,20 @@ class ReturnGift extends React.Component {
     handleCouponNumberChange(value, index) {
         const _infos = this.state.infos;
         _infos[index].giftNum.value = value.number;
-
+        const { isMultiple } = this.props;
         const _value = parseInt(value.number);
         if (_value > 0 && _value < 51) {
             _infos[index].giftNum.validateStatus = 'success';
             _infos[index].giftNum.msg = null;
+            if (isMultiple) {
+                if (_infos[index].giftMaxUseNum.value < +_value) {
+                    _infos[index].giftNum.validateStatus = 'error';
+                    _infos[index].giftNum.msg = '礼品数量不超过最多限制';
+                } else {
+                    _infos[index].giftNum.validateStatus = 'success';
+                    _infos[index].giftNum.msg = null;
+                }
+            }
         } else {
             _infos[index].giftNum.validateStatus = 'error';
             _infos[index].giftNum.msg = '返券数量必须大于0, 小于等于50';
@@ -556,8 +565,13 @@ class ReturnGift extends React.Component {
 
         const _value = parseInt(value.number);
         if (_value > 0 && _value <= 10000) {
-            _infos[index].giftMaxUseNum.validateStatus = 'success';
-            _infos[index].giftMaxUseNum.msg = null;
+            if (_infos[index].giftNum.value > +_value) {
+                _infos[index].giftMaxUseNum.validateStatus = 'error';
+                _infos[index].giftMaxUseNum.msg = '最多返券数不少于礼品数量';
+            } else {
+                _infos[index].giftMaxUseNum.validateStatus = 'success';
+                _infos[index].giftMaxUseNum.msg = null;
+            }
         } else {
             _infos[index].giftMaxUseNum.validateStatus = 'error';
             _infos[index].giftMaxUseNum.msg = '最多返券数量必须大于等于1, 小于等于10000';
