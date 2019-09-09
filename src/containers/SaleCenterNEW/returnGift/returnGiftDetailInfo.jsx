@@ -205,7 +205,7 @@ class ReturnGiftDetailInfo extends React.Component {
         return giftList.map((item, index) => {
             if (item.giftInfo.giftType == '112') {
                 return {
-                    stageAmount: item.stageAmount.value,
+                    stageAmount: item.stageAmount,
                     giftValidType: '0',
                     giftValidDays: 1,
                     giftEffectiveTime: 0,
@@ -218,7 +218,7 @@ class ReturnGiftDetailInfo extends React.Component {
             }
             if (item.giftValidType == '0') {
                 return {
-                    stageAmount: item.stageAmount.value,
+                    stageAmount: item.stageAmount,
                     giftValidType: item.giftValidType,
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: (item.giftEffectiveTime.value || 0) * 60,
@@ -228,7 +228,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 }
             } else if (item.giftValidType == '2') {
                 return {
-                    stageAmount: item.stageAmount.value,
+                    stageAmount: item.stageAmount,
                     giftValidType: item.giftValidType,
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: item.giftEffectiveTime.value,
@@ -239,7 +239,7 @@ class ReturnGiftDetailInfo extends React.Component {
             }
             const range = item.giftEffectiveTime;
             return {
-                stageAmount: item.stageAmount.value,
+                stageAmount: item.stageAmount,
                 giftValidType: item.giftValidType,
                 giftStartTime: range.value[0] ? parseInt(range.value[0].format('YYYYMMDD') + '000000') : '',
                 giftEndTime: range.value[1] ? parseInt(range.value[1].format('YYYYMMDD') + '235959') : '',
