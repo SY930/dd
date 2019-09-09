@@ -937,7 +937,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             priceLst,
             scopeLst,
             foodRuleList,
-            giftList: source.master.giftList || [],
+            giftList: source.giftList || [],
             categoryOrDish: 0, // promotion advanced setting
             costIncome: ruleJson.costIncome,
             isActive: source.master.isActive,
