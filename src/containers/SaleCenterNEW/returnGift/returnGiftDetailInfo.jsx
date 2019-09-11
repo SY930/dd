@@ -102,6 +102,7 @@ class ReturnGiftDetailInfo extends React.Component {
         giftList.forEach(gift => {
             const emptyGift = JSON.parse(JSON.stringify(DEFAULT_GIFT_ITEM));
             emptyGift.giftNum.value = gift.giftNum;
+            emptyGift.giftMaxUseNum.value = gift.giftMaxUseNum || 1;
             emptyGift.giftInfo.giftName = gift.giftName;
             emptyGift.giftInfo.giftItemID = gift.giftItemID;
             emptyGift.giftInfo.msg = null;
@@ -210,6 +211,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     giftValidDays: 1,
                     giftEffectiveTime: 0,
                     giftNum: item.giftNum.value,
+                    giftMaxUseNum: item.giftMaxUseNum.value,
                     giftName: item.giftInfo.giftName,
                     giftItemID: item.giftInfo.giftItemID,
                     giftType: item.giftInfo.giftType,
@@ -220,6 +222,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 return {
                     stageAmount: item.stageAmount,
                     giftValidType: item.giftValidType,
+                    giftMaxUseNum: item.giftMaxUseNum.value,
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: (item.giftEffectiveTime.value || 0) * 60,
                     giftNum: item.giftNum.value,
@@ -233,6 +236,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: item.giftEffectiveTime.value,
                     giftNum: item.giftNum.value,
+                    giftMaxUseNum: item.giftMaxUseNum.value,
                     giftName: item.giftInfo.giftName,
                     giftItemID: item.giftInfo.giftItemID,
                 }
@@ -244,6 +248,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 giftStartTime: range.value[0] ? parseInt(range.value[0].format('YYYYMMDD') + '000000') : '',
                 giftEndTime: range.value[1] ? parseInt(range.value[1].format('YYYYMMDD') + '235959') : '',
                 giftNum: item.giftNum.value,
+                giftMaxUseNum: item.giftMaxUseNum.value,
                 giftName: item.giftInfo.giftName,
                 giftItemID: item.giftInfo.giftItemID,
             }
