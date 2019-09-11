@@ -985,7 +985,12 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
-        this.props.selectPromotionForDecoration(record);
+        const { eventWay, itemID, eventName } = record; 
+        this.props.selectPromotionForDecoration({
+            type: `${eventWay}`,
+            id: itemID,
+            title: eventName,
+        });
         jumpPage({menuID: PROMOTION_DECORATION})
     }
 
