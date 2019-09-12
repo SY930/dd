@@ -349,15 +349,6 @@ class ReturnGiftDetailInfo extends React.Component {
                         onChange={(e) => {
                             const { rule } = this.state;
                             rule.gainCodeMode = e.target.value;
-                            // 清空已选礼品，因为结账单打印券码，只有两种券，且必须支持到店
-                            rule.data.map((gift) => {
-                                gift.giftInfo = {
-                                    giftName: null,
-                                    giftItemID: null,
-                                    validateStatus: 'success',
-                                    msg: null,
-                                }
-                            })
                             this.setState({ rule });
                         }}
                     >
