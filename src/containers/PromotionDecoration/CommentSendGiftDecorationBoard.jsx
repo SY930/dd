@@ -13,9 +13,35 @@ export default class CommentSendGiftDecorationBoard extends Component {
     }
 
     renderPhonePreview() {
+        const { tabKey } = this.state;
+        const {
+            decorationInfo: {
+                enterImg,
+                endImg,
+                endColor = '#ac7e4f',
+            },
+        } = this.props;
         return (
-            <div style={{ width: 400, marginRight: 30, background: 'orange' }}>
+            <div className={style.previewArea}>
+                <img src={phoneImg} alt=""/>
+                {
+                    tabKey === '2' ? (
+                        <div className={style.simpleDisplayBlock}>
+                            <div className={style.imgWrapper}>
+                                {!!endImg && <img src={endImg} style={{ width: '100%', height: '100%' }} alt=""/>}
+                            </div>
+                            <div style={{ background: endColor }} className={style.bgWrapper}>
 
+                            </div>
+                            <Icon className={style.closeBtn}  type="close-circle-o" />
+                        </div>
+                    ) : (
+                        <div style={{ background: color, borderRadius: 10 }} className={style.simpleDisplayBlock}>
+                            {!!enterImg && <img src={enterImg} style={{ width: '100%', height: '100%' }} alt=""/>}
+                            <Icon className={style.closeBtn}  type="close-circle-o" />
+                        </div>
+                    )
+                }
             </div>
         )
     }

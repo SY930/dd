@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
+import {
+    Icon,
+} from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
-import CropperUploader from '../../components/common/CropperUploader'
+import CropperUploader from '../../components/common/CropperUploader';
+import phoneImg from './assets/iphone.png'
 
 export default class SimpleDecorationBoard extends Component {
 
     renderPhonePreview() {
+        const {
+            decorationInfo: {
+                img,
+                color = '#fd6631',
+            },
+        } = this.props;
         return (
-            <div style={{ width: 400, marginRight: 30, background: 'orange' }}>
+            <div className={style.previewArea}>
+                <img src={phoneImg} alt=""/>
+                <div className={style.simpleDisplayBlock}>
+                    <div className={style.imgWrapper}>
+                        {!!img && <img src={img} style={{ width: '100%', height: '100%' }} alt=""/>}
+                    </div>
+                    <div style={{ background: color }} className={style.bgWrapper}>
 
+                    </div>
+                    <Icon className={style.closeBtn}  type="close-circle-o" />
+                </div>
             </div>
         )
     }
@@ -16,12 +35,12 @@ export default class SimpleDecorationBoard extends Component {
         const {
             decorationInfo: {
                 img,
-                color = '#ac7e4f',
+                color = '#fd6631',
             },
             onChange,
         } = this.props;
         return (
-            <div>
+            <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 45 }} className={style.label}>弹窗背景色</div>
                     <ColorSettingBlock value={color} onChange={(value) => onChange({key: ['color'], value})} />

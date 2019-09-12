@@ -157,3 +157,36 @@
         }
     }
 }
+.previewArea {
+    width: 400px;
+    padding: 45px 0 0 75px;
+    position: relative;
+}
+@total-height: 374px;
+@img-height: 111px;
+.simpleDisplayBlock {
+    position: absolute;
+    top: 150px;
+    left: 105px;
+    width: 260px;
+    height: @total-height;
+    background: #FECA01;
+    border-radius:0px 0px 10px 10px;
+    .imgWrapper {
+        width: 100%;
+        height: @img-height;
+    }
+    .bgWrapper {
+        width: 100%;
+        height: @total-height - @img-height;
+        border-radius:0px 0px 10px 10px;
+    }
+    .closeBtn {
+        color: #FFFFFF;
+        font-size: 30px;
+        position: absolute;
+        bottom: -65px;
+        left: 115px;
+    }
+
+}
