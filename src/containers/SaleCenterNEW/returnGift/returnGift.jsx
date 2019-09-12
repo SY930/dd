@@ -68,7 +68,6 @@ class ReturnGift extends React.Component {
         this.state = {
             infos: this.props.value,
         };
-        this.handleStageAmountChange = this.handleStageAmountChange.bind(this);
         this.add = this.add.bind(this);
         this.remove = this.remove.bind(this);
         this.getGiftValue = this.getGiftValue.bind(this);
@@ -161,22 +160,6 @@ class ReturnGift extends React.Component {
                             </Popconfirm>
                         )
                     }
-                    
-                    {/* <FormItem
-                        labelCol={{ span: 0 }}
-                        wrapperCol={{ span: 24 }}
-                        validateStatus={info.stageAmount.validateStatus}
-                        help={info.stageAmount.msg}
-                    >
-                        <PriceInput
-                            addonBefore={this.state.maxCount == 1 ? '消费每满' : '消费满'}
-                            value={{ number: info.stageAmount.value }}
-                            onChange={val => this.handleStageAmountChange(val, index)}
-                            addonAfter="元"
-                            modal="float"
-                        />
-
-                    </FormItem> */}
                     <FormItem
                         label="礼品名称"
                         required={true}
@@ -513,24 +496,6 @@ class ReturnGift extends React.Component {
         }
     }
 
-    handleStageAmountChange(value, index) {
-        const _infos = this.state.infos;
-        _infos[index].stageAmount.value = value.number;
-        const _value = parseFloat(value.number);
-        if (_value > 0) {
-            _infos[index].stageAmount.validateStatus = 'success';
-            _infos[index].stageAmount.msg = null;
-        } else {
-            _infos[index].stageAmount.validateStatus = 'error';
-            _infos[index].stageAmount.msg = '消费金额必须大于0';
-        }
-        this.setState({
-            infos: _infos,
-        }), () => {
-            this.props.onChange && this.props.onChange(this.state.infos);
-        };
-    }
-
     handleCouponNumberChange(value, index) {
         const _infos = this.state.infos;
         _infos[index].giftNum.value = value.number;
@@ -544,8 +509,11 @@ class ReturnGift extends React.Component {
                     _infos[index].giftNum.validateStatus = 'error';
                     _infos[index].giftNum.msg = '礼品数量不超过最多限制';
                 } else {
+                    const maxUseValue = _infos[index].giftMaxUseNum.value;
                     _infos[index].giftNum.validateStatus = 'success';
                     _infos[index].giftNum.msg = null;
+                    _infos[index].giftMaxUseNum.validateStatus = maxUseValue > 0 && maxUseValue <= 10000 ? 'success' : 'error';
+                    _infos[index].giftMaxUseNum.msg = maxUseValue > 0 && maxUseValue <= 10000 ? null : '最多返券数量必须大于等于1, 小于等于10000';
                 }
             }
         } else {
@@ -569,8 +537,11 @@ class ReturnGift extends React.Component {
                 _infos[index].giftMaxUseNum.validateStatus = 'error';
                 _infos[index].giftMaxUseNum.msg = '最多返券数不少于礼品数量';
             } else {
+                const numValue = _infos[index].giftNum.value;
                 _infos[index].giftMaxUseNum.validateStatus = 'success';
                 _infos[index].giftMaxUseNum.msg = null;
+                _infos[index].giftNum.validateStatus = numValue > 0 && numValue < 51 ? 'success' : 'error';
+                _infos[index].giftNum.msg = numValue > 0 && numValue < 51 ? null : '返券数量必须大于0, 小于等于50';
             }
         } else {
             _infos[index].giftMaxUseNum.validateStatus = 'error';

@@ -272,6 +272,7 @@ class ReturnGiftDetailInfo extends React.Component {
         const validateFlag = giftList.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo)
                 .reduce((flag, key) => {
+                    if (key === 'giftMaxUseNum' && this.state.rule.stageType == 2) return flag;
                     if (ruleInfo[key] instanceof Object && ruleInfo[key].hasOwnProperty('validateStatus')) {
                         const _valid = ruleInfo[key].validateStatus === 'success';
                         return flag && _valid;
