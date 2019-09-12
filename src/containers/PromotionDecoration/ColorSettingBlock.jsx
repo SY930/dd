@@ -47,7 +47,7 @@ export default class ColorSettingBlock extends Component {
                                 className={style.colorPickerWrapper}
                             >
                                 <div
-                                    className={`${style.colorBlockWrapper} ${skinColor === color && styleType === 0 ? style.isSelected : ''}`}
+                                    className={`${style.colorBlockWrapper} ${skinColor === color ? style.isSelected : ''}`}
                                     onClick={() => onChange(skinColor)}
                                 >
                                     <div className={style.fakePadding}>

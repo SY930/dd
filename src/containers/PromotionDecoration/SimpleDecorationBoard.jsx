@@ -13,23 +13,30 @@ export default class SimpleDecorationBoard extends Component {
         )
     }
     renderSettingPanel() {
+        const {
+            decorationInfo: {
+                img,
+                color = '#ac7e4f',
+            },
+            onChange,
+        } = this.props;
         return (
             <div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 45 }} className={style.label}>弹窗背景色</div>
-                    <ColorSettingBlock value={'#000000'} onChange={(v) => console.log(v)} />
+                    <ColorSettingBlock value={color} onChange={(value) => onChange({key: ['color'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <CropperUploader
                             limit={0}
-                            cropperRatio={1}
+                            cropperRatio={92/36}
                             allowedType={['image/png', 'image/jpeg']}
-                            onChange={url => this.setState({cartImg: url})}
+                            onChange={url => onChange({key: ['img'], value: `http://res.hualala.com/${url}`})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片比例1:1，建议尺寸180x180像素</p>
+                            <p>* 建议尺寸920x360像素</p>
                             <p>* 支持JPG、PNG图片文件</p>
                         </div>
                     </div>
