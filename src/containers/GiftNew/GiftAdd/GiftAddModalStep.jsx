@@ -230,9 +230,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFormChange(key, value) {
-        if (key === 'selectBrands') {
-            console.log(value)
-        }
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
