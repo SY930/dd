@@ -32,11 +32,16 @@ import {
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
-import {GIFT_LIST_CREATE, GIFT_LIST_QUERY, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import {
+    GIFT_LIST_CREATE,
+    GIFT_LIST_QUERY,
+    GIFT_LIST_UPDATE,
+    GIFT_DETAIL_QUERY,
+} from "../../../constants/authorityCodes";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
+import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 
-const format = 'YYYY/MM/DD HH:mm:ss';
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
     constructor(props) {
@@ -54,6 +59,7 @@ class GiftDetailTable extends Component {
             queryParams: {
                 pageNo: 1,
                 pageSize: 20,
+                action: '0',
             },
             total: 2,
             tableHeight: '100%',
@@ -118,6 +124,49 @@ class GiftDetailTable extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    getTableColumns = () => {
+        const {
+            queryParams: {
+                action,
+            },
+        } = this.state;
+        if (action == 2) {
+            const columns = this.columns.slice();
+            columns.splice(1, 1, {
+                title: '操作',
+                dataIndex: 'operate',
+                className: 'TableTxtCenter',
+                key: 'operate',
+                width: 100,
+                render(value, record) {
+                    return (
+                        <span>
+                            <a
+                                href="javaScript:;"
+                                onClick={() => {
+                                    this.handleEdit(record, 'detail')
+                                }}
+                            >
+                                查看
+                            </a>
+                            <Authority rightCode={GIFT_DETAIL_QUERY}>
+                                {
+                                    (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                        <a disabled={true}>详情</a>
+                                    ) : (
+                                        <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                                    )
+                                }
+                            </Authority>
+                        </span>
+                    )
+                },
+            })
+            return columns;
+        }
+        return this.columns;
     }
 
     onWindowResize = () => {
@@ -211,9 +260,9 @@ class GiftDetailTable extends Component {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
-        this.queryFrom.validateFieldsAndScroll((err, Values) => {
+        this.queryFrom.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            const params = this.formatFormData(Values);
+            const params = { ...values };
             this.setState({
                 queryParams: { pageNo, pageSize: queryParams.pageSize || 1, ...params },
             })
@@ -225,15 +274,6 @@ class GiftDetailTable extends Component {
                 this.proGiftData(data);
             });
         });
-    }
-
-    formatFormData = (params) => {
-        return _.mapValues(params, (value, key) => {
-            switch (key) {
-                default:
-                    return value !== undefined ? value : '';
-            }
-        })
     }
 
     handleCancel() {
@@ -280,7 +320,8 @@ class GiftDetailTable extends Component {
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
-        const { FetchSharedGifts, queryCouponShopList } = this.props;
+        gift.data.action = `${gift.data.action || 0}`;
+        const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         if (gift.value == 100) { //
             return message.success('该券即将下线, 请使用折扣券');
@@ -301,7 +342,7 @@ class GiftDetailTable extends Component {
                     {`您将删除礼品
                         【${giftName}】`}
                     <br />
-                    <span>删除是不可恢复操作，请慎重考虑~</span>
+                    <span>删除是不可恢复操作，被删除的礼品可以在已删除的礼品中查看~</span>
                 </div>
             ),
             onOk: () => {
@@ -433,8 +474,17 @@ class GiftDetailTable extends Component {
                     showSearch: true,
                 },
             },
+            action: {
+                label: '状态',
+                type: 'combo',
+                defaultValue: '0',
+                options: [
+                    { label: '正常', value: '0' },
+                    { label: '已删除', value: '2' },
+                ],
+            },
         };
-        const formKeys = ['giftName', 'giftType'];
+        const formKeys = ['giftName', 'giftType', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
@@ -497,7 +547,7 @@ class GiftDetailTable extends Component {
                         <Table
                             ref={this.setTableRef}
                             bordered={true}
-                            columns={this.columns.map(c => (c.render ? ({
+                            columns={this.getTableColumns().map(c => (c.render ? ({
                                 ...c,
                                 render: c.render.bind(this),
                             }) : c))}

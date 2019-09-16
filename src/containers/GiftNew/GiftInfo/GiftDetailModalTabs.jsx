@@ -99,7 +99,7 @@ class GiftDetailModalTabs extends React.Component {
                                 <GiftSendOrUsedCount key={tab.key} data={data} _key={tab.key} />
                             </TabPane>)
                         }).concat(
-                            sendableGiftTypes.includes(String(data.giftType)) ?
+                            sendableGiftTypes.includes(String(data.giftType)) && data.action != 2 ?
                                 [
                                     (
                                         <TabPane tab={'赠送'} key={'send_gift'}>
