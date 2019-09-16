@@ -63,6 +63,7 @@ class GiftDetailModalTabs extends React.Component {
     }
     render() {
         const { data } = this.props;
+        console.log('data', data)
         const tabs = data.giftType === '91' ?
             [{ tab: '发出数', key: 'send' },
             ]
@@ -110,7 +111,7 @@ class GiftDetailModalTabs extends React.Component {
                                 :
                                 []
                         ).concat(
-                            batchableGiftTypes.includes(String(data.giftType)) ?
+                            batchableGiftTypes.includes(String(data.giftType)) && data.action != 2 ?
                                 [
                                     (
                                         <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
