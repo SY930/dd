@@ -346,13 +346,42 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, null, { path: '' }).then((data) => {
+                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, { needThrow: true, needCode: true }, { path: '' }).then((data) => {
                     if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
                         const { FetchGiftList } = this.props;
                         FetchGiftList(queryParams).then((data = []) => {
                             this.proGiftData(data);
+                        });
+                    }
+                }, ({code, msg}) => {
+                    if (code === '1211105076') {// 券被占用
+                        Modal.warning({
+                            title: '礼品被活动占用，不可删除',
+                            content: (
+                                <div
+                                    style={{
+                                        lineHeight: 1.5
+                                    }}
+                                >
+                                    <div>
+                                        该礼品被以下活动使用，如需删除，请取消引用
+                                    </div>
+                                    <div 
+                                        style={{
+                                            marginTop: 8,
+                                            background: '#fef4ed',
+                                            padding: 5
+                                        }}
+                                    >   {msg.split(',').map(name => `【${name}】`).join('')} </div>
+                                </div>
+                            ),
+                        });
+                    } else {
+                        Modal.error({
+                            title: '啊哦！好像有问题呦~~',
+                            content: `${msg}`,
                         });
                     }
                 });
