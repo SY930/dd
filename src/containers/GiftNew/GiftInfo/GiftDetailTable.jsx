@@ -356,7 +356,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, eventReference = [], wechatCardReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -405,7 +405,7 @@ class GiftDetailTable extends Component {
                     } else {
                         Modal.error({
                             title: '啊哦！好像有问题呦~~',
-                            content: `${data.msg}`,
+                            content: `${msg}`,
                         });
                     }
                 });
