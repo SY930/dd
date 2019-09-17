@@ -9,6 +9,7 @@ import phoneImg from './assets/iphone.png';
 import onlineResGift from './assets/online-res.png'
 import giftExample from './assets/gift-example.png'
 import tagImg from './assets/tag.svg'
+import btnBg from './assets/btnBg.png'
 
 export default class SimpleDecorationBoard extends Component {
 
@@ -33,7 +34,10 @@ export default class SimpleDecorationBoard extends Component {
                     <div style={{ background: color }} className={style.bgWrapper}>
                         <img src={giftExample} alt=""/>
                         <img src={giftExample} alt=""/>
-                        <img src={giftExample} alt=""/>
+                        <div className={style.btnWrapper}>
+                            <img src={btnBg} alt="" />
+                            <div>知道了</div>
+                        </div>
                     </div>
                     <Icon className={style.closeBtn}  type="close-circle-o" />
                 </div>
