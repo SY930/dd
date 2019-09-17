@@ -319,6 +319,7 @@ class GiftDetailTable extends Component {
         gift.data.shareType = gift.data.shareType === undefined ? '' : String(gift.data.shareType);
         gift.data.moneyLimitType = gift.data.moneyLimitType === undefined ? '' : String(gift.data.moneyLimitType);
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
+        gift.data.foodNameList = (gift.data.foodNameList || '').split(',');
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
         const { FetchSharedGifts } = this.props;
