@@ -103,7 +103,7 @@ const moment = require('moment');
 const confirm = Modal.confirm;
 
 const DECORATABLE_PROMOTIONS = [
-    '5010', '3010',
+    // '5010', '3010',
 ];
 const isDecorationAvailable = ({promotionType}) => {
     return DECORATABLE_PROMOTIONS.includes(`${promotionType}`)

@@ -5,14 +5,17 @@ import {
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import CropperUploader from '../../components/common/CropperUploader';
-import phoneImg from './assets/iphone.png'
+import phoneImg from './assets/iphone.png';
+import onlineResGift from './assets/online-res.png'
+import giftExample from './assets/gift-example.png'
+import tagImg from './assets/tag.svg'
 
 export default class SimpleDecorationBoard extends Component {
 
     renderPhonePreview() {
         const {
             decorationInfo: {
-                img,
+                img = onlineResGift,
                 color = '#fd6631',
             },
         } = this.props;
@@ -21,10 +24,16 @@ export default class SimpleDecorationBoard extends Component {
                 <img src={phoneImg} alt=""/>
                 <div className={style.simpleDisplayBlock}>
                     <div className={style.imgWrapper}>
-                        {!!img && <img src={img} style={{ width: '100%', height: '100%' }} alt=""/>}
+                        <div className={style.tagWrapper}>
+                            <img src={tagImg} alt=""/>
+                            <span>活动主图</span>
+                        </div>
+                        <img src={img} style={{ width: '100%', height: '100%' }} alt=""/>
                     </div>
                     <div style={{ background: color }} className={style.bgWrapper}>
-
+                        <img src={giftExample} alt=""/>
+                        <img src={giftExample} alt=""/>
+                        <img src={giftExample} alt=""/>
                     </div>
                     <Icon className={style.closeBtn}  type="close-circle-o" />
                 </div>
@@ -35,7 +44,7 @@ export default class SimpleDecorationBoard extends Component {
         const {
             decorationInfo: {
                 img,
-                color = '#fd6631',
+                color = '#FF6125',
             },
             onChange,
         } = this.props;
