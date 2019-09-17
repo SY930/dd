@@ -183,13 +183,14 @@ class ReturnGift extends React.Component {
                             disArr={this.state.disArr || []}
                         >
                             <Input
+                                placeholder="请选择礼品"
                                 value={(this.getGiftValue(index) || '').split(',')[1]}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
                             />
                             <Icon
                                 type="down"
-                                style={{ position: 'absolute', top: 10, left: 255 }}
+                                style={{ fontSize: 10, position: 'absolute', top: 10, left: 272 }}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
                             />
