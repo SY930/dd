@@ -42,7 +42,7 @@ registerLocalPage([
         key: entryCodes.PROMOTION_DECORATION,
         value: entryCodes.PROMOTION_DECORATION,
         label: '活动装修',
-        parent: [entryCodes.SALE_CENTER_PAGE],
+        parent: [entryCodes.SPECIAL_PAGE],
     },
 ]);
 
