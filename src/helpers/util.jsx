@@ -700,7 +700,7 @@ export function axiosData(api, params, opts, {
                 const {redirect, msg} = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {
                     if (opts && opts.needCode) {
-                        return Promise.reject({code, msg} || '出了点问题, 请稍后或刷新重试');
+                        return Promise.reject({...json, code, msg} || '出了点问题, 请稍后或刷新重试');
                     }
                     return Promise.reject(msg || '出了点问题, 请稍后或刷新重试');
                 }

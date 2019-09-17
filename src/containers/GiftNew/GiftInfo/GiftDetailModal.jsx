@@ -214,21 +214,6 @@ class GiftDetailModal extends Component {
                                 </Col>
                             </Row>
                         </div>
-                        {/* <div>
-                         <Row>
-                         <h3>礼品统计</h3>
-                         </Row>
-                         <Row>
-                         <Table
-                         bordered
-                         columns={columns}
-                         dataSource={this.state.dataSource}
-                         pagination={false}
-                         loading={this.state.loading}
-                         className="gift-detail-modal-table"
-                         />
-                         </Row>
-                         </div> */}
                         <div>
                             <Row>
                                 <h3>查询明细的统计</h3>
