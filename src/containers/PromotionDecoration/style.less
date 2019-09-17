@@ -185,8 +185,26 @@
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
-        img {
+        & > img {
             width: 237px;
+        }
+    }
+    .btnWrapper {
+        margin-top: 15px;
+        position: relative;
+        width: 237px;
+        img {
+            width: 100%;
+            position: absolute;
+        }
+        div {
+            width: 100%;
+            font-size: 16px;
+            line-height: 44px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #FF6125;
         }
     }
     .closeBtn {
