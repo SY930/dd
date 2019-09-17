@@ -489,7 +489,7 @@ class MySpecialActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: 160 }}
+                                style={{ width: 120 }}
                                 showSearch
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择活动类型"
@@ -509,7 +509,7 @@ class MySpecialActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: 160 }}
+                                style={{ width: 80 }}
                                 defaultValue=""
                                 placeholder="请选择使用状态"
                                 onChange={(value) => {
