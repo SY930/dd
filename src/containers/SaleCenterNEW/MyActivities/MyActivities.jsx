@@ -843,7 +843,7 @@ class MyActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: '160px' }}
+                                style={{ width: 120 }}
                                 showSearch
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择类型"
@@ -869,7 +869,7 @@ class MyActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: '160px' }}
+                                style={{ width: 60 }}
                                 defaultValue="0"
                                 placeholder="请选择使用状态"
                                 onChange={(value) => {

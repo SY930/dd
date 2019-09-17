@@ -268,7 +268,7 @@ class FoodSelectModal extends Component {
                         <span
                             key={value}
                             style={{
-                                marginBottom: 10,
+                                marginBottom: 5,
                             }}
                             className={classnames(style.filterKey, {
                                 [style.active]: value === currentBrandID,
