@@ -355,26 +355,49 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg}) => {
+                }, ({code, eventReference = [], wechatCardReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
-                            title: '礼品被活动占用，不可删除',
+                            title: '礼品被占用，不可删除',
                             content: (
                                 <div
                                     style={{
                                         lineHeight: 1.5
                                     }}
                                 >
-                                    <div>
-                                        该礼品被以下活动使用，如需删除，请取消引用
-                                    </div>
-                                    <div 
-                                        style={{
-                                            marginTop: 8,
-                                            background: '#fef4ed',
-                                            padding: 5
-                                        }}
-                                    >   {msg.split(',').map(name => `【${name}】`).join('')} </div>
+                                    {
+                                        !!eventReference.length && (
+                                            <div>
+                                                <div>
+                                                    该礼品被以下活动使用，如需删除，请取消引用
+                                                </div>
+                                                <div 
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {eventReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        !!wechatCardReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下微信卡券使用，如需删除，请取消引用
+                                                </div>
+                                                <div 
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {wechatCardReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
+                                    
                                 </div>
                             ),
                         });
@@ -477,11 +500,7 @@ class GiftDetailTable extends Component {
                 case '100':
                 case '110':
                 case '111':
-                    return (<GiftDetailModal
-                        {...detailProps}
-                        /*usedTotalSize={this.state.usedTotalSize || 0}
-                        sendTotalSize={this.state.sendTotalSize || 0}*/
-                    />);
+                    return (<GiftDetailModal {...detailProps} />);
                 case '90':
                     return <QuatoCardDetailModal {...detailProps} />;
                 default:

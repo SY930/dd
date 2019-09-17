@@ -46,9 +46,6 @@ class GiftDetailModalTabs extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { sendorUsedKey } = nextProps;
         this.setState({ activeKey: sendorUsedKey });
-        // this.setState({
-        //     activeKey: 'send',
-        // });
     }
 
     onChange(activeKey) {
@@ -63,13 +60,11 @@ class GiftDetailModalTabs extends React.Component {
     }
     render() {
         const { data } = this.props;
-        console.log('data', data)
         const tabs = data.giftType === '91' ?
             [{ tab: '发出数', key: 'send' },
             ]
             : [{ tab: '发出数', key: 'send' },
             { tab: '使用数', key: 'used' },
-                // {tab:'赠送',key:'give'}
             ];
         return (
             <div>
