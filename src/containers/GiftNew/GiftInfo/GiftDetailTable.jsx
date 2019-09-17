@@ -405,7 +405,7 @@ class GiftDetailTable extends Component {
                     } else {
                         Modal.error({
                             title: '啊哦！好像有问题呦~~',
-                            content: `${msg}`,
+                            content: `${data.msg}`,
                         });
                     }
                 });
