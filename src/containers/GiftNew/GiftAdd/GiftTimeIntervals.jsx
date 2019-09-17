@@ -150,22 +150,6 @@ class GiftTimeIntervals extends Component {
         const { maxIntervals, intervals } = this.state;
         return (
             <div key={`${index}`} className={styles.giftTimeIntervalItem}>
-                <div className={styles.tipBlock}>
-                    {
-                        ((!periodStart && !!periodEnd) || (!!periodStart && !periodEnd)) && (
-                            <Tooltip title="不完整的时段不会被保存">
-                                <Icon style={{ color: 'orange' }} type="exclamation-circle-o" />
-                            </Tooltip>
-                        )
-                    }
-                    {
-                        (!!periodStart && !!periodEnd && (periodEnd < periodStart)) && (
-                            <Tooltip title="跨天时段">
-                                <Icon style={{ color: 'orange' }} type="exclamation-circle-o" />
-                            </Tooltip>
-                        )
-                    }
-                </div>
                 <div className={styles.timePickerWrapper}>
                     <TimePicker
                         style={{ width: 120 }}
@@ -191,8 +175,23 @@ class GiftTimeIntervals extends Component {
                         onChange={(moment) => this.handleTimeChange(moment, index, 'periodEnd')}
                     />
                 </div>
-
-                <div>
+                <div className={styles.tipBlock}>
+                    {
+                        ((!periodStart && !!periodEnd) || (!!periodStart && !periodEnd)) && (
+                            <Tooltip title="不完整的时段不会被保存">
+                                <Icon style={{ color: 'orange' }} type="exclamation-circle-o" />
+                            </Tooltip>
+                        )
+                    }
+                    {
+                        (!!periodStart && !!periodEnd && (periodEnd < periodStart)) && (
+                            <Tooltip title="跨天时段">
+                                <Icon style={{ color: 'orange' }} type="exclamation-circle-o" />
+                            </Tooltip>
+                        )
+                    }
+                </div>
+                <div style={{ paddingTop: 5 }}>
                     {
                         (index === (intervals.length - 1) && intervals.length < maxIntervals) && (
                         !!periodStart && !!periodEnd ? (
@@ -222,7 +221,7 @@ class GiftTimeIntervals extends Component {
         const { intervals } = this.state;
         const errorEntity = getItervalsErrorStatus(intervals)
         return (
-            <div className={`${styles.timeIntervalContainer} ${errorEntity.hasError ? styles.invalidTimeIntervals : ''}`}>
+            <div className={styles.timeIntervalContainer}>
                 {
                     intervals.map((item, index) => this.renderIntervalItem(item, index))
                 }
