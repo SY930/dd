@@ -8,7 +8,6 @@ import defaultEnterImg from './assets/recommend1.png'
 import defaultEndImg from './assets/recommend2.png'
 import giftExample from './assets/gift-example.png'
 import tagImg from './assets/tag.svg'
-import btnBg from './assets/btnBg.png'
 
 const { TabPane } = Tabs;
 
@@ -43,11 +42,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                             <div style={{ background: endColor }} className={style.bgWrapper}>
                                 <img src={giftExample} alt="" />
                                 <img src={giftExample} alt="" />
-                                <div className={style.btnWrapper}>
-                                    <img src={btnBg} alt="" />
-                                    <div>知道了</div>
-                                </div>
-                                
+                                <img src={giftExample} alt="" />
                             </div>
                             <Icon className={style.closeBtn}  type="close-circle-o" />
                         </div>
