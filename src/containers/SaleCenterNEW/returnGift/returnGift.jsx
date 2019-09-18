@@ -19,14 +19,16 @@ import {
     Alert,
     Input,
     Icon,
+    Popconfirm,
 } from 'antd';
 import styles from '../ActivityPage.less';
+import selfStyle from './style.less';
 import PriceInput from '../common/PriceInput';
 import ExpandTree from '../../SpecialPromotionNEW/common/ExpandTree';
 import _ from 'lodash';
-import {axiosData} from "../../../helpers/util";
 import WeChatCouponCard from "../../WeChatCouponManagement/WeChatCouponCard";
 import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
+import { DEFAULT_GIFT_ITEM } from './returnGiftDetailInfo'
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -34,10 +36,6 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
 
-import {
-    saleCenterSetPromotionDetailAC,
-    fetchGiftListInfoAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 import {
     SALE_CENTER_GIFT_TYPE,
@@ -56,49 +54,6 @@ const VALIDATE_TYPE = Object.freeze([{
 },
 { key: 1, value: '1', name: '固定有效期' }]);
 
-
-const defaultData = {
-    stageAmount: {
-        value: null,
-        validateStatus: 'success',
-        msg: null,
-    },
-    giftNum: {
-        value: 1,
-        validateStatus: 'success',
-        msg: null,
-    },
-
-    giftInfo: {
-        giftName: null,
-        giftItemID: null,
-        giftType: null,
-        giftValue: null,
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 使用张数
-    giftMaxUseNum: {
-        value: 1,
-        validateStatus: 'success',
-        msg: null,
-    },
-
-    giftValidType: '0',
-
-    giftEffectiveTime: {
-        value: 0,
-        validateStatus: 'success',
-        msg: null,
-    },
-
-    giftValidDays: {
-        value: 1,
-        validateStatus: 'success',
-        msg: null,
-    },
-};
-
 const availableGiftTypes = [// 顺序matters
     '112', '10', '20', '21', '111', '110', '30', '40', '42', '80',
 ];
@@ -110,95 +65,18 @@ const offlineCanUseGiftTypes = [
 class ReturnGift extends React.Component {
     constructor(props) {
         super(props);
-        this.uuid = 0;
         this.state = {
-            flag: {
-                0: '0',
-                1: '0',
-                2: '0',
-            },
-            weChatCouponList: [],
-            defaultValue: null,
-            data: {
-                0: {
-                    stageAmount: null,
-                    giftNum: 0,
-                    giftName: null,
-                    giftItemID: null,
-                    giftMaxUseNum: 0,
-                    giftValidType: '0',
-                    giftEffectiveTime: 0,
-                    giftValidDays: 0,
-                },
-            },
-            infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
-            maxCount: this.props.maxCount || 3,
+            infos: this.props.value,
         };
-
-        this.renderBlockHeader = this.renderBlockHeader.bind(this);
-        this.handleStageAmountChange = this.handleStageAmountChange.bind(this);
         this.add = this.add.bind(this);
         this.remove = this.remove.bind(this);
         this.getGiftValue = this.getGiftValue.bind(this);
         this.handleGiftChange = this.handleGiftChange.bind(this);
         this.handlegiftMaxUseNumChange = this.handlegiftMaxUseNumChange.bind(this);
         this.handleValidateTypeChange = this.handleValidateTypeChange.bind(this);
-        this.renderValidOptions = this.renderValidOptions.bind(this);
         this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.handleGiftEffectiveTimeChange = this.handleGiftEffectiveTimeChange.bind(this);
-    }
-
-    componentDidMount() {
-        // 第一次加载需将默认值传给父组件
-        if (Object.keys(this.props.value).length > 0) {
-            this.setState({
-                infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
-            }, () => {
-                if (this.props.value === null) {
-                    this.props.onChange && this.props.onChange(this.state.infos);
-                }
-            });
-        }
-        this.props.fetchGiftListInfo({
-            groupID: this.props.user.accountInfo.groupID,
-        });
-        this.queryWeChatCouponList()
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.maxCount !== nextProps.maxCount) {
-            this.setState({
-                infos: [JSON.parse(JSON.stringify(defaultData))],
-                maxCount: nextProps.maxCount,
-            });
-        }
-        if (nextProps.value) {
-            this.setState({
-                infos: nextProps.value || [JSON.parse(JSON.stringify(defaultData))],
-            });
-        }
-    }
-    queryWeChatCouponList = () => {
-        const groupID = this.props.user.accountInfo.groupID
-        axiosData(
-            `/payCoupon/getPayCouponBatchList?groupID=${groupID}`,
-            {},
-            {},
-            { path: 'payCouponInfos' },
-            'HTTP_SERVICE_URL_WECHAT'
-        ).then(res => {
-            this.setState({
-                weChatCouponList: Array.isArray(res) ?
-                    res.map(item => ({
-                        ...item,
-                        giftType: '112',
-                        giftName: item.couponName,
-                        giftItemID: item.itemID,
-                        giftValue: item.couponValue / 100
-                    })) : []
-            })
-        }).catch(e => {
-        })
     }
 
     remove(index) {
@@ -213,7 +91,7 @@ class ReturnGift extends React.Component {
 
     add() {
         const _infos = this.state.infos;
-        _infos.push(JSON.parse(JSON.stringify(defaultData)));
+        _infos.push(JSON.parse(JSON.stringify(DEFAULT_GIFT_ITEM)));
         this.setState({
             infos: _infos,
         }, () => {
@@ -222,10 +100,18 @@ class ReturnGift extends React.Component {
     }
 
     render() {
+        const { isMultiple } = this.props; 
         return (
-            <div>
+            <div className={[selfStyle.listWrapper, !isMultiple ? selfStyle.isNotMultiple : ''].join(' ')}>
                 {this.renderItems()}
-            </div>
+                {
+                    this.state.infos.length < 10 && (
+                        <div className={selfStyle.addLink} onClick={this.add}>
+                            + 添加礼品
+                        </div>
+                    )
+                }
+            </div>          
         );
     }
 
@@ -233,7 +119,7 @@ class ReturnGift extends React.Component {
     renderItems() {
         const filterOffLine = this.props.filterOffLine;// 支持到店属性
         const allCrmGifts = this.props.allCrmGifts.toJS();
-        const allWeChatCouponList = this.state.weChatCouponList;
+        const allWeChatCouponList = this.props.weChatCouponList;
         let _giftInfo = [{
             giftType: '112',
             index: 0,
@@ -256,146 +142,139 @@ class ReturnGift extends React.Component {
             disArr[index] = toggle;
             this.setState({ disArr })
         };
-        return this.state.infos.map((info, index) => {
+        return this.state.infos.map((info, index, arr) => {
             // 微信支付代金券实体
             let couponEntity;
             if (info.giftInfo.giftType == '112') {
-                couponEntity = this.state.weChatCouponList.find(item => item.itemID == info.giftInfo.giftItemID)
+                couponEntity = this.props.weChatCouponList.find(item => item.itemID == info.giftInfo.giftItemID)
             }
             return (
-                <div className={styles.addGrade} key={index}>
-                    <div className={styles.CategoryTop}>
-                        <span className={styles.CategoryTitle}>{this.state.infos.length == 1 ? '礼品' : `礼品${index + 1}`}</span>
-                        {this.renderBlockHeader(index)}
+                <div className={selfStyle.giftWrapper}>
+                    <div className={selfStyle.giftNoLabel}>
+                        {`礼品${index + 1}`}
                     </div>
-
-                    <div className={styles.CategoryBody}>
-                        <FormItem
-                            className={[styles.FormItemStyle, styles.FormItemStyleExplain].join(' ')}
-                            labelCol={{ span: 0 }}
-                            wrapperCol={{ span: 24 }}
-                            validateStatus={info.stageAmount.validateStatus}
-                            help={info.stageAmount.msg}
+                    {
+                        arr.length > 1 && (
+                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.remove(index)}>
+                                <Icon className={selfStyle.removeButton} type="close-circle" />
+                            </Popconfirm>
+                        )
+                    }
+                    <FormItem
+                        label="礼品名称"
+                        required={true}
+                        validateStatus={info.giftInfo.validateStatus}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                        help={info.giftInfo.msg}
+                    >
+                        <ExpandTree
+                            idx={index}
+                            value={this.getGiftValue(index)}
+                            data={_giftInfo}
+                            onChange={(value) => {
+                                this.handleGiftChange(value, index);
+                            }}
+                            onClick={(value) => {
+                                const { disArr = [] } = this.state;
+                                disArr[index] = false;
+                                this.setState({ disArr })
+                            }}
+                            disArr={this.state.disArr || []}
                         >
-                            <PriceInput
-                                addonBefore={this.state.maxCount == 1 ? '消费每满' : '消费满'}
-                                value={{ number: info.stageAmount.value }}
-                                onChange={val => this.handleStageAmountChange(val, index)}
-                                addonAfter="元"
-                                modal="float"
+                            <Input
+                                placeholder="请选择礼品"
+                                value={(this.getGiftValue(index) || '').split(',')[1]}
+                                className="input_click"
+                                onClick={() => { toggleFun(index); }}
                             />
-
-                        </FormItem>
-
-                        <FormItem
-                            className={[styles.FormItemStyle, styles.FormItemStyleExplain].join(' ')}
-                            validateStatus={info.giftNum.validateStatus}
-                            help={info.giftNum.msg}
-                        >
-                            <PriceInput
-                                addonBefore="返券"
-                                addonAfter="张"
-                                modal="int"
-                                value={{ number: info.giftNum.value }}
-                                onChange={(val) => { this.handleCouponNumberChange(val, index); }}
+                            <Icon
+                                type="down"
+                                style={{ fontSize: 10, position: 'absolute', top: 10, left: 272 }}
+                                className="input_click"
+                                onClick={() => { toggleFun(index); }}
                             />
-                        </FormItem>
-
-                        <FormItem
-                            label="请选择礼品"
-                            validateStatus={info.giftInfo.validateStatus}
-                            className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            help={info.giftInfo.msg}
-                        >
-                            <ExpandTree
-                                idx={index}
-                                value={this.getGiftValue(index)}
-                                data={_giftInfo}
-                                onChange={(value) => {
-                                    this.handleGiftChange(value, index);
-                                }}
-                                onClick={(value) => {
-                                    const { disArr = [] } = this.state;
-                                    disArr[index] = false;
-                                    this.setState({ disArr })
-                                }}
-                                disArr={this.state.disArr || []}
+                        </ExpandTree>
+                    </FormItem>
+                    <div className={selfStyle.flexControlWrapper}>
+                        <div style={{ width: '50%' }}>
+                            <FormItem
+                                label="礼品数量"
+                                required={true}
+                                validateStatus={info.giftNum.validateStatus}
+                                help={info.giftNum.msg}
+                                labelCol={{ span: 10 }}
+                                wrapperCol={{ span: 14 }}
                             >
-                                <Input
-                                    value={(this.getGiftValue(index) || '').split(',')[1]}
-                                    className="input_click"
-                                    onClick={() => { toggleFun(index); }}
+                                <PriceInput
+                                    addonAfter="张"
+                                    modal="int"
+                                    value={{ number: info.giftNum.value }}
+                                    onChange={(val) => { this.handleCouponNumberChange(val, index); }}
                                 />
-                                <Icon
-                                    type="down"
-                                    style={{ position: 'absolute', top: 10, left: 265 }}
-                                    className="input_click"
-                                    onClick={() => { toggleFun(index); }}
-                                />
-                            </ExpandTree>
-                        </FormItem>
-                        {
-                            this.state.maxCount === 1 ?
-                                <FormItem
-                                    className={styles.FormItemStyle}
-                                    labelCol={{ span: 0 }}
-                                    wrapperCol={{ span: 24 }}
-                                    validateStatus={info.giftMaxUseNum.validateStatus}
-                                    help={info.giftMaxUseNum.msg}
-                                >
-                                    <PriceInput
-                                        addonBefore="最多返券"
-                                        addonAfter="张"
-                                        modal="int"
-                                        maxNum={6}
-                                        value={{ number: info.giftMaxUseNum.value }}
-                                        onChange={(val) => { this.handlegiftMaxUseNumChange(val, index); }}
-                                    />
-                                </FormItem> : null
-                        }
-                        {
-                            info.giftInfo.giftType == '112' ? (
-                                <div>
-                                    { !!couponEntity && (
-                                        <div style={{ paddingLeft: 120, margin: '12px 0'}}>
-                                            <WeChatCouponCard entity={couponEntity}  />
-                                        </div>
-                                    )}
-                                    { !!couponEntity && (
-                                        <Alert
-                                            message={`当前状态：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: '未知'}).label}`}
-                                            description="券未激活时无法发放成功，请确认。实际返券张数以微信支付商户平台设置的用户参与次数为准"
-                                            type="warning"
-                                            showIcon
-                                        />
-                                    )}
-                                </div>
-                            ) : (
-                                <div>
+                            </FormItem>
+                        </div>
+                        <div style={{ width: '47%' }}>
+                            {
+                                this.props.isMultiple ?
                                     <FormItem
-                                        className={styles.FormItemStyle}
+                                        labelCol={{ span: 0 }}
+                                        wrapperCol={{ span: 22 }}
+                                        validateStatus={info.giftMaxUseNum.validateStatus}
+                                        help={info.giftMaxUseNum.msg}
                                     >
-                                        <span className={styles.formLabel}>生效方式</span>
-                                        <RadioGroup
-                                            className={styles.radioMargin}
-                                            value={info.giftValidType > 1 ? '0' : info.giftValidType}
-                                            onChange={val => this.handleValidateTypeChange(val, index)}
-                                        >
-                                            {
-                                                VALIDATE_TYPE.map((item, index) => {
-                                                    return <Radio value={item.value} key={index}>{item.name}</Radio>
-                                                })
-                                            }
-                                        </RadioGroup>
-                                    </FormItem>
-                                    {this.renderValidOptions(info, index)}
-                                </div>
-                            )
-                        }
-                    </div>
-
+                                        <PriceInput
+                                            addonBefore="最多"
+                                            addonAfter="张"
+                                            modal="int"
+                                            maxNum={6}
+                                            value={{ number: info.giftMaxUseNum.value }}
+                                            onChange={(val) => { this.handlegiftMaxUseNumChange(val, index); }}
+                                        />
+                                    </FormItem> : null
+                            }
+                        </div>
+                    </div>    
+                    {
+                        info.giftInfo.giftType == '112' ? (
+                            <div>
+                                { !!couponEntity && (
+                                    <div style={{ paddingLeft: 82, margin: '12px 0'}}>
+                                        <WeChatCouponCard entity={couponEntity}  />
+                                    </div>
+                                )}
+                                { !!couponEntity && (
+                                    <Alert
+                                        message={`当前状态：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: '未知'}).label}`}
+                                        description="券未激活时无法发放成功，请确认。实际返券张数以微信支付商户平台设置的用户参与次数为准"
+                                        type="warning"
+                                        showIcon
+                                    />
+                                )}
+                            </div>
+                        ) : (
+                            <div>
+                                <FormItem
+                                    label="有效期限"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 18 }}
+                                >
+                                    
+                                    <RadioGroup
+                                        value={info.giftValidType > 1 ? '0' : `${info.giftValidType}`}
+                                        onChange={val => this.handleValidateTypeChange(val, index)}
+                                    >
+                                        {
+                                            VALIDATE_TYPE.map((item, index) => {
+                                                return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                            })
+                                        }
+                                    </RadioGroup>
+                                </FormItem>
+                                {this.renderValidOptions(info, index)}
+                            </div>
+                        )
+                    }
                 </div>
             );
         });
@@ -403,9 +282,9 @@ class ReturnGift extends React.Component {
 
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
-        if (info.giftValidType === '0' || info.giftValidType === '2') {
+        if (info.giftValidType == '0' || info.giftValidType == '2') {
             let arr;
-            if (info.giftValidType === '0') {
+            if (info.giftValidType == '0') {
                 arr = SALE_CENTER_GIFT_EFFICT_TIME;
             } else {
                 arr = SALE_CENTER_GIFT_EFFICT_DAY
@@ -413,62 +292,10 @@ class ReturnGift extends React.Component {
             return (
                 <div>
                     <FormItem
-                        className={[styles.FormItemStyle].join(' ')}
-                    >
-                        <span className={styles.formLabel}>相对有效期:</span>
-                        <RadioGroup
-                            className={styles.radioMargin}
-                            value={info.giftValidType}
-                            onChange={e => {
-                                const infos = this.state.infos;
-                                if (e.target.value == 2 && infos[index].giftValidType != 2) {
-                                    infos[index].giftEffectiveTime.value = '1';
-                                    infos[index].giftValidType = '2';
-                                } else if (e.target.value == 0 && infos[index].giftValidType != 0){
-                                    infos[index].giftEffectiveTime.value = '0';
-                                    infos[index].giftValidType = '0';
-                                }
-                                this.setState({
-                                    infos,
-                                }, () => {
-                                    this.props.onChange && this.props.onChange(this.state.infos);
-                                })
-                            }}
-                        >
-                            {
-                                [{ value: '0', label: '按小时' }, { value: '2', label: '按天' }].map((item, index) => {
-                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
-                                })
-                            }
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        label="何时生效"
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                    >
-                        <Select
-                            size="default"
-                            className={`${styles.noRadius} returnGiftMount1ClassJs`}
-                            getPopupContainer={(node) => node.parentNode}
-                            value={
-                                typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
-                                    '0' :
-                                    `${this.state.infos[index].giftEffectiveTime.value}`
-                            }
-                            onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
-                        >
-                            { arr.map((item, index) => (<Option value={item.value} key={index}>{item.label}</Option>)) }
-                        </Select>
-                    </FormItem>
-
-
-                    <FormItem
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle].join(' ')}
-                        labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
-                        label={'有效天数'}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                        label={' '}
+                        required={true}
                         validateStatus={info.giftValidDays.validateStatus}
                         help={info.giftValidDays.msg}
                     >
@@ -480,6 +307,53 @@ class ReturnGift extends React.Component {
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
                         />
+                    </FormItem>
+                    <FormItem
+                        label="生效时间"
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                    >
+                        <div className={selfStyle.flexControlWrapper}>
+                            <Select
+                                style={{ width: 84 }}
+                                getPopupContainer={(node) => node.parentNode}
+                                value={`${info.giftValidType}`}
+                                onChange={v => {
+                                    const infos = this.state.infos;
+                                    if (v == 2 && infos[index].giftValidType != 2) {
+                                        infos[index].giftEffectiveTime.value = '1';
+                                        infos[index].giftValidType = '2';
+                                    } else if (v == 0 && infos[index].giftValidType != 0){
+                                        infos[index].giftEffectiveTime.value = '0';
+                                        infos[index].giftValidType = '0';
+                                    }
+                                    this.setState({
+                                        infos,
+                                    }, () => {
+                                        this.props.onChange && this.props.onChange(this.state.infos);
+                                    })
+                                }}
+                            >
+                                {
+                                    [{ value: '0', label: '按小时' }, { value: '2', label: '按天' }].map((item, index) => {
+                                        return <Option value={item.value} key={index}>{item.label}</Option>
+                                    })
+                                }
+                            </Select>
+                            <Select
+                                style={{ width: 177 }}
+                                size="default"
+                                getPopupContainer={(node) => node.parentNode}
+                                value={
+                                    typeof this.state.infos[index].giftEffectiveTime.value === 'object' ?
+                                        '0' :
+                                        `${this.state.infos[index].giftEffectiveTime.value}`
+                                }
+                                onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                            >
+                                { arr.map((item, index) => (<Option value={item.value} key={index}>{item.label}</Option>)) }
+                            </Select>
+                        </div>
                     </FormItem>
                 </div>
             );
@@ -496,9 +370,8 @@ class ReturnGift extends React.Component {
         }
         return (
             <FormItem
-                label="固定有效期"
-                className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                labelCol={{ span: 8 }}
+                label=" "
+                labelCol={{ span: 5 }}
                 wrapperCol={{ span: 16 }}
                 required={true}
                 validateStatus={info.giftEffectiveTime.validateStatus}
@@ -624,33 +497,26 @@ class ReturnGift extends React.Component {
         }
     }
 
-    handleStageAmountChange(value, index) {
-        const _infos = this.state.infos;
-        _infos[index].stageAmount.value = value.number;
-        const _value = parseFloat(value.number);
-        if (_value > 0) {
-            _infos[index].stageAmount.validateStatus = 'success';
-            _infos[index].stageAmount.msg = null;
-        } else {
-            _infos[index].stageAmount.validateStatus = 'error';
-            _infos[index].stageAmount.msg = '消费金额必须大于0';
-        }
-        this.setState({
-            infos: _infos,
-        }), () => {
-            this.props.onChange && this.props.onChange(this.state.infos);
-        };
-    }
-
     handleCouponNumberChange(value, index) {
-        //
         const _infos = this.state.infos;
         _infos[index].giftNum.value = value.number;
-
+        const { isMultiple } = this.props;
         const _value = parseInt(value.number);
         if (_value > 0 && _value < 51) {
             _infos[index].giftNum.validateStatus = 'success';
             _infos[index].giftNum.msg = null;
+            if (isMultiple) {
+                if (_infos[index].giftMaxUseNum.value < +_value) {
+                    _infos[index].giftNum.validateStatus = 'error';
+                    _infos[index].giftNum.msg = '礼品数量不超过最多限制';
+                } else {
+                    const maxUseValue = _infos[index].giftMaxUseNum.value;
+                    _infos[index].giftNum.validateStatus = 'success';
+                    _infos[index].giftNum.msg = null;
+                    _infos[index].giftMaxUseNum.validateStatus = maxUseValue > 0 && maxUseValue <= 10000 ? 'success' : 'error';
+                    _infos[index].giftMaxUseNum.msg = maxUseValue > 0 && maxUseValue <= 10000 ? null : '最多返券数量必须大于等于1, 小于等于10000';
+                }
+            }
         } else {
             _infos[index].giftNum.validateStatus = 'error';
             _infos[index].giftNum.msg = '返券数量必须大于0, 小于等于50';
@@ -668,8 +534,16 @@ class ReturnGift extends React.Component {
 
         const _value = parseInt(value.number);
         if (_value > 0 && _value <= 10000) {
-            _infos[index].giftMaxUseNum.validateStatus = 'success';
-            _infos[index].giftMaxUseNum.msg = null;
+            if (_infos[index].giftNum.value > +_value) {
+                _infos[index].giftMaxUseNum.validateStatus = 'error';
+                _infos[index].giftMaxUseNum.msg = '最多返券数不少于礼品数量';
+            } else {
+                const numValue = _infos[index].giftNum.value;
+                _infos[index].giftMaxUseNum.validateStatus = 'success';
+                _infos[index].giftMaxUseNum.msg = null;
+                _infos[index].giftNum.validateStatus = numValue > 0 && numValue < 51 ? 'success' : 'error';
+                _infos[index].giftNum.msg = numValue > 0 && numValue < 51 ? null : '返券数量必须大于0, 小于等于50';
+            }
         } else {
             _infos[index].giftMaxUseNum.validateStatus = 'error';
             _infos[index].giftMaxUseNum.msg = '最多返券数量必须大于等于1, 小于等于10000';
@@ -681,45 +555,12 @@ class ReturnGift extends React.Component {
         });
     }
 
-    renderBlockHeader(index) {
-        const _length = this.state.infos.length;
-        if (this.state.maxCount == 1) {
-            return null;
-        }
-        // 不是最后一个
-        if (index === 0 && _length === 1) {
-            return (<span className={styles.CategoryAdd} onClick={this.add}>添加礼品</span>);
-        } else if (index < _length - 1) {
-            return null;
-        } else if (index == _length - 1 && _length == this.state.maxCount) {
-            return (<span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>)
-        } else if (index == _length - 1 && _length < this.state.maxCount) {
-            return (
-                <span>
-                    <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>
-                    <span className={styles.CategoryAdd} onClick={this.add}>添加礼品</span>
-                </span>
-            );
-        }
-    }
 }
 
 const mapStateToProps = (state) => {
     return {
         allCrmGifts: state.sale_promotionDetailInfo_NEW.getIn(['$giftInfo', 'data']),
-        user: state.user.toJS(),
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        setPromotionDetail: (opts) => {
-            dispatch(saleCenterSetPromotionDetailAC(opts));
-        },
-
-        fetchGiftListInfo: (opts) => {
-            dispatch(fetchGiftListInfoAC(opts));
-        },
-    };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ReturnGift));
+export default connect(mapStateToProps)(Form.create()(ReturnGift));
