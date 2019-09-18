@@ -70,21 +70,15 @@ export const COLUMNS = [
                     >
                         查看
                     </a>
-                    {record.sendTotalCount > 0 ?
-                        <Tooltip title="券已发出，无法删除">
-                            <a disabled={true}><span style={{pointerEvents: 'auto'}}>删除</span></a>
-                        </Tooltip>
-                        :
-                        <Authority rightCode={GIFT_LIST_DELETE}>
-                            {
-                                (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                    <a disabled={true}><span>删除</span></a>
-                                ) : (
-                                    <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
-                                )
-                            }
-                        </Authority>
-                    }
+                    <Authority rightCode={GIFT_LIST_DELETE}>
+                        {
+                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                <a disabled={true}><span>删除</span></a>
+                            ) : (
+                                <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
+                            )
+                        }
+                    </Authority>
                     {
                         ONLINE_STORE_VISIBLE_GIFT_TYPE.includes(`${record.giftType}`) && (
                             <a href="javaScript:;" onClick={() => this.handleGenerateLink(record)}>投放</a>

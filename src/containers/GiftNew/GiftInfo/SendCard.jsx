@@ -351,7 +351,6 @@ class SendCard extends React.Component {
     }
 
     handleMore(rec) {
-        // this.props.onChange('made', rec.batchNO);
         const { UpdateTabKeyAC, UpdateBatchNOAC } = this.props;
         UpdateTabKeyAC({
             key: 'made',
@@ -475,14 +474,14 @@ class SendCard extends React.Component {
                 exportVisible: true
             });
         });
-        // this.setState({ exportVisible: true })
     }
 
     render() {
         const { loading, dataSource, cardProps, sumData, pageNo, pageSize, total, formData } = this.state;
-        const { _key } = this.props;
+        const { _key, data } = this.props;
         const spanLeft = _key === 'sum' ? 21 : (_key === 'made' ? 16 : 17);
         const spanRight = _key === 'sum' ? 3 : (_key === 'made' ? 8 : 7);
+        const isDeleted = data.action == 2;
         return (
             <div className={styles.cardSummarize}>
                 <Row>
@@ -503,25 +502,39 @@ class SendCard extends React.Component {
                                         type="search"
                                     />查询</Button></Col>
                                     <Col span={6}>
-                                        {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                         <Button type="ghost"
                                                 disabled={total==0}
                                                 onClick={() => this.handleExport()}
                                                 style={{borderRadius: '0'}}
                                         >
-                                            <Icon
-                                                type="export" />导出</Button>
-                                        {/* </Authority> */}
+                                            <Icon type="export" />导出
+                                        </Button>
                                     </Col>
-                                    <Col span={6}><Button style={{borderRadius: '0'}} type="ghost" onClick={() => this.handleDelete()}><Iconlist
-                                        className="send-gray"
-                                        iconName={'作废'}
-                                    />作废</Button></Col>
-                                    <Col span={6}><Button
-                                        type="ghost"
-                                        style={{ padding: '4px 10px', borderRadius: '0 3px 3px 0' }}
-                                        onClick={() => this.handleCancelDelete()}
-                                    >取消作废</Button></Col>
+                                    {
+                                        !isDeleted && (
+                                            <Col span={6}>
+                                                <Button style={{borderRadius: '0'}} type="ghost" onClick={() => this.handleDelete()}><Iconlist
+                                                    className="send-gray"
+                                                    iconName={'作废'}
+                                                />
+                                                    作废
+                                                </Button>
+                                            </Col>
+                                        )
+                                    }
+                                    {
+                                        !isDeleted && (
+                                            <Col span={6}>
+                                                <Button
+                                                    type="ghost"
+                                                    style={{ padding: '4px 10px', borderRadius: '0 3px 3px 0' }}
+                                                    onClick={() => this.handleCancelDelete()}
+                                                >
+                                                    取消作废
+                                                </Button>
+                                            </Col>
+                                        )
+                                    }
                                 </Row>
                                 : (
                                     _key === 'send' ?
@@ -530,17 +543,19 @@ class SendCard extends React.Component {
                                                 type="search"
                                             />查询</Button></Col>
                                             <Col span={8} >
-                                                {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                                 <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
                                                     />导出</Button>
-                                                {/* </Authority> */}
                                             </Col>
-                                            <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
-                                                className="send-gray"
-                                                iconName={'发布'}
-                                            />发卡</Button></Col>
+                                            {
+                                                !isDeleted && (
+                                                    <Col span={8}><Button type="ghost" onClick={() => this.handleSend()}><Iconlist
+                                                        className="send-gray"
+                                                        iconName={'发布'}
+                                                    />发卡</Button></Col>
+                                                )
+                                            }
                                         </Row>
                                         :
                                         <div>
@@ -554,20 +569,16 @@ class SendCard extends React.Component {
                                             </Row>
                                             <Row>
                                                 <Col span={24} style={{ textAlign: 'right' }}>
-                                                    {/* <Authority rightCode="marketing.lipinxinxixin.query"> */}
                                                     <Button
                                                         type="ghost"
                                                         disabled={total==0}
                                                         onClick={() => this.handleExport()}
                                                     ><Icon type="export" />导出</Button>
-                                                    {/* </Authority> */}
                                                 </Col>
                                             </Row>
                                         </div>
                                 )
-
                         }
-
                     </Col>
                 </Row>
                 <Row>

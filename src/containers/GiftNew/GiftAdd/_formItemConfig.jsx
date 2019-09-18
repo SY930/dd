@@ -601,6 +601,7 @@ const SECOND_KEYS = (() => ({
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'giftShareType',
+                'moneyLimitType',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
