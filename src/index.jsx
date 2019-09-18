@@ -38,6 +38,12 @@ registerLocalPage([
         label: '微信支付代金券',
         parent: [entryCodes.PROMOTION_WECHAT_COUPON_LIST],
     },
+    {
+        key: entryCodes.PROMOTION_DECORATION,
+        value: entryCodes.PROMOTION_DECORATION,
+        label: '活动装修',
+        parent: [entryCodes.SPECIAL_PAGE],
+    },
 ]);
 
 export default registeEntryCode(entryCodes, completed => import('./containers').then(completed))
