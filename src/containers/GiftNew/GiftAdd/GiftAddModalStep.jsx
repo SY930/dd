@@ -268,7 +268,7 @@ class GiftAddModalStep extends React.PureComponent {
                 } else {
                     moenyLimitValueIndex !== -1 && newKeys.splice(moenyLimitValueIndex, 1);
                 }
-                if (describe === '菜品兑换券') {
+                if (describe === '菜品兑换券' || describe === '代金券') {
                     const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
                     if (value == 1) {
                         maxUseLimitIndex == -1 && newKeys.splice(index + 2, 0, 'maxUseLimit')
@@ -1633,6 +1633,14 @@ class GiftAddModalStep extends React.PureComponent {
             formItems.moneyLimitType.label = '账单金额';
         } else {
             formItems.moneyLimitType.label = '金额限制';
+        }
+        if (this.props.gift.value == '111') {
+            formItems.moneyLimitType.options = [
+                { label: '不限', value: '0' },
+                { label: '满', value: '2' },
+            ];
+        } else {
+            formItems.moneyLimitType.options = GiftCfg.moneyLimitType;
         }
         if (this.props.gift.value == '10' && (type === 'add' || values.amountType == 1)) {
             const {
