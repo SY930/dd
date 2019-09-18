@@ -314,11 +314,16 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             payload: params.shopID && params.shopID > 0
         })
         if (params.shopID && params.shopID > 0) {
-            return fetchData('queryShopFoodInfoList', { ...params, bookID: 0, pageNo: -1 }, null, { path: 'data' }).then((res = {}) => {
-                dispatch(fetchFoodMenuSuccess(res))
-                dispatch(getRawFoodMenuSuccess(res));
-            }).catch(e => {
-                dispatch(fetchFoodMenuFailed(e));
+            return axiosData('/shopapi/queryShopFoodSubInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+            .then(
+                records => {
+                    dispatch(fetchFoodMenuSuccess(records));
+                    dispatch(getRawFoodMenuSuccess(records));
+                },
+                error => dispatch(fetchFoodMenuFailed(error))
+            )
+            .catch(e => {
+                console.log('err: ', e);
             });
         } else {
             return axiosData('/shopapi/queryGroupFoodSubinfo.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
