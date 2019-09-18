@@ -46,9 +46,6 @@ class GiftDetailModalTabs extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { sendorUsedKey } = nextProps;
         this.setState({ activeKey: sendorUsedKey });
-        // this.setState({
-        //     activeKey: 'send',
-        // });
     }
 
     onChange(activeKey) {
@@ -68,7 +65,6 @@ class GiftDetailModalTabs extends React.Component {
             ]
             : [{ tab: '发出数', key: 'send' },
             { tab: '使用数', key: 'used' },
-                // {tab:'赠送',key:'give'}
             ];
         return (
             <div>
@@ -99,7 +95,7 @@ class GiftDetailModalTabs extends React.Component {
                                 <GiftSendOrUsedCount key={tab.key} data={data} _key={tab.key} />
                             </TabPane>)
                         }).concat(
-                            sendableGiftTypes.includes(String(data.giftType)) ?
+                            sendableGiftTypes.includes(String(data.giftType)) && data.action != 2 ?
                                 [
                                     (
                                         <TabPane tab={'赠送'} key={'send_gift'}>
@@ -110,7 +106,7 @@ class GiftDetailModalTabs extends React.Component {
                                 :
                                 []
                         ).concat(
-                            batchableGiftTypes.includes(String(data.giftType)) ?
+                            batchableGiftTypes.includes(String(data.giftType)) && data.action != 2 ?
                                 [
                                     (
                                         <TabPane tab={'批量生成券码'} key={'generate_gifts'}>

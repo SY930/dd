@@ -77,10 +77,6 @@ class SendGiftPanel extends Component {
         this.handleGiftValidRangeChange = this.handleGiftValidRangeChange.bind(this);
     }
 
-    componentDidMount() {
-        this.props.queryWechatMpInfo();
-    }
-
     handleSubmit() {
         let flag = true;
         if (this.props.form.isFieldValidating('cellNo')) {
