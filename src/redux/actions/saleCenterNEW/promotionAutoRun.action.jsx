@@ -79,14 +79,14 @@ export const queryPromotionAutoRunList = (opts) => {
                     opts,
                     {},
                     {path: 'data.autoExecuteActivityItems'},
-                    'HTTP_SERVICE_URL_CRM'
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ),
                 axiosData(
                     '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
                     {...opts, isActive: '1'},
                     {},
                     {path: 'data.autoExecuteActivityItems'},
-                    'HTTP_SERVICE_URL_CRM'
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ),
             ]
         ).then(values => {
@@ -105,7 +105,7 @@ export const savePromotionAutoRunList = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((res) => {
             dispatch(savePromotionAutoRunListSuccess(res));
             return Promise.resolve();

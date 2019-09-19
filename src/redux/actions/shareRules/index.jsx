@@ -50,7 +50,7 @@ export const changeSearchName = opts => ({
 export const queryShareGroups = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_QUERY_SHARE_GROUP_START});
-        axiosData('/promotion/promotionShareGroupService_queryList.ajax', opts, {}, { path: 'data.promotionShareGroupList' }, 'HTTP_SERVICE_URL_CRM')
+        axiosData('/promotion/promotionShareGroupService_queryList.ajax', opts, {}, { path: 'data.promotionShareGroupList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_QUERY_SHARE_GROUP_SUCCESS,
@@ -71,7 +71,7 @@ export const createOrUpdateCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_SAVE_SHARE_GROUP_START});
         const url = !opts.itemID ? '/promotion/promotionShareGroupService_add.ajax' : '/promotion/promotionShareGroupService_update.ajax'
-        return axiosData(url, opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        return axiosData(url, opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_SAVE_SHARE_GROUP_SUCCESS,
@@ -94,7 +94,7 @@ export const createOrUpdateCertainShareGroup = (opts) => {
 export const deleteCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_DELETE_SHARE_GROUP_START});
-        return axiosData('/promotion/promotionShareGroupService_deleteShareGroup.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        return axiosData('/promotion/promotionShareGroupService_deleteShareGroup.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_DELETE_SHARE_GROUP_SUCCESS,
@@ -116,7 +116,7 @@ export const deleteCertainShareGroup = (opts) => {
 export const removeItemFromCertainShareGroup = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_START});
-        return axiosData('/promotion/promotionShareGroupService_deleteShareGroupDetail.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        return axiosData('/promotion/promotionShareGroupService_deleteShareGroupDetail.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
                 dispatch({
                     type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_SUCCESS,

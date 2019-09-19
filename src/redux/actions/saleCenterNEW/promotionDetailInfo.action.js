@@ -168,14 +168,14 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
                 payload: opts.shopID && opts.shopID > 0
             })
             if (opts.shopID && opts.shopID > 0) {
-                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
+                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res = []) => {
                     dispatch(getFoodCategorySuccessToProcess({records: res}))
                     dispatch(getRawFoodCatgorySuccess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodCategoryFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'})
+                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                     .then(
                         (records = []) => {
                             dispatch(getFoodCategorySuccessToProcess({records: records}))
@@ -287,14 +287,14 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
                 payload: params.shopID && params.shopID > 0
             })
             if (params.shopID && params.shopID > 0) {
-                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
+                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res = []) => {
                     dispatch(fetchFoodMenuSuccess({records: res}))
                     dispatch(getRawFoodMenuSuccess({records: res}));
                 }).catch(e => {
                     dispatch(fetchFoodMenuFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'})
+                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                     .then(
                         (records = []) => {
                             dispatch(fetchFoodMenuSuccess({records}));
@@ -360,7 +360,7 @@ export const fetchPromotionListAC = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((responseJSON) => {
             dispatch(fetchPromotionListSuccess(responseJSON))
         }).catch((error) => {
@@ -393,7 +393,7 @@ export const fetchAllPromotionListAC = (opts) => {
             { ...opts, pageNo: 1, pageSize: 10000, usageMode: opts.usageMode ? opts.usageMode : -1 },
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((responseJSON) => {
             dispatch(fetchAllPromotionListSuccess(responseJSON.promotionLst))
         }).catch((error) => {
