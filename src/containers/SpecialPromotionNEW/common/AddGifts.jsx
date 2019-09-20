@@ -394,8 +394,6 @@ class AddGifts extends React.Component {
                 const lowerLevelValue =  _infos[1].needCount.value;
                 if (lowerLevelValue > 0 && lowerLevelValue <= 1000) {
                     if (_value <= +lowerLevelValue) {
-                        console.log('_value', _value)
-                        console.log('lowerLevelValue', lowerLevelValue)
                         _infos[index].needCount.validateStatus = 'error';
                         _infos[index].needCount.msg = '此档位所需人数必须大于上一档位';
                     } else {

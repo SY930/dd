@@ -130,6 +130,7 @@ class SpecialDetailInfo extends Component {
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
+        const giftGetRule = props.specialPromotion.getIn(['$eventInfo', 'giftGetRule'], 0);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
         const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
@@ -142,6 +143,9 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             eventRecommendSettings,
+            /** 膨胀大礼包相关 */
+            giftGetRule,
+            /** 膨胀大礼包相关结束 */
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
@@ -431,6 +435,7 @@ class SpecialDetailInfo extends Component {
             discountMaxLimitRate,
             disabledGifts,
             saveMoneySetIds,
+            giftGetRule,
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
@@ -628,6 +633,7 @@ class SpecialDetailInfo extends Component {
                 discountMaxLimitRate: discountMaxLimitRate ? discountMaxLimitRate / 100 : discountMaxLimitRate,
                 ...instantDiscountState,
             } : {
+                giftGetRule,
                 saveMoneySetIds,
                 shareImagePath,
                 shareTitle,
@@ -752,6 +758,11 @@ class SpecialDetailInfo extends Component {
     handleEventValidTimeChange = ({ number }) => {
         this.setState({
             eventValidTime: number,
+        })
+    }
+    handleGiftGetRuleChange = ({ target: { value } }) => {
+        this.setState({
+            giftGetRule: value,
         })
     }
     handleRecommendSettingsChange = (index, propertyName) => (val) => {
@@ -1879,6 +1890,24 @@ class SpecialDetailInfo extends Component {
                 {type == '67' && this.renderInstantDiscountForm()}
                 {
                     type == '65' && <p className={styles.coloredBorderedLabel}>邀请人礼品获得礼品列表：</p>
+                }
+                {
+                    type == '66' && (
+                        <FormItem
+                            label="礼品领取方式"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup
+                                onChange={this.handleGiftGetRuleChange}
+                                value={this.state.giftGetRule}
+                            >
+                                <Radio key={'0'} value={0}>领取符合条件的最高档位礼品</Radio>
+                                <Radio key={'1'} value={1}>领取符合条件的所有档位礼品</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                    )
                 }
                 <Row>
                     <Col span={17} offset={4}>
