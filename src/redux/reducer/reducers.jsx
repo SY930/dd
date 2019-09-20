@@ -18,6 +18,7 @@ const defaultMsgs = [
         msgType: 2,
         title: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].title,
         remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['2'].remark,
+        jump: 0,
         reDirectType: 1,
         reDirectUrl: '',
         isPushMsg: 1
@@ -27,6 +28,7 @@ const defaultMsgs = [
         title: DEFAULT_WECHAT_TEMPLATE_CONFIG['1'].title,
         remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['1'].remark,
         reDirectType: 1,
+        jump: 0,
         reDirectUrl: '',
         isPushMsg: 1
     },
@@ -35,6 +37,7 @@ const defaultMsgs = [
         title: DEFAULT_WECHAT_TEMPLATE_CONFIG['3'].title,
         remark: DEFAULT_WECHAT_TEMPLATE_CONFIG['3'].remark,
         reDirectType: 1,
+        jump: 0,
         reDirectUrl: '',
         isPushMsg: 1
     },

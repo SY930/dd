@@ -11,6 +11,7 @@ import {
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 import ENV from "../../../helpers/env";
 import {
+    Alert,
     Row,
     Col,
     Icon,
@@ -22,7 +23,6 @@ import {
     Form,
     Select,
     message,
-    Spin,
     Upload,
     Checkbox,
     Button
@@ -92,6 +92,7 @@ class WeChatMessageFormWrapper extends Component {
             title,
             remark,
             reDirectType,
+            jump = 0,
             currentType: type,
             isPushMsg,
             reDirectUrl,
@@ -147,71 +148,95 @@ class WeChatMessageFormWrapper extends Component {
                         />
                     )}
                 </FormItem>
+                
                 <FormItem
-                    label="跳转链接"
+                    label="点击跳转页面"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     style={{ position: 'relative' }}
                 >
-                    <Select
-                        getPopupContainer={(node) => node.parentNode}
-                        size="default"
-                        value={String(reDirectType)}
-                        disabled={type == 1 || !isEditing}
-                        onChange={(value) => {
-                            handleKeyValueChange({key: 'reDirectType', value, type});
-                            handleKeyValueChange({key: 'reDirectUrl', value: '', type});
-                        }}
+                    <RadioGroup
+                        onChange={(e) => handleKeyValueChange({key: 'jump', value: e.target.value, type})}
+                        value={jump}
+                        disabled={!isEditing}
                     >
-                        {availableUrlType.map(type => (<Select.Option disabled={type.disabled} value={type.value} key={type.value}>{type.label}</Select.Option>))}
-                    </Select>
+                        <Radio key={'0'} value={0}>不跳转</Radio>
+                        <Radio key={'1'} value={1}>跳转</Radio>
+                    </RadioGroup>
                 </FormItem>
+                <Alert style={{ marginLeft: 90, width: 450, paddingRight: 8 }} type="success" message="受腾讯礼品消息模版规则限制，建议不要设置页面跳转，减少模版被投诉风险"></Alert>
+                {
+                    jump == 1 && (
+                        <div>
+                            <FormItem
+                                label="跳转链接"
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                style={{ position: 'relative' }}
+                            >
+                                <Select
+                                    getPopupContainer={(node) => node.parentNode}
+                                    size="default"
+                                    value={String(reDirectType)}
+                                    disabled={type == 1 || !isEditing}
+                                    onChange={(value) => {
+                                        handleKeyValueChange({key: 'reDirectType', value, type});
+                                        handleKeyValueChange({key: 'reDirectUrl', value: '', type});
+                                    }}
+                                >
+                                    {availableUrlType.map(type => (<Select.Option disabled={type.disabled} value={type.value} key={type.value}>{type.label}</Select.Option>))}
+                                </Select>
+                            </FormItem>
 
-                {Number(reDirectType) === 3 && (
-                    <FormItem
-                        label="链接地址"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                        style={{ position: 'relative' }}
-                    >
-                        {getFieldDecorator(`reDirectUrl${key}`, {
-                            initialValue: reDirectUrl,
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '不多于255个字符',
-                                    pattern: /^.{0,255}$/,
-                                },
-                                {
-                                    validator: (rule, v, cb) => {
-                                        validUrl.isWebUri(v) ? cb() : cb(rule.message);
-                                    },
-                                    message: '请输入有效的链接地址',
-                                }
-                            ],
-                        })(
-                            <Input
-                                disabled={!isEditing}
-                                placeholder="自定义链接请务必慎重填写"
-                                onChange={(e) => handleKeyValueChange({key: 'reDirectUrl', value: e.target.value, type})}
-                            />
-                        )}
-                    </FormItem>
-                )}
-                {Number(reDirectType) === 2 && (
-                    <FormItem
-                        label="上传海报图"
-                        required
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                        style={{ position: 'relative' }}
-                    >
-                        {this.renderImgUrl()}
-                    </FormItem>
-                )}
+                            {Number(reDirectType) === 3 && (
+                                <FormItem
+                                    label="链接地址"
+                                    className={styles.FormItemStyle}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                    style={{ position: 'relative' }}
+                                >
+                                    {getFieldDecorator(`reDirectUrl${key}`, {
+                                        initialValue: reDirectUrl,
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message: '不多于255个字符',
+                                                pattern: /^.{0,255}$/,
+                                            },
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    validUrl.isWebUri(v) ? cb() : cb(rule.message);
+                                                },
+                                                message: '请输入有效的链接地址',
+                                            }
+                                        ],
+                                    })(
+                                        <Input
+                                            disabled={!isEditing}
+                                            placeholder="自定义链接请务必慎重填写"
+                                            onChange={(e) => handleKeyValueChange({key: 'reDirectUrl', value: e.target.value, type})}
+                                        />
+                                    )}
+                                </FormItem>
+                            )}
+                            {Number(reDirectType) === 2 && (
+                                <FormItem
+                                    label="上传海报图"
+                                    required
+                                    className={styles.FormItemStyle}
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                    style={{ position: 'relative' }}
+                                >
+                                    {this.renderImgUrl()}
+                                </FormItem>
+                            )}
+                        </div>
+                    )
+                }
                 {
                     Number(type) !== 2 && (
                         <FormItem
@@ -370,6 +395,7 @@ class WeChatMessageFormWrapper extends Component {
                 <div style={{
                     visibility: isEditing ? 'visible' : 'hidden',
                     marginRight: '12.5%',
+                    marginBottom: 30,
                     textAlign: 'right'
 
                 }}>
@@ -405,11 +431,12 @@ function mapStateToProps(state) {
         return listing.get('msgType') === state.sale_wechat_message_setting.get('currentType');
     });
     return {
-        remark : templateToUpdate.get('remark'),
-        title : templateToUpdate.get('title'),
-        reDirectType : templateToUpdate.get('reDirectType'),
-        reDirectUrl : templateToUpdate.get('reDirectUrl'),
-        isPushMsg : templateToUpdate.get('isPushMsg'),
+        remark: templateToUpdate.get('remark'),
+        title: templateToUpdate.get('title'),
+        reDirectType: templateToUpdate.get('reDirectType'),
+        jump: templateToUpdate.get('jump'),
+        reDirectUrl: templateToUpdate.get('reDirectUrl'),
+        isPushMsg: templateToUpdate.get('isPushMsg'),
         wechatTemplates: state.sale_wechat_message_setting.get('wechatMessageTemplateList'),
         currentType: state.sale_wechat_message_setting.get('currentType'),
         isSaving: state.sale_wechat_message_setting.get('isSaving'),
