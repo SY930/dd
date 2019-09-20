@@ -33,51 +33,61 @@ import PriceInput from "../common/PriceInput";
 class SpecialDetailInfo extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultRun = '0';
+        const {
+            isLimited,
+            amountLimit,
+            totalAmountLimit,
+            isTotalLimited,
+        } = this.getInitState()
         this.state = {
-            display: false,
+            display: !props.isNew,
             selections: [],
             foodOptions: [],
             foodSelections: new Set(),
             foodCurrentSelections: [],
             data: [],
-            amountLimit: 1, // 特价菜同一菜品使用数量限制, 默认为1份, int, > 0
-            isLimited: 0, // 0 为不限制使用数量, 1为限制
+            amountLimit, // 特价菜同一菜品使用数量限制, 默认为1份, int, > 0
+            isLimited, // 同一菜品是否限制 0 为不限制使用数量, 1为限制
+            totalAmountLimit, // 特价菜全部菜品使用数量限制, 默认为1份, int, > 0
+            isTotalLimited, // 特价菜全部菜品是否限制 0 为不限制使用数量, 1为限制
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.onChangeClick = this.onChangeClick.bind(this);
         this.handleIsLimitedChange = this.handleIsLimitedChange.bind(this);
         this.handleAmountLimitChange = this.handleAmountLimitChange.bind(this);
+        this.handleIsTotalLimitedChange = this.handleIsTotalLimitedChange.bind(this);
+        this.handleTotalAmountLimitChange = this.handleTotalAmountLimitChange.bind(this);
         this.dishesChange = this.dishesChange.bind(this);
+    }
+
+    getInitState() {
+        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
+        const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
+        return {
+            isLimited: Number(!!amountLimit),
+            amountLimit: amountLimit || 1,
+            isTotalLimited: Number(!!totalAmountLimit),
+            totalAmountLimit: totalAmountLimit || 1,
+        };
     }
 
     componentDidMount() {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
-        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
-        _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
-        const display = !this.props.isNew;
-        this.setState({
-            display,
-            isLimited: Number(!!amountLimit),
-            amountLimit: amountLimit || 1,
-            targetScope: _categoryOrDish,
-        });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])
-            !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
-            this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])});
-        }
     }
 
     handleSubmit = (cbFn) => {
-        const { data } = this.state;
+        const {
+            data,
+            isLimited,
+            amountLimit,
+            isTotalLimited,
+            totalAmountLimit,
+        } = this.state;
         const priceLst = data.map((item) => {
             return {
                 foodUnitID: item.itemID,
@@ -88,18 +98,29 @@ class SpecialDetailInfo extends React.Component {
                 price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
             }
         });
-        if (this.state.isLimited == 1 && !this.state.amountLimit) {
+        if (isLimited == 1 && !amountLimit) {
             return false;
+        }
+        if (isTotalLimited == 1 && !totalAmountLimit) {
+            return false;
+        }
+        if (isTotalLimited == 1 && isLimited == 1) {
+            if (+totalAmountLimit < amountLimit) return false;
         }
         if (priceLst.length === 0) {
             message.warning('请至少添加一个菜品');
             return false;
         }
         const rule = {};
-        if (this.state.isLimited == 1 && this.state.amountLimit) {
-            rule.specialFoodMax = this.state.amountLimit;
+        if (isLimited == 1 && amountLimit) {
+            rule.specialFoodMax = amountLimit;
         } else {
             rule.specialFoodMax = 0;
+        }
+        if (isTotalLimited == 1 && totalAmountLimit) {
+            rule.totalFoodMax = totalAmountLimit;
+        } else {
+            rule.totalFoodMax = 0;
         }
         this.props.setPromotionDetail({
             priceLst,
@@ -145,6 +166,39 @@ class SpecialDetailInfo extends React.Component {
     handleAmountLimitChange(value) {
         this.setState({amountLimit: value.number})
     }
+    handleIsTotalLimitedChange(value) {
+        this.setState({isTotalLimited: value})
+    }
+    handleTotalAmountLimitChange(value) {
+        this.setState({totalAmountLimit: value.number})
+    }
+
+    getTotalAmountValidation = () => {
+        const {
+            isLimited,
+            isTotalLimited,
+            amountLimit,
+            totalAmountLimit,
+        } = this.state;
+        if (!(totalAmountLimit > 0)) {
+            return {
+                status: 'error',
+                message: '必须大于0'
+            }
+        }
+        if (isLimited == 1 && isTotalLimited == 1) {
+            if (amountLimit > 0 && totalAmountLimit > 0 && +amountLimit > totalAmountLimit) {
+                return {
+                    status: 'error',
+                    message: '必须大于或等于同一商品限制份数'
+                }
+            }
+        }
+        return {
+            status: 'success',
+            message: null
+        }
+    }
 
     render() {
         const { isOnline } = this.props;
@@ -162,32 +216,32 @@ class SpecialDetailInfo extends React.Component {
                             />
                         )
                     }                   
-                    <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
+                    <div style={{height: '40px', marginTop: '8px'}} className={styles.flexContainer}>
                         <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                            同一商品每单限制
+                            同一商品每单
                         </div>
                         <div style={{width: '300px'}}>
-                            <Col  span={this.state.isLimited == 0 ? 24 : 8}>
+                            <Col  span={this.state.isLimited == 0 ? 24 : 12}>
                                 <Select onChange={this.handleIsLimitedChange}
                                         value={String(this.state.isLimited)}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
-                                    <Option key="0" value={'0'}>不限制</Option>
-                                    <Option key="1" value={'1'}>限制</Option>
+                                    <Option key="0" value={'0'}>不限份数享受特价</Option>
+                                    <Option key="1" value={'1'}>限</Option>
                                 </Select>
                             </Col>
                             {
                                 this.state.isLimited == 1 ?
-                                    <Col span={16}>
+                                    <Col span={12}>
                                         <FormItem
                                             style={{ marginTop: -6 }}
                                             validateStatus={this.state.amountLimit > 0 ? 'success' : 'error'}
                                             help={this.state.amountLimit > 0 ? null : '必须大于0'}
                                         >
                                             <PriceInput
-                                                addonAfter={'份'}
+                                                maxNum={5}
+                                                addonAfter={'份 享受特价'}
                                                 value={{ number: this.state.amountLimit }}
-                                                defaultValue={{ number: this.state.amountLimit }}
                                                 onChange={this.handleAmountLimitChange}
                                                 modal="int"
                                             />
@@ -195,7 +249,41 @@ class SpecialDetailInfo extends React.Component {
                                     </Col> : null
                             }
                         </div>
-                </div>
+                    </div>
+                    <div style={{height: '40px', marginTop: '8px'}} className={styles.flexContainer}>
+                        <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                            全部商品每单
+                        </div>
+                        <div style={{width: '300px'}}>
+                            <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
+                                <Select onChange={this.handleIsTotalLimitedChange}
+                                        value={String(this.state.isTotalLimited)}
+                                        getPopupContainer={(node) => node.parentNode}
+                                >
+                                    <Option key="0" value={'0'}>不限份数享受特价</Option>
+                                    <Option key="1" value={'1'}>限</Option>
+                                </Select>
+                            </Col>
+                            {
+                                this.state.isTotalLimited == 1 ?
+                                    <Col span={12}>
+                                        <FormItem
+                                            style={{ marginTop: -6 }}
+                                            validateStatus={this.getTotalAmountValidation().status}
+                                            help={this.getTotalAmountValidation().message}
+                                        >
+                                            <PriceInput
+                                                addonAfter={'份 享受特价'}
+                                                maxNum={5}
+                                                value={{ number: this.state.totalAmountLimit }}
+                                                onChange={this.handleTotalAmountLimitChange}
+                                                modal="int"
+                                            />
+                                        </FormItem>
+                                    </Col> : null
+                            }
+                        </div>
+                    </div>
                     {!isOnline && this.renderAdvancedSettingButton()}
                     {!isOnline && this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
