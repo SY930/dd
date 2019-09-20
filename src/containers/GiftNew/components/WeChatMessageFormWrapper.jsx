@@ -92,7 +92,7 @@ class WeChatMessageFormWrapper extends Component {
             title,
             remark,
             reDirectType,
-            jump,
+            jump = 0,
             currentType: type,
             isPushMsg,
             reDirectUrl,
