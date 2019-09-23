@@ -187,7 +187,11 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div>
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
+                            <Popconfirm
+                                title="确定要删除吗?"
+                                onConfirm={() => this.handleDel(record)}
+                                getPopupContainer={_ => document.getElementById('_addMoneyTradeDetail')}
+                            >
                                 <a title="删除" alt="删除">删除</a>
                             </Popconfirm>
                         </div>
