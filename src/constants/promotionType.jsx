@@ -474,6 +474,14 @@ export const WECHAT_MALL_ACTIVITIES = [
         tags: ['微信商城'],
         key: '71',
     },
+    {
+        title: '消费返积分',
+        color: '#84aac6',
+        text: '邀请好友来拼团，也可直接购买',
+        example: '',
+        tags: ['微信商城'],
+        key: '73',
+    },
 ];
 /**
  * 线上营销

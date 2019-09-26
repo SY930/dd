@@ -45,6 +45,15 @@ class GoodSelectModal extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if ((this.props.initialValue || []).length !== (nextProps.initialValue || []).length) {
+            this.setState({
+                selectedCategories: [],
+                selectedGoodResults: nextProps.initialValue.slice(),
+            })
+        }
+    }
+
     handleOk = () => {
         const { onOk } = this.props;
         const {
