@@ -150,7 +150,7 @@ class ExpandTree extends React.Component {
                             >
                                 <Search
                                     style={{ width: '90%', margin: '5px 14px' }}
-                                    placeholder="Search"
+                                    placeholder="请输入券名进行搜索"
                                     className={'ExpandTreeVisibel'}
                                     value={this.state.searchValue}
                                     onChange={(e) => { this.setState({ searchValue: e.target.value }) }}

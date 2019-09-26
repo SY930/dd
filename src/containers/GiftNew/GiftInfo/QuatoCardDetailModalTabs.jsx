@@ -46,14 +46,18 @@ class QuatoCardDetailModalTabs extends React.Component {
     }
 
     render() {
-        const tabs = [
+        const { data } = this.props;
+        const tabs = data.action != 2 ? [
             { label: '发卡', key: 'send' },
             { label: '已制卡明细', key: 'made' },
             { label: '卡汇总', key: 'sum' },
             { label: '批量售卖', key: 'batchSold' },
             { label: '批量生成二维码', key: 'batchQRCode' },
+        ] : [
+            { label: '发卡', key: 'send' },
+            { label: '已制卡明细', key: 'made' },
+            { label: '卡汇总', key: 'sum' },
         ];
-        const { data } = this.props;
         const { activeKey: activeK, formData } = this.state;
         return (
             <div className={styles.giftDetailModalTabs} key={+new Date() + Math.random()}>
@@ -83,7 +87,6 @@ class QuatoCardDetailModalTabs extends React.Component {
                                 <SendCard
                                     formData={formData}
                                     _key={tab.key}
-                                    // onChange={(activeKey,batchNO)=>this.onChange(activeKey,batchNO)}
                                     data={data}
                                 />
                             </TabPane>)

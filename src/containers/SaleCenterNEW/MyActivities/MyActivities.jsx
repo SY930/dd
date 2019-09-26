@@ -18,11 +18,13 @@ import {
     Spin,
 } from 'antd';
 import {throttle, isEqual} from 'lodash'
+import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
 import {
     SALE_CENTER_PAGE,
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
+    PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
 
 import {
@@ -91,12 +93,21 @@ import {
 } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
+import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
+
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
+
+const DECORATABLE_PROMOTIONS = [
+    // '5010', '3010',
+];
+const isDecorationAvailable = ({promotionType}) => {
+    return DECORATABLE_PROMOTIONS.includes(`${promotionType}`)
+};
 
 
 const mapStateToProps = (state) => {
@@ -111,6 +122,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        selectPromotionForDecoration: (opts) => {
+            dispatch(selectPromotionForDecoration(opts))
+        },
         // 查询
         query: (opts) => {
             dispatch(initializationOfMyActivities(opts));
@@ -298,11 +312,20 @@ class MyActivities extends React.Component {
     }
 
     handleDisableClickEvent(text, record) {
-        // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
             record,
             cb: this.toggleStateCallBack,
         });
+    }
+
+    handleDecorationStart = (record) => {
+        const { promotionType, promotionIDStr, promotionName } = record; 
+        this.props.selectPromotionForDecoration({
+            type: `${promotionType}`,
+            id: promotionIDStr,
+            title: promotionName,
+        });
+        jumpPage({menuID: PROMOTION_DECORATION})
     }
 
     confirmDelete = (record) => {
@@ -1071,7 +1094,7 @@ class MyActivities extends React.Component {
                 title: '操作',
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 180,
+                width: 210,
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1134,6 +1157,12 @@ class MyActivities extends React.Component {
                                     }}
                                 >删除</a>
                             </Authority>
+                            <a
+                                disabled={!isDecorationAvailable(record)}
+                                onClick={() => {
+                                    this.handleDecorationStart(record)
+                                }}
+                            >装修</a>
                     </span>
 
                     );
@@ -1256,7 +1285,7 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

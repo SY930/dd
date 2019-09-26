@@ -22,3 +22,4 @@ export { default as WeChatCouponManagementList } from './WeChatCouponManagement'
 export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCouponCreate';
 export { default as TrdPromotionInterface } from './TrdPromotionInterface';
 export { default as PromotionCalendarNew } from './PromotionCalendarNew';
+export { default as PromotionDecoration } from './PromotionDecoration';

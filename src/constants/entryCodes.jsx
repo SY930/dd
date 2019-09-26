@@ -30,6 +30,7 @@ export const PROMOTION_CALENDAR_NEW = 'promotion.group.calendar'; // 营销日�
 
 export const PROMOTION_WECHAT_COUPON_LIST = '10000761000'; // 微信支付代金券 列表页
 export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页
+export const PROMOTION_DECORATION = 'promotion_decoration'; // 营销活动装修页
 
 export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角
 export const ONLINE_PROMOTION_CREATE_SHOP = '1000086002'; // 新建线上营销 店铺视角
