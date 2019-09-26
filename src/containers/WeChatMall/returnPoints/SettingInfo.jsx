@@ -53,7 +53,7 @@ class SettingInfo extends React.Component {
                 selectedCategory,
                 selectedGood,
                 excludeGoods,
-            } = this.getInitialGoodAndUnitInfo(nextProps);
+            } = this.getInitialGoodInfo(nextProps);
             this.setState({
                 selectedCategory,
                 selectedGood,
@@ -62,7 +62,7 @@ class SettingInfo extends React.Component {
         }
     }
 
-    getInitialGoodAndUnitInfo = (props = this.props) => {
+    getInitialGoodInfo = (props = this.props) => {
         const goods = props.goods.toJS();
         const { goodsList = [] } = props.data;
         if (!goods.length || !goodsList.length) {
@@ -107,24 +107,23 @@ class SettingInfo extends React.Component {
             }
         });
         if (!flag) { return false; }
+        if (productScopeType == 2 && !selectedGood) {
+            message.warning('请选择适用商品');
+            return false;
+        }
         const goodsList = [];
         if (productScopeType == 1) {
-            goodsList.push({targetID: selectedCategory, scopeType: 1})
+            goodsList.push(
+                {targetID: selectedCategory, scopeType: 1},
+                ...excludeGoods.map(item => ({targetID: item.value, scopeType: 4}))
+            )
+        } else if (productScopeType == 2) {
+            goodsList.push({targetID: selectedGood.value || selectedGood.targetID, scopeType: 2})
         }
         this.props.onChange({
             ...rest,
-            goodsList: []
-            // goodsList 需要按照后端格式组装一下
-            // goodsList: goodsList.map(item => ({
-            //     foodID: item.unitID,
-            //     foodItemID: selectedGood.goodID,
-            //     point: item.point,
-            //     purchaseLimit: item.purchaseLimit,
-            //     storage: item.storage,
-            //     price: item.price,
-            //     specType: item.unitName1,
-            //     name: selectedGood.goodName,
-            // }))
+            goodsList,
+            productScopeType,
         })
         return flag;
     }

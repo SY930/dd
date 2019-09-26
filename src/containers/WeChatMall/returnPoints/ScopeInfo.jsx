@@ -68,7 +68,7 @@ class ScopeInfo extends React.Component {
         if (nextFlag) {
             this.props.onChange({
                 cardType: this.state.cardType,
-                cardScopeList: this.state.cardScopeListx,
+                cardScopeList: this.state.cardScopeList,
             });
         }
         return nextFlag;
