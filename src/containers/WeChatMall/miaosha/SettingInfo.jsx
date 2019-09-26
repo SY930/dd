@@ -12,7 +12,7 @@ import {
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SingleGoodSelector from '../../../components/common/GoodSelector'
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
-import selfStyle from './style.less'
+import selfStyle from '../style.less'
 
 const FormItem = Form.Item;
 const Option = Select.Option;

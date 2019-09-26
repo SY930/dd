@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import registerPage from '../../index';
 import styles from '../SaleCenterNEW/ActivityPage.less'
+import selfStyle from './style.less'
 import { jumpPage } from '@hualala/platform-base'
 import {
     Modal,
@@ -35,8 +36,8 @@ import {
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
+import NewPromotionCard from '../NewCreatePromotions/NewPromotionCard'
 
-const Immutable = require('immutable');
 function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
@@ -126,11 +127,11 @@ class NewActivity extends React.Component {
                     style={{
                         overflow: 'auto',
                         height: this.state.contentHeight || 800,
-                        padding: 30,
+                        padding: '10px 10px 30px 30px',
                     }}>
-                    <ul>
+                    <div style={{ paddingBottom: 30 }} className={selfStyle.flexContainer}>
                         {this.renderActivityButtons()}
-                    </ul>
+                    </div>   
                     {this.state.modal1Visible ? this.renderModal() : null}
                 </Col>
             </Row>
@@ -143,26 +144,17 @@ class NewActivity extends React.Component {
         return (
             WECHAT_MALL_ACTIVITIES.map((activity, index) => {
                 return (
-                    <li
-                        onClick={() => {
-                            this.props.toggleIsUpdate(true);
-                            this.onButtonClicked(index, activity);
-                        }}
-                        key={activity.key}
-                        style={{
-                            listStyle: 'none',
-                        }}
-                    >
-                        <Authority rightCode={BASIC_PROMOTION_CREATE}>
-                            <ActivityLogo
-                                index={index}
-                                tags={activity.tags}
-                                titletext={activity.title}
-                                example={activity.example}
-                                spantext={activity.text}
-                            />
-                        </Authority>
-                    </li>
+                    <Authority key={activity.key} rightCode={BASIC_PROMOTION_CREATE}>
+                        <NewPromotionCard
+                            key={activity.key}
+                            promotionEntity={activity}
+                            onCardClick={() => {
+                                this.props.toggleIsUpdate(true);
+                                this.onButtonClicked(index, activity);
+                            }}
+                            index={index}
+                        />
+                    </Authority>
                 );
             })
         );

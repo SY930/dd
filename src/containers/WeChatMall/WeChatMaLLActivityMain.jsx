@@ -9,6 +9,7 @@ import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo'; // �
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import WeChatMallSale from './miaosha/Wrapper';
 import WeChatMallGroupSale from './groupSale/Wrapper';
+import WeChatMallReturnPoints from './returnPoints/Wrapper';
 import { axiosData, getAccountInfo } from '../../helpers/util';
 
 import {
@@ -25,6 +26,7 @@ class ActivityMain extends React.Component {
         this._pages = [
             WeChatMallSale, // 商城秒杀
             WeChatMallGroupSale, // 拼团活动
+            WeChatMallReturnPoints, // 消费返积分
         ];
     }
 

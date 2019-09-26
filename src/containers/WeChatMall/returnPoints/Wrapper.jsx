@@ -1,5 +1,6 @@
 import React from 'react';
 import BasicInfo from './BasicInfo';
+import ScopeInfo from './ScopeInfo';
 import SettingInfo from './SettingInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 
@@ -9,7 +10,7 @@ class Wrapper extends React.Component {
         this.handles = []; // store the callback
         this.state = {
             itemID: props.previousData ? props.previousData.itemID : undefined,
-            data: props.previousData ? {...props.previousData, endTime: `${props.previousData.endTime}`.substring(0, 8)+'000000'} : {},
+            data: props.previousData ? {...props.previousData} : {},
         };
         this.steps = [
             {
@@ -25,11 +26,23 @@ class Wrapper extends React.Component {
                     />),
             },
             {
+                title: '活动范围',
+                content: (
+                    <ScopeInfo
+                        getSubmitFn={(handles) => {
+                            this.handles[1] = handles;
+                        }}
+                        itemID={this.state.itemID}
+                        data={this.state.data}
+                        onChange={this.handleDataChange}
+                    />),
+            },
+            {
                 title: '活动内容',
                 content: (
                     <SettingInfo
                         getSubmitFn={(handles) => {
-                            this.handles[1] = handles;
+                            this.handles[2] = handles;
                         }}
                         data={this.state.data}
                         onChange={this.handleDataChange}
@@ -40,10 +53,7 @@ class Wrapper extends React.Component {
     }
 
     onFinish = (cb) => {
-        this.props.onFinish(cb)({
-            ...this.state.data,
-            endTime: `${this.state.data.endTime}`.substring(0, 8)+'235959'
-        })
+        this.props.onFinish(cb)(this.state.data)
     }
 
     /**
