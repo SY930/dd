@@ -9,7 +9,7 @@ class Wrapper extends React.Component {
         this.handles = []; // store the callback
         this.state = {
             itemID: props.previousData ? props.previousData.itemID : undefined,
-            data: props.previousData ? {...props.previousData} : {},
+            data: props.previousData ? {...props.previousData, endTime: `${props.previousData.endTime}`.substring(0, 8)+'000000'} : {},
         };
         this.steps = [
             {
@@ -40,7 +40,10 @@ class Wrapper extends React.Component {
     }
 
     onFinish = (cb) => {
-        this.props.onFinish(cb)(this.state.data)
+        this.props.onFinish(cb)({
+            ...this.state.data,
+            endTime: `${this.state.data.endTime}`.substring(0, 8)+'235959'
+        })
     }
 
     /**
