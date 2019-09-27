@@ -321,7 +321,10 @@ class CategoryAndFoodSelector extends Component {
         let filteredBrands = brands;
         if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
             filteredCategories = filteredCategories.filter(({value}) => this.state.categories.includes(value))
-            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value}) => this.state.categories.includes(value))
+            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value, onlineFoodCategoryID}) => 
+            this.state.categories.includes(value) ||
+            this.state.categories.includes(onlineFoodCategoryID)
+        )
             filteredBrands = filteredBrands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
         }
         if (dishFilter) {

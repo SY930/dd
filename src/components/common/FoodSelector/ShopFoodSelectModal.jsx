@@ -88,7 +88,10 @@ class FoodSelectModal extends Component {
             selectedDishResults,
         } = this.state;        
         let filteredDishesOptions = selectedCategories.length ?
-            allDishes.filter(({localFoodCategoryID}) => selectedCategories.includes(localFoodCategoryID)) :
+            allDishes.filter(({localFoodCategoryID, onlineFoodCategoryID}) => 
+            selectedCategories.includes(localFoodCategoryID) ||
+            selectedCategories.includes(onlineFoodCategoryID)
+        ) :
             allDishes;
         // 单选模式，禁用掉其它菜
         if (!multiple && selectedDishResults.length) {
