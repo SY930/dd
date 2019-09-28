@@ -1,6 +1,6 @@
 {
     "name": "@hualala/platform-sale",
-    "version": "2.10.91",
+    "version": "2.10.92",
     "description": "商户平台营销中心(sale)业务包，基于@hualala/platform-base定义的规范实现",
     "main": "index.js",
     "scripts": {
