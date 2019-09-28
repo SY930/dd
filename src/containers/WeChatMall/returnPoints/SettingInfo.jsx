@@ -115,7 +115,7 @@ class SettingInfo extends React.Component {
         if (productScopeType == 1) {
             goodsList.push(
                 {targetID: selectedCategory, scopeType: 1},
-                ...excludeGoods.map(item => ({targetID: item.value, scopeType: 4}))
+                ...excludeGoods.map(item => ({targetID: item, scopeType: 4}))
             )
         } else if (productScopeType == 2) {
             goodsList.push({targetID: selectedGood.value || selectedGood.targetID, scopeType: 2})
