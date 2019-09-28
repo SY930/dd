@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+    Alert,
     Form,
     Select,
     Radio,
@@ -93,6 +94,7 @@ class ScopeInfo extends React.Component {
         })
         return (
             <Form className={styles.FormStyle}>
+                <Alert style={{ marginLeft: 52, width: 530 }} message="说明：本活动仅适用于会员" type="info" />
                 <FormItem
                     label="会员范围"
                     className={styles.FormItemStyle}
@@ -109,8 +111,8 @@ class ScopeInfo extends React.Component {
                         }
                         }
                     >
-                        <Radio key={0} value={0}>卡类别</Radio >
-                        <Radio key={1} value={1}>卡等级</Radio >
+                        <Radio key="0" value={0}>卡类别</Radio >
+                        <Radio key="1" value={1}>卡等级</Radio >
                     </RadioGroup >
                 </FormItem>
                 <FormItem
