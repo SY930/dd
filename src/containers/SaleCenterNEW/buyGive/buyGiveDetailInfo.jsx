@@ -16,16 +16,12 @@ import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const Immutable = require('immutable');
-
-import EditBoxForDishes from '../common/EditBoxForDishes';
 
 import {
     saleCenterSetPromotionDetailAC,
@@ -245,14 +241,7 @@ class BuyGiveDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectStatus}
                 help={this.state.dishsSelectStatus == 'success' ? null : '赠送菜品不可为空'}
             >
-                {
-                    this.props.isShopFoodSelectorMode ? (
-                        <EditBoxForDishes onChange={this.onDishesChange} />
-                    ) : (
-                        <ConnectedPriceListSelector onChange={this.onDishesChange} />
-                    )
-                }
-                
+                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />           
             </FormItem>
         )
     }
@@ -280,10 +269,7 @@ class BuyGiveDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                    <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderBuyDishNumInput()}
                     {this.renderDishsSelectionBox()}
                     {this.renderGiveDishNumInput()}

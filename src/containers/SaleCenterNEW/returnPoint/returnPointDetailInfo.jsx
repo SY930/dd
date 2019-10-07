@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../ActivityPage.less';
@@ -332,10 +331,7 @@ class ReturnPointDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                    <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} /> : null}
                 </Form>

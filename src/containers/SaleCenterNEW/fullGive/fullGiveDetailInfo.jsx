@@ -16,7 +16,6 @@ import _ from 'lodash';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AddGrade from '../../../containers/SaleCenterNEW/common/AddGrade'; // 可增删的输入框 组件
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const FormItem = Form.Item;
@@ -375,8 +374,7 @@ class FullGiveDetailInfo extends React.Component {
                     </Select>
                 </FormItem>
                 {this.state.ruleType == 3 || this.state.ruleType == 4 ?
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
+                        <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     : null}
                 <Row>
                     <Col span={19} offset={2}>

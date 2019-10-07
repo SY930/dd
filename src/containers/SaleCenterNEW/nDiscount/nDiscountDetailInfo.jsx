@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-
 const FormItem = Form.Item;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
@@ -15,7 +13,6 @@ import { NDiscount } from './NDiscount'; // 可增删的输入框 组件
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import FoodBox from "../../GiftNew/GiftAdd/FoodBox";
 import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 
@@ -175,10 +172,7 @@ class NDiscountDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     <NDiscount
                         onChange={this.handleDiscountTypeChange}
                         form={this.props.form}
@@ -187,21 +181,9 @@ class NDiscountDetailInfo extends React.Component {
                     />
                     {
                         this.state.stageType === '1' && (
-                            this.props.isShopFoodSelectorMode ? (
-                                <FoodBox
-                                    categoryOrDish={0}
-                                    dishOnly={true}
-                                    boxLabel="第二份菜品"
-                                    noExclude={true}
-                                    onChange={this.handleDishesChange}
-                                    catOrFoodValue={_priceLst}
-                                    disabledFetch={true}
-                                />
-                            ) : (
-                                <FormItem required={true} label="适用菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                                    <ConnectedPriceListSelector onChange={(dishes) => this.handleDishesChange({dishes})} />
-                                </FormItem>
-                            )
+                            <FormItem required={true} label="第二份菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={(dishes) => this.handleDishesChange({dishes})} />
+                            </FormItem>   
                         )
                     }
                     {this.renderAdvancedSettingButton()}

@@ -202,7 +202,6 @@ class FoodSelectModal extends Component {
         } = this.state;
         let filteredCategoryOptions = allCategories.filter(({brandID}) => currentBrandID === brandID);
         if (selectedCategoryTypes.length === 1) { // 目前只有2种分类类型，不选或选2个都等于不过滤
-            console.log('filteredCategoryOptions', filteredCategoryOptions)
             filteredCategoryOptions = filteredCategoryOptions.filter(item => item.typeSet.has(selectedCategoryTypes[0]))
         }
         const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value));

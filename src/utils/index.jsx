@@ -175,7 +175,12 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
     const uniqCatMap = new Map();
     rawCategories.forEach(item => {
         if (!uniqCatMap.has(item.foodCategoryName)) {
-            uniqCatMap.set(item.foodCategoryName, item)
+            const categoryTypeSet = new Set();
+            categoryTypeSet.add(`${item.type || 0}`)
+            uniqCatMap.set(item.foodCategoryName, {...item, typeSet: categoryTypeSet})
+        } else {
+            const categoryTypeSet = uniqCatMap.get(item.foodCategoryName).typeSet;
+            categoryTypeSet.add(`${item.type || 0}`)
         }
     })
     const uniqDishMap = new Map();

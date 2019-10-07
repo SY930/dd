@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CategoryAndFoodSelector from './CategoryAndFoodSelector'
-
+import CategoryAndFoodSelectorForShop from './CategoryAndFoodSelectorForShop'
+import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => {
     return {
@@ -36,8 +37,10 @@ class ConnectedPriceListSelector extends Component {
         } else {
             priceLst = this.props.priceLst.toJS();
         }
+        const { isShopMode } = this.props;
+        const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
         return (
-            <CategoryAndFoodSelector
+            <Comp
                 dishOnly={true}
                 priceLst={priceLst}
                 dishFilter={this.dishFilter}
@@ -46,5 +49,8 @@ class ConnectedPriceListSelector extends Component {
         )
     }
 }
+ConnectedPriceListSelector.propTypes = {
+    isShopMode: PropTypes.bool,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPriceListSelector)

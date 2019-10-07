@@ -11,17 +11,12 @@ import PriceInput from '../common/PriceInput';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const Immutable = require('immutable');
-
-import EditBoxForDishes from '../common/EditBoxForDishes';
-
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -251,23 +246,14 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                {
-                    this.props.isShopFoodSelectorMode ? (
-                        <EditBoxForDishes type='1090'
-                            value={this.state.upGradeDishes}
-                            onChange={(value) => {
-                                this.onupGradeDishesChange(value);
-                            }}
-                        />
-                    ) : ( // 这里没有考虑到，其实不是priceLst而是scopeType为5的scopeLst, 最后是在组件内兼容的
-                        <ConnectedPriceListSelector
-                            value={this.state.upGradeDishes}
-                            onChange={(value) => {
-                                this.onupGradeDishesChange(value);
-                            }}
-                        />
-                    )
-                }
+                {/* 这里没有考虑到，其实不是priceLst而是scopeType为5的scopeLst, 最后是在组件内兼容的 */}
+                <ConnectedPriceListSelector
+                    isShopMode={this.props.isShopFoodSelectorMode}
+                    value={this.state.upGradeDishes}
+                    onChange={(value) => {
+                        this.onupGradeDishesChange(value);
+                    }}
+                /> 
             </FormItem>
         )
     }
@@ -314,23 +300,13 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                {
-                    this.props.isShopFoodSelectorMode ? (
-                        <EditBoxForDishes type='1090'
-                            value={this.state.dishes}
-                            onChange={(value) => {
-                                this.onAfterDishesChange(value);
-                            }}
-                        />
-                    ) : (
-                        <ConnectedPriceListSelector
-                            value={this.state.dishes}
-                            onChange={(value) => {
-                                this.onAfterDishesChange(value);
-                            }}
-                        />
-                    )
-                }
+                <ConnectedPriceListSelector
+                    isShopMode={this.props.isShopFoodSelectorMode}
+                    value={this.state.dishes}
+                    onChange={(value) => {
+                        this.onAfterDishesChange(value);
+                    }}
+                />               
             </FormItem>
         )
     }
@@ -495,8 +471,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     </FormItem>
                     {countType == 0 ? null :
                         countType == 2 || subjectType == 2 || subjectType == 3 ?
-                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                            <ConnectedScopeListSelector/>
+                        <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                         : null /* 条件限制菜品 */}
                     {this.renderupGradeDishesBox()/*升级前菜品*/}
                     {this.renderFreeAmountInput()}

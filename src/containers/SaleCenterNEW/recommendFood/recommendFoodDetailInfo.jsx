@@ -12,8 +12,6 @@ import {
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
-import CollocationTable from '../common/CollocationTable';
-import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 import selfStyle from './selfStyle.less'
 

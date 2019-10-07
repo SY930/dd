@@ -5,11 +5,11 @@ import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引
 import CloseableTip from "../../../components/common/CloseableTip/index";
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-import PromotionDetailSettings from '../../../containers/SaleCenterNEW/common/promotionDetailSettings';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../ActivityPage.less';
 import checkStyle from './checkStyle.less';
 import CategoryAndFoodSelector from '../common/CategoryAndFoodSelector'
+import CategoryAndFoodSelectorForShop from '../common/CategoryAndFoodSelectorForShop'
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -21,6 +21,7 @@ class CompositeDetailInfo extends React.Component {
         super(props);
         this.defaultRun = '0';
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
+        console.log('_scopeLst', _scopeLst)
         this.state = {
             display: false,
             // data 用来存放 条件中的菜品信息
@@ -39,7 +40,7 @@ class CompositeDetailInfo extends React.Component {
                 },
             ],
         };
-
+        console.log('this.state.data', this.state.data)
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.renderPromotionSetting = this.renderPromotionSetting.bind(this);
@@ -100,7 +101,9 @@ class CompositeDetailInfo extends React.Component {
             ];
         }
         const data = [];
+        console.log(scopeLst)
         scopeLst.map((scope) => {
+            debugger;
             if (!data[scope.stageNo]) {
                 data[scope.stageNo] = {
                     count: null, // 需购买份数
@@ -118,6 +121,7 @@ class CompositeDetailInfo extends React.Component {
                 brandID: scope.brandID ? `${scope.brandID}` : '0',
             });
         })
+        console.log('data111', data)
         return data;
     }
 
@@ -503,15 +507,18 @@ class CompositeDetailInfo extends React.Component {
                             className={styles.forErrorExplain}
                         >
                             {
-                                this.props.form.getFieldDecorator(`food${idx}`, {
-                                    rules: isShopFoodSelectorMode ? [{
-                                        required: true,
-                                        message: '菜品不得为空',
-                                    }] : [],
-                                })(
+                                this.props.form.getFieldDecorator(`food${idx}`, {})(
                                     isShopFoodSelectorMode ? (
-                                        <PromotionDetailSettings
-                                            stageNo={idx}
+                                        <CategoryAndFoodSelectorForShop
+                                            /**
+                                             * val: {
+                                             *  categoryOrDish: 0 | 1,
+                                             *  foodCategory: [],
+                                             *  dishes: [],
+                                             *  excludeDishes: [],
+                                             * }
+                                             */
+                                            scopeLst={item.scopeLst}
                                             onChange={(val) => {
                                                 this.handlePromotionSetting(idx, val)
                                             }}

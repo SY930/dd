@@ -10,7 +10,6 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
@@ -411,8 +410,7 @@ class DiscountDetailInfo extends React.Component {
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.state.isDishVisibleIndex !== '1' ? 
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
+                        <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}

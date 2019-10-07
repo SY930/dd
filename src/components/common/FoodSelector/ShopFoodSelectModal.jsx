@@ -11,6 +11,30 @@ import SelectedList from '../FilterSelector/SelectedList'
 import style from '../FilterSelector/assets/FilterSelector.less'
 import { isProfessionalTheme } from '../../../helpers/util'
 
+const CATEGORY_TYPES = [
+    {
+        value: '0',
+        label: '常规分类',
+    },
+    {
+        value: '1',
+        label: '线上分类',
+    },
+]
+
+const DEFAULT_CATEGORY_COLUMNS = [
+    {
+        title: '菜品分类',
+        dataIndex: 'foodCategoryName',
+        key: 'foodCategoryName',
+        fixed: 'left',
+        className: 'TableTxtLeft',
+        render: (text) => {
+            return <Tooltip title={text}>{text}</Tooltip>
+        },
+    },
+];
+
 const DEFAULT_FOOD_COLUMNS = [
     {
         title: '菜品分类',
@@ -39,13 +63,13 @@ const DEFAULT_FOOD_COLUMNS = [
         },
     },
 ];
-// TODO: 目前只支持的店铺菜品单品选择
 class FoodSelectModal extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             /** 菜品分类模式状态 */
+            selectedCategoryTypes: [],
             selectedCategoryResults: props.mode === 'category' ? props.initialValue.slice() : [],
             /** 单品模式状态 */
             selectedCategories: [],
@@ -62,6 +86,19 @@ class FoodSelectModal extends Component {
         onOk(mode === 'category' ? selectedCategoryResults : selectedDishResults);
     }
 
+    /** 分类模式相关handler开始 */
+    handleCategoryResultsChange = (valueArray) => {
+        this.setState({
+            selectedCategoryResults: valueArray,
+        })
+    }
+    handleSelectedTypesChange = (valueArray) => {
+        this.setState({
+            selectedCategoryTypes: valueArray,
+        })
+    }
+    /** 分类模式相关handler结束 */
+
     /** 单品模式相关handler开始 */
     handleCategoriesChange = (valueArray) => {
         this.setState({
@@ -74,6 +111,57 @@ class FoodSelectModal extends Component {
         })
     }
     /** 单品模式相关handler结束 */
+
+    /** 分类模式窗口内容 */
+    renderCategorySelector() {
+        const {
+            tableColumns = DEFAULT_CATEGORY_COLUMNS,
+            allCategories = [], // [{value: String}]
+        } = this.props;
+        const {
+            selectedCategoryTypes,
+            selectedCategoryResults
+        } = this.state;
+        let filteredCategoryOptions = allCategories;
+        if (selectedCategoryTypes.length === 1) { // 目前只有2种分类类型，不选或选2个都等于不过滤
+            filteredCategoryOptions = filteredCategoryOptions.filter(item => item.typeSet.has(selectedCategoryTypes[0]))
+        }
+        const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value));
+        return (
+            <div className={style.hllFilterSelector}>
+                <Row type="flex">
+                    <div className={style.filterList}>
+                        <CheckboxList
+                            width={200}
+                            showCheckAll={false}
+                            options={CATEGORY_TYPES}
+                            value={selectedCategoryTypes}
+                            onChange={this.handleSelectedTypesChange}
+                        />
+                    </div>
+                    <div className={style.resultList}>
+                        <CheckboxList
+                            display="table"
+                            showCollapse={false}
+                            showCheckAll={true}
+                            options={filteredCategoryOptions}
+                            value={selectedCategoryResults}
+                            tableColumns={tableColumns}
+                            onChange={this.handleCategoryResultsChange}
+                        />
+                    </div>
+                </Row>
+                <SelectedList
+                    title="所选分类"
+                    className={style.selectedList}
+                    display="table"
+                    items={selectedItems}
+                    tableColumns={tableColumns}
+                    onChange={this.handleCategoryResultsChange}
+                />
+            </div>
+        )
+    }
 
     /** 单品模式窗口内容 */
     renderDishSelector() {
@@ -148,7 +236,7 @@ class FoodSelectModal extends Component {
                 maskClosable={false}
             >
                 {
-                    this.renderDishSelector()
+                    mode === 'category' ? this.renderCategorySelector() : this.renderDishSelector()
                 }
             </Modal>
         )
