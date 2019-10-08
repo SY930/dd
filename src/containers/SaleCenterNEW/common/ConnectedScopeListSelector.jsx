@@ -37,8 +37,8 @@ class ConnectedScopeListSelector extends Component {
     }
     render() {
         const scopeLst = this.props.scopeLst.toJS();
-        const { isShopMode } = this.props;
-        const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
+        const { isShopMode, component } = this.props;
+        const Comp = component || (isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector);
         return (
             <Comp
                 dishFilter={this.dishFilter}
