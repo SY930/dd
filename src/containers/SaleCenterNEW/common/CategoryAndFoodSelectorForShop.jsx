@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
 import {
     Form,
     Radio,
-    Tree,
 } from 'antd';
 import styles from '../ActivityPage.less';
-import FoodSelector from '../../../components/common/FoodSelector'
+import FoodSelector from '../../../components/common/FoodSelector/ShopFoodSelector'
 import {
-    memoizedExpandCategoriesAndDishes,
+    memoizedShopCategoriesAndDishes
 } from '../../../utils';
 
 const FormItem = Form.Item;
@@ -44,10 +42,10 @@ const getFoodInfoFromScopeList = (scopeList) => {
             categoryOrDish = scope.scopeType == 2 ? 1 : 0
         }
         if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
-            dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
+            dishes.push(`${scope.targetName}${scope.targetUnitName}`)
         } else if (categoryOrDish === 0 && scope.scopeType != 2) {
-            scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
-            scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
+            scope.scopeType == 1 && categories.push(`${scope.targetName}`)
+            scope.scopeType == 4 && excludeDishes.push(`${scope.targetName}${scope.targetUnitName}`)
         }
     })
     return {
@@ -64,8 +62,8 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
         }
     }
     return {
-        dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`
-        : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
+        dishes: priceLst.map((item) => item.foodName ? `${item.foodName}${item.foodUnitName}`
+        : `${item.targetName}${item.targetUnitName}`
         )
     }
 }
@@ -100,17 +98,16 @@ class CategoryAndFoodSelector extends Component {
         }
     }
     componentDidMount() {
-        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+        if (this.props.allCategories.size && this.props.allDishes.size) {
             this.mapSelectedValueToObjectsThenEmit()
         }
     }
     mapSelectedValueToObjectsThenEmit = () => {
         const {
-            allBrands,
             allCategories,
             allDishes
         } = this.props;
-        const { dishes, categories } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const { dishes, categories } = memoizedShopCategoriesAndDishes(allCategories, allDishes)
         const {
             categories: selectedCategoryValues,
             categoryOrDish,
@@ -149,18 +146,9 @@ class CategoryAndFoodSelector extends Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
-            if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
+        if (this.props.allCategories.size && this.props.allDishes.size) {
+            if (!prevProps.allCategories.size || !prevProps.allDishes.size) {
                 this.mapSelectedValueToObjectsThenEmit()
-            }
-        }
-        if (this.props.selectedBrands !== prevProps.selectedBrands) {
-            if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
-                this.setState({
-                    dishes: [],
-                    categories: [],
-                    excludeDishes: [],
-                }, () => this.mapSelectedValueToObjectsThenEmit())
             }
         }
     }
@@ -232,7 +220,6 @@ class CategoryAndFoodSelector extends Component {
     }
     renderDishsSelectionBox() {
         const {
-            allBrands,
             allCategories,
             allDishes,
             dishFilter,
@@ -240,13 +227,7 @@ class CategoryAndFoodSelector extends Component {
             showRequiredMark,
             showEmptyTips,
         } = this.props;
-        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        const selectedBrands = this.props.selectedBrands.toJS();
-        if (selectedBrands.length) {
-            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
-            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-        }
+        let { dishes, categories } = memoizedShopCategoriesAndDishes(allCategories, allDishes)
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
@@ -257,7 +238,6 @@ class CategoryAndFoodSelector extends Component {
                     placeholder={`点击添加${dishLabel}`}
                     allDishes={dishes}
                     allCategories={categories}
-                    allBrands={brands}
                     value={this.state.dishes}
                     onChange={this.handleDishChange}
                 />
@@ -277,7 +257,6 @@ class CategoryAndFoodSelector extends Component {
                         placeholder={`点击添加${dishLabel}`}
                         allDishes={dishes}
                         allCategories={categories}
-                        allBrands={brands}
                         value={this.state.dishes}
                         onChange={this.handleDishChange}
                     />
@@ -301,7 +280,6 @@ class CategoryAndFoodSelector extends Component {
     }
     renderCategorySelectionBox() {
         const {
-            allBrands,
             allCategories,
             allDishes,
             dishFilter,
@@ -309,23 +287,13 @@ class CategoryAndFoodSelector extends Component {
             showRequiredMark,
             showEmptyTips,
         } = this.props;
-        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        const selectedBrands = this.props.selectedBrands.toJS();
-        if (selectedBrands.length) {
-            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
-            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-        }
+        let { dishes, categories } = memoizedShopCategoriesAndDishes(allCategories, allDishes)
         let filteredCategories = categories;
         let filteredDishes = dishes;
-        let filteredBrands = brands;
         if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
             filteredCategories = filteredCategories.filter(({value}) => this.state.categories.includes(value))
             filteredDishes = filteredDishes.filter(({localFoodCategoryID: value, onlineFoodCategoryID}) => 
-            this.state.categories.includes(value) ||
-            this.state.categories.includes(onlineFoodCategoryID)
-        )
-            filteredBrands = filteredBrands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
+            this.state.categories.includes(value) || this.state.categories.includes(onlineFoodCategoryID))
         }
         if (dishFilter) {
             filteredDishes = dishFilter(filteredDishes) 
@@ -344,7 +312,6 @@ class CategoryAndFoodSelector extends Component {
                         placeholder="点击添加适用分类"
                         allDishes={dishes}
                         allCategories={categories}
-                        allBrands={brands}
                         value={this.state.categories}
                         onChange={this.handleCategoryChange}
                     />
@@ -372,7 +339,6 @@ class CategoryAndFoodSelector extends Component {
                                 placeholder="点击添加排除菜品"
                                 allDishes={filteredDishes}
                                 allCategories={filteredCategories}
-                                allBrands={filteredBrands}
                                 value={this.state.excludeDishes}
                                 onChange={this.handleExcludeDishChange}
                             />
@@ -399,22 +365,6 @@ class CategoryAndFoodSelector extends Component {
 }
 const mapStateToPropsForPromotion = (state) => {
     return {
-        /** 基础营销活动范围中设置的品牌 */
-        selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
-        /** 基本档获取的所有品牌（由店铺schema接口获取，所以似乎品牌下没有店铺的话不会在这里？） */
-        allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
-        allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
-        allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
-    }
-}
-const mapStateToPropsForGift = (state) => {
-    return {
-        /** 礼品模版中设置的品牌 [{targetID: XXX, targetName: XXX}] */
-        selectedBrands: state.sale_editGiftInfoNew
-            .getIn(['createOrEditFormData', 'selectBrands'], Immutable.fromJS([]))
-            .map(item => `${item.get('targetID')}`),
-        /** 礼品模版中查询到的品牌 */
-        allBrands: state.sale_editGiftInfoNew.get('allBrands'),
         allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
         allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
     }
@@ -430,4 +380,3 @@ CategoryAndFoodSelector.defaultProps = {
 };
 
 export default connect(mapStateToPropsForPromotion)(CategoryAndFoodSelector)
-export const GiftCategoryAndFoodSelector = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)

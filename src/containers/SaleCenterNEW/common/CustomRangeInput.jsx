@@ -22,7 +22,6 @@ class CustomRangeInput extends React.Component {
         this.state = {
             start: value ? value.start : null,
             end: value ? value.end : null,
-            relation: this.props.relation || '减',
             addonBefore: this.props.addonBefore || '消费满',
             addonAfter: this.props.addonAfter || '元',
             addonAfterUnit: this.props.addonAfterUnit || '元',
@@ -93,7 +92,7 @@ class CustomRangeInput extends React.Component {
                 </Col>
 
                 <Col span={4}>
-                    <div>{this.state.relation}</div>
+                    <div>{this.props.relation || '减'}</div>
                 </Col>
 
                 <Col span={7}>

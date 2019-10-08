@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import {
     saleCenterSetPromotionDetailAC,
@@ -379,8 +378,7 @@ class BuyAFreeDetailInfo extends React.Component {
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '1' ?
                             null :
-                                this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                                <ConnectedScopeListSelector/>
+                            <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}

@@ -15,8 +15,6 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-
 const FormItem = Form.Item;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
@@ -359,8 +357,7 @@ class LowPriceDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {ruleType === '2' || ruleType === '4' ? this.props.isShopFoodSelectorMode ?
-                        <PromotionDetailSetting /> : <ConnectedScopeListSelector/>
+                    {ruleType === '2' || ruleType === '4' ? <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}

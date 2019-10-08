@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const FormItem = Form.Item;
@@ -371,10 +370,7 @@ class GroupTicketDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderGroupTicket()}
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                    <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} /> : null}
                 </Form>

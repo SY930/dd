@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import {
     saleCenterSetPromotionDetailAC,
@@ -265,10 +264,7 @@ class BuyCutDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                    <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderBuyDishNumInput()}
                     {this.renderCutWay()}
                     {this.renderGiveDishNumInput()}

@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
-import EditBoxForDishes from '../../../containers/SaleCenterNEW/common/EditBoxForDishes';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
 
 const FormItem = Form.Item;
@@ -210,11 +209,7 @@ class AddUpGiveDetailInfo extends React.Component {
                         }],
                         initialValue: this.state.priceLst,
                     })(
-                        this.props.isShopFoodSelectorMode ? (
-                            <EditBoxForDishes onChange={this.onDishesChange} />
-                        ) : (
-                            <ConnectedPriceListSelector onChange={this.onDishesChange} />
-                        )
+                        <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />                  
                     )}
             </FormItem>
         )

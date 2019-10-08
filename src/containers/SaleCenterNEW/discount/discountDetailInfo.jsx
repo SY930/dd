@@ -10,10 +10,12 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import NoThresholdDiscountFoodSelector from './NoThresholdDiscountFoodSelector'
+import NoThresholdDiscountFoodSelectorForShop from './NoThresholdDiscountFoodSelectorForShop'
+
 
 import {
     saleCenterSetPromotionDetailAC,
@@ -34,21 +36,10 @@ class DiscountDetailInfo extends React.Component {
         super(props);
         this.defaultRun = '0';
         this.state = {
-            display: false,
-            isDishVisibleIndex: '0',
+            display: !this.props.isNew,
             maxCount: 3,
-            discount: '',
             discountFlag: true,
-            ruleInfo: [
-                {
-                    validationStatus: 'success',
-                    helpMsg: null,
-                    start: 0,
-                    end: 0,
-                },
-            ],
-            ruleType: '0',
-            targetScope: '0',
+            ...this.initState(),
         };
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
         this.addRule = this.addRule.bind(this);
@@ -56,24 +47,31 @@ class DiscountDetailInfo extends React.Component {
         this.onDiscountChange = this.onDiscountChange.bind(this);
     }
 
-    componentDidMount() {
-        this.props.getSubmitFn({
-            finish: this.handleSubmit,
-        });
+    initState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
-            return null;
+            return {
+                discount: '',
+                ruleInfo: [
+                    {
+                        validationStatus: 'success',
+                        helpMsg: null,
+                        start: 0,
+                        end: 0,
+                    },
+                ],
+                ruleType: '0',
+                isDishVisibleIndex: '0',
+                targetScope: '0',
+            };
         }
-
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         // default value
         _rule = Object.assign({}, _rule);
         const _categoryOrDish = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']);
         const _scopeLstLength = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS().length;
-        const display = !this.props.isNew;
         const _ruleType = _rule.stageType == '2' ? (_scopeLstLength == 0 ? '1' : '2') : '0';
-        this.setState({
-            display,
+        return {
             ruleType: _ruleType,
             isDishVisibleIndex: _ruleType,
             ruleInfo: _rule.stage ? _rule.stage.map((stageInfo) => {
@@ -92,6 +90,12 @@ class DiscountDetailInfo extends React.Component {
             }],
             discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
+        };
+    }
+
+    componentDidMount() {
+        this.props.getSubmitFn({
+            finish: this.handleSubmit,
         });
     }
 
@@ -287,7 +291,7 @@ class DiscountDetailInfo extends React.Component {
                                 }
                                 endPlaceHolder="例如9.5折,8折"
                                 discountMode={true}
-                                relation={'折扣'}
+                                relation={this.state.ruleType == '0' ? '默认折扣' : '折扣'}
                                 addonAfterUnit={'折'}
                                 disabled={this.state.ruleType == '0'}
                                 value={_value}
@@ -406,13 +410,20 @@ class DiscountDetailInfo extends React.Component {
 
     render() {
         const payLimit = this.state.ruleType != 0;
+        let component;
+        if (this.state.ruleType == '0') {
+            component = this.props.isShopFoodSelectorMode ? NoThresholdDiscountFoodSelectorForShop :
+                NoThresholdDiscountFoodSelector;
+        }
         return (
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.state.isDishVisibleIndex !== '1' ? 
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
+                        <ConnectedScopeListSelector
+                            component={component}
+                            isShopMode={this.props.isShopFoodSelectorMode}
+                        />
                     : null}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={payLimit} /> : null}

@@ -11,6 +11,17 @@ import SelectedList from '../FilterSelector/SelectedList'
 import style from '../FilterSelector/assets/FilterSelector.less'
 import { isProfessionalTheme } from '../../../helpers/util'
 
+const CATEGORY_TYPES = [
+    {
+        value: '0',
+        label: '常规分类',
+    },
+    {
+        value: '1',
+        label: '线上分类',
+    },
+]
+
 const DEFAULT_CATEGORY_COLUMNS = [
     {
         title: '所属品牌',
@@ -114,11 +125,12 @@ class FoodSelectModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            /** 菜品分类模式状态 */
-            selectedBrandIDs: [],
-            selectedCategoryResults: props.mode === 'category' ? props.initialValue.slice() : [],
-            /** 单品模式状态 */
+            /** 共享状态 */
             currentBrandID: props.allBrands.length? props.allBrands[0].brandID : FAKE_ALL_BRANDID,
+            /** 菜品分类模式状态 */
+            selectedCategoryResults: props.mode === 'category' ? props.initialValue.slice() : [],
+            selectedCategoryTypes: [],
+            /** 单品模式状态 */
             selectedCategories: [],
             selectedDishResults: props.mode === 'dish' ? props.initialValue.slice() : [],
         }
@@ -139,6 +151,15 @@ class FoodSelectModal extends Component {
         } = this.state;
         onOk(mode === 'category' ? selectedCategoryResults : selectedDishResults);
     }
+    handleCurrentBrandChange = (brand) => {
+        if (brand !== this.state.currentBrandID) {
+            this.setState({
+                currentBrandID: brand,
+                selectedCategories: [],
+                selectedCategoryTypes: [],
+            })
+        }
+    }
     /** 分类模式相关handler开始 */
     handleCategoryResultsChange = (valueArray) => {
         const { selectedCategoryResults: prevSelected } = this.state;
@@ -146,22 +167,14 @@ class FoodSelectModal extends Component {
             selectedCategoryResults: excludeDuplicates(prevSelected, valueArray),
         })
     }
-    handleSelectedBrandIDsChange = (valueArray) => {
+    handleSelectedTypesChange = (valueArray) => {
         this.setState({
-            selectedBrandIDs: valueArray,
+            selectedCategoryTypes: valueArray,
         })
     }
     /** 分类模式相关handler结束 */
 
     /** 单品模式相关handler开始 */
-    handleCurrentBrandChange = (brand) => {
-        if (brand !== this.state.currentBrandID) {
-            this.setState({
-                currentBrandID: brand,
-                selectedCategories: [],
-            })
-        }
-    }
     handleCategoriesChange = (valueArray) => {
         this.setState({
             selectedCategories: valueArray,
@@ -183,36 +196,57 @@ class FoodSelectModal extends Component {
             allCategories = [], // [{value: String}]
         } = this.props;
         const {
-            selectedBrandIDs,
+            selectedCategoryTypes,
+            currentBrandID,
             selectedCategoryResults
         } = this.state;
-        const filteredCategoryOptions = selectedBrandIDs.length ? allCategories
-            .filter(({brandID}) => selectedBrandIDs.includes(`${brandID}`)) : allCategories;
+        let filteredCategoryOptions = allCategories.filter(({brandID}) => currentBrandID === brandID);
+        if (selectedCategoryTypes.length === 1) { // 目前只有2种分类类型，不选或选2个都等于不过滤
+            filteredCategoryOptions = filteredCategoryOptions.filter(item => item.typeSet.has(selectedCategoryTypes[0]))
+        }
         const selectedItems = allCategories.filter(category => selectedCategoryResults.includes(category.value));
-        /**
-         * 当分类选择器右侧有 不限品牌 + 其它品牌时，由于excludeDuplicates（文件上方） 逻辑，全选框需要去掉
-         */
-        const isExcludeMode = (selectedBrandIDs.length === 0 && allBrands.length > 1) ||
-            (selectedBrandIDs.length > 1 && selectedBrandIDs.includes(FAKE_ALL_BRANDID))
         return (
-            <div
-                className={style.hllFilterSelector}
-            >
+            <div className={style.hllFilterSelector}>
+                <div
+                    className={style.filterKeyList}
+                    style={{
+                        maxHeight: 80,
+                        overflowY: 'auto',
+                    }}
+                >
+                    {allBrands.map(({ value, label }) => (
+                        <span
+                            key={value}
+                            style={{
+                                marginBottom: 5,
+                            }}
+                            className={classnames(style.filterKey, {
+                                [style.active]: value === currentBrandID,
+                            })}
+                            role="button"
+                            tabIndex="0"
+                            onClick={() => this.handleCurrentBrandChange(value)}
+                            title={label}
+                        >
+                            {label}
+                        </span>
+                    ))}
+                </div>
                 <Row type="flex">
                     <div className={style.filterList}>
                         <CheckboxList
                             width={200}
                             showCheckAll={false}
-                            options={allBrands}
-                            value={selectedBrandIDs}
-                            onChange={this.handleSelectedBrandIDsChange}
+                            options={CATEGORY_TYPES}
+                            value={selectedCategoryTypes}
+                            onChange={this.handleSelectedTypesChange}
                         />
                     </div>
                     <div className={style.resultList}>
                         <CheckboxList
                             display="table"
                             showCollapse={false}
-                            showCheckAll={!isExcludeMode}
+                            showCheckAll={true}
                             options={filteredCategoryOptions}
                             value={selectedCategoryResults}
                             tableColumns={tableColumns}
@@ -248,7 +282,10 @@ class FoodSelectModal extends Component {
         const filteredCategoryOptions = allCategories
             .filter(item => currentBrandID === `${item.brandID}`);
         let filteredDishesOptions = selectedCategories.length ?
-            allDishes.filter(({localFoodCategoryID}) => selectedCategories.includes(localFoodCategoryID)) :
+            allDishes.filter(({localFoodCategoryID, onlineFoodCategoryID}) => 
+            selectedCategories.includes(localFoodCategoryID) ||
+            selectedCategories.includes(onlineFoodCategoryID)
+        ) :
             allDishes.filter(({brandID}) => currentBrandID === `${brandID}`);
         // 单选模式，禁用掉其它菜
         if (!multiple && selectedDishResults.length) {

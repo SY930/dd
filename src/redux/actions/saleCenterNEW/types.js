@@ -960,6 +960,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                     targetID: item.foodCategoryID,
                     targetCode: item.foodCategoryKey,
                     targetName: item.foodCategoryName,
+                    discountRate: item.discountRate || 0,
                 });
             });
         }

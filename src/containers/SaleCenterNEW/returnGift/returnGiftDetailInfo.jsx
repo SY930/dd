@@ -16,7 +16,6 @@ import selfStyle from './style.less';
 import {axiosData} from "../../../helpers/util";
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import ReturnGift from './returnGift'; // 可增删的输入框 组件
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import {
@@ -524,10 +523,7 @@ class ReturnGiftDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {
-                        this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                        <ConnectedScopeListSelector/>
-                    }
+                    <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={true} stashSome={this.state.rule.gainCodeMode == '0'} /> : null}
                 </Form>

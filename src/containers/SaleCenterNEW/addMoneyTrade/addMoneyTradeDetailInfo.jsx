@@ -24,17 +24,12 @@ const RadioGroup = Radio.Group;
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const Immutable = require('immutable');
-
-import EditBoxForDishes from '../common/EditBoxForDishes';
-
 
 import {
     saleCenterSetPromotionDetailAC,
@@ -328,8 +323,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
-                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                            <ConnectedScopeListSelector/>
+                            <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
                     {this.renderDishsSelectionBox()}
                     {this.renderAdvancedSettingButton()}

@@ -47,7 +47,12 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
     const uniqCatMap = new Map();
     rawCategories.forEach(item => {
         if (!uniqCatMap.has(item.foodCategoryName)) {
-            uniqCatMap.set(item.foodCategoryName, item)
+            const categoryTypeSet = new Set();
+            categoryTypeSet.add(`${item.type || 0}`)
+            uniqCatMap.set(item.foodCategoryName, {...item, typeSet: categoryTypeSet})
+        } else {
+            const categoryTypeSet = uniqCatMap.get(item.foodCategoryName).typeSet;
+            categoryTypeSet.add(`${item.type || 0}`)
         }
     })
     const commonCategories = Array.from(uniqCatMap.values())
@@ -78,6 +83,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             brandID: '0',
             brandName: '不限品牌',
             localFoodCategoryID: `0__${dish.foodCategoryName}`,
+            onlineFoodCategoryID: `0__${dish.foodOnlineCategoryName}`,
             label: `(不限品牌)${dish.foodName}(${dish.unit})`,
             price: dish.prePrice == -1 ? dish.price : dish.prePrice,
             newPrice: dish.prePrice == -1 ? dish.price : dish.prePrice,
@@ -85,19 +91,26 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             value: `0__${dish.foodName}${dish.unit}`
         }));
     const categories = rawCategories.reduce((acc, curr) => {
+        const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
+        const dupIndex = acc.findIndex(item => item.brandID === `${curr.brandID}` && item.foodCategoryName === curr.foodCategoryName)
         if (curr.brandID > 0) {
-            const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
-            acc.push({
-                ...curr,
-                brandID: `${curr.brandID}`,
-                brandName,
-                label: `(${brandName})${curr.foodCategoryName}`,
-                py: curr.foodCategoryMnemonicCode,
-                value: `${curr.brandID}__${curr.foodCategoryName}`
-            })
+            if (dupIndex === -1) {
+                acc.push({
+                    ...curr,
+                    brandID: `${curr.brandID}`,
+                    brandName,
+                    label: `(${brandName})${curr.foodCategoryName}`,
+                    py: curr.foodCategoryMnemonicCode,
+                    value: `${curr.brandID}__${curr.foodCategoryName}`,
+                    typeSet: new Set(`${curr.type || 0}`)
+                })
+            } else {
+                acc[dupIndex].typeSet.add(`${curr.type || 0}`)
+            }  
         } else if (`${curr.brandID}` === '0') { // 把这种通用的分类扩展给每个品牌
             acc.push(...brands.map(brand => ({
                 ...curr,
+                typeSet: acc[dupIndex].typeSet,
                 brandID: `${brand.brandID}`,
                 brandName: brand.brandName,
                 py: curr.foodCategoryMnemonicCode,
@@ -119,6 +132,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 label: `(${brandName})${curr.foodName}(${curr.unit})`,
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${curr.brandID}__${curr.foodCategoryName}`,
+                onlineFoodCategoryID: `${curr.brandID}__${curr.foodOnlineCategoryName}`,
                 value: `${curr.brandID}__${curr.foodName}${curr.unit}`
             })
         } else if (`${curr.brandID}` === '0') { // 把这种通用的菜品扩展给每个品牌
@@ -131,6 +145,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 label: `(${brand.brandName})${curr.foodName}(${curr.unit})`,
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${brand.brandID}__${curr.foodCategoryName}`,
+                onlineFoodCategoryID: `${brand.brandID}__${curr.foodOnlineCategoryName}`,
                 value: `${brand.brandID}__${curr.foodName}${curr.unit}`
             })))
         }
@@ -160,7 +175,12 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
     const uniqCatMap = new Map();
     rawCategories.forEach(item => {
         if (!uniqCatMap.has(item.foodCategoryName)) {
-            uniqCatMap.set(item.foodCategoryName, item)
+            const categoryTypeSet = new Set();
+            categoryTypeSet.add(`${item.type || 0}`)
+            uniqCatMap.set(item.foodCategoryName, {...item, typeSet: categoryTypeSet})
+        } else {
+            const categoryTypeSet = uniqCatMap.get(item.foodCategoryName).typeSet;
+            categoryTypeSet.add(`${item.type || 0}`)
         }
     })
     const uniqDishMap = new Map();
@@ -193,6 +213,7 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
                 label: `${curr.foodName}(${curr.unit})`,
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${curr.foodCategoryName}`,
+                onlineFoodCategoryID: `${curr.foodOnlineCategoryName}`,
                 value: `${curr.foodName}${curr.unit}`
             })
         return acc;

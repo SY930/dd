@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
-import PromotionDetailSetting from '../../../containers/SaleCenterNEW/common/promotionDetailSetting';
 import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRangeInput';
 
 const FormItem = Form.Item;
@@ -480,8 +479,7 @@ class FullCutDetailInfo extends React.Component {
                     {this.renderPromotionRule()}
                     {this.state.ruleType != '1' && this.state.ruleType != '2' ? 
                         (
-                            this.props.isShopFoodSelectorMode ? <PromotionDetailSetting /> :
-                            <ConnectedScopeListSelector/>
+                            <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                         ) : null
                     }
                     {this.renderAdvancedSettingButton()}

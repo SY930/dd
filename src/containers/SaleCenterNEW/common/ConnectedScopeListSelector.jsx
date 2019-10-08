@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CategoryAndFoodSelector from './CategoryAndFoodSelector'
+import CategoryAndFoodSelectorForShop from './CategoryAndFoodSelectorForShop'
 import CloseableTip from '../../../components/common/CloseableTip'
+import PropTypes from 'prop-types';
 
 
 const mapStateToProps = (state) => {
@@ -35,8 +37,10 @@ class ConnectedScopeListSelector extends Component {
     }
     render() {
         const scopeLst = this.props.scopeLst.toJS();
+        const { isShopMode, component } = this.props;
+        const Comp = component || (isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector);
         return (
-            <CategoryAndFoodSelector
+            <Comp
                 dishFilter={this.dishFilter}
                 scopeLst={scopeLst}
                 onChange={this.handleScopeLstChange}
@@ -53,5 +57,8 @@ class ConnectedScopeListSelector extends Component {
         )
     }
 }
+ConnectedScopeListSelector.propTypes = {
+    isShopMode: PropTypes.bool,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectedScopeListSelector)
