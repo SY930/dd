@@ -87,7 +87,6 @@ class CustomProgressBar extends React.Component {
     render() {
         const { steps } = this.props;
         const current = this.state.current;
-
         if (!(steps instanceof Array && steps.length > 0)) {
             throw new Error('Steps should be an array with elments');
         }
