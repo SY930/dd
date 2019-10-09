@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Tabs, Button, Icon } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
-import CropperUploader from '../../components/common/CropperUploader'
+import DecorationUploader from './DecorationUploader';
 import phoneImg from './assets/iphone.png';
 import defaultEnterImg from './assets/recommend1.png'
 import defaultEndImg from './assets/recommend2.png'
@@ -33,7 +33,9 @@ export default class CommentSendGiftDecorationBoard extends Component {
                     tabKey === '2' ? (
                         <div className={style.simpleDisplayBlock}>
                             <div className={style.imgWrapper}>
-                                <img src={endImg} style={{ width: '100%', height: '100%' }} alt=""/>
+                                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                    <img src={endImg} style={{ width: '100%' }} alt=""/>
+                                </div>
                                 <div className={style.tagWrapper}>
                                     <img src={tagImg} alt=""/>
                                     <span>活动主图</span>
@@ -52,7 +54,9 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                 <img src={tagImg} alt=""/>
                                 <span>活动主图</span>
                             </div>
-                            <img src={enterImg} style={{ width: '100%', height: '100%' }} alt=""/>
+                            <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                <img src={enterImg} style={{ width: '100%' }} alt=""/>
+                            </div>
                             <Icon className={style.closeBtn}  type="close-circle-o" />
                         </div>
                     )
@@ -77,15 +81,14 @@ export default class CommentSendGiftDecorationBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <CropperUploader
-                            limit={0}
-                            cropperRatio={92/36}
-                            allowedType={['image/png', 'image/jpeg']}
-                            onChange={url => onChange({key: ['endImg'], value: `http://res.hualala.com/${url}`})}
+                        <DecorationUploader
+                            limit={1000}
+                            onChange={value => onChange({key: ['endImg'], value})}
                         />
                         <div className={style.uploaderTip}>
+                            <p>* 图片大小不要超过1000KB</p>
                             <p>* 建议尺寸920x360像素</p>
-                            <p>* 支持JPG、PNG图片文件</p>
+                            <p>* 支持JPG、PNG、GIF图片文件</p>
                         </div>
                     </div>
                 </div>
@@ -111,15 +114,14 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                 <div className={style.sectionWrapper}>
                                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                                        <CropperUploader
-                                            limit={0}
-                                            cropperRatio={920/1346}
-                                            allowedType={['image/png', 'image/jpeg']}
-                                            onChange={url => onChange({key: ['enterImg'], value: `http://res.hualala.com/${url}`})}
+                                        <DecorationUploader
+                                            limit={1000}
+                                            onChange={value => onChange({key: ['enterImg'], value})}
                                         />
                                         <div className={style.uploaderTip}>
+                                            <p>* 图片大小不要超过1000KB</p>
                                             <p>* 建议尺寸920x1346像素</p>
-                                            <p>* 支持JPG、PNG图片文件</p>
+                                            <p>* 支持JPG、PNG、GIF图片文件</p>
                                         </div>
                                     </div>
                                 </div>

@@ -121,8 +121,6 @@ export default class PromotionDecoration extends Component {
     renderContent() {
         const { type, decorationInfo, updateDecorationItem } = this.props;
         switch (type) {
-            case '3010':
-            case '5010':
             case '23':
                 return <SimpleDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '64':
