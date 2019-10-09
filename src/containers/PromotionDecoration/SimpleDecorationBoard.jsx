@@ -57,7 +57,7 @@ export default class SimpleDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 45 }} className={style.label}>弹窗背景色</div>
+                    <div className={style.label}>弹窗背景色</div>
                     <ColorSettingBlock value={color} onChange={(value) => onChange({key: ['color'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>

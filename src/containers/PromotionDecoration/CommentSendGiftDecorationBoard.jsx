@@ -33,7 +33,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                     tabKey === '2' ? (
                         <div className={style.simpleDisplayBlock}>
                             <div className={style.imgWrapper}>
-                                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                <div style={{ width: '100%', height: '100%',  overflow: 'hidden' }}>
                                     <img src={endImg} style={{ width: '100%' }} alt=""/>
                                 </div>
                                 <div className={style.tagWrapper}>
@@ -49,12 +49,12 @@ export default class CommentSendGiftDecorationBoard extends Component {
                             <Icon className={style.closeBtn}  type="close-circle-o" />
                         </div>
                     ) : (
-                        <div style={{ borderRadius: 10 }} className={style.simpleDisplayBlock}>
+                        <div className={style.simpleDisplayBlock}>
                             <div className={style.tagWrapper}>
                                 <img src={tagImg} alt=""/>
                                 <span>活动主图</span>
                             </div>
-                            <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                            <div style={{ borderRadius: 10, width: '100%', height: '100%', overflow: 'hidden' }}>
                                 <img src={enterImg} style={{ width: '100%' }} alt=""/>
                             </div>
                             <Icon className={style.closeBtn}  type="close-circle-o" />
@@ -75,7 +75,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
         return (
             <div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 45 }} className={style.label}>弹窗背景色</div>
+                    <div className={style.label}>弹窗背景色</div>
                     <ColorSettingBlock value={endColor} onChange={(value) => onChange({key: ['endColor'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>

@@ -32,12 +32,12 @@ const DEFAULT_SKIN_COLORS = [
 
 export default class ColorSettingBlock extends Component {
     render() {
-        const { value: color, onChange } = this.props;
+        const { value: color, onChange, title = '请选择您喜欢的颜色或者自定义颜色' } = this.props;
         const isCustomColor = !DEFAULT_SKIN_COLORS.map(item => item.skinColor).includes(color);
         return (
             <div className={style.colorPickersContainer}>
                 <div className={style.colorPickersTip}>
-                    请选择您喜欢的颜色或者自定义颜色
+                    {title}
                 </div>
                 <div className={style.colorPickersWrapper}>
                     {
