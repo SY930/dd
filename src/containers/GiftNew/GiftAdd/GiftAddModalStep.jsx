@@ -576,6 +576,8 @@ class GiftAddModalStep extends React.PureComponent {
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             params.maxUseLimit = params.maxUseLimit || '0';
+            params.goldGift = +params.aggregationChannels.includes('goldGift')
+            params.vivoChannel = +params.aggregationChannels.includes('vivoChannel')
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -583,7 +585,8 @@ class GiftAddModalStep extends React.PureComponent {
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
             startSaving();
-            delete params.operateTime; // 就, 很烦
+            delete params.operateTime;
+            delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
                 endSaving();
@@ -1650,6 +1653,16 @@ class GiftAddModalStep extends React.PureComponent {
             } else {
                 formItems.moneyLimitType.label = '账单金额限制'
             }
+        }
+        if (this.props.gift.value == '10') {
+            formItems.aggregationChannels.options = [
+                { label: '金豆商城', value: 'goldGift' },
+                { label: 'vivo快应用', value: 'vivoChannel' },
+            ]
+        } else {
+            formItems.aggregationChannels.options = [
+                { label: 'vivo快应用', value: 'vivoChannel' },
+            ]
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
