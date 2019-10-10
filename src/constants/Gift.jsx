@@ -116,10 +116,6 @@ const GiftCfg = {
         { label: '不可转赠', value: 0 },
         { label: '可转赠', value: 1 },
     ],
-    goldGift: [
-        { label: '不可用', value: 0 },
-        { label: '可用', value: 1 },
-    ],
     isHolidaysUsing: [
         { label: '不限制', value: '0' },
         { label: '不含节假日', value: '1' },
