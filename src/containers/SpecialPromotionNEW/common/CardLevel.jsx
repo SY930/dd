@@ -331,7 +331,6 @@ class CardLevel extends React.Component {
                             }
                             {
                                 !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
-
                                     <Icon
                                         type="exclamation-circle" className={styles.cardLevelTreeIcon}
                                         onClick={() => {

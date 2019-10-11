@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 /**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-03-15T10:50:38+08:00
@@ -10,15 +11,23 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Radio, message } from 'antd';
+import { Form, Select, Radio, message, Icon } from 'antd';
 import { isEqual, uniq } from 'lodash';
+import { is, fromJS } from 'immutable';
 import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import memoizeOne from 'memoize-one';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saveCurrentcanUseShopIDs,
     getEventExcludeCardTypes,
-    getGroupCRMCustomAmount } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+    getGroupCRMCustomAmount,
+    saleCenterGetExcludeCardLevelIds,
+ } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
+ import {
+    saleCenterSetPromotionDetailAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
@@ -27,6 +36,9 @@ import {
     getPromotionShopSchema,
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import ShopSelector from '../../../components/common/ShopSelector';
+import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
+import { map } from 'rxjs/operator/map';
+import ExcludeCardTable from '../common/ExcludeCardTable';
 
 const RadioGroup = Radio.Group;
 
@@ -43,6 +55,7 @@ class StepTwo extends React.Component {
         }
         this.state = {
             getExcludeCardLevelIds: [],
+            cardInfo: [],
             message: '',
             settleUnitID: '',
             accountNo: '',
@@ -57,14 +70,31 @@ class StepTwo extends React.Component {
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || [],
             excludeCardTypeShops: [],
+            tableDisplay: false,
+            getExcludeCardLevelIdsStatus: false,
+            combineExcludeCardLevelIds: [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
         this.onHandleSelect = this.onHandleSelect.bind(this);
+        this.memoizeChangeChooseCardLevelData = memoizeOne(this.changeChooseCardLevelData);
     }
     componentDidMount() {
+        const user = this.props.user;
+        if (this.props.type == '51') {
+            //请求卡等级数据
+            const opt = {
+                _groupID: user.accountInfo.groupID,
+                _role: user.accountInfo.roleType,
+                _loginName: user.accountInfo.loginName,
+                _groupLoginName: user.accountInfo.groupLoginName,
+            };
+            this.props.fetchSpecialCardLevel({
+                data: opt,
+            });
+        }
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -72,7 +102,6 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        const user = this.props.user;
         const opts = {
             _groupID: user.accountInfo.groupID, // 集团id
             pageNo: 1,
@@ -106,6 +135,36 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const eventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
+        // 编辑状态的第一次将自己的itemID传过去以去掉对于自身cardlevelid的排除
+        if ( this.props.type == '51' && eventInfo.itemID && !this.state.getExcludeCardLevelIdsStatus) {
+            const opts2 = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                eventStartDate: eventInfo.eventStartDate,
+                eventEndDate: eventInfo.eventEndDate,
+                itemID: eventInfo.itemID,
+            };
+            this.setState({
+                getExcludeCardLevelIdsStatus: true,
+            }, () => {
+                this.props.saleCenterGetExcludeCardLevelIds(opts2);
+            })
+        }
+        const arr = [];
+        const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
+        // 遍历所有排除卡
+        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            // true全部占用
+            this.setState({ combineExcludeCardLevelIds: this.state.cardInfo })
+        } else {
+            excludeEvent.forEach((event) => {
+                event.cardLevelIDList && event.cardLevelIDList.map((card) => {
+                    arr.push(card)
+                })
+            })
+            this.setState({ combineExcludeCardLevelIds: arr });
+        }
         const previousSchema = this.state.shopSchema;
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (!isEqual(previousSchema, nextShopSchema)) {
@@ -113,14 +172,23 @@ class StepTwo extends React.Component {
             });
         }
         // 遍历所有排除卡
-        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
-            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
-            // true全部占用
-            this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {
-                const { getExcludeCardLevelIds } = this.state
-                this.filterHasCardShop(getExcludeCardLevelIds)
+        // true全部占用
+        // 获取会员等级信息
+        const { groupCardTypeList } = this.props;
+        const { groupCardTypeList: _groupCardTypeList } = nextProps;
+        const { combineExcludeCardLevelIds } = this.state;
+        if (_groupCardTypeList && (groupCardTypeList !== _groupCardTypeList)) {
+            this.setState({
+                cardInfo: _groupCardTypeList.toJS() || [],
+            }, () => {
+                this.filterCardLevelList(combineExcludeCardLevelIds);
             })
         }
+        this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList}, () => {
+            const { getExcludeCardLevelIds } = this.state
+            this.filterHasCardShop(getExcludeCardLevelIds);
+            this.filterCardLevelList(combineExcludeCardLevelIds);
+        })
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
             const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
@@ -128,8 +196,8 @@ class StepTwo extends React.Component {
                 return acc;
             }, []);
             this.setState({ 
-              occupiedShops,
-              excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
+                occupiedShops,
+                excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS(),
             })
         }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) &&
@@ -156,6 +224,26 @@ class StepTwo extends React.Component {
                 this.setState({ cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) });
             }
         }
+    }
+
+    changeChooseCardLevelData = ($eventInfo) => {
+        const choosedData = [];
+        const eventInfo = $eventInfo.toJS();
+        const { cardInfo } = this.state;
+        if (eventInfo.cardLevelIDList && eventInfo.cardLevelIDList.length) {
+            cardInfo.map((item) => {
+                item.cardTypeLevelList.map((levelItem)=>{
+                    if(eventInfo.cardLevelIDList.indexOf(levelItem.cardLevelID) >= 0) {
+                        choosedData.push({
+                            cardLevelID : levelItem.cardLevelID,
+                            cardLevelName: levelItem.cardLevelName,
+                            cardTypeName: levelItem.cardTypeName,
+                        })
+                    }
+                })
+            })
+        }
+        return choosedData;
     }
     onCardLevelChange(obj) {
         this.setState(obj)
@@ -230,6 +318,10 @@ class StepTwo extends React.Component {
             opts.canUseShopIDs = this.state.canUseShopIDs
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
         }
+        if(!opts.cardLevelIDList.length&& opts.cardLevelRangeType === '6'){
+            message.warning('请先选择卡等级再进行下一步');
+            return;
+        }
         this.props.setSpecialBasicInfo(opts);
         return flag;
     }
@@ -287,21 +379,71 @@ class StepTwo extends React.Component {
         this.props.setSpecialBasicInfo({ sourceWayLimit: v });
     }
 
+    // handleSelectChange = (value) => {
+    //     this.queryCanuseShops(value)
+    //     this.setState({
+    //         cardLevelIDList: value,
+    //         canUseShops: [],
+    //         selections_shopsInfo: { shopsInfo: [] }
+    //     })
+    //     this.props.onChange && this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
+    // }
+
+    handleCardScopeList = (opts) => {
+        this.setState({
+            cardLevelIDList: opts.cardScopeIDs,
+            cardScopeIDs: opts.cardScopeIDs,
+        }, () => {
+            const { cardScopeType, cardScopeIDs } = this.state
+            this.props.setPromotionDetail({
+                cardScopeList: cardScopeIDs.length === 0
+                    ? undefined
+                    : cardScopeIDs.map((cardScopeID) => {
+                        return {
+                            cardScopeType,
+                            cardScopeID,
+                        }
+                    }),
+            })
+        })
+    }
+
     renderBirthDayGroupSelector() {
-        const { cardLevelRangeType } = this.state;
-        const localType = cardLevelRangeType == 5 ? '5' : '0'
+        const { cardLevelRangeType, cardScopeIDs = [], cardInfo } = this.state;
+        // const boxData = []
+        // cardScopeIDs.forEach((id) => {
+        //     cardInfo.forEach((cat) => {
+        //         cat.cardTypeLevelList.forEach((level) => {
+        //             if (level.cardLevelID === id) {
+        //                 boxData.push(level)
+        //             }
+        //         })
+        //     })
+        // })
+        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
+        let localType = '';
+        if (cardLevelRangeType == 2 || cardLevelRangeType == 0) {
+            localType = '0';
+        } else if ( cardLevelRangeType == 5 ) {
+            localType = '5';
+        } else {
+            localType = '6';
+        }
+        const choosedData = this.memoizeChangeChooseCardLevelData(this.props.specialPromotion.get('$eventInfo'));
         return (
             <div>
                 <FormItem label={'会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                         <Radio key={'5'} value={'5'}>会员群体</Radio>
                         <Radio key={'0'} value={'0'}>会员卡类</Radio>
+                        <Radio key={'6'} value={'6'}>卡等级</Radio>
                     </RadioGroup>
                 </FormItem>
-                {cardLevelRangeType == 5 && this.renderMemberGroup()}
-                {cardLevelRangeType != 5 && (
+                {localType == 5 && this.renderMemberGroup()}
+                {localType == 0 && (
                     <CardLevel
-                        cardLevelRangeType={cardLevelRangeType}
+                        cardLevelRangeType={localType}
                         onChange={this.onCardLevelChange}
                         label="适用卡类"
                         cusAllLabel="不限"
@@ -311,6 +453,59 @@ class StepTwo extends React.Component {
                         type={this.props.type}
                         form={this.props.form}
                     />
+                )}
+                {localType == 6 && (
+                    <FormItem
+                        label="适用卡等级"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <BaseHualalaModal
+                            outLabel={'卡等级'} //   外侧选项+号下方文案
+                            outItemName="cardLevelName" //   外侧已选条目选项的label
+                            outItemID="cardLevelID" //   外侧已选条目选项的value
+                            innerleftTitle={'全部卡类'} //   内部左侧分类title
+                            innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                            leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                            innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                            innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                            innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                            innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                            itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
+                            treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                            data={choosedData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                            onChange={(value) => {
+                                // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                const _value = value.map(level => level.cardLevelID)
+                                this.handleCardScopeList({
+                                    cardScopeIDs: _value,
+                                });
+                            }}
+                        />
+                        {
+                            !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
+                                <Icon
+                                    type="exclamation-circle" 
+                                    className={styles.cardLevelTreeIcon}
+                                    style={{       
+                                        position: 'absolute',
+                                        top: 32,
+                                        color: 'rgba(239, 72, 72, 0.81)',
+                                        right: -21,
+                                    }}
+                                    onClick={() => {
+                                        this.setState({ tableDisplay: !this.state.tableDisplay })
+                                    }}
+                                />
+                        }
+                        {
+                            !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
+                                <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '100%', marginTop: '10px' }}>
+                                    <ExcludeCardTable catOrCard='cat' />
+                                </div>
+                        }   
+                    </FormItem>
                 )}
             </div>
         )
@@ -340,6 +535,23 @@ class StepTwo extends React.Component {
             if (this.props.isNew) {
                 this.initShopData(2)
             }
+        })
+    }
+    // 过滤所有卡等级列表中，已经被排除的卡类
+    filterCardLevelList = (excludeList) => {
+        const { cardInfo } = this.state;
+        let tempArr = [];
+        if(!this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            // 按卡类别，把卡等级排除
+            cardInfo.map((cardType, index) => {
+                // 去掉互斥卡类别等级
+                if (!excludeList.includes(cardType.cardTypeID)) {
+                    tempArr.push(cardType);
+                }
+            })
+        }
+        this.setState({
+            cardInfo: tempArr,
         })
     }
     // 查询已选卡类型的可用店铺
@@ -499,6 +711,7 @@ const mapStateToProps = (state) => {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         shopSchemaInfo: state.sale_shopSchema_New,
     };
 };
@@ -519,6 +732,13 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(getEventExcludeCardTypes(opts))
         },
         getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
+        fetchSpecialCardLevel: (opts) => {
+            dispatch(fetchSpecialCardLevel(opts));
+        },
+        setPromotionDetail: opts => dispatch(saleCenterSetPromotionDetailAC(opts)),
+        saleCenterGetExcludeCardLevelIds: (opts) => {
+            dispatch(saleCenterGetExcludeCardLevelIds(opts));
+        },
     };
 };
 
