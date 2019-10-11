@@ -520,7 +520,8 @@ class StepTwo extends React.Component {
     // 过滤已有卡类的店铺
     filterHasCardShop = (cardList) => {
         const { cardTypeShopList } = this.state
-        cardList.forEach((item) => {
+        const cardListParam = cardList ? cardList : [];
+        cardListParam.forEach((item) => {
             delete cardTypeShopList[item];
         })
         const shopIDs = []
