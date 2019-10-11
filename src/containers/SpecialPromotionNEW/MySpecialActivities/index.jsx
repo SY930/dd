@@ -78,6 +78,7 @@ const mapStateToProps = (state) => {
     };
 };
 const DECORATABLE_PROMOTIONS = [
+    '21',
     '23',
     '64',
     '65',

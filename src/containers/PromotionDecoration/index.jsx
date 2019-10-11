@@ -17,6 +17,7 @@ import SimpleDecorationBoard from './SimpleDecorationBoard';
 import CommentSendGiftDecorationBoard from './CommentSendGiftDecorationBoard';
 import ExpasionGiftDecorationBoard from './ExpasionGiftDecorationBoard';
 import ShareGiftDecorationBoard from './ShareGiftDecorationBoard';
+import FreeGiftDecorationBoard from './FreeGiftDecorationBoard';
 import {
     getDecorationInfo,
     saveDecorationInfo,
@@ -123,6 +124,8 @@ export default class PromotionDecoration extends Component {
     renderContent() {
         const { type, decorationInfo, updateDecorationItem } = this.props;
         switch (type) {
+            case '21':
+                return <FreeGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '23':
                 return <SimpleDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '64':
