@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 /**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-03-15T10:50:38+08:00
@@ -15,11 +16,17 @@ import { isEqual, uniq } from 'lodash';
 import { is, fromJS } from 'immutable';
 import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import memoizeOne from 'memoize-one';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saveCurrentcanUseShopIDs,
     getEventExcludeCardTypes,
-    getGroupCRMCustomAmount } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
+    getGroupCRMCustomAmount,
+    saleCenterGetExcludeCardLevelIds,
+ } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
+ import {
+    saleCenterSetPromotionDetailAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 // import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
@@ -48,6 +55,7 @@ class StepTwo extends React.Component {
         }
         this.state = {
             getExcludeCardLevelIds: [],
+            cardInfo: [],
             message: '',
             settleUnitID: '',
             accountNo: '',
@@ -63,12 +71,15 @@ class StepTwo extends React.Component {
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || [],
             excludeCardTypeShops: [],
             tableDisplay: false,
+            getExcludeCardLevelIdsStatus: false,
+            combineExcludeCardLevelIds: [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
         this.onHandleSelect = this.onHandleSelect.bind(this);
+        this.memoizeChangeChooseCardLevelData = memoizeOne(this.changeChooseCardLevelData);
     }
     componentDidMount() {
         const user = this.props.user;
@@ -124,16 +135,35 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // 获取会员等级信息
-        const { groupCardTypeList = fromJS([]) } = this.props
-        const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps;
-        if (!is(groupCardTypeList, _groupCardTypeList)) {
-            const { getExcludeCardLevelIds } = this.state
+        const eventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
+        // 编辑状态的第一次将自己的itemID传过去以去掉对于自身cardlevelid的排除
+        if ( this.props.type == '51' && eventInfo.itemID && !this.state.getExcludeCardLevelIdsStatus) {
+            const opts2 = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                eventStartDate: eventInfo.eventStartDate,
+                eventEndDate: eventInfo.eventEndDate,
+                itemID: eventInfo.itemID,
+            };
             this.setState({
-                cardInfo: _groupCardTypeList.toJS(),
+                getExcludeCardLevelIdsStatus: true,
             }, () => {
-                this.filterCardLevelList(getExcludeCardLevelIds);
+                this.props.saleCenterGetExcludeCardLevelIds(opts2);
             })
+        }
+        const arr = [];
+        const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
+        // 遍历所有排除卡
+        if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            // true全部占用
+            this.setState({ combineExcludeCardLevelIds: this.state.cardInfo })
+        } else {
+            excludeEvent.forEach((event) => {
+                event.cardLevelIDList && event.cardLevelIDList.map((card) => {
+                    arr.push(card)
+                })
+            })
+            this.setState({ combineExcludeCardLevelIds: arr });
         }
         const previousSchema = this.state.shopSchema;
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
@@ -143,10 +173,21 @@ class StepTwo extends React.Component {
         }
         // 遍历所有排除卡
         // true全部占用
+        // 获取会员等级信息
+        const { groupCardTypeList } = this.props;
+        const { groupCardTypeList: _groupCardTypeList } = nextProps;
+        const { combineExcludeCardLevelIds } = this.state;
+        if (_groupCardTypeList && (groupCardTypeList !== _groupCardTypeList)) {
+            this.setState({
+                cardInfo: _groupCardTypeList.toJS() || [],
+            }, () => {
+                this.filterCardLevelList(combineExcludeCardLevelIds);
+            })
+        }
         this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList}, () => {
             const { getExcludeCardLevelIds } = this.state
             this.filterHasCardShop(getExcludeCardLevelIds);
-            this.filterCardLevelList(getExcludeCardLevelIds);
+            this.filterCardLevelList(combineExcludeCardLevelIds);
         })
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
@@ -183,6 +224,26 @@ class StepTwo extends React.Component {
                 this.setState({ cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) });
             }
         }
+    }
+
+    changeChooseCardLevelData = ($eventInfo) => {
+        const choosedData = [];
+        const eventInfo = $eventInfo.toJS();
+        const { cardInfo } = this.state;
+        if (eventInfo.cardLevelIDList && eventInfo.cardLevelIDList.length) {
+            cardInfo.map((item) => {
+                item.cardTypeLevelList.map((levelItem)=>{
+                    if(eventInfo.cardLevelIDList.indexOf(levelItem.cardLevelID) >= 0) {
+                        choosedData.push({
+                            cardLevelID : levelItem.cardLevelID,
+                            cardLevelName: levelItem.cardLevelName,
+                            cardTypeName: levelItem.cardTypeName,
+                        })
+                    }
+                })
+            })
+        }
+        return choosedData;
     }
     onCardLevelChange(obj) {
         this.setState(obj)
@@ -257,6 +318,10 @@ class StepTwo extends React.Component {
             opts.canUseShopIDs = this.state.canUseShopIDs
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
         }
+        if(!opts.cardLevelIDList.length&& opts.cardLevelRangeType === '6'){
+            message.warning('请先选择卡等级再进行下一步');
+            return;
+        }
         this.props.setSpecialBasicInfo(opts);
         return flag;
     }
@@ -325,7 +390,10 @@ class StepTwo extends React.Component {
     // }
 
     handleCardScopeList = (opts) => {
-        this.setState(opts, () => {
+        this.setState({
+            cardLevelIDList: opts.cardScopeIDs,
+            cardScopeIDs: opts.cardScopeIDs,
+        }, () => {
             const { cardScopeType, cardScopeIDs } = this.state
             this.props.setPromotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
@@ -360,15 +428,16 @@ class StepTwo extends React.Component {
         } else if ( cardLevelRangeType == 5 ) {
             localType = '5';
         } else {
-            localType = '7';
+            localType = '6';
         }
+        const choosedData = this.memoizeChangeChooseCardLevelData(this.props.specialPromotion.get('$eventInfo'));
         return (
             <div>
                 <FormItem label={'会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                         <Radio key={'5'} value={'5'}>会员群体</Radio>
                         <Radio key={'0'} value={'0'}>会员卡类</Radio>
-                        <Radio key={'7'} value={'7'}>卡等级</Radio>
+                        <Radio key={'6'} value={'6'}>卡等级</Radio>
                     </RadioGroup>
                 </FormItem>
                 {localType == 5 && this.renderMemberGroup()}
@@ -385,7 +454,7 @@ class StepTwo extends React.Component {
                         form={this.props.form}
                     />
                 )}
-                {localType == 7 && (
+                {localType == 6 && (
                     <FormItem
                         label="适用卡等级"
                         className={styles.FormItemStyle}
@@ -405,7 +474,7 @@ class StepTwo extends React.Component {
                             innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                             itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
                             treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
-                            data={[]} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                            data={choosedData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                             onChange={(value) => {
                                 // 组件内部已选条目数组【{}，{}，{}】,向外传递值
                                 const _value = value.map(level => level.cardLevelID)
@@ -419,7 +488,7 @@ class StepTwo extends React.Component {
                                 <Icon
                                     type="exclamation-circle" 
                                     className={styles.cardLevelTreeIcon}
-                                    style={{    
+                                    style={{       
                                         position: 'absolute',
                                         top: 32,
                                         color: 'rgba(239, 72, 72, 0.81)',
@@ -433,7 +502,7 @@ class StepTwo extends React.Component {
                         {
                             !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
                                 <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '100%', marginTop: '10px' }}>
-                                    <ExcludeCardTable catOrCard='card' />
+                                    <ExcludeCardTable catOrCard='cat' />
                                 </div>
                         }   
                     </FormItem>
@@ -471,12 +540,16 @@ class StepTwo extends React.Component {
     // 过滤所有卡等级列表中，已经被排除的卡类
     filterCardLevelList = (excludeList) => {
         const { cardInfo } = this.state;
-        let tempArr = cardInfo || [];
-        tempArr.map((item, index) => {
-            if(excludeList[0].cardLevelIDList.indexOf(item.cardTypeID) >= 0){
-                tempArr.splice(index, 1);
-            }
-        })
+        let tempArr = [];
+        if(!this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
+            // 按卡类别，把卡等级排除
+            cardInfo.map((cardType, index) => {
+                // 去掉互斥卡类别等级
+                if (!excludeList.includes(cardType.cardTypeID)) {
+                    tempArr.push(cardType);
+                }
+            })
+        }
         this.setState({
             cardInfo: tempArr,
         })
@@ -661,6 +734,10 @@ const mapDispatchToProps = (dispatch) => {
         getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
         fetchSpecialCardLevel: (opts) => {
             dispatch(fetchSpecialCardLevel(opts));
+        },
+        setPromotionDetail: opts => dispatch(saleCenterSetPromotionDetailAC(opts)),
+        saleCenterGetExcludeCardLevelIds: (opts) => {
+            dispatch(saleCenterGetExcludeCardLevelIds(opts));
         },
     };
 };
