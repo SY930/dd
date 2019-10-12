@@ -4,10 +4,9 @@ import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
 import phoneImg from './assets/iphone.png';
-import defaultEnterImg from './assets/recommend1.png'
+import defaultExpansionBgImg from './assets/expansionBg.png'
 import defaultEndImg from './assets/recommend2.png'
-import giftExample from './assets/gift-example.png'
-import tagImg from './assets/tag.svg'
+import phoneTop from './assets/phoneTop.png'
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 
@@ -23,14 +22,36 @@ export default class ExpasionGiftDecorationBoard extends Component {
         const { tabKey } = this.state;
         const {
             decorationInfo: {
-                enterImg = defaultEnterImg,
-                endImg = defaultEndImg,
-                endColor = '#FF6125',
+                bannerImg = defaultExpansionBgImg,
+                giftThumbImg1,
+                giftImg1,
+                giftThumbImg2,
+                giftImg2,
+                giftThumbImg3,
+                giftImg3,
+                bgColor,
+                buttonBgColor,
+                buttonColor,
+                tagColor1,
+                tagColor2,
+                tagColor3,
             },
         } = this.props;
         return (
             <div className={style.previewArea}>
                 <img src={phoneImg} alt=""/>
+                <img className={style.fakeHeader} src={phoneTop} alt=""/>
+                <div className={style.scrollArea}>
+                    <img style={{ width: '100%' }} src={bannerImg} alt=""/>
+                    <div className={style.timmer}>
+                        活动还剩：2天17小时10分30秒
+                    </div>
+                    <div className={style.giftContainer}>
+                        <div className={style.buttonArea}>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -250,23 +271,6 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 <Tabs activeKey={this.state.tabKey} onTabClick={(tabKey) => this.setState({tabKey})} className={style.customTabWrapper}>
                         <TabPane tab="页面配图" key="1">
                             {this.renderIMGSettingPanel()}
-                            {/* <div style={{ paddingTop: 45 }}>
-                                <div className={style.sectionWrapper}>
-                                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
-                                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                                        <DecorationUploader
-                                            limit={1000}
-                                            onChange={value => onChange({key: ['enterImg'], value})}
-                                        />
-                                        <div className={style.uploaderTip}>
-                                            <p>* 图片大小不要超过1000KB</p>
-                                            <p>* 建议尺寸920x1346像素</p>
-                                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({tabKey: '2'})}>下一页</Button>
-                            </div>  */}
                         </TabPane>
                         <TabPane tab="活动皮肤装修" key="2">
                             {this.renderColorSettingPanel()}
