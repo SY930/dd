@@ -29,21 +29,21 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 giftImg2,
                 giftThumbImg3,
                 giftImg3,
-                bgColor,
-                buttonBgColor,
-                buttonColor,
-                tagColor1,
-                tagColor2,
-                tagColor3,
+                bgColor = '#FF353B',
+                buttonBgColor = '#FFC455',
+                buttonColor = '#AD0701',
+                tagColor1 = '#D639DE',
+                tagColor2 = '#FB4273',
+                tagColor3 = '#F9CD4D',
             },
         } = this.props;
         return (
             <div className={style.previewArea}>
                 <img src={phoneImg} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
-                <div className={style.scrollArea}>
+                <div style={{ background: bgColor }} className={style.scrollArea}>
                     <img style={{ width: '100%' }} src={bannerImg} alt=""/>
-                    <div className={style.timmer}>
+                    <div className={style.timer}>
                         活动还剩：2天17小时10分30秒
                     </div>
                     <div className={style.giftContainer}>
