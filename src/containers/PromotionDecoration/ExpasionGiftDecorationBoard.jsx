@@ -44,6 +44,9 @@ export default class ExpasionGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
+                <div className={style.typeTitle}>
+                    膨胀大礼包
+                </div>
                 <img src={phoneImg} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: bgColor }} className={style.scrollArea}>
@@ -240,10 +243,6 @@ export default class ExpasionGiftDecorationBoard extends Component {
     }
     renderIMGSettingPanel() {
         const {
-            decorationInfo: {
-                endImg,
-                endColor = '#FF6125',
-            },
             onChange,
         } = this.props;
         return (

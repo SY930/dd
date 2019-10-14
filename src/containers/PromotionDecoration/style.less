@@ -171,6 +171,15 @@
     width: 400px;
     padding: 45px 0 0 75px;
     position: relative;
+    .typeTitle {
+        position: absolute;
+        top: 93px;
+        left: 92px;
+        font-size: 15px;
+        width: 287px;
+        text-align: center;
+        z-index: 10;
+    }
     .fakeHeader {
         position: absolute;
         top: 58px;
@@ -419,6 +428,27 @@
     .rule {
         color: rgba(255,255,255,0.8);
         line-height: 1.5;
+    }
+}
+.shareCommonBlock {
+    padding-top: 30px;
+    overflow: hidden;
+    position: relative;
+    width: 259px;
+    margin: 0 auto 20px;
+    background:rgba(255,255,255,0.2);
+    border-radius: 13px;
+    > img {
+        width: 210px;
+        display: block;
+        margin: 10px auto 0;
+    }
+    .buttonArea {
+        margin: 20px auto;
+        width: 210px;
+        height: 34px;
+        border-radius: 17px;
+        .centeredFlex();
     }
 }
 

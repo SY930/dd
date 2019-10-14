@@ -4,19 +4,67 @@ import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
 import phoneImg from './assets/iphone.png';
-import defaultEnterImg from './assets/recommend1.png'
-import defaultEndImg from './assets/recommend2.png'
+import defaultShareBgImg from './assets/shareGift.png';
+import shareGift1 from './assets/shareGift1.png';
+import phoneTop from './assets/phoneTop.png'
 import giftExample from './assets/gift-example.png'
-import tagImg from './assets/tag.svg'
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 
 export default class ShareGiftDecorationBoard extends Component {
 
     renderPhonePreview() {
+        const {
+            decorationInfo: {
+                bannerImg = defaultShareBgImg,
+                bgColor = '#FF6248',
+                buttonBgColor = '#FFC655',
+                buttonColor = '#FFFFFF',
+                tagColor1 = '#CF4CE4',
+                tagColor2 = '#CF4CE4',
+                tagColor3 = '#FB4171',
+            },
+        } = this.props;
         return (
             <div className={style.previewArea}>
+                <div className={style.typeTitle}>
+                    分享裂变
+                </div>
                 <img src={phoneImg} alt=""/>
+                <img className={style.fakeHeader} src={phoneTop} alt=""/>
+                <div style={{ background: bgColor }} className={style.scrollArea}>
+                    <img style={{ width: '100%' }} src={bannerImg} alt=""/>
+                    <div style={{ margin: '8px 0', textAlign: 'center', color: 'rgba(255,255,255,0.9)' }}>
+                        活动时间：2019.03.20-2019.04.20
+                    </div>
+                    <div className={style.shareCommonBlock}>
+                        <div style={{ background: tagColor1 }} className={style.coloredTag}>
+                            我的礼品
+                        </div>
+                        <img src={giftExample} alt=""/>
+                        <img src={giftExample} alt=""/>
+                        <div className={style.buttonArea} style={{ background: buttonBgColor, color: buttonColor }}>
+                            邀请好友领壕礼
+                        </div>
+                    </div>
+                    <div className={style.shareCommonBlock}>
+                        <div style={{ background: tagColor2 }} className={style.coloredTag}>
+                            好友的礼品
+                        </div>
+                        <img src={giftExample} alt=""/>
+                        <img src={giftExample} alt=""/>
+                        <img src={giftExample} alt=""/>
+                        <br/>
+                    </div>
+                    <div style={{ background: '#FDA956' }} className={style.shareCommonBlock}>
+                        <div style={{ background: tagColor3 }} className={style.coloredTag}>
+                            邀请的好友
+                        </div>
+                        <img src={shareGift1} alt=""/>
+                        <br/>
+                    </div>
+                    
+                </div>
             </div>
         )
     }
@@ -24,12 +72,12 @@ export default class ShareGiftDecorationBoard extends Component {
     renderSettingPanel() {
         const {
             decorationInfo: {
-                bgColor = '#FF353B',
-                buttonBgColor = '#FFC455',
-                buttonColor = '#AD0701',
-                tagColor1 = '#D639DE',
-                tagColor2 = '#FB4273',
-                tagColor3 = '#F9CD4D',
+                bgColor = '#FF6248',
+                buttonBgColor = '#FFC655',
+                buttonColor = '#FFFFFF',
+                tagColor1 = '#CF4CE4',
+                tagColor2 = '#CF4CE4',
+                tagColor3 = '#FB4171',
             },
             onChange,
         } = this.props;
@@ -48,7 +96,7 @@ export default class ShareGiftDecorationBoard extends Component {
                         />
                         <div className={style.uploaderTip}>
                             <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸750x666像素</p>
+                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>750*666</span>像素</p>
                             <p>* 支持JPG、PNG、GIF图片文件</p>
                         </div>
                     </div>
@@ -108,13 +156,13 @@ export default class ShareGiftDecorationBoard extends Component {
                         <div className={style.rightBlock}>
                             <h5>图例</h5>
                             <div style={{ background: tagColor1 }} className={style.tagPreview}>
-                                活动好礼
+                                我的礼品
                             </div>
                             <div style={{ background: tagColor2 }} className={style.tagPreview}>
-                                助力好友榜
+                                好友的礼品
                             </div>
                             <div style={{ background: tagColor3 }} className={style.tagPreview}>
-                                活动规则
+                                邀请的好友
                             </div>
                         </div>
                     </div>
