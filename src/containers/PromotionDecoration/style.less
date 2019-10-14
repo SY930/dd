@@ -193,6 +193,15 @@
         height: 550px;
         border-radius: 0 0 30px 30px;
         overflow-y: auto;
+        ::-webkit-scrollbar {
+            width: 3px;
+        } 
+        ::-webkit-scrollbar-track {
+            background: #ddd;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #666; 
+        }
     }
 }
 @total-height: 374px;
@@ -450,5 +459,23 @@
         border-radius: 17px;
         .centeredFlex();
     }
+}
+.freeButton {
+    .centeredFlex();
+    width: 187px;
+    height: 40px;
+    margin: 0 auto;
+    position: relative;
+    top: -80px;
+    z-index: 1;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+.friendZone { // get it ?
+    width:254px;
+    margin: -10px auto 20px;
+    height: 300px;
+    background:rgba(255,255,255,1);
+    border: 1px solid;
+    border-radius:8px;
 }
 
