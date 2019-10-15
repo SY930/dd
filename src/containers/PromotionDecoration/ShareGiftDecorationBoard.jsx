@@ -27,6 +27,9 @@ export default class ShareGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
+                <div className={style.scrollTip}>
+                    滚动鼠标查看活动
+                </div>
                 <div className={style.typeTitle}>
                     分享裂变
                 </div>

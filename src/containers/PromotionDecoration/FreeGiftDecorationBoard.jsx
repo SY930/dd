@@ -28,6 +28,9 @@ export default class FreeGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
+                <div className={style.scrollTip}>
+                    滚动鼠标查看活动
+                </div>
                 <div className={style.typeTitle}>
                     免费领取
                 </div>

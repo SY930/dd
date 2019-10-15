@@ -44,6 +44,9 @@ export default class ExpasionGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
+                <div className={style.scrollTip}>
+                    滚动鼠标查看活动
+                </div>
                 <div className={style.typeTitle}>
                     膨胀大礼包
                 </div>
