@@ -165,7 +165,7 @@ class WeChatMessageFormWrapper extends Component {
                         <Radio key={'1'} value={1}>跳转</Radio>
                     </RadioGroup>
                 </FormItem>
-                <Alert style={{ marginLeft: 90, width: 450, paddingRight: 8 }} type="success" message="受腾讯礼品消息模版规则限制，建议不要设置页面跳转，减少模版被投诉风险"></Alert>
+                <Alert style={{ marginLeft: 90, width: 450, paddingRight: 8 }} type="success" message="受腾讯礼品消息模板规则限制，建议不要设置页面跳转，减少模板被投诉风险"></Alert>
                 {
                     jump == 1 && (
                         <div>
