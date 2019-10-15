@@ -137,7 +137,13 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                     alt=""
                                 />
                                 </div>
-                                <div className={style.action}>
+                                <div
+                                    className={style.action}
+                                    style={{
+                                        background: buttonBgColor,
+                                        color: buttonColor,
+                                    }}
+                                >
                                     参与即领
                                 </div>
                             </div>
@@ -247,6 +253,15 @@ export default class ExpasionGiftDecorationBoard extends Component {
     renderIMGSettingPanel() {
         const {
             onChange,
+            decorationInfo: {
+                bannerImg,
+                giftThumbImg1,
+                giftImg1,
+                giftThumbImg2,
+                giftImg2,
+                giftThumbImg3,
+                giftImg3,
+            }
         } = this.props;
         return (
             <div>
@@ -255,6 +270,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={bannerImg}
                             onChange={value => onChange({key: ['bannerImg'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -269,6 +285,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftThumbImg1}
                             onChange={value => onChange({key: ['giftThumbImg1'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -283,6 +300,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftImg1}
                             onChange={value => onChange({key: ['giftImg1'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -297,6 +315,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftThumbImg2}
                             onChange={value => onChange({key: ['giftThumbImg2'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -311,6 +330,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftImg2}
                             onChange={value => onChange({key: ['giftImg2'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -325,6 +345,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftThumbImg3}
                             onChange={value => onChange({key: ['giftThumbImg3'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -339,6 +360,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={giftImg3}
                             onChange={value => onChange({key: ['giftImg3'], value})}
                         />
                         <div className={style.uploaderTip}>

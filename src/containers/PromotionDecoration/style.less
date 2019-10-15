@@ -296,10 +296,10 @@
     .rightBlock {
         width: 50%;
         background: #F8F8F8;
-        padding-left: 40px;
         h5 {
             color: #999999;
-            margin: 10px 0;
+            margin: 10px auto;
+            text-align: center;
         }
     }
 }
@@ -327,7 +327,7 @@
     color: #FFFFFF;
     font-size: 15px;
     font-weight:500;
-    margin-bottom: 20px;
+    margin: 0 auto 20px;
 }
 .inlineRow {
     display: flex;
@@ -400,8 +400,8 @@
             margin-top: 10px;
             height: 22px;
             border-radius: 11px;
-            background: #FEDA65;
-            color: #AD0701;
+            background: rgb(155, 128, 39);
+            color: rgb(85, 10, 8);
         }
     }
 }
@@ -448,6 +448,10 @@
         color: rgba(255,255,255,0.8);
         line-height: 1.5;
     }
+    .ruleSubTitle {
+        font-weight: bold;
+        line-height: 1.8;
+    }
 }
 .shareCommonBlock {
     padding-top: 30px;
@@ -482,10 +486,38 @@
 }
 .friendZone { // get it ?
     width:254px;
-    margin: -10px auto 20px;
+    margin: -36px auto 20px;
     height: 300px;
     background:rgba(255,255,255,1);
     border: 1px solid;
     border-radius:8px;
+}
+.resetableTrigger {
+    width: 96px;
+    height: 96px;
+    position: relative;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    overflow: hidden;
+    .actionBar {
+        opacity: 0;
+        position: absolute;
+        text-align: center;
+        line-height: 25px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 25px;
+        color: #FFF;
+        transition: opacity 0.3 ease-in;
+        background: rgba(0,0,0, 0.5)
+    }
+    &:hover .actionBar {
+        opacity: 1;
+    }
+    > img {
+        width: 94px;
+        height: 94px;
+    }
 }
 

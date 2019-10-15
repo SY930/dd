@@ -23,6 +23,7 @@ export default class ShareGiftDecorationBoard extends Component {
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
                 tagColor3 = '#FB4171',
+                tagColor4 = '#CF4CE4',
             },
         } = this.props;
         return (
@@ -59,12 +60,30 @@ export default class ShareGiftDecorationBoard extends Component {
                         <img src={giftExample} alt=""/>
                         <br/>
                     </div>
-                    <div style={{ background: '#FDA956' }} className={style.shareCommonBlock}>
+                    <div className={style.shareCommonBlock}>
                         <div style={{ background: tagColor3 }} className={style.coloredTag}>
                             邀请的好友
                         </div>
                         <img src={shareGift1} alt=""/>
                         <br/>
+                    </div>
+                    <div className={style.ruleInfo}>
+                        <div style={{ background: tagColor4 }} className={style.coloredTag}>
+                            活动规则
+                        </div>
+                        <div className={style.rule}>
+                            <p className={style.ruleSubTitle}>活动主题</p>
+                            <p style={{ paddingLeft: 10 }}>2018-11-17~2018-12.17</p>
+                            <p className={style.ruleSubTitle}>邀请人礼品</p>
+                            <p style={{ paddingLeft: 10 }}>礼品一名称，2张</p>
+                            <p style={{ paddingLeft: 10 }}>礼品二名称，3张</p>
+                            <p className={style.ruleSubTitle}>被邀请人礼品</p>
+                            <p style={{ paddingLeft: 10 }}>礼品一名称，2张</p>
+                            <p style={{ paddingLeft: 10 }}>礼品二名称，3张</p>
+                            <p className={style.ruleSubTitle}>活动详情</p>
+                            <p style={{ paddingLeft: 10 }}>1、被邀请人注册为会员即邀请成功</p>
+                            <p style={{ paddingLeft: 10 }}>2、邀请人最多可参与N次邀请活动</p>       
+                        </div>
                     </div>
                     
                 </div>
@@ -81,6 +100,8 @@ export default class ShareGiftDecorationBoard extends Component {
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
                 tagColor3 = '#FB4171',
+                tagColor4 = '#CF4CE4',
+                bannerImg,
             },
             onChange,
         } = this.props;
@@ -95,6 +116,7 @@ export default class ShareGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={bannerImg}
                             onChange={value => onChange({key: ['bannerImg'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -120,7 +142,7 @@ export default class ShareGiftDecorationBoard extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 8 }} className={style.label}>标签样式</div>
-                    <div className={style.tagColorBlock}>
+                    <div style={{ height: 210 }} className={style.tagColorBlock}>
                         <div className={style.leftBlock}>
                             <div className={style.colorRow}>
                                 <span>标签一</span>
@@ -155,6 +177,17 @@ export default class ShareGiftDecorationBoard extends Component {
                                     />
                                 </div>
                             </div>
+                            <div className={style.colorRow}>
+                                <span>标签四</span>
+                                <div className={style.borderedColorWrapper}>
+                                    <WrappedColorPicker
+                                        alpha={100}
+                                        color={tagColor4}
+                                        onChange={({ color }) => onChange({key: ['tagColor4'], value: color})}
+                                        placement="topLeft"
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className={style.rightBlock}>
                             <h5>图例</h5>
@@ -166,6 +199,9 @@ export default class ShareGiftDecorationBoard extends Component {
                             </div>
                             <div style={{ background: tagColor3 }} className={style.tagPreview}>
                                 邀请的好友
+                            </div>
+                            <div style={{ background: tagColor4 }} className={style.tagPreview}>
+                                活动规则
                             </div>
                         </div>
                     </div>

@@ -65,6 +65,7 @@ export default class SimpleDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={img}
                             onChange={value => onChange({key: ['img'], value})}
                         />
                         <div className={style.uploaderTip}>

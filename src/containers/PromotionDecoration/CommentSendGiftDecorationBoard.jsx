@@ -83,6 +83,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={endImg}
                             onChange={value => onChange({key: ['endImg'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -116,6 +117,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                                         <DecorationUploader
                                             limit={1000}
+                                            value={enterImg}
                                             onChange={value => onChange({key: ['enterImg'], value})}
                                         />
                                         <div className={style.uploaderTip}>

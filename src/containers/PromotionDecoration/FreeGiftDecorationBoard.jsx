@@ -22,7 +22,6 @@ export default class FreeGiftDecorationBoard extends Component {
                 tagBg = '#FF7E60',
                 tagTextColor = '#FDFDFF',
                 listBorderColor = '#FC988A',
-                btnRadius = 50,
                 activeImg,
             },
         } = this.props;
@@ -42,8 +41,8 @@ export default class FreeGiftDecorationBoard extends Component {
                         活动日期：2019.09.10~2019.11.12
                     </div>
                     <img style={{ position: 'relative', zIndex: 1, display: 'block', margin: '10px auto', width: 254 }} src={freeGift1} alt=""/>
-                    <img style={{ position: 'absolute', zIndex: 1, display: 'block', top: 195, left: 60, width: 170 }} src={giftExample} alt=""/>
-                    <div style={{ borderRadius: 40 *(btnRadius / 100), background: btnBg, color: btnTextColor}} className={style.freeButton}>
+                    <img style={{ position: 'absolute', zIndex: 1, display: 'block', top: 196, left: 49, width: 185 }} src={giftExample} alt=""/>
+                    <div style={{ borderRadius: 20, background: btnBg, color: btnTextColor}} className={style.freeButton}>
                         免费领取
                     </div>
                     <div style={{ position: 'relative', borderColor: listBorderColor }} className={style.friendZone}>
@@ -93,7 +92,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 tagBg = '#FF7E60',
                 tagTextColor = '#FDFDFF',
                 listBorderColor = '#FC988A',
-                btnRadius = 50,
+                activeImg,
             },
             onChange,
         } = this.props;
@@ -108,6 +107,7 @@ export default class FreeGiftDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
+                            value={activeImg}
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -138,14 +138,14 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        <span>圆角弧度</span>
+                        {/* <span>圆角弧度</span>
                         <InputNumber
                             style={{ width: 82 }}
                             min={0}
                             max={50}
                             value={btnRadius}
                             onChange={(value) => onChange({key: ['btnRadius'], value})}
-                        />
+                        /> */}
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
@@ -156,16 +156,10 @@ export default class FreeGiftDecorationBoard extends Component {
                             <WrappedColorPicker
                                 alpha={100}
                                 color={tagBg}
-                                onChange={({ color }) => onChange({key: ['tagBg'], value: color})}
-                                placement="topLeft"
-                            />
-                        </div>
-                        <span>文字颜色</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={tagTextColor}
-                                onChange={({ color }) => onChange({key: ['tagTextColor'], value: color})}
+                                onChange={({ color }) => {
+                                    onChange({key: ['tagBg'], value: color});
+                                    onChange({key: ['listBorderColor'], value: color})
+                                }}
                                 placement="topLeft"
                             />
                         </div>
@@ -175,6 +169,15 @@ export default class FreeGiftDecorationBoard extends Component {
                                 alpha={100}
                                 color={listBorderColor}
                                 onChange={({ color }) => onChange({key: ['listBorderColor'], value: color})}
+                                placement="topLeft"
+                            />
+                        </div>
+                        <span>文字颜色</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={tagTextColor}
+                                onChange={({ color }) => onChange({key: ['tagTextColor'], value: color})}
                                 placement="topLeft"
                             />
                         </div>

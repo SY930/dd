@@ -37,17 +37,35 @@ export default class DecorationUploader extends Component {
             beforeUpload: this.beforeUpload,
             onChange: this.onUrlChange,
         };
+        const { value, onChange } = this.props;
         return (
             <Upload
                 {...uploadProps}
             >
-                <div className={style.uploaderTrigger} >
-                    <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
-                    <br/>
-                    <span>
-                        上传
-                    </span>
-                </div>                              
+                {
+                    value ? (
+                        <div className={style.resetableTrigger}>
+                            <div
+                                className={style.actionBar}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onChange(undefined);
+                                }}
+                            >
+                                重置
+                            </div>
+                            <img src={value} alt=""/>
+                        </div>
+                    ) : (
+                        <div className={style.uploaderTrigger} >
+                            <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
+                            <br/>
+                            <span>
+                                上传
+                            </span>
+                        </div> 
+                    )
+                }                               
             </Upload>
         )
     }

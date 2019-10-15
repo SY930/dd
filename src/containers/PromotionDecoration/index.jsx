@@ -63,6 +63,9 @@ export default class PromotionDecoration extends Component {
         }
         this.props.getDecorationInfo({type, id})
     }
+    componentWillUnmount() {
+        this.props.resetDecorationInfo();
+    }
 
     handleCancel = () => {
         closePage();
