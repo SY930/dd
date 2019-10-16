@@ -78,9 +78,11 @@ const mapStateToProps = (state) => {
     };
 };
 const DECORATABLE_PROMOTIONS = [
+    '21',
     '23',
     '64',
-    // '66'
+    '65',
+    '66',
 ]
 const isDecorationAvailable = ({eventWay}) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)

@@ -15,6 +15,9 @@ import {
 } from '../../constants/entryCodes';
 import SimpleDecorationBoard from './SimpleDecorationBoard';
 import CommentSendGiftDecorationBoard from './CommentSendGiftDecorationBoard';
+import ExpasionGiftDecorationBoard from './ExpasionGiftDecorationBoard';
+import ShareGiftDecorationBoard from './ShareGiftDecorationBoard';
+import FreeGiftDecorationBoard from './FreeGiftDecorationBoard';
 import {
     getDecorationInfo,
     saveDecorationInfo,
@@ -59,6 +62,9 @@ export default class PromotionDecoration extends Component {
             return;
         }
         this.props.getDecorationInfo({type, id})
+    }
+    componentWillUnmount() {
+        this.props.resetDecorationInfo();
     }
 
     handleCancel = () => {
@@ -121,12 +127,16 @@ export default class PromotionDecoration extends Component {
     renderContent() {
         const { type, decorationInfo, updateDecorationItem } = this.props;
         switch (type) {
-            case '3010':
-            case '5010':
+            case '21':
+                return <FreeGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '23':
                 return <SimpleDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '64':
                 return <CommentSendGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case '65':
+                return <ShareGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case '66':
+                return <ExpasionGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }

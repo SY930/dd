@@ -4,7 +4,7 @@ import {
 } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
-import CropperUploader from '../../components/common/CropperUploader';
+import DecorationUploader from './DecorationUploader'
 import phoneImg from './assets/iphone.png';
 import onlineResGift from './assets/online-res.png'
 import giftExample from './assets/gift-example.png'
@@ -29,7 +29,9 @@ export default class SimpleDecorationBoard extends Component {
                             <img src={tagImg} alt=""/>
                             <span>活动主图</span>
                         </div>
-                        <img src={img} style={{ width: '100%', height: '100%' }} alt=""/>
+                        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                            <img src={img} style={{ width: '100%' }} alt=""/>
+                        </div>
                     </div>
                     <div style={{ background: color }} className={style.bgWrapper}>
                         <img src={giftExample} alt=""/>
@@ -55,21 +57,21 @@ export default class SimpleDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 45 }} className={style.label}>弹窗背景色</div>
+                    <div className={style.label}>弹窗背景色</div>
                     <ColorSettingBlock value={color} onChange={(value) => onChange({key: ['color'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <CropperUploader
-                            limit={0}
-                            cropperRatio={92/36}
-                            allowedType={['image/png', 'image/jpeg']}
-                            onChange={url => onChange({key: ['img'], value: `http://res.hualala.com/${url}`})}
+                        <DecorationUploader
+                            limit={1000}
+                            value={img}
+                            onChange={value => onChange({key: ['img'], value})}
                         />
                         <div className={style.uploaderTip}>
+                            <p>* 图片大小不要超过1000KB</p>
                             <p>* 建议尺寸920x360像素</p>
-                            <p>* 支持JPG、PNG图片文件</p>
+                            <p>* 支持JPG、PNG、GIF图片文件</p>
                         </div>
                     </div>
                 </div>
