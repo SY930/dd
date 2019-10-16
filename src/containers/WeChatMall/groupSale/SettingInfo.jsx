@@ -11,7 +11,7 @@ import {
     message,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import selfStyle from './style.less'
+import selfStyle from '../style.less'
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import SingleGoodSelector from '../../../components/common/GoodSelector'
 

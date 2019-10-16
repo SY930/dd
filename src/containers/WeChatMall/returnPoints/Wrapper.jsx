@@ -1,5 +1,6 @@
 import React from 'react';
 import BasicInfo from './BasicInfo';
+import ScopeInfo from './ScopeInfo';
 import SettingInfo from './SettingInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 
@@ -25,11 +26,23 @@ class Wrapper extends React.Component {
                     />),
             },
             {
+                title: '活动范围',
+                content: (
+                    <ScopeInfo
+                        getSubmitFn={(handles) => {
+                            this.handles[1] = handles;
+                        }}
+                        itemID={this.state.itemID}
+                        data={this.state.data}
+                        onChange={this.handleDataChange}
+                    />),
+            },
+            {
                 title: '活动内容',
                 content: (
                     <SettingInfo
                         getSubmitFn={(handles) => {
-                            this.handles[1] = handles;
+                            this.handles[2] = handles;
                         }}
                         data={this.state.data}
                         onChange={this.handleDataChange}
