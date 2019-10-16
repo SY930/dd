@@ -250,7 +250,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="_addMoneyTradeDetail">
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <FormItem
                         label="活动方式"
