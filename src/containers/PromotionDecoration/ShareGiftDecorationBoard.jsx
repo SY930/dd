@@ -69,7 +69,7 @@ export default class ShareGiftDecorationBoard extends Component {
                     </div>
                     <div className={style.ruleInfo}>
                         <div style={{ background: tagColor4 }} className={style.coloredTag}>
-                            活动规则
+                            活动介绍
                         </div>
                         <div className={style.rule}>
                             <p className={style.ruleSubTitle}>活动主题</p>
@@ -201,7 +201,7 @@ export default class ShareGiftDecorationBoard extends Component {
                                 邀请的好友
                             </div>
                             <div style={{ background: tagColor4 }} className={style.tagPreview}>
-                                活动规则
+                                活动介绍
                             </div>
                         </div>
                     </div>
