@@ -1885,6 +1885,7 @@ class SpecialDetailInfo extends Component {
         if (type == '63') { // 唤醒送礼，多个天数档位设置需要去重
             return this.renderWakeupGiftsDetail();
         }
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
@@ -1902,6 +1903,7 @@ class SpecialDetailInfo extends Component {
                             <RadioGroup
                                 onChange={this.handleGiftGetRuleChange}
                                 value={this.state.giftGetRule}
+                                disabled={userCount > 0}
                             >
                                 <Radio key={'0'} value={0}>领取符合条件的最高档位礼品</Radio>
                                 <Radio key={'1'} value={1}>领取符合条件的所有档位礼品</Radio>
