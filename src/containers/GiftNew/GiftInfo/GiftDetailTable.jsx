@@ -222,6 +222,11 @@ class GiftDetailTable extends Component {
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             g.isDiscountRate = g.discountRate < 1;
             g.isPointRate = g.pointRate > 0;
+            // 金豆商城字段和vivo快应用字段合并
+            g.aggregationChannels = [];
+            g.goldGift && g.aggregationChannels.push('goldGift');
+            g.vivoChannel && g.aggregationChannels.push('vivoChannel');
+            
             g.transferType = g.transferType > 0 ? 1 : 0; // 该字段以前是0 1 2, 三种值 现在1, 2合并为1
             if (g.transferLimitType !== undefined && g.transferLimitType != -1) {
                 g.transferLimitType = String(g.transferLimitType);
