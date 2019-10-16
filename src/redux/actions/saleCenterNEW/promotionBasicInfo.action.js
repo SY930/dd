@@ -99,7 +99,7 @@ export const saleCenterAddPhrase = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
         .then((records) => {
             if (opts.data.phraseType == '0') {
@@ -135,7 +135,7 @@ export const saleCenterDeletePhrase = (opts) => {
             opts.data,
             {},
             { path: 'data' },
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
         .then((res) => {
             opts.success && opts.success();
@@ -160,7 +160,7 @@ export const fetchFilterShops = (opts) => {
             opts.data,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((responseJSON) => {
             dispatch(fetchFilterShopsSuccess(responseJSON))
         }, (error) => {

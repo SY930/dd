@@ -244,7 +244,7 @@ export const addPhrase = (opts) => {
             opts,
             {},
             {path: 'data'},
-            'HTTP_SERVICE_URL_CRM'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
             .then((records) => {
                 if (opts.phraseType == '0') {

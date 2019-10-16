@@ -29,7 +29,7 @@ export default class PromotionNameSelect extends React.Component {
             ...opt,
             promotionType: opt.promotionType > 0 ? opt.promotionType : undefined
         }
-        axiosData('/promotion/docPromotionService_queryPromotionNameLst.ajax', param, null, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
+        axiosData('/promotion/docPromotionService_queryPromotionNameLst.ajax', param, null, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
                 this.setState({
                     allPromotionNameLst: res.promotionNameLst || [],

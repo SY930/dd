@@ -355,7 +355,7 @@ class MyActivities extends React.Component {
                     params,
                     {},
                     {path: 'data'},
-                    'HTTP_SERVICE_URL_CRM'
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ).then(() => {
                     message.success(`删除成功`);
                     this.tryToRefresh();
@@ -574,7 +574,7 @@ class MyActivities extends React.Component {
 
     changeSortOrder(record, direction) {
         const params = {promotionID: record.promotionIDStr, rankingType: direction};
-        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_CRM').then(() => {
+        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             this.tryToRefresh()
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
