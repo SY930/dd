@@ -17,7 +17,7 @@ import Immutable from 'immutable';
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import SpecialDishesTable from '../common/SpecialDishesTable'; // 表格
+import SpecialDishesTableWithoutBrand from './SpecialDishesTableWithoutBrand'; // 表格
 import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
 
 const FormItem = Form.Item;
@@ -65,15 +65,7 @@ class SpecialDetailInfo extends React.Component {
             display,
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
-            targetScope: _categoryOrDish,
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])
-            !== nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
-            this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])});
-        }
     }
 
     handleSubmit = (cbFn) => {
@@ -153,7 +145,7 @@ class SpecialDetailInfo extends React.Component {
                 <Form className={styles.FormStyle}>
                     {
                         this.props.isShopFoodSelectorMode ? (
-                            <SpecialDishesTable
+                            <SpecialDishesTableWithoutBrand
                                 onChange={this.dishesChange}
                             />
                         ) : (

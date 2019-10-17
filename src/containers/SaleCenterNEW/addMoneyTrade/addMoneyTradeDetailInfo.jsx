@@ -43,7 +43,6 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         super(props);
         this.state = {
             previousRuleType: null, // 妥协后端奇妙的数据结构
-            foodCategoryCollection: [],
             dishes: [],
             stageCountFlag: true,
             stageAmountFlag: true,

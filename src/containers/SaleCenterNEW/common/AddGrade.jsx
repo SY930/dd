@@ -34,8 +34,6 @@ class AddGrade extends React.Component {
                 2: '0',
             },
             selectedDishes: [],
-            foodCategoryCollection: [], // 存储所有相关数据
-
             data: this.props.value || {
                 0: {
                     stageAmount: '',
@@ -77,11 +75,6 @@ class AddGrade extends React.Component {
                     keys: Object.keys(nextProps.value),
                 });
             }
-        }
-        if (nextProps.foodCategoryCollection != this.props.foodCategoryCollection) {
-            this.setState({
-                foodCategoryCollection: nextProps.foodCategoryCollection,
-            });
         }
         if (this.props.value != nextProps.value) {
             this.setState({

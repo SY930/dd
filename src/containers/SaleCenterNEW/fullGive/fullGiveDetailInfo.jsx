@@ -42,16 +42,12 @@ class FullGiveDetailInfo extends React.Component {
         this.defaultRun = '0';
         const { data, ruleType } = this.initState();
         this.state = {
-            foodCategoryCollection: [],
             display: !this.props.isNew,
             ruleType,
             priceLst: [],
-            foodMenuList: [],
             data,
             priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
                 this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
-            foodMenuList: this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records ?
-                this.props.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records : [],
         };
     }
 
@@ -59,9 +55,6 @@ class FullGiveDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        if (this.props.isShopFoodSelectorMode) {
-            this.sortData(this.state.priceLst, this.state.foodMenuList)
-        }
     }
     initState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
@@ -139,65 +132,6 @@ class FullGiveDetailInfo extends React.Component {
             data,
             ruleType,
         }
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.isShopFoodSelectorMode) {
-            if (nextProps.promotionDetailInfo.get('foodCategoryCollection') != this.props.promotionDetailInfo.get('foodCategoryCollection')) {
-                this.setState({
-                    foodCategoryCollection: nextProps.promotionDetailInfo.get('foodCategoryCollection').toJS(),
-                    foodMenuList: nextProps.promotionDetailInfo.getIn(['$foodMenuListInfo', 'data']).toJS().records,
-                }, () => {
-                    this.sortData(this.state.priceLst, this.state.foodMenuList)
-                });
-            }
-        } 
-    }
-
-    sortData(_priceLst, foodMenu) {
-        if (_priceLst.length == 0 || foodMenu.length == 0) {
-            return
-        }
-        const _dish = [];
-        _priceLst.map((price, i) => {
-            const dish = foodMenu.find((food) => {
-                return food.itemID == price.foodUnitID;
-            });
-            const cDish = _.cloneDeep(dish);
-            if (cDish) {
-                cDish.stageNo = price.stageNo;
-                _dish.push(cDish);
-            }
-        });
-        const { data } = this.state;
-        const _dishes = {
-            0: [],
-            1: [],
-            2: [],
-        };
-        _dish.forEach((dish) => {
-            _dishes[dish.stageNo].push(dish);
-        });
-        Object.keys(_dishes).map((key) => {
-            if (_dishes[key].length > 0) {
-                if (!data[key]) {
-                    data[key] = {
-                        stageAmount: '',
-                        giftType: '1',
-                        dishes: [],
-                        giftName: null,
-                        foodCount: '',
-                        foodCountFlag: true,
-                        dishesFlag: true,
-                        StageAmountFlag: true,
-                    };
-                }
-                data[key].giftType = '1';
-                data[key].dishes = _dishes[key];
-            }
-        });
-        this.setState({
-            data,
-        });
     }
 
     handleSubmit = (cbFn) => {
@@ -379,7 +313,6 @@ class FullGiveDetailInfo extends React.Component {
                 <Row>
                     <Col span={19} offset={2}>
                         <AddGrade
-                            foodCategoryCollection={this.state.foodCategoryCollection}
                             getFieldDecorator={getFieldDecorator}
                             getFieldValue={getFieldValue}
                             form={this.props.form}

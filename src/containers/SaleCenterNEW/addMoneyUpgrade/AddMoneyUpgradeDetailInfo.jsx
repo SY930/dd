@@ -36,7 +36,6 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         this.state = {
             display: false,
             foodMenuList: [],
-            foodCategoryCollection: [],
             countType: 0,
             subjectType: 0,
             stageCondition: 0,

@@ -167,6 +167,8 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
                 type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
                 payload: opts.shopID && opts.shopID > 0
             })
+            // 起reset作用
+            dispatch(getRawFoodCatgorySuccess({records: []}))
             if (opts.shopID && opts.shopID > 0) {
                 return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res = []) => {
                     dispatch(getFoodCategorySuccessToProcess({records: res}))
@@ -194,6 +196,8 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
             type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
             payload: opts.shopID && opts.shopID > 0
         })
+        // 起reset作用
+        dispatch(getRawFoodCatgorySuccess({records: []}))
         dispatch(fetchFoodCategoryStart());
         const url = opts.shopID && opts.shopID > 0 ?
   	            '/shopapi/queryShopFoodClass.svc' : '/shopapi/queryGroupFoodCategory.svc';
@@ -261,6 +265,7 @@ const fetchFoodMenuFailed = () => {
 export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
             dispatch({
                 type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
                 payload: params.shopID && params.shopID > 0
@@ -292,6 +297,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
             payload: params.shopID && params.shopID > 0
         })
+        dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
         if (params.shopID && params.shopID > 0) {
             return axiosData('/shopapi/queryShopFoodSubInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
             .then(

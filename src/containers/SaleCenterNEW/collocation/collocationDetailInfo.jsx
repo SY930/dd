@@ -1,27 +1,15 @@
-/**
- * @Author: chenshuang
- * @Date:   2017-04-01T10:37:50+08:00
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:57:47+08:00
- */
-
-
-/*
- update by Cs on 2017/03/02 。 添加特价
- */
-
 import React, { Component } from 'react'
 import { Form, Select, message } from 'antd';
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import CollocationTable from '../common/CollocationTable'; // 表格
+
 import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID'; // 表格
+import CollocationTableWithoutBrandID from '../common/CollocationTableWithoutBrandID'; // 表格
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Immutable = require('immutable');
 
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
@@ -34,7 +22,7 @@ class CollocationDetailInfo extends React.Component {
         super(props);
         this.defaultRun = '0';
         this.state = {
-            display: false,
+            display: !this.props.isNew,
             priceLst: [],
             scopeLst: [],
         };
@@ -49,30 +37,6 @@ class CollocationDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let _priceLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-        _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
-        let _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-        _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
-        const display = !this.props.isNew;
-        this.setState({
-            display,
-            priceLst: _priceLst,
-            scopeLst: _scopeLst,
-        });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) !== this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']) ||
-            nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']) !== this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst'])
-        ) {
-            let _priceLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']);
-            _priceLst = Immutable.List.isList(_priceLst) ? _priceLst.toJS() : [];
-            let _scopeLst = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
-            _scopeLst = Immutable.List.isList(_scopeLst) ? _scopeLst.toJS() : [];
-            this.setState({
-                priceLst: _priceLst,
-                scopeLst: _scopeLst,
-            });
-        }
     }
 
     handleSubmit() {
@@ -152,10 +116,8 @@ class CollocationDetailInfo extends React.Component {
                 <Form className={styles.FormStyle}>
                     {
                         this.props.isShopFoodSelectorMode ? (
-                            <CollocationTable
+                            <CollocationTableWithoutBrandID
                                 onChange={this.dishesChange}
-                                priceLst={this.state.priceLst}
-                                scopeLst={this.state.scopeLst}
                             />
                         ) : (
                             <CollocationTableWithBrandID
