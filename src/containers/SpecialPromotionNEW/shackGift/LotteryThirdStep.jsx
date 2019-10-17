@@ -3,7 +3,7 @@ import { Button, Icon, Tabs, message } from 'antd';
 import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
-import { defaultData, getDefaultGiftData, defaultGivePointsXXXXX } from './defaultCommonData';
+import { defaultData, getDefaultGiftData, defaultGivePointsXXXXX, defaultGiveCouponXXXXX } from './defaultCommonData';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPrizeData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
@@ -125,10 +125,9 @@ class LotteryThirdStep extends React.Component {
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
-            _infos[index].giftInfo.giftName = newValue[1];
-            _infos[index].giftInfo.giftItemID = newValue[0];
-            _infos[index].giftInfo.validateStatus = 'success';
-            _infos[index].giftInfo.msg = null;
+            _infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = newValue[0];
+            _infos[index].giveCouponXXXXX.value.giftInfo.validateStatus = 'success';
+            _infos[index].giveCouponXXXXX.value.giftInfo.msg = null;
             this.setState({
                 infos: _infos,
             },() => {
@@ -136,10 +135,10 @@ class LotteryThirdStep extends React.Component {
             });
         } else {
             const _infos = this.state.infos;
-            _infos[index].giftInfo.giftName = null;
-            _infos[index].giftInfo.giftItemID = null;
-            _infos[index].giftInfo.validateStatus = 'error';
-            _infos[index].giftInfo.msg = '必须选择礼券';
+            _infos[index].giveCouponXXXXX.value.giftInfo.giftName = null;
+            _infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = null;
+            _infos[index].giveCouponXXXXX.value.giftInfo.validateStatus = 'error';
+            _infos[index].giveCouponXXXXX.value.giftInfo.msg = '必须选择礼券';
             this.setState({
                 infos: _infos,
             },() => {
@@ -186,9 +185,40 @@ class LotteryThirdStep extends React.Component {
             _infos[index].givePointsXXXXX.value = defaultGivePointsXXXXX
         }else{
             //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
-
-            //取消的时候如果优惠券是选中状态，则直接取消。
+            if(!(_infos[index].giveCouponXXXXX.value.isOn)){
+                //优惠券为非选中状态
+                _infos[index].giveCouponXXXXX.validateStatus = 'error';
+                _infos[index].giveCouponXXXXX.msg = '赠送积分和赠送优惠券至少选择一项';
+            }else{
+                //取消的时候如果优惠券是选中状态，则直接取消。
+                _infos[index].giveCouponXXXXX.validateStatus = 'success';
+                _infos[index].giveCouponXXXXX.msg = null;
+            }
             _infos[index].givePointsXXXXX.value = {}
+        }
+        this.setState({
+            infos: _infos,
+        },() => {
+            this.gradeChange(this.state.infos);
+        });
+    }
+    handleGiveCouponXXXXXChange = (value, index) => {
+        const _infos = this.state.infos;
+        if(_infos[index].giveCouponXXXXX.value.isOn){
+            //从开变成关的状态
+            _infos[index].giveCouponXXXXX.value = { isOn: false };
+            if(JSON.stringify(_infos[index].givePointsXXXXX.value) == "{}"){
+                _infos[index].giveCouponXXXXX.validateStatus = 'error';
+                _infos[index].giveCouponXXXXX.msg = '赠送积分和赠送优惠券至少选择一项';
+            }else{
+                _infos[index].giveCouponXXXXX.validateStatus = 'success';
+                _infos[index].giveCouponXXXXX.msg = null;
+            }
+        }else{
+            //从关变成开
+            _infos[index].giveCouponXXXXX.value = defaultGiveCouponXXXXX
+            _infos[index].giveCouponXXXXX.validateStatus = 'success';
+            _infos[index].giveCouponXXXXX.msg = null;
         }
         this.setState({
             infos: _infos,
@@ -343,16 +373,16 @@ class LotteryThirdStep extends React.Component {
         this.setState({ disArr })
     }
 
-    handlegiftTotalCountChange = (value, index) => {
+    handleGiftCountChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].giftTotalCount.value = value.number;
+        _infos[index].giveCouponXXXXX.value.giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0 && _value <= 1000000000) {
-            _infos[index].giftTotalCount.validateStatus = 'success';
-            _infos[index].giftTotalCount.msg = null;
+            _infos[index].giveCouponXXXXX.value.giftCount.validateStatus = 'success';
+            _infos[index].giveCouponXXXXX.value.giftCount.msg = null;
         } else {
-            _infos[index].giftTotalCount.validateStatus = 'error';
-            _infos[index].giftTotalCount.msg = '礼品总数必须大于0, 小于等于10亿';
+            _infos[index].giveCouponXXXXX.value.giftCount.validateStatus = 'error';
+            _infos[index].giveCouponXXXXX.value.giftCount.msg = '礼品总数必须大于0, 小于等于10亿';
         }
         this.setState({
             infos: _infos,
@@ -415,12 +445,13 @@ class LotteryThirdStep extends React.Component {
                                     toggleFun={toggleFun}
                                     disArr={disArr}
                                     changeDisArr={this.changeDisArr}
-                                    handlegiftTotalCountChange={this.handlegiftTotalCountChange}
+                                    handleGiftCountChange={this.handleGiftCountChange}
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
                                     handleGivePointsXXXXXChange={this.handleGivePointsXXXXXChange}
                                     handleGivePointsValueXXXXXChange={this.handleGivePointsValueXXXXXChange}
                                     handleCardXXXXXChange={this.handleCardXXXXXChange}
+                                    handleGiveCouponXXXXXChange={this.handleGiveCouponXXXXXChange}
                                 />
                             </TabPane>
                         )

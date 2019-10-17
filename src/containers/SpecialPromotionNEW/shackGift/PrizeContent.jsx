@@ -14,15 +14,20 @@ const VALIDATE_TYPE = Object.freeze([{
 { key: 1, value: '2', name: '固定有效期' }]);
 export default class PrizeContent extends React.Component {
     getGiftValue = (index) => {
-        if (this.props.info.giftInfo.giftItemID === null ||
-            this.props.info.giftInfo.giftName === null) {
+        const { info } = this.props;
+        if (info.giveCouponXXXXX.value.giftInfo.giftItemID === null ||
+            info.giveCouponXXXXX.value.giftInfo.giftName === null) {
             return null;
         }
-        return [this.props.info.giftInfo.giftItemID, this.props.info.giftInfo.giftName].join(',');
+        return [info.giveCouponXXXXX.value.giftInfo.giftItemID, info.giveCouponXXXXX.value.giftInfo.giftName].join(',');
     }
     ChangeCheckBoxOne = (e) => {
         const { handleGivePointsXXXXXChange, index} =this.props;
         handleGivePointsXXXXXChange(e, index);
+    }
+    ChangeCheckBoxTwo = (e) => {
+        const { handleGiveCouponXXXXXChange, index} =this.props;
+        handleGiveCouponXXXXXChange(e, index);
     }
     getCardTypeValue = () => {
         const { cardTypeArr, info } = this.props;
@@ -42,19 +47,19 @@ export default class PrizeContent extends React.Component {
                 index, 
                 toggleFun, 
                 changeDisArr,
-                handlegiftTotalCountChange,
+                handleGiftCountChange,
                 handleValidateTypeChange,
                 handleGiftOddsChange,
                 disArr,
                 handleGivePointsValueXXXXXChange,
                 cardTypeArr,
                 handleCardXXXXXChange,
-            } = this.props;
-        let validateStatus = info.giftTotalCount.validateStatus;
+        } = this.props;
+        let validateStatus = info.giveCouponXXXXX.value.giftCount.validateStatus;
         let addonBefore = '礼品总数:';
-        let help = info.giftTotalCount.msg;
-        let valueNuber = info.giftTotalCount.value;
-        let onChangeFunc = handlegiftTotalCountChange;
+        let help = info.giveCouponXXXXX.value.giftCount.msg;
+        let valueNuber = info.giveCouponXXXXX.value.giftCount.value;
+        let onChangeFunc = handleGiftCountChange;
         return (
             <div className = {style.formDiv}>
                     <Form className={style.addGrade} key={index}>
@@ -146,82 +151,69 @@ export default class PrizeContent extends React.Component {
                             >  
                                 <Checkbox 
                                     checked={info.giveCouponXXXXX.value.isOn}
-                                    onChange={this.ChangeCheckBoxOne}
+                                    onChange={this.ChangeCheckBoxTwo}
                                 />
                                 <span>赠送优惠券</span>
                                 {info.giveCouponXXXXX.value.isOn ?
                                     null :  
                                     <div className={style.paleRed}>
+                                        {/* 礼品名称 */}
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
-                                            validateStatus={info.givePointsXXXXX.value.givePointsValueXXXXX.validateStatus}
-                                            help={info.givePointsXXXXX.value.givePointsValueXXXXX.msg}
+                                            validateStatus={info.giveCouponXXXXX.value.giftInfo.validateStatus}
+                                            help={info.giveCouponXXXXX.value.giftInfo.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>赠送积分</span>
+                                                <span>礼品名称</span>
+                                            </div> 
+                                            <ExpandTree
+                                                idx={index}
+                                                value={this.getGiftValue(index)}
+                                                //debugger 这里没有值默认选第一个的逻辑应该在确认数据之后写
+                                                data={_.sortBy(filteredGiftInfo, 'index')}
+                                                onChange={(value) => {
+                                                    handleGiftChange(value, index);
+                                                }}
+                                                onClick={(value,index) => {
+                                                    changeDisArr(value,index);
+                                                }}
+                                                disArr={disArr || []}
+                                            >
+                                                <Input
+                                                    value={(this.getGiftValue(index) || '').split(',')[1]}
+                                                    className="input_click"
+                                                    onClick={() => { toggleFun(index); }}
+                                                />
+                                                <Icon
+                                                    type="down"
+                                                    style={{ position: 'absolute', top: 10, left: 265 }}
+                                                    className="input_click"
+                                                    onClick={() => { toggleFun(index); }}
+                                                />
+                                            </ExpandTree>
+                                        </FormItem>
+                                        {/* 礼品个数 */}
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                            validateStatus={validateStatus}
+                                            help={help}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>礼品数量</span>
                                             </div> 
                                             <PriceInput
-                                                addonAfter="积分"
-                                                modal="float"
-                                                value={{ number: info.givePointsXXXXX.value.givePointsValueXXXXX.value }}
-                                                onChange={(val) => {handleGivePointsValueXXXXXChange(val, index);}}
+                                                addonBefore={addonBefore}
+                                                maxNum={10}
+                                                value={{ number: valueNuber }}
+                                                onChange={val => onChangeFunc(val, index)}
+                                                addonAfter="张"
+                                                modal="int"
                                             />
                                         </FormItem>
                                     </div>   
                                 }
-                            </FormItem>
-                            {/* 礼品名称 */}
-                            <FormItem
-                                label="礼品名称"
-                                className={[style.FormItemStyle, style.labeleBeforeSlect, style.labeleBeforeSlectMargin].join(' ')}
-                                labelCol={{ span: 2 }}
-                                wrapperCol={{ span: 22 }}
-                                validateStatus={info.giftInfo.validateStatus}
-                                help={info.giftInfo.msg}
-                            >
-                                <ExpandTree
-                                    idx={index}
-                                    value={this.getGiftValue(index)}
-                                    data={_.sortBy(filteredGiftInfo, 'index')}
-                                    onChange={(value) => {
-                                        handleGiftChange(value, index);
-                                    }}
-                                    onClick={(value,index) => {
-                                        changeDisArr(value,index);
-                                    }}
-                                    disArr={disArr || []}
-                                >
-                                    <Input
-                                        value={(this.getGiftValue(index) || '').split(',')[1]}
-                                        className="input_click"
-                                        onClick={() => { toggleFun(index); }}
-                                    />
-                                    <Icon
-                                        type="down"
-                                        style={{ position: 'absolute', top: 10, left: 265 }}
-                                        className="input_click"
-                                        onClick={() => { toggleFun(index); }}
-                                    />
-                                </ExpandTree>
-                            </FormItem>
-                            {/* 礼品个数 */}
-                            <FormItem
-                                className={[style.FormItemStyle, style.FormItemHelpLabel].join(' ')}
-                                labelCol={{ span: 0 }}
-                                wrapperCol={{ span: 24 }}
-                                validateStatus={validateStatus}
-                                help={help}
-                            >
-                                <PriceInput
-                                    addonBefore={addonBefore}
-                                    maxNum={10}
-                                    value={{ number: valueNuber }}
-                                    onChange={val => onChangeFunc(val, index)}
-                                    addonAfter="个"
-                                    modal="int"
-                                />
-
                             </FormItem>
                             {/* ....... */}
                             <FormItem
