@@ -309,6 +309,8 @@ class SpecialDetailInfo extends Component {
             pointRate: setting.pointRate ? roundToDecimal(setting.pointRate * 100) : undefined,
             consumeRate: setting.consumeRate ? roundToDecimal(setting.consumeRate * 100) : undefined,
             rechargeRate: setting.rechargeRate ? roundToDecimal(setting.rechargeRate * 100) : undefined,
+            pointLimitValue: setting.pointLimitValue || undefined, // 0 表示不限制
+            moneyLimitValue: setting.moneyLimitValue || undefined, // 0 表示不限制,
         }))
         if (eventRecommendSettings.length === 2) return eventRecommendSettings;
         if (eventRecommendSettings.length === 1) return [eventRecommendSettings[0], getDefaultRecommendSetting(2)]
@@ -1486,7 +1488,80 @@ class SpecialDetailInfo extends Component {
             </Row>
         )
     }
-    
+    renderPointControl = (recommendType, index) => {
+        const {
+            form: {
+                getFieldDecorator,
+            },
+        } = this.props;
+        const {
+            eventRecommendSettings,
+        } = this.state;
+        return (
+            <Row gutter={8}>
+                <Col span={10} offset={1}>
+                    <FormItem
+                        label="积分比例"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                    >
+                        {
+                            getFieldDecorator(`point${recommendType}`, {
+                                onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
+                                initialValue: { number: eventRecommendSettings[index].pointRate },
+                                rules: [
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            if (v.number === '' || v.number === undefined) {
+                                                return cb();
+                                            }
+                                            if (!v || !(v.number > 0)) {
+                                                return cb('积分比例必须大于0');
+                                            } else if (v.number > 100) {
+                                                return cb('积分比例不能超过100%');
+                                            }
+                                            cb()
+                                        },
+                                    },
+                                ],
+                            })(
+                                <PriceInput
+                                    addonAfter="%"
+                                    placeholder="请输入积分比例数值"
+                                    maxNum={3}
+                                    modal="float"
+                                />
+                            )
+                        }
+                    </FormItem>
+                </Col>
+                <Col span={10}>
+                    <FormItem
+                        label="单笔积分上限"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                    >
+                        {
+                            getFieldDecorator(`pointLimitValue${recommendType}`, {
+                                onChange: this.handleRecommendSettingsChange(index, 'pointLimitValue'),
+                                initialValue: { number: eventRecommendSettings[index].pointLimitValue },
+                                rules: [],
+                            })(
+                                <PriceInput
+                                    addonAfter="分"
+                                    placeholder="不填表示不限制"
+                                    maxNum={6}
+                                    modal="float"
+                                />
+                            )
+                        }
+                    </FormItem>
+                </Col>
+            </Row>
+        )
+    }
     renderRechargeReward = (recommendType) => {
         const {
             eventRecommendSettings,
@@ -1499,76 +1574,69 @@ class SpecialDetailInfo extends Component {
         const index = recommendType - 1;
         return (
             <div>
-                <FormItem
-                    label="储值金额比例"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4, offset: 3 }}
-                    wrapperCol={{ span: 12 }}
-                >
-                    {
-                        getFieldDecorator(`recharge${recommendType}`, {
-                            onChange: this.handleRecommendSettingsChange(index, 'rechargeRate'),
-                            initialValue: { number: eventRecommendSettings[index].rechargeRate },
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v.number === '' || v.number === undefined) {
-                                            return cb();
-                                        }
-                                        if (!v || !(v.number > 0)) {
-                                            return cb('储值金额比例必须大于0');
-                                        } else if (v.number > 100) {
-                                            return cb('储值金额比例不能超过100%');
-                                        }
-                                        cb()
-                                    },
-                                },
-                            ],
-                        })(
-                            <PriceInput
-                                addonAfter="%"
-                                placeholder="请输入储值金额比例数值"
-                                maxNum={3}
-                                modal="float"
-                            />
-                        )
-                    }
-                </FormItem>
-                <FormItem
-                    label="积分比例"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4, offset: 3 }}
-                    wrapperCol={{ span: 12 }}
-                >
-                    {
-                        getFieldDecorator(`point${recommendType}`, {
-                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
-                            initialValue: { number: eventRecommendSettings[index].pointRate },
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v.number === '' || v.number === undefined) {
-                                            return cb();
-                                        }
-                                        if (!v || !(v.number > 0)) {
-                                            return cb('积分比例必须大于0');
-                                        } else if (v.number > 100) {
-                                            return cb('积分比例不能超过100%');
-                                        }
-                                        cb()
-                                    },
-                                },
-                            ],
-                        })(
-                            <PriceInput
-                                addonAfter="%"
-                                placeholder="请输入积分比例数值"
-                                maxNum={3}
-                                modal="float"
-                            />
-                        )
-                    }
-                </FormItem>
+                <Row gutter={8}>
+                    <Col span={10} offset={1}>
+                        <FormItem
+                            label="储值金额比例"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                        >
+                            {
+                                getFieldDecorator(`recharge${recommendType}`, {
+                                    onChange: this.handleRecommendSettingsChange(index, 'rechargeRate'),
+                                    initialValue: { number: eventRecommendSettings[index].rechargeRate },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (v.number === '' || v.number === undefined) {
+                                                    return cb();
+                                                }
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('储值金额比例必须大于0');
+                                                } else if (v.number > 100) {
+                                                    return cb('储值金额比例不能超过100%');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="%"
+                                        placeholder="请输入储值金额比例数值"
+                                        maxNum={3}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                    <Col span={10}>
+                        <FormItem
+                            label="单笔返利上限"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                        >
+                            {
+                                getFieldDecorator(`moneyLimitValue${recommendType}`, {
+                                    onChange: this.handleRecommendSettingsChange(index, 'moneyLimitValue'),
+                                    initialValue: { number: eventRecommendSettings[index].moneyLimitValue },
+                                    rules: [],
+                                })(
+                                    <PriceInput
+                                        addonAfter="元"
+                                        placeholder="不填表示不限制"
+                                        maxNum={6}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                </Row>
+                {this.renderPointControl(recommendType, index)}
             </div>
         )
     }
@@ -1584,80 +1652,74 @@ class SpecialDetailInfo extends Component {
         const index = recommendType - 1;
         return (
             <div>
-                <FormItem
-                    label="消费金额比例"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4, offset: 3 }}
-                    wrapperCol={{ span: 12 }}
-                >
-                    {
-                        getFieldDecorator(`consumption${recommendType}`, {
-                            onChange: this.handleRecommendSettingsChange(index, 'consumeRate'),
-                            initialValue: { number: eventRecommendSettings[index].consumeRate },
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v.number === '' || v.number === undefined) {
-                                            return cb();
-                                        }
-                                        if (!v || !(v.number > 0)) {
-                                            return cb('消费金额比例必须大于0');
-                                        } else if (v.number > 100) {
-                                            return cb('消费金额比例不能超过100%');
-                                        }
-                                        cb()
-                                    },
-                                },
-                            ],
-                        })(
-                            <PriceInput
-                                addonAfter="%"
-                                maxNum={3}
-                                placeholder="请输入消费金额比例数值"
-                                modal="float"
-                            />
-                        )
-                    }
-                </FormItem>
-                <FormItem
-                    label="积分比例"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4, offset: 3 }}
-                    wrapperCol={{ span: 12 }}
-                >
-                    {
-                        getFieldDecorator(`point${recommendType}`, {
-                            onChange: this.handleRecommendSettingsChange(index, 'pointRate'),
-                            initialValue: { number: eventRecommendSettings[index].pointRate },
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (v.number === '' || v.number === undefined) {
-                                            return cb();
-                                        }
-                                        if (!v || !(v.number > 0)) {
-                                            return cb('积分比例必须大于0');
-                                        } else if (v.number > 100) {
-                                            return cb('积分比例不能超过100%');
-                                        }
-                                        cb()
-                                    },
-                                },
-                            ],
-                        })(
-                            <PriceInput
-                                addonAfter="%"
-                                placeholder="请输入积分比例数值"
-                                maxNum={3}
-                                modal="float"
-                            />
-                        )
-                    }
-                </FormItem>
+                <Row gutter={8}>
+                    <Col span={10} offset={1}>
+                        <FormItem
+                            label="消费金额比例"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                        >
+                            {
+                                getFieldDecorator(`consumption${recommendType}`, {
+                                    onChange: this.handleRecommendSettingsChange(index, 'consumeRate'),
+                                    initialValue: { number: eventRecommendSettings[index].consumeRate },
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (v.number === '' || v.number === undefined) {
+                                                    return cb();
+                                                }
+                                                if (!v || !(v.number > 0)) {
+                                                    return cb('消费金额比例必须大于0');
+                                                } else if (v.number > 100) {
+                                                    return cb('消费金额比例不能超过100%');
+                                                }
+                                                cb()
+                                            },
+                                        },
+                                    ],
+                                })(
+                                    <PriceInput
+                                        addonAfter="%"
+                                        maxNum={3}
+                                        placeholder="请输入消费金额比例数值"
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                    <Col span={10}>
+                        <FormItem
+                            label="单笔返利上限"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                        >
+                            {
+                                getFieldDecorator(`moneyLimitValue${recommendType}`, {
+                                    onChange: this.handleRecommendSettingsChange(index, 'moneyLimitValue'),
+                                    initialValue: { number: eventRecommendSettings[index].moneyLimitValue },
+                                    rules: [],
+                                })(
+                                    <PriceInput
+                                        addonAfter="元"
+                                        placeholder="不填表示不限制"
+                                        maxNum={6}
+                                        modal="float"
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+
+                </Row>
+                {this.renderPointControl(recommendType, index)}
                 <FormItem
                     label="奖励范围"
                     className={styles.FormItemStyle}
-                    labelCol={{ span: 4, offset: 3 }}
+                    labelCol={{ span: 4 }}
                     wrapperCol={{ span: 12 }}
                 >
                     <Select
