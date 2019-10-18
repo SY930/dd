@@ -104,15 +104,15 @@ class LotteryThirdStep extends React.Component {
                 infos[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours
                     : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
                 infos[index].effectType = `${gift.effectType}`;
-                infos[index].giftInfo.giftName = gift.giftName;
-                infos[index].giftInfo.giftItemID = gift.giftID;
-                infos[index].giftValidDays.value = gift.giftValidUntilDayCount;
-                infos[index].giftTotalCount.value = gift.giftTotalCount;
+                // infos[index].giveCouponXXXXX.value.giftInfo.giftName = gift.giftName;
+                // infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = gift.giftID;
+                // infos[index].giftValidDays.value = gift.giftValidUntilDayCount;
+                // infos[index].giveCouponXXXXX.value.giftCount.value = gift.giftTotalCount;
                 infos[index].givePointsXXXXX.value = {};//先默认写成这样debugger是通过选选项中所有数据不为空来判断是否有值之后再修改。
                 // infos[index].giveCouponXXXXX.value = {};
                 //先默认写成这样debugger是通过选选项中所有数据不为空来判断是否有值之后再修改 同理不过注意这个优惠券本身有个isOn的触发所以测试阶段先注释掉。在正式代码之中ison要被赋值。
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-                infos[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays ? `${gift.lastConsumeIntervalDays}` : undefined;
+                // infos[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays ? `${gift.lastConsumeIntervalDays}` : undefined;
             })
         }
         return {
@@ -126,6 +126,7 @@ class LotteryThirdStep extends React.Component {
             const newValue = value.split(',');
             const _infos = this.state.infos;
             _infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = newValue[0];
+            _infos[index].giveCouponXXXXX.value.giftInfo.giftName = newValue[1];
             _infos[index].giveCouponXXXXX.value.giftInfo.validateStatus = 'success';
             _infos[index].giveCouponXXXXX.value.giftInfo.msg = null;
             this.setState({
@@ -145,6 +146,11 @@ class LotteryThirdStep extends React.Component {
                 this.gradeChange(this.state.infos);
             });
         }
+        const { disArr = [] } = this.state;
+        const toggle = !disArr[index];
+        disArr.map((v, i) => disArr[i] = false)
+        disArr[index] = toggle;
+        this.setState({ disArr });
     }
 
     gradeChange = (gifts) => {
@@ -158,13 +164,28 @@ class LotteryThirdStep extends React.Component {
     // 类型改变
     handleValidateTypeChange = (e, index) => {
         const _infos = this.state.infos;
-        _infos[index].effectType = e.target.value;
-        _infos[index].giftEffectiveTime.value = '0';
-        _infos[index].giftValidDays.value = '';
-        _infos[index].giftEffectiveTime.validateStatus = 'success';
-        _infos[index].giftValidDays.validateStatus = 'success';
-        _infos[index].giftEffectiveTime.msg = null;
-        _infos[index].giftValidDays.msg = null;
+        _infos[index].giveCouponXXXXX.value.effectType = e.target.value;
+        if(e.target.value == '1'){
+            //切到了相对有效期，滞空固定有效期的数据
+
+
+        }else{
+            //切到了固定有效期，滞空相对有效期
+            _infos[index].giveCouponXXXXX.value.dependTypeXXXXX = '1';
+            _infos[index].giveCouponXXXXX.value.giftValidDays = {
+                value: '',
+                validateStatus: 'success',
+                msg: null,
+            };
+
+        }
+        //联动
+        // _infos[index].giftEffectiveTime.value = '0';
+        // _infos[index].giftValidDays.value = '';
+        // _infos[index].giftEffectiveTime.validateStatus = 'success';
+        // _infos[index].giftValidDays.validateStatus = 'success';
+        // _infos[index].giftEffectiveTime.msg = null;
+        // _infos[index].giftValidDays.msg = null;
         this.setState({
             infos: _infos,
         },() => {
@@ -262,6 +283,24 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
+    handleGiftValidDaysChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveCouponXXXXX.value.giftValidDays.value = val.number;
+        const _value = val.number || 0;
+        if (_value > 0 && _value <= 36500) {
+            _infos[index].giveCouponXXXXX.value.giftValidDays.validateStatus = 'success';
+            _infos[index].giveCouponXXXXX.value.giftValidDays.msg = null;
+        } else {
+            _infos[index].giveCouponXXXXX.value.giftValidDays.validateStatus = 'error';
+            _infos[index].giveCouponXXXXX.value.giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
     handleGiftOddsChange = (val, index) => {
         const _infos = this.state.infos;
         _infos[index].giftOdds.value = val.number;
@@ -277,6 +316,52 @@ class LotteryThirdStep extends React.Component {
             infos: _infos,
         },() => {
             this.gradeChange(this.state.infos);
+        });
+    }
+
+    handleGiftEffectiveTimeChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = val;
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+
+    handleDependTypeXXXXXChange = (val, index) =>{
+        const _infos = this.state.infos;
+        _infos[index].giveCouponXXXXX.value.dependTypeXXXXX = val;
+        if(val == '2'){
+            //点击到按天的时候把按天模式下的默认值设置为1天生效
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = '1';
+        }else{
+            //点击到按小时的时候把按小时模式下的默认值设置为立即生效
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = '0';
+        }
+        this.setState({
+            infos: _infos,
+        },() => {
+            this.gradeChange(this.state.infos);
+        });
+    }
+
+     // 固定有效时间改变
+     handleRangePickerChange = (date, dateString, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = date;
+        if (date === null || date === undefined || !date[0] || !date[1]) {
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.validateStatus = 'error';
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.msg = '请输入有效时间';
+        } else {
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.validateStatus = 'success';
+            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.msg = null;
+        }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
 
@@ -403,7 +488,7 @@ class LotteryThirdStep extends React.Component {
             const toggle = !disArr[index];
             disArr.map((v, i) => disArr[i] = false)
             disArr[index] = toggle;
-            this.setState({ disArr })
+            this.setState({ disArr });
         }
         return (
             <div>
@@ -452,6 +537,10 @@ class LotteryThirdStep extends React.Component {
                                     handleGivePointsValueXXXXXChange={this.handleGivePointsValueXXXXXChange}
                                     handleCardXXXXXChange={this.handleCardXXXXXChange}
                                     handleGiveCouponXXXXXChange={this.handleGiveCouponXXXXXChange}
+                                    handleGiftChange={this.handleGiftChange}
+                                    handleGiftValidDaysChange={this.handleGiftValidDaysChange}
+                                    handleDependTypeXXXXXChange={this.handleDependTypeXXXXXChange}
+                                    handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                                 />
                             </TabPane>
                         )

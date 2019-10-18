@@ -12,16 +12,9 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
-    effectType: '1',
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 礼品有效期
-    giftValidDays: {
-        value: '',
         validateStatus: 'success',
         msg: null,
     },
@@ -56,7 +49,6 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         validateStatus: 'success',
         msg: null,
     },
-    effectType: '1',
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
@@ -84,6 +76,34 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
     giveCouponXXXXX: {
         value:{
             isOn: true,
+            giftInfo: {
+                giftName: null,
+                giftItemID: null,
+                validateStatus: 'success',
+                msg: null,
+            },
+            // 礼品数量
+            giftCount: {
+                value: '',
+                validateStatus: 'success',
+                msg: null,
+            },
+            //有效期限
+            effectType: '1',
+            // 礼品有效期
+            giftValidDays: {
+                value: '',
+                validateStatus: 'success',
+                msg: null,
+            },
+            //选了按小时还是按天,默认是按小时
+            dependTypeXXXXX: '1',
+            // 礼品生效时间
+            giftEffectiveTime: {
+                value: '0',
+                validateStatus: 'success',
+                msg: null,
+            },
         },
         validateStatus: 'success',
         msg: null,
@@ -115,6 +135,22 @@ export const defaultGiveCouponXXXXX = {
     // 礼品数量
     giftCount: {
         value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    //有效期限
+    effectType: '1',
+    // 礼品有效期
+    giftValidDays: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    //选了按小时还是按天,默认是按小时
+    dependTypeXXXXX: '1',
+    // 礼品生效时间
+    giftEffectiveTime: {
+        value: '0',
         validateStatus: 'success',
         msg: null,
     },

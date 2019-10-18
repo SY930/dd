@@ -12,6 +12,11 @@ const VALIDATE_TYPE = Object.freeze([{
     key: 0, value: '1', name: '相对有效期',
 },
 { key: 1, value: '2', name: '固定有效期' }]);
+import {
+    SALE_CENTER_GIFT_TYPE,
+    SALE_CENTER_GIFT_EFFICT_TIME,
+    SALE_CENTER_GIFT_EFFICT_DAY,
+} from '../../../redux/actions/saleCenterNEW/types';
 export default class PrizeContent extends React.Component {
     getGiftValue = (index) => {
         const { info } = this.props;
@@ -38,6 +43,98 @@ export default class PrizeContent extends React.Component {
             return cardTypeArr[0].cardTypeID
         }
         return '';
+    }
+    // 相对有效期 OR 固定有效期
+    renderValidOptions = (info, index) => {
+        const { handleGiftValidDaysChange, handleDependTypeXXXXXChange, handleGiftEffectiveTimeChange  } =this.props;
+        if (info.giveCouponXXXXX.value.effectType != '2') {
+            return (
+                <div>
+                    <FormItem
+                        wrapperCol={{ span: 12 }}
+                        className={style.FormItemSecondStyle}
+                        validateStatus={info.giveCouponXXXXX.value.giftValidDays.validateStatus}
+                        help={info.giveCouponXXXXX.value.giftValidDays.msg}
+                    > 
+                        <PriceInput
+                            addonBefore=""
+                            addonAfter="天"
+                            maxNum={10}
+                            modal="int"
+                            value={{ number: info.giveCouponXXXXX.value.giftValidDays.value }}
+                            onChange={(val) => {handleGiftValidDaysChange(val, index); }}
+                        />
+                    </FormItem>
+                    <FormItem
+                        wrapperCol={{ span: 12 }}
+                        className={style.FormItemSecondStyle}
+                        validateStatus={info.giveCouponXXXXX.value.giftValidDays.validateStatus}
+                        help={info.giveCouponXXXXX.value.giftValidDays.msg}
+                    > 
+                        <div className={style.labelSecondDiv}>
+                            <span>生效时间</span>
+                        </div>
+                        <Select 
+                            className={style.LittleSelect}
+                            size="default"
+                            value={info.giveCouponXXXXX.value.dependTypeXXXXX == '1' ? '1' : '2'}
+                            onChange={(val) => {handleDependTypeXXXXXChange(val, index); }}
+                        >
+                            <Option value='1' key={1}>按小时</Option>
+                            <Option value='2' key={2}>按天</Option>
+                        </Select>
+                        <Select
+                            size="default"
+                            className={style.middleSelect}
+                            value={
+                                typeof info.giveCouponXXXXX.value.giftEffectiveTime.value === 'object' ?
+                                    '0' :
+                                    `${info.giveCouponXXXXX.value.giftEffectiveTime.value}`
+                            }
+                            onChange={(val) => { handleGiftEffectiveTimeChange(val, index) }}
+                            getPopupContainer={(node) => node.parentNode}
+                        >
+                            {
+                                (info.giveCouponXXXXX.value.dependTypeXXXXX == '1' ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY)
+                                    .map((item, index) => {
+                                        return (<Option value={item.value} key={index}>{item.label}</Option>);
+                                    })
+                            }
+                        </Select> 
+                    </FormItem>
+                </div>
+            );
+        }
+        const pickerProps = {
+            showTime: false,
+            format: 'YYYY-MM-DD',
+            onChange: (date, dateString) => {
+                this.handleRangePickerChange(date, dateString, index);
+            },
+        };
+        if (typeof info.giveCouponXXXXX.value.giftEffectiveTime.value === 'object') {
+            pickerProps.value = info.giveCouponXXXXX.value.giftEffectiveTime.value;
+        }
+        const disabledDate = (current) => {
+            // Can not select days before today
+            return current && current.format('YYYYMMDD') < this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
+        }
+        return (
+            <FormItem
+                label="固定有效期"
+                className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                required={true}
+                validateStatus={info.giftEffectiveTime.validateStatus}
+                help={info.giftEffectiveTime.msg}
+            >
+                <RangePicker
+                    {...pickerProps}
+                    disabledDate={this.props.type == '70' ? disabledDate : null}
+                />
+            </FormItem>
+        );
     }
     render () {
         const { 
@@ -154,7 +251,7 @@ export default class PrizeContent extends React.Component {
                                     onChange={this.ChangeCheckBoxTwo}
                                 />
                                 <span>赠送优惠券</span>
-                                {info.giveCouponXXXXX.value.isOn ?
+                                {!(info.giveCouponXXXXX.value.isOn) ?
                                     null :  
                                     <div className={style.paleRed}>
                                         {/* 礼品名称 */}
@@ -212,28 +309,30 @@ export default class PrizeContent extends React.Component {
                                                 modal="int"
                                             />
                                         </FormItem>
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>有效期限</span>
+                                            </div> 
+                                            <RadioGroup
+                                                className={style.radioMargin}
+                                                value={info.giveCouponXXXXX.value.effectType == '2' ? '2' : '1'}
+                                                onChange={val => handleValidateTypeChange(val, index)}
+                                            >
+                                                {
+                                                    VALIDATE_TYPE.map((item, index) => {
+                                                        return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                                    })
+                                                }
+                                            </RadioGroup>
+                                        </FormItem>
+                                        {this.renderValidOptions(info, index)}
                                     </div>   
                                 }
                             </FormItem>
-                            {/* ....... */}
-                            <FormItem
-                                className={style.FormItemStyle}
-                            >
-                                <span className={style.formLabel}>生效方式:</span>
-                                <RadioGroup
-                                    className={style.radioMargin}
-                                    value={info.effectType == '2' ? '2' : '1'}
-                                    onChange={val => handleValidateTypeChange(val, index)}
-                                >
-                                    {
-                                        VALIDATE_TYPE.map((item, index) => {
-                                            return <Radio value={item.value} key={index}>{item.name}</Radio>
-                                        })
-                                    }
-                                </RadioGroup>
-                            </FormItem>
-                            {/* 有效期这里先注掉看效果 */}
-                            {/* {this.renderValidOptions(info, index)} */}
+                            {/* ....... */}                       
                             {/* ....... */}
 
                         </div>
