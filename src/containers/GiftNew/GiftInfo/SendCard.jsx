@@ -10,7 +10,7 @@ import ExportModal from './ExportModal';
 import Authority from '../../../components/common/Authority';
 
 import styles from './GiftInfo.less';
-import { mapValueToLabel } from './CommonFn';
+import { mapValueToLabel } from 'helpers/util';
 import { SENDCARD_COLUMNS, SENDCARD_QUERY_FORMITEMS, SENDCARD_FORMKEYS } from './_tableSendCardListConfig';
 import { MADECARD_COLUMNS, MADECARD_FORMKEYS, MADECARD_QUERY_FORMITEMS } from './_tableMadeCardConfig';
 import { PWDSafe } from './QuatoCardDetailModalTabs';

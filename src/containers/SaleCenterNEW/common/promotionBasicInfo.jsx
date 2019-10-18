@@ -15,7 +15,6 @@ const CheckboxGroup = Checkbox.Group;
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
-import '../../../components/common/ColorPicker.less';
 import CustomTimeRangeInput from './CustomTimeRangeInput';
 
 const Immutable = require('immutable');

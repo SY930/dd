@@ -15,7 +15,6 @@ import {
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import '../../../components/common/ColorPicker.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterQueryFsmGroupSettleUnit,

@@ -12,7 +12,6 @@ import {
     Icon,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import '../../../components/common/ColorPicker.less';
 import CustomTimeRangeInput from '../../../containers/SaleCenterNEW/common/CustomTimeRangeInput';
 
 const FormItem = Form.Item;

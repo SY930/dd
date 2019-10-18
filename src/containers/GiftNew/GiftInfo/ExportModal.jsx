@@ -55,15 +55,11 @@ const COLUMNS = [{
             <span>
                 {
                     record.exportStatus == '1' ?
-                        // <Authority rightCode="crm.huiyuandengjixin.query">
                         <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>下载文件</a>
-                        // </Authority>
                         :
                         null
                 }
-                {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
                 <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>删除</a>
-                {/* </Authority> */}
             </span>
         )
     },

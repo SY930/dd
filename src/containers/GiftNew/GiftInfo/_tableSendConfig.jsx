@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tooltip, span } from 'antd';
 import GiftCfg from '../../../constants/Gift';
-import { mapValueToLabel } from './CommonFn';
+import { mapValueToLabel } from 'helpers/util';
 
 const format = 'YYYY/MM/DD HH:mm';
 const FORMITEMS = {
