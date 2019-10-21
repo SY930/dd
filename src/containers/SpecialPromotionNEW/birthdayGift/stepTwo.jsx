@@ -10,8 +10,9 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Radio, message } from 'antd';
+import { Form, Icon, Select, Radio, message } from 'antd';
 import { isEqual, uniq } from 'lodash';
+import Immutable from 'immutable'
 import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
@@ -19,7 +20,6 @@ import {
     saveCurrentcanUseShopIDs,
     getEventExcludeCardTypes,
     getGroupCRMCustomAmount } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-// import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
@@ -27,6 +27,8 @@ import {
     getPromotionShopSchema,
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import ShopSelector from '../../../components/common/ShopSelector';
+import BirthdayCardLevelSelector from './BirthdayCardLevelSelector';
+import ExcludeCardTable from '../common/ExcludeCardTable';
 
 const RadioGroup = Radio.Group;
 
@@ -36,6 +38,7 @@ const Option = Select.Option;
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
+        const cardLevelIDList = props.specialPromotion.getIn(['$eventInfo', 'cardLevelIDList']);
         let cardLevelRangeType = props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (cardLevelRangeType === undefined) {
@@ -46,7 +49,7 @@ class StepTwo extends React.Component {
             message: '',
             settleUnitID: '',
             accountNo: '',
-            cardLevelIDList: [],
+            cardLevelIDList: Immutable.List.isList(cardLevelIDList) ? cardLevelIDList.toJS() : [],
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             groupMembersList: [],
             cardLevelRangeType: cardLevelRangeType,
@@ -55,7 +58,7 @@ class StepTwo extends React.Component {
             canUseShopIDs: [],
             canUseShopIDsAll: [],
             occupiedShops: [], // 已经被占用的卡类适用店铺id
-            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList']) || [],
+            shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
         };
 
@@ -73,31 +76,25 @@ class StepTwo extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         const user = this.props.user;
-        const opts = {
-            _groupID: user.accountInfo.groupID, // 集团id
+        this.props.queryGroupMembersList({
+            _groupID: user.accountInfo.groupID,
             pageNo: 1,
             pageSize: 1000,
-        };
-        // 设置适用店铺
-        this.setState({
-          shopIDList: specialPromotion.shopIDList || []
-        })
-        this.props.queryGroupMembersList(opts);
-        this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
-        this.props.getEventExcludeCardTypes({
-            groupID: this.props.user.accountInfo.groupID,
-            eventStartDate: '20000625',
-            eventEndDate: '21000531',
-            // eventEndDate: "20000625",
-            // eventStartDate: "21000531",
-            eventWay: '52',
-            itemID: specialPromotion.itemID || ''
         });
-        this.querycanUseShopIDs()
+        if (this.props.type == '52') {
+            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
+            this.props.getEventExcludeCardTypes({
+                groupID: this.props.user.accountInfo.groupID,
+                eventStartDate: '20000625',
+                eventEndDate: '21000531',
+                eventWay: '52',
+                itemID: specialPromotion.itemID || ''
+            });
+            this.querycanUseShopIDs()
+        }
         if (Object.keys(specialPromotion).length > 10) {
             this.setState({
                 message: specialPromotion.smsTemplate,
-                // cardLevelIDList: specialPromotion.cardLevelIDList,
             })
         }
         if (!this.props.specialPromotion.get('customerCount')) {
@@ -106,31 +103,32 @@ class StepTwo extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const previousSchema = this.state.shopSchema;
-        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
-        if (!isEqual(previousSchema, nextShopSchema)) {
-            this.setState({ shopSchema: nextShopSchema, // 后台请求来的值
-            });
-        }
-        // 遍历所有排除卡
-        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
-            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
-            // true全部占用
-            this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {
-                const { getExcludeCardLevelIds } = this.state
-                this.filterHasCardShop(getExcludeCardLevelIds)
-            })
-        }
-        if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
-            !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
-            const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
-                acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
-                return acc;
-            }, []);
-            this.setState({ 
-              occupiedShops,
-              excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
-            })
+        if (this.props.type == '52') {
+            const previousSchema = this.state.shopSchema;
+            const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
+            if (!isEqual(previousSchema, nextShopSchema)) {
+                this.setState({ shopSchema: nextShopSchema, // 后台请求来的值
+                });
+            }
+            // 遍历所有排除卡
+            if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
+                !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
+                this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {
+                    const { getExcludeCardLevelIds } = this.state
+                    this.filterHasCardShop(getExcludeCardLevelIds)
+                })
+            }
+            if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
+                !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
+                const occupiedShops = nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS().reduce((acc, curr) => {
+                    acc.push(...curr.shopIDList.map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
+                    return acc;
+                }, []);
+                this.setState({ 
+                occupiedShops,
+                excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
+                })
+            }
         }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'smsTemplate']) &&
             nextProps.specialPromotion.get('$eventInfo').size > 10) {
@@ -281,6 +279,7 @@ class StepTwo extends React.Component {
             cardLevelIDList: [],
             groupMembersID: undefined,
         })
+        this.props.setSpecialBasicInfo({ cardLevelIDList: [] });
     }
 
     handleSourceWayLimitChange = (v) => {
@@ -288,18 +287,32 @@ class StepTwo extends React.Component {
     }
 
     renderBirthDayGroupSelector() {
+        const {
+            form: {
+                getFieldDecorator,
+            }
+        } = this.props;
+        // 控制小红点
+        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
         const { cardLevelRangeType } = this.state;
-        const localType = cardLevelRangeType == 5 ? '5' : '0'
+        let localType = '0';
+        if (cardLevelRangeType == 5) {
+            localType = '5';
+        } else if (cardLevelRangeType == 6) {
+            localType = '6';
+        }
         return (
             <div>
                 <FormItem label={'会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                         <Radio key={'5'} value={'5'}>会员群体</Radio>
                         <Radio key={'0'} value={'0'}>会员卡类</Radio>
+                        <Radio key={'6'} value={'6'}>会员卡等级</Radio>
                     </RadioGroup>
                 </FormItem>
-                {cardLevelRangeType == 5 && this.renderMemberGroup()}
-                {cardLevelRangeType != 5 && (
+                {localType === '5' && this.renderMemberGroup()}
+                {localType === '0' && (
                     <CardLevel
                         cardLevelRangeType={cardLevelRangeType}
                         onChange={this.onCardLevelChange}
@@ -312,6 +325,46 @@ class StepTwo extends React.Component {
                         form={this.props.form}
                     />
                 )}
+                {
+                    localType === '6' && (
+                        <div>
+                            <FormItem
+                                label="适用卡等级"
+                                className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {getFieldDecorator('cardLevelIDList', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请选择卡等级',
+                                    }],
+                                    initialValue: this.state.cardLevelIDList,
+                                    onChange: (v) => this.setState({cardLevelIDList: v})
+                                })(
+                                    <BirthdayCardLevelSelector />
+                                )}
+                                {
+                                    !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
+
+                                        <Icon
+                                            style={{ top: 30}}
+                                            type="exclamation-circle" className={styles.cardLevelTreeIcon}
+                                            onClick={() => {
+                                                this.setState({ tableDisplay: !this.state.tableDisplay })
+                                            }}
+                                        />
+                                }
+                            </FormItem>
+                            {
+                                !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
+                                    <div style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}>
+                                        <ExcludeCardTable catOrCard={this.props.catOrCard} />
+                                    </div>
+                            }
+                        </div>
+                    )
+                }
             </div>
         )
     }

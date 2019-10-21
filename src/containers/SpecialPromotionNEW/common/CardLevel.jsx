@@ -41,7 +41,7 @@ class CardLevel extends React.Component {
         this.state = {
             cardInfo: [],
             cardLevelIDList: [],
-            getExcludeCardLevelIds: [],
+            getExcludeCardLevelIds: [], // 不同的活动，可能是卡类，可能是卡等级
             getExcludeCardLevelIdsStatus: false,
             tableDisplay: false,
             cardLevelRangeType: '0',
@@ -237,7 +237,6 @@ class CardLevel extends React.Component {
     }
     render() {
         const { getFieldDecorator } = this.props.form;
-        // const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
         const { cardInfo = [] } = this.state;
         let getExcludeCardLevelIds = []
         if(this.props.type == '52') {
@@ -277,10 +276,12 @@ class CardLevel extends React.Component {
                 }
             })
         } else if (!this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
-            // 按卡类别，把卡等级排除
             cardInfo.map((cardType, index) => {
-                // 去掉互斥卡类别等级
-                if (!getExcludeCardLevelIds.includes(cardType.cardTypeID)) {
+                // 在生日赠送活动中（51）getExcludeCardLevelIds 既有卡类ID又有卡等级ID
+                if (!getExcludeCardLevelIds.includes(cardType.cardTypeID) &&
+                    cardType.cardTypeLevelList.map(({cardLevelID}) => cardLevelID)
+                    .every(id => !getExcludeCardLevelIds.includes(id))
+                ) {
                     treeData.push({
                         label: cardType.cardTypeName,
                         value: cardType.cardTypeID,
@@ -323,6 +324,8 @@ class CardLevel extends React.Component {
                                         placeholder={`请选择${this.props.catOrCard == 'card' ? '会员等级' : '会员卡类'}`}
                                         allowClear={true}
                                         multiple={true}
+                                        showSearch
+                                        treeNodeFilterProp="label"
                                         treeData={treeData}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleSelectChange}
