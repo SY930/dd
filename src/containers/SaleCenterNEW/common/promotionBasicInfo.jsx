@@ -770,6 +770,13 @@ class PromotionBasicInfo extends React.Component {
         return (
             <div>
                 {_timeRangeInfo}
+                {
+                    this.props.propmotionType == '1010' && (
+                        <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
+                            活动时段按下单时间执行
+                        </p>
+                    )
+                }
             </div>
         )
     }
@@ -1185,6 +1192,7 @@ class PromotionBasicInfo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         fullCut: state.sale_fullCut_NEW,
+        propmotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         myActivities: state.sale_myActivities_NEW,
