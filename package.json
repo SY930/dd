@@ -26,6 +26,7 @@
         "qrcode.react": "0.9.3",
         "solarlunar": "2.0.7",
         "rc-color-picker": "1.2.6",
+        "react-intl": "2.7.2",
         "react-cropper": "1.0.1"
     },
     "devDependencies": {

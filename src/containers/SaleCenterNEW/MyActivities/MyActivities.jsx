@@ -94,6 +94,7 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
+import { defineMessages, FormattedMessage } from 'react-intl'
 
 
 const Option = Select.Option;
@@ -109,6 +110,12 @@ const isDecorationAvailable = ({promotionType}) => {
     return DECORATABLE_PROMOTIONS.includes(`${promotionType}`)
 };
 
+const localeMessages = defineMessages({
+    title: {
+        id: 'EntryPage.title.Basic',
+        defaultMessage: '已选条件：' 
+    },
+})
 
 const mapStateToProps = (state) => {
     return {
@@ -772,7 +779,12 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
-                        {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'}
+                        <FormattedMessage
+                            {
+                                ...localeMessages.title
+                            }
+                        />
+                        {/* {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'} */}
                     </span>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
