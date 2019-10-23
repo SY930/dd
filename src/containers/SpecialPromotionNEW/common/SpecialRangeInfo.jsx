@@ -363,16 +363,17 @@ class SpecialRangeInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label={this.props.type === '21' ? '参与积分' : '参与范围'}
+                    
                     labelCol={{ span: 4 }}
                     className={styles.noPadding}
                     wrapperCol={{ span: 20 }}
                 >
                 </FormItem>
                 <FormItem
-                    label=""
+                    label={this.props.type === '21' ? '参与积分' : '参与范围'}
                     className={styles.noPadding}
-                    wrapperCol={{ span: 17, offset: 4 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
                 >
                     <CheckboxGroup options={this.props.type === '30' || this.props.type === '22' || this.props.type === '21' ? optionTwo : options} value={this.state.joinRange} onChange={this.handleJoinRangeChange} />
                     <div className={styles.deduct}>
@@ -415,13 +416,7 @@ class SpecialRangeInfo extends React.Component {
                     label={'参与次数'}
                     className={styles.noPadding}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}
-                >
-                </FormItem>
-                <FormItem
-                    label={''}
-                    className={styles.noPadding}
-                    wrapperCol={{ span: 17, offset: 4 }}
+                    wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup value={this.state.joinCount} onChange={this.handleJoinCountChange}>
                         <Radio style={radioStyle} value={'0'}>不限次数</Radio>

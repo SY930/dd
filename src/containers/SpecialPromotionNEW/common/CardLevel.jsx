@@ -215,17 +215,18 @@ class CardLevel extends React.Component {
 
         return (
             <FormItem
-                style={{ marginLeft: -13 }}
                 validateStatus={defaultCardType ? 'success' : 'error'}
                 help={defaultCardType ? null : '不可为空'}
-                label="新用户注册成为会员的卡类选择"
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 14 }}
+                label="新用户注册卡类"
+                required
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
             >
                 <Select
                     showSearch={true}
                     onChange={this.handleDefaultCardTypeChange}
-                    value={defaultCardType}
+                    value={defaultCardType || undefined}
+                    placeholder="请选择新用户注册成为会员的卡类型"
                     getPopupContainer={(node) => node.parentNode}
                 >
                     {
