@@ -86,8 +86,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-            isLimited: _rule.stage ? _rule.stage[0].totalFoodMax > 0 ? '1' : '0' : '0',
-            totalFoodMax: _rule.stage ? _rule.stage[0].totalFoodMax : undefined,
+            isLimited: _rule.totalFoodMax > 0 ? '1' : '0',
+            totalFoodMax: _rule.totalFoodMax || undefined,
             ruleType: String(ruleType),
         }
     }
@@ -148,13 +148,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             });
             const rule = {
                 stageType,
+                totalFoodMax: isLimited == '1' ? totalFoodMax : undefined,
                 stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
                 stage: [
                     {
                         stageCount: stageCount || 0,
                         stageAmount: stageAmount || 0,
                         freeAmount: priceLst[0].payPrice,
-                        totalFoodMax: isLimited == '1' ? totalFoodMax : undefined,
                     },
                 ],
             }
