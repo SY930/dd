@@ -240,6 +240,7 @@ class StepTwo extends React.Component {
                         })(
                             <Select
                                 showSearch={true}
+                                optionFilterProp="children"
                                 placeholder="请选择新用户注册成为会员的卡类型"
                                 getPopupContainer={(node) => node.parentNode}
                             >

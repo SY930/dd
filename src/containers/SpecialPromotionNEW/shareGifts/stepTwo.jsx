@@ -88,6 +88,7 @@ class StepTwo extends React.Component {
             <Form className={styles.cardLevelTree}>
                 <FormItem
                     label="新用户注册成为会员的卡类选择"
+                    optionFilterProp="children"
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 8 }}

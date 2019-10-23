@@ -224,6 +224,7 @@ class CardLevel extends React.Component {
             >
                 <Select
                     showSearch={true}
+                    optionFilterProp="children"
                     onChange={this.handleDefaultCardTypeChange}
                     value={defaultCardType || undefined}
                     placeholder="请选择新用户注册成为会员的卡类型"
