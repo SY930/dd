@@ -62,7 +62,6 @@ const registeLangPack = async () => {
     }
     console.log('营销中心语言包开始加载:', lang);
     await LOCEL_LANGUAGE_MAP.get(lang).then((data) => {
-        console.log(data.default)
         registeLocale(data.default)
     });
     console.log('营销中心语言包加载完成:', lang);

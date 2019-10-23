@@ -3,7 +3,7 @@ import antdLocal from 'antd/lib/locale-provider/ko_KR';
 import messages from './ko.messages.json';
 
 const appLocale = {
-    messages: Object.assign({}, antdLocal, messages),
+    messages: Object.assign({}, antdLocal, (window.appLocale || {}).messages, messages),
     locale: 'ko',
     data: appLocaleData,
     formats: {

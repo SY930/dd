@@ -4,7 +4,7 @@ import messages from './en.messages.json';
 
 const appLocale = {
     // 合并所有 messages, 加入组件的 messages
-    messages: Object.assign({}, antdLocale, messages),
+    messages: Object.assign({}, antdLocale, (window.appLocale || {}).messages, messages),
 
     // locale
     locale: 'en-US',

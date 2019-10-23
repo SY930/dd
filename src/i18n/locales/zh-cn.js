@@ -4,7 +4,7 @@ import messages from './zh-cn.messages.json';
 
 const appLocale = {
     // 合并所有 messages, 加入组件的 messages
-    messages: Object.assign({}, messages),
+    messages: Object.assign({}, (window.appLocale || {}).messages, messages),
 
     // locale
     locale: 'zh-CN',

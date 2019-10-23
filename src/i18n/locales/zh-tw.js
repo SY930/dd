@@ -2,7 +2,7 @@ import appLocaleData from 'react-intl/locale-data/zh';
 import messages from './zh-tw.messages.json';
 
 const appLocale = {
-    messages: Object.assign({}, messages),
+    messages: Object.assign({}, (window.appLocale || {}).messages, messages),
     locale: 'zh-tw',
     data: appLocaleData,
     formats: {

@@ -2,7 +2,7 @@ import appLocaleData from 'react-intl/locale-data/fr';
 import messages from './fr.messages';
 
 window.appLocale = {
-    messages: Object.assign({}, messages),
+    messages: Object.assign({}, (window.appLocale || {}).messages, messages),
     locale: 'fr',
     data: appLocaleData,
     formats: {

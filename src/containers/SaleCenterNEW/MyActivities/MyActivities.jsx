@@ -111,9 +111,13 @@ const isDecorationAvailable = ({promotionType}) => {
 };
 
 const localeMessages = defineMessages({
+    onlienTitle: {
+        id: 'EntryPage.title.OnlinePromotion',
+        defaultMessage: '线上营销信息' 
+    },
     title: {
-        id: 'EntryPage.title.Basic',
-        defaultMessage: '已选条件：' 
+        id: 'EntryPage.title.BasicPromotion',
+        defaultMessage: '基本营销信息' 
     },
 })
 
@@ -781,10 +785,9 @@ class MyActivities extends React.Component {
                     <span className={styles.customHeader}>
                         <FormattedMessage
                             {
-                                ...localeMessages.title
+                                ...(this.isOnlinePromotionPage() ? localeMessages.onlienTitle : localeMessages.title)
                             }
                         />
-                        {/* {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'} */}
                     </span>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
