@@ -616,6 +616,7 @@ class SpecialDetailInfo extends Component {
                 message.warning('中奖比率之和不能大于100!');
                 return false;
             }
+            debugger;
             const giftInfo = this.getGiftInfo(data);
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(

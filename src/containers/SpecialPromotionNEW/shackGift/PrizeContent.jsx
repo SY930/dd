@@ -19,10 +19,15 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 export default class PrizeContent extends React.Component {
     getGiftValue = (index) => {
-        const { info } = this.props;
-        if (info.giveCouponXXXXX.value.giftInfo.giftItemID === null ||
-            info.giveCouponXXXXX.value.giftInfo.giftName === null) {
-            return null;
+        const { info, filteredGiftInfo, handleGiftChange } = this.props;
+        const tempArr = _.sortBy(filteredGiftInfo, 'index');
+        if (info.giveCouponXXXXX.value.giftInfo.giftItemID == null ||
+            info.giveCouponXXXXX.value.giftInfo.giftName == null) {
+                if(tempArr.length){
+                    handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
+                    return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
+                }
+                return null;
         }
         return [info.giveCouponXXXXX.value.giftInfo.giftItemID, info.giveCouponXXXXX.value.giftInfo.giftName].join(',');
     }
@@ -34,19 +39,21 @@ export default class PrizeContent extends React.Component {
         const { handleGiveCouponXXXXXChange, index} =this.props;
         handleGiveCouponXXXXXChange(e, index);
     }
-    getCardTypeValue = () => {
-        const { cardTypeArr, info } = this.props;
+    getCardTypeValue = (index) => {
+        const { cardTypeArr, info, handleCardXXXXXChange, } = this.props;
         if(info.givePointsXXXXX.value.cardXXXXX.value){
             return info.givePointsXXXXX.value.cardXXXXX.value;
         }
         if(cardTypeArr.length){
+            handleCardXXXXXChange(cardTypeArr[0].cardTypeID, index);
             return cardTypeArr[0].cardTypeID
         }
         return '';
     }
     // 相对有效期 OR 固定有效期
     renderValidOptions = (info, index) => {
-        const { handleGiftValidDaysChange, handleDependTypeXXXXXChange, handleGiftEffectiveTimeChange  } =this.props;
+        const { handleGiftValidDaysChange, handleDependTypeXXXXXChange, handleGiftEffectiveTimeChange, handleRangePickerChange  } =this.props;
+        const a = info.giveCouponXXXXX.value.giftValidDays.value 
         if (info.giveCouponXXXXX.value.effectType != '2') {
             return (
                 <div>
@@ -68,8 +75,8 @@ export default class PrizeContent extends React.Component {
                     <FormItem
                         wrapperCol={{ span: 12 }}
                         className={style.FormItemSecondStyle}
-                        validateStatus={info.giveCouponXXXXX.value.giftValidDays.validateStatus}
-                        help={info.giveCouponXXXXX.value.giftValidDays.msg}
+                        validateStatus={info.giveCouponXXXXX.value.giftEffectiveTime.validateStatus}
+                        help={info.giveCouponXXXXX.value.giftEffectiveTime.msg}
                     > 
                         <div className={style.labelSecondDiv}>
                             <span>生效时间</span>
@@ -77,11 +84,11 @@ export default class PrizeContent extends React.Component {
                         <Select 
                             className={style.LittleSelect}
                             size="default"
-                            value={info.giveCouponXXXXX.value.dependTypeXXXXX == '1' ? '1' : '2'}
+                            value={info.giveCouponXXXXX.value.dependTypeXXXXX == '1' ? '1' : '3'}
                             onChange={(val) => {handleDependTypeXXXXXChange(val, index); }}
                         >
                             <Option value='1' key={1}>按小时</Option>
-                            <Option value='2' key={2}>按天</Option>
+                            <Option value='3' key={3}>按天</Option>
                         </Select>
                         <Select
                             size="default"
@@ -109,7 +116,7 @@ export default class PrizeContent extends React.Component {
             showTime: false,
             format: 'YYYY-MM-DD',
             onChange: (date, dateString) => {
-                this.handleRangePickerChange(date, dateString, index);
+                handleRangePickerChange(date, dateString, index);
             },
         };
         if (typeof info.giveCouponXXXXX.value.giftEffectiveTime.value === 'object') {
@@ -121,14 +128,15 @@ export default class PrizeContent extends React.Component {
         }
         return (
             <FormItem
-                label="固定有效期"
-                className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
+                wrapperCol={{ span: 12 }}
+                className={style.FormItemSecondStyle}
                 required={true}
-                validateStatus={info.giftEffectiveTime.validateStatus}
-                help={info.giftEffectiveTime.msg}
-            >
+                validateStatus={info.giveCouponXXXXX.value.giftEffectiveTime.validateStatus}
+                help={info.giveCouponXXXXX.value.giftEffectiveTime.msg}
+            >   
+                <div className={style.labelSecondDiv}>
+                    <span>固定有效期</span>
+                </div> 
                 <RangePicker
                     {...pickerProps}
                     disabledDate={this.props.type == '70' ? disabledDate : null}
@@ -152,11 +160,7 @@ export default class PrizeContent extends React.Component {
                 cardTypeArr,
                 handleCardXXXXXChange,
         } = this.props;
-        let validateStatus = info.giveCouponXXXXX.value.giftCount.validateStatus;
         let addonBefore = '礼品总数:';
-        let help = info.giveCouponXXXXX.value.giftCount.msg;
-        let valueNuber = info.giveCouponXXXXX.value.giftCount.value;
-        let onChangeFunc = handleGiftCountChange;
         return (
             <div className = {style.formDiv}>
                     <Form className={style.addGrade} key={index}>
@@ -224,7 +228,7 @@ export default class PrizeContent extends React.Component {
                                             </div> 
                                             <Select
                                                 showSearch={true}
-                                                value={this.getCardTypeValue()}
+                                                value={this.getCardTypeValue(index)}
                                                 onChange={(val) => {handleCardXXXXXChange(val, index)}}
                                             >
                                                 {
@@ -254,7 +258,7 @@ export default class PrizeContent extends React.Component {
                                 {!(info.giveCouponXXXXX.value.isOn) ?
                                     null :  
                                     <div className={style.paleRed}>
-                                        {/* 礼品名称 */}
+                                        {/* 优惠券名称 */}
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
@@ -262,7 +266,7 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveCouponXXXXX.value.giftInfo.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>礼品名称</span>
+                                                <span>优惠券名称</span>
                                             </div> 
                                             <ExpandTree
                                                 idx={index}
@@ -284,7 +288,7 @@ export default class PrizeContent extends React.Component {
                                                 />
                                                 <Icon
                                                     type="down"
-                                                    style={{ position: 'absolute', top: 10, left: 265 }}
+                                                    style={{ position: 'absolute', top: 10, left: 252 }}
                                                     className="input_click"
                                                     onClick={() => { toggleFun(index); }}
                                                 />
@@ -294,8 +298,8 @@ export default class PrizeContent extends React.Component {
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
-                                            validateStatus={validateStatus}
-                                            help={help}
+                                            validateStatus={info.giveCouponXXXXX.value.giftCount.validateStatus}
+                                            help={info.giveCouponXXXXX.value.giftCount.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
                                                 <span>礼品数量</span>
@@ -303,8 +307,8 @@ export default class PrizeContent extends React.Component {
                                             <PriceInput
                                                 addonBefore={addonBefore}
                                                 maxNum={10}
-                                                value={{ number: valueNuber }}
-                                                onChange={val => onChangeFunc(val, index)}
+                                                value={{ number: info.giveCouponXXXXX.value.giftCount.value }}
+                                                onChange={val => handleGiftCountChange(val, index)}
                                                 addonAfter="张"
                                                 modal="int"
                                             />

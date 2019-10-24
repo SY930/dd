@@ -1,24 +1,4 @@
 export const defaultData = {
-    // 膨胀所需人数
-    needCount: {
-        value: '',
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 礼品ID和name
-    giftInfo: {
-        giftName: null,
-        giftItemID: null,
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 礼品生效时间
-    giftEffectiveTime: {
-        value: '0',
-        validateStatus: 'success',
-        msg: null,
-    },
-
     giftOdds: {
         value: '',
         validateStatus: 'success',
@@ -36,6 +16,34 @@ export const defaultData = {
     giveCouponXXXXX: {
         value:{
             isOn: true,
+            giftInfo: {
+                giftName: null,
+                giftItemID: null,
+                validateStatus: 'success',
+                msg: null,
+            },
+            // 礼品数量
+            giftCount: {
+                value: '',
+                validateStatus: 'success',
+                msg: null,
+            },
+            //有效期限
+            effectType: '1',
+            // 礼品有效期
+            giftValidDays: {
+                value: '',
+                validateStatus: 'success',
+                msg: null,
+            },
+            //选了按小时还是按天,默认是按小时
+            dependTypeXXXXX: '1',
+            // 礼品生效时间
+            giftEffectiveTime: {
+                value: '0',
+                validateStatus: 'success',
+                msg: null,
+            },
         },
         validateStatus: 'success',
         msg: null,
@@ -43,24 +51,6 @@ export const defaultData = {
 };
 
 export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
-    // 膨胀所需人数
-    needCount: {
-        value: '',
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 礼品生效时间
-    giftEffectiveTime: {
-        value: '0',
-        validateStatus: 'success',
-        msg: null,
-    },
-    // 礼品有效期
-    giftValidDays: {
-        value: '',
-        validateStatus: 'success',
-        msg: null,
-    },
     giftOdds: {
         value: '',
         validateStatus: 'success',
@@ -113,7 +103,7 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
 
 export const defaultGivePointsXXXXX = {
     givePointsValueXXXXX: {
-        value: '1',
+        value: '',
         validateStatus: 'success',
         msg: null,
     },
@@ -155,3 +145,7 @@ export const defaultGiveCouponXXXXX = {
         msg: null,
     },
 }
+
+export const defalutDisArr = [
+    false, false, false, false, false, false, false, false, false, false, false, false
+]

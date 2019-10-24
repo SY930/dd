@@ -81,6 +81,13 @@ class NewShackGift extends NewPromotion {
                         levelPrize = {levelPrize}
                         updateLevelPrize={saleCenterLotteryLevelPrizeData}
                         isNew={this.props.isNew}
+                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        getSubmitFn={(handles) => {
+                            this.handles[2] = handles;
+                        }}
+                        onChange={(rule) => {
+                           this.setState({ rule });
+                       }}
                     ></LotteryThirdStep>
                 ),
             },
