@@ -418,7 +418,29 @@ export default class ExpasionGiftDecorationBoard extends Component {
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
                 <div>
-                <Tabs activeKey={this.state.tabKey} onTabClick={(tabKey) => this.setState({tabKey})} className={style.customTabWrapper}>
+                <Tabs
+                    activeKey={this.state.tabKey}
+                    onTabClick={(tabKey) => this.setState({tabKey})}
+                    className={style.customTabWrapper}
+                    tabBarExtraContent={
+                        <div
+                            style={{
+                                position: 'absolute',
+                                right: 50,
+                                top: 10,
+                                zIndex: 10,
+                            }}
+                        >
+                            <Button
+                                type="primary"
+                                onClick={this.props.onReset}
+                            >
+                                恢复默认
+                            </Button>
+                        </div>
+                        
+                    }
+                >
                         <TabPane tab="页面配图" key="1">
                             {this.renderIMGSettingPanel()}
                         </TabPane>
