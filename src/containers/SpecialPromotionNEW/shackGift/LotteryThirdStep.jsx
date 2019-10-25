@@ -204,8 +204,6 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCouponXXXXX.value.giftInfo.msg = null;
             this.setState({
                 infos: _infos,
-            },() => {
-                this.gradeChange(this.state.infos);
             });
         } else {
             const _infos = this.state.infos;
@@ -215,24 +213,12 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCouponXXXXX.value.giftInfo.msg = '必须选择礼券';
             this.setState({
                 infos: _infos,
-            },() => {
-                this.gradeChange(this.state.infos);
             });
         };
         const { disArr = [] } = this.state;
-        const toggle = !disArr[index];
         disArr.map((v, i) => disArr[i] = false)
         disArr[index] = false;
         this.setState({ disArr });
-    }
-
-    gradeChange = (gifts) => {
-        const typePropertyName = 'sendType';
-        if (!Array.isArray(gifts)) return;
-        const { infos } = this.state;
-        this.setState({
-            infos: [...infos.filter(item => item[typePropertyName] !== 0), ...gifts]
-        })
     }
     // 类型改变
     handleValidateTypeChange = (e, index) => {
@@ -252,8 +238,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -283,8 +267,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
     handleGiveCouponXXXXXChange = (value, index) => {
@@ -309,8 +291,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -327,8 +307,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
     handleCardXXXXXChange = (value, index) => {
@@ -344,8 +322,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -380,8 +356,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -409,8 +383,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -435,8 +407,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        }, () => {
-            this.gradeChange(this.state.infos);
         });
     }
 
@@ -575,8 +545,6 @@ class LotteryThirdStep extends React.Component {
         }
         this.setState({
             infos: _infos,
-        },() => {
-            this.gradeChange(this.state.infos);
         });
     }
 
