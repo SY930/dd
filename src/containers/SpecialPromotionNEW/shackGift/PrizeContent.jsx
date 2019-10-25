@@ -181,6 +181,7 @@ export default class PrizeContent extends React.Component {
                                         className={style.giftOdds}
                                         addonAfter="%"
                                         modal="float"
+                                        maxNum={3}
                                         value={{ number: info.giftOdds.value }}
                                         onChange={(val) => {handleGiftOddsChange(val, index);}}
                                     />
@@ -213,6 +214,7 @@ export default class PrizeContent extends React.Component {
                                             <PriceInput
                                                 addonAfter="积分"
                                                 modal="float"
+                                                maxNum={6}
                                                 value={{ number: info.givePointsXXXXX.value.givePointsValueXXXXX.value }}
                                                 onChange={(val) => {handleGivePointsValueXXXXXChange(val, index);}}
                                             />
