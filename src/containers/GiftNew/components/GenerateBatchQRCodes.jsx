@@ -23,16 +23,12 @@ import {
 } from "../../GiftNew/_action";
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
-const QR_CODE_EFFECT_DAYS = [
-    {
-        value: '0',
-        label: '永久有效',
-    },
-    ... (new Array(30).fill(0)).map((_, index) => ({
+const QR_CODE_EFFECT_DAYS = new Array(30)
+    .fill(0)
+    .map((_, index) => ({
         value: `${index + 1}`,
         label: `${index + 1}天`
-    }))
-]
+    }));
 
 class GenerateBatchQRCodes extends Component {
 
@@ -333,7 +329,7 @@ class GenerateBatchQRCodes extends Component {
                 key: 'key11',
                 render: (qrEffectDays, record) => {
                     if (!(qrEffectDays > 0)) {
-                        return '永久有效'
+                        return '--'
                     }
                     const remainDays = moment(new Date(record.createStamp)).add(qrEffectDays, 'days')
                     .diff(moment(), 'days', true).toFixed(1); // float
