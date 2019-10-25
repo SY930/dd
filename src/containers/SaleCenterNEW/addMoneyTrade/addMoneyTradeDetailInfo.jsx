@@ -58,6 +58,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
     }
 
+    canLimitBeSet = () => {
+        const { ruleType } = this.state;
+        return ruleType === '2' || ruleType === '3';
+    }
+
     getInitState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
@@ -121,7 +126,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             message.warning('至少要设置一份活动菜品')
             return false;
         }
-        if (isLimited == '1' && !(totalFoodMax > 0 && totalFoodMax <= dishes.length)) {
+        if (this.canLimitBeSet() && isLimited == '1' && !(totalFoodMax > 0 && totalFoodMax <= dishes.length)) {
             return false;
         }
         if (dishes.some(dish => !(dish.payPrice > 0))) {
@@ -148,7 +153,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             });
             const rule = {
                 stageType,
-                totalFoodMax: isLimited == '1' ? totalFoodMax : undefined,
+                totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
                 stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
                 stage: [
                     {
@@ -224,21 +229,30 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
     renderDishsSelectionBox() {
         return (
-            this.props.isShopFoodSelectorMode ? (
-                <AddMoneyTradeDishesTableWithoutBrand
-                    legacyPayPrice={this.state.freeAmount}
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
-            ) : (
-                <AddMoneyTradeDishesTableWithBrand
-                    legacyPayPrice={this.state.freeAmount}
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
-            )    
+            <div style={{ position: 'relative' }}>
+                { !this.canLimitBeSet() && (
+                    <div style={{ position: 'absolute', top: 12, left: 60 }}>
+                        （以下活动菜品用户可任选其一参与换购）
+                    </div>
+                )}
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <AddMoneyTradeDishesTableWithoutBrand
+                            legacyPayPrice={this.state.freeAmount}
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <AddMoneyTradeDishesTableWithBrand
+                            legacyPayPrice={this.state.freeAmount}
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    )
+                }
+            </div>    
         )
     }
     // 换购菜品onchange
@@ -421,8 +435,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             null :
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
+
                     {this.renderDishsSelectionBox()}
-                    {this.renderTotalFoodMax()}
+                    {this.canLimitBeSet() && this.renderTotalFoodMax()}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
