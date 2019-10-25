@@ -3,7 +3,7 @@ import { Button, Icon, Tabs, message } from 'antd';
 import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
-import { defaultData, getDefaultGiftData, defaultGivePointsXXXXX, defaultGiveCouponXXXXX, defalutDisArr } from './defaultCommonData';
+import { defaultData, getDefaultGiftData, defaultGivePoints, defaultGiveCoupon, defalutDisArr } from './defaultCommonData';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPrizeData, saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC, } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -109,32 +109,32 @@ class LotteryThirdStep extends React.Component {
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.giftTotalCount && gift.giftName && gift.giftID){
                     //有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
-                    infos[index].giveCouponXXXXX.value.effectType = `${gift.effectType}`;
+                    infos[index].giveCoupon.value.effectType = `${gift.effectType}`;
                     //在相对有效期被选中的情况下，的维持有效时间 。在固定有效期的时候这个值为0
-                    infos[index].giveCouponXXXXX.value.giftValidDays.value = gift.giftValidUntilDayCount;
+                    infos[index].giveCoupon.value.giftValidDays.value = gift.giftValidUntilDayCount;
                     //生效时间类型： 按小时 还是 按天。
-                    infos[index].giveCouponXXXXX.value.dependTypeXXXXX = gift.effectType == '3' ? '3' : '1';
+                    infos[index].giveCoupon.value.dependType = gift.effectType == '3' ? '3' : '1';
                     // 礼品生效时间
-                    infos[index].giveCouponXXXXX.value.giftEffectiveTime.value= gift.effectType != '2' ? gift.giftEffectTimeHours
+                    infos[index].giveCoupon.value.giftEffectiveTime.value= gift.effectType != '2' ? gift.giftEffectTimeHours
                         : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
                     //礼品总数
-                    infos[index].giveCouponXXXXX.value.giftCount.value = gift.giftTotalCount;
+                    infos[index].giveCoupon.value.giftCount.value = gift.giftTotalCount;
                     //优惠券信息 优惠券名称、id等
-                    infos[index].giveCouponXXXXX.value.giftInfo.giftName = gift.giftName;
-                    infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = gift.giftID;
+                    infos[index].giveCoupon.value.giftInfo.giftName = gift.giftName;
+                    infos[index].giveCoupon.value.giftInfo.giftItemID = gift.giftID;
                 }else{
-                    infos[index].giveCouponXXXXX.value = _.cloneDeep(defaultGiveCouponXXXXX);
-                    infos[index].giveCouponXXXXX.value.isOn = false;
+                    infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
+                    infos[index].giveCoupon.value.isOn = false;
                 }
                 //与赠送积分相关的，在与赠送积分相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.cardTypeID && gift.presentValue){
-                    infos[index].givePointsXXXXX.value = _.cloneDeep(defaultGivePointsXXXXX);
+                    infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
                     //充值到会员卡的卡类型id
-                    infos[index].givePointsXXXXX.value.cardXXXXX.value = gift.cardTypeID;  
+                    infos[index].givePoints.value.card.value = gift.cardTypeID;  
                     //赠送积分
-                    infos[index].givePointsXXXXX.value.givePointsValueXXXXX.value = gift.presentValue;  
+                    infos[index].givePoints.value.givePointsValue.value = gift.presentValue;  
                 } else {
-                    infos[index].givePointsXXXXX.value = {};
+                    infos[index].givePoints.value = {};
                 }               
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             })
@@ -198,19 +198,19 @@ class LotteryThirdStep extends React.Component {
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
-            _infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = newValue[0];
-            _infos[index].giveCouponXXXXX.value.giftInfo.giftName = newValue[1];
-            _infos[index].giveCouponXXXXX.value.giftInfo.validateStatus = 'success';
-            _infos[index].giveCouponXXXXX.value.giftInfo.msg = null;
+            _infos[index].giveCoupon.value.giftInfo.giftItemID = newValue[0];
+            _infos[index].giveCoupon.value.giftInfo.giftName = newValue[1];
+            _infos[index].giveCoupon.value.giftInfo.validateStatus = 'success';
+            _infos[index].giveCoupon.value.giftInfo.msg = null;
             this.setState({
                 infos: _infos,
             });
         } else {
             const _infos = this.state.infos;
-            _infos[index].giveCouponXXXXX.value.giftInfo.giftName = null;
-            _infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = null;
-            _infos[index].giveCouponXXXXX.value.giftInfo.validateStatus = 'error';
-            _infos[index].giveCouponXXXXX.value.giftInfo.msg = '必须选择礼券';
+            _infos[index].giveCoupon.value.giftInfo.giftName = null;
+            _infos[index].giveCoupon.value.giftInfo.giftItemID = null;
+            _infos[index].giveCoupon.value.giftInfo.validateStatus = 'error';
+            _infos[index].giveCoupon.value.giftInfo.msg = '必须选择礼券';
             this.setState({
                 infos: _infos,
             });
@@ -223,13 +223,13 @@ class LotteryThirdStep extends React.Component {
     // 类型改变
     handleValidateTypeChange = (e, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.effectType = e.target.value;
+        _infos[index].giveCoupon.value.effectType = e.target.value;
         if(e.target.value == '1'){
             //切到了相对有效期，滞空固定有效期的数据
         }else{
             //切到了固定有效期，滞空相对有效期
-            _infos[index].giveCouponXXXXX.value.dependTypeXXXXX = '1';
-            _infos[index].giveCouponXXXXX.value.giftValidDays = {
+            _infos[index].giveCoupon.value.dependType = '1';
+            _infos[index].giveCoupon.value.giftValidDays = {
                 value: '',
                 validateStatus: 'success',
                 msg: null,
@@ -248,77 +248,77 @@ class LotteryThirdStep extends React.Component {
      * @param {num} index
      * @returns {void}
      */
-    handleGivePointsXXXXXChange = (value, index) => {
+    handleGivePointsChange = (value, index) => {
         const _infos = this.state.infos;
-        if(JSON.stringify(_infos[index].givePointsXXXXX.value) == "{}"){
-            _infos[index].givePointsXXXXX.value = _.cloneDeep(defaultGivePointsXXXXX)
+        if(JSON.stringify(_infos[index].givePoints.value) == "{}"){
+            _infos[index].givePoints.value = _.cloneDeep(defaultGivePoints)
         }else{
             //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
-            if(!(_infos[index].giveCouponXXXXX.value.isOn)){
+            if(!(_infos[index].giveCoupon.value.isOn)){
                 //优惠券为非选中状态
-                _infos[index].giveCouponXXXXX.validateStatus = 'error';
-                _infos[index].giveCouponXXXXX.msg = '赠送积分和赠送优惠券至少选择一项';
+                _infos[index].giveCoupon.validateStatus = 'error';
+                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
-                _infos[index].giveCouponXXXXX.validateStatus = 'success';
-                _infos[index].giveCouponXXXXX.msg = null;
+                _infos[index].giveCoupon.validateStatus = 'success';
+                _infos[index].giveCoupon.msg = null;
             }
-            _infos[index].givePointsXXXXX.value = {}
+            _infos[index].givePoints.value = {}
         }
         this.setState({
             infos: _infos,
         });
     }
-    handleGiveCouponXXXXXChange = (value, index) => {
+    handleGiveCouponChange = (value, index) => {
         const _infos = this.state.infos;
-        if(_infos[index].giveCouponXXXXX.value.isOn){
+        if(_infos[index].giveCoupon.value.isOn){
             //从开变成关的状态
             //先滞空giveCoupn的数据再把状态变为关
-            _infos[index].giveCouponXXXXX.value = { isOn: false };
-            if(JSON.stringify(_infos[index].givePointsXXXXX.value) == "{}"){
-                _infos[index].giveCouponXXXXX.validateStatus = 'error';
-                _infos[index].giveCouponXXXXX.msg = '赠送积分和赠送优惠券至少选择一项';
+            _infos[index].giveCoupon.value = { isOn: false };
+            if(JSON.stringify(_infos[index].givePoints.value) == "{}"){
+                _infos[index].giveCoupon.validateStatus = 'error';
+                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
             }else{
-                _infos[index].giveCouponXXXXX.validateStatus = 'success';
-                _infos[index].giveCouponXXXXX.msg = null;
+                _infos[index].giveCoupon.validateStatus = 'success';
+                _infos[index].giveCoupon.msg = null;
             }
         }else{
             //从关变成开
-            _infos[index].giveCouponXXXXX.value = _.cloneDeep(defaultGiveCouponXXXXX);
-            _infos[index].giveCouponXXXXX.value.isOn = true;
-            _infos[index].giveCouponXXXXX.validateStatus = 'success';
-            _infos[index].giveCouponXXXXX.msg = null;
+            _infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
+            _infos[index].giveCoupon.value.isOn = true;
+            _infos[index].giveCoupon.validateStatus = 'success';
+            _infos[index].giveCoupon.msg = null;
         }
         this.setState({
             infos: _infos,
         });
     }
 
-    handleGivePointsValueXXXXXChange = (value, index) => {
+    handleGivePointsValueChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].givePointsXXXXX.value.givePointsValueXXXXX.value = value.number;
+        _infos[index].givePoints.value.givePointsValue.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            _infos[index].givePointsXXXXX.value.givePointsValueXXXXX.validateStatus = 'success';
-            _infos[index].givePointsXXXXX.value.givePointsValueXXXXX.msg = null;
+            _infos[index].givePoints.value.givePointsValue.validateStatus = 'success';
+            _infos[index].givePoints.value.givePointsValue.msg = null;
         } else {
-            _infos[index].givePointsXXXXX.value.givePointsValueXXXXX.validateStatus = 'error';
-            _infos[index].givePointsXXXXX.value.givePointsValueXXXXX.msg = '赠送积分值应该大于0';
+            _infos[index].givePoints.value.givePointsValue.validateStatus = 'error';
+            _infos[index].givePoints.value.givePointsValue.msg = '赠送积分值应该大于0';
         }
         this.setState({
             infos: _infos,
         });
     }
-    handleCardXXXXXChange = (value, index) => {
+    handleCardChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].givePointsXXXXX.value.cardXXXXX.value = value;
+        _infos[index].givePoints.value.card.value = value;
         const _value = value;
         if (_value) {
-            _infos[index].givePointsXXXXX.value.cardXXXXX.validateStatus = 'success';
-            _infos[index].givePointsXXXXX.value.cardXXXXX.msg = null;
+            _infos[index].givePoints.value.card.validateStatus = 'success';
+            _infos[index].givePoints.value.card.msg = null;
         } else {
-            _infos[index].givePointsXXXXX.value.cardXXXXX.validateStatus = 'error';
-            _infos[index].givePointsXXXXX.value.cardXXXXX.msg = '请先选择卡类型';
+            _infos[index].givePoints.value.card.validateStatus = 'error';
+            _infos[index].givePoints.value.card.msg = '请先选择卡类型';
         }
         this.setState({
             infos: _infos,
@@ -327,14 +327,14 @@ class LotteryThirdStep extends React.Component {
 
     handleGiftValidDaysChange = (val, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.giftValidDays.value = val.number;
+        _infos[index].giveCoupon.value.giftValidDays.value = val.number;
         const _value = val.number || 0;
         if (_value > 0 && _value <= 36500) {
-            _infos[index].giveCouponXXXXX.value.giftValidDays.validateStatus = 'success';
-            _infos[index].giveCouponXXXXX.value.giftValidDays.msg = null;
+            _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'success';
+            _infos[index].giveCoupon.value.giftValidDays.msg = null;
         } else {
-            _infos[index].giveCouponXXXXX.value.giftValidDays.validateStatus = 'error';
-            _infos[index].giveCouponXXXXX.value.giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+            _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'error';
+            _infos[index].giveCoupon.value.giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
         }
         this.setState({
             infos: _infos,
@@ -361,7 +361,7 @@ class LotteryThirdStep extends React.Component {
 
     handleGiftEffectiveTimeChange = (val, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = val;
+        _infos[index].giveCoupon.value.giftEffectiveTime.value = val;
         this.setState({
             infos: _infos,
         }, () => {
@@ -370,16 +370,16 @@ class LotteryThirdStep extends React.Component {
     }
 
 
-    handleDependTypeXXXXXChange = (val, index) =>{
+    handleDependTypeChange = (val, index) =>{
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.dependTypeXXXXX = val;
-        _infos[index].giveCouponXXXXX.value.effectType = val;
+        _infos[index].giveCoupon.value.dependType = val;
+        _infos[index].giveCoupon.value.effectType = val;
         if(val == '3'){
             //点击到按天的时候把按天模式下的默认值设置为1天生效
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = '1';
+            _infos[index].giveCoupon.value.giftEffectiveTime.value = '1';
         }else{
             //点击到按小时的时候把按小时模式下的默认值设置为立即生效
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = '0';
+            _infos[index].giveCoupon.value.giftEffectiveTime.value = '0';
         }
         this.setState({
             infos: _infos,
@@ -396,14 +396,14 @@ class LotteryThirdStep extends React.Component {
       */
      handleRangePickerChange = (date, dateString, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.giftEffectiveTime.value = date;
-        _infos[index].giveCouponXXXXX.value.giftValidDays.value = 0;
+        _infos[index].giveCoupon.value.giftEffectiveTime.value = date;
+        _infos[index].giveCoupon.value.giftValidDays.value = 0;
         if (date === null || date === undefined || !date[0] || !date[1]) {
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.validateStatus = 'error';
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.msg = '请输入有效时间';
+            _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'error';
+            _infos[index].giveCoupon.value.giftEffectiveTime.msg = '请输入有效时间';
         } else {
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.validateStatus = 'success';
-            _infos[index].giveCouponXXXXX.value.giftEffectiveTime.msg = null;
+            _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'success';
+            _infos[index].giveCoupon.value.giftEffectiveTime.msg = null;
         }
         this.setState({
             infos: _infos,
@@ -534,14 +534,14 @@ class LotteryThirdStep extends React.Component {
      */
     handleGiftCountChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCouponXXXXX.value.giftCount.value = value.number;
+        _infos[index].giveCoupon.value.giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0 && _value <= 1000000000) {
-            _infos[index].giveCouponXXXXX.value.giftCount.validateStatus = 'success';
-            _infos[index].giveCouponXXXXX.value.giftCount.msg = null;
+            _infos[index].giveCoupon.value.giftCount.validateStatus = 'success';
+            _infos[index].giveCoupon.value.giftCount.msg = null;
         } else {
-            _infos[index].giveCouponXXXXX.value.giftCount.validateStatus = 'error';
-            _infos[index].giveCouponXXXXX.value.giftCount.msg = '礼品总数必须大于0, 小于等于10亿';
+            _infos[index].giveCoupon.value.giftCount.validateStatus = 'error';
+            _infos[index].giveCoupon.value.giftCount.msg = '礼品总数必须大于0, 小于等于10亿';
         }
         this.setState({
             infos: _infos,
@@ -570,6 +570,7 @@ class LotteryThirdStep extends React.Component {
                             }
                         }else{
                             if(!item.giftOdds.value){
+                                tempResult = false;
                                 this.handleGiftOddsChange({number: item.giftOdds.value}, activeKey);
                             }
                             sumOdds += +item.giftOdds.value;
@@ -580,24 +581,24 @@ class LotteryThirdStep extends React.Component {
                         }
                     });
                     break;
-                case 'givePointsXXXXX':
-                    if(JSON.stringify(infos[activeKey].givePointsXXXXX.value) != "{}"){
+                case 'givePoints':
+                    if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
                         //赠送积分是勾选的要确认里面的内容是不是都合适
-                        let tempobj = infos[activeKey].givePointsXXXXX.value;
-                        if(!tempobj.givePointsValueXXXXX.value || !tempobj.cardXXXXX.value ){
+                        let tempobj = infos[activeKey].givePoints.value;
+                        if(!tempobj.givePointsValue.value || !tempobj.card.value ){
                             tempResult = false;
-                            this.handleGivePointsValueXXXXXChange(tempobj.givePointsValueXXXXX.value, activeKey);
+                            this.handleGivePointsValueChange(tempobj.givePointsValue.value, activeKey);
                         }
                     }else{
                         //赠送积分不是勾选的，要确认是不是优惠券的msg是不是不为空，如果不为空则证明。两个都没选。要返回false。
-                        if(!infos[activeKey].giveCouponXXXXX.value.isOn){
+                        if(!infos[activeKey].giveCoupon.value.isOn){
                             tempResult = false;
                         }
                     }
-                case 'giveCouponXXXXX':
-                        if(infos[activeKey].giveCouponXXXXX.value.isOn){
+                case 'giveCoupon':
+                        if(infos[activeKey].giveCoupon.value.isOn){
                             //优惠券是勾选的确认优惠券里面的内容
-                            let tempobj = infos[activeKey].giveCouponXXXXX.value;
+                            let tempobj = infos[activeKey].giveCoupon.value;
                             if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                 tempResult = false;
                                 this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
@@ -630,13 +631,13 @@ class LotteryThirdStep extends React.Component {
      * @returns {array}
      */
     getResultData = (data, type) => {
-        let pointsObj = data.givePointsXXXXX.value;
-        let couponObj = data.giveCouponXXXXX.value;
+        let pointsObj = data.givePoints.value;
+        let couponObj = data.giveCoupon.value;
         let tempObj = {};
         tempObj.sortIndex = data.sortIndex;
         if(type == 'points'){
-            tempObj.presentValue = pointsObj.givePointsValueXXXXX.value;
-            tempObj.cardTypeID = pointsObj.cardXXXXX.value;
+            tempObj.presentValue = pointsObj.givePointsValue.value;
+            tempObj.cardTypeID = pointsObj.card.value;
             tempObj.presentType = 2;
         }else{
             tempObj.presentValue = '';
@@ -678,11 +679,11 @@ class LotteryThirdStep extends React.Component {
             });
             const tempArr = [];
             infos.map((item, index) => {
-                if(JSON.stringify(item.givePointsXXXXX.value) != "{}"){
+                if(JSON.stringify(item.givePoints.value) != "{}"){
                     let tempObj = this.getResultData(item, 'points');
                     tempArr.push(tempObj);
                 }
-                if(item.giveCouponXXXXX.value.isOn){
+                if(item.giveCoupon.value.isOn){
                     let tempObj = this.getResultData(item, 'benefit');
                     tempArr.push(tempObj);
                 }
@@ -750,13 +751,13 @@ class LotteryThirdStep extends React.Component {
                                     handleGiftCountChange={this.handleGiftCountChange}
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
-                                    handleGivePointsXXXXXChange={this.handleGivePointsXXXXXChange}
-                                    handleGivePointsValueXXXXXChange={this.handleGivePointsValueXXXXXChange}
-                                    handleCardXXXXXChange={this.handleCardXXXXXChange}
-                                    handleGiveCouponXXXXXChange={this.handleGiveCouponXXXXXChange}
+                                    handleGivePointsChange={this.handleGivePointsChange}
+                                    handleGivePointsValueChange={this.handleGivePointsValueChange}
+                                    handleCardChange={this.handleCardChange}
+                                    handleGiveCouponChange={this.handleGiveCouponChange}
                                     handleGiftChange={this.handleGiftChange}
                                     handleGiftValidDaysChange={this.handleGiftValidDaysChange}
-                                    handleDependTypeXXXXXChange={this.handleDependTypeXXXXXChange}
+                                    handleDependTypeChange={this.handleDependTypeChange}
                                     handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                                     handleRangePickerChange={this.handleRangePickerChange}
                                     disabledStatus={this.props.disabledStatus}

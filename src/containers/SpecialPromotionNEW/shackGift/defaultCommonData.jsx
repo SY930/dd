@@ -6,14 +6,14 @@ export const defaultData = {
     },
 
     //赠送积分
-    givePointsXXXXX: {
+    givePoints: {
         value: {},
         validateStatus: 'success',
         msg: null,
     },
 
     //赠送优惠券
-    giveCouponXXXXX: {
+    giveCoupon: {
         value:{
             isOn: true,
             giftInfo: {
@@ -37,7 +37,7 @@ export const defaultData = {
                 msg: null,
             },
             //选了按小时还是按天,默认是按小时
-            dependTypeXXXXX: '1',
+            dependType: '1',
             // 礼品生效时间
             giftEffectiveTime: {
                 value: '0',
@@ -57,13 +57,13 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         msg: null,
     },
     //赠送积分
-    givePointsXXXXX: {
+    givePoints: {
         value: {},
         validateStatus: 'success',
         msg: null,
     },
     //赠送优惠券
-    giveCouponXXXXX: {
+    giveCoupon: {
         value:{
             isOn: true,
             giftInfo: {
@@ -87,7 +87,7 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
                 msg: null,
             },
             //选了按小时还是按天,默认是按小时
-            dependTypeXXXXX: '1',
+            dependType: '1',
             // 礼品生效时间
             giftEffectiveTime: {
                 value: '0',
@@ -101,20 +101,20 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
     [typePropertyName]: typeValue,
 })
 
-export const defaultGivePointsXXXXX = {
-    givePointsValueXXXXX: {
+export const defaultGivePoints = {
+    givePointsValue: {
         value: '',
         validateStatus: 'success',
         msg: null,
     },
-    cardXXXXX: {
+    card: {
         value: '',
         validateStatus: 'success',
         msg: null,
     }
 }
 
-export const defaultGiveCouponXXXXX = {
+export const defaultGiveCoupon = {
     isOn: true,
     giftInfo: {
         giftName: null,
@@ -137,7 +137,7 @@ export const defaultGiveCouponXXXXX = {
         msg: null,
     },
     //选了按小时还是按天,默认是按小时
-    dependTypeXXXXX: '1',
+    dependType: '1',
     // 礼品生效时间
     giftEffectiveTime: {
         value: '0',
