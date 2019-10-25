@@ -4,6 +4,7 @@ import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
 import { defaultData, getDefaultGiftData, defaultGivePointsXXXXX, defaultGiveCouponXXXXX, defalutDisArr } from './defaultCommonData';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPrizeData, saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC, } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
@@ -12,7 +13,6 @@ import {
 import {
     UpdateGiftLevel,
 } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
-import _ from 'lodash';
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
@@ -123,11 +123,12 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveCouponXXXXX.value.giftInfo.giftName = gift.giftName;
                     infos[index].giveCouponXXXXX.value.giftInfo.giftItemID = gift.giftID;
                 }else{
-                    infos[index].giveCouponXXXXX.value = defaultGiveCouponXXXXX;
+                    infos[index].giveCouponXXXXX.value = _.cloneDeep(defaultGiveCouponXXXXX);
+                    infos[index].giveCouponXXXXX.value.isOn = false;
                 }
                 //与赠送积分相关的，在与赠送积分相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.cardTypeID && gift.presentValue){
-                    infos[index].givePointsXXXXX.value = defaultGivePointsXXXXX;
+                    infos[index].givePointsXXXXX.value = _.cloneDeep(defaultGivePointsXXXXX);
                     //充值到会员卡的卡类型id
                     infos[index].givePointsXXXXX.value.cardXXXXX.value = gift.cardTypeID;  
                     //赠送积分
@@ -266,7 +267,7 @@ class LotteryThirdStep extends React.Component {
     handleGivePointsXXXXXChange = (value, index) => {
         const _infos = this.state.infos;
         if(JSON.stringify(_infos[index].givePointsXXXXX.value) == "{}"){
-            _infos[index].givePointsXXXXX.value = defaultGivePointsXXXXX
+            _infos[index].givePointsXXXXX.value = _.cloneDeep(defaultGivePointsXXXXX)
         }else{
             //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
             if(!(_infos[index].giveCouponXXXXX.value.isOn)){
@@ -290,6 +291,7 @@ class LotteryThirdStep extends React.Component {
         const _infos = this.state.infos;
         if(_infos[index].giveCouponXXXXX.value.isOn){
             //从开变成关的状态
+            //先滞空giveCoupn的数据再把状态变为关
             _infos[index].giveCouponXXXXX.value = { isOn: false };
             if(JSON.stringify(_infos[index].givePointsXXXXX.value) == "{}"){
                 _infos[index].giveCouponXXXXX.validateStatus = 'error';
@@ -300,7 +302,8 @@ class LotteryThirdStep extends React.Component {
             }
         }else{
             //从关变成开
-            _infos[index].giveCouponXXXXX.value = defaultGiveCouponXXXXX
+            _infos[index].giveCouponXXXXX.value = _.cloneDeep(defaultGiveCouponXXXXX);
+            _infos[index].giveCouponXXXXX.value.isOn = true;
             _infos[index].giveCouponXXXXX.validateStatus = 'success';
             _infos[index].giveCouponXXXXX.msg = null;
         }

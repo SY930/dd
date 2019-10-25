@@ -271,7 +271,7 @@ export default class PrizeContent extends React.Component {
                                             <ExpandTree
                                                 idx={index}
                                                 value={this.getGiftValue(index)}
-                                                //debugger 这里没有值默认选第一个的逻辑应该在确认数据之后写
+                                                // 这里没有值默认选第一个的逻辑应该在确认数据之后写
                                                 data={_.sortBy(filteredGiftInfo, 'index')}
                                                 onChange={(value) => {
                                                     handleGiftChange(value, index);

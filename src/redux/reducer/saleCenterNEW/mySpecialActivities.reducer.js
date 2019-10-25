@@ -194,10 +194,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
         
         case SALE_CENTER_UPDATE_GIFTS_LEVEL:
             //不知道重不重要写到后面再看取不取掉
-            // debugger;
             return $$state.setIn(['giftsLevel'], Immutable.fromJS(action.payload));
         // 活动列表
-
         case SPECIAL_PROMOTION_FETCH_PROMOTION_OK:
             if ($$state.getIn(['$specialPromotionList', 'status']) === 'pending') {
                 return $$state.setIn(['$specialPromotionList', 'status'], 'success')
