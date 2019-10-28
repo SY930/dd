@@ -719,14 +719,18 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             终止</a>
-                        <a
-                            href="#"
-                            className={ !isDecorationAvailable(record) ? styles.textDisabled : null}
-                            onClick={() => {
-                                isDecorationAvailable(record) && this.handleDecorationStart(record)
-                            }}
-                        >
-                            装修</a>
+                        {
+                            isDecorationAvailable(record) && (
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        this.handleDecorationStart(record)
+                                    }}
+                                >
+                                    装修
+                                </a>
+                            )
+                        }
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
