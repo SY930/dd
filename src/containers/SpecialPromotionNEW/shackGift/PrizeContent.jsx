@@ -64,9 +64,8 @@ export default class PrizeContent extends React.Component {
                         help={info.giveCoupon.value.giftValidDays.msg}
                     > 
                         <PriceInput
-                            addonBefore=""
                             addonAfter="天"
-                            maxNum={10}
+                            maxNum={5}
                             modal="int"
                             value={{ number: info.giveCoupon.value.giftValidDays.value }}
                             onChange={(val) => {handleGiftValidDaysChange(val, index); }}
@@ -144,7 +143,7 @@ export default class PrizeContent extends React.Component {
             </FormItem>
         );
     }
-    render () {
+    render() {
         const { 
                 info, 
                 filteredGiftInfo, 
@@ -160,9 +159,8 @@ export default class PrizeContent extends React.Component {
                 cardTypeArr,
                 handleCardChange,
         } = this.props;
-        let addonBefore = '礼品总数:';
         return (
-            <div className = {style.formDiv}>
+            <div className={style.formDiv}>
                     <Form className={style.addGrade} key={index}>
                         <div className={style.CategoryBody}>
                             <div className={style.paleRed}>
@@ -189,6 +187,7 @@ export default class PrizeContent extends React.Component {
                             </div>
                             {/* 赠送积分 */}
                             <FormItem
+                                style={{ padding: 0 }}
                                 wrapperCol={{ span: 24 }}
                                 className={style.noLabelFormItemStyle}
                                 validateStatus={info.givePoints.validateStatus}
@@ -248,6 +247,7 @@ export default class PrizeContent extends React.Component {
                             {/* 赠送优惠券 */}
                             <FormItem
                                 wrapperCol={{ span: 24 }}
+                                style={{ padding: 0 }}
                                 className={style.noLabelFormItemStyle}
                                 validateStatus={info.giveCoupon.validateStatus}
                                 help={info.giveCoupon.msg}
@@ -304,11 +304,10 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveCoupon.value.giftCount.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>礼品数量</span>
+                                                <span>礼品总数</span>
                                             </div> 
                                             <PriceInput
-                                                addonBefore={addonBefore}
-                                                maxNum={10}
+                                                maxNum={9}
                                                 value={{ number: info.giveCoupon.value.giftCount.value }}
                                                 onChange={val => handleGiftCountChange(val, index)}
                                                 addonAfter="张"

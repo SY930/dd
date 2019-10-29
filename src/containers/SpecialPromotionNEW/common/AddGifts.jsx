@@ -277,7 +277,7 @@ class AddGifts extends React.Component {
                         >
                             <PriceInput
                                 addonBefore={addonBefore}
-                                maxNum={10}
+                                maxNum={9}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter="个"
@@ -354,12 +354,12 @@ class AddGifts extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giftValidDays.value = val.number;
         const _value = val.number || 0;
-        if (_value > 0 && _value <= 36500) {
+        if (_value > 0) {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+            _infos[index].giftValidDays.msg = '有效天数必须大于0';
         }
         this.setState({
             infos: _infos,
@@ -500,7 +500,7 @@ class AddGifts extends React.Component {
                         <PriceInput
                             addonBefore=""
                             addonAfter="天"
-                            maxNum={10}
+                            maxNum={5}
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
@@ -622,7 +622,7 @@ class AddGifts extends React.Component {
             _infos[index].giftTotalCount.msg = null;
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
-            _infos[index].giftTotalCount.msg = '礼品总数必须大于0, 小于等于10亿';
+            _infos[index].giftTotalCount.msg = '礼品总数必须大于0';
         }
         this.setState({
             infos: _infos,

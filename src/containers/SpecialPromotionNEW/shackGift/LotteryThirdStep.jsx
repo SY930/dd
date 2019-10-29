@@ -329,12 +329,12 @@ class LotteryThirdStep extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giveCoupon.value.giftValidDays.value = val.number;
         const _value = val.number || 0;
-        if (_value > 0 && _value <= 36500) {
+        if (_value > 0) {
             _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'success';
             _infos[index].giveCoupon.value.giftValidDays.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+            _infos[index].giveCoupon.value.giftValidDays.msg = '有效天数必须大于0';
         }
         this.setState({
             infos: _infos,
@@ -456,11 +456,10 @@ class LotteryThirdStep extends React.Component {
         switch (action) {
             case 'remove' :
                 infos.splice(+targetKey, 1);
-                if(+activeKey > +targetKey){
-                    let tempKey = +activeKey - 1;
-                    this.setState({ activeKey: `${tempKey}`, })
-                }
-                this.setState({ infos,})
+                this.setState({
+                    infos,
+                    activeKey: activeKey === targetKey ? `${activeKey - 1}` : `${activeKey}`,
+                })
                 break;  
             default: 
                 break;     
@@ -479,13 +478,13 @@ class LotteryThirdStep extends React.Component {
         let panelArr = [];
         //新建逻辑
         if ( isNew && infos.length === 1 ) {
-            panelArr.push({title: '一等奖', content: PrizeContent, key: '0', closable: false,});
+            panelArr.push({title: '一等奖', content: PrizeContent, key: '0' });
         } else {
             infos.map((item, index) => {
                 if( index == activeKey){
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, closable: false,});
+                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
                 }else{
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`,});
+                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
                 }
             })
         }
@@ -536,12 +535,12 @@ class LotteryThirdStep extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giveCoupon.value.giftCount.value = value.number;
         const _value = parseFloat(value.number);
-        if (_value > 0 && _value <= 1000000000) {
+        if (_value > 0) {
             _infos[index].giveCoupon.value.giftCount.validateStatus = 'success';
             _infos[index].giveCoupon.value.giftCount.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftCount.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftCount.msg = '礼品总数必须大于0, 小于等于10亿';
+            _infos[index].giveCoupon.value.giftCount.msg = '礼品总数必须大于0';
         }
         this.setState({
             infos: _infos,
@@ -736,7 +735,7 @@ class LotteryThirdStep extends React.Component {
                             <TabPane 
                                 tab={pane.title} 
                                 key={pane.key} 
-                                closable={pane.closable} 
+                                closable={panelArr.length > 1 && index === panelArr.length - 1} 
                                 ref='paneRef'
                             >
                                 <pane.content 

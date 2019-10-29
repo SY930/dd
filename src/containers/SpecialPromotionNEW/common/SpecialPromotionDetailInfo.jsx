@@ -452,11 +452,11 @@ class SpecialDetailInfo extends Component {
         // 校验礼品数量
         function checkgiftTotalCount(giftTotalCount) {
             const _value = parseFloat(giftTotalCount.value);
-            if (_value > 0 && _value <= 1000000000) {
+            if (_value > 0) {
                 return giftTotalCount;
             }
             return {
-                msg: '礼品总数必须大于0, 小于等于10亿',
+                msg: '礼品总数必须大于0',
                 validateStatus: 'error',
                 value: '',
             }
