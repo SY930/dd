@@ -212,18 +212,18 @@ class SpecialPromotionDetail extends React.Component {
         if (way == 20) {
             return (
                 <div>
-                <h5><span></span>统计信息</h5>
-                <Col span={24}>
-                    {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
-                </Col>
-                <Col style={{ marginTop: 10 }} span={12}>
+                    <h5><span></span>统计信息</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={12}>
                         {this.renderPointsTable()}
                     </Col>
-                {this.renderSearch()}
-                <Col span={24}>
-                    {this.renderActivityInfoTable()}
-                </Col>
-            </div>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
             )
         }
         return (
@@ -408,29 +408,31 @@ class SpecialPromotionDetail extends React.Component {
         const columns = [
             {
                 title: '赠送类型',
-                dataIndex: 'idx',
-                key: 'idx',
+                dataIndex: 'title',
+                key: 'title',
                 className: 'TableTxtCenter',
-                render: (text) => {
-                    return '赠送积分'
-                },
             },
             {
                 title: '累计赠送积分数',
                 dataIndex: 'sendPointAmount',
                 key: 'sendPointAmount',
                 className: 'TableTxtRight',
+                render: data => data || 0,
             },
             {
                 title: '累计赠送总次数',
                 dataIndex: 'sendCount',
                 key: 'sendCount',
                 className: 'TableTxtRight',
+                render: data => data || 0,
             },
         ];
-        let dataSource = []
+        let dataSource;
         try {
-            dataSource = [this.props.mySpecialActivities.data.eventInfo.eventPointData] || [];
+            dataSource = [{
+                title: '赠送积分',
+                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            }];
         } catch (e) {
             dataSource = [];
         }
