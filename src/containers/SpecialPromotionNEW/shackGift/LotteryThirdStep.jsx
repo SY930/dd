@@ -584,9 +584,9 @@ class LotteryThirdStep extends React.Component {
                     if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
                         //赠送积分是勾选的要确认里面的内容是不是都合适
                         let tempobj = infos[activeKey].givePoints.value;
-                        if(!tempobj.givePointsValue.value || !tempobj.card.value ){
+                        if(!(tempobj.givePointsValue.value > 0) || !tempobj.card.value ){
                             tempResult = false;
-                            this.handleGivePointsValueChange(tempobj.givePointsValue.value, activeKey);
+                            this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
                         }
                     }else{
                         //赠送积分不是勾选的，要确认是不是优惠券的msg是不是不为空，如果不为空则证明。两个都没选。要返回false。
@@ -594,6 +594,7 @@ class LotteryThirdStep extends React.Component {
                             tempResult = false;
                         }
                     }
+                    break;
                 case 'giveCoupon':
                         if(infos[activeKey].giveCoupon.value.isOn){
                             //优惠券是勾选的确认优惠券里面的内容
