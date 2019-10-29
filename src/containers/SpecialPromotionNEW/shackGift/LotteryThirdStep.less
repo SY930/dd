@@ -28,16 +28,19 @@
         .ant-tabs-nav .ant-tabs-tab:active{
             color: #40B495;
         }
-        .ant-tabs-nav .ant-tabs-tab {
+        .ant-tabs-nav .ant-tabs-tab:hover {
             color: #40B495;
             width: 90px!important;
             padding-left: 25px!important;
         }
-        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active .anticon-close, .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab:hover .anticon-close {
+        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active .anticon-close {
             width: 16px;
             transform: translateZ(0);
+            margin-left: -2px;
+            margin-top: 2px;
+        }
+        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab:hover .anticon-close {
             margin-left: 3px;
-            margin-top: 3px;
         }
         .ant-tabs-tabpane {
             max-height: 310px;
