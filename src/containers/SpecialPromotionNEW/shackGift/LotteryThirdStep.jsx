@@ -707,12 +707,12 @@ class LotteryThirdStep extends React.Component {
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
         let panelArr = this.getPaneArr(infos);
         return (
-            <div>
+            <div className={style.stepWrapper}>
                 <Button 
                     className = { style.addLevelButton } 
                     type = 'primary' 
                     onClick={this.handleAddLevelPrize}
-                    disabled={this.props.disabledStatus}
+                    disabled={this.props.disabled || infos.length >= 10}
                 > 
                     <Icon type="plus" className={style.addIcon} />
                     添加中奖等级 
@@ -735,7 +735,7 @@ class LotteryThirdStep extends React.Component {
                             <TabPane 
                                 tab={pane.title} 
                                 key={pane.key} 
-                                closable={panelArr.length > 1 && index === panelArr.length - 1} 
+                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1} 
                                 ref='paneRef'
                             >
                                 <pane.content 
@@ -759,7 +759,7 @@ class LotteryThirdStep extends React.Component {
                                     handleDependTypeChange={this.handleDependTypeChange}
                                     handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                                     handleRangePickerChange={this.handleRangePickerChange}
-                                    disabledStatus={this.props.disabledStatus}
+                                    disabled={this.props.disabled}
                                 />
                             </TabPane>
                         )
@@ -777,7 +777,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
         levelPrize: state.sale_mySpecialActivities_NEW.getIn(['giftsLevel']),
-        disabledStatus: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount'])>0,
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
     };
 };
 

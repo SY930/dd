@@ -158,9 +158,14 @@ export default class PrizeContent extends React.Component {
                 handleGivePointsValueChange,
                 cardTypeArr,
                 handleCardChange,
+                disabled,
         } = this.props;
         return (
-            <div className={style.formDiv}>
+            <div style={{ position: 'relative' }}>
+                {
+                    disabled && <div className={style.disabledModal}></div>
+                }
+                <div className={style.formDiv}>
                     <Form className={style.addGrade} key={index}>
                         <div className={style.CategoryBody}>
                             <div className={style.paleRed}>
@@ -343,7 +348,9 @@ export default class PrizeContent extends React.Component {
                         </div>
 
                     </Form>
+                </div>
             </div>
+            
         )
     }
 }
