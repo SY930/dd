@@ -209,6 +209,23 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if (way == 20) {
+            return (
+                <div>
+                <h5><span></span>统计信息</h5>
+                <Col span={24}>
+                    {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                </Col>
+                <Col style={{ marginTop: 10 }} span={12}>
+                        {this.renderPointsTable()}
+                    </Col>
+                {this.renderSearch()}
+                <Col span={24}>
+                    {this.renderActivityInfoTable()}
+                </Col>
+            </div>
+            )
+        }
         return (
             <div>
                 <h5><span></span>统计信息</h5>
@@ -383,6 +400,40 @@ class SpecialPromotionDetail extends React.Component {
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
             }
         });
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
+    renderPointsTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'idx',
+                key: 'idx',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return '赠送积分'
+                },
+            },
+            {
+                title: '累计赠送积分数',
+                dataIndex: 'sendPointAmount',
+                key: 'sendPointAmount',
+                className: 'TableTxtRight',
+            },
+            {
+                title: '累计赠送总次数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+            },
+        ];
+        let dataSource = []
+        try {
+            dataSource = [this.props.mySpecialActivities.data.eventInfo.eventPointData] || [];
+        } catch (e) {
+            dataSource = [];
+        }
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
