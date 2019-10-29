@@ -224,6 +224,7 @@ class CardLevel extends React.Component {
             >
                 <Select
                     showSearch={true}
+                    notFoundContent={'未搜索到结果'}
                     optionFilterProp="children"
                     onChange={this.handleDefaultCardTypeChange}
                     value={defaultCardType || undefined}

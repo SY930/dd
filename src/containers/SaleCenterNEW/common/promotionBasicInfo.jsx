@@ -1024,6 +1024,7 @@ class PromotionBasicInfo extends React.Component {
                 >
                     <Select
                         showSearch={true}
+                        notFoundContent={'未搜索到结果'}
                         placeholder="请选择活动类别"
                         getPopupContainer={(node) => node.parentNode}
                         size="default"

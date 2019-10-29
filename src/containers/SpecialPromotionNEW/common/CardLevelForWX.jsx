@@ -371,6 +371,7 @@ class CardLevelForWX extends React.Component {
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
+                                notFoundContent={'未搜索到结果'}
                                 value={this.state.cardLevelIDList}
                                 className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                                 getPopupContainer={(node) => node.parentNode}

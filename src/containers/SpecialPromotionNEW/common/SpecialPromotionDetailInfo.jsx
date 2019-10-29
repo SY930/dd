@@ -1527,7 +1527,6 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
-                                placeholder="请输入储值金额比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
@@ -1562,7 +1561,6 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
-                                placeholder="请输入积分比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
@@ -1613,7 +1611,6 @@ class SpecialDetailInfo extends Component {
                             <PriceInput
                                 addonAfter="%"
                                 maxNum={3}
-                                placeholder="请输入消费金额比例数值"
                                 modal="float"
                             />
                         )
@@ -1647,7 +1644,6 @@ class SpecialDetailInfo extends Component {
                         })(
                             <PriceInput
                                 addonAfter="%"
-                                placeholder="请输入积分比例数值"
                                 maxNum={3}
                                 modal="float"
                             />
@@ -1713,6 +1709,7 @@ class SpecialDetailInfo extends Component {
                                 })(
                                     <Select
                                         showSearch={true}
+                                        notFoundContent={'未搜索到结果'}
                                         multiple
                                         placeholder="请选择活动适用的储值套餐"
                                         getPopupContainer={(node) => node.parentNode}
@@ -1767,7 +1764,7 @@ class SpecialDetailInfo extends Component {
                 <p className={styles.coloredBorderedLabel}>
                     被推荐人奖励：
                     <Tooltip title="被推荐人在且仅在被邀请成为会员时可以领取一次被推荐人奖励。">
-                        <Icon type="question-circle" />
+                        <Icon style={{ fontWeight: 'normal' }} type="question-circle" />
                     </Tooltip>
                 </p>
                 {this.renderRecommendGifts(0)}

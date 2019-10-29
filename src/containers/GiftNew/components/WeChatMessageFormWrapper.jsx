@@ -362,6 +362,7 @@ class WeChatMessageFormWrapper extends Component {
                     >
                         <Select
                             showSearch={true}
+                            notFoundContent={'未搜索到结果'}
                             getPopupContainer={(node) => node.parentNode}
                             size="default"
                             value={String(currentType)}

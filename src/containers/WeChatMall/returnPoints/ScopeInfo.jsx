@@ -128,6 +128,7 @@ class ScopeInfo extends React.Component {
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
+                                notFoundContent={'未搜索到结果'}
                                 placeholder="请选择适用卡类"
                                 value={cardScopeList.map(item => item.cardTypeID)}
                                 className={styles.linkSelectorRight}
