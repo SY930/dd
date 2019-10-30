@@ -164,7 +164,7 @@ class CropperUploader extends Component {
                 {
                     cropperVisible && (
                         <Modal
-                            title="图片编辑"
+                            title="图片裁切"
                             visible={true}
                             width="700px"
                             onOk={this.handleOk}

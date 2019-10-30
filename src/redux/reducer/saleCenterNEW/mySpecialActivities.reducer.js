@@ -58,6 +58,7 @@ import {
     GHT_TAGLIST_SUCCESS,
     GHT_TAGGROUPLIST_SUCCESS,
     SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
+    SALE_CENTER_UPDATE_GIFTS_LEVEL,
 } from '../../actions/saleCenterNEW/mySpecialActivities.action'
 
 const $initialState = Immutable.fromJS({
@@ -87,6 +88,7 @@ const $initialState = Immutable.fromJS({
     $specialNew: {
         status: 'start',
     },
+    giftsLevel: [],
     $groupMembers: {},
     tagList: [],
     tagGroupList: [],
@@ -156,6 +158,7 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
                 return $$state.setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload));
             }
             return $$state;
+
         case SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY:
             return $$state.setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload));
 
@@ -169,14 +172,14 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$specialDetailInfo', 'status'], 'cancel');
 
         // 编辑
-
         case SALE_CENTER_FETCH_SPECIAL_DETAIL_START:
             return $$state.setIn(['$specialDetailInfo', 'status'], 'pending');
 
         case SALE_CENTER_FETCH_SPECIAL_DETAIL_OK:
             if ($$state.getIn(['$specialDetailInfo', 'status']) === 'pending') {
                 return $$state.setIn(['$specialDetailInfo', 'status'], 'success')
-                    .setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload));
+                    .setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload))
+                    .setIn(['giftsLevel'], Immutable.fromJS(action.payload.gifts));
             }
             return $$state;
 
@@ -188,9 +191,11 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_SPECIAL_DETAIL_CANCEL:
             return $$state.setIn(['$specialDetailInfo', 'status'], 'cancel');
-
+        
+        case SALE_CENTER_UPDATE_GIFTS_LEVEL:
+            //不知道重不重要写到后面再看取不取掉
+            return $$state.setIn(['giftsLevel'], Immutable.fromJS(action.payload));
         // 活动列表
-
         case SPECIAL_PROMOTION_FETCH_PROMOTION_OK:
             if ($$state.getIn(['$specialPromotionList', 'status']) === 'pending') {
                 return $$state.setIn(['$specialPromotionList', 'status'], 'success')

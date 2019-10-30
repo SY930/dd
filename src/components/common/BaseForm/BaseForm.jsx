@@ -217,7 +217,7 @@ class BaseForm extends React.Component {
                         <Select
                             multiple={!!item.multiple}
                             placeholder={`请选择${item.label}`}
-                            notFoundContent={'未找到匹配项'}
+                            notFoundContent={'未搜索到结果'}
                             dropdownMatchSelectWidth={false}
                             filterOption={(value, option) => option.props.children.indexOf(value) > -1}
                         >

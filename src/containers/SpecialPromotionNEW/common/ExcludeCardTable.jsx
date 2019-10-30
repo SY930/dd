@@ -12,27 +12,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     Form,
-    DatePicker,
-    Select,
-    Col,
-    Radio,
-    TreeSelect,
     Table,
-    Icon,
 } from 'antd';
-
-const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetExcludeCardLevelIds } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import _ from 'lodash';
-
-const Immutable = require('immutable');
 
 class ExcludeCardTable extends React.Component {
     constructor(props) {
@@ -89,6 +76,11 @@ class ExcludeCardTable extends React.Component {
                                 }
                             });
                         });
+                        cardInfo.map((cardType, index) => {
+                            if (cardType.cardTypeID == cardLevelID) {
+                                excludeEvent.idNames.push(cardType.cardTypeName)
+                            }
+                        });
                     })
                 }
                 excludeData.push(excludeEvent);
@@ -100,6 +92,13 @@ class ExcludeCardTable extends React.Component {
                 } else {
                     excludeEvent.idNames = [];
                     excludeEvent.cardLevelIDList.map((cardLevelID) => {
+                        cardInfo.map((cardType, index) => {
+                            cardType.cardTypeLevelList.map((card, i) => {
+                                if (card.cardLevelID == cardLevelID) {
+                                    excludeEvent.idNames.push(card.cardLevelName)
+                                }
+                            });
+                        });
                         cardInfo.map((cardType, index) => {
                             if (cardType.cardTypeID == cardLevelID) {
                                 excludeEvent.idNames.push(cardType.cardTypeName)
@@ -134,7 +133,7 @@ class ExcludeCardTable extends React.Component {
                 )
             },
         }, {
-            title: this.props.isWeChatOnly ? '占用卡类信息' : this.props.catOrCard == 'card' ? '占用卡等级信息' : '占用卡类信息',
+            title: '占用卡类/卡等级信息',
             dataIndex: 'idNames',
             key: 'idNames',
             className: 'TableTxtCenter',
@@ -148,7 +147,6 @@ class ExcludeCardTable extends React.Component {
         },
         ];
         return (
-
             <Table
                 dataSource={excludeData}
                 columns={columns}
@@ -157,9 +155,8 @@ class ExcludeCardTable extends React.Component {
                 bordered={true}
                 size="middle"
                 rowKey="uid"
-                title={() => { return this.props.catOrCard == 'card' ? '同时段内，卡等级被以下活动占用' : '同时段内，卡类被以下活动占用' }}
+                title={() => { return '同时段内，卡类/卡等级被以下活动占用' }}
             />
-
         );
     }
 }

@@ -41,7 +41,7 @@ class CardLevel extends React.Component {
         this.state = {
             cardInfo: [],
             cardLevelIDList: [],
-            getExcludeCardLevelIds: [],
+            getExcludeCardLevelIds: [], // 不同的活动，可能是卡类，可能是卡等级
             getExcludeCardLevelIdsStatus: false,
             tableDisplay: false,
             cardLevelRangeType: '0',
@@ -215,17 +215,20 @@ class CardLevel extends React.Component {
 
         return (
             <FormItem
-                style={{ marginLeft: -13 }}
                 validateStatus={defaultCardType ? 'success' : 'error'}
                 help={defaultCardType ? null : '不可为空'}
-                label="新用户注册成为会员的卡类选择"
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 14 }}
+                label="新用户注册卡类"
+                required
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
             >
                 <Select
                     showSearch={true}
+                    notFoundContent={'未搜索到结果'}
+                    optionFilterProp="children"
                     onChange={this.handleDefaultCardTypeChange}
-                    value={defaultCardType}
+                    value={defaultCardType || undefined}
+                    placeholder="请选择新用户注册成为会员的卡类型"
                     getPopupContainer={(node) => node.parentNode}
                 >
                     {
@@ -237,7 +240,6 @@ class CardLevel extends React.Component {
     }
     render() {
         const { getFieldDecorator } = this.props.form;
-        // const { cardInfo = [], getExcludeCardLevelIds = [] } = this.state;
         const { cardInfo = [] } = this.state;
         let getExcludeCardLevelIds = []
         if(this.props.type == '52') {
@@ -277,10 +279,12 @@ class CardLevel extends React.Component {
                 }
             })
         } else if (!this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
-            // 按卡类别，把卡等级排除
             cardInfo.map((cardType, index) => {
-                // 去掉互斥卡类别等级
-                if (!getExcludeCardLevelIds.includes(cardType.cardTypeID)) {
+                // 在生日赠送活动中（51）getExcludeCardLevelIds 既有卡类ID又有卡等级ID
+                if (!getExcludeCardLevelIds.includes(cardType.cardTypeID) &&
+                    cardType.cardTypeLevelList.map(({cardLevelID}) => cardLevelID)
+                    .every(id => !getExcludeCardLevelIds.includes(id))
+                ) {
                     treeData.push({
                         label: cardType.cardTypeName,
                         value: cardType.cardTypeID,
@@ -323,6 +327,8 @@ class CardLevel extends React.Component {
                                         placeholder={`请选择${this.props.catOrCard == 'card' ? '会员等级' : '会员卡类'}`}
                                         allowClear={true}
                                         multiple={true}
+                                        showSearch
+                                        treeNodeFilterProp="label"
                                         treeData={treeData}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleSelectChange}

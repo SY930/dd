@@ -495,6 +495,7 @@ class MySpecialActivities extends React.Component {
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
+                                notFoundContent={'未搜索到结果'}
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择活动类型"
                                 defaultValue="全部"
@@ -719,14 +720,18 @@ class MySpecialActivities extends React.Component {
                             }}
                         >
                             终止</a>
-                        <a
-                            href="#"
-                            className={ !isDecorationAvailable(record) ? styles.textDisabled : null}
-                            onClick={() => {
-                                isDecorationAvailable(record) && this.handleDecorationStart(record)
-                            }}
-                        >
-                            装修</a>
+                        {
+                            isDecorationAvailable(record) && (
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        this.handleDecorationStart(record)
+                                    }}
+                                >
+                                    装修
+                                </a>
+                            )
+                        }
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"

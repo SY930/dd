@@ -164,6 +164,7 @@ class StepOneWithDateRange extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        document.addEventListener('click', this.onFakeDatePickerBlur)
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,
             _role: this.props.user.accountInfo.roleType,
@@ -215,6 +216,25 @@ class StepOneWithDateRange extends React.Component {
             this.promotionNameInputRef.focus()
         } catch (e) {
             // oops
+        }
+    }
+    componentWillUnmount() {
+        document.removeEventListener('click', this.onFakeDatePickerBlur)
+    }
+
+    onFakeDatePickerBlur = (e) => {
+        if (this.fakeDatePicker) {
+            let element = e.target;
+            while (element.parentNode) {
+                if (element === this.fakeDatePicker
+                    || (element.className || '').includes('ant-calendar-picker-container')) {
+                    break;
+                }
+                element = element.parentNode
+            }
+            if (!element.parentNode) {
+                this.setState({ open: false })
+            }
         }
     }
 
@@ -525,17 +545,28 @@ class StepOneWithDateRange extends React.Component {
         };
         return (
             <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
-                <DatePicker onChange={
-                    (moment, dateString) => {
-                        this.excludeDatePicker(moment, dateString);
+                <DatePicker
+                    ref={e => this.realDatePicker = e}
+                    open={this.state.open}
+                    style={{ visibility: 'hidden', position: 'absolute'}}
+                    value={undefined}
+                    onChange={
+                        (moment, dateString) => {
+                            this.excludeDatePicker(moment, dateString);
+                            this.setState({
+                                open: false,
+                            })
+                        }
                     }
-                }
                 />
-                {
-                    this.state.excludeDateArray.length > 0 ? (
-                        <div className={styles.showExcludeDate}>{this.renderExcludedDate()}</div>
-                    ) : null
-                }
+                <div
+                    ref={node => this.fakeDatePicker = node}
+                    onClick={() => this.setState({ open: true })}
+                    className={styles.showExcludeDate}
+                >
+                    <Icon style={{ position: 'absolute', right: 9, top: 8 }} type="calendar" />
+                    {this.renderExcludedDate()}
+                </div>
             </FormItem>
         )
     }
@@ -586,6 +617,7 @@ class StepOneWithDateRange extends React.Component {
         return this.state.excludeDateArray.map((date, index) => {
             const callback = (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.unselectExcludeDate(index);
             };
 

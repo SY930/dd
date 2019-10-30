@@ -42,6 +42,7 @@ module.exports = {
         'react/jsx-boolean-value': [2, 'always'],
         'global-require': [0],
         'jsx-a11y/href-no-hash': [0],
+        'linebreak-style': false,
     },
     'globals': {
         'document': false,
