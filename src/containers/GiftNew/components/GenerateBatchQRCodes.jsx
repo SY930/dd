@@ -23,6 +23,12 @@ import {
 } from "../../GiftNew/_action";
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
+const QR_CODE_EFFECT_DAYS = new Array(30)
+    .fill(0)
+    .map((_, index) => ({
+        value: `${index + 1}`,
+        label: `${index + 1}天`
+    }));
 
 class GenerateBatchQRCodes extends Component {
 
@@ -41,6 +47,7 @@ class GenerateBatchQRCodes extends Component {
             mpID: undefined,
             startNo: undefined,
             endNo: undefined,
+            qrEffectDays: '30', // 二维码默认有效期30天
             selectedBatchEntity: null,
             description: '',
         };
@@ -143,6 +150,12 @@ class GenerateBatchQRCodes extends Component {
         });
     }
 
+    handleQrEffectDaysChange = (value) => {
+        this.setState({
+            qrEffectDays: value
+        })
+    }
+
     mapStateToRequestParams = () => {
         const {
             selectedBatchEntity,
@@ -151,6 +164,7 @@ class GenerateBatchQRCodes extends Component {
             mpID,
             batchItemID,
             description: remark,
+            qrEffectDays,
         } = this.state;
         return {
             giftItemID: this.props.giftItemID,
@@ -160,6 +174,7 @@ class GenerateBatchQRCodes extends Component {
             batchNo: selectedBatchEntity.batchNO,
             mpID,
             remark,
+            qrEffectDays,
         };
     }
 
@@ -197,6 +212,7 @@ class GenerateBatchQRCodes extends Component {
                     endNo: undefined,
                     selectedBatchEntity: null,
                     description: '',
+                    qrEffectDays: '30',
                 }, () => {
                     this.handleQuery();
                     this.props.form.resetFields();
@@ -304,6 +320,21 @@ class GenerateBatchQRCodes extends Component {
                 width: 100,
                 dataIndex: 'createBy',
                 key: 'key4',
+            },
+            {
+                title: '二维码剩余有效期',
+                className: 'TableTxtCenter',
+                width: 110,
+                dataIndex: 'qrEffectDays',
+                key: 'key11',
+                render: (qrEffectDays, record) => {
+                    if (!(qrEffectDays > 0)) {
+                        return '--'
+                    }
+                    const remainDays = moment(new Date(record.createStamp)).add(qrEffectDays, 'days')
+                    .diff(moment(), 'days', true).toFixed(1); // float
+                    return remainDays >= 0 ? `${remainDays}天` : '已过期'
+                }
             },
             {
                 title: '状态',
@@ -514,6 +545,23 @@ class GenerateBatchQRCodes extends Component {
                         </Select>
                     )
                 }
+                </FormItem>
+                <FormItem
+                    label="有效期"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                >
+                    <Select
+                        value={this.state.qrEffectDays}
+                        onChange={this.handleQrEffectDaysChange}
+                    >
+                        {
+                            QR_CODE_EFFECT_DAYS.map(({value, label}) => (
+                                <Select.Option key={value} value={value}>{label}</Select.Option>
+                            ))
+                        }
+                    </Select>
                 </FormItem>
                 <FormItem
                     label="备注"
