@@ -164,7 +164,7 @@ class ExpandTree extends React.Component {
                                     top: 39,
                                     width: '100%',
                                     minHeight: 184,
-                                    maxHeight: 300,
+                                    maxHeight: 240,
                                     overflow: 'auto',
                                     zIndex: 1000,
                                     backgroundColor: 'white',
