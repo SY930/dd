@@ -10,10 +10,10 @@ export default class DecorationUploader extends Component {
 
     onUrlChange = (info) => {
         const { file: { status } } = info;
-        if (status === 'done' && info.file.response && (info.file.response.data && info.file.response.data.url)) {
+        if (status === 'done' && info.file.response && info.file.response.url) {
             message.success(`${info.file.name} 上传成功`);
-            this.props.onChange(`http://res.hualala.com/${info.file.response.data.url}`)
-        } else if (status === 'error' || (info.file.response && !(info.file.response.data && info.file.response.data.url))) {
+            this.props.onChange(`http://res.hualala.com/${info.file.response.url}`)
+        } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
             message.error(`${info.file.name} 上传失败`);
         }
     }
@@ -30,20 +30,29 @@ export default class DecorationUploader extends Component {
     }
     render() {
         const uploadProps = {
-            name: 'file',
+            name: 'myFile',
             showUploadList: false,
-            action: '/api/shopcenter/upload',
+            action: '/api/common/imageUpload',
             accept: 'image/png,image/jpeg,image/gif',
             beforeUpload: this.beforeUpload,
             onChange: this.onUrlChange,
         };
-        const { value, onChange } = this.props;
+        const { value, onChange, trigger } = this.props;
+        const displayTrigger = trigger || (
+            <div className={style.uploaderTrigger} >
+                <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
+                <br/>
+                <span>
+                    上传
+                </span>
+            </div> 
+        )
         return (
             <Upload
                 {...uploadProps}
             >
                 {
-                    value ? (
+                    value ? ( // 有value时默认回显，可重置
                         <div className={style.resetableTrigger}>
                             <div
                                 className={style.actionBar}
@@ -56,14 +65,8 @@ export default class DecorationUploader extends Component {
                             </div>
                             <img src={value} alt=""/>
                         </div>
-                    ) : (
-                        <div className={style.uploaderTrigger} >
-                            <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
-                            <br/>
-                            <span>
-                                上传
-                            </span>
-                        </div> 
+                    ) : (// 无value时显示自定义trigger或默认trigger
+                        displayTrigger
                     )
                 }                               
             </Upload>

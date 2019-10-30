@@ -90,7 +90,7 @@ export default class PromotionDecoration extends Component {
     }
 
     renderHeader() {
-        const { loading, title } = this.props;
+        const { loading, type, title } = this.props;
         return (
             <div className={style.flexHeader} >
                 <span className={style.title} >
@@ -105,14 +105,20 @@ export default class PromotionDecoration extends Component {
                 >
                     返回
                 </Button>
-                <Button
-                    type="ghost"
-                    loading={loading}
-                    onClick={this.handleReset}
-                    style={{ marginRight: 12 }}
-                >
-                    恢复默认
-                </Button>
+                {/** 膨胀大礼包的恢复默认在内部 */}
+                {
+                    type !== '66' && (
+                        <Button
+                            type="ghost"
+                            loading={loading}
+                            onClick={this.handleReset}
+                            style={{ marginRight: 12 }}
+                        >
+                            恢复默认
+                        </Button>
+                    )
+                }
+                
                 <Button
                     type="primary"
                     loading={loading}
@@ -136,7 +142,7 @@ export default class PromotionDecoration extends Component {
             case '65':
                 return <ShareGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '66':
-                return <ExpasionGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+                return <ExpasionGiftDecorationBoard onReset={this.handleReset} onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }

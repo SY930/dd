@@ -102,13 +102,6 @@ const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
 
-const DECORATABLE_PROMOTIONS = [
-    // '5010', '3010',
-];
-const isDecorationAvailable = ({promotionType}) => {
-    return DECORATABLE_PROMOTIONS.includes(`${promotionType}`)
-};
-
 
 const mapStateToProps = (state) => {
     return {
@@ -1094,7 +1087,7 @@ class MyActivities extends React.Component {
                 title: '操作',
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 210,
+                width: 180,
                 render: (text, record, index) => {
                     const buttonText = (record.isActive == '1' ? '禁用' : '启用');
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1157,12 +1150,6 @@ class MyActivities extends React.Component {
                                     }}
                                 >删除</a>
                             </Authority>
-                            <a
-                                disabled={!isDecorationAvailable(record)}
-                                onClick={() => {
-                                    this.handleDecorationStart(record)
-                                }}
-                            >装修</a>
                     </span>
 
                     );
