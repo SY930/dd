@@ -14,6 +14,8 @@ import {
     Select,
     Radio,
     message,
+    Col,
+    Row,
 } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
@@ -56,6 +58,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
     }
 
+    canLimitBeSet = () => {
+        const { ruleType } = this.state;
+        return ruleType === '2' || ruleType === '3';
+    }
+
     getInitState = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']);
@@ -67,6 +74,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                 stageCount: '',
                 freeAmount: '',
                 ruleType: '0',
+                isLimited: '0',
+                totalFoodMax: undefined,
             };
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
@@ -82,7 +91,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
-            ruleType: String(ruleType)
+            isLimited: _rule.totalFoodMax > 0 ? '1' : '0',
+            totalFoodMax: _rule.totalFoodMax || undefined,
+            ruleType: String(ruleType),
         }
     }
 
@@ -93,7 +104,18 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     }
 
     handleSubmit() {
-        let { stageAmount, stageType, stageCount, dishes, stageCountFlag, stageAmountFlag, freeAmount, ruleType } = this.state;
+        let {
+            stageAmount,
+            stageType,
+            stageCount,
+            dishes,
+            stageCountFlag,
+            stageAmountFlag,
+            freeAmount,
+            ruleType,
+            isLimited,
+            totalFoodMax,
+        } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -102,6 +124,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         }
         if (dishes.length === 0) {
             message.warning('至少要设置一份活动菜品')
+            return false;
+        }
+        if (this.canLimitBeSet() && isLimited == '1' && !(totalFoodMax > 0 && totalFoodMax <= dishes.length)) {
             return false;
         }
         if (dishes.some(dish => !(dish.payPrice > 0))) {
@@ -128,6 +153,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             });
             const rule = {
                 stageType,
+                totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
                 stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
                 stage: [
                     {
@@ -203,21 +229,30 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
     renderDishsSelectionBox() {
         return (
-            this.props.isShopFoodSelectorMode ? (
-                <AddMoneyTradeDishesTableWithoutBrand
-                    legacyPayPrice={this.state.freeAmount}
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
-            ) : (
-                <AddMoneyTradeDishesTableWithBrand
-                    legacyPayPrice={this.state.freeAmount}
-                    onChange={(value) => {
-                        this.onDishesChange(value);
-                    }}
-                />
-            )    
+            <div style={{ position: 'relative' }}>
+                { !this.canLimitBeSet() && (
+                    <div style={{ position: 'absolute', top: 12, left: 60 }}>
+                        （以下活动菜品用户可任选其一参与换购）
+                    </div>
+                )}
+                {
+                    this.props.isShopFoodSelectorMode ? (
+                        <AddMoneyTradeDishesTableWithoutBrand
+                            legacyPayPrice={this.state.freeAmount}
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    ) : (
+                        <AddMoneyTradeDishesTableWithBrand
+                            legacyPayPrice={this.state.freeAmount}
+                            onChange={(value) => {
+                                this.onDishesChange(value);
+                            }}
+                        />
+                    )
+                }
+            </div>    
         )
     }
     // 换购菜品onchange
@@ -245,6 +280,82 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
 
     ruleTypeChange(val) {
         this.setState({ ruleType: val })
+    }
+    handleIsLimitedChange = (value) => {
+        this.setState({
+            isLimited: value,
+        })
+    }
+    handleTotalFoodMaxChange = ({ number: value }) => {
+        this.setState({
+            totalFoodMax: value,
+        })
+    }
+    getTotalMaxValidateInfo = () => {
+        const {
+            totalFoodMax,
+            dishes,
+        } = this.state;
+        if (!(totalFoodMax > 0)) {
+            return {
+                msg: '必须大于0',
+                status: 'error'
+            }
+        }
+        if (totalFoodMax > dishes.length) {
+            return {
+                msg: '限制份数不能超过活动菜品数',
+                status: 'error'
+            }
+        }
+        return {
+            msg: undefined,
+            status: 'success'
+        }
+    }
+    renderTotalFoodMax() {
+        const {
+            msg,
+            status,
+        } = this.getTotalMaxValidateInfo();
+        return (
+            <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
+                <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                    每单换购数量
+                </div>
+                <div style={{width: '300px'}}>
+                    <Row>
+                        <Col  span={this.state.isLimited == 0 ? 24 : 8}>
+                            <Select onChange={this.handleIsLimitedChange}
+                                    value={String(this.state.isLimited)}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>不限制</Option>
+                                <Option key="1" value={'1'}>限制</Option>
+                            </Select>
+                        </Col>
+                        {
+                            this.state.isLimited == '1' ?
+                                <Col span={16}>
+                                    <FormItem
+                                        style={{ marginTop: -6 }}
+                                        validateStatus={status}
+                                        help={msg}
+                                    >
+                                        <PriceInput
+                                            addonAfter={'份'}
+                                            maxNum={5}
+                                            value={{ number: this.state.totalFoodMax }}
+                                            onChange={this.handleTotalFoodMaxChange}
+                                            modal="int"
+                                        />
+                                    </FormItem>
+                                </Col> : null
+                        }
+                    </Row>
+                </div>
+        </div>
+        )
     }
 
     render() {
@@ -324,7 +435,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             null :
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
+
                     {this.renderDishsSelectionBox()}
+                    {this.canLimitBeSet() && this.renderTotalFoodMax()}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
