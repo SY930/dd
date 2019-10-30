@@ -36,6 +36,7 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import { axiosData } from '../../../helpers/util';
+const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -546,6 +547,17 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
+            eventWay == 20 && ({
+                title: '获奖情况',
+                dataIndex: 'winFlag',
+                key: 'winFlag',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(level)=> {
+                    if (!(level > 0)) return '未中奖'
+                    return `${levelArray[level - 1]}等奖`
+                }
+            }),
             {
                 title: '参与时间',
                 dataIndex: 'joinTime',
@@ -642,7 +654,7 @@ class SpecialPromotionDetail extends React.Component {
         return (
             <Table
                 dataSource={dataSource}
-                columns={columns}
+                columns={columns.filter(Boolean)}
                 bordered={true}
                 scroll={eventWay == 68 ? {x: 1550} : {}}
                 pagination={{
