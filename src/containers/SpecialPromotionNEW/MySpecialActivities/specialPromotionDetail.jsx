@@ -554,7 +554,8 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render:(level)=> {
-                    if (!(level > 0)) return '未中奖'
+                    if (!level) return '--'
+                    if (level === -1) return '未中奖'
                     return `${levelArray[level - 1]}等奖`
                 }
             }),
