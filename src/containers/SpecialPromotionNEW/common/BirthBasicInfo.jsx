@@ -64,17 +64,13 @@ class PromotionBasicInfo extends React.Component {
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
         });
-        // 生日赠送查询排除卡类
-        // if (this.props.type === '51') {
         const opts = {
             groupID: this.props.user.accountInfo.groupID,
             eventWay: this.props.type,
+            itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
         };
-        if (Object.keys(specialPromotion).length < 30) {
-            // 新建时查询排除卡类
-            this.props.saleCenterGetExcludeCardLevelIds(opts)
-        }
-        // }
+        this.props.saleCenterGetExcludeCardLevelIds(opts);
+
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
             :
