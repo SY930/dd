@@ -1151,11 +1151,13 @@
 }
 
 .showExcludeDate{
+    position: relative;
     border: 1px solid @normal-color;
-    margin-top: 15px;
+    min-height: 34px;
+    border-radius: 3px;
     :global{
         .ant-tag{
-            margin: 5px 8px;
+            margin: 5px 0 5px 5px;
         }
     }
 }
@@ -1453,7 +1455,7 @@
     width: 550px;
     height: 70px;
     line-height: 70px;
-    margin: 150px auto;
+    margin: 15px auto;
     border: 1px dashed #e5e5e5;
     border-radius: 5px;
     color: #aeaeae;
@@ -1464,7 +1466,7 @@
     .priceWrapper{
         padding-left: 40%;
         position: absolute;
-        bottom: 37px;
+        bottom: 46px;
         width: 100%;
         height: 32px;
         line-height: 32px;
@@ -1472,19 +1474,19 @@
     .deduct{
         position: absolute;
         right: 0;
-        bottom: 59px;
+        bottom: 62px;
         width: 60%;
     }
     .add{
         position: absolute;
         right: 0;
-        bottom: 24px;
+        bottom: 26px;
         width: 60%;
     }
     .addTwo{
         position: absolute;
         right: 0;
-        bottom: 6px;
+        bottom: 13px;
         width: 60%;
     }
     :global{
@@ -2010,6 +2012,7 @@
     color: rgb(240, 65, 52);
 }
 .coloredBorderedLabel {
+    font-weight: bold;
     border-left: 2px solid #1ab394;;
     padding-left: 12px;
     line-height: 1;

@@ -41,6 +41,7 @@ class PushMessageMpID extends Component {
     render() {
         return (
             <Select
+                notFoundContent={'未搜索到结果'}
                 placeholder="请选择微信推送的公众号"
                 showSearch={true}
                 value={this.props.value || undefined}

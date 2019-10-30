@@ -71,6 +71,7 @@ class SelectBrands extends Component {
         return (
             <Select
                 placeholder="默认为全部品牌"
+                notFoundContent={'未搜索到结果'}
                 multiple={true}
                 allowClear={true}
                 showSearch={false}

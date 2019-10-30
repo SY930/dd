@@ -500,6 +500,7 @@ export default class EntryPage extends Component {
                 <h5>适用场景</h5>
                 <Select
                     multiple={true}
+                    notFoundContent={'未搜索到结果'}
                     style={{ width: 220, margin: '0 20px 0 10px' }}
                     value={channelList}
                     placeholder="全部"
@@ -515,6 +516,7 @@ export default class EntryPage extends Component {
                 <Select
                     multiple={true}
                     value={supportOrderTypeList}
+                    notFoundContent={'未搜索到结果'}
                     style={{ width: 200, margin: '0 20px 0 10px' }}
                     placeholder="全部"
                     onChange={this.handleSupportOrderTypeChange}

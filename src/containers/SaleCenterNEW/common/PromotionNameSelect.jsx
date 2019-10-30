@@ -61,6 +61,7 @@ export default class PromotionNameSelect extends React.Component {
                     this.setState({ promotionName })
                     this.props.onChange({ promotionName })
                 }}
+                notFoundContent={'未搜索到结果'}
                 filterOption={false}
                 placeholder="请输入活动名称"
             >

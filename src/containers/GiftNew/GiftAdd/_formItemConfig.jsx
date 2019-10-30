@@ -94,29 +94,6 @@ const FORMITEMS = {
         defaultValue: '1',
         options: GiftCfg.shareType,
     },
-    moneyLimitType: {
-        label: '金额限制',
-        type: 'combo',
-        options: GiftCfg.moneyLimitType,
-        defaultValue: '0',
-    },
-    moenyLimitValue: {
-        label: ' ',
-        type: 'text',
-        defaultValue: '100',
-        placeholder: '请输入金额',
-        surfix: '元，使用一张',
-        rules: [{
-            required: true,
-            validator: (rule, v, cb) => {
-                if ((!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) || v <= 0) {
-                    cb(rule.message);
-                }
-                cb();
-            },
-            message: '整数不超过8位，小数不超过2位，必须大于0',
-        }],
-    },
     maxUseLimit: {
         label: '一笔订单最多使用',
         type: 'text',
@@ -463,7 +440,7 @@ const SECOND_KEYS = (() => ({
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'amountType',
                 'showGiftRule',
@@ -488,7 +465,7 @@ const SECOND_KEYS = (() => ({
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
@@ -512,7 +489,7 @@ const SECOND_KEYS = (() => ({
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
@@ -602,7 +579,7 @@ const SECOND_KEYS = (() => ({
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',

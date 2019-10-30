@@ -495,6 +495,7 @@ class MySpecialActivities extends React.Component {
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
+                                notFoundContent={'未搜索到结果'}
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder="请选择活动类型"
                                 defaultValue="全部"

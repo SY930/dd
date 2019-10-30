@@ -43,6 +43,7 @@ import SelectBrands from "../components/SelectBrands";
 import PushMessageMpID from "../components/PushMessageMpID";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
+import MoneyLimitTypeAndValue from '../components/MoneyLimitTypeAndValue';
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 import SelectCardTypes from "../components/SelectCardTypes";
@@ -257,18 +258,12 @@ class GiftAddModalStep extends React.PureComponent {
         }
         values[key] = value;
         switch (key) {
-            case 'moneyLimitType':
-                // 从newKeys里找到moenyLimitValue的key加到secondKeys的对应位置
-                const moenyLimitValueIndex = _.findIndex(newKeys, item => item == 'moenyLimitValue');
-                if (value != 0) {
-                    moenyLimitValueIndex == -1 && newKeys.splice(index + 1, 0, 'moenyLimitValue');
-                } else {
-                    moenyLimitValueIndex !== -1 && newKeys.splice(moenyLimitValueIndex, 1);
-                }
+            case 'moneyLimitTypeAndValue':
+                const { moneyLimitType } = value;
                 if (describe === '菜品兑换券' || describe === '代金券') {
                     const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
-                    if (value == 1) {
-                        maxUseLimitIndex == -1 && newKeys.splice(index + 2, 0, 'maxUseLimit')
+                    if (moneyLimitType == 1) {
+                        maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
                     } else {
                         maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
                     }
@@ -578,6 +573,8 @@ class GiftAddModalStep extends React.PureComponent {
             params.maxUseLimit = params.maxUseLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
+            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType; 
+            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue; 
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -1058,6 +1055,28 @@ class GiftAddModalStep extends React.PureComponent {
             </FormItem>
         )
     }
+    renderMoneyLimitTypeAndValue(decorator) {
+        const { gift: { data, value } } = this.props;
+        const {
+            moneyLimitType = '0',
+            moenyLimitValue = '100',
+        } = data;
+        return (
+            decorator({
+                rules: [
+                    {
+                        validator: (rule, {moneyLimitType, moenyLimitValue} = {}, cb) => {
+                            if (moneyLimitType > 0 && !(moenyLimitValue > 0)) {
+                                return cb('请输入限制金额')
+                            }
+                            cb()
+                        }
+                    }
+                ],
+                initialValue: { moneyLimitType, moenyLimitValue },
+            })(<MoneyLimitTypeAndValue type={value}></MoneyLimitTypeAndValue>)
+        )
+    }
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
@@ -1387,6 +1406,11 @@ class GiftAddModalStep extends React.PureComponent {
                     />
                 )
             },
+            moneyLimitTypeAndValue: {
+                label: '金额限制',
+                type: 'custom',
+                render: (decorator, form) => this.renderMoneyLimitTypeAndValue(decorator, form),
+            },
             promotionID: {
                 label: '对应基础营销活动',
                 type: 'custom',
@@ -1630,17 +1654,9 @@ class GiftAddModalStep extends React.PureComponent {
             formData = dates;
         }
         if (this.props.gift.value == '20') {
-            formItems.moneyLimitType.label = '账单金额';
+            formItems.moneyLimitTypeAndValue.label = '账单金额';
         } else {
-            formItems.moneyLimitType.label = '金额限制';
-        }
-        if (this.props.gift.value == '111') {
-            formItems.moneyLimitType.options = [
-                { label: '不限', value: '0' },
-                { label: '满', value: '2' },
-            ];
-        } else {
-            formItems.moneyLimitType.options = GiftCfg.moneyLimitType;
+            formItems.moneyLimitTypeAndValue.label = '金额限制';
         }
         if (this.props.gift.value == '10' && (type === 'add' || values.amountType == 1)) {
             const {
@@ -1649,9 +1665,9 @@ class GiftAddModalStep extends React.PureComponent {
                 foodCategory = [],
             } = values.foodsboxs || {};
             if (dishes.length || excludeDishes.length || foodCategory.length) {
-                formItems.moneyLimitType.label = '活动菜品金额限制'
+                formItems.moneyLimitTypeAndValue.label = '活动菜品金额限制'
             } else {
-                formItems.moneyLimitType.label = '账单金额限制'
+                formItems.moneyLimitTypeAndValue.label = '账单金额限制'
             }
         }
         if (this.props.gift.value == '10') {

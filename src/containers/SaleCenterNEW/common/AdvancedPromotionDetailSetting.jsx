@@ -436,6 +436,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         >
                            <Select
                                 size={'default'}
+                                notFoundContent={'未搜索到结果'}
                                 multiple={true}
                                 showSearch={true}
                                 value={cardScopeIDs}
@@ -466,6 +467,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     ?
                                     (<Select
                                         size={'default'}
+                                        notFoundContent={'未搜索到结果'}
                                         multiple={true}
                                         showSearch={true}
                                         value={cardScopeIDs}
