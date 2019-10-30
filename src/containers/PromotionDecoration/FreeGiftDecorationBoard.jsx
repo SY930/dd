@@ -106,7 +106,7 @@ export default class FreeGiftDecorationBoard extends Component {
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
-                            limit={1000}
+                            limit={0}
                             value={activeImg}
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
