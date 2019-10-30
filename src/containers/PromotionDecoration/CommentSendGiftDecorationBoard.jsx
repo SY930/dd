@@ -3,10 +3,12 @@ import { Tabs, Button, Icon } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultEnterImg from './assets/recommend1.png'
-import defaultEndImg from './assets/recommend2.png'
-import giftExample from './assets/gift-example.png'
+import {
+    iphone,
+    giftExample,
+    recommend1 as defaultEnterImg,
+    recommend2 as defaultEndImg,
+} from './assets';
 import tagImg from './assets/tag.svg'
 
 const { TabPane } = Tabs;
@@ -28,7 +30,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
-                <img src={phoneImg} alt=""/>
+                <img src={iphone} alt=""/>
                 {
                     tabKey === '2' ? (
                         <div className={style.simpleDisplayBlock}>

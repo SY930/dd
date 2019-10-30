@@ -3,16 +3,18 @@ import { Tabs, Button, Icon } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultExpansionBgImg from './assets/expansionBg.png'
-import giftExample from './assets/gift-example.png'
-import giftExampleThumb from './assets/giftExampleThumb.png'
-import phoneTop from './assets/phoneTop.png'
+import {
+    iphone as phoneImg,
+    expansionBg as defaultExpansionBgImg,
+    giftExample,
+    giftExampleThumb,
+    phoneTop,
+    progress as progressImg,
+} from './assets';
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import giftBg1 from './assets/1-1.png'
 import giftBg2 from './assets/1-2.png'
-import progressImg from './assets/progress.png'
 import giftBg3 from './assets/2-1.png'
 import giftBg4 from './assets/2-2.png'
 import ExpasionGiftImgCropUploader from './ExpasionGiftImgCropUploader'
