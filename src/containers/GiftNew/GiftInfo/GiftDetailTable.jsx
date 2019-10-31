@@ -252,7 +252,7 @@ class GiftDetailTable extends Component {
     changeSortOrder(record, direction) {
         // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
