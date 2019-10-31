@@ -95,9 +95,13 @@ const deleteMessageTemplateFail = (opt) => {
 export const getMessageTemplateList = (opts) => {
     return (dispatch) => {
         dispatch(getMessageTemplateListStart());
-        return axiosData('/sms/smsTemplateService_getSmsTemplateList.ajax', { ...opts }, null, {
-            path: 'data.templateList',
-        })
+        return axiosData(
+            '/sms/smsTemplateService_getSmsTemplateList.ajax',
+            { ...opts },
+            null,
+            {path: 'data.templateList',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
             .then((records) => {
                 dispatch(getMessageTemplateListSuccess({
                     list: records || [],
@@ -113,9 +117,13 @@ export const getMessageTemplateList = (opts) => {
 export const updateMessageTemplate = (opts) => {
     return (dispatch) => {
         dispatch(updateMessageTemplateStart());
-        return axiosData('/sms/smsTemplateService_updateSmsTemplate.ajax', { ...opts }, null, {
-            path: 'data',
-        })
+        return axiosData(
+            '/sms/smsTemplateService_updateSmsTemplate.ajax',
+            { ...opts },
+            null,
+            {path: 'data',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
             .then((records) => {
                 dispatch(updateMessageTemplateSuccess());
                 return Promise.resolve();
@@ -129,9 +137,13 @@ export const updateMessageTemplate = (opts) => {
 export const createMessageTemplate = (opts) => {
     return (dispatch) => {
         dispatch(createMessageTemplateStart());
-        return axiosData('/sms/smsTemplateService_addSmsTemplate.ajax', { ...opts }, null, {
-            path: 'data',
-        })
+        return axiosData(
+            '/sms/smsTemplateService_addSmsTemplate.ajax',
+            { ...opts },
+            null,
+            {path: 'data',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
             .then((records) => {
                 dispatch(createMessageTemplateSuccess());
                 return Promise.resolve();
@@ -145,9 +157,13 @@ export const createMessageTemplate = (opts) => {
 export const deleteMessageTemplate = (opts) => {
     return (dispatch) => {
         dispatch(deleteMessageTemplateStart());
-        return axiosData('/sms/smsTemplateService_deleteSmsTemplate.ajax', { ...opts }, {needThrow: true}, {
-            path: 'data',
-        })
+        return axiosData(
+            '/sms/smsTemplateService_deleteSmsTemplate.ajax',
+            { ...opts },
+            {needThrow: true},
+            {path: 'data',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
             .then((records) => {
                 dispatch(deleteMessageTemplateSuccess());
                 return Promise.resolve();
