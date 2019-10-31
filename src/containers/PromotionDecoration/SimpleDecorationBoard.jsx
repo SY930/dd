@@ -5,24 +5,24 @@ import {
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader'
-import phoneImg from './assets/iphone.png';
-import onlineResGift from './assets/online-res.png'
-import giftExample from './assets/gift-example.png'
+import { iphone } from './assets';
+import { onlineRes } from './assets'
+import { giftExample } from './assets'
 import tagImg from './assets/tag.svg'
-import btnBg from './assets/btnBg.png'
+import { btnBg } from './assets'
 
 export default class SimpleDecorationBoard extends Component {
 
     renderPhonePreview() {
         const {
             decorationInfo: {
-                img = onlineResGift,
+                img = onlineRes,
                 color = '#fd6631',
             },
         } = this.props;
         return (
             <div className={style.previewArea}>
-                <img src={phoneImg} alt=""/>
+                <img src={iphone} alt=""/>
                 <div className={style.simpleDisplayBlock}>
                     <div className={style.imgWrapper}>
                         <div className={style.tagWrapper}>
