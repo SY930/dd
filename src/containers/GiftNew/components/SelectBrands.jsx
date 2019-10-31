@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {
     Select,
-    Row,
-    Col,
     Form
 } from 'antd';
 import {fetchData} from "../../../helpers/util";
@@ -67,7 +65,6 @@ class SelectBrands extends Component {
 
     render() {
         const realValue = (this.props.value || []).map(target => String(target.targetID))
-
         return (
             <Select
                 placeholder="默认为全部品牌"
@@ -75,7 +72,7 @@ class SelectBrands extends Component {
                 multiple={true}
                 allowClear={true}
                 showSearch={false}
-                filterOption={false}
+                optionFilterProp="children"
                 value={realValue}
                 onChange={this.handleSelectChange}
             >
