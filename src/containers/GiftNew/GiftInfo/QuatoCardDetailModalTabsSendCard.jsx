@@ -87,6 +87,7 @@ class CardOperate extends React.Component {
     handleFormChange = (key, value) => {
         switch (key) {
             case 'useCardTypeID':
+                this.form.resetFields(['useCardLevelID']);
                 this.getLevelsByCardTypeID(value);
                 break;
         }
