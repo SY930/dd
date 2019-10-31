@@ -70,7 +70,7 @@ class ExcludeCardTable extends React.Component {
                     excludeEvent.idNames = [];
                     excludeEvent.cardLevelIDList.map((cardLevelID) => {
                         cardInfo.map((cardType, index) => {
-                            cardType.cardTypeLevelList.map((card, i) => {
+                            (cardType.cardTypeLevelList || []).map((card, i) => {
                                 if (card.cardLevelID == cardLevelID) {
                                     excludeEvent.idNames.push(card.cardLevelName)
                                 }
@@ -93,7 +93,7 @@ class ExcludeCardTable extends React.Component {
                     excludeEvent.idNames = [];
                     excludeEvent.cardLevelIDList.map((cardLevelID) => {
                         cardInfo.map((cardType, index) => {
-                            cardType.cardTypeLevelList.map((card, i) => {
+                            (cardType.cardTypeLevelList || []).map((card, i) => {
                                 if (card.cardLevelID == cardLevelID) {
                                     excludeEvent.idNames.push(card.cardLevelName)
                                 }
