@@ -352,7 +352,13 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, { needThrow: true, needCode: true }, { path: '' }).then((data) => {
+                axiosData(
+                    '/coupon/couponService_removeBoard.ajax',
+                    { giftItemID },
+                    { needThrow: true, needCode: true },
+                    { path: '' },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW',
+                ).then((data) => {
                     if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
