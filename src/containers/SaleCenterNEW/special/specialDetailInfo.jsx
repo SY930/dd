@@ -296,7 +296,7 @@ class SpecialDetailInfo extends React.Component {
                         }
                     </div>
                 </div>
-                {/* <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
+                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         每人每天限制
                     </div>
@@ -329,7 +329,7 @@ class SpecialDetailInfo extends React.Component {
                                 </Col> : null
                         }
                     </div>
-                </div> */}
+                </div>
             </div>
         )
     }
