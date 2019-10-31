@@ -78,13 +78,18 @@ export const queryWeChatMessageTemplates = (opts) => {
     return (dispatch) => {
         dispatch(saleCenterQueryWeChatMessageTemplatesStart());
 
-        axiosData('/coupon/CouponWechatTemplateService_getCouponWechatTemplates.ajax', opts, {}, {path: 'data.wechatTemplates'})
+        axiosData(
+            '/coupon/CouponWechatTemplateService_getCouponWechatTemplates.ajax',
+            opts,
+            {},
+            {path: 'data.wechatTemplates'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
             .then(
                 res => {
                     dispatch(saleCenterQueryWeChatMessageTemplatesSuccess(res));
                 },
                 error => {
-                    // dispatch(saleCenterQueryWeChatMessageTemplatesSuccess());
                     dispatch(saleCenterQueryWeChatMessageTemplatesFail());
                 }
             )
@@ -108,7 +113,7 @@ export const saveWeChatMessageTemplates = (opts, isCreate) => {
                 template.remark = DEFAULT_WECHAT_TEMPLATE_CONFIG[type].remark
             }
         })
-        return axiosData(url, opts, {}, {path: 'data'})
+        return axiosData(url, opts, {}, {path: 'data'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(
                 res => {
                     message.success('保存成功');
@@ -116,8 +121,6 @@ export const saveWeChatMessageTemplates = (opts, isCreate) => {
                     return Promise.resolve();
                 },
                 error => {
-                    // message.success('保存成功');
-                    // dispatch(saleCenterSaveWeChatMessageTemplatesSuccess());
                     dispatch(saleCenterSaveWeChatMessageTemplatesFail());
                     return Promise.reject();
                 }
