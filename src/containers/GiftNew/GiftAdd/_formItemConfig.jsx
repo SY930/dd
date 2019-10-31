@@ -109,6 +109,21 @@ const FORMITEMS = {
             message: '张数范围1~999999'
         }],
     },
+    customerUseCountLimit: {
+        label: '会员单天使用张数限制',
+        type: 'text',
+        placeholder: '不填表示不限制',
+        surfix: '张',
+        rules: [{
+            validator: (rule, v = '', cb) => {
+                if (/^(?:[1-9][0-9]{0,5})?$/.test(v)) {
+                    return cb()
+                }
+                cb(rule.message);
+            },
+            message: '张数范围1~999999'
+        }],
+    },
     isFoodCatNameList: {
         // label: '抵扣规则',
         // type: 'combo',
@@ -441,6 +456,7 @@ const SECOND_KEYS = (() => ({
                 'isOfflineCanUsing',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
+                'customerUseCountLimit',
                 'shopNames',
                 'amountType',
                 'showGiftRule',
