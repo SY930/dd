@@ -342,6 +342,65 @@ export default class PrizeContent extends React.Component {
                                     </div>   
                                 }
                             </FormItem>
+                            {/* 赠送积分 */}
+                            <FormItem
+                                style={{ padding: 0 }}
+                                wrapperCol={{ span: 24 }}
+                                className={style.noLabelFormItemStyle}
+                                validateStatus={info.givePoints.validateStatus}
+                                help={info.givePoints.msg}
+                            >  
+                                <Checkbox 
+                                    checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
+                                    onChange={this.ChangeCheckBoxOne}
+                                />
+                                <span>现金红包</span>
+                                {JSON.stringify(info.givePoints.value) == "{}" ?
+                                    null :  
+                                    <div className={style.paleRed}>
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                            validateStatus={info.givePoints.value.card.validateStatus}
+                                            help={info.givePoints.value.card.msg}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>现金红包</span>
+                                            </div> 
+                                            <Select
+                                                showSearch={true}
+                                                value={this.getCardTypeValue(index)}
+                                                onChange={(val) => {handleCardChange(val, index)}}
+                                            >
+                                                {
+                                                    cardTypeArr.map((value) => {
+                                                        return (
+                                                            <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormItem>
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                            validateStatus={info.givePoints.value.givePointsValue.validateStatus}
+                                            help={info.givePoints.value.givePointsValue.msg}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>红包金额</span>
+                                            </div> 
+                                            <PriceInput
+                                                addonAfter="元"
+                                                modal="float"
+                                                maxNum={3}
+                                                value={{ number: info.givePoints.value.givePointsValue.value }}
+                                                onChange={(val) => {handleGivePointsValueChange(val, index);}}
+                                            />
+                                        </FormItem>
+                                    </div>   
+                                }
+                            </FormItem>
                             {/* ....... */}                       
                             {/* ....... */}
 
