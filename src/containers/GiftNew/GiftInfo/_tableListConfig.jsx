@@ -21,6 +21,7 @@ import {
 // { label: '线上礼品卡', value: '91' },
 // { label: '买赠券', value: '110' },
 // { label: '折扣券', value: '111' },
+// { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
     '10', '20', '21', '30', '40', '42', '80', '110', '111'
@@ -84,6 +85,7 @@ export const COLUMNS = [
                             <a href="javaScript:;" onClick={() => this.handleGenerateLink(record)}>投放</a>
                         )
                     }
+                    {record.giftType != 113 && (
                     <Authority rightCode={GIFT_DETAIL_QUERY}>
                         {
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
@@ -93,6 +95,7 @@ export const COLUMNS = [
                             )
                         }
                     </Authority>
+                    )}
                 </span>
             )
         },

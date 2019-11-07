@@ -25,7 +25,7 @@ const CRM_GIFTS = [
 const PREVIEW_ENABLED_GIFTS = [
     ...PRIMARY_GIFTS,
     ...CRM_GIFTS,
-    '80'
+    '80',
 ]
 
 // 价值只显示前4位数字
@@ -323,6 +323,22 @@ class PhonePreview extends PureComponent {
             </div>
         )
     }
+    renderRedPacketPreviewContent() {
+        return (
+            <div style={{ padding: 20 }}>
+                <div style={{ fontSize: 18, marginLeft: 20, marginBottom: 20, fontWeight: 'bold'}}>操作指导</div>
+                <div style={{ lineHeight: 2, background: 'rgb(251,251,251)', padding: 12 }}>
+                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
+                <br></br>
+                ◆入驻时间超过90天;<br></br>
+                ◆截止今日回推30天连续不间断保持有交易;<br></br>
+                ◆保持正常健康交易;<br></br>
+                在使用现金红包之前，请前往开通现金红包功能。<br></br>
+                操作路径：[登录微信支付商户平台一>产品中心一>现金红包一>开通]。
+                </div>
+            </div>
+        )
+    }
 
     renderCRMInterestGiftPreviewContent() {
         const { // 默认值与Gift.jsx 中配置一致
@@ -474,6 +490,7 @@ class PhonePreview extends PureComponent {
                         </div>
                     )
                 }
+                { giftType === '113' && this.renderRedPacketPreviewContent() }
             </div>
         )
     }
@@ -511,8 +528,4 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PhonePreview)
+export default connect(mapStateToProps)(PhonePreview)

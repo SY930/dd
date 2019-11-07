@@ -22,6 +22,8 @@ import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promo
 import SelectBrands from "../components/SelectBrands";
 import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
+import SellerCode from "../components/SellerCode";
+import FakeBorderedLabel from "../components/FakeBorderedLabel";
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -177,6 +179,12 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID/>),
             },
+            sellerCode: {
+                label: '红包发放账户',
+                rules: [{ required: true, message: '不得为空' }],
+                type: 'custom',
+                render: decorator => decorator({})(<SellerCode/>),
+            },
             transferType: {
                 label: '券是否可转赠',
                 type: 'radio',
@@ -219,10 +227,6 @@ class GiftAddModal extends React.Component {
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
                     { max: 50, message: '不能超过50个字符' },
-                    /*{
-                        message: '汉字、字母、数字、小数点，50个字符以内',
-                        pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                    },*/
                 ],
                 disabled: type !== 'add',
             },
@@ -312,6 +316,16 @@ class GiftAddModal extends React.Component {
                 defaultValue: 0,
                 options: GiftCfg.showGiftRule,
             },
+            basicInfoLabel: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => decorator({})(<FakeBorderedLabel title="基本信息" />),
+            },
+            safetyInfoLabel: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => decorator({})(<FakeBorderedLabel title="额度及安全" />),
+            },
             giftRule: {
                 label: '使用规则',
                 type: 'custom',
@@ -328,6 +342,62 @@ class GiftAddModal extends React.Component {
                     }
                 },
             },
+            moneyLimit: {
+                label: '红包总计投放金额',
+                type: 'text',
+                placeholder: '请输入红包总计投放金额',
+                surfix: '元',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (/(^\+?\d{0,7}$)|(^\+?\d{0,7}\.\d{0,2}$)/.test(v) && v > 0 & v <= 1000000) {
+                                cb();
+                            }
+                            cb(rule.message);
+                        },
+                        message: '金额限制大于0，不超过1000000.00元',
+                    },
+                ],
+            },
+            userDayLimitCount: {
+                label: '单用户单日领取数量',
+                type: 'text',
+                placeholder: '可设置区间1～10个',
+                prefix: '不超过',
+                surfix: '个',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v = '', cb) => {
+                            if (/^(?:[1-9]|10)?$/.test(v)) {
+                                return cb()
+                            }
+                            cb(rule.message);
+                        },
+                        message: '数量限制范围1~10'
+                    }
+                ],
+            },
+            userDayMoneyLimitValue: {
+                label: '单用户单日领取金额',
+                type: 'text',
+                placeholder: '可设置最高额度1000.00元',
+                prefix: '不超过',
+                surfix: '元',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (/(^\+?\d{0,4}$)|(^\+?\d{0,4}\.\d{0,2}$)/.test(v) && v > 0 & v <= 1000) {
+                                cb();
+                            }
+                            cb(rule.message);
+                        },
+                        message: '金额限制大于0，不超过1000.00元',
+                    },
+                ],
+            }
         };
         const formKeys = {
             '实物礼品券': [
@@ -397,6 +467,22 @@ class GiftAddModal extends React.Component {
                         'giftRule',
                         'showGiftRule',
                         'isSynch',
+                    ]
+                }
+            ],
+            '现金红包': [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'basicInfoLabel',
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'sellerCode',
+                        'safetyInfoLabel',
+                        'moneyLimit',
+                        'userDayLimitCount',
+                        'userDayMoneyLimitValue',
                     ]
                 }
             ],
