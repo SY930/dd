@@ -183,6 +183,7 @@ class GiftAddModal extends React.Component {
                 label: '红包发放账户',
                 rules: [{ required: true, message: '不得为空' }],
                 type: 'custom',
+                // defaultValue: 'test',
                 render: decorator => decorator({})(<SellerCode/>),
             },
             transferType: {
@@ -287,6 +288,23 @@ class GiftAddModal extends React.Component {
                 rules: [
                     { required: true, message: '活动详情不能为空' },
                     { max: 400, message: '最多400个字符' },
+                ],
+            },
+            wishing: {
+                label: '红包祝福语',
+                type: 'textarea',
+                placeholder: '恭喜发财，大吉大利',
+                rules: [
+                    { required: true, message: '红包祝福语不能为空' },
+                    { max: 255, message: '最多255个字符' },
+                ],
+            },
+            sendName: {
+                label: '红包显示商户名称',
+                type: 'text',
+                rules: [
+                    { required: true, message: '红包显示商户名称不能为空' },
+                    { max: 50, message: '最多50个字符' },
                 ],
             },
             selectBrands: {
@@ -479,6 +497,8 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'sellerCode',
+                        'sendName',
+                        'wishing',
                         'safetyInfoLabel',
                         'moneyLimit',
                         'userDayLimitCount',
