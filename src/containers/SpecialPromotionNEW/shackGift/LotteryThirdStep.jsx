@@ -647,7 +647,7 @@ class LotteryThirdStep extends React.Component {
             tempObj.effectType = couponObj.effectType;
             tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
             if(couponObj.effectType == '1' || couponObj.effectType == '3'){
-                tempObj.giftEffectTimeHours = couponObj.giftEffectiveTime.value;
+                tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
             }else{
                 tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
                 tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
