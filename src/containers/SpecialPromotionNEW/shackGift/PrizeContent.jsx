@@ -39,6 +39,10 @@ export default class PrizeContent extends React.Component {
         const { handleGiveCouponChange, index} =this.props;
         handleGiveCouponChange(e, index);
     }
+    ChangeCheckBoxThree = (e) => {
+        const { handleGiveRedPacketChange, index} =this.props;
+        handleGiveRedPacketChange(e, index);
+    }
     getCardTypeValue = (index) => {
         const { cardTypeArr, info, handleCardChange, } = this.props;
         if(info.givePoints.value.card.value){
@@ -156,7 +160,10 @@ export default class PrizeContent extends React.Component {
                 handleGiftOddsChange,
                 disArr,
                 handleGivePointsValueChange,
+                handleGiveRedPacketValueChange,
+                handleGiveRedPacketIDChange,
                 cardTypeArr,
+                redPacketArr,
                 handleCardChange,
                 disabled,
         } = this.props;
@@ -342,40 +349,36 @@ export default class PrizeContent extends React.Component {
                                     </div>   
                                 }
                             </FormItem>
-                            {/* 赠送积分 */}
+                            {/* 赠送红包 */}
                             <FormItem
                                 style={{ padding: 0 }}
                                 wrapperCol={{ span: 24 }}
                                 className={style.noLabelFormItemStyle}
-                                validateStatus={info.givePoints.validateStatus}
-                                help={info.givePoints.msg}
                             >  
                                 <Checkbox 
-                                    checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
-                                    onChange={this.ChangeCheckBoxOne}
+                                    checked={info.giveRedPacket.isOn}
+                                    onChange={this.ChangeCheckBoxThree}
                                 />
                                 <span>现金红包</span>
-                                {JSON.stringify(info.givePoints.value) == "{}" ?
-                                    null :  
+                                {info.giveRedPacket.isOn ? 
                                     <div className={style.paleRed}>
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
-                                            validateStatus={info.givePoints.value.card.validateStatus}
-                                            help={info.givePoints.value.card.msg}
+                                            validateStatus={info.giveRedPacket.redPacketID.validateStatus}
+                                            help={info.giveRedPacket.redPacketID.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
                                                 <span>现金红包</span>
                                             </div> 
                                             <Select
-                                                showSearch={true}
-                                                value={this.getCardTypeValue(index)}
-                                                onChange={(val) => {handleCardChange(val, index)}}
+                                                value={info.giveRedPacket.redPacketID.value}
+                                                onChange={(val) => {handleGiveRedPacketIDChange(val, index)}}
                                             >
                                                 {
-                                                    cardTypeArr.map((value) => {
+                                                    redPacketArr.map((item) => {
                                                         return (
-                                                            <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
+                                                            <Option key={item.giftItemID} value={item.giftItemID}>{item.giftName}</Option>
                                                         )
                                                     })
                                                 }
@@ -384,8 +387,8 @@ export default class PrizeContent extends React.Component {
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
-                                            validateStatus={info.givePoints.value.givePointsValue.validateStatus}
-                                            help={info.givePoints.value.givePointsValue.msg}
+                                            validateStatus={info.giveRedPacket.redPacketValue.validateStatus}
+                                            help={info.giveRedPacket.redPacketValue.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
                                                 <span>红包金额</span>
@@ -394,11 +397,11 @@ export default class PrizeContent extends React.Component {
                                                 addonAfter="元"
                                                 modal="float"
                                                 maxNum={3}
-                                                value={{ number: info.givePoints.value.givePointsValue.value }}
-                                                onChange={(val) => {handleGivePointsValueChange(val, index);}}
+                                                value={{ number: info.giveRedPacket.redPacketValue.value }}
+                                                onChange={(val) => {handleGiveRedPacketValueChange(val, index);}}
                                             />
                                         </FormItem>
-                                    </div>   
+                                    </div> : null
                                 }
                             </FormItem>
                             {/* ....... */}                       

@@ -116,6 +116,7 @@ class GiftAddModal extends React.Component {
                 params.giftItemID = data.giftItemID;
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
+            params.giftValue = params.giftValue || '0';
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -183,7 +184,7 @@ class GiftAddModal extends React.Component {
                 label: '红包发放账户',
                 rules: [{ required: true, message: '不得为空' }],
                 type: 'custom',
-                // defaultValue: 'test',
+                defaultValue: 'test',
                 render: decorator => decorator({})(<SellerCode/>),
             },
             transferType: {
@@ -499,6 +500,7 @@ class GiftAddModal extends React.Component {
                         'sellerCode',
                         'sendName',
                         'wishing',
+                        'giftRemark',
                         'safetyInfoLabel',
                         'moneyLimit',
                         'userDayLimitCount',
