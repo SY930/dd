@@ -19,7 +19,7 @@ export default class ShareGiftDecorationBoard extends Component {
             decorationInfo: {
                 bannerImg = defaultShareBgImg,
                 bgColor = '#FF6248',
-                buttonBgColor = '#FFC655',
+                buttonBgColor = '#FFC455',
                 buttonColor = '#AD0701',
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
@@ -96,7 +96,7 @@ export default class ShareGiftDecorationBoard extends Component {
         const {
             decorationInfo: {
                 bgColor = '#FF6248',
-                buttonBgColor = '#FFC655',
+                buttonBgColor = '#FFC455',
                 buttonColor = '#AD0701',
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
