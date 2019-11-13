@@ -27,3 +27,7 @@ export const recommend1 = getAbsoluteURL('basicdoc/c982b5b9-02e2-488a-ada5-3153b
 export const recommend2 = getAbsoluteURL('basicdoc/39644446-7105-4bc7-ac55-8ee97b495c25.png');
 export const shareGift = getAbsoluteURL('basicdoc/7cfd2062-4f16-4d3b-afd2-f5024fa5f491.png');
 export const shareGift1 = getAbsoluteURL('basicdoc/4bf51c2a-2f21-4c58-8187-5a5f2c7cef11.png');
+export const lotteryBtn = getAbsoluteURL('basicdoc/58e2f818-f1cc-4af4-990f-dc92a314658b.png');
+export const lotteryExample = getAbsoluteURL('basicdoc/90f6d370-22d9-44c9-90e4-a188a6c22f34.png');
+export const lotteryMain = getAbsoluteURL('basicdoc/ba81c81a-8e47-41e1-bc18-1be0169f4074.png');
+export const lotteryWheel = getAbsoluteURL('basicdoc/a3febb84-884e-493b-8d71-e8bc6bb72129.png');

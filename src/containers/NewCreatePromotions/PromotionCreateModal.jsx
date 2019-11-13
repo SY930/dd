@@ -196,7 +196,7 @@ class PromotionCreateModal extends Component {
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
-                title={`创建${promotionType}活动`}
+                title={`创建${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -225,7 +225,7 @@ class PromotionCreateModal extends Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={(promotionType || '').endsWith('活动') ? `创建${promotionType}` : `创建${promotionType}活动`}
+                title={`创建${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
