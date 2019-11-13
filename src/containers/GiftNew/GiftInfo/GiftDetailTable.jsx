@@ -326,6 +326,7 @@ class GiftDetailTable extends Component {
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         gift.data.foodNameList = (gift.data.foodNameList || '').split(',');
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
+        gift.data.customerUseCountLimit = gift.data.customerUseCountLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });

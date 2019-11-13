@@ -571,6 +571,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             params.maxUseLimit = params.maxUseLimit || '0';
+            params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType; 
