@@ -120,6 +120,7 @@ const $initialState = Immutable.fromJS({
         isActive: '',
         upGradeDishes: [], // 例如：升级换新的加价前商品
         needSyncToAliPay: 0,
+        birthdayLimit: 0,
     },
     foodCategoryCollection: [],
     goodCategories: [],
