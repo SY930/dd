@@ -320,6 +320,7 @@ class LotteryThirdStep extends React.Component {
                 _infos[index].giveCoupon.validateStatus = 'success';
                 _infos[index].giveCoupon.msg = null;
             }
+            _infos[index].giveRedPacket.isOn = false;
         }
         this.setState({
             infos: _infos,
@@ -367,7 +368,7 @@ class LotteryThirdStep extends React.Component {
     }
     handleGiveRedPacketValueChange = (value, index) => {
         const redPacketObj = this.state.infos[index].giveRedPacket.redPacketValue;
-        const _value = parseFloat(value.number);
+        const _value = parseFloat(value.number || 0);
         redPacketObj.value = _value;
         if (_value > 0) {
             redPacketObj.validateStatus = 'success';
@@ -643,6 +644,10 @@ class LotteryThirdStep extends React.Component {
         const { activeKey, infos } = this.state;
         let tempResult = true;
         for(let i in infos[activeKey] ){
+            if (JSON.stringify(infos[activeKey].givePoints.value) === '{}' && !infos[activeKey].giveRedPacket.isOn
+            && !infos[activeKey].giveCoupon.value.isOn) {
+                return false;
+            }
             switch(i){
                 case 'giftOdds':
                     let sumOdds = 0;
@@ -674,12 +679,6 @@ class LotteryThirdStep extends React.Component {
                             this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
                         }
                     }
-                    // else{
-                    //     //赠送积分不是勾选的，要确认是不是优惠券的msg是不是不为空，如果不为空则证明。两个都没选。要返回false。
-                    //     if(!infos[activeKey].giveCoupon.value.isOn){
-                    //         tempResult = false;
-                    //     }
-                    // }
                     break;
                 case 'giveRedPacket':
                     if(infos[activeKey].giveRedPacket.isOn){
@@ -763,9 +762,7 @@ class LotteryThirdStep extends React.Component {
 
     handleSubmit = () =>{
         const { specialPromotion, setSpecialGiftInfo, user,} = this.props;
-        console.log('1', 1)
         if(this.checkEveryDataVaild()){
-            console.log('2', 2)
             const { infos } = this.state;
             infos.map((item, index) => {
                 return item.sortIndex = index+1;

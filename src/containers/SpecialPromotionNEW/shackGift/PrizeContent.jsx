@@ -197,6 +197,7 @@ export default class PrizeContent extends React.Component {
                                     />
                                 </FormItem>
                             </div>
+                            
                             {/* 赠送积分 */}
                             <FormItem
                                 style={{ padding: 0 }}
@@ -261,8 +262,6 @@ export default class PrizeContent extends React.Component {
                                 wrapperCol={{ span: 24 }}
                                 style={{ padding: 0 }}
                                 className={style.noLabelFormItemStyle}
-                                validateStatus={info.giveCoupon.validateStatus}
-                                help={info.giveCoupon.msg}
                             >  
                                 <Checkbox 
                                     checked={info.giveCoupon.value.isOn}
@@ -406,7 +405,11 @@ export default class PrizeContent extends React.Component {
                             </FormItem>
                             {/* ....... */}                       
                             {/* ....... */}
-
+                            {
+                                info.giveCoupon.validateStatus === 'error' && (
+                                    <div style={{ color: '#f04134', lineHeight: 1.5 }}>{info.giveCoupon.msg}</div>
+                                )
+                            }
                         </div>
 
                     </Form>

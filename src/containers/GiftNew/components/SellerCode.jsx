@@ -19,10 +19,10 @@ class SellerCode extends Component {
             '/coupon/getRedGiftChannelCompat.ajax',
             {},
             null,
-            {path: 'data'},
+            {path: 'data.channelSettleDataList'},
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((list) => {
-            const sellerInfoList = Array.isArray(list) ? list.map(item => ({ value: item.settleId, label: item.settleName })) : [];
+            const sellerInfoList = Array.isArray(list) ? list.map(item => ({ value: `${item.settleId}:${item.merchantNo}:${item.channelCode}`, label: item.settleName })) : [];
             this.setState({ sellerInfoList });
         });
     }
