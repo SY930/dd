@@ -4,8 +4,9 @@ import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import {throttle} from 'lodash';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, fetchData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
+import SelectBrands from '../components/SelectBrands'
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
@@ -54,6 +55,7 @@ class GiftDetailTable extends Component {
             createModalVisible: false,
             data: {},
             dataSource: [],
+            brands: [],
             editGift: { describe: '', value: '' },
             loading: true,
             queryParams: {
@@ -101,6 +103,15 @@ class GiftDetailTable extends Component {
             pageSize: 20,
         }).then((data = []) => {
             this.proGiftData(data);
+        });
+        fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' })
+        .then((data) => {
+            if (!data) return;
+            const brands = [];
+            data.map((d) => {
+                brands.push({ value: d.brandID, label: d.brandName })
+            });
+            this.setState({ brands });
         });
         this.props.queryWechatMpInfo();
         this.onWindowResize();
@@ -326,6 +337,7 @@ class GiftDetailTable extends Component {
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         gift.data.foodNameList = (gift.data.foodNameList || '').split(',');
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
+        gift.data.customerUseCountLimit = gift.data.customerUseCountLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
@@ -526,6 +538,18 @@ class GiftDetailTable extends Component {
                 options: GiftCfg.giftTypeName,
                 props: {
                     showSearch: true,
+                    optionFilterProp: 'children',
+                },
+            },
+            brandID: {
+                label: '所属品牌',
+                type: 'combo',
+                options: this.state.brands,
+                props: {
+                    placeholder: '全部品牌',
+                    showSearch: true,
+                    optionFilterProp: 'children',
+                    allowClear: true,
                 },
             },
             action: {
@@ -538,7 +562,7 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
-        const formKeys = ['giftName', 'giftType', 'action'];
+        const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>

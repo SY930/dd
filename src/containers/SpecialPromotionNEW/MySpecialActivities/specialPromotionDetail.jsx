@@ -36,6 +36,7 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import { axiosData } from '../../../helpers/util';
+const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -202,6 +203,23 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
                     </Col>
     
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if (way == 20) {
+            return (
+                <div>
+                    <h5><span></span>统计信息</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={12}>
+                        {this.renderPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -387,6 +405,42 @@ class SpecialPromotionDetail extends React.Component {
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
     }
+    renderPointsTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送积分数',
+                dataIndex: 'sendPointAmount',
+                key: 'sendPointAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送总次数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            dataSource = [{
+                title: '赠送积分',
+                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
 
     renderSearch() {
         return (
@@ -493,6 +547,18 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
+            eventWay == 20 && ({
+                title: '获奖情况',
+                dataIndex: 'winFlag',
+                key: 'winFlag',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(level)=> {
+                    if (!level) return '--'
+                    if (level === -1) return '未中奖'
+                    return `${levelArray[level - 1]}等奖`
+                }
+            }),
             {
                 title: '参与时间',
                 dataIndex: 'joinTime',
@@ -589,7 +655,7 @@ class SpecialPromotionDetail extends React.Component {
         return (
             <Table
                 dataSource={dataSource}
-                columns={columns}
+                columns={columns.filter(Boolean)}
                 bordered={true}
                 scroll={eventWay == 68 ? {x: 1550} : {}}
                 pagination={{

@@ -6,7 +6,7 @@
     "scripts": {
         "debug:server": "cd ../platform && cross-env DEBUG_PACKAGE=platform-sale npm run debug:server",
         "debug:client": "platform-scripts run-dev-server --port=8000",
-        "prepublishOnly": "rimraf ./lib && platform-scripts babel && platform-scripts build",
+        "prepublishOnly": "platform-scripts build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "lint-staged": {

@@ -256,6 +256,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '生日总要HAPPY一下，此时赠送礼品恰到好处的吸引客户进店消费',
         example: '',
+        tags: ['全场景'],
         key: '51',
         right: 11,
         bottom: 7,
@@ -265,6 +266,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
         example: '',
+        tags: ['全场景'],
         key: '63',
         right: 19,
         bottom: 0,
@@ -274,6 +276,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '当客人消费达到累计的次数或者金额后，商家能够赠送相应的礼品，客人体验感会更好',
         example: '',
+        tags: ['全场景'],
         key: '62',
         right: 13,
         bottom: 11,
@@ -283,6 +286,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '选择升级后的会员等级为某等级，升级后是这个等级中的，赠送礼品',
         example: '',
+        tags: ['全场景'],
         key: '61',
         right: 29,
         bottom: 2,
@@ -290,7 +294,7 @@ export const LOYALTY_PROMOTION_TYPES = [
     {
         title: '完善资料送礼',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        tags: ['小程序'],
+        tags: ['全场景'],
         text: '获取会员更详细的资料，例如生日，住址，手机号，邮箱等资料，与会员建立更多维度的维系渠道',
         example: '',
         key: '60',

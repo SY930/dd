@@ -387,15 +387,15 @@ class SendGiftPanel extends Component {
                                                     if (!v) {
                                                         return cb();
                                                     }
-                                                    v.number > 0 && v.number <= 36500 ? cb() : cb(rule.message);
+                                                    v.number > 0? cb() : cb(rule.message);
                                                 },
-                                                message: '有效天数必须大于0, 小于等于36500'
+                                                message: '有效天数必须大于0'
                                             },
                                         ]
                                     })(<PriceInput
                                         addonBefore=""
                                         addonAfter="天"
-                                        maxNum={10}
+                                        maxNum={5}
                                         modal="int"
                                     />)}
                                 </FormItem>

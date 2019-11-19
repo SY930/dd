@@ -1,0 +1,91 @@
+.componentWrapper {
+    display: flex;
+    margin-bottom: 30px;
+}
+.buttonArea {
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 20px 0;
+    flex: none;
+}
+.imgUploaderContainer {
+    width:699px;
+    height:126px;
+    border:1px solid #eee;
+    border-radius:10px;
+    display: flex;
+    padding: 15px 0;
+    .thumbImgWrapper {
+        position: relative;
+        width:88px;
+        height:96px;
+        background:rgba(251,251,251,1);
+        border:1px dashed rgba(217,217,217,1);
+        border-radius:3px;
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+        .actionModal {
+            padding: 0 10px;
+        }
+        &:hover .actionModal {
+            opacity: 1;
+        }
+    }
+    .imgWrapper {
+        position: relative;
+        width:319px;
+        height:96px;
+        background:rgba(251,251,251,1);
+        border:1px dashed rgba(217,217,217,1);
+        border-radius:3px;
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 100%;
+            height: 100%;
+        }
+        .actionModal {
+            padding: 0 100px;
+        }
+        &:hover .actionModal {
+            opacity: 1;
+        }
+    }
+}
+.tip {
+    color: #999999;
+}
+.actionModal {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    transition: opacity 0.3 ease-out;
+    .actionIcon {
+        cursor: pointer;
+    }
+}
+.fakeAchor {
+    color: rgb(55, 159, 241);
+    cursor: pointer;
+    margin-top: 12px;
+}

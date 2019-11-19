@@ -340,6 +340,7 @@ class SendCard extends React.Component {
                             treeData={this.state.treeData}
                             placeholder="请选择入会店铺"
                             showSearch={true}
+                            notFoundContent={'未搜索到结果'}
                             getPopupContainer={() => document.querySelector('.giftDetailUsedCount')}
                             treeNodeFilterProp="label"
                             allowClear={true}

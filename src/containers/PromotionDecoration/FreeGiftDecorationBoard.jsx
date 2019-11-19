@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { InputNumber } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import freeGift from './assets/freeGift.png';
-import freeGift1 from './assets/freeGift1.png';
-import freeGift2 from './assets/freeGift2.png';
-import giftExample from './assets/gift-example.png';
-import phoneTop from './assets/phoneTop.png'
+import {
+    iphone,
+    freeGift,
+    freeGift1,
+    freeGift2,
+    giftExample,
+    phoneTop,
+} from './assets';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 
 export default class FreeGiftDecorationBoard extends Component {
@@ -33,7 +34,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div className={style.typeTitle}>
                     免费领取
                 </div>
-                <img src={phoneImg} alt=""/>
+                <img src={iphone} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: activeBg, paddingTop: 80 }} className={style.scrollArea}>
                     <img style={{ width: '100%', position: 'absolute', top: 0 }} src={activeImg || freeGift} alt=""/>
@@ -106,7 +107,7 @@ export default class FreeGiftDecorationBoard extends Component {
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
-                            limit={1000}
+                            limit={0}
                             value={activeImg}
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
@@ -138,14 +139,6 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        {/* <span>圆角弧度</span>
-                        <InputNumber
-                            style={{ width: 82 }}
-                            min={0}
-                            max={50}
-                            value={btnRadius}
-                            onChange={(value) => onChange({key: ['btnRadius'], value})}
-                        /> */}
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>

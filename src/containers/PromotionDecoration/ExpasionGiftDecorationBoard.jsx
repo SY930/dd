@@ -3,18 +3,21 @@ import { Tabs, Button, Icon } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultExpansionBgImg from './assets/expansionBg.png'
-import giftExample from './assets/gift-example.png'
-import giftExampleThumb from './assets/giftExampleThumb.png'
-import phoneTop from './assets/phoneTop.png'
+import {
+    iphone as phoneImg,
+    expansionBg as defaultExpansionBgImg,
+    giftExample,
+    giftExampleThumb,
+    phoneTop,
+    progress as progressImg,
+} from './assets';
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import giftBg1 from './assets/1-1.png'
 import giftBg2 from './assets/1-2.png'
-import progressImg from './assets/progress.png'
 import giftBg3 from './assets/2-1.png'
 import giftBg4 from './assets/2-2.png'
+import ExpasionGiftImgCropUploader from './ExpasionGiftImgCropUploader'
 
 const { TabPane } = Tabs;
 
@@ -257,17 +260,28 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 bannerImg,
                 giftThumbImg1,
                 giftImg1,
+                __giftBaseImg1,
                 giftThumbImg2,
                 giftImg2,
+                __giftBaseImg2,
                 giftThumbImg3,
                 giftImg3,
+                __giftBaseImg3,
             }
         } = this.props;
         return (
             <div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动宣传图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
+                    <div style={{ top: 50, fontSize: 12, fontWeight: 'normal' }} className={style.label}>活动宣传图</div>
+                    <div
+                        style={{
+                            width: 350,
+                            padding: '15px 0 15px 20px',
+                            border: '1px solid #eee',
+                            borderRadius: 10
+                        }}
+                        className={style.uploaderWrapper}
+                    >
                         <DecorationUploader
                             limit={1000}
                             value={bannerImg}
@@ -280,96 +294,33 @@ export default class ExpasionGiftDecorationBoard extends Component {
                         </div>
                     </div>
                 </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品一缩略图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftThumbImg1}
-                            onChange={value => onChange({key: ['giftThumbImg1'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>134*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品一主图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftImg1}
-                            onChange={value => onChange({key: ['giftImg1'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>485*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品二缩略图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftThumbImg2}
-                            onChange={value => onChange({key: ['giftThumbImg2'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>134*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品二主图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftImg2}
-                            onChange={value => onChange({key: ['giftImg2'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>485*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品三缩略图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftThumbImg3}
-                            onChange={value => onChange({key: ['giftThumbImg3'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>134*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>奖品三主图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
-                            limit={1000}
-                            value={giftImg3}
-                            onChange={value => onChange({key: ['giftImg3'], value})}
-                        />
-                        <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>485*146</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
-                        </div>
-                    </div>
-                </div>
+                <ExpasionGiftImgCropUploader
+                    title="奖品一"
+                    baseImgUrl={__giftBaseImg1}
+                    thumbImgUrl={giftThumbImg1}
+                    imgUrl={giftImg1}
+                    onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg1'], value})}
+                    onThumbImgUrlChange={value => onChange({key: ['giftThumbImg1'], value})}
+                    onImgUrlChange={value => onChange({key: ['giftImg1'], value})}
+                />
+                <ExpasionGiftImgCropUploader
+                    title="奖品二"
+                    baseImgUrl={__giftBaseImg2}
+                    thumbImgUrl={giftThumbImg2}
+                    imgUrl={giftImg2}
+                    onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg2'], value})}
+                    onThumbImgUrlChange={value => onChange({key: ['giftThumbImg2'], value})}
+                    onImgUrlChange={value => onChange({key: ['giftImg2'], value})}
+                />
+                <ExpasionGiftImgCropUploader
+                    title="奖品三"
+                    baseImgUrl={__giftBaseImg3}
+                    thumbImgUrl={giftThumbImg3}
+                    imgUrl={giftImg3}
+                    onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg3'], value})}
+                    onThumbImgUrlChange={value => onChange({key: ['giftThumbImg3'], value})}
+                    onImgUrlChange={value => onChange({key: ['giftImg3'], value})}
+                />
             </div>
         )
     }
@@ -469,7 +420,29 @@ export default class ExpasionGiftDecorationBoard extends Component {
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
                 <div>
-                <Tabs activeKey={this.state.tabKey} onTabClick={(tabKey) => this.setState({tabKey})} className={style.customTabWrapper}>
+                <Tabs
+                    activeKey={this.state.tabKey}
+                    onTabClick={(tabKey) => this.setState({tabKey})}
+                    className={style.customTabWrapper}
+                    tabBarExtraContent={
+                        <div
+                            style={{
+                                position: 'absolute',
+                                right: 50,
+                                top: 10,
+                                zIndex: 10,
+                            }}
+                        >
+                            <Button
+                                type="primary"
+                                onClick={this.props.onReset}
+                            >
+                                恢复默认
+                            </Button>
+                        </div>
+                        
+                    }
+                >
                         <TabPane tab="页面配图" key="1">
                             {this.renderIMGSettingPanel()}
                         </TabPane>

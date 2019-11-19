@@ -59,6 +59,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
         this.hideAddCategory = this.hideAddCategory.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
     }
+
     showAddCategory() {
         this.setState({
             cateVisible: true,
@@ -370,6 +371,21 @@ class PromotionBasicInfo extends React.Component {
             seniorDateSetting: value,
         })
     }
+    onFakeDatePickerBlur = (e) => {
+        if (this.fakeDatePicker) {
+            let element = e.target;
+            while (element.parentNode) {
+                if (element === this.fakeDatePicker
+                    || (element.className || '').includes('ant-calendar-picker-container')) {
+                    break;
+                }
+                element = element.parentNode
+            }
+            if (!element.parentNode) {
+                this.setState({ open: false })
+            }
+        }
+    }
 
     componentDidMount() {
         this.props.getSubmitFn({
@@ -379,7 +395,7 @@ class PromotionBasicInfo extends React.Component {
             cancel: undefined,
         });
         const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags } = this.props;
-
+        document.addEventListener('click', this.onFakeDatePickerBlur)
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
@@ -446,6 +462,9 @@ class PromotionBasicInfo extends React.Component {
         } catch (e) {
             // oops
         }
+    }
+    componentWillUnmount() {
+        document.removeEventListener('click', this.onFakeDatePickerBlur)
     }
 
 
@@ -541,7 +560,6 @@ class PromotionBasicInfo extends React.Component {
     };
 
     renderPromotionCycleSetting() {
-        const self = this;
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
@@ -626,18 +644,28 @@ class PromotionBasicInfo extends React.Component {
         };
         return (
             <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
-                <DatePicker onChange={
-                    (moment, dateString) => {
-                        self.excludeDatePicker(moment, dateString);
+                <DatePicker
+                    ref={e => this.realDatePicker = e}
+                    open={this.state.open}
+                    style={{ visibility: 'hidden', position: 'absolute'}}
+                    value={undefined}
+                    onChange={
+                        (moment, dateString) => {
+                            this.excludeDatePicker(moment, dateString);
+                            this.setState({
+                                open: false,
+                            })
+                        }
                     }
-                }
                 />
-                {
-                    self.state.excludeDateArray.size > 0 ? (
-                        <div className={styles.showExcludeDate}>{self.renderExcludedDate()}</div>
-                    ) : null
-                }
-
+                <div
+                    ref={node => this.fakeDatePicker = node}
+                    onClick={() => this.setState({ open: true })}
+                    className={styles.showExcludeDate}
+                >
+                    <Icon style={{ position: 'absolute', right: 9, top: 8 }} type="calendar" />
+                    {this.renderExcludedDate()}
+                </div>
             </FormItem>
         )
     }
@@ -656,6 +684,7 @@ class PromotionBasicInfo extends React.Component {
         return this.state.excludeDateArray.map((date, index) => {
             const callback = (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.unselectExcludeDate(index);
             };
 
@@ -740,6 +769,13 @@ class PromotionBasicInfo extends React.Component {
         return (
             <div>
                 {_timeRangeInfo}
+                {
+                    this.props.propmotionType == '1010' && (
+                        <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
+                            活动时段按下单时间执行
+                        </p>
+                    )
+                }
             </div>
         )
     }
@@ -994,6 +1030,7 @@ class PromotionBasicInfo extends React.Component {
                 >
                     <Select
                         showSearch={true}
+                        notFoundContent={'未搜索到结果'}
                         placeholder="请选择活动类别"
                         getPopupContainer={(node) => node.parentNode}
                         size="default"
@@ -1155,6 +1192,7 @@ class PromotionBasicInfo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         fullCut: state.sale_fullCut_NEW,
+        propmotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         myActivities: state.sale_myActivities_NEW,

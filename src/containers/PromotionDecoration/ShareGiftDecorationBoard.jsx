@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Tabs, Button, Icon } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultShareBgImg from './assets/shareGift.png';
-import shareGift1 from './assets/shareGift1.png';
-import phoneTop from './assets/phoneTop.png'
-import giftExample from './assets/gift-example.png'
+import {
+    iphone as phoneImg,
+    shareGift as defaultShareBgImg,
+    giftExample,
+    phoneTop,
+    shareGift1
+} from './assets';
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 
@@ -18,8 +19,8 @@ export default class ShareGiftDecorationBoard extends Component {
             decorationInfo: {
                 bannerImg = defaultShareBgImg,
                 bgColor = '#FF6248',
-                buttonBgColor = '#FFC655',
-                buttonColor = '#FFFFFF',
+                buttonBgColor = '#FFC455',
+                buttonColor = '#AD0701',
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
                 tagColor3 = '#FB4171',
@@ -95,8 +96,8 @@ export default class ShareGiftDecorationBoard extends Component {
         const {
             decorationInfo: {
                 bgColor = '#FF6248',
-                buttonBgColor = '#FFC655',
-                buttonColor = '#FFFFFF',
+                buttonBgColor = '#FFC455',
+                buttonColor = '#AD0701',
                 tagColor1 = '#CF4CE4',
                 tagColor2 = '#CF4CE4',
                 tagColor3 = '#FB4171',
