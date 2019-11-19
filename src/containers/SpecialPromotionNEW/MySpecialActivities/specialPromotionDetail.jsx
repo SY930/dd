@@ -220,7 +220,7 @@ class SpecialPromotionDetail extends React.Component {
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
                     </Col>
-                    <Col style={{ marginTop: 10 }} span={18}>
+                    <Col style={{ marginTop: 10 }} span={24}>
                         {this.renderRedPacketsTable()}
                     </Col>
                     {this.renderSearch()}
