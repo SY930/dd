@@ -8,6 +8,7 @@ import {
     Tooltip,
     Popconfirm,
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../utils';
@@ -171,7 +172,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         } = this.state;
         const resultTableColumns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 key: 'index',
                 width: 50,
@@ -179,7 +180,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 render: (text) => `${text + 1}`,
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 50,
@@ -192,7 +193,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                                 onConfirm={() => this.handleDel(record)}
                                 getPopupContainer={_ => document.getElementById('_addMoneyTradeDetail')}
                             >
-                                <a title="删除" alt="删除">删除</a>
+                                <a title={COMMON_LABEL.delete}>{ COMMON_LABEL.delete }</a>
                             </Popconfirm>
                         </div>
                     );

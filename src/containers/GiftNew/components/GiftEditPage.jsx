@@ -4,11 +4,13 @@ import { throttle } from 'lodash';
 import {
     Button,
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import styles from '../GiftAdd/Crm.less';
 import {cancelCreateOrEditGift} from "../_action";
 import PhonePreview from "./PhonePreview";
 import FormWrapper from "./FormWrapper";
 import GiftCfg from "../../../constants/Gift";
+import { Iconlist } from 'components/basic/IconsFont/IconsFont';
 
 class GiftEditPage extends Component {
 
@@ -83,7 +85,7 @@ class GiftEditPage extends Component {
                         }}
                         onClick={this.props.cancelCreateOrEdit}
                     >
-                        取消
+                        {COMMON_LABEL.cancel}
                     </Button>
                     <Button
                         type="primary"
@@ -91,7 +93,7 @@ class GiftEditPage extends Component {
                         loading={loading}
                         onClick={this.lockedSaving}
                     >
-                        保存
+                        {COMMON_LABEL.save}
                     </Button>
                 </div>
                 <div style={{height: 15}}>

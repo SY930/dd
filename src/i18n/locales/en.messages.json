@@ -1,4 +1,25 @@
 {
-  "EntryPage.title.BasicPromotion": "Basic Promotion",
-  "EntryPage.title.OnlinePromotion": "Online Promotion"
+  "Common.Label.save": "Save",
+  "Common.Label.cancel": "Cancel",
+  "Common.Label.close": "Close",
+  "Common.Label.confirm": "Confirm",
+  "Common.Label.query": "Query",
+  "Common.Label.create": "Create",
+  "Common.Label.edit": "Edit",
+  "Common.Label.enable": "Enable",
+  "Common.Label.disable": "Disable",
+  "Common.Label.delete": "Delete",
+  "Common.Label.sort": "Sort",
+  "Common.Label.detail": "Detail",
+  "Common.Label.view": "View",
+  "Common.Label.export": "Export",
+  "Common.Label.goback": "Go back",
+  "Common.Label.serialNumber": "No.",
+  "Common.Label.actions": "Actions",
+  "Common.Label.status": "Status",
+  "Common.Label.download": "Download",
+  "Common.Label.remark": "Remark",
+  "Common.Label.retry": "Retry",
+  "Common.Label.open": "Open",
+  "Common.Label.refresh": "Refresh"
 }

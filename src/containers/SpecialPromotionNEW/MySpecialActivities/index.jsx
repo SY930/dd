@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
+import { COMMON_LABEL } from 'i18n/common';
 import {
     Table, Input, Select, DatePicker,
     Button, Modal, Row, Col, message,
@@ -547,7 +547,9 @@ class MySpecialActivities extends React.Component {
 
                         <li>
                             <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />
+                                    { COMMON_LABEL.query }
+                                </Button>
                             </Authority>
                         </li>
                         <li>
@@ -555,7 +557,7 @@ class MySpecialActivities extends React.Component {
                                 <Button
                                     type="ghost"
                                     onClick={() => this.setState({ exportVisible: true })}
-                                ><Icon type="export" />导出</Button>
+                                ><Icon type="export" />{ COMMON_LABEL.export }</Button>
                             </Authority>
                         </li>
 
@@ -611,7 +613,7 @@ class MySpecialActivities extends React.Component {
         ];
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 60,
@@ -623,7 +625,7 @@ class MySpecialActivities extends React.Component {
             },
 
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 key: 'operation',
                 width: 280,
                 // fixed:'left',
@@ -633,7 +635,7 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
-                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     return (<span>
                         <a
                             href="#"
@@ -673,7 +675,8 @@ class MySpecialActivities extends React.Component {
                                     }
                                 }}
                             >
-                                编辑</a>
+                                {COMMON_LABEL.edit}
+                            </a>
                         </Authority>
                         <a
                             href="#"
@@ -686,7 +689,8 @@ class MySpecialActivities extends React.Component {
                                 this.handleUpdateOpe(text, record, index);
                             }}
                         >
-                            查看</a>
+                            { COMMON_LABEL.view }
+                        </a>
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
@@ -703,7 +707,8 @@ class MySpecialActivities extends React.Component {
                                         this.checkDeleteInfo(text, record, index);
                                 }}
                             >
-                                删除</a>
+                                { COMMON_LABEL.delete }
+                            </a>
                         </Authority>
                         <a
                             href="#"
@@ -720,7 +725,8 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', '活动终止成功');
                             }}
                         >
-                            终止</a>
+                            终止
+                        </a>
                         {
                             isDecorationAvailable(record) && (
                                 <a
@@ -755,7 +761,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '排序',
+                title: COMMON_LABEL.sort,
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
@@ -792,13 +798,6 @@ class MySpecialActivities extends React.Component {
                 width: 200,
                 render: text => <span title={text}>{text}</span>,
             },
-            // {
-            //     title: '参与人数',
-            //     className: 'TableTxtRight',
-            //     dataIndex: 'userCount',
-            //     key: 'userCount',
-            //     width: 100,
-            // },
             {
                 title: '短信发送/结算状态',
                 className: 'TableTxtCenter',
@@ -1060,7 +1059,7 @@ class MySpecialActivities extends React.Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>重试</a>
+                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>{ COMMON_LABEL.retry }</a>
                 </div>
             );
         }
@@ -1114,7 +1113,7 @@ class MySpecialActivities extends React.Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             renderContentOfTheModal = (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={checkDetailInfo}>重试</a>
+                    查询详情出错!点击 <a onClick={checkDetailInfo}>{ COMMON_LABEL.retry }</a>
                 </div>
             );
         }
@@ -1127,7 +1126,7 @@ class MySpecialActivities extends React.Component {
                 title="活动详情"
                 maskClosable={false}
                 visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>关闭</Button>}
+                footer={<Button onClick={this.handleClose}>{ COMMON_LABEL.close }</Button>}
                 closable={false}
                 width="750px"
             >

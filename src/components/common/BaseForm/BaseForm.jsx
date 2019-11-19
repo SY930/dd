@@ -22,6 +22,7 @@ import ImageUpload from '../ImageUpload';
 
 import { parseRule } from './rules';
 import styles from './styles.less';
+import { COMMON_LABEL } from 'i18n/common';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -253,7 +254,7 @@ class BaseForm extends React.Component {
                     children = this.decorateFormField(key, {
                         valuePropName: 'checked',
                     }, item)(
-                        <Switch checkedChildren={item.onLabel || '开启'} unCheckedChildren={item.offLabel || '关闭'} />
+                        <Switch checkedChildren={item.onLabel || COMMON_LABEL.open} unCheckedChildren={item.offLabel || COMMON_LABEL.close} />
                     );
                     break;
                 case 'timepicker': {

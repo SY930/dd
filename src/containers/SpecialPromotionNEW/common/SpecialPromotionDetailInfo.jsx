@@ -44,6 +44,7 @@ import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { doRedirect } from '../../../../src/helpers/util';
+import { COMMON_LABEL } from 'i18n/common';
 const moment = require('moment');
 const FormItem = Form.Item;
 
@@ -1457,9 +1458,9 @@ class SpecialDetailInfo extends Component {
                 >
                     <Switch
                         checked={!this.state.disabledGifts}
-                        checkedChildren="开启"
+                        checkedChildren={COMMON_LABEL.open}
                         disabled={userCount > 0}
-                        unCheckedChildren="关闭"
+                        unCheckedChildren={COMMON_LABEL.close}
                         onChange={(bool) => this.setState({disabledGifts: !bool})}
                     ></Switch>
                 </FormItem>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
+import { COMMON_LABEL } from 'i18n/common';
 import {
     Form,
     Radio,
@@ -109,7 +109,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
         }
         this.columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 key: 'index',
                 width: 50,
@@ -117,7 +117,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 render: (text) => `${text + 1}`,
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 50,
@@ -126,7 +126,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                     return (
                         <div className="editable-row-operations">
                             <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
-                                <a title="删除" alt="删除">删除</a>
+                                <a title={ COMMON_LABEL.delete }>{ COMMON_LABEL.delete }</a>
                             </Popconfirm>
                         </div>
                     );

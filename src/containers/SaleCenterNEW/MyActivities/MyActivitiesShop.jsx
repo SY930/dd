@@ -17,6 +17,7 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import { jumpPage } from '@hualala/platform-base'
 import {axiosData, getAccountInfo} from '../../../helpers/util'
 import registerPage from '../../../index';
@@ -849,7 +850,7 @@ class MyActivitiesShop extends React.Component {
 
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{ COMMON_LABEL.query }</Button>
                             </Authority>
                         </li>
                         <li>
@@ -957,30 +958,6 @@ class MyActivitiesShop extends React.Component {
                             </Select>
                         </li>
 
-                        {/* <li>
-                            <h5>品牌</h5>
-                        </li>
-                        <li>
-                            <Select
-                                style={{ width: 100 }}
-                                allowClear={true}
-                                placeholder="请选择品牌"
-                                onChange={(brands) => {
-                                    this.setState({
-                                        promotionBrands: brands,
-                                    });
-                                }}
-                            >
-                                {
-                                    brands.map((brand, index) => {
-                                        return (
-                                            <Option key={`${index}`} value={`${brand.brandID}`}>{brand.brandName}</Option>
-                                        );
-                                    })
-                                }
-                            </Select>
-                        </li> */}
-
                         <li>
                             <h5>适用业务</h5>
                         </li>
@@ -1014,7 +991,7 @@ class MyActivitiesShop extends React.Component {
     renderTables() {
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 50,
@@ -1025,13 +1002,13 @@ class MyActivitiesShop extends React.Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isShopToggleActiveDisabled = (() => {
                         if (!isGroupOfHuaTianGroupList()) {
@@ -1064,7 +1041,7 @@ class MyActivitiesShop extends React.Component {
                                         this.handleUpdateOpe(text, record, index);
                                     }}
                                 >
-                                    查看
+                                    { COMMON_LABEL.view }
                                 </a>
                             </Authority>
                             <Authority rightCode={BASIC_PROMOTION_UPDATE}>
@@ -1075,7 +1052,7 @@ class MyActivitiesShop extends React.Component {
                                         this.props.toggleIsUpdate(true)
                                         this.handleUpdateOpe(text, record, index);
                                     }}
-                                >编辑</a>
+                                >{ COMMON_LABEL.edit }</a>
                             </Authority>
                             <Authority rightCode={BASIC_PROMOTION_DELETE}>
                                 <a
@@ -1084,14 +1061,14 @@ class MyActivitiesShop extends React.Component {
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
-                                >删除</a>
+                                >{ COMMON_LABEL.delete }</a>
                             </Authority>
                         </span>
                     );
                 },
             },
             {
-                title: '排序',
+                title: COMMON_LABEL.sort,
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,

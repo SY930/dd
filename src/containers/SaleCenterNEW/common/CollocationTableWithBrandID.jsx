@@ -8,6 +8,7 @@ import {
     Icon,
     Tooltip,
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 import {
@@ -391,7 +392,7 @@ class CollocationTableWithBrandID extends Component {
                 },
             },
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'num',
                 key: 'num',
                 width: 120,
@@ -441,7 +442,7 @@ class CollocationTableWithBrandID extends Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 100,

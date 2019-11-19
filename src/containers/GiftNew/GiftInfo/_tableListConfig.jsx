@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import {Tooltip} from 'antd';
@@ -28,14 +29,14 @@ const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
 
 export const COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'num',
         key: 'num',
         className: 'x-tc',
         // fixed: 'left',
         width: 50,
     }, {
-        title: '操作',
+        title: COMMON_LABEL.actions,
         dataIndex: 'operate',
         className: 'TableTxtCenter',
         key: 'operate',
@@ -50,7 +51,7 @@ export const COLUMNS = [
                                 <a
                                     href="javaScript:;"
                                     disabled={true}
-                                >编辑</a>
+                                >{ COMMON_LABEL.edit }</a>
                             ) : (
                                 <a
                                     href="javaScript:;"
@@ -58,7 +59,7 @@ export const COLUMNS = [
                                         this.handleEdit(record, 'edit')
                                     }
                                     }
-                                >编辑</a>
+                                >{ COMMON_LABEL.edit }</a>
                             )
                         }
                     </Authority>
@@ -68,14 +69,14 @@ export const COLUMNS = [
                             this.handleEdit(record, 'detail')
                         }}
                     >
-                        查看
+                        { COMMON_LABEL.view }
                     </a>
                     <Authority rightCode={GIFT_LIST_DELETE}>
                         {
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a disabled={true}><span>删除</span></a>
+                                <a disabled={true}><span>{ COMMON_LABEL.delete }</span></a>
                             ) : (
-                                <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
+                                <a onClick={() => this.handleDelete(record)}><span>{ COMMON_LABEL.delete }</span></a>
                             )
                         }
                     </Authority>
@@ -89,7 +90,7 @@ export const COLUMNS = [
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                 <a disabled={true}>详情</a>
                             ) : (
-                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{ COMMON_LABEL.detail }</a>
                             )
                         }
                     </Authority>
@@ -129,43 +130,6 @@ export const COLUMNS = [
         key: 'giftValue',
         width: 100,
         className: 'x-tr',
-    // }, {
-    //     title: '已发送数量',
-    //     dataIndex: 'sendTotalCount',
-    //     key: 'sendTotalCount',
-    //     width: 100,
-    //     className: 'x-tr',
-    // }, {
-    //     title: '已使用数量',
-    //     dataIndex: 'usedCount',
-    //     key: 'usedCount',
-    //     width: 100,
-    //     className: 'x-tr',
-    // }, {
-    //     title: '礼品规则',
-    //     dataIndex: 'giftRule',
-    //     key: 'giftRule',
-    //     className: 'gift-rule',
-    //     render: (value, record) => {
-    //         if (record.giftTypeName == '菜品优惠券') {
-    //             return (record.isFoodCatNameList ?
-    //                 <div>
-    //                     {value.map((item, idx) => {
-    //                         if (idx < (value.length - 1)) {
-    //                             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                         }
-    //                         return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                     })}
-    //                 </div>
-    //                 :
-    //                 <div>{value.map((item, idx) => {
-    //                     return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                 })}</div>)
-    //         }
-    //         return (<div>{value.map((item, idx) => {
-    //             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //         })}</div>)
-    //     },
     }, {
         title: '礼品描述',
         dataIndex: 'giftRemark',

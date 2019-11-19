@@ -17,7 +17,8 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import {throttle, isEqual} from 'lodash'
+import { COMMON_LABEL } from 'i18n/common';
+import { throttle } from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
@@ -907,7 +908,7 @@ class MyActivities extends React.Component {
 
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{ COMMON_LABEL.query }</Button>
                             </Authority>
                         </li>
                         <li>
@@ -920,7 +921,7 @@ class MyActivities extends React.Component {
                                         <Button
                                             type="ghost"
                                             onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />导出</Button>
+                                        ><Icon type="export" />{ COMMON_LABEL.export }</Button>
                                     </Authority>
                                 </li>
                             )
@@ -1089,7 +1090,7 @@ class MyActivities extends React.Component {
     renderTables() {
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 50,
@@ -1099,12 +1100,12 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
                         if (!isGroupOfHuaTianGroupList()) {
@@ -1138,7 +1139,7 @@ class MyActivities extends React.Component {
                                         this.handleUpdateOpe(text, record, index);
                                     }}
                                 >
-                                    查看
+                                    { COMMON_LABEL.view }
                                 </a>
                             </Authority>
                             {
@@ -1151,7 +1152,7 @@ class MyActivities extends React.Component {
                                                 this.props.toggleIsUpdate(true)
                                                 this.handleUpdateOpe(text, record, index);
                                             }}
-                                        >编辑</a>
+                                        >{ COMMON_LABEL.edit }</a>
                                     </Authority>
                                 )
                             }
@@ -1163,7 +1164,7 @@ class MyActivities extends React.Component {
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
-                                >删除</a>
+                                >{ COMMON_LABEL.delete }</a>
                             </Authority>
                     </span>
 
@@ -1171,7 +1172,7 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '排序',
+                title: COMMON_LABEL.sort,
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,

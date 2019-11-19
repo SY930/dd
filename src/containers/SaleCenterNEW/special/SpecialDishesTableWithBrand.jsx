@@ -15,6 +15,7 @@ import {
 import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
+import { COMMON_LABEL } from 'i18n/common';
 
 const FormItem = Form.Item;
 
@@ -166,7 +167,7 @@ class SpecialDishesTableWithBrand extends Component {
         } = this.state;
         const resultTableColumns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 key: 'index',
                 width: 50,
@@ -183,7 +184,7 @@ class SpecialDishesTableWithBrand extends Component {
                     return (
                         <div className="editable-row-operations">
                             <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
-                                <a title="删除" alt="删除">删除</a>
+                                <a title={ COMMON_LABEL.delete }>{ COMMON_LABEL.delete }</a>
                             </Popconfirm>
                         </div>
                     );

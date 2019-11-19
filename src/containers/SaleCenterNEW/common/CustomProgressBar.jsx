@@ -11,6 +11,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';
 import { Steps, Button } from 'antd';
 import {
@@ -110,7 +111,8 @@ class CustomProgressBar extends React.Component {
                         className="cancelBtnJs"
                         type="ghost"
                         onClick={() => this.cancel(current)}
-                    >取消
+                    >
+                        { COMMON_LABEL.cancel }
                     </Button>
                     {
                         this.state.current > 0 && (

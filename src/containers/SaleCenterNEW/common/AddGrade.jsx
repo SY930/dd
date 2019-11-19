@@ -21,6 +21,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
+import { COMMON_LABEL } from 'i18n/common';
 const FormItem = Form.Item;
 
 class AddGrade extends React.Component {
@@ -199,11 +200,11 @@ class AddGrade extends React.Component {
                         <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : '添加新档'}</span>
                     ) : (
                         k == 2 ? (
-                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
+                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                         ) : (// 满 非第一个档次
                             <span>
                                 <span className={styles.CategoryAdd} onClick={this.add}>添加新档</span>
-                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
+                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                             </span>
                         )
                     )

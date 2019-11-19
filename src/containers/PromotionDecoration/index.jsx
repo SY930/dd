@@ -4,7 +4,7 @@ import {
     Button,
     message,
 } from 'antd';
-
+import { COMMON_LABEL } from 'i18n/common';
 import registerPage from '../../../index';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import style from './style.less'
@@ -104,7 +104,7 @@ export default class PromotionDecoration extends Component {
                     onClick={this.handleCancel}
                     style={{ marginRight: 12 }}
                 >
-                    返回
+                    { COMMON_LABEL.goback }
                 </Button>
                 {/** 膨胀大礼包的恢复默认在内部 */}
                 {
@@ -125,7 +125,7 @@ export default class PromotionDecoration extends Component {
                     loading={loading}
                     onClick={this.handleSave}
                 >
-                    保存
+                    { COMMON_LABEL.save }
                 </Button>
             </div>
         )

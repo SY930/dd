@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip, span } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 import { mapValueToLabel } from 'helpers/util';
 
@@ -14,7 +15,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     giftStatus: {
-        label: '状态',
+        label: COMMON_LABEL.status,
         type: 'combo',
         defaultValue: '',
         options: GiftCfg.giftSendStatus,
@@ -22,7 +23,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     WXgiftCardStatus: {
-        label: '状态',
+        label: COMMON_LABEL.status,
         type: 'combo',
         defaultValue: '',
         options: GiftCfg.WXgiftCardStatus,
@@ -61,7 +62,7 @@ const WX_SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend',
 { col: { span: 12, offset: 0 }, keys: ['WXgiftCardStatus'] }];
 const BASE_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'num',
         width:50,
         className:'TableTxtCenter',
@@ -144,7 +145,7 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
         render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
     },
     {
-        title: '状态',
+        title: COMMON_LABEL.status,
         dataIndex: 'giftStatus',
         className:'TableTxtCenter',
         key: 'giftStatus',
@@ -179,7 +180,7 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
     },
 ]
 const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
-    title: '状态',
+    title: COMMON_LABEL.status,
     dataIndex: 'giftStatus',
     key: 'giftStatus',
     render: (value) => {
@@ -189,7 +190,7 @@ const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
 const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 const USED_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.status,
         dataIndex: 'num',
         className:'TableTxtCenter',
         key: 'num',

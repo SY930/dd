@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import { COMMON_LABEL } from 'i18n/common';
 import {
     Table,
     Button,
@@ -299,7 +300,7 @@ class GenerateBatchGifts extends Component {
                         }}
                     >
                         <Icon type="search" />
-                        查询
+                        { COMMON_LABEL.query }
                     </Button>
 
                     <Button
@@ -317,7 +318,7 @@ class GenerateBatchGifts extends Component {
     renderTable() {
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'index',
@@ -372,7 +373,7 @@ class GenerateBatchGifts extends Component {
                 },
             },
             {
-                title: '状态',
+                title: COMMON_LABEL.status,
                 className: 'TableTxtCenter',
                 width: 80,
                 dataIndex: 'status',
@@ -395,7 +396,7 @@ class GenerateBatchGifts extends Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'key7',
@@ -409,7 +410,7 @@ class GenerateBatchGifts extends Component {
                                 onClick={() => {
                                     this.handleExport(record)
                                 }}
-                            >导出</a>
+                            >{ COMMON_LABEL.export }</a>
                         )
                     }
                     return '--'

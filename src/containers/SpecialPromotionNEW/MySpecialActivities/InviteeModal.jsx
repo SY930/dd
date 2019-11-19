@@ -5,6 +5,7 @@ import {
     Button,
     Tooltip,
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import { axiosData } from '../../../../src/helpers/util';
 
 export default class InviteeModal extends Component {
@@ -17,7 +18,7 @@ export default class InviteeModal extends Component {
         loading: false,
         columns: [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'idx',
                 key: 'idx',
                 className: 'TableTxtCenter',
@@ -126,7 +127,7 @@ export default class InviteeModal extends Component {
                 onCancel={handleModalClose}
                 maskClosable={false}
                 width={900}
-                footer={[<Button key="0" type="ghost" onClick={handleModalClose}>关闭</Button>]}
+                footer={[<Button key="0" type="ghost" onClick={handleModalClose}>{COMMON_LABEL.close}</Button>]}
             >
                 <Table
                     dataSource={this.state.inviteeList}

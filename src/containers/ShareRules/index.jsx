@@ -32,6 +32,7 @@ import {FetchGiftList} from "../GiftNew/_action";
 import {fetchAllPromotionListAC} from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import {fetchPromotionScopeInfo} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import { COMMON_LABEL } from 'i18n/common';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -223,7 +224,7 @@ export default class ShareRules extends Component {
                     }}
                 >
                     <Icon type="search"/>
-                    查询
+                    { COMMON_LABEL.query }
                 </Button>
 
             </div>

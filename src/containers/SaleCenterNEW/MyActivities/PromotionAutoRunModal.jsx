@@ -18,6 +18,7 @@ import {
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import Authority from "../../../components/common/Authority/index";
 import {AUTO_RUN_UPDATE} from "../../../constants/authorityCodes";
+import { COMMON_LABEL } from 'i18n/common';
 
 class PromotionAutoRunModal extends Component {
 
@@ -100,7 +101,7 @@ class PromotionAutoRunModal extends Component {
         };
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 className: 'TableTxtCenter',
                 width: 50,
                 render: (order, record, index) => index + 1,
@@ -185,7 +186,7 @@ class PromotionAutoRunModal extends Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'order1',
                 className: 'TableTxtCenter',
                 render: (order, record, index) => {
@@ -198,7 +199,7 @@ class PromotionAutoRunModal extends Component {
                                 this.setState({
                                     promotionList
                                 })
-                            }}>删除</a>
+                            }}>{ COMMON_LABEL.delete }</a>
                         </span>
                     )
                 },
@@ -282,7 +283,7 @@ class PromotionAutoRunModal extends Component {
                         type="ghost"
                         onClick={this.handleCancel}
                     >
-                        取消
+                        { COMMON_LABEL.cancel }
                     </Button>,
                     <Authority rightCode={AUTO_RUN_UPDATE}>
                         <Button
@@ -292,7 +293,7 @@ class PromotionAutoRunModal extends Component {
                             }}
                             onClick={this.handleOk}
                             loading={isSaving}
-                        >确定</Button>
+                        >{ COMMON_LABEL.confirm }</Button>
                     </Authority>
                 ]}
             >
@@ -307,7 +308,7 @@ class PromotionAutoRunModal extends Component {
                                     fontSize: 16
                                 }}
                             >
-                                查询自动执行信息出错！点击 <a onClick={this.handleRetry}>重试</a>
+                                查询自动执行信息出错！点击 <a onClick={this.handleRetry}>{ COMMON_LABEL.retry }</a>
                             </div>
                         ) : (
                             <div className={styles.autoRunWrapper}>

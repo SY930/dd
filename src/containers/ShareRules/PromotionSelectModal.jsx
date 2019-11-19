@@ -7,6 +7,7 @@ import {
     Button,
     Tooltip
 } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import {debounce} from 'lodash';
 import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
 const TreeNode = Tree.TreeNode;
@@ -129,8 +130,12 @@ class PromotionSelectModal extends Component {
                 title={`${this.props.isCreate ? '创建' : '编辑'}营销活动规则`}
                 visible={true}
                 footer={[
-                    <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>取消</Button>,
-                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>,
+                    <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>
+                        { COMMON_LABEL.cancel }
+                    </Button>,
+                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>
+                        { COMMON_LABEL.save }
+                    </Button>,
                 ]}
                 onCancel={this.props.handleCancel}
                 width="922px"
