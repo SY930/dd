@@ -217,8 +217,11 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
                     </Col>
-                    <Col style={{ marginTop: 10 }} span={12}>
+                    <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderRedPacketsTable()}
                     </Col>
                     {this.renderSearch()}
                     <Col span={24}>
@@ -433,6 +436,49 @@ class SpecialPromotionDetail extends React.Component {
             dataSource = [{
                 title: '赠送积分',
                 ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
+    renderRedPacketsTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送红包总数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送红包金额',
+                dataIndex: 'redPackAmount',
+                key: 'redPackAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计参与人数',
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            dataSource = [{
+                title: '现金红包',
+                ...this.props.mySpecialActivities.data.eventInfo.redPackData,
             }];
         } catch (e) {
             dataSource = [];
