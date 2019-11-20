@@ -66,8 +66,8 @@ class RedPacketSendOrUsedTable extends React.Component {
                 },
                 {
                     title: '状态',
-                    dataIndex: 'giftStatus',
-                    key: 'giftStatus',
+                    dataIndex: 'presentStatus',
+                    key: 'presentStatus',
                     render: (value) => {
                         return <span>{mapValueToLabel(GiftCfg.redPacketStatus, String(value))}</span>
                     },
@@ -106,7 +106,7 @@ class RedPacketSendOrUsedTable extends React.Component {
                     labelCol: { span: 4 },
                     wrapperCol: { span: 20 },
                 },
-                giftStatus: {
+                presentStatus: {
                     label: '状态',
                     type: 'combo',
                     defaultValue: '',
@@ -142,6 +142,12 @@ class RedPacketSendOrUsedTable extends React.Component {
             },
         };
         this.queryForm = null;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.activeKey !== this.props.activeKey && this.props.activeKey === this.props._key) {
+            this.queryForm.resetFields();
+        }
     }
 
     proRecords = (quotaList = this.props.sendList) => {
@@ -220,16 +226,12 @@ class RedPacketSendOrUsedTable extends React.Component {
                 }
             });
             if (used) {
-                params.giftStatus = '2';
+                params.presentStatus = '4';
             }
             this.reloading(() => {
                 this.setState({ loading: true });
             }).then(() => {
                 this.getData(params);
-                const _params = Object.assign(params, values);
-                this.setState({ queryParams: _params });
-                const { UpdateSendorUsedParamsAC } = this.props;
-                UpdateSendorUsedParamsAC({ params: _params });
             });
         });
     }
@@ -251,17 +253,18 @@ class RedPacketSendOrUsedTable extends React.Component {
         this.getData({ ...queryParams, pageNo, pageSize });
     }
     render() {
+        const { _key, sendList, usedList, } = this.props;
         const {
             dataSource,
             pageNo,
             pageSize,
             total,
-        } = this.proRecords();
-        const { _key } = this.props;
+        } = this.proRecords(_key === 'send' ? sendList : usedList);
+        
         const formKeys = _key === 'send' ?
             [
                 { col: { span: 12 }, keys: [ 'getWay', 'timeRangeSend', ] },
-                { col: { span: 12 }, keys: [ 'giftStatus', 'mobileNum', ] },
+                { col: { span: 12 }, keys: [ 'presentStatus', 'mobileNum', ] },
             ]
             :
             [

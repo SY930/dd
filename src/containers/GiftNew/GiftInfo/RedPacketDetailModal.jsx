@@ -69,7 +69,7 @@ class RedPacketDetailModal extends Component {
     componentDidMount() {
         const { data: { giftType, giftItemID }, FetchSendorUsedList } = this.props;
         FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
-        FetchSendorUsedList({isSend: false, params: {giftStatus: '4', pageNo: 1, pageSize: 10, giftItemID } });
+        FetchSendorUsedList({isSend: false, params: {presentStatus: '4', pageNo: 1, pageSize: 10, giftItemID } });
     }
     handleCancel() {
         this.setState({ loading: true });

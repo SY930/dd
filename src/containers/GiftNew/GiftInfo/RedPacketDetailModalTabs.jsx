@@ -76,7 +76,7 @@ class RedPacketDetailModalTabs extends React.Component {
                         tabs.map((tab) => {
                             return (
                                 <TabPane tab={tab.tab} key={tab.key}>
-                                    <RedPacketSendOrUsedTable key={tab.key} data={data} _key={tab.key} />
+                                    <RedPacketSendOrUsedTable activeKey={this.state.activeKey} key={tab.key} data={data} _key={tab.key} />
                                 </TabPane>
                             )
                         })
