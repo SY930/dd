@@ -32,10 +32,6 @@ class GiftDetailModalTabs extends React.Component {
         };
         this.handleExport = this.handleExport.bind(this);
     }
-    componentDidMount() {
-        // const { sendorUsedKey } = this.props;
-        // this.setState({ activeKey: sendorUsedKey});
-    }
 
     handleExport() {
         this.setState({

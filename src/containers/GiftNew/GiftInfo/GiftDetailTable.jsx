@@ -11,6 +11,7 @@ import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
 import styles2 from '../../SaleCenterNEW/ActivityPage.less';
 import GiftDetailModal from './GiftDetailModal';
+import RedPacketDetailModal from './RedPacketDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
 import GiftAddModalStep from '../GiftAdd/GiftAddModalStep';
@@ -18,7 +19,6 @@ import ExportModal from './ExportModal';
 import { COLUMNS } from './_tableListConfig';
 import {
     FetchGiftList,
-    FetchSendorUsedList,
     UpdateBatchNO,
     UpdateDetailModalVisible,
     FetchSharedGifts,
@@ -426,12 +426,12 @@ class GiftDetailTable extends Component {
         this.setState({ visibleDetail: true, data: { ...rec } });
         const { UpdateDetailModalVisible } = this.props;
         UpdateDetailModalVisible({ visible: true });
-        const { FetchSendorUsedList } = this.props;
-        const { giftType, giftItemID } = rec;
-        if (giftType !== '90') {
-            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
-            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
-        }
+        // const { FetchSendorUsedList } = this.props;
+        // const { giftType, giftItemID } = rec;
+        // if (giftType !== '90') {
+        //     FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+        //     giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+        // }
     }
     handleGenerateLink(record) {
         this.setState({
@@ -509,6 +509,8 @@ class GiftDetailTable extends Component {
                 case '110':
                 case '111':
                     return (<GiftDetailModal {...detailProps} />);
+                case '113':
+                    return (<RedPacketDetailModal {...detailProps} />);
                 case '90':
                     return <QuatoCardDetailModal {...detailProps} />;
                 default:
@@ -625,7 +627,7 @@ class GiftDetailTable extends Component {
                 </div>
 
                 <div>
-                    {GiftDetail(data.giftType)}
+                    { visibleDetail && GiftDetail(data.giftType) }
                 </div>
                 <div>
                     {GiftEdit(editGift.value)}
@@ -676,7 +678,6 @@ function mapDispatchToProps(dispatch) {
     return {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         startEditGift: opts => dispatch(startEditGift(opts)),
-        FetchSendorUsedList: opts => dispatch(FetchSendorUsedList(opts)),
         UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
         UpdateDetailModalVisible: opts => dispatch(UpdateDetailModalVisible(opts)),
         FetchSharedGifts: opts => dispatch(FetchSharedGifts(opts)),

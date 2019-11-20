@@ -260,6 +260,15 @@ const GiftCfg = {
         { value: '3', label: '过期' },
         { value: '4', label: '注销 ' },
     ],
+    redPacketStatus: [ // 现金红包
+        { value: '', label: '全部' },
+        { value: '1', label: '发送中' },
+        { value: '2', label: '已发放待领取' },
+        { value: '3', label: '发放失败' },
+        { value: '4', label: '已领取 ' },
+        { value: '5', label: '退款中' },
+        { value: '6', label: '已退款 ' },
+    ],
     giftUsedStatus: [
         { value: '', label: '全部' },
         { value: '1', label: '待处理' },

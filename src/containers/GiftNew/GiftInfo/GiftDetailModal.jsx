@@ -8,7 +8,9 @@ import styles from './GiftInfo.less';
 import {
     UpdateSendorUsedTabKey,
     UpdateSendorUsedPage,
-    UpdateSendorUsedParams, resetSendOrTotalCount,
+    UpdateSendorUsedParams,
+    resetSendOrTotalCount,
+    FetchSendorUsedList,
 } from '../_action';
 
 class GiftDetailModal extends Component {
@@ -19,6 +21,13 @@ class GiftDetailModal extends Component {
             loading: true,
             giftUsageList: [],
         };
+    }
+    componentDidMount() {
+        const { data: { giftType, giftItemID }, FetchSendorUsedList } = this.props;;
+        if (giftType !== '90') {
+            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+        }
     }
     componentWillReceiveProps(nextProps) {
         // const {visible} = nextProps;
@@ -250,6 +259,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
     return {
+        FetchSendorUsedList: opts => dispatch(FetchSendorUsedList(opts)),
         resetSendOrTotalCount: opts => dispatch(resetSendOrTotalCount(opts)),
         UpdateSendorUsedTabKey: opts => dispatch(UpdateSendorUsedTabKey(opts)),
         UpdateSendorUsedPage: opts => dispatch(UpdateSendorUsedPage(opts)),

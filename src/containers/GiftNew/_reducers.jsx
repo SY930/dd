@@ -66,6 +66,7 @@ const $initialState = Immutable.fromJS({
     sendList: [],
     usedList: [],
     sendorUsedKey: 'send',
+    redPacketInfoList: [],
     sendorUsedPage: {
         pageNo: 1,
         pageSize: 10,
@@ -163,7 +164,11 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK:
             return $$state.set('sendorUsedList', Immutable.fromJS(action.payload.sendorUsedList));
         case GIFT_NEW_FETCH_SEND_LIST_OK:
-            return $$state.set('sendList', Immutable.fromJS(action.payload.sendorUsedList));
+            // 实际是一个obj,不是list
+            const sendorUsedList = action.payload.sendorUsedList;
+            return $$state
+            .set('sendList', Immutable.fromJS(sendorUsedList))
+            .set('redPacketInfoList',  Immutable.fromJS(sendorUsedList.summaryByGiftStatusList || []));
         case GIFT_NEW_FETCH_USED_LIST_OK:
             return $$state.set('usedList', Immutable.fromJS(action.payload.sendorUsedList));
         case GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY:
@@ -192,6 +197,7 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state
                 .set('sendList', Immutable.fromJS([]))
                 .set('usedList', Immutable.fromJS([]))
+                .set('redPacketInfoList', Immutable.fromJS([]))
                 .set('totalUsedCount', 0)
                 .set('totalSendCount', 0);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
