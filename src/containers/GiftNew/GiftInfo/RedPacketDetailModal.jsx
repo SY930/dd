@@ -20,6 +20,13 @@ class RedPacketDetailModal extends Component {
             dataSource: [],
             totalColumns: [
                 {
+                    title: '发出总数',
+                    dataIndex: 'total',
+                    key: 'total',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
                     title: '发送中',
                     dataIndex: '1',
                     key: '1',
@@ -96,9 +103,12 @@ class RedPacketDetailModal extends Component {
         const { redPacketInfoList } = this.props;
         const redPacketStatusList = redPacketInfoList.toJS();
         const result = {};
+        let total = 0;
         redPacketStatusList.forEach(item => {
+            total += item.sum || 0;
             result[`${item.presentStatus}`] = item.sum;
         })
+        result.total = total;
         return result;
     }
     render() {
