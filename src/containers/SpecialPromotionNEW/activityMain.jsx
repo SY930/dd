@@ -32,6 +32,7 @@ import ShareGifts from './shareGifts';
 import ExpansionGifts from './expansionGifts';
 import InstantDiscount from './instantDiscount';
 import RecommendGifts from './recommendGifts';
+import AccumulateGift from './accumulateGift';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -102,6 +103,7 @@ class ActivityMain extends React.Component {
             ExpansionGifts,
             InstantDiscount,
             RecommendGifts,
+            AccumulateGift,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
@@ -152,8 +154,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityMain);
+export default connect(mapStateToProps)(ActivityMain);

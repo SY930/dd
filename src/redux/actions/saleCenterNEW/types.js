@@ -693,6 +693,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '68',
         },
+        {
+            idx: 19,
+            title: '集点卡',
+            text: '消费后获得集点，促进会员多次消费',
+            example: '',
+            key: '75',
+        },
     ];
     return basic;
 }());
