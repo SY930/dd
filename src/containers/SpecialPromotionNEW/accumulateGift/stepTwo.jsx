@@ -14,13 +14,51 @@ import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCar
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+const CONSUME_AMOUNT_OPTIONS = [
+    {
+        value: '任意消费满',
+        label: '1',
+    },
+    {
+        value: '任意消费每满',
+        label: '1',
+    },
+    {
+        value: '活动菜品消费满',
+        label: '1',
+    },
+    {
+        value: '活动菜品消费每满',
+        label: '1',
+    },
+];
+const CONSUME_TIMES_OPTIONS = [
+    {
+        value: '任意菜品数量满',
+        label: '1',
+    },
+    {
+        value: '任意菜品数量每满',
+        label: '1',
+    },
+    {
+        value: '活动菜品数量满',
+        label: '1',
+    },
+    {
+        value: '活动菜品数量每满',
+        label: '1',
+    },
+];
+
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
-            partInTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'partInTimes']) || undefined, // 不想显示0
-            defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
+            pointTotalNumber: props.specialPromotionInfo.getIn(['$eventInfo', 'pointTotalNumber']) || undefined,
+            consumeTotalAmount: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalAmount']) || undefined, // 不想显示0
+            consumeTotalTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes']) || undefined,
+            consumeType: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes'], 0),
         }
     }
 
@@ -64,9 +102,9 @@ class StepTwo extends React.Component {
         })
     }
 
-    handleNeedCountChange = ({ number }) => {
+    handlePointTotalNumberChange = ({ number }) => {
         this.setState({
-            needCount: number,
+            pointTotalNumber: number,
         })
     }
 
@@ -106,34 +144,33 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 <FormItem
-                    label={'参与人数'}
+                    label={'总计点数'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     required
                     wrapperCol={{ span: 17 }}
                 >
-                    {this.props.form.getFieldDecorator('needCount', {
+                    {this.props.form.getFieldDecorator('pointTotalNumber', {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v || (!v.number && v.number !== 0)) {
-                                            return cb('参与人数为必填项');
+                                            return cb('总计点数为必填项');
                                         } else if (v.number === 0) {
-                                            return cb('参与人数必须大于0');
+                                            return cb('总计点数必须大于0');
                                         }
                                         cb()
                                     },
                                 }
                             ],
-                            initialValue: {number: this.state.needCount},
-                            onChange: this.handleNeedCountChange
+                            initialValue: {number: this.state.pointTotalNumber},
+                            onChange: this.handlePointTotalNumberChange
                         })(
                             <PriceInput
-                                addonAfter="人"
+                                addonAfter="个"
                                 disabled={userCount > 0}
-                                placeholder="邀请好友人数达到参与人数配置方可获得礼品"
                                 modal="int"
-                                maxNum={6}
+                                maxNum={3}
                             />
                         )
                     } 
@@ -159,7 +196,6 @@ class StepTwo extends React.Component {
 }
 const mapStateToProps = (state) => {
     return {
-        user: state.user.toJS(),
         specialPromotionInfo: state.sale_specialPromotion_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
     };
