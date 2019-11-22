@@ -303,7 +303,7 @@ class GiftAddModal extends React.Component {
                 placeholder: '恭喜发财，大吉大利',
                 rules: [
                     { required: true, message: '红包祝福语不能为空' },
-                    { max: 255, message: '最多255个字符' },
+                    { max: 30, message: '最多30个字符' },
                 ],
             },
             sendName: {
@@ -311,7 +311,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 rules: [
                     { required: true, message: '红包显示商户名称不能为空' },
-                    { max: 50, message: '最多50个字符' },
+                    { max: 20, message: '最多20个字符' },
                 ],
             },
             selectBrands: {

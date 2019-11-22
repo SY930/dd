@@ -13,6 +13,8 @@ import {
     FetchSendorUsedList,
 } from '../_action';
 
+const redPacketImg = 'http://res.hualala.com/basicdoc/6e7dec75-e044-4fbc-8c1c-04845e4f2eb0.png'
+
 class RedPacketDetailModal extends Component {
     constructor(props) {
         super(props);
@@ -143,6 +145,9 @@ class RedPacketDetailModal extends Component {
                                 <h3>基本信息</h3>
                             </Row>
                             <Row style={{ margin: '0 10px' }}>
+                                <Col span={4}>
+                                    <img style={{ width: 160 }} src={redPacketImg} />
+                                </Col>
                                 <Col span={19} push={1}>
                                     <InfoDisplay infoItem={infoItem} infoData={data} />
                                     <Row className="info-rule">

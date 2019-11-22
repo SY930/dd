@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import { Icon, Tooltip } from 'antd';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phoneX.png';
@@ -12,6 +13,10 @@ import privilegeOfWaitOff from '../../../assets/privilegeOfWaitOff.png';
 import vipPriceOff from '../../../assets/vipPriceOff.png';
 import vipPriceOn from '../../../assets/vipPriceOn.png';
 import GiftCfg from "../../../constants/Gift";
+import style from 'containers/PromotionDecoration/style.less'
+import { iphone } from 'containers/PromotionDecoration/assets';
+
+const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de-79ea54ac0f7a.png'
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
 const PRIMARY_GIFTS = [
@@ -324,17 +329,61 @@ class PhonePreview extends PureComponent {
         )
     }
     renderRedPacketPreviewContent() {
+        const {
+            wishing,
+            sendName,
+        } = this.props;
         return (
-            <div style={{ padding: 20 }}>
-                <div style={{ fontSize: 18, marginLeft: 20, marginBottom: 20, fontWeight: 'bold'}}>操作指导</div>
-                <div style={{ lineHeight: 2, background: 'rgb(251,251,251)', padding: 12 }}>
-                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
-                <br></br>
-                ◆入驻时间超过90天;<br></br>
-                ◆截止今日回推30天连续不间断保持有交易;<br></br>
-                ◆保持正常健康交易;<br></br>
-                在使用现金红包之前，请前往开通现金红包功能。<br></br>
-                操作路径：[登录微信支付商户平台一>产品中心一>现金红包一>开通]。
+            // <div style={{ padding: 20 }}>
+            //     <div style={{ fontSize: 18, marginLeft: 20, marginBottom: 20, fontWeight: 'bold'}}>操作指导</div>
+            //     <div style={{ lineHeight: 2, background: 'rgb(251,251,251)', padding: 12 }}>
+                
+            //     </div>
+            // </div>
+            <div className={style.previewArea}>
+                <img src={iphone} alt=""/>
+                <div className={style.simpleDisplayBlock}>
+                    <div style={{ height: '150%' }} className={style.imgWrapper}>
+                        <div style={{ width: '100%', position: 'relative', height: '100%', overflow: 'hidden' }}>
+                            <Tooltip title={<div>
+                                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
+                                <br></br>
+                                ◆入驻时间超过90天;<br></br>
+                                ◆截止今日回推30天连续不间断保持有交易;<br></br>
+                                ◆保持正常健康交易;<br></br>
+                            </div>}>
+                            <img src={RED_PACKET_MAIN} style={{ width: '100%' }} alt=""/>
+                            </Tooltip>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: 80,
+                                    fontSize: 14,
+                                    width: '100%',
+                                    padding: '0 50px',
+                                    textAlign: 'center',
+                                    color: '#FFEFCF',
+                                }}
+                            >
+                                {sendName}
+                            </div>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: 120,
+                                    fontSize: 18,
+                                    width: '100%',
+                                    fontWeight: 500,
+                                    padding: '0 50px',
+                                    textAlign: 'center',
+                                    color: '#FFEFCF',
+                                }}
+                            >
+                                {wishing}
+                            </div>
+                        </div>
+                    </div>
+                    <Icon className={style.closeBtn}  type="close-circle-o" />
                 </div>
             </div>
         )
@@ -520,6 +569,8 @@ function mapStateToProps(state) {
         isCustomerPrice: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isCustomerPrice']),
         isDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isDiscountRate']),
         isPointRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'isPointRate']),
+        wishing: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'wishing']),
+        sendName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'sendName']),
         showGiftRule: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'showGiftRule']),
         couponPeriodSettings: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'couponPeriodSettings']),
         giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']), // PriceInput 给出的是{number: xxx}
