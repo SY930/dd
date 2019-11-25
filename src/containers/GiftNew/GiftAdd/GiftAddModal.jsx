@@ -5,6 +5,8 @@ import { axiosData } from '../../../helpers/util';
 import {
     Row,
     Col,
+    Icon,
+    Tooltip,
     message,
 } from 'antd';
 import styles from './GiftAdd.less';
@@ -188,7 +190,20 @@ class GiftAddModal extends React.Component {
                 render: decorator => decorator({})(<PushMessageMpID/>),
             },
             sellerCode: {
-                label: '红包发放账户',
+                label: (
+                    <span>
+                        红包发放账户&nbsp;
+                        <Tooltip title={<div>
+                                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
+                                <br></br>
+                                ◆入驻时间超过90天;<br></br>
+                                ◆截止今日回推30天连续不间断保持有交易;<br></br>
+                                ◆保持正常健康交易;<br></br>
+                            </div>}>
+                            <Icon type="question-circle" />
+                        </Tooltip>
+                    </span>
+                ),
                 rules: [{ required: true, message: '不得为空' }],
                 type: 'custom',
                 render: decorator => decorator({})(<SellerCode/>),

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Icon, Tooltip } from 'antd';
+import { Icon } from 'antd';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phoneX.png';
@@ -345,15 +345,7 @@ class PhonePreview extends PureComponent {
                 <div className={style.simpleDisplayBlock}>
                     <div style={{ height: '150%' }} className={style.imgWrapper}>
                         <div style={{ width: '100%', position: 'relative', height: '100%', overflow: 'hidden' }}>
-                            <Tooltip title={<div>
-                                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
-                                <br></br>
-                                ◆入驻时间超过90天;<br></br>
-                                ◆截止今日回推30天连续不间断保持有交易;<br></br>
-                                ◆保持正常健康交易;<br></br>
-                            </div>}>
                             <img src={RED_PACKET_MAIN} style={{ width: '100%' }} alt=""/>
-                            </Tooltip>
                             <div
                                 style={{
                                     position: 'absolute',
