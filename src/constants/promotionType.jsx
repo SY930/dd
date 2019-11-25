@@ -179,11 +179,12 @@ export const REPEAT_PROMOTION_TYPES = [
         title: '集点卡',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '消费后获得集点，促进会员多次消费',
+        tags: ['新微信'],
         example: '',
         key: '75',
         isNew: true,
-        right: 3,
-        bottom: 0,
+        right: 16,
+        bottom: 6,
     },
     {
         title: '群发礼品',

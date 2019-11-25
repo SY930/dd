@@ -8,6 +8,7 @@ import {
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput'; // 编辑
+import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 
@@ -16,19 +17,19 @@ const Option = Select.Option;
 
 const CONSUME_AMOUNT_OPTIONS = [
     {
-        value: '任意消费满',
-        label: '1',
+        label: '任意消费满',
+        value: '1',
     },
     {
-        value: '任意消费每满',
-        label: '1',
+        label: '任意消费每满',
+        value: '1',
     },
     {
-        value: '活动菜品消费满',
-        label: '1',
+        label: '活动菜品消费满',
+        value: '1',
     },
     {
-        value: '活动菜品消费每满',
+        label: '活动菜品消费每满',
         label: '1',
     },
 ];
@@ -55,6 +56,7 @@ class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            radioType: 0,
             pointTotalNumber: props.specialPromotionInfo.getIn(['$eventInfo', 'pointTotalNumber']) || undefined,
             consumeTotalAmount: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalAmount']) || undefined, // 不想显示0
             consumeTotalTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes']) || undefined,
@@ -107,6 +109,39 @@ class StepTwo extends React.Component {
             pointTotalNumber: number,
         })
     }
+    renderComboInput() {
+        const { radioType, consumeTotalAmount, consumeTotalTimes } = this.state;
+        const { form: { getFieldDecorator } } = this.props;
+        if (radioType === 0) { // 按金额
+            return getFieldDecorator('consumeTotalAmount', {
+                initialValue: { number: consumeTotalAmount },
+                onChange: ({ number }) => this.setState({ consumeTotalAmount: number }),
+                rules: [
+                    {
+                        validator: (rule, v, cb) => {
+                            if (!v) {
+                                return cb();
+                            }
+                            v.number > 0? cb() : cb('金额不得为空');
+                        },
+                    }
+                ]
+            })(
+                <PriceInput
+                    addonBefore={
+                        <Select>
+
+                        </Select>
+                    }
+                    maxNum={5}
+                    addonAfter="元，可集一个点"
+                />
+            )
+        }
+        return (
+            <PriceInput />
+        )
+    }
 
     render() {
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
@@ -114,35 +149,6 @@ class StepTwo extends React.Component {
         const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);
         return (
             <Form className={styles.cardLevelTree}>
-                <FormItem
-                    label="新用户注册卡类"
-                    optionFilterProp="children"
-                    className={styles.FormItemStyle}
-                    required
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    {
-                        this.props.form.getFieldDecorator('defaultCardType', {
-                            rules: [
-                                { required: true, message: '必须选择一个卡类型' }
-                            ],
-                            initialValue: this.state.defaultCardType,
-                            onChange: this.handleDefaultCardTypeChange,
-                        })(
-                            <Select
-                                showSearch={true}
-                                notFoundContent={'未搜索到结果'}
-                                placeholder="请选择新用户注册成为会员的卡类型"
-                                getPopupContainer={(node) => node.parentNode}
-                            >
-                                {
-                                    cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
-                                }
-                            </Select>
-                        )
-                    }
-                </FormItem>
                 <FormItem
                     label={'总计点数'}
                     className={styles.FormItemStyle}
@@ -176,20 +182,28 @@ class StepTwo extends React.Component {
                     } 
                 </FormItem>
                 <FormItem
-                    label={'邀请人参与次数'}
+                    label={'获得方式'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
+                    <RadioGroup onChange={({ target: { value } }) => this.setState({ radioType: value })} value={this.state.radioType}>
+                        <Radio value={0}>按金额</Radio>
+                        <Radio value={1}>按数量</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <FormItem
+                    label=" "
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    { this.renderComboInput() }
                     <PriceInput
-                        addonAfter="次"
-                        value={{ number: this.state.partInTimes }}
-                        onChange={this.handlePartInTimesChange}
-                        placeholder="邀请人数每达到参与人数要求时，邀请人可多次获得礼品，为空表示不限次数"
-                        modal="int"
-                        maxNum={6}
+                        
                     />
                 </FormItem>
+                <CategoryAndFoodSelector onChange={(v) => console.log('v', v)} />
             </Form>
         );
     }
