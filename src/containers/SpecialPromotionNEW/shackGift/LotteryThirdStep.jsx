@@ -217,7 +217,7 @@ class LotteryThirdStep extends React.Component {
                         }
                     });
                     if(flag){
-                        temparr.push(item);
+                        temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
                     }
                 }
             })
