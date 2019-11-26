@@ -200,7 +200,7 @@ class RedPacketSendOrUsedTable extends React.Component {
     }
     handleFormChange(k, v, f) {
     }
-    handleQuery(used) {
+    handleQuery() {
         this.queryForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
             const params = {};
@@ -225,7 +225,7 @@ class RedPacketSendOrUsedTable extends React.Component {
                     }
                 }
             });
-            if (used) {
+            if (this.props._key === 'used') {
                 params.presentStatus = '4';
             }
             this.reloading(() => {

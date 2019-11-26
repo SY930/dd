@@ -39,7 +39,7 @@ class RedPacketDetailModalTabs extends React.Component {
         const { UpdateSendorUsedTabKey, UpdateSendorUsedPage, data: { giftItemID }, FetchSendorUsedList, UpdateSendorUsedParams } = this.props;
         UpdateSendorUsedTabKey({ key: activeKey });
         UpdateSendorUsedPage({ page: { pageNo: 1, pageSize: 10 } });
-        const params = activeKey === 'used' ? { giftItemID, pageNo: 1, pageSize: 10, giftStatus: '4' } :
+        const params = activeKey === 'used' ? { giftItemID, pageNo: 1, pageSize: 10, presentStatus: '4' } :
             { giftItemID, pageNo: 1, pageSize: 10 }
         FetchSendorUsedList({ params, isSend:  activeKey === 'send'});
         UpdateSendorUsedParams({ params });
