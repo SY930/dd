@@ -391,12 +391,12 @@ class GiftAddModal extends React.Component {
                     { required: true, message: '不得为空' },
                     {
                         validator: (rule, v, cb) => {
-                            if (/(^\+?\d{0,7}$)|(^\+?\d{0,7}\.\d{0,2}$)/.test(v) && v > 0 & v <= 1000000) {
+                            if (/(^\+?\d{0,7}$)|(^\+?\d{0,7}\.\d{0,2}$)/.test(v) && v >= 1 & v <= 1000000) {
                                 cb();
                             }
                             cb(rule.message);
                         },
-                        message: '金额限制大于0，不超过1000000.00元',
+                        message: '金额限制不小于1元，不超过1000000.00元',
                     },
                 ],
             },
@@ -429,12 +429,12 @@ class GiftAddModal extends React.Component {
                     { required: true, message: '不得为空' },
                     {
                         validator: (rule, v, cb) => {
-                            if (/(^\+?\d{0,4}$)|(^\+?\d{0,4}\.\d{0,2}$)/.test(v) && v > 0 & v <= 1000) {
+                            if (/(^\+?\d{0,4}$)|(^\+?\d{0,4}\.\d{0,2}$)/.test(v) && v >= 1 & v <= 1000) {
                                 cb();
                             }
                             cb(rule.message);
                         },
-                        message: '金额限制大于0，不超过1000.00元',
+                        message: '金额限制不小于1元，不超过1000.00元',
                     },
                 ],
             }
