@@ -369,13 +369,13 @@ class LotteryThirdStep extends React.Component {
     handleGiveRedPacketValueChange = (value, index) => {
         const redPacketObj = this.state.infos[index].giveRedPacket.redPacketValue;
         const _value = parseFloat(value.number || 0);
-        redPacketObj.value = _value;
-        if (_value > 0) {
+        redPacketObj.value = value.number;
+        if (_value >= 1 && _value <= 200) {
             redPacketObj.validateStatus = 'success';
             redPacketObj.msg = null;
         } else {
             redPacketObj.validateStatus = 'error';
-            redPacketObj.msg = '红包金额应该大于0';
+            redPacketObj.msg = '红包金额范围1-200元';
         }
         this.setState({
             infos: this.state.infos.slice(),
@@ -684,7 +684,7 @@ class LotteryThirdStep extends React.Component {
                     if(infos[activeKey].giveRedPacket.isOn){
                         //赠送积分是勾选的要确认里面的内容是不是都合适
                         let tempobj = infos[activeKey].giveRedPacket;
-                        if(!(tempobj.redPacketValue.value > 0) || !tempobj.redPacketID.value ){
+                        if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
                             tempResult = false;
                             this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
                             this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
