@@ -77,7 +77,7 @@ class PromotionScopeInfo extends React.Component {
             // be caution, state key is diff with redux key.
             brands: [],
             shopsInfo: [],
-            selections: [],
+            selections: this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo || [],
             initialized: false,
             voucherVerify: '0',
             voucherVerifyChannel: '1',
@@ -187,9 +187,7 @@ class PromotionScopeInfo extends React.Component {
                 channel: _stateFromRedux.channel,
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
-                selections: _stateFromRedux.shopsInfo.map((item) => item.shopID || item),
                 initialized: true,
-                currentSelections: _stateFromRedux.shopsInfo,
                 $brands: Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
@@ -224,8 +222,6 @@ class PromotionScopeInfo extends React.Component {
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
-                selections: _data.shopsInfo.map(item => item.shopID || item),
-                currentSelections: _data.shopsInfo,
                 $brands: Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
                     nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
