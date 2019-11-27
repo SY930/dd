@@ -96,6 +96,14 @@ const GiftCfg = {
             category: 'secondary',
             tags: ['pos', '新微信']
         },
+        {
+            name: '现金红包',
+            describe: '微信现金红包，可通过活动发送现金红包给指定用户',
+            value: '113',
+            color: '#e5be6c',
+            category: 'secondary',
+            tags: ['新微信']
+        },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -107,10 +115,10 @@ const GiftCfg = {
         { label: '会员积分券', value: '42' },
         { label: '会员权益券', value: '80' },
         { label: '礼品定额卡', value: '90' },
-        { label: '活动券', value: '100' },
         { label: '线上礼品卡', value: '91' },
         { label: '买赠券', value: '110' },
         { label: '折扣券', value: '111' },
+        { label: '现金红包', value: '113' },
     ],
     transferType: [
         { label: '不可转赠', value: 0 },
@@ -251,6 +259,15 @@ const GiftCfg = {
         { value: '2', label: '转赠中' },
         { value: '3', label: '过期' },
         { value: '4', label: '注销 ' },
+    ],
+    redPacketStatus: [ // 现金红包
+        { value: '', label: '全部' },
+        { value: '1', label: '发送中' },
+        { value: '2', label: '已发放待领取' },
+        { value: '3', label: '发放失败' },
+        { value: '4', label: '已领取 ' },
+        { value: '5', label: '退款中' },
+        { value: '6', label: '已退款 ' },
     ],
     giftUsedStatus: [
         { value: '', label: '全部' },

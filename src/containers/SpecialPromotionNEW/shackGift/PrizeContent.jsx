@@ -39,6 +39,10 @@ export default class PrizeContent extends React.Component {
         const { handleGiveCouponChange, index} =this.props;
         handleGiveCouponChange(e, index);
     }
+    ChangeCheckBoxThree = (e) => {
+        const { handleGiveRedPacketChange, index} =this.props;
+        handleGiveRedPacketChange(e, index);
+    }
     getCardTypeValue = (index) => {
         const { cardTypeArr, info, handleCardChange, } = this.props;
         if(info.givePoints.value.card.value){
@@ -156,7 +160,10 @@ export default class PrizeContent extends React.Component {
                 handleGiftOddsChange,
                 disArr,
                 handleGivePointsValueChange,
+                handleGiveRedPacketValueChange,
+                handleGiveRedPacketIDChange,
                 cardTypeArr,
+                redPacketArr,
                 handleCardChange,
                 disabled,
         } = this.props;
@@ -190,6 +197,7 @@ export default class PrizeContent extends React.Component {
                                     />
                                 </FormItem>
                             </div>
+                            
                             {/* 赠送积分 */}
                             <FormItem
                                 style={{ padding: 0 }}
@@ -254,8 +262,6 @@ export default class PrizeContent extends React.Component {
                                 wrapperCol={{ span: 24 }}
                                 style={{ padding: 0 }}
                                 className={style.noLabelFormItemStyle}
-                                validateStatus={info.giveCoupon.validateStatus}
-                                help={info.giveCoupon.msg}
                             >  
                                 <Checkbox 
                                     checked={info.giveCoupon.value.isOn}
@@ -342,9 +348,68 @@ export default class PrizeContent extends React.Component {
                                     </div>   
                                 }
                             </FormItem>
+                            {/* 赠送红包 */}
+                            <FormItem
+                                style={{ padding: 0 }}
+                                wrapperCol={{ span: 24 }}
+                                className={style.noLabelFormItemStyle}
+                            >  
+                                <Checkbox 
+                                    checked={info.giveRedPacket.isOn}
+                                    onChange={this.ChangeCheckBoxThree}
+                                />
+                                <span>现金红包</span>
+                                {info.giveRedPacket.isOn ? 
+                                    <div className={style.paleRed}>
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                            validateStatus={info.giveRedPacket.redPacketID.validateStatus}
+                                            help={info.giveRedPacket.redPacketID.msg}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>现金红包</span>
+                                            </div> 
+                                            <Select
+                                                value={info.giveRedPacket.redPacketID.value}
+                                                onChange={(val) => {handleGiveRedPacketIDChange(val, index)}}
+                                            >
+                                                {
+                                                    redPacketArr.map((item) => {
+                                                        return (
+                                                            <Option key={item.giftItemID} value={item.giftItemID}>{item.giftName}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormItem>
+                                        <FormItem
+                                            wrapperCol={{ span: 12 }}
+                                            className={style.FormItemSecondStyle}
+                                            validateStatus={info.giveRedPacket.redPacketValue.validateStatus}
+                                            help={info.giveRedPacket.redPacketValue.msg}
+                                        > 
+                                            <div className={style.labelSecondDiv}>
+                                                <span>红包金额</span>
+                                            </div> 
+                                            <PriceInput
+                                                addonAfter="元"
+                                                modal="float"
+                                                maxNum={3}
+                                                value={{ number: info.giveRedPacket.redPacketValue.value }}
+                                                onChange={(val) => {handleGiveRedPacketValueChange(val, index);}}
+                                            />
+                                        </FormItem>
+                                    </div> : null
+                                }
+                            </FormItem>
                             {/* ....... */}                       
                             {/* ....... */}
-
+                            {
+                                info.giveCoupon.validateStatus === 'error' && (
+                                    <div style={{ color: '#f04134', lineHeight: 1.5 }}>{info.giveCoupon.msg}</div>
+                                )
+                            }
                         </div>
 
                     </Form>

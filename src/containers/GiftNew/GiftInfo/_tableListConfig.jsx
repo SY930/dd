@@ -21,6 +21,7 @@ import {
 // { label: '线上礼品卡', value: '91' },
 // { label: '买赠券', value: '110' },
 // { label: '折扣券', value: '111' },
+// { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
     '10', '20', '21', '30', '40', '42', '80', '110', '111'
@@ -129,43 +130,6 @@ export const COLUMNS = [
         key: 'giftValue',
         width: 100,
         className: 'x-tr',
-    // }, {
-    //     title: '已发送数量',
-    //     dataIndex: 'sendTotalCount',
-    //     key: 'sendTotalCount',
-    //     width: 100,
-    //     className: 'x-tr',
-    // }, {
-    //     title: '已使用数量',
-    //     dataIndex: 'usedCount',
-    //     key: 'usedCount',
-    //     width: 100,
-    //     className: 'x-tr',
-    // }, {
-    //     title: '礼品规则',
-    //     dataIndex: 'giftRule',
-    //     key: 'giftRule',
-    //     className: 'gift-rule',
-    //     render: (value, record) => {
-    //         if (record.giftTypeName == '菜品优惠券') {
-    //             return (record.isFoodCatNameList ?
-    //                 <div>
-    //                     {value.map((item, idx) => {
-    //                         if (idx < (value.length - 1)) {
-    //                             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                         }
-    //                         return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                     })}
-    //                 </div>
-    //                 :
-    //                 <div>{value.map((item, idx) => {
-    //                     return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //                 })}</div>)
-    //         }
-    //         return (<div>{value.map((item, idx) => {
-    //             return <div key={idx} className="wrapLetter"><span>{`${++idx}、`}</span><span>{item}</span></div>
-    //         })}</div>)
-    //     },
     }, {
         title: '礼品描述',
         dataIndex: 'giftRemark',

@@ -20,7 +20,7 @@ class QuatoCardDetailModal extends Component {
         };
         this.columns = COLUMNS;
     }
-    componentWillMount() {
+    componentDidMount() {
         const { data: { giftItemID }, FetchQuotaCardSum } = this.props;
         FetchQuotaCardSum({
             giftItemID,

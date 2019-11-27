@@ -11,6 +11,20 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    //赠送红包
+    giveRedPacket: {
+        isOn: false,
+        redPacketID: {
+            value: undefined,
+            validateStatus: 'success',
+            msg: null,
+        },
+        redPacketValue: {
+            value: undefined,
+            validateStatus: 'success',
+            msg: null,
+        },
+    },
 
     //赠送优惠券
     giveCoupon: {
@@ -62,6 +76,20 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         validateStatus: 'success',
         msg: null,
     },
+    //赠送红包
+    giveRedPacket: {
+        isOn: false,
+        redPacketID: {
+            value: undefined,
+            validateStatus: 'success',
+            msg: null,
+        },
+        redPacketValue: {
+            value: undefined,
+            validateStatus: 'success',
+            msg: null,
+        },
+    },
     //赠送优惠券
     giveCoupon: {
         value:{
@@ -112,6 +140,21 @@ export const defaultGivePoints = {
         validateStatus: 'success',
         msg: null,
     }
+}
+
+export const defaultGiveRedPacket = {
+    //赠送红包
+    isOn: false,
+    redPacketID: {
+        value: undefined,
+        validateStatus: 'success',
+        msg: null,
+    },
+    redPacketValue: {
+        value: undefined,
+        validateStatus: 'success',
+        msg: null,
+    },
 }
 
 export const defaultGiveCoupon = {

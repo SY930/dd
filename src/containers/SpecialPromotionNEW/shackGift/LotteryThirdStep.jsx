@@ -3,7 +3,14 @@ import { Button, Icon, Tabs, message } from 'antd';
 import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
-import { defaultData, getDefaultGiftData, defaultGivePoints, defaultGiveCoupon, defalutDisArr } from './defaultCommonData';
+import {
+    defaultData,
+    getDefaultGiftData,
+    defaultGiveRedPacket,
+    defaultGivePoints,
+    defaultGiveCoupon,
+    defalutDisArr,
+} from './defaultCommonData';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPrizeData, saleCenterSetSpecialBasicInfoAC, saleCenterSetSpecialGiftInfoAC, } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -38,6 +45,7 @@ class LotteryThirdStep extends React.Component {
             giftTreeData: [],
             disArr: defalutDisArr,
             cardTypeArr: [],
+            redPackets: [],
         }
     }
 
@@ -72,6 +80,7 @@ class LotteryThirdStep extends React.Component {
             groupID: user.accountInfo.groupID,
         }
         this.fetchCardType({opts});
+        this.queryRedPackets();
     }
 
     fetchCardType = (opts) => {
@@ -83,6 +92,18 @@ class LotteryThirdStep extends React.Component {
         ).then((records) => {
             this.setState({
                 cardTypeArr: records || []
+            })
+        });
+    }
+    queryRedPackets = () => {
+        axiosData(
+            '/coupon/couponService_getBoards.ajax',
+            { giftType: '113', pageNo: 1, pageSize: 10000 },
+            null,
+            {path: 'data.crmGiftList',}
+        ).then((records) => {
+            this.setState({
+                redPackets: records || []
             })
         });
     }
@@ -135,7 +156,16 @@ class LotteryThirdStep extends React.Component {
                     infos[index].givePoints.value.givePointsValue.value = gift.presentValue;  
                 } else {
                     infos[index].givePoints.value = {};
-                }               
+                }
+                // 红包相关
+                if (gift.redPacketID && gift.redPacketValue) {
+                    infos[index].giveRedPacket = _.cloneDeep(defaultGiveRedPacket);
+                    infos[index].giveRedPacket.redPacketID.value = gift.redPacketID;
+                    infos[index].giveRedPacket.redPacketValue.value = gift.redPacketValue;
+                    infos[index].giveRedPacket.isOn = true;
+                } else {
+                    infos[index].giveRedPacket.isOn = false;
+                }
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
             })
         }
@@ -158,15 +188,14 @@ class LotteryThirdStep extends React.Component {
         }else{
             prizeArr.map((item, index) => {
                 if(index == 0){
-                    temparr.push(item);
+                    temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
                 }else{
                     let flag = true;
                     temparr.map((every,num) => {
                         if(every.sortIndex == item.sortIndex){
                             flag = false
                             //进行合并
-                            if(every.presentType == 2){
-                                //券要合并到积分里
+                            if(item.presentType == 1){
                                 temparr[num].effectType = item.effectType;
                                 temparr[num].giftValidUntilDayCount = item.giftValidUntilDayCount;
                                 if(item.effectType != '2'){
@@ -178,15 +207,17 @@ class LotteryThirdStep extends React.Component {
                                 temparr[num].giftTotalCount = item.giftTotalCount;
                                 temparr[num].giftName = item.giftName;
                                 temparr[num].giftID = item.giftID;
-                            }else{
-                                //积分要合到券里
+                            }else if (item.presentType == 2){
                                 temparr[num].cardTypeID = item.cardTypeID;
                                 temparr[num].presentValue = item.presentValue;
+                            } else if (item.presentType == 3){
+                                temparr[num].redPacketID = item.giftID;
+                                temparr[num].redPacketValue = item.presentValue;
                             }
                         }
                     });
                     if(flag){
-                        temparr.push(item);
+                        temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
                     }
                 }
             })
@@ -251,13 +282,15 @@ class LotteryThirdStep extends React.Component {
     handleGivePointsChange = (value, index) => {
         const _infos = this.state.infos;
         if(JSON.stringify(_infos[index].givePoints.value) == "{}"){
-            _infos[index].givePoints.value = _.cloneDeep(defaultGivePoints)
+            _infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
+            _infos[index].giveCoupon.validateStatus = 'success';
+            _infos[index].giveCoupon.msg = null;
         }else{
             //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
-            if(!(_infos[index].giveCoupon.value.isOn)){
+            if(!(_infos[index].giveCoupon.value.isOn) && !(_infos[index].giveRedPacket.isOn)){
                 //优惠券为非选中状态
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
+                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
                 _infos[index].giveCoupon.validateStatus = 'success';
@@ -269,15 +302,39 @@ class LotteryThirdStep extends React.Component {
             infos: _infos,
         });
     }
+    handleGiveRedPacketChange = (value, index) => {
+        const _infos = this.state.infos;
+        if(!(_infos[index].giveRedPacket.isOn)){
+            _infos[index].giveRedPacket = _.cloneDeep(defaultGiveRedPacket)
+            _infos[index].giveRedPacket.isOn = true;
+            _infos[index].giveCoupon.validateStatus = 'success';
+            _infos[index].giveCoupon.msg = null;
+        }else{
+            //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
+            if(!(_infos[index].giveCoupon.value.isOn) && JSON.stringify(_infos[index].givePoints.value) == "{}"){
+                //优惠券为非选中状态
+                _infos[index].giveCoupon.validateStatus = 'error';
+                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
+            }else{
+                //取消的时候如果优惠券是选中状态，则直接取消。
+                _infos[index].giveCoupon.validateStatus = 'success';
+                _infos[index].giveCoupon.msg = null;
+            }
+            _infos[index].giveRedPacket.isOn = false;
+        }
+        this.setState({
+            infos: _infos,
+        });
+    }
     handleGiveCouponChange = (value, index) => {
         const _infos = this.state.infos;
         if(_infos[index].giveCoupon.value.isOn){
             //从开变成关的状态
             //先滞空giveCoupn的数据再把状态变为关
             _infos[index].giveCoupon.value = { isOn: false };
-            if(JSON.stringify(_infos[index].givePoints.value) == "{}"){
+            if(JSON.stringify(_infos[index].givePoints.value) == "{}" && !(_infos[index].giveRedPacket.isOn)){
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
+                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
             }else{
                 _infos[index].giveCoupon.validateStatus = 'success';
                 _infos[index].giveCoupon.msg = null;
@@ -309,6 +366,21 @@ class LotteryThirdStep extends React.Component {
             infos: _infos,
         });
     }
+    handleGiveRedPacketValueChange = (value, index) => {
+        const redPacketObj = this.state.infos[index].giveRedPacket.redPacketValue;
+        const _value = parseFloat(value.number || 0);
+        redPacketObj.value = value.number;
+        if (_value >= 1 && _value <= 200) {
+            redPacketObj.validateStatus = 'success';
+            redPacketObj.msg = null;
+        } else {
+            redPacketObj.validateStatus = 'error';
+            redPacketObj.msg = '红包金额范围1-200元';
+        }
+        this.setState({
+            infos: this.state.infos.slice(),
+        });
+    }
     handleCardChange = (value, index) => {
         const _infos = this.state.infos;
         _infos[index].givePoints.value.card.value = value;
@@ -319,6 +391,20 @@ class LotteryThirdStep extends React.Component {
         } else {
             _infos[index].givePoints.value.card.validateStatus = 'error';
             _infos[index].givePoints.value.card.msg = '请先选择卡类型';
+        }
+        this.setState({
+            infos: _infos,
+        });
+    }
+    handleGiveRedPacketIDChange = (value, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveRedPacket.redPacketID.value = value
+        if (value) {
+            _infos[index].giveRedPacket.redPacketID.validateStatus = 'success';
+            _infos[index].giveRedPacket.redPacketID.msg = null;
+        } else {
+            _infos[index].giveRedPacket.redPacketID.validateStatus = 'error';
+            _infos[index].giveRedPacket.redPacketID.msg = '请选择现金红包';
         }
         this.setState({
             infos: _infos,
@@ -558,6 +644,10 @@ class LotteryThirdStep extends React.Component {
         const { activeKey, infos } = this.state;
         let tempResult = true;
         for(let i in infos[activeKey] ){
+            if (JSON.stringify(infos[activeKey].givePoints.value) === '{}' && !infos[activeKey].giveRedPacket.isOn
+            && !infos[activeKey].giveCoupon.value.isOn) {
+                return false;
+            }
             switch(i){
                 case 'giftOdds':
                     let sumOdds = 0;
@@ -588,10 +678,16 @@ class LotteryThirdStep extends React.Component {
                             tempResult = false;
                             this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
                         }
-                    }else{
-                        //赠送积分不是勾选的，要确认是不是优惠券的msg是不是不为空，如果不为空则证明。两个都没选。要返回false。
-                        if(!infos[activeKey].giveCoupon.value.isOn){
+                    }
+                    break;
+                case 'giveRedPacket':
+                    if(infos[activeKey].giveRedPacket.isOn){
+                        //赠送积分是勾选的要确认里面的内容是不是都合适
+                        let tempobj = infos[activeKey].giveRedPacket;
+                        if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
                             tempResult = false;
+                            this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
+                            this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
                         }
                     }
                     break;
@@ -633,15 +729,18 @@ class LotteryThirdStep extends React.Component {
     getResultData = (data, type) => {
         let pointsObj = data.givePoints.value;
         let couponObj = data.giveCoupon.value;
+        let redPacketObj = data.giveRedPacket;
         let tempObj = {};
         tempObj.sortIndex = data.sortIndex;
         if(type == 'points'){
             tempObj.presentValue = pointsObj.givePointsValue.value;
             tempObj.cardTypeID = pointsObj.card.value;
             tempObj.presentType = 2;
-        }else{
-            tempObj.presentValue = '';
-            tempObj.cardTypeID = '';
+        }
+        if(type == 'redPacket'){
+            tempObj.presentValue = redPacketObj.redPacketValue.value;
+            tempObj.giftID = redPacketObj.redPacketID.value;
+            tempObj.presentType = 3;
         }
         if(type == 'benefit'){
             tempObj.effectType = couponObj.effectType;
@@ -656,15 +755,6 @@ class LotteryThirdStep extends React.Component {
             tempObj.giftName = couponObj.giftInfo.giftName;
             tempObj.giftID = couponObj.giftInfo.giftItemID;  
             tempObj.presentType = 1;
-        }else{
-            tempObj.effectType = '';
-            tempObj.giftValidUntilDayCount = '';
-            tempObj.giftEffectTimeHours = '';
-            tempObj.effectTime = '';
-            tempObj.validUntilDate = '';
-            tempObj.giftTotalCount = '';
-            tempObj.giftName = '';
-            tempObj.giftID = '';  
         }
         tempObj.giftOdds = data.giftOdds.value;
         return tempObj;
@@ -685,6 +775,10 @@ class LotteryThirdStep extends React.Component {
                 }
                 if(item.giveCoupon.value.isOn){
                     let tempObj = this.getResultData(item, 'benefit');
+                    tempArr.push(tempObj);
+                }
+                if(item.giveRedPacket.isOn){
+                    let tempObj = this.getResultData(item, 'redPacket');
                     tempArr.push(tempObj);
                 }
             })
@@ -747,6 +841,7 @@ class LotteryThirdStep extends React.Component {
                                     index={index} 
                                     toggleFun={this.toggleFun}
                                     disArr={disArr}
+                                    redPacketArr={this.state.redPackets}
                                     changeDisArr={this.changeDisArr}
                                     handleGiftCountChange={this.handleGiftCountChange}
                                     handleValidateTypeChange={this.handleValidateTypeChange}
@@ -754,7 +849,10 @@ class LotteryThirdStep extends React.Component {
                                     handleGivePointsChange={this.handleGivePointsChange}
                                     handleGivePointsValueChange={this.handleGivePointsValueChange}
                                     handleCardChange={this.handleCardChange}
+                                    handleGiveRedPacketValueChange={this.handleGiveRedPacketValueChange}
+                                    handleGiveRedPacketIDChange={this.handleGiveRedPacketIDChange}
                                     handleGiveCouponChange={this.handleGiveCouponChange}
+                                    handleGiveRedPacketChange={this.handleGiveRedPacketChange}
                                     handleGiftChange={this.handleGiftChange}
                                     handleGiftValidDaysChange={this.handleGiftValidDaysChange}
                                     handleDependTypeChange={this.handleDependTypeChange}

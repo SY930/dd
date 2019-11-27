@@ -5,6 +5,8 @@ import { axiosData } from '../../../helpers/util';
 import {
     Row,
     Col,
+    Icon,
+    Tooltip,
     message,
 } from 'antd';
 import styles from './GiftAdd.less';
@@ -22,6 +24,8 @@ import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promo
 import SelectBrands from "../components/SelectBrands";
 import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
+import SellerCode from "../components/SellerCode";
+import FakeBorderedLabel from "../components/FakeBorderedLabel";
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -114,6 +118,14 @@ class GiftAddModal extends React.Component {
                 params.giftItemID = data.giftItemID;
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
+            params.giftValue = params.giftValue || '0';
+            if (params.sellerCode) {
+                const [ settleId, merchantNo, settleName ] = params.sellerCode.split(':');
+                params.settleId = settleId;
+                params.merchantNo = merchantNo;
+                params.settleName = settleName;
+            }
+            params.giftValue = params.giftValue || '0';
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -177,6 +189,25 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID/>),
             },
+            sellerCode: {
+                label: (
+                    <span>
+                        红包发放账户&nbsp;
+                        <Tooltip title={<div>
+                                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
+                                <br></br>
+                                ◆入驻时间超过90天;<br></br>
+                                ◆截止今日回推30天连续不间断保持有交易;<br></br>
+                                ◆保持正常健康交易;<br></br>
+                            </div>}>
+                            <Icon type="question-circle" />
+                        </Tooltip>
+                    </span>
+                ),
+                rules: [{ required: true, message: '不得为空' }],
+                type: 'custom',
+                render: decorator => decorator({})(<SellerCode/>),
+            },
             transferType: {
                 label: '券是否可转赠',
                 type: 'radio',
@@ -219,10 +250,6 @@ class GiftAddModal extends React.Component {
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
                     { max: 50, message: '不能超过50个字符' },
-                    /*{
-                        message: '汉字、字母、数字、小数点，50个字符以内',
-                        pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
-                    },*/
                 ],
                 disabled: type !== 'add',
             },
@@ -285,6 +312,23 @@ class GiftAddModal extends React.Component {
                     { max: 400, message: '最多400个字符' },
                 ],
             },
+            wishing: {
+                label: '红包祝福语',
+                type: 'textarea',
+                placeholder: '恭喜发财，大吉大利',
+                rules: [
+                    { required: true, message: '红包祝福语不能为空' },
+                    { max: 30, message: '最多30个字符' },
+                ],
+            },
+            sendName: {
+                label: '红包显示商户名称',
+                type: 'text',
+                rules: [
+                    { required: true, message: '红包显示商户名称不能为空' },
+                    { max: 20, message: '最多20个字符' },
+                ],
+            },
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
@@ -312,6 +356,16 @@ class GiftAddModal extends React.Component {
                 defaultValue: 0,
                 options: GiftCfg.showGiftRule,
             },
+            basicInfoLabel: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => decorator({})(<FakeBorderedLabel title="基本信息" />),
+            },
+            safetyInfoLabel: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => decorator({})(<FakeBorderedLabel title="额度及安全" />),
+            },
             giftRule: {
                 label: '使用规则',
                 type: 'custom',
@@ -328,6 +382,62 @@ class GiftAddModal extends React.Component {
                     }
                 },
             },
+            moneyLimit: {
+                label: '红包总计投放金额',
+                type: 'text',
+                placeholder: '请输入红包总计投放金额',
+                surfix: '元',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (/(^\+?\d{0,7}$)|(^\+?\d{0,7}\.\d{0,2}$)/.test(v) && v >= 1 & v <= 1000000) {
+                                cb();
+                            }
+                            cb(rule.message);
+                        },
+                        message: '金额限制不小于1元，不超过1000000.00元',
+                    },
+                ],
+            },
+            userDayLimitCount: {
+                label: '单用户单日领取数量',
+                type: 'text',
+                placeholder: '可设置区间1～10个',
+                prefix: '不超过',
+                surfix: '个',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v = '', cb) => {
+                            if (/^(?:[1-9]|10)?$/.test(v)) {
+                                return cb()
+                            }
+                            cb(rule.message);
+                        },
+                        message: '数量限制范围1~10'
+                    }
+                ],
+            },
+            userDayMoneyLimitValue: {
+                label: '单用户单日领取金额',
+                type: 'text',
+                placeholder: '可设置最高额度1000.00元',
+                prefix: '不超过',
+                surfix: '元',
+                rules: [
+                    { required: true, message: '不得为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if (/(^\+?\d{0,4}$)|(^\+?\d{0,4}\.\d{0,2}$)/.test(v) && v >= 1 & v <= 1000) {
+                                cb();
+                            }
+                            cb(rule.message);
+                        },
+                        message: '金额限制不小于1元，不超过1000.00元',
+                    },
+                ],
+            }
         };
         const formKeys = {
             '实物礼品券': [
@@ -397,6 +507,25 @@ class GiftAddModal extends React.Component {
                         'giftRule',
                         'showGiftRule',
                         'isSynch',
+                    ]
+                }
+            ],
+            '现金红包': [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'basicInfoLabel',
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'sellerCode',
+                        'sendName',
+                        'wishing',
+                        'giftRemark',
+                        'safetyInfoLabel',
+                        'moneyLimit',
+                        'userDayLimitCount',
+                        'userDayMoneyLimitValue',
                     ]
                 }
             ],

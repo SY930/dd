@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Modal, Button, Tooltip, Table } from 'antd';
 import _ from 'lodash';
 import { getByteLength } from '../../../helpers/util';
-import GiftDetailModalTabs from './GiftDetailModalTabs';
+import RedPacketDetailModalTabs from './RedPacketDetailModalTabs';
 import styles from './GiftInfo.less';
 import {
     UpdateSendorUsedTabKey,
@@ -13,54 +13,72 @@ import {
     FetchSendorUsedList,
 } from '../_action';
 
-class GiftDetailModal extends Component {
+const redPacketImg = 'http://res.hualala.com/basicdoc/6e7dec75-e044-4fbc-8c1c-04845e4f2eb0.png'
+
+class RedPacketDetailModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             dataSource: [],
+            totalColumns: [
+                {
+                    title: '发出总数',
+                    dataIndex: 'total',
+                    key: 'total',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '发送中',
+                    dataIndex: '1',
+                    key: '1',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '已发放待领取',
+                    dataIndex: '2',
+                    key: '2',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '发放失败数',
+                    dataIndex: '3',
+                    key: '3',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '已领取数',
+                    dataIndex: '4',
+                    key: '4',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '退款中',
+                    dataIndex: '5',
+                    key: '5',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+                {
+                    title: '已退款',
+                    dataIndex: '6',
+                    key: '6',
+                    className: 'TableTxtCenter',
+                    render: num => num || 0,
+                },
+            ],
             loading: true,
             giftUsageList: [],
         };
     }
     componentDidMount() {
-        const { data: { giftType, giftItemID }, FetchSendorUsedList } = this.props;;
-        if (giftType !== '90') {
-            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
-            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
-        }
-    }
-    componentWillReceiveProps(nextProps) {
-        // const {visible} = nextProps;
-        // if (visible) {
-        //     const {data:{giftItemID}} = nextProps;
-        //     fetchData('getGiftSummary_dkl', {
-        //         giftItemID
-        //     }, null, {path: "data"}).then(data=> {
-        //         let dataSource = [];
-        //         if (data) {
-        //             let giftStatusCounts = data.summaryByGiftStatusList ? data.summaryByGiftStatusList : [];
-        //             let sumCount = data.giftSummary;
-        //             giftStatusCounts.map((d, i)=> {
-        //                 d.key = d.giftStatus;
-        //                 d.giftStatus = _.find(GiftCfg.giftSendStatus, {value: String(d.giftStatus)}).label;
-        //                 dataSource.push(d);
-        //             });
-        //             sumCount = _.mapKeys(sumCount, (v, k)=> {
-        //                 if (k == 'countTotal') {
-        //                     return 'sum';
-        //                 } else {
-        //                     return k.replace('count', 'sum');
-        //                 }
-        //             });
-        //             sumCount.giftStatus = '全部';
-        //             sumCount.key = sumCount.giftStatus;
-        //             dataSource.push(sumCount);
-        //             this.setState({dataSource, loading: false});
-        //         } else {
-        //             this.setState({loading: false});
-        //         }
-        //     });
-        // }
+        const { data: { giftType, giftItemID }, FetchSendorUsedList } = this.props;
+        FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+        FetchSendorUsedList({isSend: false, params: {presentStatus: '4', pageNo: 1, pageSize: 10, giftItemID } });
     }
     handleCancel() {
         this.setState({ loading: true });
@@ -83,14 +101,22 @@ class GiftDetailModal extends Component {
         });
         resetSendOrTotalCount();
     }
-
+    getRedPacketTotalInfo() {
+        const { redPacketInfoList } = this.props;
+        const redPacketStatusList = redPacketInfoList.toJS();
+        const result = {};
+        let total = 0;
+        redPacketStatusList.forEach(item => {
+            total += item.sum || 0;
+            result[`${item.presentStatus}`] = item.sum;
+        })
+        result.total = total;
+        return result;
+    }
     render() {
         const { visible, data } = this.props;
-        const { giftType } = data;
-        let infoItem = [];
-        if (giftType === '80') {
-            infoItem = [
-                { col: { span: 8 }, maxL: 18, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', shopNames: '适用店铺' } },
+        const infoItem = [
+                { col: { span: 8 }, maxL: 18, keys: { giftName: '礼品名称', giftTypeName: '礼品类型' } },
                 {
                     col: { span: 16 },
                     labelCol: { span: 4 },
@@ -99,93 +125,9 @@ class GiftDetailModal extends Component {
                     keys: { createStamp: '创建时间', giftRemark: '使用说明' },
                 },
             ];
-        } else {
-            infoItem = [
-                { col: { span: 8 }, maxL: 18, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftValue: '礼品价值' } },
-                {
-                    col: { span: 16 },
-                    labelCol: { span: 4 },
-                    itemCol: { span: 20 },
-                    maxL: 40,
-                    keys: { createStamp: '创建时间', giftRemark: '使用说明', shopNames: '适用店铺' },
-                },
-            ];
-        }
-        const columns = [
-            {
-                title: '状态',
-                dataIndex: 'giftStatus',
-                key: 'giftStatus',
-            }, {
-                title: '消费返券',
-                dataIndex: 'sum10',
-                key: 'sum10',
-            }, {
-                title: '摇奖活动',
-                dataIndex: 'sum20',
-                key: 'sum20',
-            }, {
-                title: '积分摇奖',
-                dataIndex: 'sum30',
-                key: 'sum30',
-            }, {
-                title: '积分兑换',
-                dataIndex: 'sum40',
-                key: 'sum40',
-            }, {
-                title: '免费领取',
-                dataIndex: 'sum60',
-                key: 'sum60',
-            }, {
-                title: '商家赠送',
-                dataIndex: 'sum70',
-                key: 'sum70',
-            }, {
-                title: '商家支付',
-                dataIndex: 'sum80',
-                key: 'sum80',
-            }, {
-                title: '商家卖出',
-                dataIndex: 'sum90',
-                key: 'sum90',
-            }, {
-                title: '总计',
-                dataIndex: 'sum',
-                key: 'sum',
-            },
-        ];
         const giftRule = data.giftRule ? data.giftRule : [];
-        const giftLogo = (v) => {
-            switch (v) {
-                case '10':
-                case '20':
-                case '21':
-                case '30':
-                case '40':
-                    return <span><em>{data.giftValue}</em>元</span>;
-                case '80':
-                    return (<span><em>{(data.discountRate * 10).toFixed(1)}</em>折<em>{data.pointRate}</em>倍</span>);
-                case '42':
-                    return <span><em>{data.giftValue}</em>分</span>;
-            }
-        };
-        const totalColumns = [
-            {
-                title: '发出数',
-                dataIndex: 'sendCount',
-                key: 'sendCount',
-                className: 'TableTxtCenter',
-            }, {
-                title: '使用数',
-                dataIndex: 'usedCount',
-                key: 'usedCount',
-                className: 'TableTxtCenter',
-            },
-        ];
-        const totalData = [{
-            sendCount: this.props.sendTotalSize || 0,
-            usedCount: this.props.usedTotalSize || 0,
-        }]
+        
+        const totalData = [this.getRedPacketTotalInfo()]
         return (
             <Modal
                 key="礼品使用详情"
@@ -204,13 +146,7 @@ class GiftDetailModal extends Component {
                             </Row>
                             <Row style={{ margin: '0 10px' }}>
                                 <Col span={4}>
-                                    <div
-                                        className="gift-image"
-                                        style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
-                                    >
-                                        {giftLogo(giftType)}
-                                        <p className={styles.ellipsisBlock}>{data.giftName}</p>
-                                    </div>
+                                    <img style={{ width: 160 }} src={redPacketImg} />
                                 </Col>
                                 <Col span={19} push={1}>
                                     <InfoDisplay infoItem={infoItem} infoData={data} />
@@ -228,7 +164,7 @@ class GiftDetailModal extends Component {
                                 <h3>查询明细的统计</h3>
                                 <Table
                                     bordered={true}
-                                    columns={giftType === '91' ? totalColumns.slice(0, 1) : totalColumns}
+                                    columns={this.state.totalColumns}
                                     dataSource={totalData}
                                     pagination={false}
                                 />
@@ -237,7 +173,7 @@ class GiftDetailModal extends Component {
                                 <h3>使用统计</h3>
                             </Row>
                             <Row>
-                                <GiftDetailModalTabs
+                                <RedPacketDetailModalTabs
                                     data={data}
                                     sendCount={this.props.sendTotalSize || 0}
                                     usedCount={this.props.usedTotalSize || 0}
@@ -252,7 +188,7 @@ class GiftDetailModal extends Component {
 }
 function mapStateToProps(state) {
     return {
-        sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
+        redPacketInfoList: state.sale_giftInfoNew.get('redPacketInfoList'),
         sendTotalSize: state.sale_giftInfoNew.get('totalSendCount'),
         usedTotalSize: state.sale_giftInfoNew.get('totalUsedCount'),
     }
@@ -271,7 +207,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(GiftDetailModal);
+)(RedPacketDetailModal);
 
 class InfoDisplay extends Component {
     constructor(props) {
