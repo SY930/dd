@@ -59,16 +59,16 @@ class AccumulateGiftWrapper extends NewPromotion {
                     />
                 ),
             },
-            {
-                title: '场景设置',
-                content: (
-                    <StepTwo
-                        getSubmitFn={(handles) => {
-                            this.handles[3] = handles;
-                        }}
-                    />
-                ),
-            },
+            // {
+            //     title: '场景设置',
+            //     content: (
+            //         <StepTwo
+            //             getSubmitFn={(handles) => {
+            //                 this.handles[3] = handles;
+            //             }}
+            //         />
+            //     ),
+            // },
         ];
         return (
             <CustomProgressBar

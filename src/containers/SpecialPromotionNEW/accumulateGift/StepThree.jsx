@@ -24,47 +24,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-const CONSUME_AMOUNT_OPTIONS = [
-    {
-        label: '任意消费满',
-        value: '8',
-    },
-    {
-        label: '任意消费每满',
-        value: '10',
-    },
-    {
-        label: '活动菜品消费满',
-        value: '9',
-        showFood: true,
-    },
-    {
-        label: '活动菜品消费每满',
-        value: '11',
-        showFood: true,
-    },
-];
-const CONSUME_TIMES_OPTIONS = [
-    {
-        label: '任意菜品数量满',
-        value: '4',
-    },
-    {
-        label: '任意菜品数量每满',
-        value: '6',
-    },
-    {
-        label: '活动菜品数量满',
-        value: '5',
-        showFood: true,
-    },
-    {
-        label: '活动菜品数量每满',
-        value: '7',
-        showFood: true,
-    },
-];
-
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -88,14 +47,6 @@ class StepTwo extends React.Component {
         this.props.getShopSchemaInfo();
         this.props.fetchFoodCategoryInfo();
         this.props.fetchFoodMenuInfo();
-    }
-    isShowFoodSelector() {
-        const {
-            consumeType,
-        } = this.state;
-        return Boolean([ ...CONSUME_AMOUNT_OPTIONS, ...CONSUME_TIMES_OPTIONS ]
-        .find(item => item.value === consumeType)
-        .showFood);
     }
 
     handleSubmit = () => {
@@ -142,41 +93,6 @@ class StepTwo extends React.Component {
         this.setState({
             radioType: value,
             consumeType: value === 0 ? '8' : '4',
-        })
-    }
-    handleCategoryAndFoodChange = (val) => {
-        const scopeList = [];
-        val.foodCategory.forEach((item) => {
-            scopeList.push({
-                scopeType: '1',
-                targetID: item.foodCategoryID,
-                brandID: item.brandID,
-                targetCode: item.foodCategoryKey,
-                targetName: item.foodCategoryName,
-            });
-        });
-        val.excludeDishes.forEach((item) => {
-            scopeList.push({
-                scopeType: '4',
-                targetID: item.itemID,
-                brandID: item.brandID,
-                targetCode: item.foodKey,
-                targetName: item.foodName,
-                targetUnitName: item.unit,
-            });
-        });
-        val.dishes.forEach((item) => {
-            scopeList.push({
-                scopeType: '2',
-                targetID: item.itemID,
-                brandID: item.brandID,
-                targetCode: item.foodKey,
-                targetName: item.foodName,
-                targetUnitName: item.unit,
-            });
-        });
-        this.setState({
-            scopeList,
         })
     }
     
