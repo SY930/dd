@@ -65,10 +65,11 @@ class BirthdayCardLevelSelector extends Component {
         let filteredCardInfo = allCardLevelCheck ? [] : cardInfo.filter(cardType => {
             return !excludeCardTypeAndLevelIDList.includes(cardType.cardTypeID)
         })
-        filteredCardInfo.forEach(cardType => {
+        filteredCardInfo = filteredCardInfo.filter(cardType => {
             cardType.cardTypeLevelList = cardType.cardTypeLevelList.filter(cardLevel => {
                 return !excludeCardTypeAndLevelIDList.includes(cardLevel.cardLevelID)
             })
+            return !!(cardType.cardTypeLevelList || []).length;
         })
         return (
             <BaseHualalaModal
