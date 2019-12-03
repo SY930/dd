@@ -148,6 +148,7 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             eventRecommendSettings,
+            cleanCount: props.specialPromotion.getIn(['$eventInfo', 'cleanCount'], 0),
             /** 膨胀大礼包相关 */
             giftGetRule,
             /** 膨胀大礼包相关结束 */
@@ -454,6 +455,7 @@ class SpecialDetailInfo extends Component {
             data,
             shareImagePath,
             shareTitle,
+            cleanCount,
             discountMinRate,
             discountMaxRate,
             discountRate,
@@ -654,6 +656,7 @@ class SpecialDetailInfo extends Component {
                 saveMoneySetIds,
                 shareImagePath,
                 shareTitle,
+                cleanCount,
             });
             this.props.setSpecialGiftInfo(giftInfo);
             if (this.props.type == '68') { // 推荐有礼表项
@@ -788,6 +791,11 @@ class SpecialDetailInfo extends Component {
         }
         this.setState({
             giftGetRule: value,
+        })
+    }
+    handleCleanCountChange = ({ target: { value } }) => {
+        this.setState({
+            cleanCount: value,
         })
     }
     handleRecommendSettingsChange = (index, propertyName) => (val) => {
@@ -1860,6 +1868,7 @@ class SpecialDetailInfo extends Component {
     renderAccumulateGiftsDetail() {
         const {
             giftGetRule,
+            cleanCount,
             wakeupSendGiftsDataArray,
         } = this.state;
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
@@ -1880,6 +1889,25 @@ class SpecialDetailInfo extends Component {
                         <Radio key={'3'} value={3}>阶梯点数领取</Radio>
                     </RadioGroup>
                 </FormItem>
+                {
+                    giftGetRule === 3 && (
+                        <FormItem
+                            label="阶梯点数领取后"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup
+                                onChange={this.handleCleanCountChange}
+                                value={cleanCount}
+                                disabled={userCount > 0}
+                            >
+                                <Radio value={0}>点数清零</Radio>
+                                <Radio value={1}>点数不清零</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                    )
+                }
                 {
                     giftGetRule === 2 ? (
                         <Row>

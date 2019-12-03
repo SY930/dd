@@ -44,7 +44,7 @@ class StepFour extends React.Component {
             }
         }
         const appIDList = launchSceneList.map(item => item.appID);
-        const sceneList = launchSceneList[0].split(',');
+        const sceneList = (launchSceneList[0].scenePosition || '').split(',');
         return {
             appIDList,
             sceneList,
