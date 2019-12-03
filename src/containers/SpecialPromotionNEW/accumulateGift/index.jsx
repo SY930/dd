@@ -1,16 +1,7 @@
-/**
- * @Author: Xiao Feng Wang  <xf>
- * @Date:   2017-03-28T10:51:51+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: NewBuyGiveActivity.jsx
- * @Last modified by:   xf
- * @Last modified time: 2017-03-28T19:24:47+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React from 'react';
 import { connect } from 'react-redux';
 import StepTwo from './stepTwo'; // 活动范围
+import StepFour from './StepFour'; // 投放场景
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'; // 选择礼品
 
 import NewPromotion from '../common/NewPromotion';
@@ -52,30 +43,33 @@ class AccumulateGiftWrapper extends NewPromotion {
             {
                 title: '活动内容',
                 content: (
-                    <StepTwo
+                    <SpecialDetailInfo
+                        isLast={false}
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
+                        }}
+                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        isNew={this.props.isNew}
+                    />
+                ),
+            },
+            {
+                title: '场景设置',
+                content: (
+                    <StepFour
+                        getSubmitFn={(handles) => {
+                            this.handles[3] = handles;
                         }}
                     />
                 ),
             },
-            // {
-            //     title: '场景设置',
-            //     content: (
-            //         <StepTwo
-            //             getSubmitFn={(handles) => {
-            //                 this.handles[3] = handles;
-            //             }}
-            //         />
-            //     ),
-            // },
         ];
         return (
             <CustomProgressBar
                 loading={this.state.loading}
                 steps={steps}
                 callback={(arg) => {
-                    this.props.callbacktwo(arg);
+                    arg === steps.length && this.props.callbacktwo(3);
                 }}
                 onNext={this.handleNext}
                 onFinish={this.handleFinish}

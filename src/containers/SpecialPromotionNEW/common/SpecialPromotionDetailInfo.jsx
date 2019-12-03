@@ -1,13 +1,3 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import {
     Row,
@@ -26,6 +16,7 @@ import {
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import selfStyle from './addGifts.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialGiftInfoAC,
@@ -118,10 +109,24 @@ const shareInfoEnabledTypes = [
     '66',
 ]
 
+const MULTIPLE_LEVEL_GIFTS_CONFIG = [
+    {
+        type: '63',
+        propertyName: 'lastConsumeIntervalDays',
+        levelLabel: '距上次消费天数',
+        levelAffix: '天，赠送以下礼品',
+    },
+    {
+        type: '75',
+        propertyName: 'needCount',
+        levelLabel: '集满',
+        levelAffix: '点，赠送以下礼品',
+    },
+]
+
 class SpecialDetailInfo extends Component {
     constructor(props) {
         super(props);
-        this.handlePrev = this.handlePrev.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
         const {
@@ -130,7 +135,7 @@ class SpecialDetailInfo extends Component {
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
-        const giftGetRule = props.specialPromotion.getIn(['$eventInfo', 'giftGetRule'], 0);
+        const giftGetRule = props.specialPromotion.getIn(['$eventInfo', 'giftGetRule'], props.type == '75' ? 2 : 0);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
         const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
@@ -175,14 +180,13 @@ class SpecialDetailInfo extends Component {
         }
     }
     componentDidMount() {
+        const { type, isLast = true, } = this.props;
         this.props.getSubmitFn({
-            prev: this.handlePrev,
-            next: undefined,
-            finish: this.handleSubmit,
-            cancel: undefined,
+            finish: isLast ? this.handleSubmit : undefined,
+            next: !isLast ? this.handleSubmit : undefined,
         });
         this.props.fetchGiftListInfo();
-        if (this.props.type == 67) {
+        if (type == 67) {
             const user = this.props.user;
             const opts = {
                 _groupID: user.accountInfo.groupID,
@@ -194,9 +198,13 @@ class SpecialDetailInfo extends Component {
                 data: opts,
             });
         }
-        if (this.props.type == 68) {
+        if (type == 68) {
             this.props.queryAllSaveMoneySet()
         }
+    }
+    getMultipleLevelConfig = () => {
+        const { type } = this.props;
+        return MULTIPLE_LEVEL_GIFTS_CONFIG.find(item => item.type === `${type}`)
     }
 
     componentDidUpdate(prevProps) {
@@ -207,6 +215,19 @@ class SpecialDetailInfo extends Component {
                 eventRecommendSettings: [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)],
                 saveMoneySetIds: [],
                 saveMoneySetType: '0',
+            });
+            this.props.form.resetFields();
+        }
+        if (prevProps.specialPromotion.getIn(['$eventInfo', 'needCount']) !==
+        this.props.specialPromotion.getIn(['$eventInfo', 'needCount'])) {
+            this.setState({
+                wakeupSendGiftsDataArray: [
+                    {
+                        key: getIntervalID(),
+                        intervalDays: undefined,
+                        gifts: this.initiateDefaultGifts(),
+                    }
+                ]
             });
             this.props.form.resetFields();
         }
@@ -266,11 +287,17 @@ class SpecialDetailInfo extends Component {
             }
         }
         let wakeupSendGiftsDataArray = [];
-        if (this.props.type == 63) {
+        const multiConfig = this.getMultipleLevelConfig();
+        if (multiConfig) {
             const intervalDaysArray = data.reduce((acc, curr) => {
-                if (curr.lastConsumeIntervalDays > 0) {
-                    if (acc.indexOf(curr.lastConsumeIntervalDays) === -1) {
-                        acc.push(curr.lastConsumeIntervalDays);
+                // 不同活动里的needCount 输入框层级不一样，数据类型也不一样
+                if (typeof curr[multiConfig.propertyName] === 'object') {
+                    curr[multiConfig.propertyName] = curr[multiConfig.propertyName].value
+                }
+                const propertyValue = curr[multiConfig.propertyName];
+                if (propertyValue  >= 0) { // undefined >= 0 is false
+                    if (acc.indexOf(propertyValue) === -1) {
+                        acc.push(propertyValue);
                     }
                 }
                 return acc;
@@ -291,7 +318,7 @@ class SpecialDetailInfo extends Component {
                     .map(days => ({
                         key: getIntervalID(),
                         intervalDays: days,
-                        gifts: data.filter(gift => gift.lastConsumeIntervalDays === days)
+                        gifts: data.filter(gift => gift[multiConfig.propertyName] === days)
                     }))
             }
         }
@@ -328,7 +355,6 @@ class SpecialDetailInfo extends Component {
                     giftEffectTimeHours: giftInfo.giftEffectiveTime.value,
                     giftValidUntilDayCount: giftInfo.giftValidDays.value,
                     giftID: giftInfo.giftInfo.giftItemID,
-                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             } else {
@@ -338,7 +364,6 @@ class SpecialDetailInfo extends Component {
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
                     validUntilDate: giftInfo.giftEffectiveTime.value[1] && giftInfo.giftEffectiveTime.value[1] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[1].format('YYYYMMDD')) : '',
                     giftID: giftInfo.giftInfo.giftItemID,
-                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             }
@@ -353,6 +378,7 @@ class SpecialDetailInfo extends Component {
             gifts.sendType = giftInfo.sendType || 0;
             gifts.recommendType = giftInfo.recommendType || 0;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
+            gifts.needCount = typeof giftInfo.needCount === 'object' ? giftInfo.needCount.value : giftInfo.needCount;
             return gifts
         });
         return giftArr;
@@ -368,9 +394,6 @@ class SpecialDetailInfo extends Component {
             validateStatus: 'error',
             value: '',
         }
-    }
-    handlePrev() {
-        return this.handleSubmit(true)
     }
     handleSubmit(isPrev) {
         if (isPrev) return true;
@@ -441,7 +464,7 @@ class SpecialDetailInfo extends Component {
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
-        // 桌边砍可以不启用礼品
+        // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo(
             {
@@ -571,10 +594,10 @@ class SpecialDetailInfo extends Component {
                 data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
             }
         }
-        if (this.props.type == '63') {
+        if (this.getMultipleLevelConfig()) {
             data = this.state.wakeupSendGiftsDataArray.reduce((acc, curr) => {
                 curr.gifts.forEach(gift => {
-                    gift.lastConsumeIntervalDays = curr.intervalDays;
+                    gift[this.getMultipleLevelConfig().propertyName] = curr.intervalDays || 0;
                 })
                 acc.push(...curr.gifts);
                 return acc;
@@ -612,17 +635,9 @@ class SpecialDetailInfo extends Component {
                 }, true);
             return p && _validStatusOfCurrentIndex;
         }, true);
-        // 把中奖率累加,判断总和是否满足小于等于100
-        const validOdds = data.reduce((res, cur) => {
-            return res + parseFloat(cur.giftOdds.value)
-        }, 0);
         data = validatedRuleData;
         this.setState({ data });
         if (validateFlag) {
-            if (validOdds > 100) {
-                message.warning('中奖比率之和不能大于100!');
-                return false;
-            }
             const giftInfo = this.getGiftInfo(data);
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
@@ -641,7 +656,7 @@ class SpecialDetailInfo extends Component {
                 shareTitle,
             });
             this.props.setSpecialGiftInfo(giftInfo);
-            if (this.props.type == '68') {
+            if (this.props.type == '68') { // 推荐有礼表项
                 let { eventRecommendSettings } = this.state;
                 const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
                 const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -763,6 +778,14 @@ class SpecialDetailInfo extends Component {
         })
     }
     handleGiftGetRuleChange = ({ target: { value } }) => {
+        if (value === 2 && this.props.type == '75') {
+            let { wakeupSendGiftsDataArray } = this.state;
+            wakeupSendGiftsDataArray = wakeupSendGiftsDataArray.slice(0, 1);
+            wakeupSendGiftsDataArray[0].intervalDays = undefined;
+            this.setState({
+                wakeupSendGiftsDataArray
+            })
+        }
         this.setState({
             giftGetRule: value,
         })
@@ -813,7 +836,7 @@ class SpecialDetailInfo extends Component {
         })
     }
     handleWakeupIntervalGiftsChange = (val, index) => {
-        const { wakeupSendGiftsDataArray } = this.state;
+        let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
         this.setState({
             wakeupSendGiftsDataArray,
@@ -1834,33 +1857,121 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    renderWakeupGiftsDetail() {
+    renderAccumulateGiftsDetail() {
+        const {
+            giftGetRule,
+            wakeupSendGiftsDataArray,
+        } = this.state;
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        return (
+            <div>
+                <FormItem
+                    label="礼品领取方式"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        onChange={this.handleGiftGetRuleChange}
+                        value={giftGetRule}
+                        disabled={userCount > 0}
+                    >
+                        <Radio key={'2'} value={2}>集满全部点数领取</Radio>
+                        <Radio key={'3'} value={3}>阶梯点数领取</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    giftGetRule === 2 ? (
+                        <Row>
+                            <Col span={17} offset={4}>
+                                <AddGifts
+                                    key={wakeupSendGiftsDataArray[0].key}
+                                    maxCount={10}
+                                    type={this.props.type}
+                                    isNew={this.props.isNew}
+                                    value={wakeupSendGiftsDataArray[0].gifts}
+                                    onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, 0)}
+                                />
+                            </Col>
+                        </Row>
+                    ) : this.renderMultipleLevelGiftsDetail()
+                }
+            </div>
+        )
+    }
+    getMultipleLevelValueLimit = () => {
+        const { type, specialPromotion } = this.props;
+        if (type == '75') {
+            return specialPromotion.getIn(['$eventInfo', 'needCount'])
+        }
+    }
+    renderMultipleLevelGiftsDetail() {
         const { wakeupSendGiftsDataArray } = this.state;
         const {
             form: {
                 getFieldDecorator,
             }
         } = this.props;
+        const multiConfig = this.getMultipleLevelConfig();
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
             <div>
                 {
                     wakeupSendGiftsDataArray.map(({intervalDays, gifts, key}, index, arr) => (
                         <div key={`${key}`}>
-                            <FormItem
-                                label="距上次消费天数"
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                style={{ position: 'relative', marginBottom: 14 }}
-                                required
-                            >
+                            <Row key={`${key}`}>
+                                <Col span={4}>
+                                    <div className={selfStyle.fakeLabel}>
+                                        {`档位${index + 1}`}
+                                    </div>
+                                </Col>
+                                <Col style={{ position: 'relative' }} span={17}>
+                                <div className={selfStyle.grayHeader}>
+                                {multiConfig.levelLabel}&nbsp;
+                                <FormItem>
+                                    {
+                                        getFieldDecorator(`intervalDays${key}`, {
+                                            onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
+                                            initialValue: { number: intervalDays },
+                                            rules: [
+                                                {
+                                                    validator: (rule, v, cb) => {
+                                                        if (!v || !(v.number > 0)) {
+                                                            return cb('必须大于0');
+                                                        }
+                                                        if (this.getMultipleLevelValueLimit() && !(v.number <= this.getMultipleLevelValueLimit())) {
+                                                            return cb(`不能大于${this.getMultipleLevelValueLimit()}`);
+                                                        }
+                                                        for (let i = 0; i < index; i++) {
+                                                            const days = arr[i].intervalDays;
+                                                            if (days > 0) {
+                                                                // 时间段设置不可以重叠
+                                                                if (v.number <= +days) {
+                                                                    return cb('档位数值需大于上一档位');
+                                                                }
+                                                            }
+                                                        }
+                                                        cb()
+                                                    },
+                                                },
+                                            ],
+                                        })(
+                                            <PriceInput
+                                                disabled={userCount > 0}
+                                                maxNum={5}
+                                                modal="int"
+                                            />
+                                        )
+                                    }
+                                </FormItem>
+                                {multiConfig.levelAffix}
+                                </div>
                                 {
                                     userCount > 0 ? null : (
                                         <div style={{
                                             position: 'absolute',
                                             width: 65,
-                                            top: 3,
+                                            top: 10,
                                             right: -70,
                                         }}>
                                             {
@@ -1887,42 +1998,13 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                     )
                                 }
-                                {
-                                    getFieldDecorator(`intervalDays${key}`, {
-                                        onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
-                                        initialValue: { number: intervalDays },
-                                        rules: [
-                                            {
-                                                validator: (rule, v, cb) => {
-                                                    if (!v || !(v.number > 0)) {
-                                                        return cb('距上次消费天数必须大于0');
-                                                    }
-                                                    for (let i = 0; i < index; i++) {
-                                                        const days = arr[i].intervalDays;
-                                                        if (days > 0) {
-                                                            // 时间段设置不可以重叠
-                                                            if (v.number <= +days) {
-                                                                return cb('档位天数需大于上一档位天数');
-                                                            }
-                                                        }
-                                                    }
-                                                    cb()
-                                                },
-                                            },
-                                        ],
-                                    })(
-                                        <PriceInput
-                                            disabled={userCount > 0}
-                                            addonAfter="天"
-                                            maxNum={5}
-                                            modal="int"
-                                        />
-                                    )
-                                }
-                            </FormItem>
+                                </Col>        
+                            </Row>
                             <Row>
                                 <Col span={17} offset={4}>
                                     <AddGifts
+                                        key={`${key}`}
+                                        isAttached={true}
                                         maxCount={10}
                                         type={this.props.type}
                                         isNew={this.props.isNew}
@@ -1943,7 +2025,10 @@ class SpecialDetailInfo extends Component {
             return this.renderRecommendGiftsDetail();
         }
         if (type == '63') { // 唤醒送礼，多个天数档位设置需要去重
-            return this.renderWakeupGiftsDetail();
+            return this.renderMultipleLevelGiftsDetail();
+        }
+        if (type == '75') { // 集点卡 礼品逻辑
+            return this.renderAccumulateGiftsDetail();
         }
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (

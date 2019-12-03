@@ -88,7 +88,6 @@ class StepTwo extends React.Component {
             <Form className={styles.cardLevelTree}>
                 <FormItem
                     label="新用户注册卡类"
-                    optionFilterProp="children"
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -104,6 +103,7 @@ class StepTwo extends React.Component {
                         })(
                             <Select
                                 showSearch={true}
+                                optionFilterProp="children"
                                 notFoundContent={'未搜索到结果'}
                                 placeholder="请选择新用户注册成为会员的卡类型"
                                 getPopupContainer={(node) => node.parentNode}

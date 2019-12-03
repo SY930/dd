@@ -68,12 +68,14 @@ const CONSUME_TIMES_OPTIONS = [
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
+        const consumeType = `${props.specialPromotionInfo.getIn(['$eventInfo', 'consumeType'], '8')}`;
         this.state = {
-            radioType: 0,
-            pointTotalNumber: props.specialPromotionInfo.getIn(['$eventInfo', 'pointTotalNumber']) || undefined,
+            radioType: consumeType >= 8 ? 0 : 1,
+            foodScopeList: props.specialPromotionInfo.getIn(['$eventInfo', 'foodScopeList'], Immutable.fromJS([])).toJS(),
+            needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
             consumeTotalAmount: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalAmount']) || undefined, // 不想显示0
             consumeTotalTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes']) || undefined,
-            consumeType: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes'], '8'),
+            consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
         }
     }
@@ -94,7 +96,7 @@ class StepTwo extends React.Component {
             consumeType,
         } = this.state;
         return Boolean([ ...CONSUME_AMOUNT_OPTIONS, ...CONSUME_TIMES_OPTIONS ]
-        .find(item => item.value === consumeType)
+        .find(item => item.value === `${consumeType}`)
         .showFood);
     }
 
@@ -105,9 +107,6 @@ class StepTwo extends React.Component {
                 flag = false;
             }
         });
-        if (!this.state.defaultCardType) {
-            flag = false;
-        }
         if (flag) {
             this.props.setSpecialBasicInfo({
                 ...this.state,
@@ -130,7 +129,7 @@ class StepTwo extends React.Component {
 
     handlePointTotalNumberChange = ({ number }) => {
         this.setState({
-            pointTotalNumber: number,
+            needCount: number,
         })
     }
     handleConsumeTypeChange = (value) => {
@@ -176,7 +175,7 @@ class StepTwo extends React.Component {
             });
         });
         this.setState({
-            scopeList,
+            foodScopeList: scopeList,
         })
     }
     
@@ -251,7 +250,7 @@ class StepTwo extends React.Component {
     }
 
     render() {
-        const { consumeType, shopIDList } = this.state;
+        const { foodScopeList, shopIDList } = this.state;
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
         const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);
@@ -264,7 +263,7 @@ class StepTwo extends React.Component {
                     required
                     wrapperCol={{ span: 17 }}
                 >
-                    {this.props.form.getFieldDecorator('pointTotalNumber', {
+                    {this.props.form.getFieldDecorator('needCount', {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
@@ -277,7 +276,7 @@ class StepTwo extends React.Component {
                                     },
                                 }
                             ],
-                            initialValue: {number: this.state.pointTotalNumber},
+                            initialValue: {number: this.state.needCount},
                             onChange: this.handlePointTotalNumberChange
                         })(
                             <PriceInput
@@ -310,7 +309,7 @@ class StepTwo extends React.Component {
                 </FormItem>
                 {
                     this.isShowFoodSelector() && (
-                        <CategoryAndFoodSelector scopeLst={[]} onChange={this.handleCategoryAndFoodChange} />
+                        <CategoryAndFoodSelector scopeLst={foodScopeList} onChange={this.handleCategoryAndFoodChange} />
                     )
                 }
                 <FormItem
