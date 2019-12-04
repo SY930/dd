@@ -254,7 +254,6 @@ class SpecialDetailInfo extends Component {
         const data = this.initiateDefaultGifts();
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
-                data[index].needCount.value = gift.needCount || 0;
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
             } else {
@@ -266,6 +265,7 @@ class SpecialDetailInfo extends Component {
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
+            data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
@@ -293,7 +293,7 @@ class SpecialDetailInfo extends Component {
             const intervalDaysArray = data.reduce((acc, curr) => {
                 // 不同活动里的needCount 输入框层级不一样，数据类型也不一样
                 if (typeof curr[multiConfig.propertyName] === 'object') {
-                    curr[multiConfig.propertyName] = curr[multiConfig.propertyName].value
+                    curr[multiConfig.propertyName] = curr[multiConfig.propertyName].value;
                 }
                 const propertyValue = curr[multiConfig.propertyName];
                 if (propertyValue  >= 0) { // undefined >= 0 is false
@@ -319,7 +319,7 @@ class SpecialDetailInfo extends Component {
                     .map(days => ({
                         key: getIntervalID(),
                         intervalDays: days,
-                        gifts: data.filter(gift => gift[multiConfig.propertyName] === days)
+                        gifts: data.filter(gift => +gift[multiConfig.propertyName] === days)
                     }))
             }
         }

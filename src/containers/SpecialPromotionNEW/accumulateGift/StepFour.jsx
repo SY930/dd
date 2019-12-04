@@ -44,7 +44,7 @@ class StepFour extends React.Component {
             }
         }
         const appIDList = launchSceneList.map(item => item.appID);
-        const sceneList = (launchSceneList[0].scenePosition || '').split(',');
+        const sceneList = (launchSceneList[0].scenePosition || '').split(',').filter(Boolean);
         return {
             appIDList,
             sceneList,
@@ -130,6 +130,7 @@ class StepFour extends React.Component {
                         rules: [
                             { required: true, message: '请选择活动展现场景' },
                         ],
+                        onChange: (v) => console.log(v), 
                         initialValue: sceneList,
                     })(<Checkbox.Group options={SCENES} />)}
                 </FormItem>
