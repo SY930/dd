@@ -44,7 +44,7 @@ class StepFour extends React.Component {
             }
         }
         const appIDList = launchSceneList.map(item => item.appID);
-        const sceneList = (launchSceneList[0].scenePosition || '').split(',').filter(Boolean);
+        const sceneList = (launchSceneList[0].scenePositionList || []).map(String)
         return {
             appIDList,
             sceneList,
@@ -62,7 +62,7 @@ class StepFour extends React.Component {
                 launchSceneList = appIDList.map(appID => ({
                     appID,
                     sceneType: 1,
-                    scenePosition: sceneList.join(','),
+                    scenePositionList: sceneList,
                 }))
             }
         });
