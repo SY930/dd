@@ -241,7 +241,7 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            axiosData('/gift/batchGenCouponCode.ajax', { params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
