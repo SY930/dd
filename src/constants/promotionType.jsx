@@ -344,7 +344,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '更实在的折扣优惠,常用于情侣消费,朋友消费',
         example: '例如:午餐12点-13点可乐第二份8折,第三份半价',
-        tags: ['pos'],
+        tags: ['pos', '新微信'],
         key: '1050',
         right: 15,
         bottom: 5,
