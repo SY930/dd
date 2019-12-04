@@ -14,6 +14,7 @@ import {
     Col,
     message,
 } from 'antd';
+import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import CloseableTip from "../../../components/common/CloseableTip/index";
@@ -172,6 +173,18 @@ class GenerateBatchGifts extends Component {
             .catch(err => {
             })
     }
+    handleRetry(record) {
+        axiosData(
+            '/gift/batchGenCouponCode.ajax',
+            { ...record, createBy: getAccountInfo().userName },
+            {},
+            {path: 'message'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then(res => {
+                message.success(res || '请求成功');
+                this.handleQuery();
+            })
+    }
 
     getDateCount() {
         const { validDateRange } = this.state;
@@ -228,7 +241,7 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            axiosData('/gift/batchGenCouponCode.ajax', params, {}, {path: 'data'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            axiosData('/gift/batchGenCouponCode.ajax', { params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
@@ -244,7 +257,7 @@ class GenerateBatchGifts extends Component {
                         this.handleQuery();
                         this.props.form.resetFields();
                     });
-                    // message.success('请求成功');
+                    message.success(res || '请求成功');
                 })
                 .catch(err => {
                     this.setState({
@@ -410,6 +423,14 @@ class GenerateBatchGifts extends Component {
                                     this.handleExport(record)
                                 }}
                             >导出</a>
+                        )
+                    } else if (record.status == 8) {
+                        return (
+                            <a
+                                onClick={() => {
+                                    this.handleRetry(record)
+                                }}
+                            >重试</a>
                         )
                     }
                     return '--'
