@@ -370,7 +370,7 @@ export const FetchGiftSort = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data.crmGiftTypes',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((records) => {
             dispatch(getGiftSortSuccessAC({
                 payload: {
@@ -483,7 +483,7 @@ export const queryCouponShopList = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((response) => {
                 console.log(response)
             })

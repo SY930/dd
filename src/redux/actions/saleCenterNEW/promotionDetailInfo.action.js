@@ -450,7 +450,7 @@ export const fetchGiftListInfoAC = (opts) => {
         });
         axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((responseJSON) => {
             dispatch(fetchGiftListSuccess(responseJSON))
         }).catch((error) => {
