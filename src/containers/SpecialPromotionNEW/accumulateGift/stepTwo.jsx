@@ -5,6 +5,7 @@ import {
     Form,
     Select,
     Radio,
+    message,
 } from 'antd';
 import {
     fetchPromotionScopeInfo,
@@ -107,9 +108,15 @@ class StepTwo extends React.Component {
                 flag = false;
             }
         });
+        const { foodScopeList } = this.state;
+        if (this.isShowFoodSelector() && !foodScopeList.length) {
+            flag = false;
+            message.warning('请设置适用菜品')
+        }
         if (flag) {
             this.props.setSpecialBasicInfo({
                 ...this.state,
+                foodScopeList: this.isShowFoodSelector() ? foodScopeList : [],
             });
         }
         return flag;
@@ -309,7 +316,7 @@ class StepTwo extends React.Component {
                 </FormItem>
                 {
                     this.isShowFoodSelector() && (
-                        <CategoryAndFoodSelector scopeLst={foodScopeList} onChange={this.handleCategoryAndFoodChange} />
+                        <CategoryAndFoodSelector showRequiredMark scopeLst={foodScopeList} onChange={this.handleCategoryAndFoodChange} />
                     )
                 }
                 <FormItem
