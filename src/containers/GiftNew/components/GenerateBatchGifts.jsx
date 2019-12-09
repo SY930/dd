@@ -14,6 +14,7 @@ import {
     Col,
     message,
 } from 'antd';
+import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import CloseableTip from "../../../components/common/CloseableTip/index";
@@ -75,12 +76,12 @@ class GenerateBatchGifts extends Component {
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
             params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
         }
-        axiosData('/coupon/couponEntityService_getGiftBatchs.ajax', {...params, pageNo}, {}, {path: 'data'}, )
+        axiosData('/gift/getCouponBatch.ajax', {...params, pageNo}, {}, {path: 'giftBatchResList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(res => {
                 this.setState({
-                    historyList: res.giftBatchResList || [],
-                    total: (res.giftBatchResList || []).length ? (res.totalSize || 0) : 0,
-                    pageNo: (res.giftBatchResList || []).length ? (res.pageNo || 1) : 1,
+                    historyList: res || [],
+                    total: (res || []).length ? (res.totalSize || 0) : 0,
+                    pageNo: (res || []).length ? (res.pageNo || 1) : 1,
                     loading: false,
                 });
             })
@@ -172,6 +173,18 @@ class GenerateBatchGifts extends Component {
             .catch(err => {
             })
     }
+    handleRetry(record) {
+        axiosData(
+            '/gift/batchGenCouponCode.ajax',
+            { ...record, createBy: getAccountInfo().userName },
+            {},
+            {path: 'message'},
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then(res => {
+                message.success(res || '请求成功');
+                this.handleQuery();
+            })
+    }
 
     getDateCount() {
         const { validDateRange } = this.state;
@@ -228,7 +241,7 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            axiosData('/coupon/couponEntityService_banchGenGiftCode.ajax', params, {}, {path: 'data'}, )
+            axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
@@ -244,7 +257,7 @@ class GenerateBatchGifts extends Component {
                         this.handleQuery();
                         this.props.form.resetFields();
                     });
-                    // message.success('请求成功');
+                    message.success(res || '请求成功');
                 })
                 .catch(err => {
                     this.setState({
@@ -410,6 +423,14 @@ class GenerateBatchGifts extends Component {
                                     this.handleExport(record)
                                 }}
                             >导出</a>
+                        )
+                    } else if (record.status == 8) {
+                        return (
+                            <a
+                                onClick={() => {
+                                    this.handleRetry(record)
+                                }}
+                            >重试</a>
                         )
                     }
                     return '--'
