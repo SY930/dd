@@ -69,6 +69,7 @@ const simpleOptionSmsGate = [ // 选项有2种
 ];
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
+    '20',
     '30',
     '67',
 ];
