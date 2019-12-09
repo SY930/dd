@@ -586,7 +586,7 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            axiosData(callServer, { ...params, groupName }, null, { path: '' }).then((data) => {
+            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()

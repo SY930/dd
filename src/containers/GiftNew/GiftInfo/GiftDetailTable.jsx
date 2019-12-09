@@ -265,7 +265,7 @@ class GiftDetailTable extends Component {
     changeSortOrder(record, direction) {
         // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -366,7 +366,13 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, { needThrow: true, needCode: true }, { path: '' }).then((data) => {
+                axiosData(
+                    '/coupon/couponService_removeBoard.ajax',
+                    { giftItemID },
+                    { needThrow: true, needCode: true },
+                    { path: '' },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW',
+                ).then((data) => {
                     if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
