@@ -42,13 +42,10 @@ class NewPromotion extends React.Component {
 
     onFinish(cb) {
         const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline } = this.props;
-
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
-
         const detailInfo = promotionDetailInfo.get('$promotionDetail').toJS();
-
         const isActive = detailInfo.isActive;
         let userType = detailInfo.userSetting;
         const subjectType = detailInfo.subjectType == '0' ? '0' : '1';
@@ -66,6 +63,7 @@ class NewPromotion extends React.Component {
         const opts = {
             groupID: this.props.user.getIn(['accountInfo', 'groupID']),
             maintenanceLevel: this.props.user.get('shopID') ? '1' : '0',
+            ...detailInfo,
             ...scopeInfo,
             ...basicInfo,
             ..._detailInfo, // include rule and priceLst
@@ -86,7 +84,7 @@ class NewPromotion extends React.Component {
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
-            maintenanceLevel, usageMode, shopID, foodRuleList } = opts;
+            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit } = opts;
         const promotionInfo = {
             master: {
                 groupID,
@@ -123,6 +121,7 @@ class NewPromotion extends React.Component {
                 usageMode,
                 needSyncToAliPay: detailInfo.needSyncToAliPay,
                 giftList,
+                birthdayLimit,
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
