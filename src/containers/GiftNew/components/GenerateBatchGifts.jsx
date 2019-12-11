@@ -13,6 +13,7 @@ import {
     Row,
     Col,
     message,
+    Alert,
 } from 'antd';
 import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -63,6 +64,11 @@ class GenerateBatchGifts extends Component {
 
     componentDidMount(){
         this.handleQuery()
+    }
+
+    isDisabledTime = () => {
+        const time = moment().format('HHmm')
+        return (time >= 1100 && time <= 1400) || (time >= 1700 && time <= 2030)
     }
 
     handleQuery(pageNo = this.state.pageNo) {
@@ -619,83 +625,86 @@ class GenerateBatchGifts extends Component {
     renderModalContent() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Form>
-                <FormItem
-                    label="有效期"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 14 }}
-                >
-                    <Row>
-                        <Col span={19}>
-                            <RangePicker value={this.state.validDateRange} onChange={this.handleValidDateRangeChange} />
-                        </Col>
-                        <Col offset={1} span={3}>
-                            <div className={styles.ActivityDateDay}>
-                                <span>{this.getDateCount()}</span>
-                            </div>
-                        </Col>
-                    </Row>
-                    {/*这里用了点小hack, 强行移位tip, 组件做的不够好*/}
-                    <CloseableTip
-                        style={{
-                            position: 'absolute',
-                            right: '6px',
-                            top: '3px'
-                        }}
-                        width="100%"
-                        content={
-                            <div>
-                                <p>有效期</p>
-                                <br/>
-                                <p>有效期<span style={{fontWeight: 'bold'}}>不填</span>代表<span style={{fontWeight: 'bold'}}>永久</span>有效</p>
-                            </div>
-                        }
-                    />
-                </FormItem>
-                <FormItem
-                    label="生成方式"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 18 }}
-                >
-                    <RadioGroup onChange={this.handleAutoGeneratingChange} value={this.state.autoGenerating}>
-                        <Radio key={'1'} value={'1'}>系统自动生成</Radio>
-                        <Radio key={'2'} value={'2'}>按规则生成</Radio>
-                    </RadioGroup>
-                </FormItem>
-                {
-                    this.state.autoGenerating ==='1' && this.renderAutoGeneratingRules()
-                }
-                {
-                    this.state.autoGenerating ==='2' && this.renderManualGeneratingRules()
-                }
-                <FormItem
-                    label="备注"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 8 }}
-                    required
-                >{
-                    getFieldDecorator('description', {
-                        initialValue: this.state.description,
-                        onChange: this.handleDescriptionChange,
-                        rules: [
-                            { required: true, message: '不能为空' },
-                            {
-                                message: '汉字、字母、数字组成，不多于20个字符',
-                                pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
-                            },
-                        ],
-                    })(
-                        <Input
-                            type="textarea"
-                            placeholder="请输入备注信息"
+            <div>
+                <Alert style={{ width: 500, marginLeft: 220 }} message="营业高峰期（11:00-14:00，17:00-20:30）暂停使用批量生成券码功能" type="warning"></Alert>
+                <Form>
+                    <FormItem
+                        label="有效期"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 14 }}
+                    >
+                        <Row>
+                            <Col span={19}>
+                                <RangePicker value={this.state.validDateRange} onChange={this.handleValidDateRangeChange} />
+                            </Col>
+                            <Col offset={1} span={3}>
+                                <div className={styles.ActivityDateDay}>
+                                    <span>{this.getDateCount()}</span>
+                                </div>
+                            </Col>
+                        </Row>
+                        {/*这里用了点小hack, 强行移位tip, 组件做的不够好*/}
+                        <CloseableTip
+                            style={{
+                                position: 'absolute',
+                                right: '6px',
+                                top: '3px'
+                            }}
+                            width="100%"
+                            content={
+                                <div>
+                                    <p>有效期</p>
+                                    <br/>
+                                    <p>有效期<span style={{fontWeight: 'bold'}}>不填</span>代表<span style={{fontWeight: 'bold'}}>永久</span>有效</p>
+                                </div>
+                            }
                         />
-                    )
-                }
-                </FormItem>
-            </Form>
+                    </FormItem>
+                    <FormItem
+                        label="生成方式"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 18 }}
+                    >
+                        <RadioGroup onChange={this.handleAutoGeneratingChange} value={this.state.autoGenerating}>
+                            <Radio key={'1'} value={'1'}>系统自动生成</Radio>
+                            <Radio key={'2'} value={'2'}>按规则生成</Radio>
+                        </RadioGroup>
+                    </FormItem>
+                    {
+                        this.state.autoGenerating ==='1' && this.renderAutoGeneratingRules()
+                    }
+                    {
+                        this.state.autoGenerating ==='2' && this.renderManualGeneratingRules()
+                    }
+                    <FormItem
+                        label="备注"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 8 }}
+                        required
+                    >{
+                        getFieldDecorator('description', {
+                            initialValue: this.state.description,
+                            onChange: this.handleDescriptionChange,
+                            rules: [
+                                { required: true, message: '不能为空' },
+                                {
+                                    message: '汉字、字母、数字组成，不多于20个字符',
+                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
+                                },
+                            ],
+                        })(
+                            <Input
+                                type="textarea"
+                                placeholder="请输入备注信息"
+                            />
+                        )
+                    }
+                    </FormItem>
+                </Form>
+            </div>
         )
     }
 
@@ -714,7 +723,10 @@ class GenerateBatchGifts extends Component {
                     confirmLoading={this.state.confirmLoading}
                     width={950}
                     onCancel={this.hideModal}
-                    onOk={this.handleModalOk}
+                    footer={[
+                        <Button type="ghost" onClick={this.hideModal}>关闭</Button>,
+                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk}>关闭</Button>,
+                    ]}
                 >
                     {this.state.modalVisible && this.renderModalContent()}
                 </Modal>
