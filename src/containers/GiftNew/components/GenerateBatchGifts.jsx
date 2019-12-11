@@ -725,7 +725,7 @@ class GenerateBatchGifts extends Component {
                     onCancel={this.hideModal}
                     footer={[
                         <Button type="ghost" onClick={this.hideModal}>关闭</Button>,
-                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk}>关闭</Button>,
+                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk}>确定</Button>,
                     ]}
                 >
                     {this.state.modalVisible && this.renderModalContent()}
