@@ -160,7 +160,7 @@ export const getMallGoodsAndCategories = (shopID) => {
     }
 }
 
-export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
+export const fetchFoodCategoryInfoAC = (opts = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
             dispatch({
