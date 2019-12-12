@@ -517,17 +517,17 @@ class LotteryThirdStep extends React.Component {
     }
 
     /**
-     * 在切换几等奖tab的时候，切换之前要做校验 ,把当前的key设置为activekey
-     * @date 2019-10-22
+     * 在切换几等奖tab的时候，切换之前不用做校验 ,把当前的key设置为activekey
+     * @date 2019-12-12
      * @param {any} targetKey
      * @returns {any}
      */
     onChange = (targetKey) => {
-        if(this.checkEveryDataVaild()){
+        // if(this.checkEveryDataVaild()){
             this.setState({
                 activeKey: targetKey,
             });
-        }
+        // }
     }
 
     /**
@@ -641,79 +641,94 @@ class LotteryThirdStep extends React.Component {
      * @returns {boolean}
      */
     checkEveryDataVaild = () => {
-        const { activeKey, infos } = this.state;
+        const { infos } = this.state;
         let tempResult = true;
-        for(let i in infos[activeKey] ){
+        // 校验概率必填、加合不超过100%
+        let sumOdds = 0;
+        for (let idx = 0; idx < infos.length; idx++) {
+            if(sumOdds> 100){
+                if(tempResult){
+                    tempResult = false;
+                    message.error('不同等级奖项中奖概率相加不能超过100%');
+                }
+            }else{
+                if(!infos[idx].giftOdds.value){
+                    tempResult = false;
+                    this.handleGiftOddsChange({number: infos[idx].giftOdds.value}, idx);
+                    this.setState({
+                        activeKey: `${idx}`
+                    })
+                    return false;
+                }
+                sumOdds += +infos[idx].giftOdds.value;
+                if(sumOdds > 100){
+                    tempResult = false;
+                    message.error('不同等级奖项中奖概率相加不能超过100%');
+                }
+            }   
+        }
+        // 校验校验每一等级必填
+        for (let activeKey = 0; activeKey < infos.length; activeKey ++) {
             if (JSON.stringify(infos[activeKey].givePoints.value) === '{}' && !infos[activeKey].giveRedPacket.isOn
-            && !infos[activeKey].giveCoupon.value.isOn) {
-                return false;
-            }
-            switch(i){
-                case 'giftOdds':
-                    let sumOdds = 0;
-                    infos.map((item) => {
-                        if(sumOdds> 100){
-                            if(tempResult){
+                && !infos[activeKey].giveCoupon.value.isOn) {
+                    this.setState({
+                        activeKey: `${activeKey}`
+                    })
+                    return false;
+                }
+            for(let i in infos[activeKey] ){
+                switch(i){
+                    case 'givePoints':
+                        if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
+                            //赠送积分是勾选的要确认里面的内容是不是都合适
+                            let tempobj = infos[activeKey].givePoints.value;
+                            if(!(tempobj.givePointsValue.value > 0) || !tempobj.card.value ){
                                 tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
-                            }
-                        }else{
-                            if(!item.giftOdds.value){
-                                tempResult = false;
-                                this.handleGiftOddsChange({number: item.giftOdds.value}, activeKey);
-                            }
-                            sumOdds += +item.giftOdds.value;
-                            if(sumOdds > 100){
-                                tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
+                                this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
                             }
                         }
-                    });
-                    break;
-                case 'givePoints':
-                    if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
-                        //赠送积分是勾选的要确认里面的内容是不是都合适
-                        let tempobj = infos[activeKey].givePoints.value;
-                        if(!(tempobj.givePointsValue.value > 0) || !tempobj.card.value ){
-                            tempResult = false;
-                            this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
-                        }
-                    }
-                    break;
-                case 'giveRedPacket':
-                    if(infos[activeKey].giveRedPacket.isOn){
-                        //赠送积分是勾选的要确认里面的内容是不是都合适
-                        let tempobj = infos[activeKey].giveRedPacket;
-                        if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
-                            tempResult = false;
-                            this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
-                            this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
-                        }
-                    }
-                    break;
-                case 'giveCoupon':
-                        if(infos[activeKey].giveCoupon.value.isOn){
-                            //优惠券是勾选的确认优惠券里面的内容
-                            let tempobj = infos[activeKey].giveCoupon.value;
-                            if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
+                        break;
+                    case 'giveRedPacket':
+                        if(infos[activeKey].giveRedPacket.isOn){
+                            //赠送积分是勾选的要确认里面的内容是不是都合适
+                            let tempobj = infos[activeKey].giveRedPacket;
+                            if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
                                 tempResult = false;
-                                this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
+                                this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
+                                this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
                             }
-                            if(tempobj.effectType == '1' || tempobj.effectType == '3'){
-                                //按小时或者按天
-                                if(!tempobj.giftValidDays.value){
+                        }
+                        break;
+                    case 'giveCoupon':
+                            if(infos[activeKey].giveCoupon.value.isOn){
+                                //优惠券是勾选的确认优惠券里面的内容
+                                let tempobj = infos[activeKey].giveCoupon.value;
+                                if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                     tempResult = false;
-                                    this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
-                                    this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                    this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
                                 }
-                            }else{
-                                //固定有效期
-                                if(tempobj.giftEffectiveTime.value.constructor != Array){
-                                    tempResult = false;
-                                    this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                if(tempobj.effectType == '1' || tempobj.effectType == '3'){
+                                    //按小时或者按天
+                                    if(!tempobj.giftValidDays.value){
+                                        tempResult = false;
+                                        this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
+                                        this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                    }
+                                }else{
+                                    //固定有效期
+                                    if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
+                                        tempResult = false;
+                                        this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                    }
                                 }
                             }
-                        }
+                }
+                if (!tempResult) {
+                    this.setState({
+                        activeKey: `${activeKey}`
+                    })
+                    return false;
+                }
             }
         }
         return tempResult;
