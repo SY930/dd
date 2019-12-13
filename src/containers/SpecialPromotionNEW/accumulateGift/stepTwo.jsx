@@ -276,8 +276,8 @@ class StepTwo extends React.Component {
                                     validator: (rule, v, cb) => {
                                         if (!v || (!v.number && v.number !== 0)) {
                                             return cb('总计点数为必填项');
-                                        } else if (v.number === 0) {
-                                            return cb('总计点数必须大于0');
+                                        } else if (!(v.number > 0 && v.number <= 20)) {
+                                            return cb('总计点数必须大于0, 不超过20');
                                         }
                                         cb()
                                     },
