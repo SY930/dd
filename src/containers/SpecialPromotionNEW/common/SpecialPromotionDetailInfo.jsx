@@ -1892,7 +1892,7 @@ class SpecialDetailInfo extends Component {
                 {
                     giftGetRule === 3 && (
                         <FormItem
-                            label="阶梯点数领取后"
+                            label="阶梯礼品兑换后"
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -1902,8 +1902,8 @@ class SpecialDetailInfo extends Component {
                                 value={cleanCount}
                                 disabled={userCount > 0}
                             >
-                                <Radio value={0}>点数清零</Radio>
-                                <Radio value={1}>点数不清零</Radio>
+                                <Radio value={0}>扣减所用点数</Radio>
+                                <Radio value={1}>不扣减所用点数</Radio>
                             </RadioGroup>
                         </FormItem>
                     )
