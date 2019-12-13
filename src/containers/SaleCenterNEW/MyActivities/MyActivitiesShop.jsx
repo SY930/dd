@@ -315,7 +315,7 @@ class MyActivitiesShop extends React.Component {
         }
         return [
             all,
-            ...ACTIVITY_CATEGORIES.filter(activity => activity.key !== '5010')
+            ...ACTIVITY_CATEGORIES,
         ]
     }
 
