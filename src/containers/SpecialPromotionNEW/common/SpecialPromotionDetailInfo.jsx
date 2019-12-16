@@ -2007,7 +2007,7 @@ class SpecialDetailInfo extends Component {
                                             right: -70,
                                         }}>
                                             {
-                                                (index === arr.length - 1 && arr.length < 5) && (
+                                                (index === arr.length - 1 && arr.length < 10) && (
                                                     <Icon
                                                         onClick={this.addInterval}
                                                         style={{ marginRight: 5 }}
