@@ -231,7 +231,7 @@ class NoThresholdDiscountFoodSelector extends Component {
         categories.splice(record.index, 1);
         this.setState({
             categories,
-            excludeDishes: [],
+            excludeDishes: this.getExcludeDishesAfterCategoryChange(categories.map(item => item.value)),
         }, () => {
             this.mapSelectedValueToObjectsThenEmit()
         })
@@ -283,14 +283,23 @@ class NoThresholdDiscountFoodSelector extends Component {
             this.mapSelectedValueToObjectsThenEmit();
         })
     }
-    handleCategoryChange = (value) => {
-        this.setState({
-            dishes: [],
-            excludeDishes: [],
-            categories: value
-        }, () => {
-            this.mapSelectedValueToObjectsThenEmit();
-        })
+    getExcludeDishesAfterCategoryChange = (categories) => {
+        // 当分类发生变动时，要把属于被去掉分类下的排除菜品也去掉
+        let excludeDishes = this.state.excludeDishes.slice();
+        if (categories.length) {
+            const {
+                allBrands,
+                allCategories,
+                allDishes,
+            } = this.props;
+            const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+            excludeDishes = dishes
+                .filter(({value: dishValue, localFoodCategoryID, onlineFoodCategoryID}) =>
+                    excludeDishes.includes(dishValue) &&
+                    (categories.includes(localFoodCategoryID) || categories.includes(onlineFoodCategoryID)))
+                .map(item => item.value);
+        }
+        return excludeDishes;
     }
     handleExcludeDishChange = (value) => {
         this.setState({
@@ -318,7 +327,7 @@ class NoThresholdDiscountFoodSelector extends Component {
         this.setState({
             selectorModalVisible: false,
             categories: categoryObjects,
-            excludeDishes: [],
+            excludeDishes: this.getExcludeDishesAfterCategoryChange(v),
         }, () => {
             this.mapSelectedValueToObjectsThenEmit()
         })
