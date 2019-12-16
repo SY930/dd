@@ -399,7 +399,7 @@ class SpecialDetailInfo extends Component {
     handleSubmit(isPrev) {
         if (isPrev) return true;
         let flag = true;
-        this.props.form.validateFieldsAndScroll((error, basicValues) => {
+        this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
             }
@@ -840,7 +840,7 @@ class SpecialDetailInfo extends Component {
         const { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].intervalDays = val;
         this.setState({
-            wakeupSendGiftsDataArray,
+            wakeupSendGiftsDataArray: wakeupSendGiftsDataArray.slice(),
         })
     }
     handleWakeupIntervalGiftsChange = (val, index) => {
@@ -1967,13 +1967,17 @@ class SpecialDetailInfo extends Component {
                                                         if (!v || !(v.number > 0)) {
                                                             return cb('必须大于0');
                                                         }
-                                                        if (this.getMultipleLevelValueLimit() && !(v.number <= this.getMultipleLevelValueLimit())) {
-                                                            return cb(`不能大于${this.getMultipleLevelValueLimit()}`);
+                                                        const limit = this.getMultipleLevelValueLimit();
+                                                        if (limit && !(v.number <= limit)) {
+                                                            return cb(`不能大于${limit}`);
+                                                        }
+                                                        if (limit && index === arr.length - 1 && v.number != limit) { // 最后一档必须填满限制
+                                                            return cb(`最后一档必须等于${limit}`);
                                                         }
                                                         for (let i = 0; i < index; i++) {
                                                             const days = arr[i].intervalDays;
                                                             if (days > 0) {
-                                                                // 时间段设置不可以重叠
+                                                                // 档位设置不可以重叠
                                                                 if (v.number <= +days) {
                                                                     return cb('档位数值需大于上一档位');
                                                                 }
