@@ -34,6 +34,7 @@ class AccumulateGiftWrapper extends NewPromotion {
                 title: '活动范围',
                 content: (
                     <StepTwo
+                        isNew={this.props.isNew}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
@@ -60,6 +61,7 @@ class AccumulateGiftWrapper extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[3] = handles;
                         }}
+                        isNew={this.props.isNew}
                     />
                 ),
             },

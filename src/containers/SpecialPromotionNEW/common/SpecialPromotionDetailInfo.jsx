@@ -148,7 +148,7 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             eventRecommendSettings,
-            cleanCount: props.specialPromotion.getIn(['$eventInfo', 'cleanCount'], 0),
+            cleanCount: props.specialPromotion.getIn(['$eventInfo', 'cleanCount'], 1),
             /** 膨胀大礼包相关 */
             giftGetRule,
             /** 膨胀大礼包相关结束 */
@@ -1871,7 +1871,7 @@ class SpecialDetailInfo extends Component {
             cleanCount,
             wakeupSendGiftsDataArray,
         } = this.state;
-        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        const { isNew } = this.props;
         return (
             <div>
                 <FormItem
@@ -1883,7 +1883,7 @@ class SpecialDetailInfo extends Component {
                     <RadioGroup
                         onChange={this.handleGiftGetRuleChange}
                         value={giftGetRule}
-                        disabled={userCount > 0}
+                        disabled={!isNew}
                     >
                         <Radio key={'2'} value={2}>集满全部点数领取</Radio>
                         <Radio key={'3'} value={3}>阶梯点数领取</Radio>
@@ -1900,10 +1900,10 @@ class SpecialDetailInfo extends Component {
                             <RadioGroup
                                 onChange={this.handleCleanCountChange}
                                 value={cleanCount}
-                                disabled={userCount > 0}
+                                disabled={!isNew}
                             >
-                                <Radio value={0}>扣减所用点数</Radio>
-                                <Radio value={1}>不扣减所用点数</Radio>
+                                <Radio value={1}>扣减所用点数</Radio>
+                                <Radio value={0}>不扣减所用点数</Radio>
                             </RadioGroup>
                         </FormItem>
                     )
@@ -1913,6 +1913,7 @@ class SpecialDetailInfo extends Component {
                         <Row>
                             <Col span={17} offset={4}>
                                 <AddGifts
+                                    disabledGifts={!isNew}
                                     key={wakeupSendGiftsDataArray[0].key}
                                     maxCount={10}
                                     type={this.props.type}
@@ -1938,8 +1939,11 @@ class SpecialDetailInfo extends Component {
         const {
             form: {
                 getFieldDecorator,
-            }
+            },
+            isNew,
+            type,
         } = this.props;
+        const disabledGifts = type == 75 && !isNew;
         const multiConfig = this.getMultipleLevelConfig();
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
@@ -1989,7 +1993,7 @@ class SpecialDetailInfo extends Component {
                                             ],
                                         })(
                                             <PriceInput
-                                                disabled={userCount > 0}
+                                                disabled={userCount > 0 || disabledGifts}
                                                 maxNum={5}
                                                 modal="int"
                                             />
@@ -1999,7 +2003,7 @@ class SpecialDetailInfo extends Component {
                                 {multiConfig.levelAffix}
                                 </div>
                                 {
-                                    userCount > 0 ? null : (
+                                    (userCount > 0 || disabledGifts) ? null : (
                                         <div style={{
                                             position: 'absolute',
                                             width: 65,
@@ -2035,6 +2039,7 @@ class SpecialDetailInfo extends Component {
                             <Row>
                                 <Col span={17} offset={4}>
                                     <AddGifts
+                                        disabledGifts={disabledGifts}
                                         key={`${key}`}
                                         isAttached={true}
                                         maxCount={10}
