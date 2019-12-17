@@ -260,7 +260,7 @@ class StepTwo extends React.Component {
         const { foodScopeList, shopIDList } = this.state;
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
-        const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);
+        const { isNew } = this.props;
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -288,7 +288,7 @@ class StepTwo extends React.Component {
                         })(
                             <PriceInput
                                 addonAfter="个"
-                                disabled={userCount > 0}
+                                disabled={!isNew}
                                 modal="int"
                                 maxNum={3}
                             />

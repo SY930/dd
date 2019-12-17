@@ -166,7 +166,7 @@ class AddGifts extends React.Component {
         const { type, isAttached } = this.props;
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
-        // 桌边砍可以主动加蒙层
+        // 桌边砍, 集点卡编辑时可以主动加蒙层
         const disabledGifts = this.props.disabledGifts;
         return (
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
