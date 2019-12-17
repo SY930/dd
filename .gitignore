@@ -6,7 +6,7 @@
 .DS_Store
 .vscode
 .gitattributes
-
+i18n-messages
 node_modules
 lib
 static
