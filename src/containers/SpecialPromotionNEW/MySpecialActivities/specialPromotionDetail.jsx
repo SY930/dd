@@ -186,7 +186,7 @@ class SpecialPromotionDetail extends React.Component {
             records = []
         }
         const way = this.state.eventInfo.data.eventWay;
-        if (way == 68) {
+        if (way == 68) { // 推荐有礼
             return (
                 <div>
                     <h5><span></span>统计信息</h5>
@@ -222,6 +222,23 @@ class SpecialPromotionDetail extends React.Component {
                     </Col>
                     <Col style={{ marginTop: 10 }} span={24}>
                         {this.renderRedPacketsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if (way == 75) {
+            return (
+                <div>
+                    <h5><span></span>统计信息</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderCollectPointsTable()}
                     </Col>
                     {this.renderSearch()}
                     <Col span={24}>
@@ -499,6 +516,44 @@ class SpecialPromotionDetail extends React.Component {
             </div>
         )
     }
+    renderCollectPointsTable() {
+        const columns = [
+            {
+                title: '累计获得点数',
+                dataIndex: 'total',
+                key: 'total',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '可兑换点数总计',
+                dataIndex: 'notUsedCount',
+                key: 'notUsedCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '已兑换点数总计',
+                dataIndex: 'usedCount',
+                key: 'usedCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            const data = this.props.mySpecialActivities.data.eventInfo.collectPointCardData || {};
+            dataSource = [{
+                ...data,
+                total: (data.usedCount || 0) + (data.notUsedCount || 0),
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
 
     handleInputChange(e) {
         this.setState({
@@ -612,6 +667,14 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 160,
             },
+            eventWay == 75 && ({
+                title: '兑换点数',
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtCenter',
+                width: 100,
+                render: joinCount => joinCount || 0,
+            }),
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({

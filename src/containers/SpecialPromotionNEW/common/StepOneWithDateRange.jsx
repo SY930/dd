@@ -66,6 +66,7 @@ const simpleOptionSmsGate = [ // 选项有2种
     '64',
     '65',
     '67',
+    '75',
 ];
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
@@ -83,6 +84,7 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '68',
     '23',
     '70',
+    '75',
 ]
 
 class StepOneWithDateRange extends React.Component {

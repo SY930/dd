@@ -62,7 +62,12 @@ export const fetchPromotionScopeInfo = (opts) => {
             type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO,
         });
         axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data'})
-            .then(data => dispatch(fetchPromotionScopeInfoSuccess(data)),
+            .then((data = {}) => {
+                data.citys = data.cities;
+                data.shopCategories = data.shopCategorys;
+                dispatch(getPromotionShopSchemaSuccess(data));
+                dispatch(fetchPromotionScopeInfoSuccess(data));
+            },
                 error => dispatch(fetchPromotionScopeInfoFailed()))
             .catch(err => console.log('err: ', err))
     };
