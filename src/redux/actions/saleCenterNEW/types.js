@@ -542,6 +542,14 @@ export const ACTIVITY_CATEGORIES = (function () {
         example: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠',
         key: '2080',
     },
+    {
+
+        idx: 20,
+        title: '签到活动',
+        text: '这是一个签到活动描述',
+        example: '',
+        key: '1110',
+    },
     ];
     return basic;
 }());

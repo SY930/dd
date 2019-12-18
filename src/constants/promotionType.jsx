@@ -243,6 +243,16 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 22,
         bottom: 13,
     },
+    {
+        title: '签到活动',
+        tags: ['pos'],
+        isSpecial: false,
+        text: '这是测试的签到活动',
+        example: '例如:累计签到就行了',
+        key: '1110',
+        right: 22,
+        bottom: 13,
+    },
 
 ];
 
