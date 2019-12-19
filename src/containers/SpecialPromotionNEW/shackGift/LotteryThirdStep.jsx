@@ -100,7 +100,8 @@ class LotteryThirdStep extends React.Component {
             '/coupon/couponService_getBoards.ajax',
             { giftType: '113', pageNo: 1, pageSize: 10000 },
             null,
-            {path: 'data.crmGiftList',}
+            {path: 'data.crmGiftList',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then((records) => {
             this.setState({
                 redPackets: records || []

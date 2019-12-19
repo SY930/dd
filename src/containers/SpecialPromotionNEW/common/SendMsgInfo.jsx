@@ -14,6 +14,7 @@ import {
     Form,
     Select,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import MsgSelector from "./MsgSelector";
@@ -122,10 +123,20 @@ class SendMsgInfo extends React.Component {
             this.props.onChange && this.props.onChange(this.state.message);
         })
     }
-
+    jumpAway = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const menuID = this.props.userMenuList.toJS().find(tab => tab.entryCode === 'shop.jituan.equityaccount').menuID
+        menuID && jumpPage({ menuID });
+        const cancelBtn = document.querySelector('.cancelBtnJs');
+        cancelBtn && cancelBtn.click();
+    }
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const {
+            form: { getFieldDecorator },
+            minMessageCount = 0,
+        } = this.props;
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         const { settleUnitID, accountNo } = this.state;
         // 旧活动, 已设置settleUnitID的情况下, 继续渲染settleUnitID; 其它情况都渲染accountNo, !(accountNo > 0) 是为了防止undefined
@@ -134,6 +145,7 @@ class SendMsgInfo extends React.Component {
                 <div>
                     {
                         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ? (
+                            // 兼容历史数据
                             <FormItem
                                 label="短信结算账户"
                                 className={styles.FormItemStyle}
@@ -154,7 +166,12 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.accountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.settleUnitID == settleUnitID) {
                                                 return (
-                                                    <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount || 0}条`}</div>
+                                                    <div
+                                                        key={accountInfo.settleUnitID}
+                                                        style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}
+                                                    >
+                                                        {`短信可用条数：${accountInfo.smsCount || 0}条`}
+                                                    </div>
                                                 )
                                             }
                                         })
@@ -162,6 +179,7 @@ class SendMsgInfo extends React.Component {
                                 </div>
                             </FormItem>
                         ) : (
+                            // 新数据
                             <FormItem
                                 label="短信权益账户"
                                 className={styles.FormItemStyle}
@@ -192,7 +210,15 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.accountNo == accountNo) {
                                                 return (
-                                                    <div key={accountInfo.accountNo}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount || 0}条`}</div>
+                                                    <div
+                                                        key={accountInfo.accountNo}
+                                                        style={{ margin: '8px 8px 0', color: accountInfo.smsCount > minMessageCount ? 'inherit' : 'red'}}
+                                                    >
+                                                        {`短信可用条数：${accountInfo.smsCount || 0}条`}
+                                                        {!(accountInfo.smsCount >= minMessageCount) && (
+                                                            <span>，短信余额不足，无法发送。 <a onClick={this.jumpAway}>立即充值</a></span>
+                                                        )}
+                                                    </div>
                                                 )
                                             }
                                         })
@@ -234,6 +260,7 @@ class SendMsgInfo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
+        userMenuList: state.user.get('menuList'),
     };
 };
 
