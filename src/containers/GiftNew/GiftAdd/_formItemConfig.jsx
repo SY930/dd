@@ -71,6 +71,12 @@ const FORMITEMS = {
         defaultValue: 0,
         options: GiftCfg.showGiftRule,
     },
+    isOnlineExchangeable: {
+        label: '允许线上通过券码兑换',
+        type: 'radio',
+        defaultValue: 0,
+        options: GiftCfg.isOnlineExchangeable,
+    },
     giftShareType: {
         label: (
             <span>
@@ -454,6 +460,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
@@ -480,6 +487,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
@@ -504,6 +512,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
@@ -573,6 +582,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'shopNames',
                 'showGiftRule',
@@ -594,6 +604,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
