@@ -199,10 +199,6 @@ class NewActivity extends React.Component {
                 return (
                     <div
                         key={`NewActivity${index}`}
-                        style={{
-                            display: (this.props.user.shopID > 0 && activity.key === '5010') ?
-                                'none' : 'block',
-                        }}
                     >
                         <Authority rightCode={BASIC_PROMOTION_CREATE}>
                             <NewPromotionCard

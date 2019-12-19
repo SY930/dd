@@ -139,6 +139,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
         groupID: opts.record.groupID,
         shopID: opts.record.shopID,
         promotionID: opts.record.promotionIDStr,
+        promotionType: opts.record.promotionType,
         isActive: opts.record.isActive == '1' ? '0' : '1',
     };
     return (dispatch) => {
