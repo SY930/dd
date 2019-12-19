@@ -188,11 +188,26 @@ class CategoryAndFoodSelector extends Component {
             this.mapSelectedValueToObjectsThenEmit();
         })
     }
-    handleCategoryChange = (value) => {
+    handleCategoryChange = (categories) => {
+        // 当分类发生变动时，要把属于被去掉分类下的排除菜品也去掉
+        let excludeDishes = this.state.excludeDishes.slice();
+        if (categories.length) {
+            const {
+                allBrands,
+                allCategories,
+                allDishes,
+            } = this.props;
+            const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+            excludeDishes = dishes
+                .filter(({value: dishValue, localFoodCategoryID, onlineFoodCategoryID}) =>
+                    excludeDishes.includes(dishValue) &&
+                    (categories.includes(localFoodCategoryID) || categories.includes(onlineFoodCategoryID)))
+                .map(item => item.value);
+        }
         this.setState({
             dishes: [],
-            excludeDishes: [],
-            categories: value
+            excludeDishes,
+            categories,
         }, () => {
             this.mapSelectedValueToObjectsThenEmit();
         })
