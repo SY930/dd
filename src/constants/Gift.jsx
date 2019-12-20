@@ -1,3 +1,9 @@
+import memberIcon1 from 'assets/memberIcon1.png'
+import memberIcon2 from 'assets/memberIcon2.png'
+import memberIcon3 from 'assets/memberIcon3.png'
+import redPacketIcon from 'assets/redPacketIcon.png'
+import realityGiftIcon from 'assets/realityGiftIcon.png'
+
 const GiftCfg = {
     giftType: [
         {
@@ -31,7 +37,8 @@ const GiftCfg = {
             value: '40',
             color: '#9dc568',
             category: 'secondary',
-            tags: ['pos', '新微信']
+            tags: ['pos', '新微信'],
+            icon: memberIcon1,
         },
         {
             name: '会员积分券',
@@ -39,7 +46,8 @@ const GiftCfg = {
             value: '42',
             color: '#84aac6',
             category: 'secondary',
-            tags: ['pos', '新微信']
+            tags: ['pos', '新微信'],
+            icon: memberIcon2,
         },
         {
             name: '会员权益券',
@@ -47,7 +55,17 @@ const GiftCfg = {
             value: '80',
             category: 'secondary',
             color: '#84aac6',
-            tags: ['新微信']
+            tags: ['新微信'],
+            icon: memberIcon3,
+        },
+        {
+            name: '实物礼品券',
+            describe: '顾客获取后，线下展示券密码验证核销使用',
+            value: '30',
+            color: '#e5be6c',
+            category: 'secondary',
+            tags: ['pos', '新微信'],
+            icon: realityGiftIcon,
         },
         {
             name: '礼品定额卡',
@@ -55,14 +73,8 @@ const GiftCfg = {
             value: '90',
             color: '#c49b79',
             category: 'secondary',
+            view: 'card', // 卡片视图
             tags: ['pos', '新微信']
-        },
-        {
-            name: '活动券',
-            describe: '添加礼品的时候，在礼品信息里面增加券对应的基础营销活动的编码',
-            value: '100',
-            color: '#c49b79',
-            tags: ['pos']
         },
         {
             name: '线上礼品卡',
@@ -70,6 +82,7 @@ const GiftCfg = {
             value: '91',
             color: '#84aac6',
             category: 'secondary',
+            view: 'card', // 卡片视图
             tags: ['微信小程序']
         },
         {
@@ -89,12 +102,14 @@ const GiftCfg = {
             color: '#c49b79'
         },
         {
-            name: '实物礼品券',
-            describe: '顾客获取后，线下展示券密码验证核销使用',
-            value: '30',
+            name: '现金红包',
+            describe: '微信现金红包，可通过活动发送现金红包给指定用户',
+            value: '113',
             color: '#e5be6c',
             category: 'secondary',
-            tags: ['pos', '新微信']
+            tags: ['新微信'],
+            view: 'redpacket', // 红包视图
+            icon: redPacketIcon,
         },
     ],
     giftTypeName: [
@@ -107,10 +122,10 @@ const GiftCfg = {
         { label: '会员积分券', value: '42' },
         { label: '会员权益券', value: '80' },
         { label: '礼品定额卡', value: '90' },
-        { label: '活动券', value: '100' },
         { label: '线上礼品卡', value: '91' },
         { label: '买赠券', value: '110' },
         { label: '折扣券', value: '111' },
+        { label: '现金红包', value: '113' },
     ],
     transferType: [
         { label: '不可转赠', value: 0 },
@@ -167,10 +182,9 @@ const GiftCfg = {
         { label: '显示', value: 0 },
         { label: '不显示', value: 1 },
     ],
-    moneyLimitType: [
-        { label: '不限', value: '0' },
-        { label: '每满', value: '1' },
-        { label: '满', value: '2' },
+    isOnlineExchangeable: [
+        { label: '关闭', value: 0 },
+        { label: '开启', value: 1 },
     ],
     isFoodCatNameList: [
         { label: '按菜品', value: '0' },
@@ -221,6 +235,7 @@ const GiftCfg = {
         { value: '118', label: '评价送礼' },
         { value: '119', label: '赠送领取' },
         { value: '120', label: '关注送礼' },
+        { value: '121', label: '集点卡' },
         { value: '3010', label: '基础营销消费返券' },
         { value: '3011', label: '批量生成' },
     ],
@@ -256,6 +271,15 @@ const GiftCfg = {
         { value: '2', label: '转赠中' },
         { value: '3', label: '过期' },
         { value: '4', label: '注销 ' },
+    ],
+    redPacketStatus: [ // 现金红包
+        { value: '', label: '全部' },
+        { value: '1', label: '发送中' },
+        { value: '2', label: '已发放待领取' },
+        { value: '3', label: '发放失败' },
+        { value: '4', label: '已领取 ' },
+        { value: '5', label: '退款中' },
+        { value: '6', label: '已退款 ' },
     ],
     giftUsedStatus: [
         { value: '', label: '全部' },

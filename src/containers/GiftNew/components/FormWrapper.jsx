@@ -5,7 +5,7 @@ import GiftAddModalStep from "../GiftAdd/GiftAddModalStep";
 import GiftAddModal from "../GiftAdd/GiftAddModal";
 
 const complexGifts = [ '10', '20', '21', '80', '91', '100', '110', '111' ];
-const simpleGifts = [ '30', '40', '42', '90' ];
+const simpleGifts = [ '30', '40', '42', '90', '113' ];
 
 class FormWrapper extends Component {
     constructor(props) {

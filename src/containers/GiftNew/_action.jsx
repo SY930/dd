@@ -69,7 +69,7 @@ export const FetchGiftList = (opts, isAllGifts) => {
         dispatch(getGiftListBegin(true));
         return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 dispatch(
                     isAllGifts ?
@@ -187,7 +187,7 @@ export const getGiftSchemaSuccessAC = (opt) => {
 };
 export const FetchGiftSchema = (opts) => {
     return (dispatch) => {
-        return axiosData('/crm/groupShopService_findSchemaShopcenter.ajax', {}, {}, {path: 'data.shops'})
+        return axiosData('/crm/groupShopService_findSchemaShopcenterNew.ajax', {}, {}, {path: 'data.shops'})
             .then((records) => {
                 dispatch(getGiftSchemaSuccessAC({
                     payload: {
@@ -293,7 +293,7 @@ export const FetchSendorUsedList = (opts) => {
         if (!opts.isSend) {
             sendOrUsageCountParam.giftStatus = 2;
         }
-        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'})
+        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(total => {
                 if (!opts.isSend) {
                     dispatch(getUsedTotalCountSuccessAC(total))
@@ -310,7 +310,7 @@ export const FetchSendorUsedList = (opts) => {
             })
         return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 if (opts.isSend) {
                     dispatch(getSendListSuccessAC({
@@ -370,7 +370,7 @@ export const FetchGiftSort = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data.crmGiftTypes',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((records) => {
             dispatch(getGiftSortSuccessAC({
                 payload: {
@@ -395,7 +395,7 @@ export const FetchSharedGifts = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((records) => {
                 dispatch(getSharedGiftsSuccessAC({
                     payload: {
@@ -483,7 +483,7 @@ export const queryCouponShopList = (opts) => {
     return (dispatch) => {
         return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((response) => {
                 console.log(response)
             })

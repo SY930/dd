@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Select, Radio, Button, Icon } from 'antd';
+import { Row, Col, Form, Select, Radio, Button, Icon, Checkbox } from 'antd';
 import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 import {
@@ -241,6 +241,28 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
+    renderBirthdayLimit() {
+        const { birthdayLimit } = this.props;
+        return (
+            <FormItem
+                label="其他限制"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <div style={{ paddingTop: 6 }}>
+                    <Checkbox
+                        checked={!!birthdayLimit}
+                        onChange={e => this.props.setPromotionDetail({
+                            birthdayLimit: +e.target.checked,
+                        })}
+                    >
+                        仅限生日当天参与
+                    </Checkbox>
+                </div>
+            </FormItem>
+        )
+    }
 
     onPromotionChange(val) {
         this.setState({
@@ -436,6 +458,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         >
                            <Select
                                 size={'default'}
+                                notFoundContent={'未搜索到结果'}
                                 multiple={true}
                                 showSearch={true}
                                 value={cardScopeIDs}
@@ -466,6 +489,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     ?
                                     (<Select
                                         size={'default'}
+                                        notFoundContent={'未搜索到结果'}
                                         multiple={true}
                                         showSearch={true}
                                         value={cardScopeIDs}
@@ -530,6 +554,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         this.renderPaymentSetting($promotionDetail)
                         : null
                 }
+                { promotionType === '3020' && this.renderBirthdayLimit()}
                 {_stash ? null : this.renderExcludedPromotionBlackList()}
                 {_stash ? null : this.renderExcludedPromotionSelection()}
                 {
@@ -545,6 +570,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
 const mapStateToProps = (state) => {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        birthdayLimit: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'birthdayLimit'], 0),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),

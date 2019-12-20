@@ -71,6 +71,12 @@ const FORMITEMS = {
         defaultValue: 0,
         options: GiftCfg.showGiftRule,
     },
+    isOnlineExchangeable: {
+        label: '允许线上通过券码兑换',
+        type: 'radio',
+        defaultValue: 0,
+        options: GiftCfg.isOnlineExchangeable,
+    },
     giftShareType: {
         label: (
             <span>
@@ -94,31 +100,23 @@ const FORMITEMS = {
         defaultValue: '1',
         options: GiftCfg.shareType,
     },
-    moneyLimitType: {
-        label: '金额限制',
-        type: 'combo',
-        options: GiftCfg.moneyLimitType,
-        defaultValue: '0',
-    },
-    moenyLimitValue: {
-        label: ' ',
-        type: 'text',
-        defaultValue: '100',
-        placeholder: '请输入金额',
-        surfix: '元，使用一张',
-        rules: [{
-            required: true,
-            validator: (rule, v, cb) => {
-                if ((!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) || v <= 0) {
-                    cb(rule.message);
-                }
-                cb();
-            },
-            message: '整数不超过8位，小数不超过2位，必须大于0',
-        }],
-    },
     maxUseLimit: {
         label: '一笔订单最多使用',
+        type: 'text',
+        placeholder: '不填表示不限制',
+        surfix: '张',
+        rules: [{
+            validator: (rule, v = '', cb) => {
+                if (/^(?:[1-9][0-9]{0,5})?$/.test(v)) {
+                    return cb()
+                }
+                cb(rule.message);
+            },
+            message: '张数范围1~999999'
+        }],
+    },
+    customerUseCountLimit: {
+        label: '会员单天使用张数限制',
         type: 'text',
         placeholder: '不填表示不限制',
         surfix: '张',
@@ -462,8 +460,10 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
+                'customerUseCountLimit',
                 'shopNames',
                 'amountType',
                 'showGiftRule',
@@ -487,8 +487,9 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
@@ -511,8 +512,9 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
@@ -580,6 +582,7 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
                 'shopNames',
                 'showGiftRule',
@@ -601,8 +604,9 @@ const SECOND_KEYS = (() => ({
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
+                'isOnlineExchangeable',
                 'giftShareType',
-                'moneyLimitType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',

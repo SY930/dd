@@ -1,22 +1,85 @@
 import React, { Component } from 'react';
-import { InputNumber } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultEnterImg from './assets/recommend1.png'
-import defaultEndImg from './assets/recommend2.png'
-import giftExample from './assets/gift-example.png'
-import tagImg from './assets/tag.svg'
-import ButtonSettingBlock from './ButtonSettingBlock'
+import {
+    iphone,
+    freeGift,
+    freeGift1,
+    freeGift2,
+    giftExample,
+    phoneTop,
+} from './assets';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 
 export default class FreeGiftDecorationBoard extends Component {
 
     renderPhonePreview() {
+        const {
+            decorationInfo: {
+                activeBg = '#FFE7DC',
+                btnBg = '#FCEAAA',
+                btnTextColor = '#BD5914',
+                tagBg = '#FF7E60',
+                tagTextColor = '#FDFDFF',
+                listBorderColor = '#FC988A',
+                activeImg,
+            },
+        } = this.props;
         return (
             <div className={style.previewArea}>
-                <img src={phoneImg} alt=""/>
+                <div className={style.scrollTip}>
+                    滚动鼠标查看活动
+                </div>
+                <div className={style.typeTitle}>
+                    免费领取
+                </div>
+                <img src={iphone} alt=""/>
+                <img className={style.fakeHeader} src={phoneTop} alt=""/>
+                <div style={{ background: activeBg, paddingTop: 80 }} className={style.scrollArea}>
+                    <img style={{ width: '100%', position: 'absolute', top: 0 }} src={activeImg || freeGift} alt=""/>
+                    <div style={{ position: 'relative', zIndex: 1, margin: '8px 0', textAlign: 'center', color: '#ED6648' }}>
+                        活动日期：2019.09.10~2019.11.12
+                    </div>
+                    <img style={{ position: 'relative', zIndex: 1, display: 'block', margin: '10px auto', width: 254 }} src={freeGift1} alt=""/>
+                    <img style={{ position: 'absolute', zIndex: 1, display: 'block', top: 196, left: 49, width: 185 }} src={giftExample} alt=""/>
+                    <div style={{ borderRadius: 20, background: btnBg, color: btnTextColor}} className={style.freeButton}>
+                        免费领取
+                    </div>
+                    <div style={{ position: 'relative', borderColor: listBorderColor }} className={style.friendZone}>
+                        <div
+                            style={{
+                                transform: 'scale(0.25)',
+                                transformOrigin: 'top left',
+                                position: 'absolute',
+                                top: -5,
+                                left: 54,
+                            }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="594" height="95" viewBox="0 0 594 95">
+                                <path fill={tagBg} d="M3203,1613v43a30,30,0,0,1-30,30H2659a30,30,0,0,1-30-30v-43h-10l10-22h574l10,22h-10Z" transform="translate(-2619 -1591)"/>
+                            </svg>
+                        </div>
+                        <div
+                            style={{
+                                color: tagTextColor,
+                                position: 'absolute',
+                                top: -1,
+                                left: 97,
+                            }}
+                        >
+                            其他小伙伴
+                        </div>
+                        <img
+                            src={freeGift2}
+                            alt=""
+                            style={{
+                                display: 'block',
+                                width: 210,
+                                margin: '35px auto 0',
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
         )
     }
@@ -24,13 +87,13 @@ export default class FreeGiftDecorationBoard extends Component {
     renderSettingPanel() {
         const {
             decorationInfo: {
-                activeBg = '#FD6631',
-                btnBg = '#FFC455',
-                btnTextColor = '#CB4408',
-                tagBg = '#FA5F3F',
-                tagTextColor = '#DCDCDC',
-                listBorderColor = '#DCDCDC',
-                btnRadius = 50,
+                activeBg = '#FFE7DC',
+                btnBg = '#FCEAAA',
+                btnTextColor = '#BD5914',
+                tagBg = '#FF7E60',
+                tagTextColor = '#FDFDFF',
+                listBorderColor = '#FC988A',
+                activeImg,
             },
             onChange,
         } = this.props;
@@ -44,7 +107,8 @@ export default class FreeGiftDecorationBoard extends Component {
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
-                            limit={1000}
+                            limit={0}
+                            value={activeImg}
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
                         <div className={style.uploaderTip}>
@@ -75,14 +139,6 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        <span>圆角弧度</span>
-                        <InputNumber
-                            style={{ width: 82 }}
-                            min={0}
-                            max={50}
-                            value={btnRadius}
-                            onChange={(value) => onChange({key: ['btnRadius'], value})}
-                        />
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
@@ -93,16 +149,10 @@ export default class FreeGiftDecorationBoard extends Component {
                             <WrappedColorPicker
                                 alpha={100}
                                 color={tagBg}
-                                onChange={({ color }) => onChange({key: ['tagBg'], value: color})}
-                                placement="topLeft"
-                            />
-                        </div>
-                        <span>文字颜色</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={tagTextColor}
-                                onChange={({ color }) => onChange({key: ['tagTextColor'], value: color})}
+                                onChange={({ color }) => {
+                                    onChange({key: ['tagBg'], value: color});
+                                    onChange({key: ['listBorderColor'], value: color})
+                                }}
                                 placement="topLeft"
                             />
                         </div>
@@ -112,6 +162,15 @@ export default class FreeGiftDecorationBoard extends Component {
                                 alpha={100}
                                 color={listBorderColor}
                                 onChange={({ color }) => onChange({key: ['listBorderColor'], value: color})}
+                                placement="topLeft"
+                            />
+                        </div>
+                        <span>文字颜色</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={tagTextColor}
+                                onChange={({ color }) => onChange({key: ['tagTextColor'], value: color})}
                                 placement="topLeft"
                             />
                         </div>

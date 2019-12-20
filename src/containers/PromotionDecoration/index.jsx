@@ -18,6 +18,7 @@ import CommentSendGiftDecorationBoard from './CommentSendGiftDecorationBoard';
 import ExpasionGiftDecorationBoard from './ExpasionGiftDecorationBoard';
 import ShareGiftDecorationBoard from './ShareGiftDecorationBoard';
 import FreeGiftDecorationBoard from './FreeGiftDecorationBoard';
+import LotteryDecorationBoard from './LotteryDecorationBoard';
 import {
     getDecorationInfo,
     saveDecorationInfo,
@@ -63,6 +64,9 @@ export default class PromotionDecoration extends Component {
         }
         this.props.getDecorationInfo({type, id})
     }
+    componentWillUnmount() {
+        this.props.resetDecorationInfo();
+    }
 
     handleCancel = () => {
         closePage();
@@ -87,7 +91,7 @@ export default class PromotionDecoration extends Component {
     }
 
     renderHeader() {
-        const { loading, title } = this.props;
+        const { loading, type, title } = this.props;
         return (
             <div className={style.flexHeader} >
                 <span className={style.title} >
@@ -102,14 +106,20 @@ export default class PromotionDecoration extends Component {
                 >
                     返回
                 </Button>
-                <Button
-                    type="ghost"
-                    loading={loading}
-                    onClick={this.handleReset}
-                    style={{ marginRight: 12 }}
-                >
-                    恢复默认
-                </Button>
+                {/** 膨胀大礼包的恢复默认在内部 */}
+                {
+                    type !== '66' && (
+                        <Button
+                            type="ghost"
+                            loading={loading}
+                            onClick={this.handleReset}
+                            style={{ marginRight: 12 }}
+                        >
+                            恢复默认
+                        </Button>
+                    )
+                }
+                
                 <Button
                     type="primary"
                     loading={loading}
@@ -124,6 +134,8 @@ export default class PromotionDecoration extends Component {
     renderContent() {
         const { type, decorationInfo, updateDecorationItem } = this.props;
         switch (type) {
+            case '20':
+                return <LotteryDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '21':
                 return <FreeGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '23':
@@ -133,7 +145,7 @@ export default class PromotionDecoration extends Component {
             case '65':
                 return <ShareGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '66':
-                return <ExpasionGiftDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+                return <ExpasionGiftDecorationBoard onReset={this.handleReset} onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }

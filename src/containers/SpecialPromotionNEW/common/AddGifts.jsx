@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { DatePicker, Radio, Form, Select, Input, Icon } from 'antd';
+import { DatePicker, Radio, Form, Select, Input, Icon, Popconfirm } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import selfStyle from './addGifts.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import ExpandTree from './ExpandTree';
 import _ from 'lodash';
@@ -76,14 +77,11 @@ class AddGifts extends React.Component {
         super(props);
         this.uuid = 0;
         this.state = {
-            giftTreeData: [],
+            ...this.initGiftInfo(),
             infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
             maxCount: this.props.maxCount || 3,
-            giftInfo: [],
         };
 
-        this.renderItems = this.renderItems.bind(this);
-        this.renderBlockHeader = this.renderBlockHeader.bind(this);
         this.handlegiftTotalCountChange = this.handlegiftTotalCountChange.bind(this);
         this.handlegiftCountChange = this.handlegiftCountChange.bind(this);
         this.add = this.add.bind(this);
@@ -98,18 +96,24 @@ class AddGifts extends React.Component {
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
     }
 
+    initGiftInfo = (props = this.props) => {
+        let giftInfo;
+        try {
+            giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
+                .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
+        } catch (err) {
+            giftInfo = [];
+        }
+        return {
+            giftTreeData: this.proGiftTreeData(giftInfo),
+            giftInfo,
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'initialized'])) {
-            let giftInfo;
-            try {
-                giftInfo = nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
-                    .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
-            } catch (err) {
-                giftInfo = [];
-            }
+        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {        
             this.setState({
-                giftTreeData: this.proGiftTreeData(giftInfo),
-                giftInfo,
+                ...this.initGiftInfo(nextProps)
             });
         }
     }
@@ -159,13 +163,21 @@ class AddGifts extends React.Component {
     }
 
     render() {
+        const { type, isAttached } = this.props;
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
-        // 桌边砍可以主动加蒙层
+        // 桌边砍, 集点卡编辑时可以主动加蒙层
         const disabledGifts = this.props.disabledGifts;
         return (
-            <div className={styles.giftWrap}>
+            <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
+                { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
+                    (this.state.infos.length < 10 && type != '66' && type != '21') && (
+                        <div className={selfStyle.addLink} onClick={this.add}>
+                            + 添加礼品
+                        </div>
+                    )
+                }
                 <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div>
             </div>
         );
@@ -175,7 +187,6 @@ class AddGifts extends React.Component {
     renderItems() {
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
-        const arr = ['一等奖', '二等奖', '三等奖', '四等奖', '五等奖', '六等奖', '七等奖', '八等奖', '九等奖', '十等奖'];
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const toggle = !disArr[index];
@@ -183,7 +194,7 @@ class AddGifts extends React.Component {
             disArr[index] = toggle;
             this.setState({ disArr })
         }
-        return this.state.infos.map((info, index) => {
+        return this.state.infos.map((info, index, arr) => {
             let validateStatus,
                 addonBefore,
                 help,
@@ -203,13 +214,17 @@ class AddGifts extends React.Component {
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
             return (
-                <Form className={styles.addGrade} key={index}>
-                    <div className={styles.CategoryTop}>
-                        <span className={styles.CategoryTitle}>{this.props.type == '20' ? `礼品【${arr[index]}】` : `礼品${index + 1}`}</span>
-                        {this.props.type != '66' && this.renderBlockHeader(index)}
+                <div key={`${index}`} className={selfStyle.giftWrapper}>
+                    <div className={selfStyle.giftNoLabel}>
+                        {`礼品${index + 1}`}
                     </div>
-
-                    <div className={styles.CategoryBody}>
+                    {
+                        (arr.length > 1 && this.props.type != '66') && (
+                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.remove(index)}>
+                                <Icon className={selfStyle.removeButton} type="close-circle" />
+                            </Popconfirm>
+                        )
+                    }
                         {/* 膨胀需要人数, 只有膨胀大礼包的2 3 档需要 */}
                         {
                             (this.props.type == '66' && index > 0)  && (
@@ -261,7 +276,7 @@ class AddGifts extends React.Component {
                                 />
                                 <Icon
                                     type="down"
-                                    style={{ position: 'absolute', top: 10, left: 265 }}
+                                    style={{ position: 'absolute', top: 10, left: 250 }}
                                     className="input_click"
                                     onClick={() => { toggleFun(index); }}
                                 />
@@ -277,7 +292,7 @@ class AddGifts extends React.Component {
                         >
                             <PriceInput
                                 addonBefore={addonBefore}
-                                maxNum={10}
+                                maxNum={9}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter="个"
@@ -304,30 +319,7 @@ class AddGifts extends React.Component {
                         </FormItem>
 
                         {this.renderValidOptions(info, index)}
-                        {/* ....... */}
-                        {/* 中奖比率 */}
-                        {
-                            this.props.type == '20' ?
-                                (
-                                    <FormItem
-                                        className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
-                                        validateStatus={info.giftOdds.validateStatus}
-                                        help={info.giftOdds.msg}
-                                    >
-                                        <PriceInput
-                                            addonBefore="中奖比率"
-                                            addonAfter="%"
-                                            modal="float"
-                                            value={{ number: info.giftOdds.value }}
-                                            onChange={(val) => { this.handleGiftOddsChange(val, index); }}
-                                        />
-                                    </FormItem>
-                                ) : null
-                        }
-
                     </div>
-
-                </Form>
             );
         });
     }
@@ -354,12 +346,12 @@ class AddGifts extends React.Component {
         const _infos = this.state.infos;
         _infos[index].giftValidDays.value = val.number;
         const _value = val.number || 0;
-        if (_value > 0 && _value <= 36500) {
+        if (_value > 0) {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0, 小于等于36500';
+            _infos[index].giftValidDays.msg = '有效天数必须大于0';
         }
         this.setState({
             infos: _infos,
@@ -498,7 +490,7 @@ class AddGifts extends React.Component {
                         <PriceInput
                             addonBefore=""
                             addonAfter="天"
-                            maxNum={10}
+                            maxNum={5}
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
@@ -620,7 +612,7 @@ class AddGifts extends React.Component {
             _infos[index].giftTotalCount.msg = null;
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
-            _infos[index].giftTotalCount.msg = '礼品总数必须大于0, 小于等于10亿';
+            _infos[index].giftTotalCount.msg = '礼品总数必须大于0';
         }
         this.setState({
             infos: _infos,
@@ -668,7 +660,7 @@ class AddGifts extends React.Component {
             return (
                 <span>
                     <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>
-                    <span className={styles.CategoryAdd} onClick={this.add}>{this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>
+                    <span className={styles.CategoryAdd} onClick={this.add}>{'添加礼品'}</span>
                 </span>
             );
         }

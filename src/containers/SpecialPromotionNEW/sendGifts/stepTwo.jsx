@@ -261,6 +261,7 @@ class StepTwo extends React.Component {
                     })(
                         <Select
                             showSearch
+                            notFoundContent={'未搜索到结果'}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             style={{ width: '100%' }}
                             placeholder="请选择会员群体"

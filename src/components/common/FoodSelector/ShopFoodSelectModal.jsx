@@ -14,11 +14,11 @@ import { isProfessionalTheme } from '../../../helpers/util'
 const CATEGORY_TYPES = [
     {
         value: '0',
-        label: '常规分类',
+        label: 'POS菜品分类',
     },
     {
         value: '1',
-        label: '线上分类',
+        label: '线上菜品分类',
     },
 ]
 

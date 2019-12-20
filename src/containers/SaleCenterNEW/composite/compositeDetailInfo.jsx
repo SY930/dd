@@ -21,7 +21,6 @@ class CompositeDetailInfo extends React.Component {
         super(props);
         this.defaultRun = '0';
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-        console.log('_scopeLst', _scopeLst)
         this.state = {
             display: false,
             // data 用来存放 条件中的菜品信息
@@ -40,7 +39,6 @@ class CompositeDetailInfo extends React.Component {
                 },
             ],
         };
-        console.log('this.state.data', this.state.data)
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.renderPromotionSetting = this.renderPromotionSetting.bind(this);
@@ -101,7 +99,6 @@ class CompositeDetailInfo extends React.Component {
             ];
         }
         const data = [];
-        console.log(scopeLst)
         scopeLst.map((scope) => {
             debugger;
             if (!data[scope.stageNo]) {
@@ -121,7 +118,6 @@ class CompositeDetailInfo extends React.Component {
                 brandID: scope.brandID ? `${scope.brandID}` : '0',
             });
         })
-        console.log('data111', data)
         return data;
     }
 

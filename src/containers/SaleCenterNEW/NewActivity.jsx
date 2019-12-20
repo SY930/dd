@@ -199,10 +199,6 @@ class NewActivity extends React.Component {
                 return (
                     <div
                         key={`NewActivity${index}`}
-                        style={{
-                            display: (this.props.user.shopID > 0 && activity.key === '5010') ?
-                                'none' : 'block',
-                        }}
                     >
                         <Authority rightCode={BASIC_PROMOTION_CREATE}>
                             <NewPromotionCard
@@ -226,7 +222,7 @@ class NewActivity extends React.Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={(promotionType || '').endsWith('活动') ? `创建${promotionType}` : `创建${promotionType}活动`}
+                title={`创建${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{

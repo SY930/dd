@@ -66,6 +66,7 @@ class SelectCardTypes extends Component {
                     <FormItem required style={{ marginBottom: 0 }}>
                         <Select
                             placeholder="默认全部适用"
+                            notFoundContent={'未搜索到结果'}
                             multiple={true}
                             allowClear={true}
                             showSearch={false}

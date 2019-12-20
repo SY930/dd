@@ -28,9 +28,10 @@ class SpecialRangeInfo extends React.Component {
             rewardOnly: 1, // 是否用于打赏
             deductPoints: 0, // 扣减积分数
             sendPoints: 0, // 赠送积分数
-            wechatEventListCheck: '0', // 是否在微信会员卡活动列表领取
-            wechatOrderCheck: '0', // 是否在微信点菜界面领取
-            giftLinkCheck: '0', // 是否可被投放链接
+            // wechatEventListCheck: '0', // 是否在微信会员卡活动列表领取
+            // wechatOrderCheck: '0', // 是否在微信点菜界面领取
+            // giftLinkCheck: '0', // 是否可被投放链接
+            // sourceType: '0', // 彩蛋猫
             sendPointsStatus: 'success',
             countCycleDays: 0, // 参与周期
             countCycleDaysStatus: 'success',
@@ -96,6 +97,9 @@ class SpecialRangeInfo extends React.Component {
             }
             if (specialPromotion.giftLinkCheck != '0') {
                 freeGetJoinRange.push('3');
+            }
+            if (specialPromotion.sourceType != '0') {
+                freeGetJoinRange.push('4');
             }
             if (specialPromotion.wechatOrderCheck != '0') {
                 freeGetJoinRange.push('1');
@@ -222,7 +226,6 @@ class SpecialRangeInfo extends React.Component {
             }
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
         }
-        // 由于redux里面存的可能是所有字段,所以修改的时候需要把之前设置过,现在要取消的东西初始化
 
         if (nextFlag) {
             if (joinRange.indexOf('0') !== -1 || freeGetJoinRange.indexOf('2') !== -1) {
@@ -242,9 +245,14 @@ class SpecialRangeInfo extends React.Component {
                     opts.wechatOrderCheck = '0';
                 }
                 if (freeGetJoinRange.indexOf('3') !== -1) {
-                    opts.giftLinkCheck = '1';// 是否在微信点菜界面领取
+                    opts.giftLinkCheck = '1';
                 } else {
                     opts.giftLinkCheck = '0';
+                }
+                if (freeGetJoinRange.indexOf('4') !== -1) {
+                    opts.sourceType = '1';
+                } else {
+                    opts.sourceType = '0';
                 }
             }
             if (joinRange.indexOf('1') !== -1) {
@@ -316,6 +324,7 @@ class SpecialRangeInfo extends React.Component {
             // { label: '微信点菜界面领取', value: '1' },
             { label: '打赏活动领取', value: '2' },
             { label: '礼品链接投放', value: '3' },
+            { label: '彩蛋猫', value: '4' },
         ];
         // 因为开发线上领取新功能，去掉{ label: '微信点菜界面领取', value: '1' },
         const idx = this.state.freeGetJoinRange.findIndex((value) => {
@@ -363,16 +372,17 @@ class SpecialRangeInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label={this.props.type === '21' ? '参与积分' : '参与范围'}
+                    
                     labelCol={{ span: 4 }}
                     className={styles.noPadding}
                     wrapperCol={{ span: 20 }}
                 >
                 </FormItem>
                 <FormItem
-                    label=""
+                    label={this.props.type === '21' ? '参与积分' : '参与范围'}
                     className={styles.noPadding}
-                    wrapperCol={{ span: 17, offset: 4 }}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
                 >
                     <CheckboxGroup options={this.props.type === '30' || this.props.type === '22' || this.props.type === '21' ? optionTwo : options} value={this.state.joinRange} onChange={this.handleJoinRangeChange} />
                     <div className={styles.deduct}>
@@ -415,13 +425,7 @@ class SpecialRangeInfo extends React.Component {
                     label={'参与次数'}
                     className={styles.noPadding}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 20 }}
-                >
-                </FormItem>
-                <FormItem
-                    label={''}
-                    className={styles.noPadding}
-                    wrapperCol={{ span: 17, offset: 4 }}
+                    wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup value={this.state.joinCount} onChange={this.handleJoinCountChange}>
                         <Radio style={radioStyle} value={'0'}>不限次数</Radio>

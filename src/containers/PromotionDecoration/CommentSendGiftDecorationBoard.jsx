@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Tabs, Button, Icon } from 'antd';
+import CropperUploader from 'components/common/CropperUploader'
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
-import phoneImg from './assets/iphone.png';
-import defaultEnterImg from './assets/recommend1.png'
-import defaultEndImg from './assets/recommend2.png'
-import giftExample from './assets/gift-example.png'
+import {
+    iphone,
+    giftExample,
+    recommend1 as defaultEnterImg,
+    recommend2 as defaultEndImg,
+} from './assets';
 import tagImg from './assets/tag.svg'
 
 const { TabPane } = Tabs;
@@ -28,7 +31,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div className={style.previewArea}>
-                <img src={phoneImg} alt=""/>
+                <img src={iphone} alt=""/>
                 {
                     tabKey === '2' ? (
                         <div className={style.simpleDisplayBlock}>
@@ -80,15 +83,19 @@ export default class CommentSendGiftDecorationBoard extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
-                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                        <DecorationUploader
+                    <div style={{ width: 500 }} className={style.uploaderWrapper}>
+                        <CropperUploader
+                            isAbsoluteUrl={true}
                             limit={1000}
+                            value={endImg}
+                            cropperRatio={920 / 360}
+                            width={245}
                             onChange={value => onChange({key: ['endImg'], value})}
                         />
                         <div className={style.uploaderTip}>
                             <p>* 图片大小不要超过1000KB</p>
                             <p>* 建议尺寸920x360像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                            <p>* 支持JPG、PNG图片文件</p>
                         </div>
                     </div>
                 </div>
@@ -114,8 +121,11 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                 <div className={style.sectionWrapper}>
                                     <div style={{ top: 30 }} className={style.label}>活动主图</div>
                                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                                        <DecorationUploader
+                                        <CropperUploader
+                                            isAbsoluteUrl={true}
+                                            cropperRatio={920 / 1346}
                                             limit={1000}
+                                            value={enterImg}
                                             onChange={value => onChange({key: ['enterImg'], value})}
                                         />
                                         <div className={style.uploaderTip}>

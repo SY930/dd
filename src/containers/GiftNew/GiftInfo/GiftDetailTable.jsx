@@ -4,13 +4,15 @@ import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import {throttle} from 'lodash';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, fetchData } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
+import SelectBrands from '../components/SelectBrands'
 import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
 import styles2 from '../../SaleCenterNEW/ActivityPage.less';
 import GiftDetailModal from './GiftDetailModal';
+import RedPacketDetailModal from './RedPacketDetailModal';
 import QuatoCardDetailModal from './QuatoCardDetailModal';
 import GiftAddModal from '../GiftAdd/GiftAddModal';
 import GiftAddModalStep from '../GiftAdd/GiftAddModalStep';
@@ -18,7 +20,6 @@ import ExportModal from './ExportModal';
 import { COLUMNS } from './_tableListConfig';
 import {
     FetchGiftList,
-    FetchSendorUsedList,
     UpdateBatchNO,
     UpdateDetailModalVisible,
     FetchSharedGifts,
@@ -54,6 +55,7 @@ class GiftDetailTable extends Component {
             createModalVisible: false,
             data: {},
             dataSource: [],
+            brands: [],
             editGift: { describe: '', value: '' },
             loading: true,
             queryParams: {
@@ -83,11 +85,11 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
-                            <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
-                            <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
-                        </span>
+                        <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
+                        <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
+                    </span>
                 )
             },
         });
@@ -101,6 +103,15 @@ class GiftDetailTable extends Component {
             pageSize: 20,
         }).then((data = []) => {
             this.proGiftData(data);
+        });
+        fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' })
+        .then((data) => {
+            if (!data) return;
+            const brands = [];
+            data.map((d) => {
+                brands.push({ value: d.brandID, label: d.brandName })
+            });
+            this.setState({ brands });
         });
         this.props.queryWechatMpInfo();
         this.onWindowResize();
@@ -222,6 +233,8 @@ class GiftDetailTable extends Component {
             g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
             g.isDiscountRate = g.discountRate < 1;
             g.isPointRate = g.pointRate > 0;
+            // 现金红包相关字段合并
+            g.sellerCode = g.settleId ? `${g.settleId}:${g.merchantNo}:${g.settleName}` : undefined;
             // 金豆商城字段和vivo快应用字段合并
             g.aggregationChannels = [];
             g.goldGift && g.aggregationChannels.push('goldGift');
@@ -252,7 +265,7 @@ class GiftDetailTable extends Component {
     changeSortOrder(record, direction) {
         // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}).then(() => {
+        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
@@ -326,6 +339,7 @@ class GiftDetailTable extends Component {
         gift.data.isFoodCatNameList = gift.data.isFoodCatNameList === undefined ? '' : String(gift.data.isFoodCatNameList);
         gift.data.foodNameList = (gift.data.foodNameList || '').split(',');
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
+        gift.data.customerUseCountLimit = gift.data.customerUseCountLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
@@ -352,7 +366,13 @@ class GiftDetailTable extends Component {
                 </div>
             ),
             onOk: () => {
-                axiosData('/coupon/couponService_removeBoard.ajax', { giftItemID }, { needThrow: true, needCode: true }, { path: '' }).then((data) => {
+                axiosData(
+                    '/coupon/couponService_removeBoard.ajax',
+                    { giftItemID },
+                    { needThrow: true, needCode: true },
+                    { path: '' },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW',
+                ).then((data) => {
                     if (data.code === '000') {
                         message.success('此礼品删除成功');
                         const { queryParams } = this.state;
@@ -424,12 +444,12 @@ class GiftDetailTable extends Component {
         this.setState({ visibleDetail: true, data: { ...rec } });
         const { UpdateDetailModalVisible } = this.props;
         UpdateDetailModalVisible({ visible: true });
-        const { FetchSendorUsedList } = this.props;
-        const { giftType, giftItemID } = rec;
-        if (giftType !== '90') {
-            FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
-            giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
-        }
+        // const { FetchSendorUsedList } = this.props;
+        // const { giftType, giftItemID } = rec;
+        // if (giftType !== '90') {
+        //     FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
+        //     giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+        // }
     }
     handleGenerateLink(record) {
         this.setState({
@@ -507,6 +527,8 @@ class GiftDetailTable extends Component {
                 case '110':
                 case '111':
                     return (<GiftDetailModal {...detailProps} />);
+                case '113':
+                    return (<RedPacketDetailModal {...detailProps} />);
                 case '90':
                     return <QuatoCardDetailModal {...detailProps} />;
                 default:
@@ -526,6 +548,18 @@ class GiftDetailTable extends Component {
                 options: GiftCfg.giftTypeName,
                 props: {
                     showSearch: true,
+                    optionFilterProp: 'children',
+                },
+            },
+            brandID: {
+                label: '所属品牌',
+                type: 'combo',
+                options: this.state.brands,
+                props: {
+                    placeholder: '全部品牌',
+                    showSearch: true,
+                    optionFilterProp: 'children',
+                    allowClear: true,
                 },
             },
             action: {
@@ -538,7 +572,7 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
-        const formKeys = ['giftName', 'giftType', 'action'];
+        const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
@@ -623,7 +657,7 @@ class GiftDetailTable extends Component {
                 </div>
 
                 <div>
-                    {GiftDetail(data.giftType)}
+                    { visibleDetail && GiftDetail(data.giftType) }
                 </div>
                 <div>
                     {GiftEdit(editGift.value)}
@@ -674,7 +708,6 @@ function mapDispatchToProps(dispatch) {
     return {
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
         startEditGift: opts => dispatch(startEditGift(opts)),
-        FetchSendorUsedList: opts => dispatch(FetchSendorUsedList(opts)),
         UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
         UpdateDetailModalVisible: opts => dispatch(UpdateDetailModalVisible(opts)),
         FetchSharedGifts: opts => dispatch(FetchSharedGifts(opts)),

@@ -19,6 +19,7 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID';
+import CollocationTableWithoutBrandID from '../common/CollocationTableWithoutBrandID';
 import RecommendTimeInterval from './RecommendTimeInterval';
 
 const FormItem = Form.Item;
@@ -291,11 +292,21 @@ class RecommendFoodDetailInfo extends React.Component {
                                         labelCol={{ span: 3 }}
                                         wrapperCol={{ span: 20 }}
                                     >      
-                                        <CollocationTableWithBrandID
-                                            prices={item.priceList}
-                                            scopes={item.scopeList}
-                                            onChange={(val) => this.handDishesChange(val, index)}
-                                        />             
+                                        {
+                                            this.props.isShopFoodSelectorMode ? (
+                                                <CollocationTableWithoutBrandID
+                                                    prices={item.priceList}
+                                                    scopes={item.scopeList}
+                                                    onChange={(val) => this.handDishesChange(val, index)}
+                                                />
+                                            ) : (
+                                                <CollocationTableWithBrandID
+                                                    prices={item.priceList}
+                                                    scopes={item.scopeList}
+                                                    onChange={(val) => this.handDishesChange(val, index)}
+                                                />
+                                            )
+                                        }
                                     </FormItem>                  
                                     <FormItem
                                         label="热销推荐"
@@ -308,7 +319,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                             this.props.form.getFieldDecorator(`priceList${index}`, {
                                                 initialValue: item.priceList.filter(item => item.stageNo == -1),
                                                 onChange: (val) =>  this.autoDishesChange(val, index)
-                                            })(<ConnectedPriceListSelector />)
+                                            })(<ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} />)
                                         }
                                     </FormItem>
                                 </div>               
@@ -323,6 +334,7 @@ class RecommendFoodDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
         $foodRuleList: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'foodRuleList']),
     }
 }

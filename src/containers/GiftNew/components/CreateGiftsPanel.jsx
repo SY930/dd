@@ -69,16 +69,38 @@ class CreateGiftsPanel extends Component {
                     </div>
                     <div className={styles.groupContainer}>
                         {
-                            secondaryGifts.map(gift => (
-                                <ClickableGiftLogo
-                                    key={gift.value}
-                                    onClick={() => {
-                                        this.handleLogoClick(gift)
-                                    }}
-                                    isPrimary={false}
-                                    data={gift}
-                                />
-                            ))
+                            secondaryGifts.map(gift => {
+                                switch (gift.view) {
+                                    case 'card': return (
+                                        <ClickableGiftCard
+                                            key={gift.value}
+                                            onClick={() => {
+                                                this.handleLogoClick(gift)
+                                            }}
+                                            data={gift}
+                                        />
+                                    );
+                                    case 'redpacket': return (
+                                        <ClickableRedPacket
+                                            key={gift.value}
+                                            onClick={() => {
+                                                this.handleLogoClick(gift)
+                                            }}
+                                            data={gift}
+                                        />
+                                    );
+                                    default: return (
+                                        <ClickableGiftLogo
+                                            key={gift.value}
+                                            onClick={() => {
+                                                this.handleLogoClick(gift)
+                                            }}
+                                            isPrimary={false}
+                                            data={gift}
+                                        />
+                                    )
+                                }
+                            })
                         }
                     </div>
                 </div>
@@ -100,6 +122,44 @@ function ClickableGiftLogo(props) {
                     ))
                 }
             </div>
+            {
+                props.data.icon && <img style={{ position: 'absolute', top: 20, right: 30 }} src={props.data.icon} alt="" />
+            }
+        </div>
+    );
+}
+function ClickableGiftCard(props) {
+    return (
+        <div onClick={props.onClick} className={styles.cardLogoContainer}>
+            <div className={styles.header}>
+                {props.data.name}
+            </div>
+            <div className={styles.tagContainer}>
+                {
+                    (props.data.tags || []).map(tag => (
+                        <div key={tag}>{tag}</div>
+                    ))
+                }
+            </div>
+        </div>
+    );
+}
+function ClickableRedPacket(props) {
+    return (
+        <div onClick={props.onClick} className={styles.redPacketLogoContainer}>
+            <div className={styles.header}>
+                {props.data.name}
+            </div>
+            <div className={styles.tagContainer}>
+                {
+                    (props.data.tags || []).map(tag => (
+                        <div key={tag}>{tag}</div>
+                    ))
+                }
+            </div>
+            {
+                props.data.icon && <img style={{ position: 'absolute', top: 20, right: 22 }} src={props.data.icon} alt="" />
+            }
         </div>
     );
 }

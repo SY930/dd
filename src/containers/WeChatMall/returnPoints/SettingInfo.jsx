@@ -250,7 +250,7 @@ class SettingInfo extends React.Component {
                                         rules: [
                                             {
                                                 validator: (rule, v, cb) => {
-                                                    if (!v || !(v.number > 0 && v.number < 100)) {
+                                                    if (!v || !(v.number > 0 && v.number <= 100)) {
                                                         return cb('比例范围0～100');
                                                     }
                                                     for (let i = 0; i < index; i ++) {

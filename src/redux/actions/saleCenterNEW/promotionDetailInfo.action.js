@@ -160,22 +160,24 @@ export const getMallGoodsAndCategories = (shopID) => {
     }
 }
 
-export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
+export const fetchFoodCategoryInfoAC = (opts = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
             dispatch({
                 type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
                 payload: opts.shopID && opts.shopID > 0
             })
+            // 起reset作用
+            dispatch(getRawFoodCatgorySuccess({records: []}))
             if (opts.shopID && opts.shopID > 0) {
-                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res = []) => {
+                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
                     dispatch(getFoodCategorySuccessToProcess({records: res}))
                     dispatch(getRawFoodCatgorySuccess({records: res}))
                 }).catch(e => {
                     dispatch(fetchFoodCategoryFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'})
                     .then(
                         (records = []) => {
                             dispatch(getFoodCategorySuccessToProcess({records: records}))
@@ -194,6 +196,8 @@ export const fetchFoodCategoryInfoAC = (opts, isHuaTian, subGroupID) => {
             type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
             payload: opts.shopID && opts.shopID > 0
         })
+        // 起reset作用
+        dispatch(getRawFoodCatgorySuccess({records: []}))
         dispatch(fetchFoodCategoryStart());
         const url = opts.shopID && opts.shopID > 0 ?
   	            '/shopapi/queryShopFoodClass.svc' : '/shopapi/queryGroupFoodCategory.svc';
@@ -261,19 +265,20 @@ const fetchFoodMenuFailed = () => {
 export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
+            dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
             dispatch({
                 type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
                 payload: params.shopID && params.shopID > 0
             })
             if (params.shopID && params.shopID > 0) {
-                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res = []) => {
+                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
                     dispatch(fetchFoodMenuSuccess({records: res}))
                     dispatch(getRawFoodMenuSuccess({records: res}));
                 }).catch(e => {
                     dispatch(fetchFoodMenuFailed(e));
                 });
             } else {
-                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'})
                     .then(
                         (records = []) => {
                             dispatch(fetchFoodMenuSuccess({records}));
@@ -292,6 +297,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
             payload: params.shopID && params.shopID > 0
         })
+        dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
         if (params.shopID && params.shopID > 0) {
             return axiosData('/shopapi/queryShopFoodSubInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
             .then(
@@ -444,7 +450,7 @@ export const fetchGiftListInfoAC = (opts) => {
         });
         axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
             path: 'data',
-        })
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((responseJSON) => {
             dispatch(fetchGiftListSuccess(responseJSON))
         }).catch((error) => {

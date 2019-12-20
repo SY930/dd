@@ -176,6 +176,17 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
  */
 export const REPEAT_PROMOTION_TYPES = [
     {
+        title: '集点卡',
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: '消费后获得集点，促进会员多次消费',
+        tags: ['新微信'],
+        example: '',
+        key: '75',
+        isNew: true,
+        right: 16,
+        bottom: 6,
+    },
+    {
         title: '群发礼品',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '在最恰当的时间，送去最温馨的优惠礼品，顾客倍感惊喜',
@@ -256,6 +267,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '生日总要HAPPY一下，此时赠送礼品恰到好处的吸引客户进店消费',
         example: '',
+        tags: ['全场景'],
         key: '51',
         right: 11,
         bottom: 7,
@@ -265,6 +277,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
         example: '',
+        tags: ['全场景'],
         key: '63',
         right: 19,
         bottom: 0,
@@ -274,6 +287,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '当客人消费达到累计的次数或者金额后，商家能够赠送相应的礼品，客人体验感会更好',
         example: '',
+        tags: ['全场景'],
         key: '62',
         right: 13,
         bottom: 11,
@@ -283,6 +297,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '选择升级后的会员等级为某等级，升级后是这个等级中的，赠送礼品',
         example: '',
+        tags: ['全场景'],
         key: '61',
         right: 29,
         bottom: 2,
@@ -290,7 +305,7 @@ export const LOYALTY_PROMOTION_TYPES = [
     {
         title: '完善资料送礼',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        tags: ['小程序'],
+        tags: ['全场景'],
         text: '获取会员更详细的资料，例如生日，住址，手机号，邮箱等资料，与会员建立更多维度的维系渠道',
         example: '',
         key: '60',
@@ -340,7 +355,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '更实在的折扣优惠,常用于情侣消费,朋友消费',
         example: '例如:午餐12点-13点可乐第二份8折,第三份半价',
-        tags: ['pos'],
+        tags: ['pos', '新微信'],
         key: '1050',
         right: 15,
         bottom: 5,

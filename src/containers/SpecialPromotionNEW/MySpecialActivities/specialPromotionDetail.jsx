@@ -10,7 +10,7 @@
 
 import moment from 'moment';
 import React, { PropTypes } from 'react';
-
+import SpecialPromotionExportModal from 'containers/SpecialPromotionNEW/common/SpecialPromotionExportModal'
 import { connect } from 'react-redux';
 import {
     Modal,
@@ -36,6 +36,11 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import { axiosData } from '../../../helpers/util';
+const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+// 可导出的活动类型
+const exportablePromotionTypes = [
+    '22', // 报名活动
+];
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -104,8 +109,18 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     render() {
+        const eventEntity = this.props.record.eventInfo.data;
         return (
             <div className={styles.showInfo}>
+                {
+                    this.state.exportVisible && (
+                        <SpecialPromotionExportModal
+                            eventID={eventEntity.itemID}
+                            eventName={eventEntity.eventName}
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                    )
+                }
                 {this.renderBaseInfo()}
                 {this.renderActivityDetailInfo()}
                 {
@@ -185,7 +200,7 @@ class SpecialPromotionDetail extends React.Component {
             records = []
         }
         const way = this.state.eventInfo.data.eventWay;
-        if (way == 68) {
+        if (way == 68) { // 推荐有礼
             return (
                 <div>
                     <h5><span></span>统计信息</h5>
@@ -202,6 +217,43 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
                     </Col>
     
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if (way == 20) {
+            return (
+                <div>
+                    <h5><span></span>统计信息</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderPointsTable()}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={24}>
+                        {this.renderRedPacketsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if (way == 75) {
+            return (
+                <div>
+                    <h5><span></span>统计信息</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderCollectPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -387,17 +439,140 @@ class SpecialPromotionDetail extends React.Component {
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
     }
+    renderPointsTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送积分数',
+                dataIndex: 'sendPointAmount',
+                key: 'sendPointAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送总次数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            dataSource = [{
+                title: '赠送积分',
+                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
+    renderRedPacketsTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送红包总数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送红包金额',
+                dataIndex: 'redPackAmount',
+                key: 'redPackAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计参与人数',
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            dataSource = [{
+                title: '现金红包',
+                ...this.props.mySpecialActivities.data.eventInfo.redPackData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
 
     renderSearch() {
+        const way = this.state.eventInfo.data.eventWay;
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
                     <Col span={3}>关键字</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
                     <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
+                    {
+                        exportablePromotionTypes.includes(`${way}`) && (
+                            <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>导出</Button></Col>
+                        )
+                    }  
                 </Col>
             </div>
         )
+    }
+    renderCollectPointsTable() {
+        const columns = [
+            {
+                title: '累计获得点数',
+                dataIndex: 'total',
+                key: 'total',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '可兑换点数总计',
+                dataIndex: 'notUsedCount',
+                key: 'notUsedCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '已兑换点数总计',
+                dataIndex: 'usedCount',
+                key: 'usedCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+        try {
+            const data = this.props.mySpecialActivities.data.eventInfo.collectPointCardData || {};
+            dataSource = [{
+                ...data,
+                total: (data.usedCount || 0) + (data.notUsedCount || 0),
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
     }
 
     handleInputChange(e) {
@@ -493,6 +668,18 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
+            eventWay == 20 && ({
+                title: '获奖情况',
+                dataIndex: 'winFlag',
+                key: 'winFlag',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(level)=> {
+                    if (!level) return '--'
+                    if (level === -1) return '未中奖'
+                    return `${levelArray[level - 1]}等奖`
+                }
+            }),
             {
                 title: '参与时间',
                 dataIndex: 'joinTime',
@@ -500,6 +687,14 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 160,
             },
+            eventWay == 75 && ({
+                title: '兑换点数',
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtCenter',
+                width: 100,
+                render: joinCount => joinCount || 0,
+            }),
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({
@@ -589,7 +784,7 @@ class SpecialPromotionDetail extends React.Component {
         return (
             <Table
                 dataSource={dataSource}
-                columns={columns}
+                columns={columns.filter(Boolean)}
                 bordered={true}
                 scroll={eventWay == 68 ? {x: 1550} : {}}
                 pagination={{

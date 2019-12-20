@@ -693,6 +693,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '68',
         },
+        {
+            idx: 19,
+            title: '集点卡',
+            text: '消费后获得集点，促进会员多次消费',
+            example: '',
+            key: '75',
+        },
     ];
     return basic;
 }());
@@ -928,11 +935,9 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             excludeDishes: [], // excluded dish
             dishes: [], // selected dish
             userSetting: source.master.userType,
-            // userSetting: source.master.userType =='ALL_USER'?'0':source.master.userType =='CUSTOMER_ONLY'?'1':'2', // user setting
+            birthdayLimit: source.master.birthdayLimit,
             subjectType: source.master.subjectType == '0' ? '0' : '1', // 支付限制
-            // mutexPromotions: arrayTransformAdapter(source.master.sharedPromotionIDLst), // 不能同时进行的活动ID
             mutexPromotions: source.shareLst, // 不能同时进行的活动ID
-            // mutexSubjects: arrayTransformAdapter(source.master.excludedSubjectLst),
             role: arrayTransformAdapter(source.master.roleIDLst),
             priceLst,
             scopeLst,

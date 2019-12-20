@@ -270,6 +270,7 @@ class QuotaCardBatchSold extends React.Component {
                                     treeData={this.preProShops(shops)}
                                     placeholder="请选择售出店铺"
                                     showSearch={true}
+                                    notFoundContent={'未搜索到结果'}
                                     getPopupContainer={() => document.querySelector('.manualAdjustBalanceShopName')}
                                     // getPopupContainer={()=>this.refs.manualAdjustBalance}
                                     treeNodeFilterProp="label"

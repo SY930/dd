@@ -165,7 +165,7 @@ class WeChatMessageFormWrapper extends Component {
                         <Radio key={'1'} value={1}>跳转</Radio>
                     </RadioGroup>
                 </FormItem>
-                <Alert style={{ marginLeft: 90, width: 450, paddingRight: 8 }} type="success" message="受腾讯礼品消息模版规则限制，建议不要设置页面跳转，减少模版被投诉风险"></Alert>
+                <Alert style={{ marginLeft: 90, width: 450, paddingRight: 8 }} type="success" message="受腾讯礼品消息模板规则限制，建议不要设置页面跳转，减少模板被投诉风险"></Alert>
                 {
                     jump == 1 && (
                         <div>
@@ -273,17 +273,17 @@ class WeChatMessageFormWrapper extends Component {
             action: '/api/common/imageUpload',
             className: [styles1.avatarUploader, styles1.thinAvatarUploader].join(' '),
             accept: 'image/*',
-            beforeUpload: file => {
-                const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
-                if (!isAllowed) {
-                    message.error('仅支持png和jpeg/jpg格式的图片');
-                }
-                const isLt1M = file.size / 1024 / 1024 < 4;
-                if (!isLt1M) {
-                    message.error('图片不要大于4MB');
-                }
-                return isAllowed && isLt1M;
-            },
+            // beforeUpload: file => {
+            //     const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
+            //     if (!isAllowed) {
+            //         message.error('仅支持png和jpeg/jpg格式的图片');
+            //     }
+            //     const isLt1M = file.size / 1024 / 1024 < 4;
+            //     if (!isLt1M) {
+            //         message.error('图片不要大于4MB');
+            //     }
+            //     return isAllowed && isLt1M;
+            // },
             onChange: (info) => {
                 const status = info.file.status;
                 if (status === 'done' && info.file.response && info.file.response.url) {
@@ -362,6 +362,7 @@ class WeChatMessageFormWrapper extends Component {
                     >
                         <Select
                             showSearch={true}
+                            notFoundContent={'未搜索到结果'}
                             getPopupContainer={(node) => node.parentNode}
                             size="default"
                             value={String(currentType)}

@@ -16,24 +16,34 @@ import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'; // 选择�
 import NewPromotion from '../common/NewPromotion';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
-import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPrizeData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import {
+    fetchGiftListInfoAC,
+} from 'redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import LotteryThirdStep from './LotteryThirdStep'
+
 
 class NewShackGift extends NewPromotion {
     constructor(props) {
         super(props);
+        this.state = {
+            levelPrize: props.mySpecialActivities.getIn(['giftsLevel']),
+            data: [],
+        }
     }
 
     render() {
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
-
+        const { saleCenterLotteryLevelPrizeData, specialPromotion } = this.props;
+        const { levelPrize } = this.state;
         const steps = [
             {
                 title: '基本信息',
                 content: (
                     <StepOneWithDateRange
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={`${specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
@@ -44,7 +54,7 @@ class NewShackGift extends NewPromotion {
                 title: '活动范围',
                 content: (
                     <SpecialRangeInfo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={`${specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
@@ -53,17 +63,32 @@ class NewShackGift extends NewPromotion {
             },
             {
                 title: '活动内容',
+                //注掉的是之前的逻辑,参考完去除
+                // content: (
+                //     <SpecialDetailInfo
+                //         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                //         getSubmitFn={(handles) => {
+                //             this.handles[2] = handles;
+                //         }}
+                //         onChange={(rule) => {
+                //             this.setState({ rule });
+                //         }}
+                //         isNew={this.props.isNew}
+                //     />
+                // ),
                 content: (
-                    <SpecialDetailInfo
+                    <LotteryThirdStep
+                        levelPrize = {levelPrize}
+                        updateLevelPrize={saleCenterLotteryLevelPrizeData}
+                        isNew={this.props.isNew}
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
                         onChange={(rule) => {
-                            this.setState({ rule });
-                        }}
-                        isNew={this.props.isNew}
-                    />
+                           this.setState({ rule });
+                       }}
+                    ></LotteryThirdStep>
                 ),
             },
         ];
@@ -87,6 +112,8 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        mySpecialActivities: state.sale_mySpecialActivities_NEW,
     };
 };
 
@@ -98,6 +125,12 @@ const mapDispatchToProps = (dispatch) => {
         updateSpecialPromotion: (opts) => {
             dispatch(updateSpecialPromotion(opts));
         },
+        saleCenterLotteryLevelPrizeData: (opts) => {
+            dispatch(saleCenterLotteryLevelPrizeData(opts));
+        },
+        fetchGiftListInfoAC: (opts) => {
+            dispatch(fetchGiftListInfoAC(opts));
+        }
     };
 };
 

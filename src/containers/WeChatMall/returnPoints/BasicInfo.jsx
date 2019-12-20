@@ -98,7 +98,7 @@ class BasicInfo extends React.Component {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
-                <p>{'拼团活动'}</p>
+                <p>{'消费返积分'}</p>
             </FormItem>
         )
     }

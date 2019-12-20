@@ -15,7 +15,6 @@ import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/acti
 import PromotionBasicInfo from '../common/BirthBasicInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
-// import SendMsgInfo from '../common/SendMsgInfo';
 import StepTwo from './stepTwo';
 
 class NewBirthdayGift extends NewPromotion {

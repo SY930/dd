@@ -66,9 +66,11 @@ export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group 
 export const GHT_TAGLIST_SUCCESS = 'sale center: get tagList'
 export const GHT_TAGGROUPLIST_SUCCESS = 'sale center: get tagRroupList'
 export const SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS';
+export const SALE_CENTER_UPDATE_GIFTS_LEVEL = 'sale center: lottery gifts level'
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
+export const UpdateGiftLevel = payload => ({ type: SALE_CENTER_UPDATE_GIFTS_LEVEL, payload});
 const fetchPromotionListFail = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_FAIL, payload });
 export const fetchPromotionListCancel = () => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_CANCEL });
 export const fetchPromotionListTimeout = () => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_TIME_OUT });
