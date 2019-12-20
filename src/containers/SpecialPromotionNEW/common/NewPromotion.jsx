@@ -64,7 +64,6 @@ export default class NewPromotion extends React.Component {
                 return message.warning('权益账户不得为空');
             }
         }
-        debugger;
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
