@@ -85,7 +85,11 @@ let COMMON_LABEL = defineMessages({
         id: 'Common.Label.retry',
         defaultMessage: '重试',
     },
-    retry: {
+    remark: {
+        id: 'Common.Label.remark',
+        defaultMessage: '备注',
+    },
+    refresh: {
         id: 'Common.Label.refresh',
         defaultMessage: '刷新',
     },
