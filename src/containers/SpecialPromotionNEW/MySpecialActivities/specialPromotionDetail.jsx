@@ -10,7 +10,7 @@
 
 import moment from 'moment';
 import React, { PropTypes } from 'react';
-
+import SpecialPromotionExportModal from 'containers/SpecialPromotionNEW/common/SpecialPromotionExportModal'
 import { connect } from 'react-redux';
 import {
     Modal,
@@ -37,6 +37,10 @@ import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/
 import InviteeModal from './InviteeModal';
 import { axiosData } from '../../../helpers/util';
 const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+// 可导出的活动类型
+const exportablePromotionTypes = [
+    '22', // 报名活动
+];
 
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
@@ -105,8 +109,18 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     render() {
+        const eventEntity = this.props.record.eventInfo.data;
         return (
             <div className={styles.showInfo}>
+                {
+                    this.state.exportVisible && (
+                        <SpecialPromotionExportModal
+                            eventID={eventEntity.itemID}
+                            eventName={eventEntity.eventName}
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                    )
+                }
                 {this.renderBaseInfo()}
                 {this.renderActivityDetailInfo()}
                 {
@@ -506,12 +520,18 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     renderSearch() {
+        const way = this.state.eventInfo.data.eventWay;
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
                     <Col span={3}>关键字</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
                     <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
+                    {
+                        exportablePromotionTypes.includes(`${way}`) && (
+                            <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>导出</Button></Col>
+                        )
+                    }  
                 </Col>
             </div>
         )
