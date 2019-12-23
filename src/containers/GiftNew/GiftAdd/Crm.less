@@ -6,27 +6,7 @@
 .CrmMain{
 
 }
-.tagContainer {
-    padding: 4px;
-    width: 100%;
-    font-size: 12px;
-    position: absolute;
-    color: #ffffff;
-    .cardTag {
-        float: right;
-        border-radius: 9px;
-        height: 18px;
-        line-height: 18px;
-        padding: 0 9px;
-        background-color: rgba(0,0,0,0.06);
-        margin-left: 10px;
-    }
-    &::after{
-        content: '';
-        clear: both;
-        display: block;
-    }
-}
+
 .horzontalBg{
     // background: @horzontal-bg-color;
     // height: 15px;
@@ -270,12 +250,182 @@
 }
 
 @newBlue: #5494D7;
-@newRed: #D6464A;
-@newOrange: #DA932C;
+@newRed: #D6474A;
+@newOrange: #DB932C;
 @newGreen: #66B92E;
 @newPurple: #9372C1;
-@defaultGreen: #18B494;
-
+@defaultGreen: #1BB494;
+.primaryLogoContainer(@color: @defaultGreen) {
+    cursor: pointer;
+    width: 210px;
+    flex: none;
+    margin: 0 10px 10px 0;
+    height: 100px;
+    border-radius: 5px;
+    background-color: @color;
+    position: relative;
+    padding: 0 10px;
+    &:hover {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.45);
+        transition: .2s;
+    }
+    &:active {
+        background-color: shade(@color, 20%);
+    }
+    &::before {
+        display: block;
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        position: absolute;
+        background-color: white;
+        left: 145px;
+        top: -5px;
+    }
+    &::after {
+        display: block;
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        position: absolute;
+        background-color: white;
+        left: 145px;
+        bottom: -5px;
+    }
+    .headerWithDash {
+        width: 140px;
+        padding-top: 20px;
+        height: 100%;
+        border-right: 1px dashed rgba(255, 255, 255, 0.3);
+        color: #FFFFFF;
+        font-size: 18px;
+        display: flex;
+    }
+    .tagContainer {
+        bottom: 20px;
+        position: absolute;
+        padding: 4px;
+        width: 100%;
+        font-size: 12px;
+        position: absolute;
+        color: #ffffff;
+        .cardTag {
+            float: right;
+            border-radius: 9px;
+            height: 18px;
+            line-height: 18px;
+            padding: 0 9px;
+            background-color: rgba(0,0,0,0.06);
+            margin-left: 10px;
+        }
+        &::after{
+            content: '';
+            clear: both;
+            display: block;
+        }
+    }
+}
+.redPacketLogoContainer {
+    cursor: pointer;
+    overflow: hidden;
+    width: 210px;
+    flex: none;
+    margin: 0 10px 10px 0;
+    height: 100px;
+    border-radius: 5px;
+    background-color: #FFB13D;
+    position: relative;
+    padding: 0 10px;
+    &:hover {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.45);
+        transition: .2s;
+    }
+    &:active {
+        background-color: shade(#FFB13D, 20%);
+    }
+    .header {
+        height: 75px;
+        color: #FFFFFF;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+    }
+    .tagContainer {
+        padding: 4px 14px;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        font-size: 12px;
+        position: absolute;
+        color: #333333;
+        background: #F6F6F6;
+        .cardTag {
+            float: right;
+            border-radius: 9px;
+            height: 18px;
+            line-height: 18px;
+            padding: 0 9px;
+            background-color: rgba(0,0,0,0.06);
+            margin-left: 10px;
+        }
+        &::after{
+            content: '';
+            clear: both;
+            display: block;
+        }
+    }
+}
+.cardLogoContainer {
+    cursor: pointer;
+    width: 210px;
+    flex: none;
+    overflow: hidden;
+    margin: 0 10px 10px 0;
+    height: 100px;
+    border-radius: 5px;
+    background-color: @defaultGreen;
+    position: relative;
+    padding: 0 10px;
+    &:hover {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.45);
+        transition: .2s;
+    }
+    &:active {
+        background-color: shade(@defaultGreen, 20%);
+    }
+    .header {
+        height: 75px;
+        color: #FFFFFF;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+    }
+    .tagContainer {
+        padding: 4px 14px;
+        width: 100%;
+        left: 0;
+        font-size: 12px;
+        position: absolute;
+        color: #ffffff;
+        background: rgba(0,0,0,0.1);
+        .cardTag {
+            float: right;
+            border-radius: 9px;
+            height: 18px;
+            line-height: 18px;
+            padding: 0 9px;
+            background-color: rgba(0,0,0,0.06);
+            margin-left: 10px;
+        }
+        &::after{
+            content: '';
+            clear: both;
+            display: block;
+        }
+    }
+}
 .logoContainer(@color: @defaultGreen) {
     cursor: pointer;
     width: 210px;
@@ -315,6 +465,35 @@
         right: -3px;
         top: 72px;
     }
+    .headerWithDash {
+        height: 75px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+        color: #FFFFFF;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+    }
+    .tagContainer {
+        padding: 4px;
+        width: 100%;
+        font-size: 12px;
+        position: absolute;
+        color: #ffffff;
+        .cardTag {
+            float: right;
+            border-radius: 9px;
+            height: 18px;
+            line-height: 18px;
+            padding: 0 9px;
+            background-color: rgba(0,0,0,0.06);
+            margin-left: 10px;
+        }
+        &::after{
+            content: '';
+            clear: both;
+            display: block;
+        }
+    }
 }
 
 .logoContainer {
@@ -322,23 +501,23 @@
 }
 
 .logoContainer_0 {
-    .logoContainer(@newRed)
+    .primaryLogoContainer(@newRed)
 }
 
 .logoContainer_1 {
-    .logoContainer(@newOrange)
+    .primaryLogoContainer(@newOrange)
 }
 
 .logoContainer_2 {
-    .logoContainer(@newGreen)
+    .primaryLogoContainer(@newGreen)
 }
 
 .logoContainer_3 {
-    .logoContainer(@newPurple)
+    .primaryLogoContainer(@newPurple)
 }
 
 .logoContainer_4 {
-    .logoContainer(@newBlue)
+    .primaryLogoContainer(@newBlue)
 }
 
 .groupContainer {
@@ -346,14 +525,6 @@
     flex-wrap: wrap;
 }
 
-.headerWithDash {
-    height: 75px;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-    color: #FFFFFF;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-}
 .tagContainer {
     height: 24px;
     color: #FFFFFF;
@@ -366,6 +537,7 @@
 
 .logoGroupHeader {
     margin-left: 10px;
+    margin-bottom: 10px;
     font-size: 14px;
     color: #333333;
     position: relative;
