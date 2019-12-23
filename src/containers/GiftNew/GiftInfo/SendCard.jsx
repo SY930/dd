@@ -591,7 +591,7 @@ class SendCard extends React.Component {
                             render: c.render.bind(this),
                         }) : c))}
                         dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : { x: 980 })}
+                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : { x: 930 })}
                         rowSelection={this.props._key === 'made' ? {
                             onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
                             selectedRowKeys: this.state.selectedRowKeys,
