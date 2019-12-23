@@ -175,6 +175,10 @@ const GiftCfg = {
         { label: '显示', value: 0 },
         { label: '不显示', value: 1 },
     ],
+    isOnlineExchangeable: [
+        { label: '关闭', value: 0 },
+        { label: '开启', value: 1 },
+    ],
     isFoodCatNameList: [
         { label: '按菜品', value: '0' },
         { label: '按分类', value: '1' },
