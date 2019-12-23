@@ -55,7 +55,7 @@ class MsgSelector extends React.Component {
         e.preventDefault();
         e.stopPropagation();
         const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
-        menuID && jumpPage({menuID});
+        menuID && jumpPage({ menuID });
         const cancelBtn = document.querySelector('.cancelBtnJs');
         cancelBtn && cancelBtn.click();
     }
@@ -66,7 +66,7 @@ class MsgSelector extends React.Component {
         (this.props.selectedMessage && !messageTemplateList.includes(this.props.selectedMessage)) && messageTemplateList.unshift(this.props.selectedMessage);
         return (
 
-            <div style={{maxHeight: '272px', overflowY: 'auto'}}>
+            <div style={{maxHeight: '240px', overflowY: 'auto'}}>
                 {!!messageTemplateList.length &&  messageTemplateList.map((message, index) => {
                     return (
                         <MessageDisplayBox  selected={message === this.props.selectedMessage}
