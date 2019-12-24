@@ -39,7 +39,7 @@ import { axiosData } from '../../../helpers/util';
 const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 // 可导出的活动类型
 const exportablePromotionTypes = [
-    '22', // 报名活动
+    // '22', // 报名活动
 ];
 
 class SpecialPromotionDetail extends React.Component {
