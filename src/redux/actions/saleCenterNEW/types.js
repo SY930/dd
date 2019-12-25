@@ -487,14 +487,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         key: '1070',
     },
     {
-        idx: 17,
-        title: '菜品推荐',
-        color: '#84aac6',
-        text: '向用户推荐菜品，提高目标菜品曝光率和客单价',
-        example: '例如:客户点A菜推荐B菜，点C菜推荐D菜和F菜',
-        key: '5010',
-    },
-    {
         idx: 13,
         title: '组合减免/折扣',
         color: '#84aac6',
@@ -517,7 +509,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         text: '提高老客户忠诚度，开展累计消费次数减免的活动',
         example: '例如:累计消费2次减免2元，累计消费3次减免5元',
         key: '2070',
-    },
+    },  
     {
         idx: 16,
         title: '累计次数赠送',
@@ -525,6 +517,14 @@ export const ACTIVITY_CATEGORIES = (function () {
         text: '提高老客户忠诚度，开展累计消费次数赠送的活动',
         example: '例如:累计消费2次赠送A菜，累计消费3次赠送B菜',
         key: '1080',
+    },
+    {
+        idx: 17,
+        title: '菜品推荐',
+        color: '#84aac6',
+        text: '向用户推荐菜品，提高目标菜品曝光率和客单价',
+        example: '例如:客户点A菜推荐B菜，点C菜推荐D菜和F菜',
+        key: '5010',
     },
     {
         idx: 18,
