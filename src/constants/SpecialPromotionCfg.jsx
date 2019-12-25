@@ -22,6 +22,7 @@ const SpecialPromotionCfg = {
         { value: '68', label: '推荐有礼' },
         { value: '31', label: '关注送礼' },
         { value: '75', label: '集点卡' },
+        { value: '1210', label: '支付后活动' },
     ],
     /* 营销活动开关 */
     EventIsActive: [

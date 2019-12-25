@@ -68,6 +68,7 @@ class BasePage extends Component {
     }
 
     handleNewPromotionCardClick(promotionEntity) {
+        debugger;
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success('活动尚未开放，敬请期待');

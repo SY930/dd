@@ -123,6 +123,7 @@ class ActivityMain extends React.Component {
 
     // 渲染对应的营销活动页面
     renderActivityTags() {
+        debugger;
         return this.state.pages[this.props.index];
     }
     render() {

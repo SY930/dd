@@ -129,6 +129,16 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
  */
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
+        title: '支付后广告',
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        tags: ['微信', '小程序'],
+        text: '支付后广告的描述',
+        example: '',
+        key: '1210',
+        right: 16,
+        bottom: 6,
+    },
+    {
         title: '摇奖活动',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         tags: ['微信', '小程序'],
