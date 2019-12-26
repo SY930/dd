@@ -255,10 +255,12 @@ class PromotionScopeInfo extends React.Component {
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
         }
+        //去掉查看的店铺筛选
         if (availableBrands instanceof Array && availableBrands.length > 0) {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
         }
-        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010') {
+        const a = this.props.isUpdate;
+        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' && (this.props.isNew || this.props.isUpdate)) {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !this.state.filterShops.includes(shop.shopID));
         }
         const shops = dynamicShopSchema.shops;
@@ -599,6 +601,7 @@ const mapStateToProps = (state) => {
         shopSchema: state.sale_shopSchema_New,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         myActivities: state.sale_myActivities_NEW,
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     };
 };
 
