@@ -33,6 +33,7 @@ import ExpansionGifts from './expansionGifts';
 import InstantDiscount from './instantDiscount';
 import RecommendGifts from './recommendGifts';
 import AccumulateGift from './accumulateGift';
+import PayAfter from './PayAfter/PayAfter'; // 摇奖
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
@@ -104,6 +105,7 @@ class ActivityMain extends React.Component {
             InstantDiscount,
             RecommendGifts,
             AccumulateGift,
+            PayAfter,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
@@ -123,7 +125,6 @@ class ActivityMain extends React.Component {
 
     // 渲染对应的营销活动页面
     renderActivityTags() {
-        debugger;
         return this.state.pages[this.props.index];
     }
     render() {

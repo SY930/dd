@@ -1054,23 +1054,26 @@ class StepOneWithDateRange extends React.Component {
                     {
                         ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
                     }
-
-                    <FormItem
-                        label="活动说明"
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                    >
-                        {getFieldDecorator('description', {
-                            rules: [
-                                { required: true, message: '活动说明不能为空' },
-                                { max: 1000, message: '最多1000个字符' },
-                            ],
-                            initialValue: this.state.description,
-                        })(
-                            <Input type="textarea" placeholder="请输入活动说明, 最多1000个字符" onChange={this.handleDescriptionChange} />
-                        )}
-                    </FormItem>
+                    {
+                        this.props.type != '1210' ?
+                        <FormItem
+                            label="活动说明"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {getFieldDecorator('description', {
+                                rules: [
+                                    { required: true, message: '活动说明不能为空' },
+                                    { max: 1000, message: '最多1000个字符' },
+                                ],
+                                initialValue: this.state.description,
+                            })(
+                                <Input type="textarea" placeholder="请输入活动说明, 最多1000个字符" onChange={this.handleDescriptionChange} />
+                            )}
+                        </FormItem> : null
+                    }
+                    
                 </div>
 
 
