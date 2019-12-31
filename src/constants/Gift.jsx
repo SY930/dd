@@ -238,6 +238,7 @@ const GiftCfg = {
         { value: '121', label: '集点卡' },
         { value: '3010', label: '基础营销消费返券' },
         { value: '3011', label: '批量生成' },
+        { value: '77', label: '支付后活动', include: true },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },

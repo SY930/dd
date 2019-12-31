@@ -49,6 +49,7 @@ const $initialState = Immutable.fromJS({
         startTime: '',
         sourceWayLimit: '0',
         mpIDList: [],
+        brands: [],
         excludeEventCardLevelIdModelList: [],
         excludeCardTypeIDs: [],
         excludeCardTypeShops: [],
@@ -60,6 +61,7 @@ const $initialState = Immutable.fromJS({
         excludedDate: [], // 活动排除日期：excludedDate，格式为 yyyyMMdd，例：20181210
         validCycle: null, // 可选择每日、每周、每月，每一项的第一位表示周期类型w-周,m-月,第二位之后表示周期内值,如w1表示每周一,m2表示每周二，m1表示每月1号，当表示每日时该字段为null
     },
+    $jumpUrlInfos: [],
     $giftInfo: [],
     $eventRecommendSettings: [],
     addStatus: {
@@ -80,7 +82,11 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             if (action.payload.data && action.payload.gifts) { // 旧reducer 靠gifts 字段判断是否是直接从server请求来的数据
                 return $$state.mergeIn(['$eventInfo'], Immutable.fromJS({ ...action.payload.data }))
                     .mergeIn(['$giftInfo'], Immutable.fromJS(action.payload.gifts))
-                    .mergeIn(['$eventRecommendSettings'], Immutable.fromJS(action.payload.eventRecommendSettings || []));
+                    .mergeIn(['$eventRecommendSettings'], Immutable.fromJS(action.payload.eventRecommendSettings || []))
+            }
+            if(action.payload.data && action.payload.jumpUrlInfos){
+                return $$state.mergeIn(['$eventInfo'], Immutable.fromJS({ ...action.payload.data }))
+                .mergeIn(['$jumpUrlInfos'], Immutable.fromJS(action.payload.jumpUrlInfos ))
             }
             return $$state.mergeIn(['$eventInfo'], Immutable.fromJS(action.payload.data || action.payload));
 

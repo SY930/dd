@@ -72,6 +72,7 @@ export default class NewPromotion extends React.Component {
                 loginName: user.accountInfo.loginName,
                 userName: user.accountInfo.userName,
             },
+            jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
             gifts: specialPromotion.$giftInfo,
             eventRecommendSettings: specialPromotion.$eventRecommendSettings,
         };
