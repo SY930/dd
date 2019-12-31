@@ -1055,7 +1055,7 @@ class StepOneWithDateRange extends React.Component {
                         ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
                     }
                     {
-                        this.props.type != '1210' ?
+                        this.props.type != '77' ?
                         <FormItem
                             label="活动说明"
                             className={styles.FormItemStyle}

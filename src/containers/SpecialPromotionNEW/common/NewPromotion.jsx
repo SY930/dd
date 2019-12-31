@@ -31,7 +31,6 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
-        debugger;
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
             || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
@@ -73,6 +72,7 @@ export default class NewPromotion extends React.Component {
                 loginName: user.accountInfo.loginName,
                 userName: user.accountInfo.userName,
             },
+            jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
             gifts: specialPromotion.$giftInfo,
             eventRecommendSettings: specialPromotion.$eventRecommendSettings,
         };

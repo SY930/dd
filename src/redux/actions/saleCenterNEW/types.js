@@ -704,7 +704,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             title: '支付后活动',
             text: '支付后活动文案',
             example: '',
-            key: '1210',
+            key: '77',
         }
     ];
     return basic;

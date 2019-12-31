@@ -21,6 +21,7 @@ import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/pro
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ShopSelector from "../../../components/common/ShopSelector";
 import Immutable from 'immutable';
+import { axiosData } from '../../../helpers/util';
 
 const supportOrderTypesOptions = [
     {
@@ -62,6 +63,7 @@ class StepTwo extends React.Component {
             supportOrderTypes: supportOrderTypes ? supportOrderTypes.split(',') : ['0'],
             brands: [],
             $brands: [],
+            filterShop: [],
         }
         this.handleBrandChange = this.handleBrandChange.bind(this);
     }
@@ -76,13 +78,32 @@ class StepTwo extends React.Component {
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
         //看看这个方法是不是真的写进了brands属性
         this.setState({
-            $brands: this.props.shopSchema.toJS().brands,
+            $brands: this.props.specialPromotionInfo.toJS().$eventInfo.brands,
         })
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
             $brands: nextProps.shopSchema.toJS().brands,
         })
+        if(nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate){
+            const a = this.props;
+            const param = {
+                eventStartDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate,
+                eventEndDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventEndDate,
+                eventWay: nextProps.specialPromotionInfo.toJS().$eventInfo.eventWay,
+            }
+            axiosData(
+                '/specialPromotion/queryAvailableShopIDInfo.ajax',
+                {...param},
+                {},
+                { path: 'shopIDList' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
+            ).then(res => {
+                this.setState({
+                    filterShop: res ? res : [],
+                })
+            })
+        }
     }
 
     handleBrandChange(value) {
@@ -100,11 +121,12 @@ class StepTwo extends React.Component {
             const {
                 supportOrderTypes,
                 shopIDList,
+                brands,
             } = this.state;
             this.props.setSpecialBasicInfo({
-                supportOrderTypes: supportOrderTypes.join(','),
                 shopIDList,
                 shopRange: shopIDList.length > 0 ? 1 : 2,
+                brands,
             });
         }
         return flag;
@@ -172,9 +194,13 @@ class StepTwo extends React.Component {
     
 
     render() {
+        const originTreeData = this.props.shopSchema.toJS();
+        const shopData = this.props.shopSchema.toJS().shops;
+        const filterShopData = shopData.filter( item => this.state.filterShop.indexOf(item.shopID) < 0);
+        originTreeData.shops = filterShopData;
         return (
             <div>
-                {this.props.user.shopID > 0 ? null : this.renderBrandFormItem()}
+                {this.props.user.shopID > 0 ? null : null}
                 <Form.Item
                     label="适用店铺"
                     className={styles.FormItemStyle}
@@ -184,7 +210,7 @@ class StepTwo extends React.Component {
                     <ShopSelector
                         value={this.state.shopIDList}
                         onChange={this.handleShopChange}
-                        schemaData={this.props.shopSchema.toJS()}
+                        schemaData={originTreeData}
                     />
                 </Form.Item>
             </div>

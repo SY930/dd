@@ -21,7 +21,8 @@ import { addSpecialPromotion, updateSpecialPromotion, saleCenterLotteryLevelPriz
 import {
     fetchGiftListInfoAC,
 } from 'redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import StepThree from './StepThree'
+import StepThree from './StepThree';
+
 
 
 class PayAfter extends NewPromotion {

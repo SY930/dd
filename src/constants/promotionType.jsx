@@ -134,7 +134,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         tags: ['微信', '小程序'],
         text: '支付后广告的描述',
         example: '',
-        key: '1210',
+        key: '77',
         right: 16,
         bottom: 6,
     },
