@@ -85,7 +85,7 @@ class NewPromotionCard extends Component {
                     right,
                     bottom,
                 }}>
-                    <img style={{  width: key == 75 ? 70 : 'auto' }} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                    <img style={{  width: key == 75 ? 70 : key == 77 ? 58 : 'auto' }} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
                 </div>
             </div>
         )
