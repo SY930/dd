@@ -541,16 +541,17 @@ class StepThree extends React.Component{
                 return;
             case 'wechatPublic':
                 if(value && value.length){
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('wechatPublic');
                     tempKeys.splice((tempPosition+1), 0, 'mpID');
                     tempKeys.splice((tempPosition+2), 0, 'jumpRemark');
                     this.setState({
                         formKeys: tempKeys,
                         wechatVisible: true,
+                        activeWechat: formData.activeWechat,
                     })
                 }else {
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData  } = this.state;
                     const tempPosition = tempKeys.indexOf('mpID');
                     if(tempPosition >= 0){
                         tempKeys.splice((tempPosition), 1);
@@ -561,7 +562,8 @@ class StepThree extends React.Component{
                     }
                     this.setState({
                         formKeys: tempKeys,
-                        wechatVisible: false,                        
+                        wechatVisible: false,  
+                        activeWechat: formData.activeWechat,                      
                     })
                 }
                 return;
@@ -573,11 +575,11 @@ class StepThree extends React.Component{
                     tempKeys.splice((tempPosition+2), 0, 'saleImagePath');
                     this.setState({
                         formKeys: tempKeys,
-                        saleVisible: true,
+                        saleVisible: formData.saleImagePath ? true : false,
                         saleImg: formData.saleImagePath,
                     })
                 }else {
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('speEventID');
                     if(tempPosition >= 0){
                         tempKeys.splice((tempPosition), 1);

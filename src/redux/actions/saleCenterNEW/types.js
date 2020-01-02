@@ -701,8 +701,8 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             key: '75',
         },{
             idx: 20,
-            title: '支付后活动',
-            text: '支付后活动文案',
+            title: '支付后广告',
+            text: '支付成功页自定义投放广告内容，便于餐后营销',
             example: '',
             key: '77',
         }
