@@ -102,7 +102,7 @@ class StepThree extends React.Component{
                     labelCol: { span: 5 },
                     wrapperCol: { span: 5 },
                     disabled: true,
-                    defaultValue: '5',
+                    defaultValue: 'JD_GOLD_URL',
                     options: [
                          { label: <span className='secondLayerOption' style={{color: '#787878',}}>京东金条广告</span>, value: 'JD_GOLD_URL' },
                     ],
@@ -163,7 +163,6 @@ class StepThree extends React.Component{
                                 this.state.activityList.map(({eventID, eventName}) => (
                                     <Select.Option key={eventID} value={eventID}>{eventName}</Select.Option>
                                 ))
-                                
                             }
                         </Select>
                     )
@@ -568,13 +567,14 @@ class StepThree extends React.Component{
                 return;
             case 'saleActivity':
                 if(value && value.length){
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('saleActivity');
                     tempKeys.splice((tempPosition+1), 0, 'speEventID');
                     tempKeys.splice((tempPosition+2), 0, 'saleImagePath');
                     this.setState({
                         formKeys: tempKeys,
                         saleVisible: true,
+                        saleImg: formData.saleImagePath,
                     })
                 }else {
                     const { formKeys: tempKeys } = this.state;
@@ -589,6 +589,7 @@ class StepThree extends React.Component{
                     this.setState({
                         formKeys: tempKeys,
                         saleVisible: false,
+                        saleImg: formData.saleImagePath,
                     })
                 }
                 return;
