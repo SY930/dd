@@ -197,7 +197,8 @@ class StepTwo extends React.Component {
         const originTreeData = this.props.shopSchema.toJS();
         const shopData = this.props.shopSchema.toJS().shops;
         const filterShopData = shopData.filter( item => this.state.filterShop.indexOf(item.shopID) < 0);
-        originTreeData.shops = filterShopData;
+        const addDataShop = filterShopData.concat(shopData.filter( item => this.state.shopIDList.indexOf(item.shopID) >= 0));
+        originTreeData.shops = addDataShop;
         return (
             <div>
                 {this.props.user.shopID > 0 ? null : null}
