@@ -102,7 +102,7 @@ class StepThree extends React.Component{
                     labelCol: { span: 5 },
                     wrapperCol: { span: 5 },
                     disabled: true,
-                    defaultValue: '5',
+                    defaultValue: 'JD_GOLD_URL',
                     options: [
                          { label: <span className='secondLayerOption' style={{color: '#787878',}}>京东金条广告</span>, value: 'JD_GOLD_URL' },
                     ],
@@ -163,7 +163,6 @@ class StepThree extends React.Component{
                                 this.state.activityList.map(({eventID, eventName}) => (
                                     <Select.Option key={eventID} value={eventID}>{eventName}</Select.Option>
                                 ))
-                                
                             }
                         </Select>
                     )
@@ -542,16 +541,17 @@ class StepThree extends React.Component{
                 return;
             case 'wechatPublic':
                 if(value && value.length){
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('wechatPublic');
                     tempKeys.splice((tempPosition+1), 0, 'mpID');
                     tempKeys.splice((tempPosition+2), 0, 'jumpRemark');
                     this.setState({
                         formKeys: tempKeys,
                         wechatVisible: true,
+                        activeWechat: formData.activeWechat,
                     })
                 }else {
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData  } = this.state;
                     const tempPosition = tempKeys.indexOf('mpID');
                     if(tempPosition >= 0){
                         tempKeys.splice((tempPosition), 1);
@@ -562,22 +562,24 @@ class StepThree extends React.Component{
                     }
                     this.setState({
                         formKeys: tempKeys,
-                        wechatVisible: false,                        
+                        wechatVisible: false,  
+                        activeWechat: formData.activeWechat,                      
                     })
                 }
                 return;
             case 'saleActivity':
                 if(value && value.length){
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('saleActivity');
                     tempKeys.splice((tempPosition+1), 0, 'speEventID');
                     tempKeys.splice((tempPosition+2), 0, 'saleImagePath');
                     this.setState({
                         formKeys: tempKeys,
-                        saleVisible: true,
+                        saleVisible: formData.saleImagePath ? true : false,
+                        saleImg: formData.saleImagePath,
                     })
                 }else {
-                    const { formKeys: tempKeys } = this.state;
+                    const { formKeys: tempKeys, formData } = this.state;
                     const tempPosition = tempKeys.indexOf('speEventID');
                     if(tempPosition >= 0){
                         tempKeys.splice((tempPosition), 1);
@@ -589,6 +591,7 @@ class StepThree extends React.Component{
                     this.setState({
                         formKeys: tempKeys,
                         saleVisible: false,
+                        saleImg: formData.saleImagePath,
                     })
                 }
                 return;

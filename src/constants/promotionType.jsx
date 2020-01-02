@@ -132,7 +132,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         title: '支付后广告',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         tags: ['微信', '小程序'],
-        text: '支付后广告的描述',
+        text: '支付成功页自定义投放广告内容，便于餐后营销',
         example: '',
         key: '77',
         right: 16,
