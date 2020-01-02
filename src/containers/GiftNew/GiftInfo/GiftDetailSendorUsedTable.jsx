@@ -11,7 +11,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS } from './_tableSendConfig';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftSendOrUsedCount extends React.Component {
@@ -28,6 +28,7 @@ class GiftSendOrUsedCount extends React.Component {
             total: 2,
             pageNo: 1,
             pageSize: 10,
+            speGift: ['10', '20', '30', '40', '42', '110', '111'],
             queryParams: {
 
             },
@@ -49,9 +50,10 @@ class GiftSendOrUsedCount extends React.Component {
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
         if (_key === 'send') {
+            const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 formItems: {
                     ...formItems,
                     sendShopID: {
@@ -65,8 +67,9 @@ class GiftSendOrUsedCount extends React.Component {
                 giftType,
             });
         } else if (_key === 'used') {
+            const { speGift } = this.state;
             this.setState({
-                columns: USED_COLUMNS,
+                columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
                 formKeys: USED_FORMKEYS,
                 formItems: {
                     ...formItems,
@@ -109,14 +112,16 @@ class GiftSendOrUsedCount extends React.Component {
             this.setState({ queryParams: _sendorUsedParams });
         }
         if (_key === 'send') {
+            const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 giftType,
             });
         } else if (_key === 'used') {
+            const { speGift } = this.state;
             this.setState({
-                columns: USED_COLUMNS,
+                columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
                 formKeys: USED_FORMKEYS,
                 giftType,
             });
@@ -312,7 +317,7 @@ class GiftSendOrUsedCount extends React.Component {
                     <Col
                         span={`${key === 'send' ? 1 : 3}`}
                         pull={`${key === 'send' ? 3 : 0}`}
-                        style={key === 'send' ? { position: 'absolute', top: 143, left: 749 } : {}}
+                        style={key === 'send' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'relative', top: 0, left: 742 } :{ position: 'absolute', top: 143, left: 749 } : {}}
                     >
                         {
                             key === 'send' ?
