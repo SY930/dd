@@ -397,7 +397,7 @@ class StepThree extends React.Component{
                     return;
                 case 3:
                     result.diffAds = ['3'];
-                    result.jingdong = item.yiyeAd;
+                    result.jingdong = [].concat(item.yiyeAd);
                     return;
                 case 4:
                     result.selDifineAds = ['4'];
@@ -726,6 +726,7 @@ class StepThree extends React.Component{
         }
     }
     render() {
+        const a = this.state.formData;
         const { 
                 wechatVisible, 
                 jumpDes, 
