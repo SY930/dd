@@ -44,6 +44,7 @@ class StepThree extends React.Component{
             selfImagePath3Visible: false,
             selfImagePath3Img: '',
             errorVisible: false,
+            beenSecond: false,
             formData: {},
             formItems: {
                 afterPayJumpType: {
@@ -51,10 +52,10 @@ class StepThree extends React.Component{
                     type: 'radio',
                     labelCol: { span: 4 },
                     wrapperCol: { span: 20 },
-                    defaultValue: '1',
+                    defaultValue: 1,
                     options: [
-                        {value:'1',label:'停留在支付成功页'},
-                        {value:'2',label:'3秒后自动跳转指定链接'},
+                        {value:1, label:'停留在支付成功页'},
+                        {value:2, label:'自动跳转指定链接'},
                     ],
                 },
                 jumpUrl: {
@@ -177,6 +178,9 @@ class StepThree extends React.Component{
                             <Col span={12} >
                                 {decorator({
                                     key: 'saleImagePath',
+                                    rules: [
+                                        { required: true, message: '请上传图片' },
+                                    ],
                                 })(
                                     <CropperUploader 
                                         className={styles.uploadCom}
@@ -350,12 +354,19 @@ class StepThree extends React.Component{
         })
         let newData = {};
         const { $jumpUrlInfos: jumpUrlInfos, $eventInfo: eventInfo } = this.props.specialPromotion;
-        const newObj = this.handleJumpUrlInfos(jumpUrlInfos);
-        newData = Object.assign(eventInfo, newObj);
-        this.setState({
-            formData: newData,
-        })
-
+        if(eventInfo.afterPayJumpType == 1){
+            const newObj = this.handleJumpUrlInfos(jumpUrlInfos);
+            newData = Object.assign(eventInfo, newObj);
+            this.setState({
+                formData: newData,
+            })
+        }
+        if(eventInfo.afterPayJumpType == 2){
+            this.setState({
+                formData: eventInfo,
+                formKeys: ['afterPayJumpType', 'jumpUrl'],
+            })
+        }
     }
     componentWillReceiveProps(nextProps) {
     }
@@ -532,11 +543,25 @@ class StepThree extends React.Component{
                 if(value == 2){
                     this.setState({
                         formKeys: ['afterPayJumpType', 'jumpUrl'],
+                        wechatVisible: false,
+                        saleVisible: false,
+                        jingdongVisible: false,
+                        selfImagePath1Visible: false,
+                        selfImagePath2Visible: false,
+                        selfImagePath3Visible: false,
+                        beenSecond: true,
                     })
                 }else {
+                    if(this.state.beenSecond){
+                        this.setState({
+                            formData: {},
+                        })
+                        this.queryForm.resetFields();
+                    } 
                     this.setState({
                         formKeys: ['afterPayJumpType', 'wechatPublic','saleActivity','diffAds','selDifineAds'],
-                    })
+                        beenSecond: false,
+                    });
                 }
                 return;
             case 'wechatPublic':
