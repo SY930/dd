@@ -19,6 +19,7 @@ import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCent
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import styles1 from './payAfter.less';
 import ShopSelector from "../../../components/common/ShopSelector";
 import Immutable from 'immutable';
 import { axiosData } from '../../../helpers/util';
@@ -64,6 +65,7 @@ class StepTwo extends React.Component {
             brands: [],
             $brands: [],
             filterShop: [],
+            tipVisible: false,
         }
         this.handleBrandChange = this.handleBrandChange.bind(this);
     }
@@ -103,6 +105,10 @@ class StepTwo extends React.Component {
                     filterShop: res ? res : [],
                 })
             })
+            const { shopIDList } = this.state;
+            this.setState({
+                tipVisible: shopIDList.length ? false : true,
+            })
         }
     }
 
@@ -135,6 +141,7 @@ class StepTwo extends React.Component {
     handleShopChange = (v) => {
         this.setState({
             shopIDList: v,
+            tipVisible: v.length ? false : true,
         })
     }
     handleSupportOrderTypesChange = (v) => {
@@ -199,6 +206,7 @@ class StepTwo extends React.Component {
         const filterShopData = shopData.filter( item => this.state.filterShop.indexOf(item.shopID) < 0);
         const addDataShop = filterShopData.concat(shopData.filter( item => this.state.shopIDList.indexOf(item.shopID) >= 0));
         originTreeData.shops = addDataShop;
+        const { tipVisible } = this.state;
         return (
             <div>
                 {this.props.user.shopID > 0 ? null : null}
@@ -214,6 +222,7 @@ class StepTwo extends React.Component {
                         schemaData={originTreeData}
                     />
                 </Form.Item>
+                {tipVisible ? <span className={styles1.orangeFont}>不填代表全部店铺适用</span> : null}
             </div>
             
         );
