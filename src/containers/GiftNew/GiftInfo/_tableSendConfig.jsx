@@ -201,6 +201,7 @@ const USED_SPE_COLUMNS = [
     {
         title: '序号',
         dataIndex: 'num',
+        width: 80,
         className:'TableTxtCenter',
         key: 'num',
     },{
