@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Tabs, message, Select, Row, Col } from 'antd';
+import { Button, Icon, Tabs, message, Select, Row, Col, Tooltip } from 'antd';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { 
@@ -785,9 +785,11 @@ class StepThree extends React.Component{
                                         <p className={styles.wechatName}>
                                             {this.getName()}
                                         </p>
-                                        <p className={styles.wechatDes}>
-                                            {jumpDes}
-                                        </p>
+                                        <Tooltip title={jumpDes}>
+                                            <p className={styles.wechatDes}>
+                                                {jumpDes}
+                                            </p>
+                                        </Tooltip>
                                     </div>
                                     <Button type='primary' className={styles.followBtn}>关注</Button>
                                 </div> 
