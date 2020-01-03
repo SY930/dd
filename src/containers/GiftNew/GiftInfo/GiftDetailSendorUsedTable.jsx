@@ -11,7 +11,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS } from './_tableSendConfig';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftSendOrUsedCount extends React.Component {
@@ -70,7 +70,7 @@ class GiftSendOrUsedCount extends React.Component {
             const { speGift } = this.state;
             this.setState({
                 columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
-                formKeys: USED_FORMKEYS,
+                formKeys: speGift.indexOf(giftType) >= 0 ? USED_SPE_FORMKEYS : USED_FORMKEYS,
                 formItems: {
                     ...formItems,
                     usingShopID: {
@@ -122,7 +122,7 @@ class GiftSendOrUsedCount extends React.Component {
             const { speGift } = this.state;
             this.setState({
                 columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
-                formKeys: USED_FORMKEYS,
+                formKeys: speGift.indexOf(giftType) >= 0 ? USED_SPE_FORMKEYS : USED_FORMKEYS,
                 giftType,
             });
         }
@@ -305,7 +305,7 @@ class GiftSendOrUsedCount extends React.Component {
         return (
             <div className={styles.giftSendCount}>
                 <Row type="flex" align="bottom">
-                    <Col span={`${key === 'send' ? 24 : 21}`}>
+                    <Col span={`${key === 'send' ? 24 : this.props._key == 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? 24 : 21 : 21}`}>
                         <BaseForm
                             getForm={form => this.queryForm = form}
                             formItems={this.state.formItems}
@@ -316,8 +316,9 @@ class GiftSendOrUsedCount extends React.Component {
                     </Col>
                     <Col
                         span={`${key === 'send' ? 1 : 3}`}
-                        pull={`${key === 'send' ? 3 : 0}`}
-                        style={key === 'send' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'relative', top: 0, left: 742 } :{ position: 'absolute', top: 143, left: 749 } : {}}
+                        pull={`${key === 'send' ? 3 : this.props._key == 'used' ? 3 : 0}`}
+                        style={key === 'send' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'relative', top: 0, left: 742 } :{ position: 'absolute', top: 143, left: 749 } :
+                               key === 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'absolute', top: 101, left: 744 } :{}:{}}
                     >
                         {
                             key === 'send' ?
