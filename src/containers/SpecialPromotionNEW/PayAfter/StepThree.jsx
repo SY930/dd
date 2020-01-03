@@ -54,7 +54,7 @@ class StepThree extends React.Component{
                     defaultValue: '1',
                     options: [
                         {value:'1',label:'停留在支付成功页'},
-                        {value:'2',label:'3秒后自动跳转指定连接'},
+                        {value:'2',label:'3秒后自动跳转指定链接'},
                     ],
                 },
                 jumpUrl: {
