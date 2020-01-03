@@ -95,9 +95,9 @@ class StepFour extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('appIDList', {
-                        rules: [
-                            { required: true, message: '请选择活动展现公众号' },
-                        ],
+                        // rules: [
+                        //     { required: true, message: '请选择活动展现公众号' },
+                        // ],
                         initialValue: appIDList,
                     })(
                         <Select
@@ -127,9 +127,9 @@ class StepFour extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('sceneList', {
-                        rules: [
-                            { required: true, message: '请选择活动展现场景' },
-                        ],
+                        // rules: [
+                        //     { required: true, message: '请选择活动展现场景' },
+                        // ],
                         onChange: (v) => console.log(v), 
                         initialValue: sceneList,
                     })(<Checkbox.Group options={SCENES} />)}
