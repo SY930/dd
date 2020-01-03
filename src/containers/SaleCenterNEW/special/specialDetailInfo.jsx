@@ -135,7 +135,7 @@ class SpecialDetailInfo extends React.Component {
         } else {
             rule.specialFoodMax = 0;
         }
-        if (isLimited == 1) {
+        if (isTotalLimited == 1) {
             rule.shortRule = shortRule;
         }
         if (isTotalLimited == 1 && totalAmountLimit) {
@@ -276,20 +276,6 @@ class SpecialDetailInfo extends React.Component {
                         }
                     </div>
                </div>
-               {
-                    this.state.isLimited == 1 ? 
-                    <RadioGroup className={styles.radioStyle} value={this.state.shortRule} onChange={this.handleShortRule}>
-                        <Radio key={'0'} value={0}>按优惠力度大执行</Radio>
-                        <Radio key={'1'} value={1}>按优惠力度小执行</Radio>
-                        <Icon
-                            type="question-circle-o"
-                            className={styles.question}
-                            onMouseOver={() => {
-                                this.setState({ display: 'block' })
-                            }}
-                        />
-                    </RadioGroup> : null
-                }
                 <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         全部商品每单
@@ -324,6 +310,20 @@ class SpecialDetailInfo extends React.Component {
                         }
                     </div>
                 </div>
+                {
+                    this.state.isTotalLimited == 1 ? 
+                    <RadioGroup className={styles.radioStyle} value={this.state.shortRule} onChange={this.handleShortRule}>
+                        <Radio key={'0'} value={0}>按优惠力度大执行</Radio>
+                        <Radio key={'1'} value={1}>按优惠力度小执行</Radio>
+                        <Icon
+                            type="question-circle-o"
+                            className={styles.question}
+                            onMouseOver={() => {
+                                this.setState({ display: 'block' })
+                            }}
+                        />
+                    </RadioGroup> : null
+                }
                 <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         每人每天限制
