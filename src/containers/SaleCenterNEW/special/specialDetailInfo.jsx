@@ -222,7 +222,7 @@ class SpecialDetailInfo extends React.Component {
             if (amountLimit > 0 && totalAmountLimit > 0 && +amountLimit > totalAmountLimit) {
                 return {
                     status: 'error',
-                    message: '必须大于或等于同一商品限制份数'
+                    message: <p style={{whiteSpace: 'nowrap'}}>必须大于或等于同一商品限制份数</p>
                 }
             }
         }
