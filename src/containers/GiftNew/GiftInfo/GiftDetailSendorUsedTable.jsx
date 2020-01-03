@@ -28,7 +28,7 @@ class GiftSendOrUsedCount extends React.Component {
             total: 2,
             pageNo: 1,
             pageSize: 10,
-            speGift: ['10', '20', '30', '40', '42', '110', '111'],
+            speGift: ['10', '20', '21', '30', '40', '42', '110', '111'],
             queryParams: {
 
             },
