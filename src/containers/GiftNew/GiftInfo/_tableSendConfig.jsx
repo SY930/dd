@@ -194,6 +194,7 @@ const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
         return <span>{mapValueToLabel(GiftCfg.WXgiftCardStatus, String(value))}</span>
     },
 }, ...BASE_COLUMNS.slice(5)]
+const USED_SPE_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed', 'giftPWD'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 
 const USED_SPE_COLUMNS = [
@@ -205,11 +206,11 @@ const USED_SPE_COLUMNS = [
     },{
         title: '券编码',
         dataIndex: 'giftPWD',
-        width: 80,
+        width: 150,
         className:'TableTxtCenter',
         key: 'giftPWD',
         render: (value) => {
-            const label = mapValueToLabel(GiftCfg.giftPWD, String(value));
+            const label = String(value);
             return <Tooltip title={label}><span>{label}</span></Tooltip>
         },
     },{
@@ -360,4 +361,4 @@ const USED_COLUMNS = [
         key: 'transCardNo',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS };
