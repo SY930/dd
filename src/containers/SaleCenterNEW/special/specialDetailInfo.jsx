@@ -315,13 +315,6 @@ class SpecialDetailInfo extends React.Component {
                     <RadioGroup className={styles.radioStyle} value={this.state.shortRule} onChange={this.handleShortRule}>
                         <Radio key={'0'} value={0}>按优惠力度大执行</Radio>
                         <Radio key={'1'} value={1}>按优惠力度小执行</Radio>
-                        <Icon
-                            type="question-circle-o"
-                            className={styles.question}
-                            onMouseOver={() => {
-                                this.setState({ display: 'block' })
-                            }}
-                        />
                     </RadioGroup> : null
                 }
                 <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
