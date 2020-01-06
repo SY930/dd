@@ -94,7 +94,7 @@ class StepThree extends React.Component{
                     labelCol: { span: 4 },
                     wrapperCol: { span: 5 },
                     options: [
-                        { label: '异页广告投放', value: '3' },
+                        { label: '异业广告投放', value: '3' },
                     ],
                 },
                 jingdong: {
