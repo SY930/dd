@@ -459,6 +459,8 @@ class StepThree extends React.Component{
                                 {
                                     jumpType: 3,
                                     yiyeAd: 'JD_GOLD_URL',
+                                    imagePath: 'basicdoc/46c512de-1c4f-4ad4-a1e5-27b6e5718018.jpeg',
+                                    jumpUrl: 'https://jintiao.jd.com/jtOuterActGuide/outerActGuideInit.do?sysCode=w145&sourceLink=a2',
                                 }
                             )
                         }
