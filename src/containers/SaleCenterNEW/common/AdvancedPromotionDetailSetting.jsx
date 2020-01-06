@@ -28,6 +28,7 @@ import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '..
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
+import PriceInput from "../common/PriceInput";
 
 
 const FormItem = Form.Item;
@@ -51,6 +52,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardInfo: [],
             cardScopeIDs: [],
             userSettingOPtios: [],
+            isTotalLimited: '0',
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -81,6 +83,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
+        const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
+        const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         let userSettingOPtios = []
@@ -117,6 +121,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardScopeType,
             cardScopeIDs,
             userSettingOPtios,
+            customerUseCountLimit,
+            isTotalLimited,
         }, () => {
             this.props.setPromotionDetail({
                 userSetting: this.state.userSetting,
@@ -284,7 +290,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.setState({
             mutexSubjects: val,
         });
-
         this.props.setPromotionDetail({
             mutexSubjects: val.map((subject) => {
                 return subject.subjectKey;
@@ -360,6 +365,15 @@ class AdvancedPromotionDetailSetting extends React.Component {
             blackList: e.target.value != '0',
         });
     }
+    handleIsTotalLimitedChange = (value) => {
+        this.setState({
+            isTotalLimited: value,
+            customerUseCountLimit: 0,
+        })
+        this.props.setPromotionDetail({
+            customerUseCountLimit: 0,
+        });
+    }
     renderExcludedPromotionSelection() {
         return (
 
@@ -374,6 +388,56 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 }}
                 />
             </FormItem>
+        )
+    }
+    handleCustomerUseCountLimitChange = (value) => {
+        this.setState({
+            customerUseCountLimit: value.number,
+        })
+        this.props.setPromotionDetail({
+            customerUseCountLimit: value.number,
+        });
+    }
+    renderParticipateLimit() {
+        return (
+            <div style={{height: '40px', paddingLeft: 45, marginTop: '8px'}} className={styles.flexContainer}>
+                    <div style={{lineHeight: '28px', marginRight: '16px'}}>
+                        参与限制
+                    </div>
+                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                        活动期间每人参与次数
+                    </div>
+                    <div style={{width: '300px'}}>
+                        <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
+                            <Select onChange={this.handleIsTotalLimitedChange}
+                                    value={String(this.state.isTotalLimited)}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>不限制</Option>
+                                <Option key="1" value={'1'}>限制</Option>
+                            </Select>
+                        </Col>
+                        <Col span={this.state.isTotalLimited == 0 ? 0 : 2}></Col>
+                        {
+                            this.state.isTotalLimited == 1 ?
+                                <Col span={10}>
+                                    <FormItem
+                                        style={{ marginTop: -6 }}
+                                        validateStatus={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? 'success' : 'error'}
+                                        help={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : '必须是大于0小于1000的整数'}
+                                    >
+                                        <PriceInput
+                                            addonAfter={'次'}
+                                            maxNum={999}
+                                            value={{ number: this.state.customerUseCountLimit }}
+                                            onChange={this.handleCustomerUseCountLimitChange}
+                                            modal="int"
+                                        />
+                                    </FormItem>
+                                </Col> : null
+                        }
+                    </div>
+                </div>
         )
     }
 
@@ -396,7 +460,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     handleCardScopeList = (opts) => {
         this.setState(opts, () => {
             const { cardScopeType, cardScopeIDs } = this.state
-            this.props.setPromotionDetail({
+            this.props.setPromcardScopeTypeotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
                     ? undefined
                     : cardScopeIDs.map((cardScopeID) => {
@@ -554,6 +618,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         this.renderPaymentSetting($promotionDetail)
                         : null
                 }
+                { promotionType === '3010' && this.renderParticipateLimit()}
                 { promotionType === '3020' && this.renderBirthdayLimit()}
                 {_stash ? null : this.renderExcludedPromotionBlackList()}
                 {_stash ? null : this.renderExcludedPromotionSelection()}
