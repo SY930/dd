@@ -931,6 +931,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         return {
             rule: ruleJson,
             blackList: ruleJson.blackList || false,
+            customerUseCountLimit: ruleJson.customerUseCountLimit || 0,
             foodCategory: [],
             excludeDishes: [], // excluded dish
             dishes: [], // selected dish
