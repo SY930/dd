@@ -116,7 +116,7 @@ class LotteryThirdStep extends React.Component {
      */
     initState = () => {
         const { isNew } = this.props;
-        const giftInfo = this.getOrganize(this.props.levelPrize.toJS());
+        const giftInfo = this.getOrganize(this.props.levelPrize ? this.props.levelPrize.toJS() : []);
         let infos = [getDefaultGiftData()];
         if(!isNew){
             giftInfo.forEach((gift, index) => {
