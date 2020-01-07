@@ -46,6 +46,7 @@ class StepThree extends React.Component{
             errorVisible: false,
             beenSecond: false,
             formData: {},
+            picViewVisible: true,
             formItems: {
                 afterPayJumpType: {
                     label: '支付后页面定制',
@@ -357,10 +358,26 @@ class StepThree extends React.Component{
         if(eventInfo.afterPayJumpType == 1){
             const newObj = this.handleJumpUrlInfos(jumpUrlInfos);
             newData = Object.assign(eventInfo, newObj);
-            const tempKeys = Object.keys(newData);
+            const tempKeys = [];
+            if (newData.selfImagePath1){
+                tempKeys.push('selfImagePath1','selfJumpUrl1')
+            }
+            if (newData.selfImagePath2){
+                tempKeys.push('selfImagePath2','selfJumpUrl2')
+                this.setState({
+                    selfAdsNum: 2,
+                })
+            }
+            if (newData.selfImagePath3){
+                tempKeys.push('selfImagePath3','selfJumpUrl3')
+                this.setState({
+                    selfAdsNum: 3,
+                })
+            }
+            const newKeys = this.state.formKeys.concat(tempKeys)
             this.setState({
                 formData: newData,
-                formKeys: tempKeys,
+                formKeys: newKeys,
             })
         }
         if(eventInfo.afterPayJumpType == 2){
@@ -382,15 +399,39 @@ class StepThree extends React.Component{
                     selfAdsNum: howMany,
                     formKeys,
                 })
+                if(!this.props.isNew){
+                    if(howMany == 2 && this.state.formData.selfImagePath2){
+                        this.setState({
+                            selfImagePath2Visible: true
+                        })
+                    }
+                    if(howMany == 3 && this.state.formData.selfImagePath3){
+                        this.setState({
+                            selfImagePath3Visible: true
+                        })
+                    }
+                }
             }
         });
     }
     deleteSelfAds = (howMany) => {
         const { formKeys } = this.state;
         formKeys.splice(formKeys.indexOf('selfImagePath'+(howMany+1)))
+        const tempVar = `selfImagePath${howMany+1}Visible`
+        if(howMany == 2) {
+            this.setState({
+                selfImagePath3Visible: false,
+            })
+        }
+        if(howMany == 1) {
+            this.setState({
+                selfImagePath2Visible: false,
+            })
+        }
         this.setState({
             selfAdsNum: howMany,
             formKeys,
+
         })
     }
     handleJumpUrlInfos = (obj) => {
@@ -647,7 +688,7 @@ class StepThree extends React.Component{
                 return;
             case 'selDifineAds':
                 if(value && value.length){
-                    const { formKeys: tempKeys,} = this.state;
+                    const { formKeys: tempKeys, formData} = this.state;
                     let { selfAdsNum } = this.state;
                     const tempArr = [];
                     for(let i = 1; i <= selfAdsNum; i++){
@@ -658,6 +699,32 @@ class StepThree extends React.Component{
                     this.setState({
                         formKeys: arr,
                     })
+                    if(!this.props.isNew){
+                        //如果是编辑状态
+                        // this.setState({
+                        //     selfImagePath1Visible: formData.selfImagePath1 ? true : false,
+                        //     selfImagePath2Visible: formData.selfImagePath2 ? true : false,
+                        //     selfImagePath3Visible: formData.selfImagePath3 ? true : false,
+                        // })
+                        // if(formData.selfImagePath1){
+                        //     this.setState({
+                        //         selfAdsNum: 1,
+                        //     })
+                        // }
+                        // if(formData.selfImagePath2){
+                        //     this.setState({
+                        //         selfAdsNum: 2,
+                        //     })
+                        // }
+                        // if(formData.selfImagePath3){
+                        //     this.setState({
+                        //         selfAdsNum: 3,
+                        //     })
+                        // }
+                        this.setState({
+                            picViewVisible: true
+                        })
+                    }
                 }else {
                     if(this.props.isNew) {
                         this.setState({
@@ -665,6 +732,10 @@ class StepThree extends React.Component{
                             selfImagePath1Visible: false,
                             selfImagePath2Visible: false,
                             selfImagePath3Visible: false,
+                        })
+                    }else{
+                        this.setState({
+                            picViewVisible: false
                         })
                     }
                     const { formKeys: tempKeys } = this.state;
@@ -768,7 +839,8 @@ class StepThree extends React.Component{
                 selfImagePath2Img, 
                 selfImagePath3Visible, 
                 selfImagePath3Img,
-                errorVisible,   
+                errorVisible, 
+                picViewVisible,  
             } = this.state;
         return (
             <div className={styles.relativeDiv}>
@@ -808,17 +880,17 @@ class StepThree extends React.Component{
                                    <img className={styles.saleImg} src={jingdong}></img>
                                 </div>
                             : null}
-                            {selfImagePath1Visible ? 
+                            {selfImagePath1Visible && picViewVisible? 
                                 <div className={styles.saleReview}>
                                     {selfImagePath1Img ? <img className={styles.saleImg} src={`http://res.hualala.com/${selfImagePath1Img}`}></img> : null}
                                 </div> : null
                             }
-                            {selfImagePath2Visible ? 
+                            {selfImagePath2Visible && picViewVisible ? 
                                 <div className={styles.saleReview}>
                                     {selfImagePath2Img ? <img className={styles.saleImg} src={`http://res.hualala.com/${selfImagePath2Img}`}></img> : null}
                                 </div> : null
                             }
-                            {selfImagePath3Visible ? 
+                            {selfImagePath3Visible && picViewVisible ? 
                                 <div className={styles.saleReview}>
                                     {selfImagePath3Img ? <img className={styles.saleImg} src={`http://res.hualala.com/${selfImagePath3Img}`}></img> : null}
                                 </div> : null
