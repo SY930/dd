@@ -110,7 +110,7 @@ class SpecialDetailInfo extends React.Component {
             return false;
         }
         if (isCustomerUseCountLimited == 1 && !(customerUseCountLimit > 0)) {
-            return false;
+            return 0;
         }
 
         if (isTotalLimited == 1 && !(totalAmountLimit > 0)) {
@@ -134,10 +134,12 @@ class SpecialDetailInfo extends React.Component {
         } else {
             rule.totalFoodMax = 0;
         }
-        if (isCustomerUseCountLimited == 1 && customerUseCountLimit > 0) {
+        if (isCustomerUseCountLimited == 1 && customerUseCountLimit > 0 && this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010') {
             rule.customerUseCountLimit = customerUseCountLimit;
         } else {
-            rule.customerUseCountLimit = 0;
+            if(this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010'){
+                rule.customerUseCountLimit = 0;
+            }
         }
         this.props.setPromotionDetail({
             priceLst,
@@ -363,6 +365,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }
