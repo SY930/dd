@@ -134,10 +134,11 @@ class SpecialDetailInfo extends React.Component {
         } else {
             rule.totalFoodMax = 0;
         }
-        if (isCustomerUseCountLimited == 1 && customerUseCountLimit > 0 && this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010') {
+        console.log('promotiontype is ' + this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType);
+        if (isCustomerUseCountLimited == 1 && customerUseCountLimit > 0 && (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010' || this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1010')) {
             rule.customerUseCountLimit = customerUseCountLimit;
         } else {
-            if(this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010'){
+            if(this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010' || this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1010'){
                 rule.customerUseCountLimit = 0;
             }
         }
@@ -193,9 +194,17 @@ class SpecialDetailInfo extends React.Component {
     }
     handleIsCustomUseCountLimitedChange = (value) => {
         this.setState({isCustomerUseCountLimited: value})
+        if(value == 0) {
+            this.props.setPromotionDetail({
+                customerUseCountLimit: 0,
+            })
+        }
     }
     handleCustomerUseCountLimitChange = (value) => {
         this.setState({customerUseCountLimit: value.number})
+        this.props.setPromotionDetail({
+            customerUseCountLimit: value.number,
+        });
     }
 
     getTotalAmountValidation = () => {
