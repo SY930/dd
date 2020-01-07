@@ -357,8 +357,10 @@ class StepThree extends React.Component{
         if(eventInfo.afterPayJumpType == 1){
             const newObj = this.handleJumpUrlInfos(jumpUrlInfos);
             newData = Object.assign(eventInfo, newObj);
+            const tempKeys = Object.keys(newData);
             this.setState({
                 formData: newData,
+                formKeys: tempKeys,
             })
         }
         if(eventInfo.afterPayJumpType == 2){
