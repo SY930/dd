@@ -67,6 +67,10 @@ class StepThree extends React.Component{
                     wrapperCol: { span: 20 },
                     rules: [
                         { required: true, message: '请输入跳转链接' },
+                        {
+                            pattern: /http[s]{0,1}:\/\/([\w.]+\/?)\S*/,
+                            message: '仅支持http/https链接',
+                        },
                     ],
                 },
                 wechatPublic: {
@@ -236,6 +240,12 @@ class StepThree extends React.Component{
                     placeholder: '请输入跳转链接',
                     labelCol: { span: 7 },
                     wrapperCol: { span: 8 },
+                    rules:[
+                        {
+                            pattern: /http[s]{0,1}:\/\/([\w.]+\/?)\S*/,
+                            message: '仅支持http/https链接',
+                        },
+                    ]
                 },
                 selfImagePath2: {
                     type: 'custom',
@@ -275,6 +285,10 @@ class StepThree extends React.Component{
                     placeholder: '请输入跳转链接',
                     labelCol: { span: 7 },
                     wrapperCol: { span: 8 },
+                    rules: [{
+                        pattern: /http[s]{0,1}:\/\/([\w.]+\/?)\S*/,
+                        message: '仅支持http/https链接',
+                    },]
                 },
                 selfImagePath3: {
                     type: 'custom',
@@ -313,6 +327,12 @@ class StepThree extends React.Component{
                     placeholder: '请输入跳转链接',
                     labelCol: { span: 7 },
                     wrapperCol: { span: 8 },
+                    rules: [
+                        {
+                            pattern: /http[s]{0,1}:\/\/([\w.]+\/?)\S*/,
+                            message: '仅支持http/https链接',
+                        }
+                    ]
                 }
             },
             formKeys: ['afterPayJumpType', 'wechatPublic','saleActivity','diffAds','selDifineAds'],
