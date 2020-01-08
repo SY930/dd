@@ -540,8 +540,8 @@ class SpecialPromotionDetail extends React.Component {
         const columns = [
             {
                 title: '累计获得点数',
-                dataIndex: 'total',
-                key: 'total',
+                dataIndex: 'totalCount',
+                key: 'totalCount',
                 className: 'TableTxtRight',
                 render: data => data || 0,
             },
