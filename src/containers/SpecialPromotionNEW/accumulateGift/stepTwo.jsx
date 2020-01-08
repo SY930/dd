@@ -258,7 +258,7 @@ class StepTwo extends React.Component {
 
     render() {
         const { foodScopeList, shopIDList } = this.state;
-        const convertShopIdList = shopIDList.join(',').split(',');
+        const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
         const { isNew } = this.props;
