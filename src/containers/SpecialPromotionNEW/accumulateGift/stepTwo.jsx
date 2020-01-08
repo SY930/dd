@@ -258,6 +258,7 @@ class StepTwo extends React.Component {
 
     render() {
         const { foodScopeList, shopIDList } = this.state;
+        const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
         const { isNew } = this.props;
@@ -326,8 +327,9 @@ class StepTwo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <ShopSelector
-                        value={shopIDList}
-                        onChange={v => this.setState({ shopIDList: v })}
+                        value={convertShopIdList}
+                        onChange={v => { 
+                            this.setState({ shopIDList: v })}}
                         schemaData={this.props.shopSchema.toJS()}
                     />
                 </FormItem> 
