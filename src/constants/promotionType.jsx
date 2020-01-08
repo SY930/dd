@@ -131,7 +131,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: '支付后广告',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        tags: ['微信', '小程序'],
+        tags: ['微信'],
         text: '支付成功页自定义投放广告内容，便于餐后营销',
         example: '',
         key: '77',
@@ -189,7 +189,7 @@ export const REPEAT_PROMOTION_TYPES = [
         title: '集点卡',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '消费后获得集点，促进会员多次消费',
-        tags: ['新微信'],
+        tags: ['新微信', '小程序'],
         example: '',
         key: '75',
         isNew: true,
