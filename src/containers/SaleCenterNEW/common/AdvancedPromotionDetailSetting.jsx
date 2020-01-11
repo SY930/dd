@@ -460,7 +460,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     handleCardScopeList = (opts) => {
         this.setState(opts, () => {
             const { cardScopeType, cardScopeIDs } = this.state
-            this.props.setPromcardScopeTypeotionDetail({
+            this.props.setPromotionDetail({
                 cardScopeList: cardScopeIDs.length === 0
                     ? undefined
                     : cardScopeIDs.map((cardScopeID) => {
