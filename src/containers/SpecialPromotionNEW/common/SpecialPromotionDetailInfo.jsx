@@ -319,7 +319,7 @@ class SpecialDetailInfo extends Component {
                     .map(days => ({
                         key: getIntervalID(),
                         intervalDays: days,
-                        gifts: data.filter(gift => +gift[multiConfig.propertyName] === days)
+                        gifts: data.filter(gift => gift[multiConfig.propertyName] === days)
                     }))
             }
         }
