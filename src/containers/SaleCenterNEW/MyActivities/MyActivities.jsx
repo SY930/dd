@@ -95,25 +95,13 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
-import { defineMessages, FormattedMessage } from 'react-intl'
-
+import { MYACTIVE } from 'i18n/common/salecenter';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
-
-const localeMessages = defineMessages({
-    onlienTitle: {
-        id: 'EntryPage.title.OnlinePromotion',
-        defaultMessage: '线上营销信息' 
-    },
-    title: {
-        id: 'EntryPage.title.BasicPromotion',
-        defaultMessage: '基本营销信息' 
-    },
-})
 
 const mapStateToProps = (state) => {
     return {
@@ -324,7 +312,7 @@ class MyActivities extends React.Component {
     }
 
     handleDecorationStart = (record) => {
-        const { promotionType, promotionIDStr, promotionName } = record; 
+        const { promotionType, promotionIDStr, promotionName } = record;
         this.props.selectPromotionForDecoration({
             type: `${promotionType}`,
             id: promotionIDStr,
@@ -777,11 +765,7 @@ class MyActivities extends React.Component {
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
-                        <FormattedMessage
-                            {
-                                ...(this.isOnlinePromotionPage() ? localeMessages.onlienTitle : localeMessages.title)
-                            }
-                        />
+                        {this.isOnlinePromotionPage() ? MYACTIVE.OnlinePromotion : MYACTIVE.BasicPromotion}
                     </span>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (

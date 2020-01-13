@@ -21,5 +21,7 @@
   "Common.Label.remark": "Remark",
   "Common.Label.retry": "Retry",
   "Common.Label.open": "Open",
-  "Common.Label.refresh": "Refresh"
+  "Common.Label.refresh": "Refresh",
+  "SaleCenter.Label.OnlinePromotion": "Online Promotion",
+  "SaleCenter.Label.BasicPromotion": "Basic Promotion"
 }
