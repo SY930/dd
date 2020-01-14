@@ -95,7 +95,8 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
-import { MYACTIVE } from 'i18n/common/salecenter';
+import { MYACTIVE, LABEL_MAP } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -195,6 +196,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_mySpecialActivities_NEW,
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class MyActivities extends React.Component {
     constructor(props) {
         super(props);
@@ -760,12 +762,14 @@ class MyActivities extends React.Component {
         const {
             queryPromotionAutoRunList,
             openPromotionAutoRunListModal,
+            intl,
         } = this.props;
         return (
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
+                {intl.formatMessage(LABEL_MAP.k5ddu8nr)}
                     <span className={styles.customHeader}>
-                        {this.isOnlinePromotionPage() ? MYACTIVE.OnlinePromotion : MYACTIVE.BasicPromotion}
+                        {this.isOnlinePromotionPage() ? MYACTIVE.k5dbdped : MYACTIVE.k5dbefat}
                     </span>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
@@ -778,7 +782,7 @@ class MyActivities extends React.Component {
                                     icon="plus"
                                     className={styles.customPrimaryButton}
                                 >
-                                    自动执行
+                                    {MYACTIVE.k5dbiuws}
                                 </Button>
                             </Authority>
                         )
