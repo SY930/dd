@@ -25,6 +25,26 @@ const SALE_STRING = {
         id: 'SaleCenter.k5dlpczr',
         defaultMessage: '已结束'
     },
+    k5eng042: {
+        id: 'SaleCenter.k5eng042',
+        defaultMessage: '全部',
+    },
+    k5eng7pt: {
+        id: 'SaleCenter.k5eng7pt',
+        defaultMessage: '置顶',
+    },
+    k5engebq: {
+        id: 'SaleCenter.k5engebq',
+        defaultMessage: '置底',
+    },
+    k5engk5b: {
+        id: 'SaleCenter.k5engk5b',
+        defaultMessage: '上移',
+    },
+    k5engpht: {
+        id: 'SaleCenter.k5engpht',
+        defaultMessage: '下移',
+    },
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {

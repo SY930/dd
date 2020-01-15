@@ -93,26 +93,6 @@ const COMMON_STRING = {
         id: 'Common.Label.refresh',
         defaultMessage: '刷新',
     },
-    all: {
-        id: 'Common.Label.all',
-        defaultMessage: '全部',
-    },
-    top: {
-        id: 'Common.Label.top',
-        defaultMessage: '置顶',
-    },
-    bottom: {
-        id: 'Common.Label.bottom',
-        defaultMessage: '置底',
-    },
-    up: {
-        id: 'Common.Label.up',
-        defaultMessage: '上移',
-    },
-    down: {
-        id: 'Common.Label.down',
-        defaultMessage: '下移',
-    },
 };
 
 let COMMON_LABEL = defineMessages({
@@ -207,26 +187,6 @@ let COMMON_LABEL = defineMessages({
     refresh: {
         id: 'Common.Label.refresh',
         defaultMessage: '刷新',
-    },
-    all: {
-        id: 'Common.Label.all',
-        defaultMessage: '全部',
-    },
-    top: {
-        id: 'Common.Label.top',
-        defaultMessage: '置顶',
-    },
-    bottom: {
-        id: 'Common.Label.bottom',
-        defaultMessage: '置底',
-    },
-    up: {
-        id: 'Common.Label.up',
-        defaultMessage: '上移',
-    },
-    down: {
-        id: 'Common.Label.down',
-        defaultMessage: '下移',
     },
 });
 

@@ -603,9 +603,10 @@ class MyActivities extends React.Component {
     }
     getAllPromotionTypes = () => {
         const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const all = {
             key: 'ALL',
-            title: intl.formatMessage(COMMON_STRING.all),
+            title: k5eng042,
         }
         if (this.isOnlinePromotionPage()) { // 基础营销集团视角
             return [
@@ -827,6 +828,7 @@ class MyActivities extends React.Component {
     renderFilterBar = () => {
         const opt = this.getParams();
         const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const k5dl3m7t = intl.formatMessage(SALE_STRING.k5dl3m7t);
         const k5dl8joa = intl.formatMessage(SALE_STRING.k5dl8joa);
         return (
@@ -849,7 +851,7 @@ class MyActivities extends React.Component {
                                 showSearch
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                 placeholder={k5dl3m7t}
-                                defaultValue={intl.formatMessage(COMMON_STRING.all)}
+                                defaultValue=""
                                 onChange={(value) => {
                                     this.setState({
                                         promotionType: value === 'ALL' ? '' : value,
@@ -880,7 +882,7 @@ class MyActivities extends React.Component {
                                     });
                                 }}
                             >
-                                <Option value={TRIPLE_STATE.ALL}>{COMMON_LABEL.all}</Option>
+                                <Option value={TRIPLE_STATE.ALL}>{k5eng042}</Option>
                                 <Option value={TRIPLE_STATE.OPTION1}>{COMMON_LABEL.enable}</Option>
                                 <Option value={TRIPLE_STATE.OPTION2}>{COMMON_LABEL.disable}</Option>
                             </Select>
@@ -946,6 +948,7 @@ class MyActivities extends React.Component {
             brands = $brands.toJS();
         }
         const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
@@ -974,7 +977,7 @@ class MyActivities extends React.Component {
                                     });
                                 }}
                             >
-                                <Option key="0" value={'0'}>{COMMON_LABEL.all}</Option>
+                                <Option key="0" value={'0'}>{k5eng042}</Option>
                             <Option key="1" value={'1'}>{k5dlp2gl}</Option>
                             <Option key="2" value={'2'}>{k5dlp7zc}</Option>
                             <Option key="3" value={'3'}>{k5dlpczr}</Option>
@@ -1085,10 +1088,10 @@ class MyActivities extends React.Component {
 
     renderTables() {
         const { intl } = this.props;
-        const k5dnbv28top = intl.formatMessage(COMMON_STRING.top);
-        const k5dnbv28bottom = intl.formatMessage(COMMON_STRING.bottom);
-        const k5dnbv28up = intl.formatMessage(COMMON_STRING.up);
-        const k5dnbv28down = intl.formatMessage(COMMON_STRING.down);
+        const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
+        const k5engebq = intl.formatMessage(SALE_STRING.k5engebq);
+        const k5engk5b = intl.formatMessage(SALE_STRING.k5engk5b);
+        const k5engpht = intl.formatMessage(SALE_STRING.k5engpht);
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
@@ -1185,10 +1188,10 @@ class MyActivities extends React.Component {
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={k5dnbv28top} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={k5dnbv28up} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5dnbv28down} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5dnbv28bottom} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
                         </span>
                     )
                 },
