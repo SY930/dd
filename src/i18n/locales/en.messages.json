@@ -88,5 +88,20 @@
   "SaleCenter.k5f2124s": "Activity Application Setting",
   "SaleCenter.k5f212mo": "Set Auto Application, then Promotional Events will be applied automatically on SaaS Checkout Page in the sequence you set. The staff need not select manually so the checkout will be faster.",
   "SaleCenter.k5f21352": "Set Auto Application in SaaS Checkout for available events (Exclude group-purchase event) ",
-  "SaleCenter.k5f213qb": "Select Activity"
+  "SaleCenter.k5f213qb": "Select Activity",
+  "SaleCenter.k5f3y5ml": "Piece",
+  "SaleCenter.k5f3y6b4": "Yes",
+  "SaleCenter.k5f3y6yg": "No",
+  "SaleCenter.k5f3y7iv": "Bill amount reaches",
+  "SaleCenter.k5f3y89j": "Each time bill amount reaches",
+  "SaleCenter.k5f49c4d": "Buy amount",
+  "SaleCenter.k5f49i2k": "Voucher amount",
+  "SaleCenter.k5f49nwg": "Service fee",
+  "SaleCenter.k5f49wf8": "Service fee is required for redeeming",
+  "SaleCenter.k5f4a4be": "Include in amount received",
+  "SaleCenter.k5f4aaf0": "Group-purchase",
+  "SaleCenter.k5f4ahaw": "Max number",
+  "SaleCenter.k5f4ao7n": "One voucher is available, use up to",
+  "SaleCenter.k5f4avmq": "Max limit is 999 vouchers",
+  "SaleCenter.k5f4b1b9": "Must more than 0"
 }

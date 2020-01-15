@@ -89,6 +89,26 @@ const SALE_STRING = {
         id: 'SaleCenter.k5ezdckg',
         defaultMessage: '例如8.8折'
     },
+    k5f3y5ml: {
+        id: 'SaleCenter.k5f3y5ml',
+        defaultMessage: '张'
+    },
+    k5f3y6b4: {
+        id: 'SaleCenter.k5f3y6b4',
+        defaultMessage: '是'
+    },
+    k5f3y6yg: {
+        id: 'SaleCenter.k5f3y6yg',
+        defaultMessage: '否'
+    },
+    k5f3y7iv: {
+        id: 'SaleCenter.k5f3y7iv',
+        defaultMessage: '账单金额满'
+    },
+    k5f3y89j: {
+        id: 'SaleCenter.k5f3y89j',
+        defaultMessage: '账单金额每满'
+    },
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {
@@ -274,6 +294,46 @@ let COMMON_LABEL = defineMessages({
     k5f213qb: {
         id: 'SaleCenter.k5f213qb',
         defaultMessage: '选择活动'
+    },
+    k5f49c4d: {
+        id: 'SaleCenter.k5f49c4d',
+        defaultMessage: '券购买金额'
+    },
+    k5f49i2k: {
+        id: 'SaleCenter.k5f49i2k',
+        defaultMessage: '券面金额'
+    },
+    k5f49nwg: {
+        id: 'SaleCenter.k5f49nwg',
+        defaultMessage: '券交易手续费'
+    },
+    k5f49wf8: {
+        id: 'SaleCenter.k5f49wf8',
+        defaultMessage: '选择核销后必须输入券交易手续费'
+    },
+    k5f4a4be: {
+        id: 'SaleCenter.k5f4a4be',
+        defaultMessage: '费用是否计入实收'
+    },
+    k5f4aaf0: {
+        id: 'SaleCenter.k5f4aaf0',
+        defaultMessage: '团购券使用'
+    },
+    k5f4ahaw: {
+        id: 'SaleCenter.k5f4ahaw',
+        defaultMessage: '最多使用团购券'
+    },
+    k5f4ao7n: {
+        id: 'SaleCenter.k5f4ao7n',
+        defaultMessage: '可使用一张, 最多使用'
+    },
+    k5f4avmq: {
+        id: 'SaleCenter.k5f4avmq',
+        defaultMessage: '最多使用999张'
+    },
+    k5f4b1b9: {
+        id: 'SaleCenter.k5f4b1b9',
+        defaultMessage: '必须大于0'
     },
 });
 

@@ -348,7 +348,7 @@ class FullCutDetailInfo extends React.Component {
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
                             style={{ marginLeft: '109px', width: '70.5%' }}
-                        > 
+                        >
                             <CustomRangeInput
                                 value={_value}
                                 onChange={(value) => {
@@ -460,14 +460,14 @@ class FullCutDetailInfo extends React.Component {
                                 满减优惠&nbsp;
                                 <Tooltip title="满减优惠不包含运费，所有商品适用，最大可设置5级满减">
                                     <Icon type="question-circle-o"></Icon>
-                                </Tooltip>                             
+                                </Tooltip>
                             </span>
                         }
                         className={styles.FormItemStyle}
                         labelCol={{span: 4}}
                         wrapperCol={{ span: 17 }}
                     >
-                        
+
                     </FormItem>
                     {this.renderOnlinePromotionRule()}
                 </Form>
@@ -477,7 +477,7 @@ class FullCutDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType != '1' && this.state.ruleType != '2' ? 
+                    {this.state.ruleType != '1' && this.state.ruleType != '2' ?
                         (
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                         ) : null
