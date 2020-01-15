@@ -829,8 +829,6 @@ class MyActivities extends React.Component {
         const opt = this.getParams();
         const { intl } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
-        const k5dl3m7t = intl.formatMessage(SALE_STRING.k5dl3m7t);
-        const k5dl8joa = intl.formatMessage(SALE_STRING.k5dl8joa);
         return (
             <div>
                 <div className="layoutsSearch">
@@ -850,8 +848,8 @@ class MyActivities extends React.Component {
                                 style={{ width: 120 }}
                                 showSearch
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                placeholder={k5dl3m7t}
-                                defaultValue=""
+                                placeholder=""
+                                defaultValue="ALL"
                                 onChange={(value) => {
                                     this.setState({
                                         promotionType: value === 'ALL' ? '' : value,
@@ -875,7 +873,7 @@ class MyActivities extends React.Component {
                             <Select
                                 style={{ width: 60 }}
                                 defaultValue="0"
-                                placeholder={k5dl8joa}
+                                placeholder=""
                                 onChange={(value) => {
                                     this.setState({
                                         promotionState: value,
@@ -1095,6 +1093,9 @@ class MyActivities extends React.Component {
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
+        const k5ey8jvj = intl.formatMessage(SALE_STRING.k5ey8jvj);
+        const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
+        const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -1307,7 +1308,7 @@ class MyActivities extends React.Component {
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
                         total: this.state.total ? this.state.total : 0,
-                        showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                        showTotal: (total, range) => `${k5ey8jvj}${range[0]}-${range[1]} / ${k5ey8l0e} ${total} ${k5ey8lip}`,
                         onChange: (page, pageSize) => {
                             this.setState({
                                 pageNo: page,

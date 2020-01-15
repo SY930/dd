@@ -5,14 +5,6 @@ const SALE_STRING = {
         id: 'SaleCenter.k5ddu8nr',
         defaultMessage: '请选择店铺'
     },
-    k5dl3m7t: {
-        id: 'SaleCenter.k5dl3m7t',
-        defaultMessage: '请选择类型'
-    },
-    k5dl8joa: {
-        id: 'SaleCenter.k5dl8joa',
-        defaultMessage: '请选择使用状态'
-    },
     k5dlp2gl: {
         id: 'SaleCenter.k5dlp2gl',
         defaultMessage: '未开始'
@@ -44,6 +36,18 @@ const SALE_STRING = {
     k5engpht: {
         id: 'SaleCenter.k5engpht',
         defaultMessage: '下移',
+    },
+    k5ey8jvj: {
+        id: 'SaleCenter.k5ey8jvj',
+        defaultMessage: '本页',
+    },
+    k5ey8l0e: {
+        id: 'SaleCenter.k5ey8l0e',
+        defaultMessage: '共',
+    },
+    k5ey8lip: {
+        id: 'SaleCenter.k5ey8lip',
+        defaultMessage: '条',
     },
 };
 let COMMON_LABEL = defineMessages({
