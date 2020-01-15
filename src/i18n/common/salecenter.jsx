@@ -49,6 +49,46 @@ const SALE_STRING = {
         id: 'SaleCenter.k5ey8lip',
         defaultMessage: '条',
     },
+    k5ez4ovx: {
+        id: 'SaleCenter.k5ez4ovx',
+        defaultMessage: '任意消费满'
+    },
+    k5ez4pdf: {
+        id: 'SaleCenter.k5ez4pdf',
+        defaultMessage: '任意消费每满'
+    },
+    k5ez4pvb: {
+        id: 'SaleCenter.k5ez4pvb',
+        defaultMessage: '指定菜品消费满'
+    },
+    k5ez4qew: {
+        id: 'SaleCenter.k5ez4qew',
+        defaultMessage: '指定菜品消费每满'
+    },
+    k5ez4qy4: {
+        id: 'SaleCenter.k5ez4qy4',
+        defaultMessage: '份'
+    },
+    k5ezcuto: {
+        id: 'SaleCenter.k5ezcuto',
+        defaultMessage: '减免金额'
+    },
+    k5ezcvbm: {
+        id: 'SaleCenter.k5ezcvbm',
+        defaultMessage: '特定售价'
+    },
+    k5ezdbiy: {
+        id: 'SaleCenter.k5ezdbiy',
+        defaultMessage: '元'
+    },
+    k5ezdc19: {
+        id: 'SaleCenter.k5ezdc19',
+        defaultMessage: '折'
+    },
+    k5ezdckg: {
+        id: 'SaleCenter.k5ezdckg',
+        defaultMessage: '例如8.8折'
+    },
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {
@@ -162,6 +202,78 @@ let COMMON_LABEL = defineMessages({
     k5dohc0d: {
         id: 'SaleCenter.k5dohc0d',
         defaultMessage: '更新活动信息'
+    },
+    k5ez4n7x: {
+        id: 'SaleCenter.k5ez4n7x',
+        defaultMessage: '活动方式'
+    },
+    k5ez4nw2: {
+        id: 'SaleCenter.k5ez4nw2',
+        defaultMessage: '消费一定的菜品，可对价格最低菜品进行减免、折扣或特定售价的优惠活动'
+    },
+    k5ez4odk: {
+        id: 'SaleCenter.k5ez4odk',
+        defaultMessage: '份数为'
+    },
+    k5ez4rmr: {
+        id: 'SaleCenter.k5ez4rmr',
+        defaultMessage: '金额不得为空'
+    },
+    k5ezcavr: {
+        id: 'SaleCenter.k5ezcavr',
+        defaultMessage: '折扣要大于0, 小于等于10'
+    },
+    k5ezccbt: {
+        id: 'SaleCenter.k5ezccbt',
+        defaultMessage: '特定售价'
+    },
+    k5ezcd0f: {
+        id: 'SaleCenter.k5ezcd0f',
+        defaultMessage: '减免'
+    },
+    k5ezcu1b: {
+        id: 'SaleCenter.k5ezcu1b',
+        defaultMessage: '折扣'
+    },
+    k5ezdwpv: {
+        id: 'SaleCenter.k5ezdwpv',
+        defaultMessage: '更多活动用户限制和互斥限制请使用'
+    },
+    k5ezdx9f: {
+        id: 'SaleCenter.k5ezdx9f',
+        defaultMessage: '高级设置'
+    },
+    k5ezdxpr: {
+        id: 'SaleCenter.k5ezdxpr',
+        defaultMessage: '对最低价菜品'
+    },
+    k5ezdxpr: {
+        id: 'SaleCenter.k5ezdxpr',
+        defaultMessage: '对最低价菜品'
+    },
+    k5f2114y: {
+        id: 'SaleCenter.k5f2114y',
+        defaultMessage: '请选择需要自动执行的活动'
+    },
+    k5f211mg: {
+        id: 'SaleCenter.k5f211mg',
+        defaultMessage: '执行顺序'
+    },
+    k5f2124s: {
+        id: 'SaleCenter.k5f2124s',
+        defaultMessage: '活动执行设置'
+    },
+    k5f212mo: {
+        id: 'SaleCenter.k5f212mo',
+        defaultMessage: '设置自动执行后，在SaaS结账界面将会严格按您设置的执行顺序自动执行营销活动，不再需要手动选择，将减少营业员手动操作的步骤，方便结账更快进行'
+    },
+    k5f21352: {
+        id: 'SaleCenter.k5f21352',
+        defaultMessage: '对SaaS结账时可使用的活动（除团购活动外）您可以根据店铺情况设置让活动自动执行'
+    },
+    k5f213qb: {
+        id: 'SaleCenter.k5f213qb',
+        defaultMessage: '选择活动'
     },
 });
 

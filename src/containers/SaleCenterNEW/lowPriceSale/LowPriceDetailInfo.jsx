@@ -23,9 +23,13 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Option = Select.Option;
 
+@injectIntl()
 class LowPriceDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -226,12 +230,12 @@ class LowPriceDetailInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <p> 消费一定的菜品，可对价格最低菜品进行减免、折扣或特定售价的优惠活动</p>
+                <p>{SALE_LABEL.k5ez4nw2}</p>
                 </FormItem>
                 <Row>
                     <Col span={8} push={1}>
@@ -245,13 +249,19 @@ class LowPriceDetailInfo extends React.Component {
         )
     }
 
-    renderStageAmount() {
+    renderStageAmount = () => {
+        const { intl } = this.props;
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pdf = intl.formatMessage(SALE_STRING.k5ez4pdf);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.explainBack, styles.pushedExplain].join(' ')}
                 wrapperCol={{span:24}}
                 validateStatus={this.state.stageAmountFlag?'success':'error'}
-                help={this.state.stageAmountFlag?null:'份数为1-50'}
+                help={this.state.stageAmountFlag?null: SALE_LABEL.k5ez4odk}
             >
                 <PriceInput
                     addonBefore={
@@ -264,15 +274,15 @@ class LowPriceDetailInfo extends React.Component {
                                 onChange={this.handleRuleTypeChange}
                                 value={this.state.ruleType}
                             >
-                                <Option key="1" value='1'>任意消费满</Option>
-                                <Option key="3" value='3'>任意消费每满</Option>
-                                <Option key="2" value='2'>指定菜品消费满</Option>
-                                <Option key="4" value='4'>指定菜品消费每满</Option>
+                                <Option key="1" value='1'>{k5ez4ovx}</Option>
+                                <Option key="3" value='3'>{k5ez4pdf}</Option>
+                                <Option key="2" value='2'>{k5ez4pvb}</Option>
+                                <Option key="4" value='4'>{k5ez4qew}</Option>
                             </Select>
                         </div>
 
                 }
-                    addonAfter={'份'}
+                    addonAfter={k5ez4qy4}
                     value={{number: this.state.stageAmount}}
                     defaultValue={{number: this.state.stageAmount}}
                     onChange={this.handleStageAmountChange}
@@ -284,21 +294,27 @@ class LowPriceDetailInfo extends React.Component {
     }
 
     renderFreeAmountAndDiscount() {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+        const k5ezcuto = intl.formatMessage(SALE_STRING.k5ezcuto);
+        const k5ezcvbm = intl.formatMessage(SALE_STRING.k5ezcvbm);
         const disType = this.state.disType;
         return (
             <FormItem
                 className={styles.pushedExplain}
                 wrapperCol={{span:18}}
                 labelCol={{ span: 5 }}
-                label="对最低价菜品"
+                label={SALE_LABEL.k5ezdxpr}
                 validateStatus={this.state.freeAmountFlag && this.state.discountFlag ?'success':'error'}
-                help={!this.state.freeAmountFlag ? '金额不得为空' : !this.state.discountFlag ? '折扣要大于0, 小于等于10' : null}
+                help={!this.state.freeAmountFlag ? SALE_LABEL.k5ez4rmr : !this.state.discountFlag ? SALE_LABEL.k5ezcavr : null}
             >
                 <div className={[styles.flexFormItemNoMod, styles.radioInLine].join(' ')}>
                     <ButtonGroup size="small">
-                        <Button  value="3" type={disType == '3' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('3')}>特定售价</Button>
-                        <Button  value="1" type={disType == '1' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('1')}>减免</Button>
-                        <Button  value="2" type={disType == '2' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('2')}>折扣</Button>
+                        <Button  value="3" type={disType == '3' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('3')}>{k5ezcvbm}</Button>
+                        <Button  value="1" type={disType == '1' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('1')}>{SALE_LABEL.k5ezcd0f}</Button>
+                        <Button  value="2" type={disType == '2' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('2')}>{SALE_LABEL.k5ezcu1b}</Button>
                     </ButtonGroup>
                     <div style={{
                         display: 'inline-block',
@@ -307,8 +323,8 @@ class LowPriceDetailInfo extends React.Component {
                     }}>
                         {disType != 2 &&
                         <PriceInput
-                            addonAfter={'元'}
-                            placeholder={disType == '1' ? '减免金额' : '特定售价'}
+                            addonAfter={k5ezdbiy}
+                            placeholder={disType == '1' ? k5ezcuto : k5ezcvbm}
                             value={{number: this.state.freeAmount}}
                             defaultValue={{number: this.state.freeAmount}}
                             onChange={this.handleFreeAmountChange}
@@ -318,10 +334,10 @@ class LowPriceDetailInfo extends React.Component {
                         }
                         {disType == 2 &&
                         <PriceInput
-                            addonAfter={'折'}
+                            addonAfter={k5ezdc19}
                             discountMode={true}
                             value={{number: this.state.discountRate}}
-                            placeholder="例如8.8折"
+                            placeholder={k5ezdckg}
                             defaultValue={{number: this.state.discountRate}}
                             onChange={this.handleDiscountRateChange}
                             maxNum={2}
@@ -340,9 +356,9 @@ class LowPriceDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.formItemForMore].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
             >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+    <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display &&
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display &&
                 <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>

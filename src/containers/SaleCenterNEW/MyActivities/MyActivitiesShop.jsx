@@ -781,12 +781,10 @@ class MyActivitiesShop extends React.Component {
         );
     }
 
-    renderFilterBar() {
+    renderFilterBar = () => {
         const opt = this.getParams()
         const { intl } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
-        const k5dl3m7t = intl.formatMessage(SALE_STRING.k5dl3m7t);
-        const k5dl8joa = intl.formatMessage(SALE_STRING.k5dl8joa);
         return (
             <div>
                 <div className="layoutsSearch">

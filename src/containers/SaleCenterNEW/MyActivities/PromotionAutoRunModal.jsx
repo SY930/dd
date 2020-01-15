@@ -18,8 +18,11 @@ import {
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import Authority from "../../../components/common/Authority/index";
 import {AUTO_RUN_UPDATE} from "../../../constants/authorityCodes";
-import { COMMON_LABEL } from 'i18n/common';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class PromotionAutoRunModal extends Component {
 
     constructor(props) {
@@ -83,7 +86,7 @@ class PromotionAutoRunModal extends Component {
                 maskClosable={false}
                 onCancel={this.handleInnerCancel}
                 onOk={this.handleInnerOk}
-                title={'请选择需要自动执行的活动'}
+                title={SALE_LABEL.k5f2114y}
             >
                 {this.renderInnerTable()}
             </Modal>
@@ -107,7 +110,7 @@ class PromotionAutoRunModal extends Component {
                 render: (order, record, index) => index + 1,
             },
             {
-                title: '活动名称',
+                title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 width: 360,
                 render: (promotionName) => {
@@ -149,7 +152,7 @@ class PromotionAutoRunModal extends Component {
         } = this.state;
         const columns = [
             {
-                title: '活动名称',
+                title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 width: 480,
                 render: (promotionName) => {
@@ -161,7 +164,7 @@ class PromotionAutoRunModal extends Component {
                 },
             },
             {
-                title: '执行顺序',
+                title: SALE_LABEL.k5f211mg,
                 dataIndex: 'order',
                 className: styles.noPadding,
                 width: 110,
@@ -174,7 +177,7 @@ class PromotionAutoRunModal extends Component {
                             style={{
                                 width: '100%'
                             }}
-                            placeholder="请选择排序"
+                            placeholder=""
                         >
                             {promotionList.map((item, innerIndex) =>
                                 (<Select.Option key={innerIndex} value={`${innerIndex+1}`}>
@@ -239,7 +242,7 @@ class PromotionAutoRunModal extends Component {
             .savePromotionAutoRunList({autoExecuteActivityItems: promotionList.map((item, index) => ({...item, order: index + 1}))})
             .then(() => {
                 this.props.closePromotionAutoRunListModal();
-                message.success('设置成功');
+                message.success(SALE_LABEL.k5do0ps6);
             })
             .catch(e => {
                 console.log('e: ', e);
@@ -271,7 +274,7 @@ class PromotionAutoRunModal extends Component {
         return (
             <Modal
                 visible={isVisible}
-                title={'活动执行设置'}
+                title={SALE_LABEL.k5f2124s}
                 width="720px"
                 style={{
                     top: 20
@@ -308,7 +311,7 @@ class PromotionAutoRunModal extends Component {
                                     fontSize: 16
                                 }}
                             >
-                                查询自动执行信息出错！点击 <a onClick={this.handleRetry}>{ COMMON_LABEL.retry }</a>
+                                {SALE_LABEL.k5dmw1z4} <a onClick={this.handleRetry}>{ COMMON_LABEL.retry }</a>
                             </div>
                         ) : (
                             <div className={styles.autoRunWrapper}>
@@ -320,12 +323,12 @@ class PromotionAutoRunModal extends Component {
                                                 color: '#666666'
                                             }}
                                         >
-                                            自动执行&nbsp;&nbsp;
+                                            {SALE_LABEL.k5dbiuws}&nbsp;&nbsp;
                                             <Tooltip title={
                                                 <p style={{
                                                     maxWidth: '390px'
                                                 }}>
-                                                    设置自动执行后，在SaaS结账界面将会严格按您设置的执行顺序自动执行营销活动，不再需要手动选择，将减少营业员手动操作的步骤，方便结账更快进行。
+                                                    {SALE_LABEL.k5f212mo}
                                                 </p>
                                             }
                                             >
@@ -341,7 +344,7 @@ class PromotionAutoRunModal extends Component {
                                             fontSize: '12px',
                                             color: '#999999'
                                         }}>
-                                            对SaaS结账时可使用的活动（除团购活动外）您可以根据店铺情况设置让活动自动执行。
+                                            {SALE_LABEL.k5f21352}
                                         </div>
                                     </div>
                                     {
@@ -350,7 +353,7 @@ class PromotionAutoRunModal extends Component {
                                                 type="ghost"
                                                 icon="plus"
                                                 onClick={this.openInnerModal}
-                                            >选择活动</Button>
+                                        >{SALE_LABEL.k5f213qb}</Button>
                                         )
                                     }
                                 </div>
@@ -366,7 +369,7 @@ class PromotionAutoRunModal extends Component {
                                                         <Icon type="plus" />
                                                     </div>
                                                     <div>
-                                                        点击选择活动
+                                                    {SALE_LABEL.k5f213qb}
                                                     </div>
                                                 </div>
                                             </div>
