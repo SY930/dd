@@ -105,7 +105,11 @@
   "Sale.k5f4avmq": "Max limit is 999 vouchers",
   "Sale.k5f4b1b9": "Must more than 0",
   "Sale.k5g5bcic": "Place order to present",
-  "Sale.k5g5bcqo": "",
-  "Sale.k5g5bcz0": "",
-  "Sale.k5g5bd7c": ""
+  "Sale.k5g5bcqo": "Base info",
+  "Sale.k5g5bcz0": "Activity content",
+  "Sale.k5gdz0vu": "Volume discount cannot be empty, and the volume amount cannot be less than discount amount",
+  "Sale.k5gdz146": "Volume discount shall be more than previous volume amount",
+  "Sale.k5gdz1ci": "任意或指定消费满或每满一定金额即可得到一定的减价优惠",
+  "Sale.k5gdz1ku": "Volume discount excludes delivery fee. All items are applicable, up to 5 volumes can be set",
+  "Sale.k5gdz1t6": "Volume discount"
 }

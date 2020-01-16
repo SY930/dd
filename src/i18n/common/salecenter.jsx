@@ -29,9 +29,6 @@ const SALE_STRING = {
     k5f3y7iv: {id: 'Sale.k5f3y7iv',defaultMessage: '账单金额满'},
     k5f3y89j: {id: 'Sale.k5f3y89j',defaultMessage: '账单金额每满'},
     k5g5bcic: {id: "Sale.k5g5bcic",defaultMessage: "下单即赠送"},
-    k5g5bcqo: {id: "Sale.k5g5bcqo",defaultMessage: ""},
-    k5g5bcz0: {id: "Sale.k5g5bcz0",defaultMessage: ""},
-    k5g5bd7c: {id: "Sale.k5g5bd7c",defaultMessage: ""},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped',defaultMessage: '线上营销信息'},
@@ -90,6 +87,13 @@ let COMMON_LABEL = defineMessages({
     k5f4ao7n: {id: 'Sale.k5f4ao7n',defaultMessage: '可使用一张, 最多使用'},
     k5f4avmq: {id: 'Sale.k5f4avmq',defaultMessage: '最多使用999张'},
     k5f4b1b9: {id: 'Sale.k5f4b1b9',defaultMessage: '必须大于0'},
+    k5g5bcqo: {id: "Sale.k5g5bcqo",defaultMessage: "基本信息"},
+    k5g5bcz0: {id: "Sale.k5g5bcz0",defaultMessage: "活动内容"},
+    k5gdz0vu: {id: "Sale.k5gdz0vu", defaultMessage: "满减金额不得为空, 且门槛金额不能小于减免金额"},
+    k5gdz146: {id: "Sale.k5gdz146", defaultMessage: "满减金额要大于上一档位的金额"},
+    k5gdz1ci: {id: "Sale.k5gdz1ci", defaultMessage: "任意或指定消费满或每满一定金额即可得到一定的减价优惠"},
+    k5gdz1ku: {id: "Sale.k5gdz1ku", defaultMessage: "满减优惠不包含运费，所有商品适用，最大可设置5级满减"},
+    k5gdz1t6: {id: "Sale.k5gdz1t6", defaultMessage: "满减优惠"},
 });
 
 for (const key in COMMON_LABEL) {
