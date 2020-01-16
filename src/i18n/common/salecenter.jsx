@@ -29,6 +29,9 @@ const SALE_STRING = {
     k5f3y7iv: {id: 'Sale.k5f3y7iv',defaultMessage: '账单金额满'},
     k5f3y89j: {id: 'Sale.k5f3y89j',defaultMessage: '账单金额每满'},
     k5g5bcic: {id: "Sale.k5g5bcic",defaultMessage: "下单即赠送"},
+    k5gez90v: {id: "Sale.k5gez90v", defaultMessage: "下单即折扣"},
+    k5gfsugb: {id: "Sale.k5gfsugb", defaultMessage: "分类"},
+    k5gfsuon: {id: "Sale.k5gfsuon", defaultMessage: "菜品"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped',defaultMessage: '线上营销信息'},
@@ -94,6 +97,15 @@ let COMMON_LABEL = defineMessages({
     k5gdz1ci: {id: "Sale.k5gdz1ci", defaultMessage: "任意或指定消费满或每满一定金额即可得到一定的减价优惠"},
     k5gdz1ku: {id: "Sale.k5gdz1ku", defaultMessage: "满减优惠不包含运费，所有商品适用，最大可设置5级满减"},
     k5gdz1t6: {id: "Sale.k5gdz1t6", defaultMessage: "满减优惠"},
+    k5gez998: {id: "Sale.k5gez998", defaultMessage: "默认折扣"},
+    k5gez9hk: {id: "Sale.k5gez9hk", defaultMessage: "折扣"},
+    k5gez9pw: {id: "Sale.k5gez9pw", defaultMessage: "请输入正确折扣范围"},
+    k5gfcri5: {id: "Sale.k5gfcri5", defaultMessage: "可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣"},
+    k5gfsuwz: {id: "Sale.k5gfsuwz", defaultMessage: "活动范围"},
+    k5gfsv5b: {id: "Sale.k5gfsv5b", defaultMessage: "批量添加"},
+    k5gfsvdn: {id: "Sale.k5gfsvdn", defaultMessage: "排除菜品"},
+    k5gfsvlz: {id: "Sale.k5gfsvlz", defaultMessage: "适用菜品"},
+    k5gfsvub: {id: "Sale.k5gfsvub", defaultMessage: "未选择时默认所有"},
 });
 
 for (const key in COMMON_LABEL) {

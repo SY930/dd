@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { COMMON_LABEL } from 'i18n/common';
 import {
     Form,
     Radio,
@@ -17,21 +16,13 @@ import {
     memoizedShopCategoriesAndDishes,
 } from '../../../utils';
 import PriceInput from '../common/PriceInput';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-// 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
-const PROMOTION_OPTIONS = [
-    {
-        key: '0',
-        value: 0,
-        name: '按分类',
-    }, {
-        key: '1',
-        value: 1,
-        name: '按菜品',
-    },
-];
+
 const getFoodInfoFromScopeList = (scopeList) => {
     if (!Array.isArray(scopeList) || !scopeList.length) {
         return {
@@ -75,11 +66,13 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
         )
     }
 }
-
+@injectIntl()
 class NoThresholdDiscountFoodSelectorForShop extends Component {
 
     constructor(props) {
         super(props);
+        const { intl } = props;
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
         if (props.dishOnly) {
             const {
                 dishes,
@@ -133,7 +126,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 },
             },
             {
-                title: '分类',
+                title: k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 90,
@@ -143,7 +136,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 },
             },
             {
-                title: '折扣（折）',
+                title: SALE_LABEL.k5gez9hk,
                 width: 80,
                 dataIndex: 'discountRate',
                 key: 'discountRate',
@@ -154,7 +147,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                             <PriceInput
                                 maxNum={1}
                                 modal="float"
-                                placeholder="默认折扣"
+                                placeholder=""
                                 value={{ number: record.discountRate }}
                                 onChange={(val) => { this.onCellChange(val, record) }}
                             />
@@ -239,7 +232,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             categories,
         }, () => this.mapSelectedValueToObjectsThenEmit())
     }
-    
+
     handleCategoryOrDishChange = ({target : {value}}) => {
         this.setState({
             categoryOrDish: value,
@@ -302,10 +295,25 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             this.mapSelectedValueToObjectsThenEmit()
         })
     }
-    renderPromotionRange() {
+    renderPromotionRange = () => {
+        const { intl } = this.props;
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
+        // 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
+        const PROMOTION_OPTIONS = [
+            {
+                key: '0',
+                value: 0,
+                name: k5gfsugb,
+            }, {
+                key: '1',
+                value: 1,
+                name: k5gfsuon,
+            },
+        ];
         return (
             <FormItem
-                label="活动范围"
+                label={SALE_LABEL.k5gfsuwz}
                 className={styles.FormItemStyle}
                 labelCol={{
                     span: 4,
@@ -332,7 +340,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             allCategories,
             allDishes,
             dishFilter,
-            dishLabel,
+            dishLabel = SALE_LABEL.k5gfsvlz,
             showRequiredMark,
             showEmptyTips,
         } = this.props;
@@ -344,7 +352,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             return (
                 <FoodSelector
                     mode="dish"
-                    placeholder={`点击添加${dishLabel}`}
+                    placeholder={`${dishLabel}`}
                     allDishes={dishes}
                     allCategories={categories}
                     value={this.state.dishes}
@@ -363,7 +371,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 >
                     <FoodSelector
                         mode="dish"
-                        placeholder={`点击添加${dishLabel}`}
+                        placeholder={`${dishLabel}`}
                         allDishes={dishes}
                         allCategories={categories}
                         value={this.state.dishes}
@@ -380,7 +388,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                                 lineHeight: 1.15,
                             }}
                         >
-                            未选择菜品时默认所有菜品适用
+                            {SALE_LABEL.k5gfsvub}
                         </div>
                     )
                 }
@@ -416,6 +424,8 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
         })
     }
     renderCategorySelectionBox() {
+        const { intl } = this.props;
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
         const {
             allCategories,
             allDishes,
@@ -429,11 +439,11 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
         const categoryValues = this.state.categories.map(item => item.value);
         if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
             filteredCategories = filteredCategories.filter(({value}) => categoryValues.includes(value))
-            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value, onlineFoodCategoryID}) => 
+            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value, onlineFoodCategoryID}) =>
             categoryValues.includes(value) || categoryValues.includes(onlineFoodCategoryID))
         }
         if (dishFilter) {
-            filteredDishes = dishFilter(filteredDishes) 
+            filteredDishes = dishFilter(filteredDishes)
         }
         const displayDataSource = this.state.foodCategory.map((item, index) => ({...item, index}))
         return (
@@ -441,14 +451,14 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 <FormItem className={styles.FormItemStyle}>
                     <Row>
                         <Col span={4}>
-                            <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>选择菜品分类</div>
+                        <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>{k5gfsugb}</div>
                         </Col>
                         <Col span={4} offset={13}>
                             <a
                                 className={styles.gTitleLink}
                                 onClick={this.handleModalOpen}
                             >
-                                批量添加
+                                {SALE_LABEL.k5gfsv5b}
                             </a>
                         </Col>
                     </Row>
@@ -475,16 +485,16 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                                 marginBottom: 8,
                             }}
                         >
-                            未选择分类时默认所有分类适用
+                            {SALE_LABEL.k5gfsvub}
                         </div>
                     )
                 }
                 {
                     showExludeDishes && (
-                        <FormItem label="排除菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                        <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <FoodSelector
                                 mode="dish"
-                                placeholder="点击添加排除菜品"
+                                placeholder=""
                                 allDishes={filteredDishes}
                                 allCategories={filteredCategories}
                                 value={this.state.excludeDishes}
@@ -494,7 +504,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                     )
                 }
             </div>
-            
+
         )
     }
     render() {
@@ -520,7 +530,7 @@ const mapStateToPropsForPromotion = (state) => {
 NoThresholdDiscountFoodSelectorForShop.defaultProps = {
     showExludeDishes: true,
     dishOnly: false,
-    dishLabel: '适用菜品',
+    dishLabel: '',
     /** 分类/菜品框是否显示required红色星号 */
     showRequiredMark: false,
     /** 是否显示不选等于全选的文案 */
