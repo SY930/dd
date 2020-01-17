@@ -17,6 +17,8 @@ const SALE_STRING = {
     k5ez4pdf: {id: 'Sale.k5ez4pdf', defaultMessage: '任意消费每满'},
     k5ez4pvb: {id: 'Sale.k5ez4pvb', defaultMessage: '指定菜品消费满'},
     k5ez4qew: {id: 'Sale.k5ez4qew', defaultMessage: '指定菜品消费每满'},
+    k5hlxzmq: {id: "Sale.k5hlxzmq", defaultMessage: "同一菜品消费满"},
+    k5hlxzv2: {id: "Sale.k5hlxzv2", defaultMessage: "同一菜品消费每满"},
     k5ez4qy4: {id: 'Sale.k5ez4qy4', defaultMessage: '份'},
     k5ezcuto: {id: 'Sale.k5ezcuto', defaultMessage: '减免金额'},
     k5ezcvbm: {id: 'Sale.k5ezcvbm', defaultMessage: '特定售价'},
@@ -115,6 +117,10 @@ let COMMON_LABEL = defineMessages({
     k5hl5wkk: {id: "Sale.k5hl5wkk", defaultMessage: "当只设置一个条件组合时，活动可多次执行。例如，条件设置：1杯饮品+1个甜品，减免5元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，减免10元，依次类推。"},
     k5hl5wsw: {id: "Sale.k5hl5wsw", defaultMessage: "当设置2个及2个以上条件组合时，活动只能执行一次。例如，条件设置1：1杯饮品+1个甜品，减免5元。条…套餐，减免15元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，也是减免5元。"},
     k5hl5x18: {id: "Sale.k5hl5x18", defaultMessage: "注意：同一菜品不要在多个条件中重复设置"},
+    k5hlhwpg: {id: "Sale.k5hlhwpg", defaultMessage: "菜品、赠菜数据不完整"},
+    k5hly03e: {id: "Sale.k5hly03e", defaultMessage: "菜品赠送数量"},
+    k5hly0bq: {id: "Sale.k5hly0bq", defaultMessage: "赠送菜品"},
+    k5hly0k2: {id: "Sale.k5hly0k2", defaultMessage: "表示赠送菜品的总数，如输入2，代表所有赠送菜品任选，共赠送2份"},
 
 });
 

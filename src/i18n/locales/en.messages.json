@@ -133,5 +133,11 @@
     "Sale.k5hkj2k3": "Reduced",
     "Sale.k5hl5wkk": "If one condition is set, the event can be executed multiple times. E.g. Condition: 1 beverage + 1 dessert, 5 Yuan Off. Result: On one bill, 1 Coffee + 1 Cake, 5 Yuan Off; 2 Coffee + 2 Cakes, 10 Yuan Off, and so forth.",
     "Sale.k5hl5wsw": "If 2 or more condition are set, the event will be executed only once. E.g. Condition 1: 1 beverage + 1 dessert, 5 Yuan Off; Condition 2: 1 beverage + 1 dessert + 1 combo, 15 Yuan Off. Result: On one bill, 1 Coffee + 1 Cake, 5 Yuan Off; 2 Coffee + 2 Cakes, 5 Yuan Off.",
-    "Sale.k5hl5x18": "Note: Do not set one dish in multiple conditions."
+    "Sale.k5hl5x18": "Note: Do not set one dish in multiple conditions.",
+    "Sale.k5hlhwpg": "Dish and presented dish data is incomplete",
+    "Sale.k5hlxzmq": "Buy same dish to spend",
+    "Sale.k5hlxzv2": "Buy same dish to spend every",
+    "Sale.k5hly03e": "Presented dish quantity",
+    "Sale.k5hly0bq": "Presented dish",
+    "Sale.k5hly0k2": "Presented dish quantity, e.g. 2 means up to 2 presented dishes can be selected."
 }
