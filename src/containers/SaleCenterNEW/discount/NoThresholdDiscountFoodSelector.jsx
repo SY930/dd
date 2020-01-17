@@ -146,7 +146,7 @@ class NoThresholdDiscountFoodSelector extends Component {
                 },
             },
             {
-                title: SALE_LABEL.k5gez9hk,
+                title: SALE_LABEL.k5ezcu1b,
                 width: 80,
                 dataIndex: 'discountRate',
                 key: 'discountRate',

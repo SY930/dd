@@ -123,5 +123,15 @@
     "Sale.k5gfsv5b": "Batch add",
     "Sale.k5gfsvdn": "Exclude",
     "Sale.k5gfsvlz": "Applicable",
-    "Sale.k5gfsvub": "Default all when not selected"
+    "Sale.k5gfsvub": "Default all when not selected",
+    "Sale.k5hkj0xq": "Please enter dish quantity",
+    "Sale.k5hkj162": "Conditions cannot be repeated",
+    "Sale.k5hkj1ef": "Dish cannot be empty",
+    "Sale.k5hkj1mr": "Select at least 2 conditions",
+    "Sale.k5hkj1v3": "Conditions",
+    "Sale.k5hkj23f": "Select any below",
+    "Sale.k5hkj2k3": "Reduced",
+    "Sale.k5hl5wkk": "If one condition is set, the event can be executed multiple times. E.g. Condition: 1 beverage + 1 dessert, 5 Yuan Off. Result: On one bill, 1 Coffee + 1 Cake, 5 Yuan Off; 2 Coffee + 2 Cakes, 10 Yuan Off, and so forth.",
+    "Sale.k5hl5wsw": "If 2 or more condition are set, the event will be executed only once. E.g. Condition 1: 1 beverage + 1 dessert, 5 Yuan Off; Condition 2: 1 beverage + 1 dessert + 1 combo, 15 Yuan Off. Result: On one bill, 1 Coffee + 1 Cake, 5 Yuan Off; 2 Coffee + 2 Cakes, 5 Yuan Off.",
+    "Sale.k5hl5x18": "Note: Do not set one dish in multiple conditions."
 }

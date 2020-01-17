@@ -300,7 +300,7 @@ class DiscountDetailInfo extends React.Component {
                                 }
                                 endPlaceHolder={k5ezdckg}
                                 discountMode={true}
-                                relation={this.state.ruleType == '0' ? SALE_LABEL.k5gez998 : SALE_LABEL.k5gez9hk}
+                                relation={this.state.ruleType == '0' ? SALE_LABEL.k5gez998 : SALE_LABEL.k5ezcu1b}
                                 addonAfterUnit={k5ezdc19}
                                 disabled={this.state.ruleType == '0'}
                                 value={_value}
