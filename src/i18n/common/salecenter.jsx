@@ -54,6 +54,9 @@ const SALE_STRING = {
     k5kqf2mr: {id: "Sale.k5kqf2mr", defaultMessage: "任意菜品数量每满"},
     k5kqf2v3: {id: "Sale.k5kqf2v3", defaultMessage: "活动菜品数量满"},
     k5kqf33f: {id: "Sale.k5kqf33f", defaultMessage: "活动菜品数量每满"},
+    k5krn6qx: {id: "Sale.k5krn6qx", defaultMessage: "云店"},
+    k5krn6z9: {id: "Sale.k5krn6z9", defaultMessage: "微信"},
+    k5krn77l: {id: "Sale.k5krn77l", defaultMessage: "饮食通"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
@@ -177,6 +180,12 @@ let COMMON_LABEL = defineMessages({
     k5kqz279: {id: "Sale.k5kqz279", defaultMessage: "单位"},
     k5kqz2fl: {id: "Sale.k5kqz2fl", defaultMessage: "售价"},
     k5kqz2nx: {id: "Sale.k5kqz2nx", defaultMessage: "活动价"},
+    k5krn5l9: {id: "Sale.k5krn5l9", defaultMessage: "展示名称"},
+    k5krn5tl: {id: "Sale.k5krn5tl", defaultMessage: "开始日期"},
+    k5krn61x: {id: "Sale.k5krn61x", defaultMessage: "结束日期"},
+    k5krn6a9: {id: "Sale.k5krn6a9", defaultMessage: "活动说明"},
+    k5krn6il: {id: "Sale.k5krn6il", defaultMessage: "适用场景"},
+    k5krn7fx: {id: "Sale.k5krn7fx", defaultMessage: "堂食"},
 });
 
 for (const key in COMMON_LABEL) {
