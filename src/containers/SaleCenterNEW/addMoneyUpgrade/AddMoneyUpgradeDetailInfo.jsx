@@ -424,7 +424,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         const k5koal8f = intl.formatMessage(SALE_STRING.k5koal8f);
         const k5koalgr = intl.formatMessage(SALE_STRING.k5koalgr);
         const k5koalp3 = intl.formatMessage(SALE_STRING.k5koalp3);
-        const k5koalxf = intl.formatMessage(SALE_STRING.k5koalxf);
+        const k5kqf2ef = intl.formatMessage(SALE_STRING.k5kqf2ef);
         const k5koam5r = intl.formatMessage(SALE_STRING.k5koam5r);
         let { countType, subjectType, stageCondition, stageAmount, } = this.state;
         return (
@@ -482,7 +482,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                                 onChange={this.stageConditionChange}
                                                 value={stageCondition}
                                             >
-                                        <Option key="0" value={0}>{k5koalxf}</Option>
+                                        <Option key="0" value={0}>{k5kqf2ef}</Option>
                                         <Option key="1" value={1}>{k5koam5r}</Option>
                                             </Select>
                                         }
