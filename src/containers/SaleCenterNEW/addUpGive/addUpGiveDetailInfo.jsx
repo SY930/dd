@@ -25,9 +25,11 @@ const Option = Select.Option;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
-
-
+@injectIntl()
 class AddUpGiveDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -93,7 +95,7 @@ class AddUpGiveDetailInfo extends React.Component {
                     this.props.form.setFields({
                         stageAmount: {
                             value: _rule.stageAmount,
-                            errors: [new Error('必须是2~99998之间的整数')],
+                            errors: [new Error(SALE_LABEL.k5kmrzrz)],
                         },
                     })
                 }
@@ -109,7 +111,7 @@ class AddUpGiveDetailInfo extends React.Component {
                     this.props.form.setFields({
                         stageAmount: {
                             value: _rule.minTimes,
-                            errors: [new Error('必须是2~99998之间的整数')],
+                            errors: [new Error(SALE_LABEL.k5kmrzrz)],
                         },
                     })
                 }
@@ -152,7 +154,7 @@ class AddUpGiveDetailInfo extends React.Component {
                 this.props.form.setFields({
                     stageAmount: {
                         value: _value,
-                        errors: [new Error('必须是2~99998之间的整数')],
+                        errors: [new Error(SALE_LABEL.k5kmrzrz)],
                     },
                 })
             }
@@ -197,7 +199,7 @@ class AddUpGiveDetailInfo extends React.Component {
     renderDishsSelectionBox() {
         return (
             <FormItem
-                label="赠送菜品"
+                label={SALE_LABEL.k5hly0bq}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
@@ -205,11 +207,11 @@ class AddUpGiveDetailInfo extends React.Component {
                     this.props.form.getFieldDecorator('priceLst', {
                         rules: [{
                             required: true,
-                            message: '赠送菜品不得为空',
+                            message: SALE_LABEL.k5hkj1ef,
                         }],
                         initialValue: this.state.priceLst,
                     })(
-                        <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />                  
+                        <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />
                     )}
             </FormItem>
         )
@@ -217,9 +219,9 @@ class AddUpGiveDetailInfo extends React.Component {
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -230,10 +232,15 @@ class AddUpGiveDetailInfo extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const { intl } = this.props;
+        const k5kms08n = intl.formatMessage(SALE_STRING.k5kms08n);
+        const k5kms0gz = intl.formatMessage(SALE_STRING.k5kms0gz);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         return (
             <Form>
                 <FormItem
-                    label="日期段内消费满足"
+                    label={SALE_LABEL.k5kms00b}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 17 }}
@@ -248,7 +255,7 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('stageAmount', {
                                     rules: [{
                                         required: true,
-                                        message: '必须是2~99998之间的整数',
+                                        message: SALE_LABEL.k5kmrzrz,
                                         pattern: /^[1-9][0-9]{0,3}[0-8]?$/,
                                     }],
                                     initialValue: this.state.rule.stageType == '1' ? this.state.rule.stageAmount : this.state.rule.minTimes,
@@ -259,28 +266,28 @@ class AddUpGiveDetailInfo extends React.Component {
                                                              onChange={this.handleStageTypeChange}
                                                              getPopupContainer={(node) => node.parentNode}
                                         >
-                                            <Option key="1">每累计</Option>
-                                            <Option key="2">累计</Option>
+                                        <Option key="1">{k5kms08n}</Option>
+                                        <Option key="2">{k5kms0gz}</Option>
                                         </Select>}
-                                        addonAfter={'次'}
+                                        addonAfter={SALE_LABEL.k5kms0pc}
                                         onChange={(val) => { this.handleStageChange(val) }}
                                     />
                                 )}
                         </FormItem>
                         {this.state.rule.stageType == '1' ? null :
                         <FormItem style={{ width: '3%', margin: '0 2px' }}>
-                                <p>到</p>
+                            <p>{SALE_LABEL.k5kn0ay5}</p>
                             </FormItem>
                         }
                         {this.state.rule.stageType == '1' ? null :
                         <FormItem
                                 style={{ width: '24%', marginRight: 0 }}
                                 validateStatus={this.state.maxTimesStatus}
-                                help={this.state.maxTimesStatus == 'success' ? null : `请在${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999之间`}
+                                help={this.state.maxTimesStatus == 'success' ? null : `${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999${SALE_LABEL.k5kms0xo}`}
                             >
                                 <Input
                                 value={this.state.rule.maxTimes}
-                                addonAfter="次"
+                                addonAfter={SALE_LABEL.k5kms0pc}
                                 onChange={(val) => { this._handleStageChange(val) }}
                             />
                             </FormItem>
@@ -290,14 +297,14 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('giveFoodCount', {
                                     rules: [{
                                         required: true,
-                                        message: `0~100000之间${promotionType == '1080' ? '整数' : ',可两位小数'}`,
+                                        message: `0~100000 ${SALE_LABEL.k5kms0xo} ${promotionType == '1080' ? SALE_LABEL.k5kms160 : ','+ SALE_LABEL.k5kms1ec}`,
                                         pattern: promotionType == '1080' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
                                     }],
                                     initialValue: this.state.rule.giveFoodCount,
                                 })(
                                     <Input
-                                        addonBefore={promotionType == '1080' ? '赠送' : '减免'}
-                                        addonAfter={promotionType == '1080' ? '份' : '元'}
+                                        addonBefore={promotionType == '1080' ? SALE_LABEL.k5kn0bn5 : SALE_LABEL.k5ezcd0f}
+                                        addonAfter={promotionType == '1080' ? k5ez4qy4 : k5ezdbiy}
                                         onChange={(val) => { this.handleFoodCountChange(val) }}
                                     />
                                 )

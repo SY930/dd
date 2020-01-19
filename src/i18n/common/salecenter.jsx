@@ -35,6 +35,20 @@ const SALE_STRING = {
     k5gfsugb: {id: "Sale.k5gfsugb", defaultMessage: "分类"},
     k5gfsuon: {id: "Sale.k5gfsuon", defaultMessage: "菜品"},
     k5hkj1v3: {id: "Sale.k5hkj1v3", defaultMessage: "条件"},
+    k5kms08n: {id: "Sale.k5kms08n", defaultMessage: "每累计"},
+    k5kms0gz: {id: "Sale.k5kms0gz", defaultMessage: "累计"},
+    k5koakb3: {id: "Sale.k5koakb3", defaultMessage: "不限制"},
+    k5koakjf: {id: "Sale.k5koakjf", defaultMessage: "按金额"},
+    k5koakrr: {id: "Sale.k5koakrr", defaultMessage: "按数量"},
+    k5koal03: {id: "Sale.k5koal03", defaultMessage: "任意菜品售价满"},
+    k5koal8f: {id: "Sale.k5koal8f", defaultMessage: "任意菜品实收满"},
+    k5koalgr: {id: "Sale.k5koalgr", defaultMessage: "活动菜品售价满"},
+    k5koalp3: {id: "Sale.k5koalp3", defaultMessage: "活动菜品实收满"},
+    k5koalxf: {id: "Sale.k5koalxf", defaultMessage: "任意菜品数量满"},
+    k5koam5r: {id: "Sale.k5koam5r", defaultMessage: "同一菜品数量满"},
+    k5koajdr: {id: "Sale.k5koajdr", defaultMessage: "不加价"},
+    k5koajm3: {id: "Sale.k5koajm3", defaultMessage: "加价"},
+    k5kp4vhr: {id: "Sale.k5kp4vhr", defaultMessage: "限制"}
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
@@ -130,6 +144,24 @@ let COMMON_LABEL = defineMessages({
     k5keycvh: {id: "Sale.k5keycvh", defaultMessage: "任意或指定消费满或每满一定份数菜品,即可在已选购菜品中对一定份数的最低价商品进行免单"},
     k5keyd3t: {id: "Sale.k5keyd3t", defaultMessage: "免"},
     k5keydc5: {id: "Sale.k5keydc5", defaultMessage: "份最低价菜品"},
+    k5kmrzrz: {id: "Sale.k5kmrzrz", defaultMessage: "必须是2~99998之间的整数"},
+    k5kms00b: {id: "Sale.k5kms00b", defaultMessage: "日期段内消费满足"},
+    k5kms0pc: {id: "Sale.k5kms0pc", defaultMessage: "次"},
+    k5kms0xo: {id: "Sale.k5kms0xo", defaultMessage: "之间"},
+    k5kms160: {id: "Sale.k5kms160", defaultMessage: "整数"},
+    k5kms1ec: {id: "Sale.k5kms1ec", defaultMessage: "可两位小数"},
+    k5kn0ay5: {id: "Sale.k5kn0ay5", defaultMessage: "到"},
+    k5kn0bn5: {id: "Sale.k5kn0bn5", defaultMessage: "赠送"},
+    k5koai82: {id: "Sale.k5koai82", defaultMessage: "升级前菜品"},
+    k5koaigf: {id: "Sale.k5koaigf", defaultMessage: "升级后菜品"},
+    k5koaior: {id: "Sale.k5koaior", defaultMessage: "单笔订单最多升级换新数量限制"},
+    k5koaix3: {id: "Sale.k5koaix3", defaultMessage: "单笔订单同一菜品最多升级换新数量限制"},
+    k5koaj5f: {id: "Sale.k5koaj5f", defaultMessage: "同一菜品数量不能大于单笔订单最多数量"},
+    k5koajuf: {id: "Sale.k5koajuf", defaultMessage: "必须小于上面的数字"},
+    k5koak2r: {id: "Sale.k5koak2r", defaultMessage: "活动条件限制"},
+    k5kp4v9f: {id: "Sale.k5kp4v9f", defaultMessage: "加价方式"},
+
+
 });
 
 for (const key in COMMON_LABEL) {
