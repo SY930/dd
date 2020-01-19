@@ -178,5 +178,22 @@
     "Sale.k5koalxf": "任意菜品数量满",
     "Sale.k5koam5r": "同一菜品数量满",
     "Sale.k5kp4v9f": "Markup mode",
-    "Sale.k5kp4vhr": "Limit"
+    "Sale.k5kp4vhr": "Limit",
+    "Sale.k5kqf033": "Set a promotional dish first",
+    "Sale.k5kqf0bf": "Promotional price shall be more than 0",
+    "Sale.k5kqf0jr": "Promotional price cannot be more than normal price",
+    "Sale.k5kqf0s3": "Users can select one promotional dish below to exchange",
+    "Sale.k5kqf10f": "限制份数不能超过活动菜品数",
+    "Sale.k5kqf18r": "Exchangeable quantity for one bill",
+    "Sale.k5kqf1h3": "Spend any or specified amount or quantity, spend more amount to exchange for specified dish",
+    "Sale.k5kqf1pf": "Please enter amount",
+    "Sale.k5kqf1xr": "活动菜品消费每满",
+    "Sale.k5kqf263": "请输入菜品数量",
+    "Sale.k5kqf2ef": "任意菜品数量满",
+    "Sale.k5kqf2mr": "任意菜品数量每满",
+    "Sale.k5kqf2v3": "活动菜品数量满",
+    "Sale.k5kqf33f": "活动菜品数量每满",
+    "Sale.k5kqz279": "Unit",
+    "Sale.k5kqz2fl": "Price",
+    "Sale.k5kqz2nx": "Promotion price"
 }

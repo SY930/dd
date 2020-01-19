@@ -8,13 +8,16 @@ import {
     Tooltip,
     Popconfirm,
 } from 'antd';
-import { COMMON_LABEL } from 'i18n/common';
 import {
     memoizedShopCategoriesAndDishes,
 } from '../../../utils';
 import { ShopFoodSelectModal } from '../../../components/common/FoodSelector'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
+
 
 const FormItem = Form.Item;
 
@@ -26,6 +29,7 @@ const mapStateToProps = (state) => {
     }
 }
 
+@injectIntl()
 class AddMoneyTradeDishesTableWithoutBrand extends Component {
     constructor(props) {
         super(props);
@@ -166,7 +170,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div>
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
+                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleDel(record)}>
                                 <a title={ COMMON_LABEL.delete }>{ COMMON_LABEL.delete }</a>
                             </Popconfirm>
                         </div>
@@ -174,7 +178,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '分类',
+                title: SALE_LABEL.k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 90,
@@ -184,7 +188,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '菜品',
+                title: SALE_LABEL.k5gfsuon,
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 90,
@@ -194,7 +198,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '单位',
+                title: SALE_LABEL.k5kqz279,
                 dataIndex: 'unit',
                 key: 'unit',
                 width: 50,
@@ -205,14 +209,14 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: '售价(元)',
+                title: SALE_LABEL.k5kqz2fl,
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
             },
             {
-                title: '活动价',
+                title: SALE_LABEL.k5kqz2nx,
                 width: 80,
                 dataIndex: 'payPrice',
                 key: 'payPrice',
@@ -226,7 +230,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                             <PriceInputIcon
                                 type="text"
                                 modal="float"
-                                placeholder="不得为空"
+                                placeholder={SALE_STRING.k5hkj1ef}
                                 value={{ number: record.payPrice }}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
@@ -248,7 +252,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            批量添加菜品
+                            {SALE_STRING.k5gfsv5b}
                         </a>
                     </Col>
                 </Row>
