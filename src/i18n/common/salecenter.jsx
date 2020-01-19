@@ -121,7 +121,15 @@ let COMMON_LABEL = defineMessages({
     k5hly03e: {id: "Sale.k5hly03e", defaultMessage: "菜品赠送数量"},
     k5hly0bq: {id: "Sale.k5hly0bq", defaultMessage: "赠送菜品"},
     k5hly0k2: {id: "Sale.k5hly0k2", defaultMessage: "表示赠送菜品的总数，如输入2，代表所有赠送菜品任选，共赠送2份"},
-
+    k5kec0v8: {id: "Sale.k5kec0v8", defaultMessage: "优惠方式"},
+    k5kec13k: {id: "Sale.k5kec13k", defaultMessage: "减金额"},
+    k5kec1bw: {id: "Sale.k5kec1bw", defaultMessage: "打折扣"},
+    k5kec1k8: {id: "Sale.k5kec1k8", defaultMessage: "打"},
+    k5keycet: {id: "Sale.k5keycet", defaultMessage: "输入不大于购买数的值"},
+    k5keycn5: {id: "Sale.k5keycn5", defaultMessage: "请输入不小于免费数的值"},
+    k5keycvh: {id: "Sale.k5keycvh", defaultMessage: "任意或指定消费满或每满一定份数菜品,即可在已选购菜品中对一定份数的最低价商品进行免单"},
+    k5keyd3t: {id: "Sale.k5keyd3t", defaultMessage: "免"},
+    k5keydc5: {id: "Sale.k5keydc5", defaultMessage: "份最低价菜品"},
 });
 
 for (const key in COMMON_LABEL) {
