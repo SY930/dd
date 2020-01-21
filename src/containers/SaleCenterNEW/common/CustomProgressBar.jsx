@@ -11,12 +11,13 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { COMMON_LABEL } from 'i18n/common';
 import styles from '../../../components/basic/ProgressBar/ProgressBar.less';
 import { Steps, Button } from 'antd';
 import {
     isProfessionalTheme,
 } from '../../../helpers/util'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const Step = Steps.Step;
 
@@ -120,7 +121,7 @@ class CustomProgressBar extends React.Component {
                                 type="primary"
                                 onClick={() => this.prev(current)}
                             >
-                                上一步
+                                {SALE_LABEL.k5m6e6yf}
                             </Button>
                         )
                     }
@@ -130,7 +131,7 @@ class CustomProgressBar extends React.Component {
                             type="primary"
                             onClick={() => this.next(current)}
                             htmlType="submit"
-                        >下一步
+                        >{SALE_LABEL.k5m6e76r}
                         </Button>
                     }
                     {
@@ -144,7 +145,7 @@ class CustomProgressBar extends React.Component {
                                 this.finish(current);
                             }}
                         >
-                            完成
+                            {SALE_LABEL.k5nh20wl}
                         </Button>
                     }
                 </div>

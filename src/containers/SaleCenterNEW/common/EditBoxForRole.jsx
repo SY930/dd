@@ -4,7 +4,11 @@ import styles from '../ActivityPage.less';
 import BaseHualalaModal from './BaseHualalaModal';
 import { fetchRoleListInfoAC, saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { is } from 'immutable';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class EditBoxForSubject extends React.Component {
     constructor(props) {
         super(props);
@@ -113,15 +117,15 @@ class EditBoxForSubject extends React.Component {
         return (
             <div className={styles.treeSelectMain}>
                 <BaseHualalaModal
-                    outLabel={'活动执行角色'} //   外侧选项+号下方文案
+                    outLabel={SALE_LABEL.k5m3opsk} //   外侧选项+号下方文案
                     outItemName="roleName" //   外侧已选条目选项的label
                     outItemID="roleID" //   外侧已选条目选项的value
-                    innerleftTitle={'全部执行角色'} //   内部左侧分类title
+                    innerleftTitle={SALE_LABEL.k5m5awlc} //   内部左侧分类title
                     innerleftLabelKey={'roleGroupName.content'}//   内部左侧分类对象的哪个属性为分类label
                     leftToRightKey={'roleName'} // 点击左侧分类，的何种属性展开到右侧
                     innerRightLabel="roleName" //   内部右侧checkbox选项的label
                     innerRightValue="roleID" //   内部右侧checkbox选项的value
-                    innerBottomTitle={'已选执行角色'} //   内部底部box的title
+                    innerBottomTitle={SALE_LABEL.k5m5awto} //   内部底部box的title
                     innerBottomItemName="roleName" //   内部底部已选条目选项的label
                     treeData={roleCollection} // 树形全部数据源【{}，{}，{}】
                     data={Array.from(roleSelections)} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值

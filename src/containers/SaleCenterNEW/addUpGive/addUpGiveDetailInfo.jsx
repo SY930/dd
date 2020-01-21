@@ -196,7 +196,10 @@ class AddUpGiveDetailInfo extends React.Component {
         });
         this.setState({ priceLst })
     }
-    renderDishsSelectionBox() {
+    renderDishsSelectionBox = () => {
+        const { intl } = this.props;
+        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
+
         return (
             <FormItem
                 label={SALE_LABEL.k5hly0bq}
@@ -207,7 +210,7 @@ class AddUpGiveDetailInfo extends React.Component {
                     this.props.form.getFieldDecorator('priceLst', {
                         rules: [{
                             required: true,
-                            message: SALE_LABEL.k5hkj1ef,
+                            message: k5hkj1ef,
                         }],
                         initialValue: this.state.priceLst,
                     })(
@@ -237,6 +240,8 @@ class AddUpGiveDetailInfo extends React.Component {
         const k5kms0gz = intl.formatMessage(SALE_STRING.k5kms0gz);
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+
+        const k5kmrzrz = intl.formatMessage(SALE_STRING.k5kmrzrz);
         return (
             <Form>
                 <FormItem
@@ -255,7 +260,7 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('stageAmount', {
                                     rules: [{
                                         required: true,
-                                        message: SALE_LABEL.k5kmrzrz,
+                                        message: k5kmrzrz,
                                         pattern: /^[1-9][0-9]{0,3}[0-8]?$/,
                                     }],
                                     initialValue: this.state.rule.stageType == '1' ? this.state.rule.stageAmount : this.state.rule.minTimes,

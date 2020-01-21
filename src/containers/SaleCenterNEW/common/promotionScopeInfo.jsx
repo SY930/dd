@@ -31,30 +31,17 @@ import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/common/ShopSelector';
 import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
 
-const plainOptions = [
-    {
-        label: '预定',
-        value: '10',
-    }, {
-        label: '闪吃',
-        value: '11',
-    }, {
-        label: '外送',
-        value: '20',
-    }, {
-        label: '堂食',
-        value: '31',
-    }, {
-        label: '自提',
-        value: '21',
-    },
-];
+
 
 const shopTreeData = [];
 
+@injectIntl()
 class PromotionScopeInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -127,7 +114,7 @@ class PromotionScopeInfo extends React.Component {
                 auto: this.state.auto,
                 orderType: this.state.orderType,
                 brands: this.state.brands,
-                
+
                 voucherVerify: this.state.voucherVerify,
                 voucherVerifyChannel: this.state.voucherVerifyChannel,
                 points: this.state.points,
@@ -286,7 +273,11 @@ class PromotionScopeInfo extends React.Component {
         return dynamicShopSchema;
     }
 
-    renderBrandFormItem() {
+    renderBrandFormItem = () => {
+        const { intl } = this.props;
+        const k5dod8s9 = intl.formatMessage(SALE_STRING.k5dod8s9);
+        const k5m5ay7o = intl.formatMessage(SALE_STRING.k5m5ay7o);
+
         const _brands = this.state.$brands;
         let options;
         if (this.state.initialized) {
@@ -297,10 +288,10 @@ class PromotionScopeInfo extends React.Component {
                     );
                 })
             } else {
-                options = (<Option value={'0'} disabled={true}>暂无数据</Option>);
+            options = (<Option value={'0'} disabled={true}>{k5dod8s9}</Option>);
             }
         } else {
-            options = (<Option value={'0'} disabled={true}>数据加载中....</Option>);
+            options = (<Option value={'0'} disabled={true}>{k5m5ay7o}....</Option>);
         }
 
         const _brandList = {
@@ -308,14 +299,14 @@ class PromotionScopeInfo extends React.Component {
             allowClear: true,
             showSearch: false,
             filterOption: false,
-            placeholder: '全部品牌',
+            placeholder: SALE_LABEL.k5nh23wx,
             onChange: this.handleBrandChange,
             defaultValue: this.state.brands,
             value: this.state.brands,
         };
         return (
             <Form.Item
-                label="适用品牌"
+                label={SALE_LABEL.k5dlpn4t}
                 wrapperCol={{
                     span: 17,
                 }}
@@ -350,11 +341,15 @@ class PromotionScopeInfo extends React.Component {
         this.setState({ auto: value });
     }
 
-    renderChannelList() {
+    renderChannelList = () => {
+        const { intl } = this.props;
+        const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
+        const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
+
         if (this.props.isOnline) return null
         return (
             <FormItem
-                label="适用场景"
+                label={SALE_LABEL.k5krn6il}
                 labelCol={{
                     span: 4,
                 }}
@@ -379,7 +374,7 @@ class PromotionScopeInfo extends React.Component {
                     </Select>
                 </Col>
                 <Col span={0} className={styles.autoStyle}>
-                    <div>自动执行</div>
+    <div>{SALE_LABEL.k5dbiuws}</div>
                 </Col>
                 <Col span={0}>
                     <Select
@@ -390,8 +385,8 @@ class PromotionScopeInfo extends React.Component {
                         value={this.state.auto}
                         disabled={this.state.channel == '2'}
                     >
-                        <Option value={'1'}>是</Option>
-                        <Option value={'0'}>否</Option>
+                    <Option value={'1'}>{k5f3y6b4}</Option>
+                    <Option value={'0'}>{k5f3y6yg}</Option>
                     </Select>
                 </Col>
             </FormItem>
@@ -406,11 +401,36 @@ class PromotionScopeInfo extends React.Component {
         this.setState({ invoice: v })
     }
 
-    renderBusinessOptions() {
+    renderBusinessOptions = () => {
+        const { intl } = this.props;
+        const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
+        const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
+        const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
+        const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
+        const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
+
         if (this.props.isOnline) return null;
+        const plainOptions = [
+            {
+                label: k5m67a4r,
+                value: '10',
+            }, {
+                label: k5m67ad3,
+                value: '11',
+            }, {
+                label: k5m67alf,
+                value: '20',
+            }, {
+                label: k5krn7fx,
+                value: '31',
+            }, {
+                label: k5m67atr,
+                value: '21',
+            },
+        ];
         return (
             <Form.Item
-                label="适用业务"
+                label={SALE_LABEL.k5dlpt47}
                 className={styles.FormItemStyle}
                 labelCol={{
                     span: 4,
@@ -419,7 +439,7 @@ class PromotionScopeInfo extends React.Component {
                     ? 'success'
                     : 'error'}
                 help={!this.state.orderType.length
-                    ? '请选择适用业务'
+                    ? ''
                     : null}
                 wrapperCol={{
                     span: 17,
@@ -439,13 +459,13 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         return (
             <Form.Item
-                label="适用店铺"
+                label={SALE_LABEL.k5dlggak}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
                 required={promotionType == '5010'}
                 validateStatus={promotionType != '5010' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
-                help={promotionType != '5010' ? null : this.state.shopStatus ? null : '必须选择店铺'}
+                help={promotionType != '5010' ? null : this.state.shopStatus ? null : SALE_LABEL.k5hkj1ef}
             >
                 <ShopSelector
                     value={this.state.selections}
@@ -456,18 +476,24 @@ class PromotionScopeInfo extends React.Component {
                 />
                 {
                     this.state.allShopSet ?
-                        <p style={{ color: '#e24949' }}>同时段内，店铺已被其它同类活动全部占用, 请返回第一步重新选择时段</p>
+                <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                         : null
                 }
             </Form.Item>
         );
     }
 
-    renderGroup() {
+    renderGroup = () => {
+        const { intl } = this.props;
+        const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
+        const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
+
+        const k5m67bir = intl.formatMessage(SALE_STRING.k5m67bir);
+        const k5m67br3 = intl.formatMessage(SALE_STRING.k5m67br3);
         return (
             <div>
                 <Form.Item
-                    label="是否核销"
+                    label={SALE_LABEL.k5nh2459}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -480,14 +506,14 @@ class PromotionScopeInfo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             defaultValue={this.state.voucherVerify}
                         >
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
+                        <Option value="0">{k5f3y6yg}</Option>
+                        <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
                     {
                         this.state.voucherVerify == '1' ?
                             <div>
-                                <Col span={5} offset={1} className={styles.autoStyle}><span>核销渠道</span></Col>
+    <Col span={5} offset={1} className={styles.autoStyle}><span>{SALE_LABEL.k5m67baf}</span></Col>
                                 <Col span={6}>
                                     <Select
                                         size="default"
@@ -496,15 +522,15 @@ class PromotionScopeInfo extends React.Component {
                                         getPopupContainer={(node) => node.parentNode}
                                         defaultValue={this.state.voucherVerifyChannel}
                                     >
-                                        <Option value="1">美团点评</Option>
-                                        <Option value="2">百度糯米</Option>
+                                        <Option value="1">{k5m67bir}</Option>
+                                        <Option value="2">{k5m67br3}</Option>
                                     </Select>
                                 </Col></div>
                             : null
                     }
                 </Form.Item>
                 <Form.Item
-                    label="是否参与积分"
+                    label={SALE_LABEL.k5m67bzf}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -517,11 +543,11 @@ class PromotionScopeInfo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             defaultValue={'1'}
                         >
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
+                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
-                    <Col span={5} offset={1} className={styles.autoStyle}><span>是否实物凭证</span></Col>
+                <Col span={5} offset={1} className={styles.autoStyle}><span>{SALE_LABEL.k5m67c7r}</span></Col>
                     <Col span={6}>
                         <Select
                             size="default"
@@ -530,13 +556,13 @@ class PromotionScopeInfo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             defaultValue={'0'}
                         >
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
+                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
                 </Form.Item>
                 <Form.Item
-                    label="是否参与开发票"
+                    label={SALE_LABEL.k5m67cg3}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -548,8 +574,8 @@ class PromotionScopeInfo extends React.Component {
                             value={this.state.invoice}
                             getPopupContainer={(node) => node.parentNode}
                         >
-                            <Option value="0">否</Option>
-                            <Option value="1">是</Option>
+                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
                 </Form.Item>
@@ -568,7 +594,7 @@ class PromotionScopeInfo extends React.Component {
         detail = detail ? detail.toJS() : {};
         return (
             <Form.Item
-                label="活动使用模式"
+                label={SALE_LABEL.k5m6e3hf}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -576,8 +602,8 @@ class PromotionScopeInfo extends React.Component {
                 <RadioGroup value={this.state.usageMode || 1} onChange={(e) => this.setState({ usageMode: e.target.value })}>
                     <Radio value={1}
                         disabled={detail.promotionIDStr && detail.usageMode == 2}
-                    >普通活动</Radio>
-                    <Radio value={2}>活动券</Radio>
+                        >{SALE_LABEL.k5nh24dl}</Radio>
+                    <Radio value={2}>{SALE_LABEL.k5m6e393}</Radio>
                 </RadioGroup>
             </Form.Item>
         )

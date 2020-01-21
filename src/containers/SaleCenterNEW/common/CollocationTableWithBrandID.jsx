@@ -8,13 +8,15 @@ import {
     Icon,
     Tooltip,
 } from 'antd';
-import { COMMON_LABEL } from 'i18n/common';
 import styles from '../ActivityPage.less';
 import PriceInputIcon from './PriceInputIcon'; // 编辑
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../utils';
-import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
+import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 
@@ -57,6 +59,7 @@ const DEFAULT_DATA = [
     getDefaultStageData(),
 ];
 
+@injectIntl()
 class CollocationTableWithBrandID extends Component {
 
     constructor(props) {
@@ -92,6 +95,9 @@ class CollocationTableWithBrandID extends Component {
         }
     }
     mapPriceScopeLstToDataThenEmit = () => { // 只触发一次
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+
         let {
             allBrands,
             allCategories,
@@ -130,7 +136,7 @@ class CollocationTableWithBrandID extends Component {
             } else {
                 data[price.stageNo].free.push({
                     foodName: '',
-                    unit: '份',
+                    unit: k5ez4qy4,
                 },);
             }
         });
@@ -151,7 +157,7 @@ class CollocationTableWithBrandID extends Component {
             } else {
                 data[scope.stageNo].foods.push({
                     foodName: '',
-                    unit: '份',
+                    unit: k5ez4qy4,
                 },);
             }
         })
@@ -187,7 +193,7 @@ class CollocationTableWithBrandID extends Component {
                     .filter(item => !!item.value)
                     .map(free => free.value),
             });
-        }        
+        }
     }
     // 移除一个组合
     removeGroup = (indexInfo) => {
@@ -222,6 +228,8 @@ class CollocationTableWithBrandID extends Component {
         })
     }
     handleModalOk = (v) => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         const {
             currentEditingIndex,
             currentEditingType,
@@ -240,7 +248,7 @@ class CollocationTableWithBrandID extends Component {
         }, []);
         data[currentEditingIndex][currentEditingType] = dishObjects.length ? [...dishObjects] : [{
             foodName: '',
-            unit: '份',
+            unit: k5ez4qy4,
         }];
         this.setState({
             data,
@@ -283,6 +291,18 @@ class CollocationTableWithBrandID extends Component {
         )
     }
     render() {
+        const { intl } = this.props;
+        const k5m6e5c3 = intl.formatMessage(SALE_STRING.k5m6e5c3);
+        const k5m6e5kf = intl.formatMessage(SALE_STRING.k5m6e5kf);
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
+
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
+        const k5m6e69f = intl.formatMessage(SALE_STRING.k5m6e69f);
+        const k5m6e6hr = intl.formatMessage(SALE_STRING.k5m6e6hr);
+        const k5m6e6q3 = intl.formatMessage(SALE_STRING.k5m6e6q3);
         const dataSource = [];
         // 拼接成DataSource
         const data = this.state.data;
@@ -291,17 +311,17 @@ class CollocationTableWithBrandID extends Component {
             const freeCount = groupItem.free.length;
             // key [组合, 购买菜品数, 赠送菜品数, index]
             groupItem.foods.forEach((food, foodIndex) => {
-                const temp = { ...food, groupName: `组合${index + 1}`, key: `${index}_${count}_${freeCount}_${foodIndex}` };
+                const temp = { ...food, groupName: `${k5m6e5kf}${index + 1}`, key: `${index}_${count}_${freeCount}_${foodIndex}` };
                 dataSource.push(JSON.parse(JSON.stringify(temp)));
             })
             // 兼容套餐菜品被过滤不渲染表格
             freeCount > 0 ? groupItem.free.forEach((freeFood, freeFoodIndex) => {
-                const temp = { ...freeFood, groupName: `组合${index + 1}`, key: `${index}_${count}_${freeCount}_${count + freeFoodIndex}` };
+                const temp = { ...freeFood, groupName: `${k5m6e5kf}${index + 1}`, key: `${index}_${count}_${freeCount}_${count + freeFoodIndex}` };
                 dataSource.push(JSON.parse(JSON.stringify(temp)));
-            }) : dataSource.push({ groupName: `组合${index + 1}`, key: `${index}_${count}_1_${count + 0}` })
+            }) : dataSource.push({ groupName: `${k5m6e5kf}${index + 1}`, key: `${index}_${count}_1_${count + 0}` })
         });
         const numInput = {
-            title: '数量',
+            title: k5m6e5c3,
             width: 160,
             dataIndex: 'count',
             key: 'count',
@@ -328,7 +348,7 @@ class CollocationTableWithBrandID extends Component {
                         <PriceInputIcon
                             key={`table${index}`}
                             type="text"
-                            placeholder="数量"
+                            placeholder=""
                             modal="int"
                             value={{ number: count }}
                             index={index}
@@ -342,7 +362,7 @@ class CollocationTableWithBrandID extends Component {
         }
         const columns = [
             {
-                title: '组合',
+                title: k5m6e5kf,
                 dataIndex: 'collocation',
                 key: 'collocation',
                 width: 120,
@@ -401,13 +421,13 @@ class CollocationTableWithBrandID extends Component {
                     const indexInfo = record.key.split('_');
                     // 根据index显示序号
                     if (parseInt(indexInfo[3]) < parseInt(indexInfo[1])) {
-                        return <span>{this.props.type == '5010' ? '主菜' : '菜品'}{parseInt(indexInfo[3]) + 1}</span>
+                        return <span>{this.props.type == '5010' ? k5m6e69f : k5gfsuon}{parseInt(indexInfo[3]) + 1}</span>
                     }
-                    return <span>{this.props.type == '5010' ? '推荐菜' : '赠菜'}{parseInt(indexInfo[3]) - parseInt(indexInfo[1]) + 1}</span>
+                    return <span>{this.props.type == '5010' ? k5m6e6hr : k5m6e6q3}{parseInt(indexInfo[3]) - parseInt(indexInfo[1]) + 1}</span>
                 },
             },
             {
-                title: '品牌',
+                title: SALE_LABEL.k5dlpn4t,
                 dataIndex: 'brandName',
                 key: 'brandName',
                 width: 100,
@@ -415,7 +435,7 @@ class CollocationTableWithBrandID extends Component {
                 render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
-                title: '分类',
+                title: k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 60,
@@ -423,7 +443,7 @@ class CollocationTableWithBrandID extends Component {
                 render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
-                title: '菜品名称',
+                title: SALE_LABEL.k5m6e5sr,
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 120,
@@ -431,13 +451,13 @@ class CollocationTableWithBrandID extends Component {
                 render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
-                title: '规格',
+                title: SALE_LABEL.k5m4pzd2,
                 width: 120,
                 dataIndex: 'unit',
                 key: 'unit',
                 className: 'TableTxtLeft',
                 render: (text, record, index) => {
-                    const span = `${record.prePrice==-1?record.price:record.prePrice || ''}元/${record.unit || '份'}`
+                    const span = `${record.prePrice==-1?record.price:record.prePrice || ''}${k5ezdbiy}/${record.unit || k5ez4qy4}`
                     return <Tooltip title={span}>{span}</Tooltip>;
                 },
             },
@@ -454,7 +474,7 @@ class CollocationTableWithBrandID extends Component {
                         children: (
                             <div className="editable-row-operations">
                                 <span>
-                                    <a title="添加菜品" alt="添加菜品" onClick={() => this.selectDishes(indexInfo)}>添加菜品</a>
+                        <a title="" alt="" onClick={() => this.selectDishes(indexInfo)}>{SALE_LABEL.k5m6e613}</a>
                                 </span>
                             </div>
                         ),

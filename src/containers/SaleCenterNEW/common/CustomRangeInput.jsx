@@ -13,18 +13,23 @@ import { Form, Input, Button, Col, Row, InputNumber, Icon,
 } from 'antd';
 import PriceInput from './PriceInput';
 import styles from '../ActivityPage.less';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class CustomRangeInput extends React.Component {
     constructor(props) {
         super(props);
-
+        const { intl } = props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         const { value } = this.props;
         this.state = {
             start: value ? value.start : null,
             end: value ? value.end : null,
-            addonBefore: this.props.addonBefore || '消费满',
-            addonAfter: this.props.addonAfter || '元',
-            addonAfterUnit: this.props.addonAfterUnit || '元',
+            addonBefore: this.props.addonBefore || SALE_LABEL.k5nh214x,
+            addonAfter: this.props.addonAfter || k5ezdbiy,
+            addonAfterUnit: this.props.addonAfterUnit || k5ezdbiy,
         };
 
         this.onStartChange = this.onStartChange.bind(this);
@@ -92,7 +97,7 @@ class CustomRangeInput extends React.Component {
                 </Col>
 
                 <Col span={4}>
-                    <div>{this.props.relation || '减'}</div>
+                    <div>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
                 </Col>
 
                 <Col span={7}>

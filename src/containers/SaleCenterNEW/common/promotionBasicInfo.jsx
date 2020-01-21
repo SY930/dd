@@ -38,6 +38,10 @@ import {
     CYCLE_TYPE,
     ACTIVITY_CYCLE_TYPE,
 } from '../../../redux/actions/saleCenterNEW/types';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
+
 
 
 const options = WEEK_OPTIONS;
@@ -48,6 +52,7 @@ const moment = require('moment');
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
+@injectIntl()
 export const AddCategorys = Form.create()(class AddCategory extends React.Component {
     constructor(props) {
         super(props);
@@ -103,13 +108,13 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                         newCategory: '',
                     });
                     this.props.form.setFieldsValue({ 'addName': '' })
-                    message.success('添加成功');
+                    message.success(SALE_LABEL.k5do0ps6);
                 },
                 fail: () => {
                     this.setState({
                         loading: false,
                     });
-                    message.error('添加失败');
+                    message.error(SALE_LABEL.k5doax7i);
                 },
             });
         });
@@ -121,17 +126,24 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
         })
     }
     render() {
+        const { intl } = this.props;
+        const k5m5axac = intl.formatMessage(SALE_STRING.k5m5axac);
+        const k5nh2229 = intl.formatMessage(SALE_STRING.k5nh2229);
+        const k5nh21tx = intl.formatMessage(SALE_STRING.k5nh21tx);
+        const k5dlpi06 = intl.formatMessage(SALE_STRING.k5dlpi06);
+        const k5m6e4vf = intl.formatMessage(SALE_STRING.k5m6e4vf);
+
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 19 },
         };
-        const title = this.props.catOrtag == 'cat' ? '类别' : '标签'
+        const title = this.props.catOrtag == 'cat' ? k5nh21tx : k5dlpi06;
         return (
             <div>
-                <a className={styles.linkSelectorBtn} title={`管理${title}`} onClick={this.showAddCategory}>{`管理${title}`}</a>
+                <a className={styles.linkSelectorBtn} title={`${k5nh2229}${title}`} onClick={this.showAddCategory}>{`${k5nh2229}${title}`}</a>
                 <Modal
-                    title={`管理${title}`}
+                    title={`${k5nh2229}${title}`}
                     visible={this.state.cateVisible}
                     width={580}
                     confirmLoading={this.state.loading}
@@ -139,18 +151,18 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                     wrapClassName={styles.linkSelectorModalHasTag}
                     footer={
                         [<Button key="0" style={{ display: 'none' }}></Button>,
-                        <Button key="1" type="primary" onClick={this.handleCancel}>关闭</Button>]
+                    <Button key="1" type="primary" onClick={this.handleCancel}>{COMMON_LABEL.close}</Button>]
                     }
                 >
                     {
                         this.state.cateVisible ? (
                             <Form className={styles.FormStyleSmall}>
-                                <FormItem label={`添加${title}`} className={styles.FormItemStyle} {...formItemLayout}>
+                                <FormItem label={`${k5m6e4vf}${title}`} className={styles.FormItemStyle} {...formItemLayout}>
                                     {getFieldDecorator('addName', {
                                         rules: [{
                                             whitespace: true,
                                             required: true,
-                                            message: '汉字、字母、数字组成，不多于50个字符',
+                                            message: k5m5axac,
                                             pattern: /^[\u4E00-\u9FA5A-Za-z0-9\s\.]{1,50}$/,
                                         }],
                                         onChange: (e) => {
@@ -159,12 +171,12 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                                             })
                                         },
                                     })(
-                                        <Input style={{ width: '285px', marginRight: '10px' }} placeholder={`请输入${title}名称`} />
+                                        <Input style={{ width: '285px', marginRight: '10px' }} placeholder={`${title}`} />
                                         )}
-                                    <Button type="default" onClick={this.hideAddCategory}>{`添加${title}`}</Button>
+                                    <Button type="default" onClick={this.hideAddCategory}>{`${k5m6e4vf}${title}`}</Button>
                                 </FormItem>
                                 <FormItem style={{ marginLeft: '19px' }}>
-                                    <h5>删除{title}</h5>
+                                    <h5>{COMMON_LABEL.delete}{title}</h5>
                                     <div style={{ height: 135, overflow: 'auto', marginTop: 10, paddingRight: 14 }}>
                                         {
                                             this.props.list.map((cat) => {
@@ -195,6 +207,7 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
     }
 });
 
+@injectIntl()
 class PromotionBasicInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -305,7 +318,7 @@ class PromotionBasicInfo extends React.Component {
                 this.props.saleCenterSetBasicInfo({shopIDLst: this.props.shopIDLst})
             }
         }
-        
+
 
         const maintenanceLevel = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'maintenanceLevel']);
         if ((this.props.user.shopID > 0 && maintenanceLevel == '1') || (!this.props.user.shopID && maintenanceLevel == '0')) {
@@ -559,25 +572,30 @@ class PromotionBasicInfo extends React.Component {
         this.setState({ expand: !expand });
     };
 
-    renderPromotionCycleSetting() {
+    renderPromotionCycleSetting = () => {
+        const { intl } = this.props;
+        const k5nh22ix = intl.formatMessage(SALE_STRING.k5nh22ix);
+        const k5nh22r9 = intl.formatMessage(SALE_STRING.k5nh22r9);
+        const k5nh22zl = intl.formatMessage(SALE_STRING.k5nh22zl);
+
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
         };
         return (
-            <FormItem label="选择周期" className={styles.FormItemStyle} {...formItemLayout}>
+            <FormItem label={SALE_LABEL.k5nh22al} className={styles.FormItemStyle} {...formItemLayout}>
                 <Select
                     size="default"
-                    placeholder="请选择周期"
+                    placeholder=""
                     getPopupContainer={(node) => node.parentNode}
                     defaultValue={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
                     }}
                 >
-                    <Option value="0">每日</Option>
-                    <Option value="1">每周</Option>
-                    <Option value="2">每月</Option>
+                <Option value="0">{k5nh22ix}</Option>
+                <Option value="1">{k5nh22r9}</Option>
+                <Option value="2">{k5nh22zl}</Option>
                 </Select>
                 <div className={styles.SeniorDateMain}>
                     {this.renderPromotionCycleDetailSetting()}
@@ -643,7 +661,7 @@ class PromotionBasicInfo extends React.Component {
             wrapperCol: { span: 17 },
         };
         return (
-            <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
+            <FormItem label={SALE_LABEL.k5m5axio} className={styles.FormItemStyle} {...formItemLayout}>
                 <DatePicker
                     ref={e => this.realDatePicker = e}
                     open={this.state.open}
@@ -736,7 +754,7 @@ class PromotionBasicInfo extends React.Component {
         };
 
         const _timeRangeInfo = this.state.timeRangeInfo.map((timeRangeInfo, index) => {
-            let _label = '活动时段';
+            let _label = SALE_LABEL.k5m5axr0;
             if (index) {
                 _label = ' ';
             }
@@ -772,7 +790,7 @@ class PromotionBasicInfo extends React.Component {
                 {
                     this.props.propmotionType == '1010' && (
                         <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
-                            活动时段按下单时间执行
+                            {SALE_LABEL.k5m5axzc}
                         </p>
                     )
                 }
@@ -927,11 +945,15 @@ class PromotionBasicInfo extends React.Component {
         }, () => { this.handleAutoAddTags() });
     }
 
-    renderCategorys() {
+    renderCategorys = () => {
+        const { intl } = this.props;
+        const k5nh23g9 = intl.formatMessage(SALE_STRING.k5nh23g9);
+        const k5nh23ol = intl.formatMessage(SALE_STRING.k5nh23ol);
+
         if (this.state.categoryName === undefined) {
-            return (<Option value={'0'} key={'0'} disabled={true}>数据加载中...</Option >);
+            return (<Option value={'0'} key={'0'} disabled={true}>{SALE_LABEL.k5m5ay7o}...</Option >);
         } else if (typeof this.state.categoryName === 'object' && this.state.categoryName.length == 0) {
-            return (<Option value={'0'} key={'0'} disabled={true}>暂无数据,请新建类别</Option >);
+        return (<Option value={'0'} key={'0'} disabled={true}>{k5nh23g9}</Option >);
         }
         return this.state.categoryName
             .map((category, index) => {
@@ -943,9 +965,9 @@ class PromotionBasicInfo extends React.Component {
 
     rendertags() {
         if (this.state.tagName === undefined) {
-            return (<Option value={'0'} key={'0'} disabled={true}>数据加载中...</Option >);
+            return (<Option value={'0'} key={'0'} disabled={true}>{SALE_LABEL.k5m5ay7o}...</Option >);
         } else if (typeof this.state.tagName === 'object' && this.state.tagName.length == 0) {
-            return (<Option value={'0'} key={'0'} disabled={true}>暂无标签,输入新建</Option >);
+        return (<Option value={'0'} key={'0'} disabled={true}>{k5nh23ol}</Option >);
         }
         return this.state.tagName
             .map((tag, index) => {
@@ -968,7 +990,7 @@ class PromotionBasicInfo extends React.Component {
                     shopID: this.props.user.shopID && this.props.user.shopID !== '' ? this.props.user.shopID : undefined,
                     phraseType,
                 });
-                message.success('删除成功');
+                message.success(SALE_LABEL.k5do0ps6);
             },
         });
         if (phraseType == '0' && this.state.category == name) {
@@ -993,7 +1015,7 @@ class PromotionBasicInfo extends React.Component {
         const { promotionBasicInfo } = this.props;
 
         const tagList = {
-            placeholder: '请选择活动标签',
+            placeholder: '',
             tags: true,
             allowClear: true,
             className: styles.linkSelectorRight,
@@ -1018,11 +1040,18 @@ class PromotionBasicInfo extends React.Component {
             return current && cur < now;
         };
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+
+        const { intl } = this.props;
+        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
+        const k5m5ayg0 = intl.formatMessage(SALE_STRING.k5m5ayg0);
+        const k5m678if = intl.formatMessage(SALE_STRING.k5m678if);
+        const k5m679wf = intl.formatMessage(SALE_STRING.k5m679wf);
+
         return (
 
             <Form className={styles.FormStyle}>
                 <FormItem
-                    label="活动统计类别"
+                    label={SALE_LABEL.k5dljb1v}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1030,8 +1059,8 @@ class PromotionBasicInfo extends React.Component {
                 >
                     <Select
                         showSearch={true}
-                        notFoundContent={'未搜索到结果'}
-                        placeholder="请选择活动类别"
+                        notFoundContent={SALE_LABEL.k5dod8s9}
+                        placeholder=""
                         getPopupContainer={(node) => node.parentNode}
                         size="default"
                         value={this.state.category}
@@ -1055,11 +1084,11 @@ class PromotionBasicInfo extends React.Component {
                     />
                 </FormItem>
 
-                <FormItem label="活动名称" className={styles.FormItemStyle} {...formItemLayout}>
+                <FormItem label={SALE_LABEL.k5dlcm1i} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionName', {
                         rules: [
-                            { required: true, message: '活动名称不能为空' },
-                            { max: 50, message: '不能超过50个字符' },
+                            { required: true, message: k5hkj1ef },
+                            { max: 50, message: k5m5ayg0 },
                         /*    {
                             // whitespace: true,
                             required: true,
@@ -1070,49 +1099,49 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.name,
                     })(
                         <Input
-                            placeholder="请输入活动名称"
+                            placeholder=""
                             onChange={this.handleNameChange}
                             ref={node => this.promotionNameInputRef = node}
                         />
                         )}
                 </FormItem>
 
-                <FormItem label="活动展示名称" className={styles.FormItemStyle} {...formItemLayout}>
+                <FormItem label={SALE_LABEL.k5krn5l9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionShowName', {
                         rules: [{
                             whitespace: true,
-                            message: '汉字、字母、数字组成，不多于50个字符',
+                            message: k5m5ayg0,
                             pattern: /^[\u4E00-\u9FA5A-Za-z0-9\s\.]{1,50}$/,
                         }],
                         initialValue: this.state.showName,
                     })(
-                        <Input placeholder="请输入展示名称" onChange={this.handleShowNameChange} />
+                        <Input placeholder="" onChange={this.handleShowNameChange} />
                         )}
                 </FormItem>
 
-                <FormItem label="活动编码" className={styles.FormItemStyle} {...formItemLayout}>
+                <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionCode', {
                         rules: [{
                             whitespace: true,
                             required: true,
-                            message: '字母、数字组成，不多于20个字符',
+                            message: k5m678if,
                             pattern: /^[A-Za-z0-9]{1,20}$/,
                         }],
                         initialValue: this.state.code,
 
                     })(
-                        <Input placeholder="请输入活动编码" disabled={!this.props.isNew} onChange={this.handleCodeChange} />
+                        <Input placeholder="" disabled={!this.props.isNew} onChange={this.handleCodeChange} />
                         )}
                 </FormItem>
 
-                <FormItem label="活动标签" className={styles.FormItemStyle} {...formItemLayout}>
+                <FormItem label={SALE_LABEL.k5dlpi06} className={styles.FormItemStyle} {...formItemLayout}>
                     <Select
                         {...tagList}
                         onChange={this.handleTagsChange}
                         getPopupContainer={(node) => node.parentNode}
                         value={this.state.tags}
                         size="default"
-                        placeholder="汉字、字母、数字组成"
+                        placeholder={SALE_LABEL.k5m678qr}
                     >
                         {this.rendertags()}
                     </Select>
@@ -1138,12 +1167,12 @@ class PromotionBasicInfo extends React.Component {
                             : null
                     }
                     <FormItem
-                        label="活动起止日期"
+                        label={SALE_LABEL.k5m6797f}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                         validateStatus={this.state.rangePickerstatus}
-                        help={this.state.rangePickerstatus == 'success' ? null : this.state.shopsAllSet ? '同时段内，店铺已被其它同类活动全部占用, 请重新选择时段' : '请选择活动起止日期'}
+                        help={this.state.rangePickerstatus == 'success' ? null : this.state.shopsAllSet ? SALE_LABEL.k5m67b23 : SALE_LABEL.k5m6797f}
                     >
                         <Row>
                             <Col span={21}>
@@ -1156,7 +1185,7 @@ class PromotionBasicInfo extends React.Component {
                                             this.getDateCount()
                                         }
                                     </span>
-                                    <span>天</span>
+                                    <span>{SALE_LABEL.k5nh237x}</span>
                                 </div>
 
                             </Col>
@@ -1164,8 +1193,8 @@ class PromotionBasicInfo extends React.Component {
                     </FormItem>
                 </div>
                 <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
-                    <span className={styles.gTip}>更多活动日期与时间的设置请使用</span>
-                    <span className={styles.gDate} onClick={this.toggle}>高级日期设置</span>
+                                    <span className={styles.gTip}>{SALE_LABEL.k5m679fr}</span>
+                                    <span className={styles.gDate} onClick={this.toggle}>{SALE_LABEL.k5m679o3}</span>
                 </FormItem>
 
                 {this.state.expand && this.renderTimeSlot()}
@@ -1173,14 +1202,14 @@ class PromotionBasicInfo extends React.Component {
                 {this.state.expand && this.renderExcludedDatePicker()}
 
 
-                <FormItem label="活动说明" className={styles.FormItemStyle} {...formItemLayout}>
+                <FormItem label={SALE_LABEL.k5krn6a9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
                         rules: [
-                            { max: 200, message: '最多200个字符' },
+                            { max: 200, message: k5m679wf },
                         ],
                         initialValue: this.state.description,
                     })(
-                        <Input type="textarea" placeholder="活动说明最多200个字符" onChange={this.handleDescriptionChange} />
+                        <Input type="textarea" placeholder="" onChange={this.handleDescriptionChange} />
                         )}
                 </FormItem>
             </Form>

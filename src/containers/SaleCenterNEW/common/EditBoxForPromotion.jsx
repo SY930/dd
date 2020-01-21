@@ -1,14 +1,15 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
 import { connect } from 'react-redux'; import { Tree } from 'antd';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const TreeNode = Tree.TreeNode;
 
 import styles from '../ActivityPage.less';
 const Immutable = require('immutable');
-const DISABLED_PROMOTION_TYPE = [
-    '消费返礼品', '消费返积分'
-];
+
 
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { FetchGiftList, FetchGiftSort } from '../../GiftNew/_action';
@@ -17,6 +18,7 @@ import {
     ACTIVITY_CATEGORIES,
 } from '../../../redux/actions/saleCenterNEW/types';
 
+@injectIntl()
 class EditBoxForPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -63,7 +65,7 @@ class EditBoxForPromotion extends React.Component {
                     // 找到匹配活动，加展示名称
                     // promotion.finalShowName = "券活动";
                     if (item.giftItemID == promotion.sharedIDStr) {
-                        promotion.finalShowName = item.giftName || '券活动';
+                        promotion.finalShowName = item.giftName || SALE_LABEL.k5nh21ll;
                         promotion.promotionIDStr = promotion.sharedIDStr;
                     }
                 })
@@ -71,10 +73,10 @@ class EditBoxForPromotion extends React.Component {
                 // 会员价会员权益类
                 if (promotion.sharedIDStr == '-10' || promotion.promotionIDStr == '-10') {
                     // 会员价
-                    promotion.finalShowName = '会员价';
+                    promotion.finalShowName = SALE_LABEL.k5m4q0r2;
                 } else {
                     // 会员折扣
-                    promotion.finalShowName = '会员折扣';
+                    promotion.finalShowName = SALE_LABEL.k5m4q0ze;
                 }
                 promotion.promotionIDStr = promotion.promotionIDStr ? promotion.promotionIDStr : promotion.sharedIDStr;
             } else {
@@ -82,7 +84,7 @@ class EditBoxForPromotion extends React.Component {
                 promotionCollection.map((promotionCategory) => {
                     promotionCategory.promotionName.map((saleItem) => {
                         if (saleItem.promotionIDStr == promotion.sharedIDStr) {
-                            promotion.finalShowName = saleItem.promotionName || '基础营销活动';
+                            promotion.finalShowName = saleItem.promotionName || SALE_LABEL.k5m4q17q;
                             promotion.promotionIDStr = promotion.sharedIDStr;
                         }
                     })
@@ -152,6 +154,12 @@ class EditBoxForPromotion extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
+        const { intl } = this.props;
+        const k5m4q0ae = intl.formatMessage(SALE_STRING.k5m4q0ae);
+        const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq);
+        const DISABLED_PROMOTION_TYPE = [
+            k5m4q0ae, k5m4q0iq
+        ];
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
         const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
@@ -250,6 +258,15 @@ class EditBoxForPromotion extends React.Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k5m4q0ae = intl.formatMessage(SALE_STRING.k5m4q0ae);
+        const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq);
+        const k5m5auib = intl.formatMessage(SALE_STRING.k5m5auib);
+
+        const DISABLED_PROMOTION_TYPE = [
+            k5m4q0ae, k5m4q0iq
+        ];
+
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = new Set();
         this.state.promotionSelections.forEach(item => {
@@ -266,35 +283,35 @@ class EditBoxForPromotion extends React.Component {
                 return null
             }
             return ACTIVITY_CATEGORIES.filter(item => !DISABLED_PROMOTION_TYPE.includes(item.title)).map((item, index) => {
-                return <TreeNode key={index} title={item.title} disabled={filterFlag && item.title == '菜品推荐'} />
+                return <TreeNode key={index} title={item.title} disabled={filterFlag && item.title == k5m5auib} />
             });
         }
         return (
             <div className={styles.treeSelectMain}>
                 <HualalaEditorBox
-                    label={'营销活动共享'}
+                    label={SALE_LABEL.k5m5auqn}
                     itemName={'finalShowName'}
                     itemID={'promotionIDStr'}
                     data={promotionSelections}
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
-                    <HualalaTreeSelect level1Title={'全部营销活动'}>
+                    <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
                         {/* //搜索框 */}
                         <HualalaSearchInput onChange={this.handleSearchInputChange} />
                         {/* //左侧树 */}
                         <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
-                            <TreeNode key={'salePromotion'} title={'基础营销'}>
+                            <TreeNode key={'salePromotion'} title={SALE_LABEL.k5m4q17q}>
                                 {loop(_promotionCollection)}
                             </TreeNode>
-                            <TreeNode key={'hualala'} title={'哗啦啦券'}>
-                                <TreeNode key={'vouchers'} title={'代金券'} />
-                                <TreeNode key={'coupons'} title={'菜品优惠券'} />
-                                <TreeNode key={'exchangeCoupons'} title={'菜品兑换券'} />
+                            <TreeNode key={'hualala'} title={SALE_LABEL.k5m5av7b}>
+                                <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
+                                <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
+                                <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
                             </TreeNode>
-                            <TreeNode key={'userRight'} title={'会员权益'}>
-                                <TreeNode key={'userCard'} title={'会员价'} />
-                                <TreeNode key={'userDiscount'} title={'会员折扣'} />
+                            <TreeNode key={'userRight'} title={SALE_LABEL.k5m5aw4n}>
+                                <TreeNode key={'userCard'} title={SALE_LABEL.k5m4q0r2} />
+                                <TreeNode key={'userDiscount'} title={SALE_LABEL.k5m4q0ze} />
                             </TreeNode>
                         </Tree>
                         {/* //右侧复选框 */}
@@ -309,7 +326,7 @@ class EditBoxForPromotion extends React.Component {
                         <HualalaSelected
                             itemName={'finalShowName'}
                             itemID={'promotionIDStr'}
-                            selectdTitle={'已选营销活动'}
+                            selectdTitle={SALE_LABEL.k5m5awd0}
                             value={promotionSelections}
                             onChange={this.handleSelectedChange}
                             onClear={() => this.clear()}
@@ -331,7 +348,11 @@ class EditBoxForPromotion extends React.Component {
     }
 
     // 搜索
-    handleSearchInputChange(value) {
+    handleSearchInputChange = (value) => {
+        const { intl } = this.props;
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+
         const promotionList = this.state.promotionCollection;
         const { vouchersData, couponsData, exchangeCouponsData } = this.state;
         if (undefined === promotionList) {
@@ -350,7 +371,7 @@ class EditBoxForPromotion extends React.Component {
                 }
             });
         });
-        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat([{ 'finalShowName': '会员价', 'promotionIDStr': '-10' }, { 'finalShowName': '会员折扣', 'promotionIDStr': '-20' }])
+        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat([{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10' }, { 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20' }])
         otherPromotion.forEach((promotion) => {
             if (CC2PY(promotion.finalShowName).indexOf(CC2PY(value)) !== -1 || promotion.finalShowName.indexOf(CC2PY(value)) !== -1) {
                 allMatchItem.push(promotion);
@@ -465,7 +486,11 @@ class EditBoxForPromotion extends React.Component {
     }
 
     // 左侧选择
-    handleTreeNodeChange(value, info) {
+    handleTreeNodeChange = (value, info) => {
+        const { intl } = this.props;
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+
         let { promotionOptions, promotionSelections, promotionCurrentSelections, vouchersData, couponsData, exchangeCouponsData, valueKeyType } = this.state;
 
         if (value === undefined || value[0] === undefined) {
@@ -479,9 +504,9 @@ class EditBoxForPromotion extends React.Component {
         }else if (value[0] == 'exchangeCoupons') {
             promotionOptions = exchangeCouponsData;
         } else if (value[0] == 'userCard') {
-            promotionOptions = [{ 'finalShowName': '会员价', 'promotionIDStr': '-10', 'sharedType': '20' }];
+            promotionOptions = [{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10', 'sharedType': '20' }];
         } else if (value[0] == 'userDiscount') {
-            promotionOptions = [{ 'finalShowName': '会员折扣', 'promotionIDStr': '-20', 'sharedType': '20' }];
+            promotionOptions = [{ 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20', 'sharedType': '20' }];
         } else if (value[0] !== 'salePromotion' && value[0] !== 'hualala' && value[0] !== 'userRight') {
             // 普通基础营销
             const indexArray = value[0].split('-').map((val) => {
