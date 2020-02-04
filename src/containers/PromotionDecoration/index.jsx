@@ -4,7 +4,6 @@ import {
     Button,
     message,
 } from 'antd';
-import { COMMON_LABEL } from 'i18n/common';
 import registerPage from '../../../index';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import style from './style.less'
@@ -24,7 +23,12 @@ import {
     saveDecorationInfo,
     updateDecorationItem,
     resetDecorationInfo,
-} from '../../redux/actions/decoration'
+} from '../../redux/actions/decoration';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
+
+
 const mapStateToProps = (state) => {
     return {
         id: state.sale_promotion_decoration.getIn(['currentPromotion', 'id']),
@@ -53,6 +57,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 @registerPage([PROMOTION_DECORATION])
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 export default class PromotionDecoration extends Component {
 
     componentDidMount() {
@@ -79,7 +84,7 @@ export default class PromotionDecoration extends Component {
             id,
             decorationInfo: decorationInfo.toJS(),
         }).then(() => {
-            message.success('保存成功');
+            message.success(SALE_LABEL.k5do0ps6);
             closePage();
             switch (type) {
                 default: jumpPage({ pageID: SPECIAL_PAGE})
@@ -95,7 +100,7 @@ export default class PromotionDecoration extends Component {
         return (
             <div className={style.flexHeader} >
                 <span className={style.title} >
-                    {title || '活动装修' }
+                    {title || SALE_LABEL.k636p2td }
                 </span>
                 <div className={style.spacer} />
                 <Button
@@ -115,11 +120,11 @@ export default class PromotionDecoration extends Component {
                             onClick={this.handleReset}
                             style={{ marginRight: 12 }}
                         >
-                            恢复默认
+                            {SALE_LABEL.k636f5qg}
                         </Button>
                     )
                 }
-                
+
                 <Button
                     type="primary"
                     loading={loading}

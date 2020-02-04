@@ -41,37 +41,13 @@ import {
     ONLINE_PROMOTION_TYPES,
 } from '../../constants/promotionType';
 import selfStyle from './style.less'
-
-const ALL_PROMOTION_CATEGORIES = [
-    {
-        title: '会员拉新',
-        list: NEW_CUSTOMER_PROMOTION_TYPES.filter(item => item.key != 67 && item.key != 68),
-    },
-    {
-        title: '粉丝互动',
-        list: FANS_INTERACTIVITY_PROMOTION_TYPES,
-    },
-    {
-        title: '促进复购',
-        list: REPEAT_PROMOTION_TYPES,
-    },
-    {
-        title: '会员关怀',
-        list: LOYALTY_PROMOTION_TYPES,
-    },
-    {
-        title: '促进销量',
-        list: SALE_PROMOTION_TYPES,
-    },
-    {
-        title: '线上营销',
-        list: ONLINE_PROMOTION_TYPES,
-    },
-]
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
-
+@injectIntl()
 class PromotionCreateModal extends Component {
 
     constructor(props) {
@@ -105,7 +81,7 @@ class PromotionCreateModal extends Component {
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
-            return message.success('活动尚未开放，敬请期待');
+            return message.success(SALE_LABEL.k6316gwc);
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -123,7 +99,7 @@ class PromotionCreateModal extends Component {
             return;
         }
         if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
-            message.warn('您没有新建活动的权限，请联系管理员');
+            message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
         const key = activity.key;
@@ -148,7 +124,7 @@ class PromotionCreateModal extends Component {
                 },
                 success: (val) => {
                     if (key === '60' && val.serviceCode === 1) {
-                        message.warning('您已创建过完善资料送礼,不能重复添加!');
+                        message.warning(SALE_LABEL.k6316h4o);
                     } else {
                         this.setSpecialModalVisible(true);
                         this.props.setSpecialPromotionType({
@@ -157,7 +133,7 @@ class PromotionCreateModal extends Component {
                     }
                 },
                 fail: () => {
-                    message.error('检查失败!');
+                    message.error(SALE_LABEL.k5dmw1z4);
                 },
             });
             return;
@@ -171,7 +147,7 @@ class PromotionCreateModal extends Component {
             return;
         }
         if (!checkPermission(BASIC_PROMOTION_CREATE)) {
-            message.warn('您没有新建活动的权限，请联系管理员');
+            message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
         const key = promotionEntity.key;
@@ -193,10 +169,12 @@ class PromotionCreateModal extends Component {
 
     renderSpecialPromotionModal() {
         const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
+        const { intl } = this.props;
+        const create = intl.formatMessage(COMMON_STRING.create);
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
-                title={`创建${promotionType}`}
+                title={`${create}${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -222,10 +200,12 @@ class PromotionCreateModal extends Component {
 
     renderBasicPromotionModal() {
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
+        const { intl } = this.props;
+        const create = intl.formatMessage(COMMON_STRING.create);
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}`}
+                title={`${create}${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -250,8 +230,43 @@ class PromotionCreateModal extends Component {
     }
 
     renderModalContent() {
+        const { intl } = this.props;
+        const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
+        const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
+        const k6316iac = intl.formatMessage(SALE_STRING.k6316iac);
+        const k6316hlc = intl.formatMessage(SALE_STRING.k6316hlc);
+        const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
+
+        const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const ALL_PROMOTION_CATEGORIES = [
+            {
+                title: k6316hto,
+                list: NEW_CUSTOMER_PROMOTION_TYPES.filter(item => item.key != 67 && item.key != 68),
+            },
+            {
+                title: k6316hd0,
+                list: FANS_INTERACTIVITY_PROMOTION_TYPES,
+            },
+            {
+                title: k6316iac,
+                list: REPEAT_PROMOTION_TYPES,
+            },
+            {
+                title: k6316hlc,
+                list: LOYALTY_PROMOTION_TYPES,
+            },
+            {
+                title: k6316iio,
+                list: SALE_PROMOTION_TYPES,
+            },
+            {
+                title: k6316i20,
+                list: ONLINE_PROMOTION_TYPES,
+            },
+        ]
         const allMenu = [
-            '全部',
+            k5eng042,
             ...ALL_PROMOTION_CATEGORIES.map(item => item.title),
         ];
         const { currentCategoryIndex } = this.state;
@@ -302,7 +317,7 @@ class PromotionCreateModal extends Component {
         const { onCancel } = this.props;
         return (
             <Modal
-                title="创建活动"
+                title={SALE_LABEL.k6316ir0}
                 footer={false}
                 width={900}
                 visible={true}

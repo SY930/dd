@@ -10,7 +10,11 @@ import { onlineRes } from './assets'
 import { giftExample } from './assets'
 import tagImg from './assets/tag.svg'
 import { btnBg } from './assets'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class SimpleDecorationBoard extends Component {
 
     renderPhonePreview() {
@@ -27,7 +31,7 @@ export default class SimpleDecorationBoard extends Component {
                     <div className={style.imgWrapper}>
                         <div className={style.tagWrapper}>
                             <img src={tagImg} alt=""/>
-                            <span>活动主图</span>
+        <span>{SALE_LABEL.k6346c3s}</span>
                         </div>
                         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
                             <img src={img} style={{ width: '100%' }} alt=""/>
@@ -38,7 +42,7 @@ export default class SimpleDecorationBoard extends Component {
                         <img src={giftExample} alt=""/>
                         <div className={style.btnWrapper}>
                             <img src={btnBg} alt="" />
-                            <div>知道了</div>
+                            <div>{SALE_LABEL.k5m3oov8}</div>
                         </div>
                     </div>
                     <Icon className={style.closeBtn}  type="close-circle-o" />
@@ -57,11 +61,11 @@ export default class SimpleDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>弹窗背景色</div>
+        <div className={style.label}>{SALE_LABEL.k6346cc4}</div>
                     <ColorSettingBlock value={color} onChange={(value) => onChange({key: ['color'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
@@ -69,14 +73,14 @@ export default class SimpleDecorationBoard extends Component {
                             onChange={value => onChange({key: ['img'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸920x360像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}920x360</p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         )
     }
     render() {

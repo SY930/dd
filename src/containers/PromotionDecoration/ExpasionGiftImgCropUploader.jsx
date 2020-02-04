@@ -8,7 +8,11 @@ import commonStyle from './style.less';
 import { CropperModal } from 'components/common/CropperUploader'
 import DecorationUploader from './DecorationUploader';
 import DoubleCropperModal from './DoubleCropperModal';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class ExpasionGiftImgCropUploader extends Component {
 
     state = {
@@ -51,6 +55,11 @@ export default class ExpasionGiftImgCropUploader extends Component {
             thumbImgCropperVisible,
             imgCropperVisible,
         } = this.state;
+
+        const { intl } = this.props;
+        const k636edit = intl.formatMessage(COMMON_STRING.edit);
+        const k636delete = intl.formatMessage(COMMON_STRING.delete);
+
         return (
             <div className={style.componentWrapper}>
                 <DoubleCropperModal
@@ -83,7 +92,7 @@ export default class ExpasionGiftImgCropUploader extends Component {
                         limit={1000}
                         trigger={
                             <Button type="ghost">
-                                上传图片
+                                {SALE_LABEL.k636p0qc}
                             </Button>
                         }
                         onChange={this.handleBaseImgChange}
@@ -92,7 +101,7 @@ export default class ExpasionGiftImgCropUploader extends Component {
                         className={style.fakeAchor}
                         onClick={this.handleReset}
                     >
-                        一键重置
+                        {SALE_LABEL.k635s3np}
                     </div>
                 </div>
                 <div className={style.imgUploaderContainer}>
@@ -102,7 +111,7 @@ export default class ExpasionGiftImgCropUploader extends Component {
                                 <img src={thumbImgUrl} ></img>
                             ) : (
                                 <div className={style.tip}>
-                                    奖品缩略图
+                                    {SALE_LABEL.k635s4td}
                                 </div>
                             )
                         }
@@ -111,12 +120,12 @@ export default class ExpasionGiftImgCropUploader extends Component {
                                 <div className={style.actionModal}>
                                     <Icon
                                         type="edit"
-                                        title="编辑"
+                                        title={k636edit}
                                         className={style.actionIcon}
                                         onClick={() => this.setState({ thumbImgCropperVisible: true })}
                                     />
                                     <Icon
-                                        title="删除"
+                                        title={k636delete}
                                         type="delete"
                                         className={style.actionIcon}
                                         onClick={() => onThumbImgUrlChange(undefined)}
@@ -131,7 +140,7 @@ export default class ExpasionGiftImgCropUploader extends Component {
                                 <img src={imgUrl} ></img>
                             ) : (
                                 <div className={style.tip}>
-                                    奖品展示图
+                                    {SALE_LABEL.k635s51p}
                                 </div>
                             )
                         }
@@ -140,12 +149,12 @@ export default class ExpasionGiftImgCropUploader extends Component {
                                 <div className={style.actionModal}>
                                     <Icon
                                         type="edit"
-                                        title="编辑"
+                                        title={k636edit}
                                         className={style.actionIcon}
                                         onClick={() => this.setState({ imgCropperVisible: true })}
                                     />
                                     <Icon
-                                        title="删除"
+                                        title={k636delete}
                                         type="delete"
                                         className={style.actionIcon}
                                         onClick={() => onImgUrlChange(undefined)}
@@ -155,9 +164,9 @@ export default class ExpasionGiftImgCropUploader extends Component {
                         }
                     </div>
                     <div className={commonStyle.uploaderTip}>
-                        <p>* 展示图建议尺寸<span style={{ color: '#379FF1' }}>485*146</span>像素</p>
-                        <p>* 缩略图建议尺寸<span style={{ color: '#379FF1' }}>134*146</span>像素</p>
-                        <p>* 图片大小不要超过1000KB，支持JPG、PNG图片文件</p>
+                        <p>* {SALE_LABEL.k636p09o}<span style={{ color: '#379FF1' }}>485*146</span></p>
+                        <p>* {SALE_LABEL.k636p0i0}<span style={{ color: '#379FF1' }}>134*146</span></p>
+    <p>* {SALE_LABEL.k6346ckg}1000KB，{SALE_LABEL.k6346d14}</p>
                     </div>
                 </div>
             </div>

@@ -34,10 +34,14 @@ import {
     isHuaTian,
     SPECIAL_PROMOTION_CREATE_DISABLED_TIP,
 } from "../../constants/projectHuatianConf";
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
 
+@injectIntl()
 class BasePage extends Component {
 
     constructor(props) {
@@ -70,7 +74,7 @@ class BasePage extends Component {
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
-            return message.success('活动尚未开放，敬请期待');
+            return message.success(SALE_LABEL.k6316gwc);
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -88,7 +92,7 @@ class BasePage extends Component {
             return;
         }
         if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
-            message.warn('您没有新建活动的权限，请联系管理员');
+            message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
         const key = activity.key;
@@ -113,7 +117,7 @@ class BasePage extends Component {
                 },
                 success: (val) => {
                     if (key === '60' && val.serviceCode === 1) {
-                        message.warning('您已创建过完善资料送礼,不能重复添加!');
+                        message.warning(SALE_LABEL.k6316h4o);
                     } else {
                         this.setSpecialModalVisible(true);
                         this.props.setSpecialPromotionType({
@@ -122,7 +126,7 @@ class BasePage extends Component {
                     }
                 },
                 fail: () => {
-                    message.error('检查失败!');
+                    message.error(SALE_LABEL.k5dmw1z4);
                 },
             });
             return;
@@ -136,7 +140,7 @@ class BasePage extends Component {
             return;
         }
         if (!checkPermission(BASIC_PROMOTION_CREATE)) {
-            message.warn('您没有新建活动的权限，请联系管理员');
+            message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
         const key = promotionEntity.key;
@@ -158,10 +162,12 @@ class BasePage extends Component {
 
     renderSpecialPromotionModal() {
         const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
+        const { intl } = this.props;
+        const create = intl.formatMessage(COMMON_STRING.create);
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
-                title={`创建${promotionType}`}
+                title={`${create}${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -187,10 +193,12 @@ class BasePage extends Component {
 
     renderBasicPromotionModal() {
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
+        const { intl } = this.props;
+        const create = intl.formatMessage(COMMON_STRING.create);
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}`}
+                title={`${create}${promotionType}`}
                 maskClosable={false}
                 footer={false}
                 style={{
