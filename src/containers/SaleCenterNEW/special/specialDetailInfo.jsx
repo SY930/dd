@@ -207,6 +207,10 @@ class SpecialDetailInfo extends React.Component {
             this.props.setPromotionDetail({
                 customerUseCountLimit: 0,
             })
+        }else{
+            this.props.setPromotionDetail({
+                customerUseCountLimit: 1,
+            })
         }
     }
     handleCustomerUseCountLimitChange = (value) => {
