@@ -31,11 +31,14 @@ import {
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import ShopSelector from "../../../components/common/ShopSelector";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const moment = require('moment');
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -272,7 +275,7 @@ class StepTwo extends React.Component {
             if (!this.state.groupMembersID) {
                 this.props.form.setFields({
                     setgroupMembersID: {
-                        errors: [new Error('请选择会员群体')],
+                        errors: [new Error(`${this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}`)],
                     },
                 });
                 return false;
@@ -295,7 +298,7 @@ class StepTwo extends React.Component {
                 opts.settleUnitID = this.state.settleUnitID;
                 opts.accountNo = this.state.accountNo;
             } else {
-                message.warning('短信权益账户不得为空')
+                message.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`)
                 return false;
             }
         } else {
@@ -332,12 +335,12 @@ class StepTwo extends React.Component {
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
-                    label="适用店铺"
+                    label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     validateStatus={noSelected64 ? 'error' : 'success'}
-                    help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
+                    help={noSelected64 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe85eqm5087)}` : null}
                 >
                     <ShopSelector
                         value={selectedShopIdStrings}
@@ -357,7 +360,7 @@ class StepTwo extends React.Component {
     render() {
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
-        const tip = this.state.consumeType % 2 === 0 ? '累计金额不得少于0元' : '累计次数不得少于3次'
+        const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`
         const smsGate = this.props.specialPromotion.getIn(['$eventInfo', 'smsGate']);
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
@@ -366,10 +369,10 @@ class StepTwo extends React.Component {
                     disabled={userCount > 0}
                     getPopupContainer={(node) => node.parentNode}
             >
-                <Option key="2">累计金额满</Option>
-                <Option key="0">累计金额每满</Option>
-                <Option key="3">累计次数满</Option>
-                <Option key="1">累计次数每满</Option>
+                <Option key="2">{this.props.intl.formatMessage(STRING_SPE.d21647505b6222102)}</Option>
+                <Option key="0">{this.props.intl.formatMessage(STRING_SPE.d16hh4899ii365)}</Option>
+                <Option key="3">{this.props.intl.formatMessage(STRING_SPE.de8g998md24119)}</Option>
+                <Option key="1">{this.props.intl.formatMessage(STRING_SPE.de8g998md25272)}</Option>
             </Select>
         );
         return (
@@ -381,30 +384,30 @@ class StepTwo extends React.Component {
                     this.props.type == '62' ?
                         <div>
                             <FormItem
-                                label={'满赠条件'}
+                                label={`${this.props.intl.formatMessage(STRING_SPE.dk470bkjg96160)}`}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
                                 validateStatus={this.state.giveStatus}
-                                help={this.state.giveStatus == 'success' ? null : `不可为空,且${tip}`}
+                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
                             >
                                 {this.props.form.getFieldDecorator('give', {
                                     rules: [{
                                         required: true,
-                                        message: '不可为空',
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
                                     }],
                                     initialValue: this.state.numberValue,
                                 })(<PriceInput
                                     onChange={this.handleNumberChange}
                                     addonBefore={giveSelect}
-                                    addonAfter={this.state.consumeType % 2 === 0 ? '元' : '次'}
+                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
                                 />)
                                 }
                             </FormItem>
 
                             {this.state.cardLevelRangeType == '5' ?
                                 <FormItem
-                                    label="会员群体"
+                                    label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                                     className={styles.FormItemStyle}
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 17 }}
@@ -412,20 +415,20 @@ class StepTwo extends React.Component {
                                     {this.props.form.getFieldDecorator('setgroupMembersID', {
                                         rules: [{
                                             required: true,
-                                            message: '请选择会员群体',
+                                            message: `${this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}`,
                                         }],
                                         initialValue: this.state.groupMembersID,
                                     })(
                                         <Select
                                             style={{ width: '100%' }}
                                             showSearch
-                                            notFoundContent={'未搜索到结果'}
+                                            notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                            placeholder="请选择会员群体"
+                                            placeholder={this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}
                                             getPopupContainer={(node) => node.parentNode}
                                             onChange={this.handleSelectChange}
                                         >
-                                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
+                                            <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                                             {this.renderOptions()}
                                         </Select>
                                     )

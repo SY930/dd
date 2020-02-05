@@ -7,7 +7,11 @@ import {
 } from 'antd';
 import { COMMON_LABEL } from 'i18n/common';
 import { axiosData } from '../../../../src/helpers/util';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 export default class InviteeModal extends Component {
 
     state = {
@@ -28,7 +32,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: '邀请人姓名',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa1522390285)}`,
                 dataIndex: 'name1',
                 key: 'name1',
                 className: 'TableTxtCenter',
@@ -38,7 +42,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: '受邀请人客户编号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d7h8373fa521206)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
                 width: 180,
@@ -48,7 +52,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: '受邀请人姓名',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8g8isr22297)}`,
                 dataIndex: 'customerName',
                 key: 'customerName',
                 className: 'TableTxtCenter',
@@ -58,7 +62,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: '受邀请人手机号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1e09h0b4c3220)}`,
                 dataIndex: 'customerMobile',
                 key: 'customerMobile',
                 className: 'TableTxtRight',
@@ -68,7 +72,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: '参与时间',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
                 dataIndex: 'createTime',
                 key: 'createTime',
                 className: 'TableTxtCenter',
@@ -122,7 +126,7 @@ export default class InviteeModal extends Component {
         const handleModalClose = this.props.onClose;
         return (
             <Modal
-                title="受邀请人详情"
+                title={this.props.intl.formatMessage(STRING_SPE.dk46lj779a5228)}
                 visible={true}
                 onCancel={handleModalClose}
                 maskClosable={false}
@@ -140,7 +144,7 @@ export default class InviteeModal extends Component {
                         showQuickJumper: true,
                         showSizeChanger: false, // 暂时不改变pageSize
                         pageSize: this.state.pageSize,
-                        showTotal: (total, range) => `本页 ${range[0]} - ${range[1]} / 共 ${total} 条`,
+                        showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)} ${range[0]} - ${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
                         onChange: this.handlePageChange
                     }}
                 />

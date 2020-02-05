@@ -36,6 +36,8 @@ import {
     MONTH_OPTIONS,
     WEEK_OPTIONS,
 } from '../../../redux/actions/saleCenterNEW/fullCutActivity.action';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
@@ -83,6 +85,8 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '70',
 ]
 
+
+@injectIntl
 class StepOneWithDateRange extends React.Component {
     constructor(props) {
         super(props);
@@ -255,7 +259,7 @@ class StepOneWithDateRange extends React.Component {
                 this.setState({
                     getExcludeEventList: specialPromotion.getExcludeEventList || [],
                 }, () => {
-                    this.setErrors('rangePicker', '相同时段内，只允许一个唤醒送礼活动进行，您已有唤醒送礼活动正在进行，请重选时段')
+                    this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
                 })
             } else {
                 this.setState({
@@ -264,7 +268,7 @@ class StepOneWithDateRange extends React.Component {
             }
             if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
                 this.setState({ iconDisplay: true }, () => {
-                    this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
+                    this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
                 });
             }
         }
@@ -310,7 +314,7 @@ class StepOneWithDateRange extends React.Component {
         } = this.state;
         if (isAllWeChatIDOccupied || (allWeChatIDList.length > 0 && allWeChatIDList.every(id => occupiedWeChatIDs.includes(id))) ) {
             if (!selectedIDs.length || selectedIDs.every(id => allWeChatIDList.includes(id))) {
-                this.setErrors('rangePicker', '当前时段内，集团下公众号被其他同类活动全部占用，请重选时段');
+                this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d2c8dlqh9s244)}`);
                 return true;
             }
         }
@@ -327,7 +331,7 @@ class StepOneWithDateRange extends React.Component {
         // 升级送礼,消费送礼
         if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
             nextFlag = false;
-            this.setErrors('rangePicker', '当前时段内，会员卡类/卡等级被其他同类活动全部占用，请重选时段')
+            this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
         }
 
         // 关注送礼
@@ -337,11 +341,11 @@ class StepOneWithDateRange extends React.Component {
 
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
-            this.setErrors('rangePicker', '相同时段内，只允许一个唤醒送礼活动进行，您已有唤醒送礼活动正在进行，请重选时段')
+            this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
         }
         if (this.state.allShopCheck) {
             nextFlag = false;
-            this.setErrors('rangePicker', '当前时段内，可选店铺被其他同类活动全部占用，请重选时段')
+            this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d5g391i90j344)}`)
         }
         if (nextFlag) {
             if (this.props.type == '53' || this.props.type == '50') {
@@ -450,7 +454,7 @@ class StepOneWithDateRange extends React.Component {
                     this.setState({
                         allShopCheck
                     }, () => {
-                        allShopCheck && this.setErrors('rangePicker', '当前时段内，可选店铺被其他同类活动全部占用，请重选时段')
+                        allShopCheck && this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d5g391i90j344)}`)
                     })
                 })
             }
@@ -466,7 +470,7 @@ class StepOneWithDateRange extends React.Component {
 
     onDateWeekChange = (value) => {
         if (!value.length) {
-            return message.warning('至少要选择1天')
+            return message.warning(`${this.props.intl.formatMessage(STRING_SPE.d4h196g5b67499)}`)
         }
         this.setState({
             selectWeekValue: value,
@@ -475,7 +479,7 @@ class StepOneWithDateRange extends React.Component {
 
     onDateMonthChange = (value) => {
         if (!value.length) {
-            return message.warning('至少要选择1天')
+            return message.warning(`${this.props.intl.formatMessage(STRING_SPE.d4h196g5b67499)}`)
         }
         this.setState({
             selectMonthValue: value,
@@ -515,19 +519,19 @@ class StepOneWithDateRange extends React.Component {
             wrapperCol: { span: 17 },
         };
         return (
-            <FormItem label="选择周期" className={styles.FormItemStyle} {...formItemLayout}>
+            <FormItem label={this.props.intl.formatMessage(STRING_SPE.de8g05amdm5204)} className={styles.FormItemStyle} {...formItemLayout}>
                 <Select
                     size="default"
-                    placeholder="请选择周期"
+                    placeholder={this.props.intl.formatMessage(STRING_SPE.d5g391i90j6263)}
                     getPopupContainer={(node) => node.parentNode}
                     defaultValue={this.state.validCycleType}
                     onChange={(arg) => {
                         this.setPromotionCycle(arg);
                     }}
                 >
-                    <Option value="0">每日</Option>
-                    <Option value="1">每周</Option>
-                    <Option value="2">每月</Option>
+                    <Option value="0">{this.props.intl.formatMessage(STRING_SPE.d5g391i90j7111)}</Option>
+                    <Option value="1">{this.props.intl.formatMessage(STRING_SPE.de8g05amdm8270)}</Option>
+                    <Option value="2">{this.props.intl.formatMessage(STRING_SPE.dojx1h3j8951)}</Option>
                 </Select>
                 <div className={styles.SeniorDateMain}>
                     {this.renderPromotionCycleDetailSetting()}
@@ -543,7 +547,7 @@ class StepOneWithDateRange extends React.Component {
             wrapperCol: { span: 17 },
         };
         return (
-            <FormItem label="活动排除日期" className={styles.FormItemStyle} {...formItemLayout}>
+            <FormItem label={this.props.intl.formatMessage(STRING_SPE.d143185sia10140)} className={styles.FormItemStyle} {...formItemLayout}>
                 <DatePicker
                     ref={e => this.realDatePicker = e}
                     open={this.state.open}
@@ -630,8 +634,8 @@ class StepOneWithDateRange extends React.Component {
         return (
             <div>
                 <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
-                    <span className={styles.gTip}>更多活动日期与时间的设置请使用</span>
-                    <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>高级日期设置</span>
+                    <span className={styles.gTip}>{this.props.intl.formatMessage(STRING_SPE.de8g05amdm1166)}</span>
+                    <span className={styles.gDate} onClick={this.toggleAdvancedDateSettings}>{this.props.intl.formatMessage(STRING_SPE.dk46c4417i1276)}</span>
                 </FormItem>
                 {this.state.expand && this.renderPromotionCycleSetting()}
                 {this.state.expand && this.renderExcludedDatePicker()}
@@ -724,8 +728,8 @@ class StepOneWithDateRange extends React.Component {
             sendTimeProps = {
                 onChange: this.msgSendTime,
             };
-        let labelText = this.props.type == '53' ? '礼品发送日期' : '短信发送日期',
-            messageText = this.props.type == '53' ? '请选择礼品发送日期' : '请选择短信发送日期'
+        let labelText = this.props.type == '53' ? `${this.props.intl.formatMessage(STRING_SPE.db60b94219321363)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hgc4l3ga1415)}`,
+            messageText = this.props.type == '53' ? `${this.props.intl.formatMessage(STRING_SPE.db60b94219321541)}` : `${this.props.intl.formatMessage(STRING_SPE.d21645473363a16158)}`
 
         const formItemLayout = {
             labelCol: { span: 4 },
@@ -812,7 +816,7 @@ class StepOneWithDateRange extends React.Component {
                             onClick={() => {
                                 this.setState({ tipDisplay: 'none' });
                             }}
-                        >我知道了
+                        >{this.props.intl.formatMessage(STRING_SPE.d7h7gfdf2d00138)}
                         </Button>
                     </div>
                 </div>
@@ -821,7 +825,7 @@ class StepOneWithDateRange extends React.Component {
         return (
             <Form>
                 <FormItem
-                    label="活动类型"
+                    label={this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -841,11 +845,11 @@ class StepOneWithDateRange extends React.Component {
                     {tip}
                 </FormItem>
                 <div>
-                    <FormItem label="活动名称" className={styles.FormItemStyle} {...formItemLayout}>
+                    <FormItem label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)} className={styles.FormItemStyle} {...formItemLayout}>
                         {getFieldDecorator('promotionName', {
                             rules: [
-                                { required: true, message: '活动名称不能为空' },
-                                { max: 50, message: '不能超过50个字符' },
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8of2e6el5231)}` },
+                                { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.de8fcgn43i698)}` },
                             /*    {
                                 whitespace: true,
                                 required: true,
@@ -856,7 +860,7 @@ class StepOneWithDateRange extends React.Component {
                             initialValue: this.state.name,
                         })(
                             <Input
-                                placeholder="请输入活动名称"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc7222)}
                                 onChange={this.handleNameChange}
                                 ref={node => this.promotionNameInputRef = node}
                             />
@@ -883,7 +887,7 @@ class StepOneWithDateRange extends React.Component {
                                                 format="YYYY-MM-DD"
                                                 disabledDate={disabledDate}
                                                 style={{ width: '100%' }}
-                                                placeholder="请选择日期"
+                                                placeholder={this.props.intl.formatMessage(STRING_SPE.db60b942193317294)}
                                             />
                                         )}
                                     </FormItem>
@@ -893,7 +897,7 @@ class StepOneWithDateRange extends React.Component {
                                         {getFieldDecorator('sendTime', {
                                             rules: [{
                                                 required: true,
-                                                message: '请选择时间',
+                                                message: `${this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}`,
                                             }],
                                             initialValue: timeStringInitialValue,
                                         })(
@@ -903,11 +907,11 @@ class StepOneWithDateRange extends React.Component {
                                                 format="HH:mm"
                                                 style={{ width: '100%' }}
                                                 onChange={this.onTimePickerChange}
-                                                placeholder="请选择时间"
+                                                placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
                                             />
                                         )}
                                         {
-                                            this.props.type == '50' && <p className={styles.msgTip}>注：短信发送会延迟，建议设置时间提前1-2个小时</p>
+                                            this.props.type == '50' && <p className={styles.msgTip}>{this.props.intl.formatMessage(STRING_SPE.d1qe5jtfnh19144)}</p>
                                         }
                                     </FormItem>
                                 </Col>
@@ -916,7 +920,7 @@ class StepOneWithDateRange extends React.Component {
                     {fullOptionSmsGate.includes(String(this.props.type))
                          ?
                             <FormItem
-                                label="是否发送消息"
+                                label={this.props.intl.formatMessage(STRING_SPE.d2c89sj1s6888)}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
@@ -937,7 +941,7 @@ class StepOneWithDateRange extends React.Component {
                     }{simpleOptionSmsGate.includes(String(this.props.type))
                          ?
                             <FormItem
-                                label="是否发送消息"
+                                label={this.props.intl.formatMessage(STRING_SPE.d2c89sj1s6888)}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
@@ -959,7 +963,7 @@ class StepOneWithDateRange extends React.Component {
                     {
                         (this.props.type == '50' || this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4) && (
                             <FormItem
-                                label="短信签名"
+                                label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
@@ -969,7 +973,7 @@ class StepOneWithDateRange extends React.Component {
                                         onChange={this.handleSignIDChange}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
-                                    <Option value={''} key={''}>默认签名</Option>
+                                    <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option>
                                     {
                                         this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
                                             return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
@@ -983,7 +987,7 @@ class StepOneWithDateRange extends React.Component {
                         this.props.type != '53' && this.props.type != '50' && this.props.type != '60' || this.props.type == '70' ?
                             <div>
                                 <FormItem
-                                    label="活动起止日期"
+                                    label={this.props.intl.formatMessage(STRING_SPE.d21645473363b20173)}
                                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 17 }}
@@ -993,7 +997,7 @@ class StepOneWithDateRange extends React.Component {
                                             {getFieldDecorator('rangePicker', {
                                                 rules: [{
                                                     required: true,
-                                                    message: '请选择活动起止日期',
+                                                    message: `${this.props.intl.formatMessage(STRING_SPE.du3ac84kn21119)}`,
                                                 }],
                                                 ...dateRangeProps,
                                             })(
@@ -1011,7 +1015,7 @@ class StepOneWithDateRange extends React.Component {
                                                         this.getDateCount()
                                                     }
                                                 </span>
-                                                <span>天</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
                                             </div>
 
                                         </Col>
@@ -1052,19 +1056,19 @@ class StepOneWithDateRange extends React.Component {
                     }
 
                     <FormItem
-                        label="活动说明"
+                        label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('description', {
                             rules: [
-                                { required: true, message: '活动说明不能为空' },
-                                { max: 1000, message: '最多1000个字符' },
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}` },
+                                { max: 1000, message: `${this.props.intl.formatMessage(STRING_SPE.d17009e3e35b1366)}` },
                             ],
                             initialValue: this.state.description,
                         })(
-                            <Input type="textarea" placeholder="请输入活动说明, 最多1000个字符" onChange={this.handleDescriptionChange} />
+                            <Input type="textarea" placeholder={this.props.intl.formatMessage(STRING_SPE.d34id2b3ir14116)} onChange={this.handleDescriptionChange} />
                         )}
                     </FormItem>
                 </div>

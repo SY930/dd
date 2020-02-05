@@ -18,6 +18,11 @@ import {
     Radio,
     TreeSelect,
 } from 'antd';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -37,7 +42,7 @@ import _ from 'lodash';
 const moment = require('moment');
 
 const Immutable = require('immutable');
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -48,7 +53,7 @@ class StepTwo extends React.Component {
             lastTransTime: '', // 最后消费时间
             lastTransTimeStatus: 'success', // 最后消费时间校验状态
             lastTransShopID: '0', // 最后消费店铺ID
-            lastTransShopName: '不限', // 最后消费店铺名称
+            lastTransShopName: `${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`, // 最后消费店铺名称
             isVipBirthdayMonth: '0', // 当月生日
             shopsData: [],
             groupMembersID: '0',
@@ -240,8 +245,8 @@ class StepTwo extends React.Component {
             })
         });
         shopsData.unshift({
-            label: '不限',
-            value: '0,不限',
+            label: `${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
+            value: `0,${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
             key: '0',
         });
         return shopsData;
@@ -307,7 +312,7 @@ class StepTwo extends React.Component {
         const options = [];
         cardInfo.map((groupMembers) => {
             options.push(
-                <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
+                <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)}${groupMembers.totalMembers}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}`}</Option>
             )
         });
         return options;
@@ -322,7 +327,7 @@ class StepTwo extends React.Component {
                 showSearch: true,
                 onChange: this.onShopChange,
                 showCheckedStrategy: SHOW_PARENT,
-                searchPlaceholder: '请搜索店铺',
+                searchPlaceholder: `${this.props.intl.formatMessage(STRING_SPE.d7h83a8d5h30160)}`,
                 treeNodeFilterProp: 'label',
                 allowClear: true,
                 getPopupContainer: () => document.querySelector('.crmOperationTree'),
@@ -349,7 +354,7 @@ class StepTwo extends React.Component {
         return (
             <Form>
                 <FormItem
-                    label="会员群体"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -357,20 +362,20 @@ class StepTwo extends React.Component {
                     {getFieldDecorator('setgroupMembersID', {
                         rules: [{
                             required: true,
-                            message: '请选择会员群体',
+                            message: `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c5106)}`,
                         }],
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
                             style={{ width: '100%' }}
                             showSearch
-                            notFoundContent={'未搜索到结果'}
+                            notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            placeholder="请选择会员群体"
+                            placeholder={this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}
                             getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
-                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
+                            <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                             {this.renderOptions()}
                         </Select>
                     )

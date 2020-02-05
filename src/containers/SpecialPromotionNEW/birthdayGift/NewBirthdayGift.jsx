@@ -16,14 +16,18 @@ import PromotionBasicInfo from '../common/BirthBasicInfo';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import StepTwo from './stepTwo';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class NewBirthdayGift extends NewPromotion {
     constructor(props) {
         super(props);
         this.steps = [
 
             {
-                title: '基本信息',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<PromotionBasicInfo
                     type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                     getSubmitFn={(handles) => {
@@ -32,7 +36,7 @@ class NewBirthdayGift extends NewPromotion {
                 />),
             },
             {
-                title: '活动范围',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <StepTwo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -43,7 +47,7 @@ class NewBirthdayGift extends NewPromotion {
                 ),
             },
             {
-                title: '活动内容',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 content: (
                     <SpecialDetailInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}

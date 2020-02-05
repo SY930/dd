@@ -5,9 +5,15 @@ import { connect } from 'react-redux'; import { Tree } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import Immutable from 'immutable';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+
 
 const TreeNode = Tree.TreeNode;
 
+@injectIntl
 class EditBoxForShops extends React.Component {
     constructor(props) {
         super(props);
@@ -139,14 +145,14 @@ class EditBoxForShops extends React.Component {
         return (
             <div className={styles.treeSelectMain}>
                 <HualalaEditorBox
-                    label={'适用店铺'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}`}
                     itemName="itemName"
                     itemID="itemID"
                     data={this.state.selections}
                     onChange={this.handleEditorBoxChange}
                     onTagClose={this.handleSelectedChange}
                 >
-                    <HualalaTreeSelect level1Title={'全部城市'}>
+                    <HualalaTreeSelect level1Title={`${this.props.intl.formatMessage(STRING_SPE.dk45m43kl90212)}`}>
                         <HualalaSearchInput onChange={this.handleSearchInputChange} />
                         <Tree onSelect={this.handleTreeNodeChange}>
                             {loop(_cityAreasShops)}
@@ -158,7 +164,7 @@ class EditBoxForShops extends React.Component {
                             value={this.state.currentSelections}
                             onChange={this.handleGroupSelect}
                         />
-                        <HualalaSelected itemName="itemName" selectdTitle={'已选城市'} value={this.state.selections} onChange={this.handleSelectedChange} onClear={() => this.clear()} />
+                        <HualalaSelected itemName="itemName" selectdTitle={`${this.props.intl.formatMessage(STRING_SPE.d7h7h20agg810)}`} value={this.state.selections} onChange={this.handleSelectedChange} onClear={() => this.clear()} />
                     </HualalaTreeSelect>
                 </HualalaEditorBox>
             </div>

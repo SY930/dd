@@ -23,6 +23,8 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 // import _ from 'lodash';
 
 const FormItem = Form.Item;
@@ -35,6 +37,9 @@ const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
     '30',
 ];
 
+
+
+@injectIntl
 class CardLevel extends React.Component {
     constructor(props) {
         super(props);
@@ -216,19 +221,19 @@ class CardLevel extends React.Component {
         return (
             <FormItem
                 validateStatus={defaultCardType ? 'success' : 'error'}
-                help={defaultCardType ? null : '不可为空'}
-                label="新用户注册卡类"
+                help={defaultCardType ? null : `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`}
+                label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
                 required
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
                 <Select
                     showSearch={true}
-                    notFoundContent={'未搜索到结果'}
+                    notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                     optionFilterProp="children"
                     onChange={this.handleDefaultCardTypeChange}
                     value={defaultCardType || undefined}
-                    placeholder="请选择新用户注册成为会员的卡类型"
+                    placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                     getPopupContainer={(node) => node.parentNode}
                 >
                     {
@@ -297,17 +302,17 @@ class CardLevel extends React.Component {
             <Form className={styles.cardLevelTree}>
                 {
                     this.props.type != '61' ?
-                        <FormItem label={this.props.label || '会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                        <FormItem label={this.props.label || `${this.props.intl.formatMessage(STRING_SPE.d31eiebii4b4112)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel || '全部会员'}</Radio>
-                                <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? '会员等级' : (this.props.cusPartialLabel || '会员卡类')}</Radio>
+                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel ||  `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Radio>
+                                <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : (this.props.cusPartialLabel || `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`)}</Radio>
                             </RadioGroup>
                         </FormItem> : null
                 }
                 {
                     this.props.type == '61' || this.state.cardLevelRangeType == '2' ?
                         <FormItem
-                            label={this.props.type == '61' ? '升级后的等级为' : (this.props.catOrCard == 'card' ? '适用卡等级' : (this.props.cusSelectorLabel || '适用卡类'))}
+                            label={this.props.type == '61' ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b89d4996543)}` : (this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d5g31n12fm1627)}` : (this.props.cusSelectorLabel || `${this.props.intl.formatMessage(STRING_SPE.d170093144c212281)}`))}
                             className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -317,14 +322,14 @@ class CardLevel extends React.Component {
                                     rules: [{
                                         type: 'array',
                                         required: true,
-                                        message: '不得为空，请至少选择一种!',
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d4546omm0r6172)}`,
                                     }],
                                     initialValue: this.state.cardLevelIDList,
                                 })(
                                     <TreeSelect
                                         style={{ width: '100%' }}
                                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                        placeholder={`请选择${this.props.catOrCard == 'card' ? '会员等级' : '会员卡类'}`}
+                                        placeholder={`${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
                                         allowClear={true}
                                         multiple={true}
                                         showSearch

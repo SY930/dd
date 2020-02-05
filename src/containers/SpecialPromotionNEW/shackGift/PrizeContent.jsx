@@ -8,16 +8,25 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
-const VALIDATE_TYPE = Object.freeze([{
-    key: 0, value: '1', name: '相对有效期',
-},
-{ key: 1, value: '2', name: '固定有效期' }]);
 import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
+
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+@injectIntl
 export default class PrizeContent extends React.Component {
+    constructor(props){
+        super(props);
+        this.VALIDATE_TYPE = Object.freeze([{
+            key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
+        },
+        { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }]);
+    }
     getGiftValue = (index) => {
         const { info, filteredGiftInfo, handleGiftChange } = this.props;
         const tempArr = _.sortBy(filteredGiftInfo, 'index');
@@ -64,7 +73,7 @@ export default class PrizeContent extends React.Component {
                         help={info.giveCoupon.value.giftValidDays.msg}
                     > 
                         <PriceInput
-                            addonAfter="天"
+                            addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
                             maxNum={5}
                             modal="int"
                             value={{ number: info.giveCoupon.value.giftValidDays.value }}
@@ -78,7 +87,7 @@ export default class PrizeContent extends React.Component {
                         help={info.giveCoupon.value.giftEffectiveTime.msg}
                     > 
                         <div className={style.labelSecondDiv}>
-                            <span>生效时间</span>
+                            <span>{this.props.intl.formatMessage(STRING_SPE.d21647400695b034)}</span>
                         </div>
                         <Select 
                             className={style.LittleSelect}
@@ -86,8 +95,8 @@ export default class PrizeContent extends React.Component {
                             value={info.giveCoupon.value.dependType == '1' ? '1' : '3'}
                             onChange={(val) => {handleDependTypeChange(val, index); }}
                         >
-                            <Option value='1' key={1}>按小时</Option>
-                            <Option value='3' key={3}>按天</Option>
+                            <Option value='1' key={1}>{this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}</Option>
+                            <Option value='3' key={3}>{this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}</Option>
                         </Select>
                         <Select
                             size="default"
@@ -134,7 +143,7 @@ export default class PrizeContent extends React.Component {
                 help={info.giveCoupon.value.giftEffectiveTime.msg}
             >   
                 <div className={style.labelSecondDiv}>
-                    <span>固定有效期</span>
+                    <span>{this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}</span>
                 </div> 
                 <RangePicker
                     {...pickerProps}
@@ -178,7 +187,7 @@ export default class PrizeContent extends React.Component {
                                 > 
                                     <div className={style.labelDiv}>
                                         <span className={style.requiredIcon}>*</span>
-                                        <span>中奖概率</span>
+                                        <span>{this.props.intl.formatMessage(STRING_SPE.d21647400695b1248)}</span>
                                     </div> 
                                     <PriceInput
                                         className={style.giftOdds}
@@ -202,7 +211,7 @@ export default class PrizeContent extends React.Component {
                                     checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
                                     onChange={this.ChangeCheckBoxOne}
                                 />
-                                <span>赠送积分</span>
+                                <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
                                 {JSON.stringify(info.givePoints.value) == "{}" ?
                                     null :  
                                     <div className={style.paleRed}>
@@ -213,10 +222,10 @@ export default class PrizeContent extends React.Component {
                                             help={info.givePoints.value.givePointsValue.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>赠送积分</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
                                             </div> 
                                             <PriceInput
-                                                addonAfter="积分"
+                                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d16hh3h4b8b2184)}
                                                 modal="float"
                                                 maxNum={6}
                                                 value={{ number: info.givePoints.value.givePointsValue.value }}
@@ -230,7 +239,7 @@ export default class PrizeContent extends React.Component {
                                             help={info.givePoints.value.card.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>充值到会员卡</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}</span>
                                             </div> 
                                             <Select
                                                 showSearch={true}
@@ -261,7 +270,7 @@ export default class PrizeContent extends React.Component {
                                     checked={info.giveCoupon.value.isOn}
                                     onChange={this.ChangeCheckBoxTwo}
                                 />
-                                <span>赠送优惠券</span>
+                                <span>{this.props.intl.formatMessage(STRING_SPE.dd5aa6c59a74233)}</span>
                                 {!(info.giveCoupon.value.isOn) ?
                                     null :  
                                     <div className={style.paleRed}>
@@ -273,7 +282,7 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveCoupon.value.giftInfo.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>优惠券名称</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.dojyd1ldi5200)}</span>
                                             </div> 
                                             <ExpandTree
                                                 idx={index}
@@ -309,7 +318,7 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveCoupon.value.giftCount.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>礼品总数</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
                                             </div> 
                                             <PriceInput
                                                 maxNum={9}
@@ -324,7 +333,7 @@ export default class PrizeContent extends React.Component {
                                             className={style.FormItemSecondStyle}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>有效期限</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.d2c8gi45an648)}</span>
                                             </div> 
                                             <RadioGroup
                                                 className={style.radioMargin}
@@ -332,7 +341,7 @@ export default class PrizeContent extends React.Component {
                                                 onChange={val => handleValidateTypeChange(val, index)}
                                             >
                                                 {
-                                                    VALIDATE_TYPE.map((item, index) => {
+                                                    this.VALIDATE_TYPE.map((item, index) => {
                                                         return <Radio value={item.value} key={index}>{item.name}</Radio>
                                                     })
                                                 }

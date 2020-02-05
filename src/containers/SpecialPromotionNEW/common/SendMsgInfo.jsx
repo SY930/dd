@@ -17,11 +17,16 @@ import {
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import MsgSelector from "./MsgSelector";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-
+@injectIntl
 class SendMsgInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -135,14 +140,14 @@ class SendMsgInfo extends React.Component {
                     {
                         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ? (
                             <FormItem
-                                label="短信结算账户"
+                                label={this.props.intl.formatMessage(STRING_SPE.d2164480324a406)}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
                             >
                                 <Select onChange={this.handleSettleUnitIDChange}
                                         value={settleUnitID}
-                                        placeholder="请选择结算账户"
+                                        placeholder={this.props.intl.formatMessage(STRING_SPE.d5671dc445081113)}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
                                     {(specialPromotion.accountInfoList || []).map((accountInfo) => {
@@ -154,7 +159,7 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.accountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.settleUnitID == settleUnitID) {
                                                 return (
-                                                    <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount || 0}条`}</div>
+                                                    <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
                                                 )
                                             }
                                         })
@@ -163,17 +168,17 @@ class SendMsgInfo extends React.Component {
                             </FormItem>
                         ) : (
                             <FormItem
-                                label="短信权益账户"
+                                label={this.props.intl.formatMessage(STRING_SPE.da8olmb99d0215)}
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
                                 required
                                 validateStatus={accountNo > 0 ? 'success' : 'error'}
-                                help={accountNo > 0 ? '' : '短信权益账户不得为空'}
+                                help={accountNo > 0 ? '' : `${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`}
                             >
                                 <Select onChange={this.handleAccountNoChange}
                                         value={accountNo || undefined}
-                                        placeholder="请选择权益账户"
+                                        placeholder={this.props.intl.formatMessage(STRING_SPE.db60b40190a02137)}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
                                     {(specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
@@ -192,7 +197,7 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.accountNo == accountNo) {
                                                 return (
-                                                    <div key={accountInfo.accountNo}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`短信可用条数：${accountInfo.smsCount || 0}条`}</div>
+                                                    <div key={accountInfo.accountNo}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
                                                 )
                                             }
                                         })
@@ -204,7 +209,7 @@ class SendMsgInfo extends React.Component {
 
 
                     <FormItem
-                        label="选择短信模板"
+                        label={this.props.intl.formatMessage(STRING_SPE.d1qe4n63sj3287)}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
@@ -214,7 +219,7 @@ class SendMsgInfo extends React.Component {
                             onChange: this.handleMsgChange,
                             rules: [{
                                 required: true,
-                                message: '必须选择一条短信模板',
+                                message: `${this.props.intl.formatMessage(STRING_SPE.dojwje9qt4115)}`,
                             }],
                         })(
                             <MsgSelector selectedMessage={this.state.message}/>
@@ -226,7 +231,7 @@ class SendMsgInfo extends React.Component {
         }
         return (
             <div className={styles.noMsg}>
-                您没有开启发送短信功能，可以直接跳过该步骤
+            {this.props.intl.formatMessage(STRING_SPE.d1700dd4833c5259)}
             </div>
         )
     }

@@ -11,7 +11,11 @@
 import React from 'react';
 import { message } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -38,7 +42,7 @@ export default class NewPromotion extends React.Component {
                 const equityAccountInfoList = specialPromotion.$eventInfo.equityAccountInfoList;
                 const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === specialPromotion.$eventInfo.accountNo) || {};
                 if (!selectedAccount.smsCount) {
-                    message.warning('所选权益账户可用短信条数为0，无法创建活动');
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.dk460fga2j279)}`);
                     this.setState({
                         loading: false,
                     });
@@ -49,7 +53,7 @@ export default class NewPromotion extends React.Component {
                 if (settleUnitID > 0) {
                     const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
                     if (!selectedEntity.smsCount) {
-                        message.warning('所选结算账户可用短信条数为0，无法创建活动');
+                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.d4h17ei7f3g366)}`);
                         this.setState({
                             loading: false,
                         });
@@ -61,7 +65,7 @@ export default class NewPromotion extends React.Component {
                 this.setState({
                     loading: false,
                 });
-                return message.warning('权益账户不得为空');
+                return message.warning(`${this.props.intl.formatMessage(STRING_SPE.dd5a476c91d4150)}`);
             }
         }
         const opts = {
@@ -79,14 +83,14 @@ export default class NewPromotion extends React.Component {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
                 success: () => {
-                    message.success('活动更新成功');
+                    message.success(`${this.props.intl.formatMessage(STRING_SPE.d4h17ei7f3g518)}`);
                     this.setState({
                         loading: false,
                     });
                     cb();
                 },
                 fail: (info) => {
-                    message.error(`活动更新失败, ${info}`);
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d2c8akfh2o6216)} ${info}`);
                     this.setState({
                         loading: false,
                     });
@@ -97,7 +101,7 @@ export default class NewPromotion extends React.Component {
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: () => {
-                    message.success('活动添加成功');
+                    message.success(`${this.props.intl.formatMessage(STRING_SPE.d34idrcqen7223)}`);
                     this.setState({
                         loading: false,
                     });
@@ -106,7 +110,7 @@ export default class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: (info) => {
-                    message.error(`活动添加失败, ${info}`);
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.de8fem99k0868)} ${info}`);
                     this.setState({
                         loading: false,
                     });

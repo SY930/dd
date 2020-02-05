@@ -65,6 +65,10 @@ import {
 } from "../../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine} from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_GIFT } from 'i18n/common/gift';
+import { STRING_SPE } from 'i18n/common/special';
+
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -149,6 +153,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_promotion_decoration,
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl
 class MySpecialActivities extends React.Component {
     constructor(props) {
         super(props);
@@ -166,7 +171,7 @@ class MySpecialActivities extends React.Component {
             recordToDisplay: null,
             // qualifications:
             valid: '0',
-            modalTitle: '更新活动信息',
+            modalTitle: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep510150)}`,
             isNew: false,
 
             selectedShop: null,
@@ -236,16 +241,16 @@ class MySpecialActivities extends React.Component {
     // 终止活动
     handelStopEvent(text, record, index, nextActive, modalTip) {
         confirm({
-            title: '终止特色营销活动',
+            title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j112)}`,
             content: (
                 <div>
-                    您将终止
+                     {this.props.intl.formatMessage(STRING_SPE.dojy6qlmv253)}
                     【<span>{record.eventName}</span>】
                     <br />
-                    <span>终止是不可恢复操作，请慎重考虑~</span>
+                    <span>{this.props.intl.formatMessage(STRING_SPE.d34ikef74237)}</span>
                 </div>
             ),
-            footer: '终止是不可恢复操作,请慎重考虑',
+            footer: `${this.props.intl.formatMessage(STRING_SPE.d34ikef74237)}`,
             onOk: () => {
                 this.handleDisableClickEvent(text, record, index, nextActive, modalTip)
             },
@@ -320,13 +325,13 @@ class MySpecialActivities extends React.Component {
             const _promoitonList = nextProps.mySpecialActivities.get('$specialPromotionList').toJS();
             switch (_promoitonList.status) {
                 case 'timeout':
-                    message.error('请求超时');
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d17012f5c16b488)}`);
                     this.setState({
                         loading: false,
                     });
                     break;
                 case 'fail':
-                    message.error('请求失败');
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobd599)}`);
                     this.setState({
                         loading: false,
                     });
@@ -353,7 +358,7 @@ class MySpecialActivities extends React.Component {
                             total: _promoitonList.total,
                         });
                     } else {
-                        message.warning('暂无数据');
+                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h7670)}`);
                         this.setState({
                             loading: false,
                             dataSource: [],
@@ -449,7 +454,7 @@ class MySpecialActivities extends React.Component {
                 this.setState({
                     loading: false,
                 });
-                message.error('没有查到相应数据');
+                message.error(`${this.props.intl.formatMessage(STRING_SPE.dk46ld30bj797)}`);
             });
         }
     }
@@ -459,7 +464,7 @@ class MySpecialActivities extends React.Component {
         return (
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
-                    <span className={styles.customHeader}>特色营销信息</span>
+                    <span className={styles.customHeader}>{this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d869)}</span>
                 </div>
             </div>
         );
@@ -478,28 +483,29 @@ class MySpecialActivities extends React.Component {
                 <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
             );
         });
+        const { intl } = this.props;
         return (
             <div>
                 <div className="layoutsSearch">
                     <ul>
                         <li>
-                            <h5>活动时间</h5>
+                            <h5>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</h5>
                         </li>
                         <li>
                             <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
                         </li>
 
                         <li>
-                            <h5>活动类型</h5>
+                            <h5>{this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
-                                notFoundContent={'未搜索到结果'}
+                                notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                placeholder="请选择活动类型"
-                                defaultValue="全部"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d1kgf622e5a10108)}
+                                defaultValue={intl.formatMessage(STRING_GIFT.all)}
                                 onChange={(value) => {
                                     this.setState({
                                         eventWay: value === 'ALL' ? null : value,
@@ -511,32 +517,32 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>使用状态</h5>
+                            <h5>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 80 }}
                                 defaultValue=""
-                                placeholder="请选择使用状态"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d12116)}
                                 onChange={(value) => {
                                     this.setState({
                                         isActive: value,
                                     });
                                 }}
                             >
-                                <Option value={''}>不限</Option>
-                                <Option value={'1'}>已启用</Option>
-                                <Option value={'0'}>已禁用</Option>
-                                <Option value={'-1'}>已终止</Option>
+                                <Option value={''}>{this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}</Option>
+                                <Option value={'1'}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}</Option>
+                                <Option value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}</Option>
+                                <Option value={'-1'}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}</Option>
                             </Select>
                         </li>
 
                         <li>
-                            <h5>活动名称</h5>
+                            <h5>{this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}</h5>
                         </li>
                         <li>
                             <Input
-                                placeholder="请输入活动名称"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc7222)}
                                 onChange={(e) => {
                                     this.setState({
                                         eventName: e.target.value,
@@ -586,30 +592,30 @@ class MySpecialActivities extends React.Component {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
         }).catch(err => {
-            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+            message.warning(err || `${this.props.intl.formatMessage(STRING_SPE.dk46ld30bj16282)}`);
         })
     }
 
     renderTables() {
         const SmsSendStatus = [
-            { value: '0', label: '定义中' },
-            { value: '1', label: '待开始' },
-            { value: '2', label: '数据准备' },
-            { value: '3', label: '发送完毕' },
-            { value: '4', label: '发送失败' },
-            { value: '5', label: '待审核' },
-            { value: '8', label: '发送中' },
-            { value: '9', label: '数据准备' },
-            { value: '20', label: '数据准备' },
-            { value: '21', label: '审核未通过' },
-            { value: '30', label: '发送中' },
-            { value: '6', label: '审核通过' },
+            { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j17152)}` },
+            { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a1879)}` },
+            { value: '2', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
+            { value: '3', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep522337)}` },
+            { value: '4', label: `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a24193)}` },
+            { value: '5', label: `${this.props.intl.formatMessage(STRING_SPE.du3bnfobe2576)}` },
+            { value: '8', label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5e21260)}` },
+            { value: '9', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
+            { value: '20', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
+            { value: '21', label: `${this.props.intl.formatMessage(STRING_SPE.d454fcf3i422261)}` },
+            { value: '30', label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5e21260)}` },
+            { value: '6', label: `${this.props.intl.formatMessage(STRING_SPE.d454fcf3i422261)}` },
         ];
         const SmsSettleStatus = [
-            { value: '0', label: '不需要结算' },
-            { value: '1', label: '待结算' },
-            { value: '2', label: '结算完成' },
-            { value: '3', label: '结算失败' },
+            { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep5226252)}` },
+            { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq27163)}` },
+            { value: '2', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h828194)}` },
+            { value: '3', label: `${this.props.intl.formatMessage(STRING_SPE.da905h2m122949)}` },
         ];
         const columns = [
             {
@@ -646,11 +652,11 @@ class MySpecialActivities extends React.Component {
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {
-                                    message.warning('该活动已下线');
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
                                 record.isActive == '-1' || statusState ? null :
-                                    this.handleDisableClickEvent(text, record, index, null, '使用状态修改成功');
+                                    this.handleDisableClickEvent(text, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
                             }}
                         >
                             {buttonText}</a>
@@ -667,7 +673,7 @@ class MySpecialActivities extends React.Component {
                                         e.preventDefault()
                                     } else {
                                         if (Number(record.eventWay) === 70) {
-                                            message.warning('该活动已下线');
+                                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                             return;
                                         }
                                         this.props.toggleIsUpdate(true)
@@ -682,7 +688,7 @@ class MySpecialActivities extends React.Component {
                             href="#"
                             onClick={() => {
                                 if (Number(record.eventWay) === 70) {
-                                    message.warning('该活动已下线');
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)
@@ -700,7 +706,7 @@ class MySpecialActivities extends React.Component {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
-                                        message.warning('该活动已下线');
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                         return;
                                     }
                                     record.isActive != '0' || record.userCount != 0 || statusState ? null :
@@ -718,14 +724,14 @@ class MySpecialActivities extends React.Component {
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {
-                                    message.warning('该活动已下线');
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
                                 record.isActive == '-1' || statusState ? null :
-                                    this.handelStopEvent(text, record, index, '-1', '活动终止成功');
+                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                            终止
+                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
                         </a>
                         {
                             isDecorationAvailable(record) && (
@@ -735,7 +741,7 @@ class MySpecialActivities extends React.Component {
                                         this.handleDecorationStart(record)
                                     }}
                                 >
-                                    装修
+                                {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)}
                                 </a>
                             )
                         }
@@ -748,13 +754,13 @@ class MySpecialActivities extends React.Component {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
-                                        message.warning('该活动已下线');
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                         return;
                                     }
                                     this.checkDetailInfo(text, record, index);
                                 }}
                             >
-                                活动跟踪</a>
+                            {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                         </Authority>
                     </span>
                     );
@@ -771,27 +777,27 @@ class MySpecialActivities extends React.Component {
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                            <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq3651)}`} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.da905h2m1237216)}`} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe3831)}`} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a3922)}`} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
                         </span>
                     )
                 },
             },
             {
-                title: '活动类型',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
                 dataIndex: 'eventWay',
                 key: 'eventWay',
                 width: 100,
                 // fixed:'left',
                 render: (text, record) => {
-                    return <span>{record.eventWay == 70 ? '彩蛋猫送礼' : mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
+                    return <span>{record.eventWay == 70 ? `${this.props.intl.formatMessage(STRING_SPE.d5672b44908540146)}` : mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
                 },
             },
 
             {
-                title: '活动名称',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}`,
                 dataIndex: 'eventName',
                 key: 'eventName',
                 // fixed:'left',
@@ -799,7 +805,7 @@ class MySpecialActivities extends React.Component {
                 render: text => <span title={text}>{text}</span>,
             },
             {
-                title: '短信发送/结算状态',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
                 className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'msgStatus',
@@ -824,7 +830,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '有效时间',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5f42125)}`,
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
@@ -832,13 +838,13 @@ class MySpecialActivities extends React.Component {
                 render: (validDate) => {
                     if (validDate.start === '0' || validDate.end === '0' ||
                         validDate.start === '20000101' || validDate.end === '29991231') {
-                        return '不限制';
+                        return `${this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}`;
                     }
                     return `${moment(validDate.start, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(validDate.end, 'YYYY/MM/DD').format('YYYY/MM/DD')}`;
                 },
             },
             {
-                title: '创建时间/修改时间',
+                title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l4364)}`,
                 className: 'TableTxtCenter',
                 dataIndex: 'operateTime',
                 key: 'operateTime',
@@ -851,7 +857,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '创建人/修改人',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c68ddaa344161)}`,
                 dataIndex: 'operator',
                 width: 120,
                 key: 'operator',
@@ -870,12 +876,12 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: '使用状态',
+                title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
                 dataIndex: 'isActive',
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return isActive == '-1' ? '已终止' : isActive == '1' ? '已启用' : '已禁用';
+                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}"` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
                 },
             },
         ];
@@ -946,21 +952,21 @@ class MySpecialActivities extends React.Component {
     // 删除
     checkDeleteInfo(text, record) {
         confirm({
-            title: '删除特色营销活动',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d34ikef74448196)}`,
             content: (
                 <div>
-                    您将删除
+                {this.props.intl.formatMessage(STRING_SPE.d454fcf3i54910)}
                     【<span>{record.eventName}</span>】
                     <br />
-                    <span>删除是不可恢复操作，请慎重考虑~</span>
+                    <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
                 </div>
             ),
-            footer: '删除数据是不可恢复操作,请慎重考虑',
+            footer: `${this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}`,
             onOk: () => {
                 this.props.deleteSelectedRecord({
                     ...record,
                     success: () => {
-                        message.success('删除成功');
+                        message.success(`${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3950145)}`);
                     },
                     fail: (msg) => {
                         message.error(msg);
@@ -974,23 +980,23 @@ class MySpecialActivities extends React.Component {
         const _serverToRedux = false;
         const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
         if (_promotionIdx === undefined) {
-            message.warning('出错了, 请刷新重试');
+            message.warning(`${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l51134)}`);
             return;
         }
         if (response === undefined || response.data === undefined) {
-            message.error('没有查询到相应数据');
+            message.error(`${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`);
             return null;
         }
         this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
         this.setState({
-            modalTitle: '更新活动信息',
+            modalTitle: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep510150)}`,
             isNew: false,
             index: _promotionIdx,
         });
     };
 
     failFn = () => {
-        message.error('啊哦,好像出了点问题~');
+        message.error(`${this.props.intl.formatMessage(STRING_SPE.dk46ld30bl535)}`);
     };
 
     handleDecorationStart = (record) => {
@@ -1059,7 +1065,7 @@ class MySpecialActivities extends React.Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>{ COMMON_LABEL.retry }</a>
+                    {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)} <a onClick={this.handleUpdateOpe}>{ COMMON_LABEL.retry }</a>
                 </div>
             );
         }
@@ -1113,7 +1119,7 @@ class MySpecialActivities extends React.Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             renderContentOfTheModal = (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={checkDetailInfo}>{ COMMON_LABEL.retry }</a>
+                {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)}<a onClick={checkDetailInfo}>{ COMMON_LABEL.retry }</a>
                 </div>
             );
         }
@@ -1123,7 +1129,7 @@ class MySpecialActivities extends React.Component {
 
         return (
             <Modal
-                title="活动详情"
+                title={this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3955121)}
                 maskClosable={false}
                 visible={this.state.visible}
                 footer={<Button onClick={this.handleClose}>{ COMMON_LABEL.close }</Button>}
