@@ -6,7 +6,11 @@ import NewPromotion from '../common/NewPromotion';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class NewOnLineReturnGift extends NewPromotion {
     constructor(props) {
         super(props);
@@ -17,7 +21,7 @@ class NewOnLineReturnGift extends NewPromotion {
         }
         const steps = [
             {
-                title: '基本信息',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (
                     <StepOneWithDateRange
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -28,7 +32,7 @@ class NewOnLineReturnGift extends NewPromotion {
                 ),
             },
             {
-                title: '活动范围',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <SpecialRangeInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -39,7 +43,7 @@ class NewOnLineReturnGift extends NewPromotion {
                 ),
             },
             {
-                title: '活动内容',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 content: (
                     <SpecialDetailInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}

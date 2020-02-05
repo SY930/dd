@@ -20,7 +20,11 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import _ from 'lodash';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class ExcludeCardTable extends React.Component {
     constructor(props) {
         super(props);
@@ -65,7 +69,7 @@ class ExcludeCardTable extends React.Component {
         if (this.props.catOrCard == 'card' && !this.props.isWeChatOnly) {
             excludeEventCardLevelIdModelList.map((excludeEvent) => {
                 if (excludeEvent.allCardLevelCheck) {
-                    excludeEvent.idNames = ['全部占用'];
+                    excludeEvent.idNames = [`${this.props.intl.formatMessage(STRING_SPE.da8og068ff0212)}`];
                 } else {
                     excludeEvent.idNames = [];
                     excludeEvent.cardLevelIDList.map((cardLevelID) => {
@@ -88,7 +92,7 @@ class ExcludeCardTable extends React.Component {
         } else {
             excludeEventCardLevelIdModelList.map((excludeEvent) => {
                 if (excludeEvent.allCardLevelCheck) {
-                    excludeEvent.idNames = ['全部占用'];
+                    excludeEvent.idNames = [`${this.props.intl.formatMessage(STRING_SPE.da8og068ff0212)}`];
                 } else {
                     excludeEvent.idNames = [];
                     excludeEvent.cardLevelIDList.map((cardLevelID) => {
@@ -111,29 +115,29 @@ class ExcludeCardTable extends React.Component {
         }
 
         const columns = [{
-            title: '活动名称',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}`,
             dataIndex: 'eventName',
             key: 'eventName',
             className: 'TableTxtCenter',
             render: (text, record, index) => {
                 return (
-                    <div key={'eventName'}><h5 className={styles.cardName} key={'eventName'}>{`${record.eventName || '（无）'}`}</h5></div>
+                    <div key={'eventName'}><h5 className={styles.cardName} key={'eventName'}>{`${record.eventName || `${this.props.intl.formatMessage(STRING_SPE.d31eifji3f4063)}`}`}</h5></div>
                 )
             },
         }, {
-            title: '起止日期',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d5g337jqji179)}`,
             dataIndex: 'eventDate',
             key: 'eventDate',
             className: 'TableTxtCenter',
             render: (text, record, index) => {
                 return (
                     <div key={'eventDate'}><h5 className={styles.cardName} key={'eventDate'}>
-                        {record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ? '永久' : `${record.eventStartDate || '--'}/${record.eventEndDate || '--'}`}
+                        {record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ? `${this.props.intl.formatMessage(STRING_SPE.d16hfi5gh45088)}` : `${record.eventStartDate || '--'}/${record.eventEndDate || '--'}`}
                         </h5></div>
                 )
             },
         }, {
-            title: '占用卡类/卡等级信息',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d1qe2n6mbf241)}`,
             dataIndex: 'idNames',
             key: 'idNames',
             className: 'TableTxtCenter',
@@ -155,7 +159,7 @@ class ExcludeCardTable extends React.Component {
                 bordered={true}
                 size="middle"
                 rowKey="uid"
-                title={() => { return '同时段内，卡类/卡等级被以下活动占用' }}
+                title={() => { return `${this.props.intl.formatMessage(STRING_SPE.d31eifh489a3138)}` }}
             />
         );
     }

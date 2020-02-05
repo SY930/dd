@@ -19,12 +19,13 @@ import {
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 import { axiosData } from '../../../helpers/util';
-
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const moment = require('moment');
 const { TabPane } = Tabs;
-const TabNum = [ '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-
+const TabNum = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+@injectIntl
 class LotteryThirdStep extends React.Component {
     constructor (props) {
         super(props);
@@ -210,7 +211,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftInfo.giftName = null;
             _infos[index].giveCoupon.value.giftInfo.giftItemID = null;
             _infos[index].giveCoupon.value.giftInfo.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftInfo.msg = '必须选择礼券';
+            _infos[index].giveCoupon.value.giftInfo.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`;
             this.setState({
                 infos: _infos,
             });
@@ -257,7 +258,7 @@ class LotteryThirdStep extends React.Component {
             if(!(_infos[index].giveCoupon.value.isOn)){
                 //优惠券为非选中状态
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d170137ab9b7044)}`;
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
                 _infos[index].giveCoupon.validateStatus = 'success';
@@ -277,7 +278,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value = { isOn: false };
             if(JSON.stringify(_infos[index].givePoints.value) == "{}"){
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '赠送积分和赠送优惠券至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d170137ab9b7044)}`;
             }else{
                 _infos[index].giveCoupon.validateStatus = 'success';
                 _infos[index].giveCoupon.msg = null;
@@ -303,7 +304,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].givePoints.value.givePointsValue.msg = null;
         } else {
             _infos[index].givePoints.value.givePointsValue.validateStatus = 'error';
-            _infos[index].givePoints.value.givePointsValue.msg = '赠送积分值应该大于0';
+            _infos[index].givePoints.value.givePointsValue.msg = `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`;
         }
         this.setState({
             infos: _infos,
@@ -318,7 +319,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].givePoints.value.card.msg = null;
         } else {
             _infos[index].givePoints.value.card.validateStatus = 'error';
-            _infos[index].givePoints.value.card.msg = '请先选择卡类型';
+            _infos[index].givePoints.value.card.msg = `${this.props.intl.formatMessage(STRING_SPE.d7h83ag6gb2224)}`;
         }
         this.setState({
             infos: _infos,
@@ -334,7 +335,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftValidDays.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giveCoupon.value.giftValidDays.msg = `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvd21186)}`;
         }
         this.setState({
             infos: _infos,
@@ -352,7 +353,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giftOdds.msg = null;
         } else {
             _infos[index].giftOdds.validateStatus = 'error';
-            _infos[index].giftOdds.msg = '中奖比率必须在0~100之间';
+            _infos[index].giftOdds.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g120154)}`;
         }
         this.setState({
             infos: _infos,
@@ -400,7 +401,7 @@ class LotteryThirdStep extends React.Component {
         _infos[index].giveCoupon.value.giftValidDays.value = 0;
         if (date === null || date === undefined || !date[0] || !date[1]) {
             _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftEffectiveTime.msg = '请输入有效时间';
+            _infos[index].giveCoupon.value.giftEffectiveTime.msg = `${this.props.intl.formatMessage(STRING_SPE.db60a2a3892030168)}`;
         } else {
             _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'success';
             _infos[index].giveCoupon.value.giftEffectiveTime.msg = null;
@@ -478,13 +479,13 @@ class LotteryThirdStep extends React.Component {
         let panelArr = [];
         //新建逻辑
         if ( isNew && infos.length === 1 ) {
-            panelArr.push({title: '一等奖', content: PrizeContent, key: '0' });
+            panelArr.push({title: `1${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent, key: '0' });
         } else {
             infos.map((item, index) => {
                 if( index == activeKey){
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
+                    panelArr.push({title: `${TabNum[index]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent , key: `${index}`, });
                 }else{
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
+                    panelArr.push({title: `${TabNum[index]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent , key: `${index}`, });
                 }
             })
         }
@@ -500,7 +501,7 @@ class LotteryThirdStep extends React.Component {
         const { infos } = this.state;
             if(this.checkEveryDataVaild()){
                 if(infos.length >= 10){
-                    message.warning('最多添加10个中奖等级');
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}`);
                     return;
                 }
                 infos.push({...JSON.parse(JSON.stringify(defaultData)), 'sendType': 0});
@@ -540,7 +541,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftCount.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftCount.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftCount.msg = '礼品总数必须大于0';
+            _infos[index].giveCoupon.value.giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
         }
         this.setState({
             infos: _infos,
@@ -565,7 +566,7 @@ class LotteryThirdStep extends React.Component {
                         if(sumOdds> 100){
                             if(tempResult){
                                 tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
+                                message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
                             }
                         }else{
                             if(!item.giftOdds.value){
@@ -575,7 +576,7 @@ class LotteryThirdStep extends React.Component {
                             sumOdds += +item.giftOdds.value;
                             if(sumOdds > 100){
                                 tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
+                                message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
                             }
                         }
                     });
@@ -716,7 +717,7 @@ class LotteryThirdStep extends React.Component {
                     disabled={this.props.disabled || infos.length >= 10}
                 > 
                     <Icon type="plus" className={style.addIcon} />
-                    添加中奖等级 
+                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)} 
                 </Button>
                 <span 
                     className = { style.graySpan }

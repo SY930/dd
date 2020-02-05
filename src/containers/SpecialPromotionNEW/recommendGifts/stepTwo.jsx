@@ -23,12 +23,15 @@ import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCent
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -91,13 +94,13 @@ class StepTwo extends React.Component {
                     const equityAccountInfoList = this.props.specialPromotionInfo.getIn(['$eventInfo', 'equityAccountInfoList']).toJS();
                     const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === accountNo) || {};
                     if (!selectedAccount.smsCount) { // 校验一下所选账户的可用条数
-                        messageAlert.warning('所选权益账户可用短信条数为0，无法创建活动');
+                        messageAlert.warning(`${this.props.intl.formatMessage(STRING_SPE.d31f129919j0138)}`);
                         return false;
                     } else {
                         opts.accountNo = accountNo;
                     }
                 } else {
-                    messageAlert.warning('短信权益账户不得为空')
+                    messageAlert.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`)
                     return false;
                 }
             } else {
@@ -159,13 +162,13 @@ class StepTwo extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
-                    label="适用公众号"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5aa437e501230)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <Select
-                        placeholder="请选择活动展现公众号"
+                        placeholder={this.props.intl.formatMessage(STRING_SPE.db60ca08c5252131)}
                         multiple
                         value={mpIDList}
                         onChange={this.handleMpIDListChange}
@@ -185,8 +188,8 @@ class StepTwo extends React.Component {
                     </Select>
                     <Tooltip title={
                         <p>
-                            <p>对于非公众号使用场景的情况下，不用选择适用公众号</p>
-                            <p>对于公众号使用场景情况下，同一时间一个公众号只能配置一个推荐有礼活动</p>
+                            <p>{this.props.intl.formatMessage(STRING_SPE.d5672c12d9673113)}</p>
+                            <p>{this.props.intl.formatMessage(STRING_SPE.db60ca08c5254230)}</p>
                         </p>
                     }>
                         <Icon
@@ -197,7 +200,7 @@ class StepTwo extends React.Component {
                     </Tooltip>
                 </FormItem>
                 <FormItem
-                    label="活动规则"
+                    label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     required
@@ -206,25 +209,25 @@ class StepTwo extends React.Component {
                     {
                         this.props.form.getFieldDecorator('recommendRule', {
                             rules: [
-                                { required: true, message: '必须选择一种活动规则' }
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.du3brskjh5191)}` }
                             ],
                             initialValue: recommendRule !== undefined ? `${recommendRule}` : undefined,
                             onChange: this.handleRecommendRuleChange,
                         })(
                             <Select
-                                placeholder="请选择活动规则"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.db60ca08c525691)}
                                 disabled={userCount > 0}
                                 getPopupContainer={(node) => node.parentNode}
                             >
-                                <Select.Option value="1">注册开卡后获得奖励</Select.Option>
-                                <Select.Option value="2">储值后获得奖励</Select.Option>
-                                <Select.Option value="3">消费后获得奖励</Select.Option>
+                                <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d31f129919j725)}</Select.Option>
+                                <Select.Option value="2">{this.props.intl.formatMessage(STRING_SPE.d1qe7tmfob8230)}</Select.Option>
+                                <Select.Option value="3">{this.props.intl.formatMessage(STRING_SPE.d1kgf7b4bke9179)}</Select.Option>
                             </Select>
                         )
                     }
                 </FormItem>
                 <FormItem
-                    label="新用户注册卡类"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -233,16 +236,16 @@ class StepTwo extends React.Component {
                     {
                         this.props.form.getFieldDecorator('defaultCardType', {
                             rules: [
-                                { required: true, message: '必须选择一个卡类型' }
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8omhe07i508)}` }
                             ],
                             initialValue: this.state.defaultCardType,
                             onChange: this.handleDefaultCardTypeChange,
                         })(
                             <Select
                                 showSearch={true}
-                                notFoundContent={'未搜索到结果'}
+                                notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                 optionFilterProp="children"
-                                placeholder="请选择新用户注册成为会员的卡类型"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 {
@@ -253,7 +256,7 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 <FormItem
-                    label={'是否静默注册'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d7h8397222b10218)}`}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -262,12 +265,12 @@ class StepTwo extends React.Component {
                         onChange={this.handleAutoRegisterChange}
                         value={`${autoRegister}`}
                     >
-                        <Radio value="1">无需用户填写注册信息</Radio>
-                        <Radio value="0">用户需填写注册信息</Radio>
+                        <Radio value="1">{this.props.intl.formatMessage(STRING_SPE.db60b7b7495c23238)}</Radio>
+                        <Radio value="0">{this.props.intl.formatMessage(STRING_SPE.d4h19415ga424182)}</Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem
-                    label={'参与范围'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d1kgeaciak15137)}`}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -276,8 +279,8 @@ class StepTwo extends React.Component {
                         onChange={this.handleRecommendRangeChange}
                         value={`${recommendRange}`}
                     >
-                        <Radio value="0">仅直接推荐人参与</Radio>
-                        <Radio value="1">直接和间接推荐人同时参与</Radio>
+                        <Radio value="0">{this.props.intl.formatMessage(STRING_SPE.d31f129919j11250)}</Radio>
+                        <Radio value="1">{this.props.intl.formatMessage(STRING_SPE.d1e09ku34n12207)}</Radio>
                     </RadioGroup>
                 </FormItem>
                 <SendMsgInfo

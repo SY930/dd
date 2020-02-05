@@ -21,10 +21,14 @@ import {isEqual, uniq, isEmpty} from 'lodash';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {queryWechatMpInfo} from "../../GiftNew/_action";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -109,22 +113,22 @@ class StepTwo extends React.Component {
                     );
                 });
             } else {
-                options = (<Option value={'0'} disabled={true}>未查询到可绑定的微信公众号</Option>);
+                options = (<Option value={'0'} disabled={true}>{this.props.intl.formatMessage(STRING_SPE.d7h81cf02c1090)}</Option>);
             }
         } else {
-            options = (<Option value={'0'} disabled={true}>数据加载中....</Option>);
+            options = (<Option value={'0'} disabled={true}>{this.props.intl.formatMessage(STRING_SPE.d4h198ef43g1130)}....</Option>);
         }
 
         const opts = {
-            placeholder: '集团下全部微信公众号',
+            placeholder: `${this.props.intl.formatMessage(STRING_SPE.d5g39ah151233)}`,
             onChange: this.handleSelectionChange,
             value: Array.isArray(selectedIDs) ? selectedIDs[0] : undefined,
         };
         const isSomeAccountsOccupied = this.state.isAllOccupied || !!this.state.occupiedIDs.length;
-        const occupiedTips = '当前所选日期段内,有公众号已设置关注送礼活动';
+        const occupiedTips = `${this.props.intl.formatMessage(STRING_SPE.d1kged9hi013115)}`;
         return (
             <Form.Item
-                label="微信公众号"
+                label={this.props.intl.formatMessage(STRING_SPE.db60ba3c92724205)}
                 wrapperCol={{
                     span: 17,
                 }}
@@ -149,7 +153,7 @@ class StepTwo extends React.Component {
                 }
                 {
                     !this.state.isLoading && !this.state.allAccounts.length ?
-                    <Tooltip title="未查询到可绑定的微信公众号, 点击重试">
+                    <Tooltip title={this.props.intl.formatMessage(STRING_SPE.d34ihmnchp5239)}>
                         <Icon   onClick={this.getWechatAccountsList}
                                 type={'exclamation-circle'}
                                 style={{cursor: 'pointer'}}
@@ -169,8 +173,8 @@ class StepTwo extends React.Component {
                 {   // 部分已选公众号现在已不再集团公众号列表内
                     !this.state.isLoading && this.state.allAccounts.length && this.state.selectedIDs.some(id => this.state.allAccounts.every(account => String(account.mpID) !== String(id))) ?
                         <Tooltip title={
-                            <div style={{width: '250px'}}>{`该活动之前绑定的一个或几个公众号已不在集团公众号列表中,  ${isSomeAccountsOccupied ? `${occupiedTips},  ` : ''}点击重新查询集团公众号列表`}</div>
-                        }>
+                            <div style={{width: '250px'}}>{`,  ${isSomeAccountsOccupied ? `${occupiedTips},  ` : ''}${this.props.intl.formatMessage(STRING_SPE.d7el7b973f7173)}`}</div>
+                        }>{this.props.intl.formatMessage(STRING_SPE.d2b1c1a924146166)}
                         <Icon type={'exclamation-circle'}
                               onClick={this.getWechatAccountsList}
                               style={{cursor: 'pointer'}}
@@ -189,16 +193,16 @@ class StepTwo extends React.Component {
 
     handleSubmit() {
         if (this.state.isLoading) {
-            message.warning('正在查询集团下可用微信公众号, 请稍候');
+            message.warning(`${this.props.intl.formatMessage(STRING_SPE.d1qe5p36ch888)}`);
             return false;
         }
         if (!this.state.allAccounts.length) {
-            message.warning('未查询到该集团下可绑定的微信公众号');
+            message.warning(`${this.props.intl.formatMessage(STRING_SPE.dd5a7bed7a79258)}`);
             return false;
         }
         const mpIDList = this.state.selectedIDs.filter(id => !this.state.occupiedIDs.includes(id));
         if (!this.state.selectedIDs.length) {
-            message.warning('请至少选择一个可用微信公众号');
+            message.warning(`${this.props.intl.formatMessage(STRING_SPE.dd5a7bed7a710288)}`);
             return false;
         }
         this.props.setSpecialBasicInfo({

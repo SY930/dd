@@ -9,6 +9,8 @@ import {
     saleCenterSetSpecialBasicInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
@@ -16,6 +18,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 
+
+@injectIntl
 class SpecialRangeInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -199,11 +203,11 @@ class SpecialRangeInfo extends React.Component {
         if (this.props.type === '23') { // 线上餐厅送礼
             if (!isPrev) {
                 if (this.props.queryCanUseShopStatus === 'pending') {
-                    message.warning('正在查询可用店铺, 请稍候');
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.de8fn8fabl0236)}`);
                     return false;
                 }
                 if (this.props.queryCanUseShopStatus === 'error') {
-                    message.warning('查询可用店铺失败, 请重试');
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.dd5a73b2a3d1118)}`);
                     return false;
                 }
             }
@@ -311,10 +315,10 @@ class SpecialRangeInfo extends React.Component {
     // 免费领取的参与范围
     renderFreeGetJoinRange() {
         const options = [
-            { label: '微信会员卡活动列表领取', value: '0' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d31ejjc0631266)}`, value: '0' },
             // { label: '微信点菜界面领取', value: '1' },
-            { label: '打赏活动领取', value: '2' },
-            { label: '礼品链接投放', value: '3' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.da8onji5nc333)}`, value: '2' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d454berh2m4215)}`, value: '3' },
         ];
         // 因为开发线上领取新功能，去掉{ label: '微信点菜界面领取', value: '1' },
         const idx = this.state.freeGetJoinRange.findIndex((value) => {
@@ -325,7 +329,7 @@ class SpecialRangeInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label={'参与范围'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d1kgeaciak15137)}`}
                     className={[styles.noPadding, styles.inlineCheckBox].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 20 }}
@@ -336,7 +340,7 @@ class SpecialRangeInfo extends React.Component {
                     {this.props.form.getFieldDecorator('freeGetJoinRange', {
                         rules: [{
                             required: true,
-                            message: '请选择参与范围',
+                            message: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b6167)}`,
                         }],
                         initialValue: range,
                     })(
@@ -350,15 +354,15 @@ class SpecialRangeInfo extends React.Component {
     // 参与积分
     renderJoinRange() {
         const options = [
-            { label: '仅用于打赏活动', value: '0' },
-            { label: '参与活动扣积分', value: '1' },
-            { label: '参与活动赠积分', value: '2' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b733)}`, value: '0' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.de8fn8fabm853)}`, value: '1' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b98)}`, value: '2' },
         ];
         const optionTwo = [
-            { label: '参与活动扣积分', value: '1' },
-            { label: '参与活动赠积分', value: '2' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.de8fn8fabm853)}`, value: '1' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b98)}`, value: '2' },
         ];
-        const help = '积分必须大于0';
+        const help = `${this.props.intl.formatMessage(STRING_SPE.d16hgajaeke10122)}`;
         return (
             <div>
                 <FormItem
@@ -369,7 +373,7 @@ class SpecialRangeInfo extends React.Component {
                 >
                 </FormItem>
                 <FormItem
-                    label={this.props.type === '21' ? '参与积分' : '参与范围'}
+                    label={this.props.type === '21' ? `${this.props.intl.formatMessage(STRING_SPE.d1qe5cemc611253)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgeaciak15137)}`}
                     className={styles.noPadding}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -378,8 +382,8 @@ class SpecialRangeInfo extends React.Component {
                     <div className={styles.deduct}>
                         <FormItem validateStatus={this.state.deductPointsStatus}>
                             <PriceInput
-                                addonBefore={'扣除积分'}
-                                addonAfter={'分'}
+                                addonBefore={`${this.props.intl.formatMessage(STRING_SPE.d2164523635ba12222)}`}
+                                addonAfter={`${this.props.intl.formatMessage(STRING_SPE.db60b58ca13657133)}`}
                                 disabled={this.state.joinRange.indexOf('1') === -1}
                                 value={{ number: this.state.deductPoints }}
                                 defaultValue={{ number: this.state.deductPoints }}
@@ -390,8 +394,8 @@ class SpecialRangeInfo extends React.Component {
                     <div className={styles.add}>
                         <FormItem validateStatus={this.state.sendPointsStatus}>
                             <PriceInput
-                                addonBefore={'赠送积分'}
-                                addonAfter={'分'}
+                                addonBefore={`${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`}
+                                addonAfter={`${this.props.intl.formatMessage(STRING_SPE.db60b58ca13657133)}`}
                                 disabled={this.state.joinRange.indexOf('2') === -1}
                                 value={{ number: this.state.sendPoints }}
                                 defaultValue={{ number: this.state.sendPoints }}
@@ -412,19 +416,19 @@ class SpecialRangeInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label={'参与次数'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d7el6blifo14268)}`}
                     className={styles.noPadding}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup value={this.state.joinCount} onChange={this.handleJoinCountChange}>
-                        <Radio style={radioStyle} value={'0'}>不限次数</Radio>
-                        <Radio style={radioStyle} value={'1'}>限制次数</Radio>
+                        <Radio style={radioStyle} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d1qe5cemc615298)}</Radio>
+                        <Radio style={radioStyle} value={'1'}>{this.props.intl.formatMessage(STRING_SPE.dojwvv1om16197)}</Radio>
                         <div className={styles.priceWrapper}>
                             <FormItem validateStatus={this.state.partInTimesNoValidStatus}>
                                 <PriceInput
-                                    addonBefore={'可参与'}
-                                    addonAfter={'次'}
+                                    addonBefore={`${this.props.intl.formatMessage(STRING_SPE.d31ejjc06321726)}`}
+                                    addonAfter={`${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
                                     disabled={this.state.joinCount.indexOf('1') === -1}
                                     value={{ number: this.state.partInTimesNoValid }}
                                     defaultValue={{ number: this.state.partInTimesNoValid }}
@@ -433,13 +437,13 @@ class SpecialRangeInfo extends React.Component {
                                 />
                             </FormItem>
                         </div>
-                        <Radio style={radioStyle} value={'2'}>限制参与次数的周期</Radio>
+                        <Radio style={radioStyle} value={'2'}>{this.props.intl.formatMessage(STRING_SPE.d16hgajaekf19215)}</Radio>
                         <div className={styles.addTwo}>
                             <div style={{ width: '70%', display: 'inline-block' }}>
                                 <FormItem validateStatus={this.state.countCycleDaysStatus}>
                                     <PriceInput
-                                        addonBefore={'同一用户'}
-                                        addonAfter={'天,可参与'}
+                                        addonBefore={`${this.props.intl.formatMessage(STRING_SPE.da8onji5nd2078)}`}
+                                        addonAfter={`${this.props.intl.formatMessage(STRING_SPE.d2164523635bb21258)}`}
                                         disabled={this.state.joinCount.indexOf('2') === -1}
                                         value={{ number: this.state.countCycleDays }}
                                         defaultValue={{ number: this.state.countCycleDays }}
@@ -453,7 +457,7 @@ class SpecialRangeInfo extends React.Component {
                                 <FormItem validateStatus={this.state.partInTimesStatus}>
                                     <PriceInput
                                         addonBefore={''}
-                                        addonAfter={'次'}
+                                        addonAfter={`${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
                                         disabled={this.state.joinCount.indexOf('2') === -1}
                                         value={{ number: this.state.partInTimes }}
                                         defaultValue={{ number: this.state.partInTimes }}
@@ -577,46 +581,46 @@ class SpecialRangeInfo extends React.Component {
                 {
                     this.props.type === '23' || this.props.type === '20' || this.props.type === '21' || this.props.type === '22' || this.props.type === '30' ?
                         (<FormItem
-                            label={'参加活动成为会员'}
+                            label={`${this.props.intl.formatMessage(STRING_SPE.d4h19415ga42271)}`}
                             className={styles.noPadding}
                             wrapperCol={{ span: 17 }}
                             labelCol={{ span: 4 }}
                         >
                             <RadioGroup onChange={this.autoRegisterChange} value={this.state.autoRegister}>
-                                <Radio value={1}>无需用户填写注册信息</Radio>
-                                <Radio value={0}>用户须填写注册信息</Radio>
+                                <Radio value={1}>{this.props.intl.formatMessage(STRING_SPE.db60b7b7495c23238)}</Radio>
+                                <Radio value={0}>{this.props.intl.formatMessage(STRING_SPE.d4h19415ga424182)}</Radio>
                             </RadioGroup>
                         </FormItem>) : null
                 }
                 {
                     this.props.type !== '23' ?
                         <FormItem
-                            label={'其他限制'}
+                            label={`${this.props.intl.formatMessage(STRING_SPE.d143141l5s0247)}`}
                             className={styles.noPadding}
                             wrapperCol={{ span: 17 }}
                             labelCol={{ span: 4 }}
                         >
                             <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={this.state.isVipBirthdayMonth}>
-                                <Radio value={'0'}>不限制</Radio>
-                                <Radio value={'1'}>仅限本月生日的会员参与</Radio>
+                                <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio>
+                                <Radio value={'1'}>{this.props.intl.formatMessage(STRING_SPE.de8fn8fabn25238)}</Radio>
                             </RadioGroup>
                         </FormItem> : null
                 }
                 {
                     this.props.type === '22' ?
                         <FormItem
-                            label={'最大报名人数'}
+                            label={`${this.props.intl.formatMessage(STRING_SPE.d34ih696rh26172)}`}
                             className={styles.noPadding}
                             wrapperCol={{ span: 17 }}
                             labelCol={{ span: 4 }}
                             validateStatus={this.state.maxPartInPersonStatus}
-                            help={this.state.maxPartInPersonStatus === 'success' ? null : '请输入最大报名人数'}
+                            help={this.state.maxPartInPersonStatus === 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d2b1c0a3b9c827266)}`}
                         >
                             <PriceInput
                                 addonBefore={''}
                                 addonAfter={''}
                                 modal={'int'}
-                                placeholder={'请输入最大报名人数'}
+                                placeholder={`${this.props.intl.formatMessage(STRING_SPE.d2b1c0a3b9c827266)}`}
                                 value={{ number: this.state.maxPartInPerson }}
                                 defaultValue={{ number: this.state.maxPartInPerson }}
                                 onChange={this.onMaxPartInPersonChange}

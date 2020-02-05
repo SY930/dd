@@ -21,8 +21,11 @@ import {
     fetchGiftListInfoAC,
 } from 'redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import LotteryThirdStep from './LotteryThirdStep'
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 
+@injectIntl
 class NewShackGift extends NewPromotion {
     constructor(props) {
         super(props);
@@ -40,7 +43,7 @@ class NewShackGift extends NewPromotion {
         const { levelPrize } = this.state;
         const steps = [
             {
-                title: '基本信息',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (
                     <StepOneWithDateRange
                         type={`${specialPromotion.$eventInfo.eventWay}`}
@@ -51,7 +54,7 @@ class NewShackGift extends NewPromotion {
                 ),
             },
             {
-                title: '活动范围',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <SpecialRangeInfo
                         type={`${specialPromotion.$eventInfo.eventWay}`}
@@ -62,7 +65,7 @@ class NewShackGift extends NewPromotion {
                 ),
             },
             {
-                title: '活动内容',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 //注掉的是之前的逻辑,参考完去除
                 // content: (
                 //     <SpecialDetailInfo
