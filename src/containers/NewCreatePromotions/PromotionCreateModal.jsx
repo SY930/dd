@@ -171,10 +171,11 @@ class PromotionCreateModal extends Component {
         const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
+        const title = <p>{create} {promotionType}</p>;
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
-                title={`${create}${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -202,10 +203,11 @@ class PromotionCreateModal extends Component {
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
+        const title = <p>{create} {promotionType}</p>;
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`${create}${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{
