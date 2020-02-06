@@ -13,6 +13,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
+import { STRING_GIFT } from 'i18n/common/gift';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -183,8 +184,8 @@ class AddGifts extends React.Component {
             `${this.props.intl.formatMessage(STRING_SPE.d31eic607f0657)}`,
             `${this.props.intl.formatMessage(STRING_SPE.d2c89pf9007224)}`,
             `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu842)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.de8fc980mc940)}`, 
-            `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd8107)}`, 
+            `${this.props.intl.formatMessage(STRING_SPE.de8fc980mc940)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd8107)}`,
             `${this.props.intl.formatMessage(STRING_SPE.du389nqve112)}`];
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
@@ -412,7 +413,7 @@ class AddGifts extends React.Component {
                         _infos[index].needCount.msg = null;
                         _infos[1].needCount.validateStatus = 'success';
                         _infos[1].needCount.msg = null;
-                    }    
+                    }
                 } else {
                     _infos[index].needCount.validateStatus = 'success';
                     _infos[index].needCount.msg = null;

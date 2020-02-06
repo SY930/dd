@@ -27,7 +27,7 @@ class NewBirthdayGift extends NewPromotion {
         this.steps = [
 
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
+                title: `${props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<PromotionBasicInfo
                     type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                     getSubmitFn={(handles) => {
@@ -36,7 +36,7 @@ class NewBirthdayGift extends NewPromotion {
                 />),
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
+                title: `${props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <StepTwo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -47,10 +47,10 @@ class NewBirthdayGift extends NewPromotion {
                 ),
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
+                title: `${props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 content: (
                     <SpecialDetailInfo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={`${props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
