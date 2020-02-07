@@ -640,7 +640,7 @@ class AddGifts extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
-    handlegiftCountChange(value, index) {
+    handlegiftCountChange = (value, index) => {
         const _infos = this.state.infos;
         _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);

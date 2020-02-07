@@ -325,7 +325,7 @@ class SpecialDetailInfo extends Component {
     }
 
     // 拼出礼品信息
-    getGiftInfo(data) {
+    getGiftInfo = (data) => {
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
             if (giftInfo.effectType != '2') {
@@ -376,10 +376,10 @@ class SpecialDetailInfo extends Component {
             value: '',
         }
     }
-    handlePrev() {
+    handlePrev = () => {
         return this.handleSubmit(true)
     }
-    handleSubmit(isPrev) {
+    handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
         this.props.form.validateFieldsAndScroll((error, basicValues) => {
@@ -464,7 +464,7 @@ class SpecialDetailInfo extends Component {
             return true;
         }
         // 校验礼品数量
-        function checkgiftTotalCount(giftTotalCount) {
+        checkgiftTotalCount = (giftTotalCount) => {
             const _value = parseFloat(giftTotalCount.value);
             if (_value > 0) {
                 return giftTotalCount;
@@ -475,7 +475,7 @@ class SpecialDetailInfo extends Component {
                 value: '',
             }
         }
-        function checkgiftCount(giftCount, index, giftInfoArray) {
+        checkgiftCount = (giftCount, index, giftInfoArray) => {
             const _value = parseFloat(giftCount.value);
             if (!(_value > 0 && _value < 51)) {
                 return {
@@ -508,7 +508,7 @@ class SpecialDetailInfo extends Component {
         }
 
         // 有效天数
-        function checkGiftValidDays(giftValidDays, index) {
+        checkGiftValidDays = (giftValidDays, index) => {
             const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
             if (_value > 0 || (_value[0] && _value[1])) {
                 return giftValidDays;
@@ -521,7 +521,7 @@ class SpecialDetailInfo extends Component {
         }
 
         // 校验中奖比率
-        function checkGiftOdds(giftOdds) {
+        checkGiftOdds = (giftOdds) => {
             if (type == '20') {
                 const _value = parseFloat(giftOdds.value);
                 if (_value >= 0 && _value <= 100) {
@@ -537,7 +537,7 @@ class SpecialDetailInfo extends Component {
         }
 
         // 校验礼品信息
-        function checkGiftInfo(giftInfo, index, giftInfoArray) {
+        checkGiftInfo = (giftInfo, index, giftInfoArray) => {
             if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
                 return {
                     giftItemID: null,
@@ -684,7 +684,7 @@ class SpecialDetailInfo extends Component {
         return false;
     }
 
-    gradeChange(gifts, typeValue) {
+    gradeChange = (gifts, typeValue) => {
         const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType';
         if (!Array.isArray(gifts)) return;
         const { data } = this.state;
@@ -909,7 +909,7 @@ class SpecialDetailInfo extends Component {
             </Row>
         )
     }
-    renderShareInfo() {
+    renderShareInfo = () => {
         return (
             <div>
                 <FormItem
@@ -940,7 +940,7 @@ class SpecialDetailInfo extends Component {
             </div>  
         )
     }
-    renderFlexFormControl() {
+    renderFlexFormControl = () => {
         const {
             discountWay,
             discountType,
@@ -1189,7 +1189,7 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    renderInstantDiscountForm() {
+    renderInstantDiscountForm = () => {
         const {
             moneyLimitType,
             moneyLimitValue,
@@ -1740,7 +1740,7 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    renderSaveMoneySetSelector() {
+    renderSaveMoneySetSelector = () => {
         const {
             saveMoneySetType,
         } = this.state;
@@ -1801,7 +1801,7 @@ class SpecialDetailInfo extends Component {
             
         )
     }
-    renderRecommendGiftsDetail() {
+    renderRecommendGiftsDetail = () => {
         const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
         const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
         let renderRecommentReward;
@@ -1841,7 +1841,7 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    renderWakeupGiftsDetail() {
+    renderWakeupGiftsDetail = () => {
         const { wakeupSendGiftsDataArray } = this.state;
         const {
             form: {

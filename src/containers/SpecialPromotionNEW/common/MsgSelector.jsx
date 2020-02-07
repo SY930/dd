@@ -111,7 +111,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function MessageDisplayBox(props) {
+function MessageDisplayBox = (props) => {
     const classNames = classnames(
         {[styles.messageDisplayBox]: !props.selected},
         {[styles.leanBox]: !props.selected},
