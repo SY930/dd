@@ -410,7 +410,9 @@ export default class ShareRules extends Component {
                                             </div>
                                             <div className={style.shareGroupBody}>
                                                 {
-                                                    (shareGroup.shareGroupDetailList || []).map(item => {                                                        return (
+                                                    (shareGroup.shareGroupDetailList || []).map(item => {
+                                                        const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
+                                                       return (
                                                             <div className={style.shareGroupItem} key={item.itemID}>
                                                                 <div className={style.typeTag}>
                                                             <span>
@@ -418,7 +420,7 @@ export default class ShareRules extends Component {
                                                             </span>
                                                                 </div>
                                                                 <div className={style.itemTitle}>
-                                                                    {item.action !== 2 ? item.activityName : item.activityName + SALE_LABEL.k639ve8m}
+                                                                    {item.action !== 2 ? item.activityName : aa}
                                                                 </div>
                                                                 <div className={style.itemAction}>
                                                                     {
