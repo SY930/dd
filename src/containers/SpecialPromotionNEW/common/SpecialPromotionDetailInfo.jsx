@@ -463,111 +463,99 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        // 校验礼品数量
-        checkgiftTotalCount = (giftTotalCount) => {
-            const _value = parseFloat(giftTotalCount.value);
-            if (_value > 0) {
-                return giftTotalCount;
-            }
-            return {
-                msg: `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`,
-                validateStatus: 'error',
-                value: '',
-            }
-        }
-        checkgiftCount = (giftCount, index, giftInfoArray) => {
-            const _value = parseFloat(giftCount.value);
-            if (!(_value > 0 && _value < 51)) {
-                return {
-                    msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
-                    validateStatus: 'error',
-                    value: '',
-                }
-            }
-            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-                let hasDuplica;
-                for (let i = 0; i < index; i++) {
-                    if (giftInfoArray[i]) {
-                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-                    }
-                }
-                if (hasDuplica) {
-                    return {
-                        ...giftCount,
-                        validateStatus: 'error',
-                        msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-                    }
-                }
-            }
-            return {
-                ...giftCount,
-                validateStatus: 'success',
-                msg: '',
-            };
-        }
+        // checkgiftCount = (giftCount, index, giftInfoArray) => {
+        //     const _value = parseFloat(giftCount.value);
+        //     if (!(_value > 0 && _value < 51)) {
+        //         return {
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
+        //             validateStatus: 'error',
+        //             value: '',
+        //         }
+        //     }
+        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+        //         let hasDuplica;
+        //         for (let i = 0; i < index; i++) {
+        //             if (giftInfoArray[i]) {
+        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+        //             }
+        //         }
+        //         if (hasDuplica) {
+        //             return {
+        //                 ...giftCount,
+        //                 validateStatus: 'error',
+        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+        //             }
+        //         }
+        //     }
+        //     return {
+        //         ...giftCount,
+        //         validateStatus: 'success',
+        //         msg: '',
+        //     };
+        // }
 
-        // 有效天数
-        checkGiftValidDays = (giftValidDays, index) => {
-            const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
-            if (_value > 0 || (_value[0] && _value[1])) {
-                return giftValidDays;
-            }
-            return {
-                msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
-                validateStatus: 'error',
-                value: '',
-            }
-        }
+        // // 有效天数
+        // checkGiftValidDays = (giftValidDays, index) => {
+        //     const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
+        //     if (_value > 0 || (_value[0] && _value[1])) {
+        //         return giftValidDays;
+        //     }
+        //     return {
+        //         msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
+        //         validateStatus: 'error',
+        //         value: '',
+        //     }
+        // }
 
-        // 校验中奖比率
-        checkGiftOdds = (giftOdds) => {
-            if (type == '20') {
-                const _value = parseFloat(giftOdds.value);
-                if (_value >= 0 && _value <= 100) {
-                    return giftOdds;
-                }
-                return {
-                    msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
-                    validateStatus: 'error',
-                    value: '',
-                }
-            }
-            return giftOdds;
-        }
+        // // 校验中奖比率
+        // checkGiftOdds = (giftOdds) => {
+        //     if (type == '20') {
+        //         const _value = parseFloat(giftOdds.value);
+        //         if (_value >= 0 && _value <= 100) {
+        //             return giftOdds;
+        //         }
+        //         return {
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
+        //             validateStatus: 'error',
+        //             value: '',
+        //         }
+        //     }
+        //     return giftOdds;
+        // }
 
-        // 校验礼品信息
-        checkGiftInfo = (giftInfo, index, giftInfoArray) => {
-            if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
-                return {
-                    giftItemID: null,
-                    giftName: null,
-                    validateStatus: 'error',
-                    msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
-                }
-            }
-            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-                let hasDuplica;
-                for (let i = 0; i < index; i++) {
-                    if (giftInfoArray[i]) {
-                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-                    }
-                }
-                if (hasDuplica) {
-                    return {
-                        ...giftInfo,
-                        validateStatus: 'error',
-                        msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-                    }
-                }
-            }
-            return {
-                ...giftInfo,
-                validateStatus: 'success',
-                msg: '',
-            };
-        }
+        // // 校验礼品信息
+        // checkGiftInfo = (giftInfo, index, giftInfoArray) => {
+        //     if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
+        //         return {
+        //             giftItemID: null,
+        //             giftName: null,
+        //             validateStatus: 'error',
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
+        //         }
+        //     }
+        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+        //         let hasDuplica;
+        //         for (let i = 0; i < index; i++) {
+        //             if (giftInfoArray[i]) {
+        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+        //             }
+        //         }
+        //         if (hasDuplica) {
+        //             return {
+        //                 ...giftInfo,
+        //                 validateStatus: 'error',
+        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+        //             }
+        //         }
+        //     }
+        //     return {
+        //         ...giftInfo,
+        //         validateStatus: 'success',
+        //         msg: '',
+        //     };
+        // }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -592,20 +580,20 @@ class SpecialDetailInfo extends Component {
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 // check gift count
                 return Object.assign(ruleInfo, {
-                    giftCount: checkgiftCount(ruleInfo.giftCount, index, data),
-                    giftInfo: checkGiftInfo(ruleInfo.giftInfo, index, data),
-                    giftOdds: checkGiftOdds(ruleInfo.giftOdds),
+                    giftCount: this.checkgiftCount(ruleInfo.giftCount, index, data),
+                    giftInfo: this.checkGiftInfo(ruleInfo.giftInfo, index, data),
+                    giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                     needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                    [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                    [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? this.checkGiftValidDays(ruleInfo.giftValidDays, index) : this.checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
                 });
             }
             // check total count
             return Object.assign(ruleInfo, {
-                giftTotalCount: checkgiftTotalCount(ruleInfo.giftTotalCount),
-                giftInfo: checkGiftInfo(ruleInfo.giftInfo),
-                giftOdds: checkGiftOdds(ruleInfo.giftOdds),
+                giftTotalCount: this.checkgiftTotalCount(ruleInfo.giftTotalCount),
+                giftInfo: this.checkGiftInfo(ruleInfo.giftInfo),
+                giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                 needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? this.checkGiftValidDays(ruleInfo.giftValidDays, index) : this.checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
@@ -683,7 +671,111 @@ class SpecialDetailInfo extends Component {
         }
         return false;
     }
+    // 校验礼品数量
+    checkgiftTotalCount = (giftTotalCount) => {
+        const _value = parseFloat(giftTotalCount.value);
+        if (_value > 0) {
+            return giftTotalCount;
+        }
+        return {
+            msg: `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`,
+            validateStatus: 'error',
+            value: '',
+        }
+    }
+    checkgiftCount = (giftCount, index, giftInfoArray) => {
+        const _value = parseFloat(giftCount.value);
+        if (!(_value > 0 && _value < 51)) {
+            return {
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
+                validateStatus: 'error',
+                value: '',
+            }
+        }
+        if (this.props.type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+            let hasDuplica;
+            for (let i = 0; i < index; i++) {
+                if (giftInfoArray[i]) {
+                    hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                    giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                }
+            }
+            if (hasDuplica) {
+                return {
+                    ...giftCount,
+                    validateStatus: 'error',
+                    msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+                }
+            }
+        }
+        return {
+            ...giftCount,
+            validateStatus: 'success',
+            msg: '',
+        };
+    }
 
+    // 有效天数
+    checkGiftValidDays = (giftValidDays, index) => {
+        const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
+        if (_value > 0 || (_value[0] && _value[1])) {
+            return giftValidDays;
+        }
+        return {
+            msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
+            validateStatus: 'error',
+            value: '',
+        }
+    }
+
+    // 校验中奖比率
+    checkGiftOdds = (giftOdds) => {
+        if (this.props.type == '20') {
+            const _value = parseFloat(giftOdds.value);
+            if (_value >= 0 && _value <= 100) {
+                return giftOdds;
+            }
+            return {
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
+                validateStatus: 'error',
+                value: '',
+            }
+        }
+        return giftOdds;
+    }
+
+    // 校验礼品信息
+    checkGiftInfo = (giftInfo, index, giftInfoArray) => {
+        if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
+            return {
+                giftItemID: null,
+                giftName: null,
+                validateStatus: 'error',
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
+            }
+        }
+        if (this.props.type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+            let hasDuplica;
+            for (let i = 0; i < index; i++) {
+                if (giftInfoArray[i]) {
+                    hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                    giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                }
+            }
+            if (hasDuplica) {
+                return {
+                    ...giftInfo,
+                    validateStatus: 'error',
+                    msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+                }
+            }
+        }
+        return {
+            ...giftInfo,
+            validateStatus: 'success',
+            msg: '',
+        };
+    }
     gradeChange = (gifts, typeValue) => {
         const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType';
         if (!Array.isArray(gifts)) return;

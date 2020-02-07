@@ -111,14 +111,14 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function MessageDisplayBox = (props) => {
+function MessageDisplayBox(props){
     const classNames = classnames(
         {[styles.messageDisplayBox]: !props.selected},
         {[styles.leanBox]: !props.selected},
         {[styles.isSelectedMessage]: props.selected}
     );
     return (
-        <div title={props.selected ? `${this.props.intl.formatMessage(STRING_SPE.d7h7h72c98c018)}` : `${this.props.intl.formatMessage(STRING_SPE.du38ot6hu1140)}`}
+        <div title={props.selected ? `${props.intl.formatMessage(STRING_SPE.d7h7h72c98c018)}` : `${props.intl.formatMessage(STRING_SPE.du38ot6hu1140)}`}
             className={classNames}
             onClick={props.onClick}
         >

@@ -68,6 +68,7 @@ import PromotionCalendarBanner from "../../../components/common/PromotionCalenda
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
+import { SALE_STRING } from 'i18n/common/salecenter'
 
 
 const confirm = Modal.confirm;
@@ -192,7 +193,31 @@ class MySpecialActivities extends React.Component {
             queryDisabled: false,
             currentItemID: '',
         };
-
+        this.cfg = {
+            eventWay: [
+                { value: '', label: `${this.props.intl.formatMessage(STRING_GIFT.all)}` },
+                { value: '51', label: `${this.props.intl.formatMessage(STRING_SPE.da910d8l680255)}` },
+                { value: '52', label: `${this.props.intl.formatMessage(STRING_SPE.d1kghbbhh2g1156)}` },
+                { value: '21', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g12152)}` },
+                { value: '20', label: `${this.props.intl.formatMessage(STRING_SPE.de8h83kic431)}` },
+                { value: '30', label: `${this.props.intl.formatMessage(STRING_SPE.d567490a78b24187)}` },
+                { value: '22', label: `${this.props.intl.formatMessage(STRING_SPE.d1e0f874d45158)}` },
+                { value: '53', label: `${this.props.intl.formatMessage(STRING_SPE.dok2uwq1n6234)}` },
+                { value: '50', label: `${this.props.intl.formatMessage(STRING_SPE.d21650591a2047103)}` },
+                { value: '60', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a4865)}` },
+                { value: '61', label: `${this.props.intl.formatMessage(STRING_SPE.db612a0008a4925)}` },
+                { value: '62', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g110128)}` },
+                { value: '23', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g21118)}` },
+                // 下线 { value: '70', label: '彩蛋猫送礼' },
+                { value: '63', label: `${this.props.intl.formatMessage(STRING_SPE.d5g3ql3oen12242)}` },
+                { value: '64', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a513206)}` },
+                { value: '65', label: `${this.props.intl.formatMessage(STRING_SPE.d567490a78b314234)}` },
+                { value: '66', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a515146)}` },
+                { value: '67', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g21627)}` },
+                { value: '68', label: `${this.props.intl.formatMessage(STRING_SPE.de8h83kic51727)}` },
+                { value: '31', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8o5o6gt1820)}` },
+            ],
+        }
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
@@ -478,7 +503,7 @@ class MySpecialActivities extends React.Component {
 
     renderFilterBar() {
         const opts = [];
-        Cfg.eventWay.forEach((item, index) => {
+        this.cfg.eventWay.forEach((item, index) => {
             opts.push(
                 <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
             );
@@ -792,7 +817,7 @@ class MySpecialActivities extends React.Component {
                 width: 100,
                 // fixed:'left',
                 render: (text, record) => {
-                    return <span>{record.eventWay == 70 ? `${this.props.intl.formatMessage(STRING_SPE.d5672b44908540146)}` : mapValueToLabel(Cfg.eventWay, String(record.eventWay))}</span>
+                    return <span>{record.eventWay == 70 ? `${this.props.intl.formatMessage(STRING_SPE.d5672b44908540146)}` : mapValueToLabel(this.cfg.eventWay, String(record.eventWay))}</span>
                 },
             },
 
@@ -902,7 +927,7 @@ class MySpecialActivities extends React.Component {
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
                         total: this.state.total || 0,
-                        showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                        showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
                         onChange: (page, pageSize) => {
                             this.setState({
                                 pageNo: page,

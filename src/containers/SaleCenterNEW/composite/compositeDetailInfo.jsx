@@ -107,7 +107,6 @@ class CompositeDetailInfo extends React.Component {
         const data = [];
         console.log(scopeLst)
         scopeLst.map((scope) => {
-            debugger;
             if (!data[scope.stageNo]) {
                 data[scope.stageNo] = {
                     count: null, // 需购买份数
