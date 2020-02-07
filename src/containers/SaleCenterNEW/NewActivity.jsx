@@ -230,10 +230,11 @@ class NewActivity extends React.Component {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const promotionType = ACTIVITY_CATEGORIES[this.state.index].title;
+        const title = <p>{create} {promotionType}</p>;
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`${create}${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{
