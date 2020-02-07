@@ -39,6 +39,7 @@ import { axiosData } from '../../../helpers/util';
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
+import { STRING_GIFT } from 'i18n/common/gift';
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -336,6 +337,7 @@ class SpecialPromotionDetail extends React.Component {
     renderGiftInfoTable(records) {
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props;
+        debugger;
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -447,6 +449,7 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     renderSearch() {
+        debugger;
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
@@ -510,6 +513,7 @@ class SpecialPromotionDetail extends React.Component {
     // 活动参与表格
     renderActivityInfoTable() {
         const eventWay = this.state.eventInfo.data.eventWay;
+        debugger;
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
