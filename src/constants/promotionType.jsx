@@ -503,10 +503,7 @@ export const ONLINE_PROMOTION_TYPES = [
         title: SALE_LABEL.k67b3xc1,
         isSpecial: false,
         text: SALE_LABEL.k67cpo2j,
-        desc: `
-            ${SALE_LABEL.k67g7sms};\r\n
-            ${SALE_LABEL.k67g7sv4}
-        `,
+        desc: <p>{SALE_LABEL.k67g7sms}{SALE_LABEL.k67g7sv4}</p>,
         tags: [SALE_LABEL.k639vgbm],
         key: '2060',
         right: 14,
@@ -516,10 +513,7 @@ export const ONLINE_PROMOTION_TYPES = [
         title: SALE_LABEL.k67b3xkd,
         isSpecial: false,
         text: SALE_LABEL.k67cpoav,
-        desc: `
-        ${SALE_LABEL.k67cpoav};\r\n
-        ${SALE_LABEL.k67g7t3g};\r\n
-        ${SALE_LABEL.k67g7tbs};`,
+        desc: <p>{SALE_LABEL.k67cpoav}<br />{SALE_LABEL.k67g7t3g}<br />{SALE_LABEL.k67g7tbs}</p>,
         tags: [SALE_LABEL.k639vgbm],
         key: '1100',
         right: 10,

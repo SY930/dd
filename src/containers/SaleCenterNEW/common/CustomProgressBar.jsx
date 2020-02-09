@@ -97,7 +97,7 @@ class CustomProgressBar extends React.Component {
         return (
             <div className={isProfessionalTheme() ? styles.ProgressBarPro : styles.ProgressBar}>
                 <Steps current={current} className="clearfix">
-                    {steps.map(item => <Step key={item.title} title={item.title} />)}
+                    {steps.map((item, i) => <Step key={i} title={item.title} />)}
                 </Steps>
                 {steps.map((step, index) => {
                     if (index === current) {

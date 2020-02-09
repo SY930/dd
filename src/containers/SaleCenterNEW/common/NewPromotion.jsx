@@ -253,7 +253,7 @@ class NewPromotion extends React.Component {
         } = this.props;
         const steps = [
             {
-                title: '基本信息',
+                title: SALE_LABEL.k5g5bcqo,
                 content: (
                     <PromotionBasicInfo
                         isNew={isNew}
@@ -264,7 +264,7 @@ class NewPromotion extends React.Component {
                 ),
             },
             {
-                title: '活动范围',
+                title: SALE_LABEL.k5gfsuwz,
                 content: (
                     <PromotionScopeInfo
                         getSubmitFn={(handles) => {
@@ -276,7 +276,7 @@ class NewPromotion extends React.Component {
                 ),
             },
             {
-                title: '活动内容',
+                title: SALE_LABEL.k5g5bcz0,
                 content: React.createElement(
                     this.props.component,
                     {

@@ -82,7 +82,7 @@ class SpecialPromotionDetail extends React.Component {
                 })
             })
         }
-        
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -206,7 +206,7 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
                     </Col>
-    
+
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -336,8 +336,7 @@ class SpecialPromotionDetail extends React.Component {
     // 礼品信息表格
     renderGiftInfoTable(records) {
         const way = this.state.eventInfo.data.eventWay;
-        const { intl } = this.props;
-        debugger;
+        const { intl } = this.props
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -449,7 +448,6 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     renderSearch() {
-        debugger;
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
@@ -513,7 +511,6 @@ class SpecialPromotionDetail extends React.Component {
     // 活动参与表格
     renderActivityInfoTable() {
         const eventWay = this.state.eventInfo.data.eventWay;
-        debugger;
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
