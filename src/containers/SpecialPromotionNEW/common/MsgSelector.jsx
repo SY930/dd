@@ -11,7 +11,7 @@ import {
 import {getMessageTemplateList} from "../../BasicSettings/actions";
 import {SET_MSG_TEMPLATE} from "../../../constants/entryCodes";
 import { injectIntl } from 'i18n/common/injectDecorator'
-import { STRING_SPE } from 'i18n/common/special';
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 
 
 @injectIntl
@@ -118,7 +118,7 @@ function MessageDisplayBox(props){
         {[styles.isSelectedMessage]: props.selected}
     );
     return (
-        <div title={props.selected ? `${props.intl.formatMessage(STRING_SPE.d7h7h72c98c018)}` : `${props.intl.formatMessage(STRING_SPE.du38ot6hu1140)}`}
+        <div title={props.selected ? `${COMMON_SPE.d7h7h72c98c018}` : `${COMMON_SPE.du38ot6hu1140}`}
             className={classNames}
             onClick={props.onClick}
         >

@@ -403,7 +403,7 @@ class SpecialDetailInfo extends Component {
                     if ((basicValues['consumption1'].number === '' || basicValues['consumption1'].number == undefined) &&
                         (basicValues['point1'].number === '' || basicValues['point1'].number == undefined)
                     ) {
-                        helpMessageArray[0] = `{this.props.intl.formatMessage(STRING_SPE.d34igk92gh1246)}`;
+                        helpMessageArray[0] = `${this.props.intl.formatMessage(STRING_SPE.d34igk92gh1246)}`;
                         flag = false;
                     } else {
                         helpMessageArray[0] = '';
