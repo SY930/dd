@@ -266,7 +266,7 @@ class SpecialDetailInfo extends Component {
             } else {
                 const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType'
                 const typeValue = this.props.type == '68' ? gift.recommendType : gift.sendType;
-                data[index] = getDefaultGiftData(typeValue, typePropertyName); 
+                data[index] = getDefaultGiftData(typeValue, typePropertyName);
             }
             data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
@@ -635,11 +635,15 @@ class SpecialDetailInfo extends Component {
                 }, true);
             return p && _validStatusOfCurrentIndex;
         }, true);
+        // 把中奖率累加,判断总和是否满足小于等于100
+        const validOdds = data.reduce((res, cur) => {
+            return res + parseFloat(cur.giftOdds.value)
+        }, 0);
         data = validatedRuleData;
         this.setState({ data });
         if (validateFlag) {
             if (validOdds > 100) {
-                message.warning(`${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
+                message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
             const giftInfo = this.getGiftInfo(data);
@@ -1067,7 +1071,7 @@ class SpecialDetailInfo extends Component {
                 >
                     {this.renderImgUrl()}
                 </FormItem>
-            </div>  
+            </div>
         )
     }
     renderFlexFormControl = () => {
@@ -1243,9 +1247,9 @@ class SpecialDetailInfo extends Component {
                             }
                         </FormItem>
                         </div>
-                        
+
                     )
-                }           
+                }
                 {
                     (discountType === 1 && discountWay === 0) && (
                         <div
@@ -1313,9 +1317,9 @@ class SpecialDetailInfo extends Component {
                                 )
                             }
                         </FormItem>
-                        </div> 
+                        </div>
                     )
-                }           
+                }
             </div>
         )
     }
@@ -1928,7 +1932,7 @@ class SpecialDetailInfo extends Component {
                     )
                 }
             </div>
-            
+
         )
     }
     renderRecommendGiftsDetail = () => {
@@ -1946,7 +1950,7 @@ class SpecialDetailInfo extends Component {
             <div>
                 {recommendRule == 2 && this.renderSaveMoneySetSelector()}
                 <p className={styles.coloredBorderedLabel}>
-                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957782)} 
+                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957782)}
                     <span style={{color: '#f04134'}}>{helpMessageArray[0]}</span>
                 </p>
                 {renderRecommentReward(1)}
@@ -2140,7 +2144,7 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                     )
                                 }
-                                </Col>        
+                                </Col>
                             </Row>
                             <Row>
                                 <Col span={17} offset={4}>
