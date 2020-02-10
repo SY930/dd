@@ -1971,7 +1971,6 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-<<<<<<< HEAD
     renderAccumulateGiftsDetail() {
         const {
             giftGetRule,
@@ -2042,9 +2041,6 @@ class SpecialDetailInfo extends Component {
         }
     }
     renderMultipleLevelGiftsDetail() {
-=======
-    renderWakeupGiftsDetail = () => {
->>>>>>> i18n-gfz-merge
         const { wakeupSendGiftsDataArray } = this.state;
         const {
             form: {
@@ -2061,7 +2057,6 @@ class SpecialDetailInfo extends Component {
                 {
                     wakeupSendGiftsDataArray.map(({intervalDays, gifts, key}, index, arr) => (
                         <div key={`${key}`}>
-<<<<<<< HEAD
                             <Row key={`${key}`}>
                                 <Col span={4}>
                                     <div className={selfStyle.fakeLabel}>
@@ -2113,16 +2108,6 @@ class SpecialDetailInfo extends Component {
                                 </FormItem>
                                 {multiConfig.levelAffix}
                                 </div>
-=======
-                            <FormItem
-                                label={this.props.intl.formatMessage(STRING_SPE.d1e0750k82809)}
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                style={{ position: 'relative', marginBottom: 14 }}
-                                required
-                            >
->>>>>>> i18n-gfz-merge
                                 {
                                     (userCount > 0 || disabledGifts) ? null : (
                                         <div style={{
@@ -2155,44 +2140,8 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                     )
                                 }
-<<<<<<< HEAD
                                 </Col>        
                             </Row>
-=======
-                                {
-                                    getFieldDecorator(`intervalDays${key}`, {
-                                        onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
-                                        initialValue: { number: intervalDays },
-                                        rules: [
-                                            {
-                                                validator: (rule, v, cb) => {
-                                                    if (!v || !(v.number > 0)) {
-                                                        return cb(`${this.props.intl.formatMessage(STRING_SPE.d56720d572dc8211)}`);
-                                                    }
-                                                    for (let i = 0; i < index; i++) {
-                                                        const days = arr[i].intervalDays;
-                                                        if (days > 0) {
-                                                            // 时间段设置不可以重叠
-                                                            if (v.number <= +days) {
-                                                                return cb(`${this.props.intl.formatMessage(STRING_SPE.d1e0750k8283188)}`);
-                                                            }
-                                                        }
-                                                    }
-                                                    cb()
-                                                },
-                                            },
-                                        ],
-                                    })(
-                                        <PriceInput
-                                            disabled={userCount > 0}
-                                            addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
-                                            maxNum={5}
-                                            modal="int"
-                                        />
-                                    )
-                                }
-                            </FormItem>
->>>>>>> i18n-gfz-merge
                             <Row>
                                 <Col span={17} offset={4}>
                                     <AddGifts

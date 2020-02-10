@@ -319,7 +319,6 @@ class StepTwo extends React.Component {
     }
     // 会员等级Option
     renderOptions() {
-<<<<<<< HEAD
         const groupMembersList = this.state.groupMembersList;
         return groupMembersList.map((groupMembers) => (
             <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
@@ -365,16 +364,6 @@ class StepTwo extends React.Component {
                 message.success('发送成功')
             })
         }
-=======
-        const cardInfo = this.state.cardInfo;
-        const options = [];
-        cardInfo.map((groupMembers) => {
-            options.push(
-                <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)}${groupMembers.totalMembers}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}`}</Option>
-            )
-        });
-        return options;
->>>>>>> i18n-gfz-merge
     }
 
     render() {

@@ -91,12 +91,8 @@ class StepTwo extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
-<<<<<<< HEAD
-                    label="新用户注册卡类"
-=======
                     label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
-                    optionFilterProp="children"
->>>>>>> i18n-gfz-merge
+                    // optionFilterProp="children"
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -112,14 +108,9 @@ class StepTwo extends React.Component {
                         })(
                             <Select
                                 showSearch={true}
-<<<<<<< HEAD
                                 optionFilterProp="children"
-                                notFoundContent={'未搜索到结果'}
-                                placeholder="请选择新用户注册成为会员的卡类型"
-=======
                                 notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
->>>>>>> i18n-gfz-merge
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 {
