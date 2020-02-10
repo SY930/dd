@@ -9,6 +9,7 @@ import {
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_DELETE, SMS_TEMPLATE_UPDATE} from "../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
+import { COMMON_LABEL } from 'i18n/common';
 const confirm = Modal.confirm;
 
 class MessageDisplayBox extends React.Component {
@@ -65,7 +66,7 @@ class MessageDisplayBox extends React.Component {
                                         e.stopPropagation();
                                         this.showConfirm();
                                     }}
-                                    >删除</span>
+                                    >{ COMMON_LABEL.delete }</span>
                                     </Authority>
                                 ) }
                             </div>

@@ -5,16 +5,20 @@ import {
     message,
 } from 'antd';
 import style from './style.less'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class DecorationUploader extends Component {
 
     onUrlChange = (info) => {
         const { file: { status } } = info;
         if (status === 'done' && info.file.response && info.file.response.url) {
-            message.success(`${info.file.name} 上传成功`);
+            message.success(`${info.file.name} ${SALE_LABEL.k635s3w1}`);
             this.props.onChange(`http://res.hualala.com/${info.file.response.url}`)
         } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
-            message.error(`${info.file.name} 上传失败`);
+            message.error(`${info.file.name} ${SALE_LABEL.k635s44d}`);
         }
     }
     beforeUpload = (file) => {
@@ -23,7 +27,7 @@ export default class DecorationUploader extends Component {
         if (limit) {
             isRightSize = file.size / 1024 <= limit;
             if (!isRightSize) {
-                message.error(`图片不要大于${limit}KB`);
+                message.error(`${SALE_LABEL.k6346ckg}${limit}KB`);
             }
         }
         return isRightSize;
@@ -43,9 +47,9 @@ export default class DecorationUploader extends Component {
                 <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
                 <br/>
                 <span>
-                    上传
+                    {SALE_LABEL.k635s4cp}
                 </span>
-            </div> 
+            </div>
         )
         return (
             <Upload
@@ -61,14 +65,14 @@ export default class DecorationUploader extends Component {
                                     onChange(undefined);
                                 }}
                             >
-                                重置
+                                {SALE_LABEL.k635s3np}
                             </div>
                             <img src={value} alt=""/>
                         </div>
                     ) : (// 无value时显示自定义trigger或默认trigger
                         displayTrigger
                     )
-                }                               
+                }
             </Upload>
         )
     }

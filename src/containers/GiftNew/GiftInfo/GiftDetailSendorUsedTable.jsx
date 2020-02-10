@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Table, Button, Icon, TreeSelect, Input } from 'antd';
 import _ from 'lodash';
+import { COMMON_LABEL } from 'i18n/common';
 import Moment from 'moment';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
@@ -323,13 +324,13 @@ class GiftSendOrUsedCount extends React.Component {
                         {
                             key === 'send' ?
                                 <Row>
-                                    <Col span={24} push={5}><Button type="primary" onClick={() => this.handleQuery()}><Icon type="search" />查询</Button></Col>
-                                    <Col span={0} push={0}><Button type="ghost"><Icon type="export" />导出</Button></Col>
+                                    <Col span={24} push={5}><Button type="primary" onClick={() => this.handleQuery()}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
+                                    <Col span={0} push={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
                                 </Row>
                                 :
                                 <Row>
-                                    <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />查询</Button></Col>
-                                    <Col span={0}><Button type="ghost"><Icon type="export" />导出</Button></Col>
+                                    <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
+                                    <Col span={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
                                 </Row>
                         }
                     </Col>

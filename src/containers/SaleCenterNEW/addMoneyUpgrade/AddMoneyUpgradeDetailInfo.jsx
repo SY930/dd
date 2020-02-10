@@ -22,7 +22,11 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class AddMoneyUpgradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -165,11 +169,11 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             }
             : null
         let text = '';
-        upGradeDishes.length === 0 ? text += '升级前菜品不可为空;' : null;
-        dishes.length === 0 ? text += '升级后菜品不可为空;' : null;
-        mostNewLimit == 1 && giveFoodMax < 1 ? text += '单笔订单最多升级换新数量限制不可为空;' : null;
-        singleNewLimit == 1 && giveFoodCount < 1 ? text += '单笔订单同一菜品最多升级换新数量限制不可为空;' : null;
-        mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += '同一菜品数量不能大于单笔订单最多数量;' : null;
+        upGradeDishes.length === 0 ? text += SALE_LABEL.k5koai82+ SALE_LABEL.k5hkj1ef : null;
+        dishes.length === 0 ? text += SALE_LABEL.k5koaigf+ SALE_LABEL.k5hkj1ef : null;
+        mostNewLimit == 1 && giveFoodMax < 1 ? text += SALE_LABEL.k5koaior+ SALE_LABEL.k5hkj1ef : null;
+        singleNewLimit == 1 && giveFoodCount < 1 ? text += SALE_LABEL.k5koaix3+ SALE_LABEL.k5hkj1ef : null;
+        mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += SALE_LABEL.k5koaj5f : null;
 
         if (!text) {
             this.props.setPromotionDetail(opts);
@@ -240,7 +244,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     renderupGradeDishesBox() {
         return (
             <FormItem
-                label={'升级前菜品'}
+                label={SALE_LABEL.k5koai82}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -252,17 +256,22 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     onChange={(value) => {
                         this.onupGradeDishesChange(value);
                     }}
-                /> 
+                />
             </FormItem>
         )
     }
     // render加价方式
-    renderFreeAmountInput() {
+    renderFreeAmountInput = () => {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+
+        const k5koajm3 = intl.formatMessage(SALE_STRING.k5koajm3);
+        const k5koajdr = intl.formatMessage(SALE_STRING.k5koajdr);
         const { isAddMoney, freeAmount } = this.state;
         return (
             <FormItem
                 className={styles.FormItemStyle}
-                label='加价方式'
+                label={SALE_LABEL.k5kp4v9f}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
@@ -271,15 +280,15 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                             value={isAddMoney}
                             getPopupContainer={(node) => node.parentNode}
                     >
-                        <Option key="0" value={0}>不加价</Option>
-                        <Option key="1" value={1}>加价</Option>
+                        <Option key="0" value={0}>{k5koajdr}</Option>
+                        <Option key="1" value={1}>{k5koajm3}</Option>
                     </Select>
                 </Col>
                 {
                     isAddMoney == 1 ?
                         <Col span={isAddMoney == 0 ? 0 : 20}>
                             <PriceInput
-                                addonAfter={'元'}
+                                addonAfter={k5ezdbiy}
                                 value={{ number: freeAmount }}
                                 defaultValue={{ number: freeAmount }}
                                 onChange={this.handleFreeAmountChange}
@@ -294,7 +303,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
     renderDishsSelectionBox() {
         return (
             <FormItem
-                label={'升级后菜品'}
+                label={SALE_LABEL.k5koaigf}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -305,18 +314,23 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                     onChange={(value) => {
                         this.onAfterDishesChange(value);
                     }}
-                />               
+                />
             </FormItem>
         )
     }
     // render单笔订单最多升级换新数量限制
-    renderNewLimit() {
+    renderNewLimit = () => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5koakb3 = intl.formatMessage(SALE_STRING.k5koakb3);
+        const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
+
         const { mostNewLimit, giveFoodMax, singleNewLimit, giveFoodCount, } = this.state;
         return (
             <div style={{ width: '80%', marginLeft: 49 }}>
                 <FormItem
                     className={styles.FormItemStyle}
-                    label='单笔订单最多升级换新数量限制'
+                    label={SALE_LABEL.k5koaior}
                     labelCol={{ span: 13 }}
                     wrapperCol={{ span: 11 }}
                 >
@@ -325,8 +339,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 value={mostNewLimit}
                                 getPopupContainer={(node) => node.parentNode}
                         >
-                            <Option key="0" value={0}>不限制</Option>
-                            <Option key="1" value={1}>限制</Option>
+                            <Option key="0" value={0}>{k5koakb3}</Option>
+                            <Option key="1" value={1}>{k5kp4vhr}</Option>
                         </Select>
                     </Col>
                     {
@@ -335,10 +349,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 <FormItem
                                     style={{ marginTop: -6 }}
                                     validateStatus={giveFoodMax > 0 ? 'success' : 'error'}
-                                    help={giveFoodMax > 0 ? null : '必须大于0'}
+                                    help={giveFoodMax > 0 ? null : SALE_LABEL.k5f4b1b9}
                                 >
                                     <PriceInput
-                                        addonAfter={'份'}
+                                        addonAfter={k5ez4qy4}
                                         value={{ number: giveFoodMax }}
                                         defaultValue={{ number: giveFoodMax }}
                                         onChange={this.giveFoodMaxChange}
@@ -350,7 +364,7 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                 </FormItem>
                 <FormItem
                     className={styles.FormItemStyle}
-                    label='单笔订单同一菜品最多升级换新数量限制'
+                    label={SALE_LABEL.k5koaix3}
                     labelCol={{ span: 13 }}
                     wrapperCol={{ span: 11 }}
                 >
@@ -359,8 +373,8 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 value={singleNewLimit}
                                 getPopupContainer={(node) => node.parentNode}
                         >
-                            <Option key="0" value={0}>不限制</Option>
-                            <Option key="1" value={1}>限制</Option>
+                            <Option key="0" value={0}>{k5koakb3}</Option>
+                            <Option key="1" value={1}>{k5kp4vhr}</Option>
                         </Select>
                     </Col>
                     {
@@ -369,10 +383,10 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                 <FormItem
                                     style={{ marginTop: -6 }}
                                     validateStatus={giveFoodCount > 0 ? (giveFoodCount > giveFoodMax && mostNewLimit == 1) ? 'error' : 'success' : 'error'}
-                                    help={giveFoodCount > 0 ? (giveFoodCount > giveFoodMax && mostNewLimit == 1) ? '必须小于上面的数字' : null : '必须大于0'}
+                                    help={giveFoodCount > 0 ? (giveFoodCount > giveFoodMax && mostNewLimit == 1) ? SALE_LABEL.k5koajuf : null : SALE_LABEL.k5f4b1b9}
                                 >
                                     <PriceInput
-                                        addonAfter={'份'}
+                                        addonAfter={k5ez4qy4}
                                         value={{ number: giveFoodCount }}
                                         defaultValue={{ number: giveFoodCount }}
                                         onChange={this.giveFoodCountChange}
@@ -390,22 +404,35 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
         )
     }
     render() {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5koakb3 = intl.formatMessage(SALE_STRING.k5koakb3);
+        const k5koakjf = intl.formatMessage(SALE_STRING.k5koakjf);
+        const k5koakrr = intl.formatMessage(SALE_STRING.k5koakrr);
+
+        const k5koal03 = intl.formatMessage(SALE_STRING.k5koal03);
+        const k5koal8f = intl.formatMessage(SALE_STRING.k5koal8f);
+        const k5koalgr = intl.formatMessage(SALE_STRING.k5koalgr);
+        const k5koalp3 = intl.formatMessage(SALE_STRING.k5koalp3);
+        const k5kqf2ef = intl.formatMessage(SALE_STRING.k5kqf2ef);
+        const k5koam5r = intl.formatMessage(SALE_STRING.k5koam5r);
         let { countType, subjectType, stageCondition, stageAmount, } = this.state;
         return (
             <div>
                 <Form className={styles.FormStyle}>
                     <FormItem
                         className={styles.FormItemStyle}
-                        label='活动条件限制'
+                        label={SALE_LABEL.k5koak2r}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
@@ -414,9 +441,9 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                     value={countType}
                                     getPopupContainer={(node) => node.parentNode}
                             >
-                                <Option key="0" value={0}>不限制</Option>
-                                <Option key="1" value={1}>按金额</Option>
-                                <Option key="2" value={2}>按数量</Option>
+                                <Option key="0" value={0}>{k5koakb3}</Option>
+                                <Option key="1" value={1}>{k5koakjf}</Option>
+                                <Option key="2" value={2}>{k5koakrr}</Option>
                             </Select>
                         </Col>
                         {
@@ -430,13 +457,13 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                                 onChange={this.subjectTypeChange}
                                                 value={subjectType}
                                             >
-                                                <Option key="0" value={0}>任意菜品售价满</Option>
-                                                <Option key="1" value={1}>任意菜品实收满</Option>
-                                                <Option key="3" value={2}>活动菜品售价满</Option>
-                                                <Option key="4" value={3}>活动菜品实收满</Option>
+                                        <Option key="0" value={0}>{k5koal03}</Option>
+                                        <Option key="1" value={1}>{k5koal8f}</Option>
+                                        <Option key="3" value={2}>{k5koalgr}</Option>
+                                        <Option key="4" value={3}>{k5koalp3}</Option>
                                             </Select>
                                         }
-                                        addonAfter={'元'}
+                                        addonAfter={k5ezdbiy}
                                         value={{ number: stageAmount }}
                                         defaultValue={{ number: stageAmount }}
                                         onChange={this.onStageAmountChange}
@@ -455,11 +482,11 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
                                                 onChange={this.stageConditionChange}
                                                 value={stageCondition}
                                             >
-                                                <Option key="0" value={0}>任意菜品数量满</Option>
-                                                <Option key="1" value={1}>同一菜品数量满</Option>
+                                        <Option key="0" value={0}>{k5kqf2ef}</Option>
+                                        <Option key="1" value={1}>{k5koam5r}</Option>
                                             </Select>
                                         }
-                                        addonAfter={'份'}
+                                        addonAfter={k5ez4qy4}
                                         value={{ number: stageAmount }}
                                         defaultValue={{ number: stageAmount }}
                                         onChange={this.onStageAmountChange}

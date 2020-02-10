@@ -25,6 +25,8 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     ONLINE_PROMOTION_MANAGEMENT_SHOP,
 } from '../../../constants/entryCodes';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 class NewPromotion extends React.Component {
     constructor(props) {
@@ -135,7 +137,7 @@ class NewPromotion extends React.Component {
             this.props.updateNewPromotion({
                 data: { promotionInfo },
                 success: () => {
-                    message.success('活动更新成功', 5);
+                    message.success(SALE_LABEL.k5do0ps6, 5);
                     this.setState({
                         loading: false,
                     });
@@ -143,13 +145,13 @@ class NewPromotion extends React.Component {
                     this.props.clear();
                 },
                 fail: () => {
-                    message.error('活动更新失败');
+                    message.error(SALE_LABEL.k5doax7i);
                     this.setState({
                         loading: false,
                     });
                 },
                 sameCode: () => {
-                    message.error('活动编码重复');
+                    message.error(SALE_LABEL.k5m5ax20);
                     this.setState({
                         loading: false,
                     });
@@ -160,7 +162,7 @@ class NewPromotion extends React.Component {
                 data: { promotionInfo },
                 success: () => {
                     cb();
-                    message.success('活动创建完毕', 5);
+                    message.success(SALE_LABEL.k5do0ps6, 5);
                     this.setState({
                         loading: false,
                     });
@@ -178,13 +180,13 @@ class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: () => {
-                    message.error('活动创建失败');
+                    message.error(SALE_LABEL.k5doax7i);
                     this.setState({
                         loading: false,
                     });
                 },
                 sameCode: () => {
-                    message.error('活动编码重复');
+                    message.error(SALE_LABEL.k5m5ax20);
                     this.setState({
                         loading: false,
                     });
@@ -250,7 +252,7 @@ class NewPromotion extends React.Component {
         } = this.props;
         const steps = [
             {
-                title: '基本信息',
+                title: SALE_LABEL.k5g5bcqo,
                 content: (
                     <PromotionBasicInfo
                         isNew={isNew}
@@ -261,7 +263,7 @@ class NewPromotion extends React.Component {
                 ),
             },
             {
-                title: '活动范围',
+                title: SALE_LABEL.k5gfsuwz,
                 content: (
                     <PromotionScopeInfo
                         getSubmitFn={(handles) => {
@@ -273,7 +275,7 @@ class NewPromotion extends React.Component {
                 ),
             },
             {
-                title: '活动内容',
+                title: SALE_LABEL.k5g5bcz0,
                 content: React.createElement(
                     this.props.component,
                     {

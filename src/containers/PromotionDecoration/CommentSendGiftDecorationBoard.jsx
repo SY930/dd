@@ -11,9 +11,13 @@ import {
     recommend2 as defaultEndImg,
 } from './assets';
 import tagImg from './assets/tag.svg'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
+
 
 const { TabPane } = Tabs;
-
+@injectIntl()
 export default class CommentSendGiftDecorationBoard extends Component {
 
     state = {
@@ -41,7 +45,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                 </div>
                                 <div className={style.tagWrapper}>
                                     <img src={tagImg} alt=""/>
-                                    <span>活动主图</span>
+                                    <span>{SALE_LABEL.k6346c3s}</span>
                                 </div>
                             </div>
                             <div style={{ background: endColor }} className={style.bgWrapper}>
@@ -55,7 +59,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                         <div className={style.simpleDisplayBlock}>
                             <div className={style.tagWrapper}>
                                 <img src={tagImg} alt=""/>
-                                <span>活动主图</span>
+                                <span>{SALE_LABEL.k6346c3s}</span>
                             </div>
                             <div style={{ borderRadius: 10, width: '100%', height: '100%', overflow: 'hidden' }}>
                                 <img src={enterImg} style={{ width: '100%' }} alt=""/>
@@ -78,11 +82,11 @@ export default class CommentSendGiftDecorationBoard extends Component {
         return (
             <div>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>弹窗背景色</div>
+                    <div className={style.label}>{SALE_LABEL.k6346cc4}</div>
                     <ColorSettingBlock value={endColor} onChange={(value) => onChange({key: ['endColor'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 500 }} className={style.uploaderWrapper}>
                         <CropperUploader
                             isAbsoluteUrl={true}
@@ -93,15 +97,15 @@ export default class CommentSendGiftDecorationBoard extends Component {
                             onChange={value => onChange({key: ['endImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸920x360像素</p>
-                            <p>* 支持JPG、PNG图片文件</p>
+                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}920x360</p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
-                <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({tabKey: '1'})}>上一页</Button>
+        <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({tabKey: '1'})}>{SALE_LABEL.k635s2yp}</Button>
             </div>
-            
+
         )
     }
     render() {
@@ -111,15 +115,17 @@ export default class CommentSendGiftDecorationBoard extends Component {
             },
             onChange,
         } = this.props;
+        const { intl } = this.props;
+        const k635s3fd = intl.formatMessage(SALE_STRING.k635s3fd);
         return (
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
                 <div>
                 <Tabs activeKey={this.state.tabKey} onTabClick={(tabKey) => this.setState({tabKey})} className={style.customTabWrapper}>
-                        <TabPane tab="页面1" key="1">
+                        <TabPane tab={k635s3fd + '1'} key="1">
                             <div style={{ paddingTop: 45 }}>
                                 <div className={style.sectionWrapper}>
-                                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+        <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                                         <CropperUploader
                                             isAbsoluteUrl={true}
@@ -129,16 +135,16 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                             onChange={value => onChange({key: ['enterImg'], value})}
                                         />
                                         <div className={style.uploaderTip}>
-                                            <p>* 图片大小不要超过1000KB</p>
-                                            <p>* 建议尺寸920x1346像素</p>
-                                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                                            <p>* {SALE_LABEL.k6346css}920x1346像素</p>
+                                            <p>* {SALE_LABEL.k6346d14}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({tabKey: '2'})}>下一页</Button>
-                            </div> 
+        <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({tabKey: '2'})}>{SALE_LABEL.k635s371}</Button>
+                            </div>
                         </TabPane>
-                        <TabPane tab="页面2" key="2">
+                        <TabPane tab={k635s3fd + '2'} key="2">
                             {this.renderPageOneSettingPanel()}
                         </TabPane>
                     </Tabs>

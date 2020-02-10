@@ -14,6 +14,9 @@ import {
 import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 
@@ -28,7 +31,7 @@ const mapStateToProps = (state) => {
         allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
     }
 }
-
+@injectIntl()
 class AddMoneyTradeDishesTableWithBrand extends Component {
     constructor(props) {
         super(props);
@@ -171,7 +174,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         } = this.state;
         const resultTableColumns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 key: 'index',
                 width: 50,
@@ -179,7 +182,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 render: (text) => `${text + 1}`,
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 50,
@@ -188,18 +191,18 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                     return (
                         <div>
                             <Popconfirm
-                                title="确定要删除吗?"
+                                title={SALE_LABEL.k5dnw1q3}
                                 onConfirm={() => this.handleDel(record)}
                                 getPopupContainer={_ => document.getElementById('_addMoneyTradeDetail')}
                             >
-                                <a title="删除" alt="删除">删除</a>
+                                <a title={COMMON_LABEL.delete}>{ COMMON_LABEL.delete }</a>
                             </Popconfirm>
                         </div>
                     );
                 },
             },
             {
-                title: '品牌',
+                title: SALE_LABEL.k5dlpn4t,
                 dataIndex: 'brandName',
                 key: 'brandName',
                 width: 72,
@@ -209,7 +212,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '分类',
+                title: SALE_LABEL.k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 90,
@@ -219,7 +222,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '菜品',
+                title: SALE_LABEL.k5gfsuon,
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 90,
@@ -229,7 +232,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '单位',
+                title: SALE_LABEL.k5kqz279,
                 dataIndex: 'unit',
                 key: 'unit',
                 width: 50,
@@ -240,14 +243,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: '售价(元)',
+                title: SALE_LABEL.k5kqz2fl,
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
             },
             {
-                title: '活动价',
+                title: SALE_LABEL.k5kqz2nx,
                 width: 80,
                 dataIndex: 'payPrice',
                 key: 'payPrice',
@@ -261,7 +264,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                             <PriceInputIcon
                                 type="text"
                                 modal="float"
-                                placeholder="不得为空"
+                                placeholder={SALE_STRING.k5hkj1ef}
                                 value={{ number: record.payPrice }}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
@@ -283,7 +286,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            批量添加菜品
+                            {SALE_STRING.k5gfsv5b}
                         </a>
                     </Col>
                 </Row>

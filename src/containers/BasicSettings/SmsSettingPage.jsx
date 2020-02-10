@@ -19,6 +19,7 @@ import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_CREATE} from "../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
+import { COMMON_LABEL } from 'i18n/common';
 
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
@@ -109,7 +110,7 @@ class MessageTemplatesPage extends React.Component {
                                         () => {
                                             this.editTemplate(null);
                                         }
-                                    }>新建</Button>
+                                    }>{ COMMON_LABEL.create }</Button>
                             </Authority>
                         </span>
                     </div>

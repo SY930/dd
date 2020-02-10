@@ -10,6 +10,7 @@ import {
     UpdateTabKey,
 } from '../_action';
 import styles from './GiftInfo.less';
+import { COMMON_LABEL } from 'i18n/common';
 
 class QuatoCardDetailModal extends Component {
     constructor(props) {
@@ -74,7 +75,7 @@ class QuatoCardDetailModal extends Component {
                 maskClosable={false}
                 onCancel={() => this.props.onCancel()}
                 width={950}
-                footer={[<Button key="0" type="primary" onClick={() => this.handleCancel()}>关闭</Button>]}
+                footer={[<Button key="0" type="primary" onClick={() => this.handleCancel()}>{ COMMON_LABEL.close }</Button>]}
             >
                 <div className={styles.giftDetailModal}>
                     <div>

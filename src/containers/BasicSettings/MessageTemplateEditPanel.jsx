@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common'
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { isEqual } from 'lodash';
 import {
@@ -64,7 +65,6 @@ class MessageTemplateEditPanel extends React.Component {
         }));
     }
 
-    /** 新建/编辑 保存*/
     save() {
         if (this.props.templateEntity && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             messageService.warning(SMS_EDIT_DISABLED_TIP);
@@ -155,7 +155,7 @@ class MessageTemplateEditPanel extends React.Component {
                     footer={
                         <div style={{textAlign: 'center'}}>
                             <Button type="ghost"
-                                    onClick={this.cancel}>关闭
+                                    onClick={this.cancel}>{COMMON_LABEL.close}
                             </Button>
                             <Button
                                 disabled={this.state.message === this.state.pristineMessage}
@@ -163,7 +163,7 @@ class MessageTemplateEditPanel extends React.Component {
                                 type="primary"
                                 loading={this.state.loading}
                                 onClick={this.save}>
-                                保存
+                                {COMMON_LABEL.save}
                             </Button>
                         </div>
                     }

@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import React from 'react';
 import { Row, Col, Table, Button, Icon, TreeSelect } from 'antd';
 import _ from 'lodash';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 import BaseForm from '../../../components/common/BaseForm';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
@@ -10,7 +11,7 @@ import ExportModal from './ExportModal';
 import Authority from '../../../components/common/Authority';
 
 import styles from './GiftInfo.less';
-import { mapValueToLabel } from './CommonFn';
+import { mapValueToLabel } from 'helpers/util';
 import { SENDCARD_COLUMNS, SENDCARD_QUERY_FORMITEMS, SENDCARD_FORMKEYS } from './_tableSendCardListConfig';
 import { MADECARD_COLUMNS, MADECARD_FORMKEYS, MADECARD_QUERY_FORMITEMS } from './_tableMadeCardConfig';
 import { PWDSafe } from './QuatoCardDetailModalTabs';
@@ -42,18 +43,18 @@ class SendCard extends React.Component {
             sumData: {},
             columns: [
                 ...[{
-                    title: '序号',
+                    title: COMMON_LABEL.serialNumber,
                     dataIndex: 'rowNum',
                     key: 'rowNum',
                     className: 'TableTxtCenter',
                 }, {
-                    title: '操作',
+                    title: COMMON_LABEL.actions,
                     dataIndex: 'operate',
                     key: 'operate',
                     fixed: 'left',
                     width: 80,
                     className: 'TableTxtCenter',
-                    render: (v, rec) => (<span className="operate"><a href="javaScript:;" onClick={() => this.handleMore(rec)}>详情</a></span>),
+                    render: (v, rec) => (<span className="operate"><a href="javaScript:;" onClick={() => this.handleMore(rec)}>{COMMON_LABEL.detail}</a></span>),
                 }],
                 ...SENDCARD_COLUMNS,
             ],
@@ -157,19 +158,19 @@ class SendCard extends React.Component {
                 this.setState({
                     columns: [
                         ...[{
-                            title: '序号',
+                            title: COMMON_LABEL.serialNumber,
                             dataIndex: 'rowNum',
                             key: 'rowNum',
                             className: 'TableTxtCenter',
                             fixed: 'left',
                         }, {
-                            title: '操作',
+                            title: COMMON_LABEL.actions,
                             dataIndex: 'operate',
                             key: 'operate',
                             fixed: 'left',
                             width: 80,
                             className: 'TableTxtCenter',
-                            render: (v, rec) => (<span className="operate"><a href="javaScript:;" onClick={() => this.handleMore(rec)}>详情</a></span>),
+                            render: (v, rec) => (<span className="operate"><a href="javaScript:;" onClick={() => this.handleMore(rec)}>{COMMON_LABEL.detail}</a></span>),
                         }],
                         ...SENDCARD_COLUMNS,
                     ],
@@ -188,14 +189,13 @@ class SendCard extends React.Component {
                             width: 110,
                             render: (value, record) => <PWDSafe key={record.cardNO} value={value} />,
                         }, {
-                            title: '状态',
+                            title: COMMON_LABEL.status,
                             dataIndex: 'giftStatus',
                             key: 'giftStatus',
                             width: 60,
                             render: (text, record, index) => {
                                 return <span>{mapValueToLabel(GiftCfg.giftCardStatus, String(text))}</span>
                             },
-                            // render:value=>value ? _.find(GiftCfg.giftCardStatus,{value:String(value)}).label : ''
                         }],
                     ],
                     formItems: MADECARD_QUERY_FORMITEMS,
@@ -257,7 +257,6 @@ class SendCard extends React.Component {
     }
 
     handleFormChange(k, v) {
-        // console.log(k,v,f);
     }
 
     handleQuery() {
@@ -501,14 +500,14 @@ class SendCard extends React.Component {
                                 <Row>
                                     <Col span={6}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                         type="search"
-                                    />查询</Button></Col>
+                                    />{COMMON_LABEL.query}</Button></Col>
                                     <Col span={6}>
                                         <Button type="ghost"
                                                 disabled={total==0}
                                                 onClick={() => this.handleExport()}
                                                 style={{borderRadius: '0'}}
                                         >
-                                            <Icon type="export" />导出
+                                            <Icon type="export" />{COMMON_LABEL.export}
                                         </Button>
                                     </Col>
                                     {
@@ -542,12 +541,12 @@ class SendCard extends React.Component {
                                         <Row>
                                             <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                                 type="search"
-                                            />查询</Button></Col>
+                                            />{ COMMON_LABEL.query }</Button></Col>
                                             <Col span={8} >
                                                 <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
-                                                    />导出</Button>
+                                                    /> {COMMON_LABEL.export } </Button>
                                             </Col>
                                             {
                                                 !isDeleted && (
@@ -565,7 +564,7 @@ class SendCard extends React.Component {
                                                     <Button
                                                         type="primary"
                                                         onClick={() => this.handleQuery()}
-                                                    ><Icon type="search" />查询</Button>
+                                                    ><Icon type="search" />{ COMMON_LABEL.query }</Button>
                                                 </Col>
                                             </Row>
                                             <Row>
@@ -574,7 +573,7 @@ class SendCard extends React.Component {
                                                         type="ghost"
                                                         disabled={total==0}
                                                         onClick={() => this.handleExport()}
-                                                    ><Icon type="export" />导出</Button>
+                                                    ><Icon type="export" />{ COMMON_LABEL.export }</Button>
                                                 </Col>
                                             </Row>
                                         </div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Modal, Button, Table, message } from 'antd';
-import { connect } from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import { axiosData } from '../../../helpers/util';
 import Authority from '../../../components/common/Authority';
@@ -15,7 +15,7 @@ const ExportStatus = [
     { value: '2', label: '导出中' },
 ];
 const COLUMNS = [{
-    title: '序号',
+    title: COMMON_LABEL.serialNumber,
     dataIndex: 'index',
     width: 20,
     className: styles.tdCenter,
@@ -38,7 +38,7 @@ const COLUMNS = [{
     className: 'TableTxtCenter',
     width: 110,
 }, {
-    title: '状态',
+    title: COMMON_LABEL.status,
     dataIndex: 'exportStatus',
     className: 'TableTxtCenter',
     width: 40,
@@ -46,7 +46,7 @@ const COLUMNS = [{
         return <span>{mapValueToLabel(ExportStatus, String(text))}</span>
     },
 }, {
-    title: '操作',
+    title: COMMON_LABEL.actions,
     dataIndex: 'payType',
     className: 'TableTxtCenter',
     width: 40,
@@ -55,15 +55,11 @@ const COLUMNS = [{
             <span>
                 {
                     record.exportStatus == '1' ?
-                        // <Authority rightCode="crm.huiyuandengjixin.query">
-                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>下载文件</a>
-                        // </Authority>
+                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>{ COMMON_LABEL.download }</a>
                         :
                         null
                 }
-                {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>删除</a>
-                {/* </Authority> */}
+                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>{ COMMON_LABEL.delete }</a>
             </span>
         )
     },
@@ -217,8 +213,8 @@ export default class ExportModal extends Component {
                     wrapClassName={styles.crmShopCreditPayRecordWrap}
                     onCancel={() => this.handleClose()}
                     footer={
-                        [<Button key={'close'} type="ghost" onClick={() => this.handleClose()}>关闭</Button>,
-                        <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>刷新</Button>,
+                        [<Button key={'close'} type="ghost" onClick={() => this.handleClose()}>{ COMMON_LABEL.close }</Button>,
+                        <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>{ COMMON_LABEL.refresh }</Button>,
                         ]}
                 >
                     <Row>

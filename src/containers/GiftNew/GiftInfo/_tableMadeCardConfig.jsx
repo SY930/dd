@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Tooltip } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 
 const MADECARD_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'rowNum',
         key: 'rowNum',
         width: 50,

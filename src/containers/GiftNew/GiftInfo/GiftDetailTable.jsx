@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
+import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import {throttle} from 'lodash';
 import { axiosData, fetchData } from '../../../helpers/util';
@@ -592,7 +593,7 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >新建</Button>
+                                    >{ COMMON_LABEL.create }</Button>
                                 </Authority>
                             </span>
 
@@ -623,7 +624,7 @@ class GiftDetailTable extends Component {
                                     <Authority rightCode={GIFT_LIST_UPDATE}>
                                         <Button type="primary" onClick={() => this.handleQuery()}>
                                             <Icon type="search" />
-                                            查询
+                                            { COMMON_LABEL.query }
                                         </Button>
                                     </Authority>
                                 </li>

@@ -12,6 +12,7 @@ import {
     resetSendOrTotalCount,
     FetchSendorUsedList,
 } from '../_action';
+import { COMMON_LABEL } from 'i18n/common';
 
 class GiftDetailModal extends Component {
     constructor(props) {
@@ -111,49 +112,6 @@ class GiftDetailModal extends Component {
                 },
             ];
         }
-        const columns = [
-            {
-                title: '状态',
-                dataIndex: 'giftStatus',
-                key: 'giftStatus',
-            }, {
-                title: '消费返券',
-                dataIndex: 'sum10',
-                key: 'sum10',
-            }, {
-                title: '摇奖活动',
-                dataIndex: 'sum20',
-                key: 'sum20',
-            }, {
-                title: '积分摇奖',
-                dataIndex: 'sum30',
-                key: 'sum30',
-            }, {
-                title: '积分兑换',
-                dataIndex: 'sum40',
-                key: 'sum40',
-            }, {
-                title: '免费领取',
-                dataIndex: 'sum60',
-                key: 'sum60',
-            }, {
-                title: '商家赠送',
-                dataIndex: 'sum70',
-                key: 'sum70',
-            }, {
-                title: '商家支付',
-                dataIndex: 'sum80',
-                key: 'sum80',
-            }, {
-                title: '商家卖出',
-                dataIndex: 'sum90',
-                key: 'sum90',
-            }, {
-                title: '总计',
-                dataIndex: 'sum',
-                key: 'sum',
-            },
-        ];
         const giftRule = data.giftRule ? data.giftRule : [];
         const giftLogo = (v) => {
             switch (v) {
@@ -194,7 +152,7 @@ class GiftDetailModal extends Component {
                 onCancel={() => this.handleCancel()}
                 maskClosable={false}
                 width={950}
-                footer={[<Button key="0" className="cancelBtnJs" type="ghost" onClick={() => this.handleCancel()}>关闭</Button>]}
+                footer={[<Button key="0" className="cancelBtnJs" type="ghost" onClick={() => this.handleCancel()}>{ COMMON_LABEL.close }</Button>]}
             >
                 {visible && (
                     <div className={styles.giftDetailModal}>

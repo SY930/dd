@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     queryWeChatMessageTemplates,
@@ -408,14 +409,14 @@ class WeChatMessageFormWrapper extends Component {
                         }}
                         onClick={this.reset}
                     >
-                        取消
+                        { COMMON_LABEL.cancel }
                     </Button>
                     <Button
                         type="primary"
                         loading={isSaving}
                         onClick={this.save}
                     >
-                        保存
+                        { COMMON_LABEL.save }
                     </Button>
                 </div>
             </div>

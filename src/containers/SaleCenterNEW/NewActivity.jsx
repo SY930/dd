@@ -53,6 +53,10 @@ import {
     isGroupOfHuaTianGroupList, BASIC_PROMOTION_CREATE_DISABLED_TIP,
     isHuaTian
 } from "../../constants/projectHuatianConf";
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
+
 const allBasicActivitiesArr = [
     ...NEW_CUSTOMER_PROMOTION_TYPES,
     ...FANS_INTERACTIVITY_PROMOTION_TYPES,
@@ -99,6 +103,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class NewActivity extends React.Component {
     constructor(props) {
         super(props);
@@ -147,7 +152,7 @@ class NewActivity extends React.Component {
                     <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
                         <div className={headerClasses}>
                             <span  className={styles.customHeader}>
-                                新建基础营销&nbsp;&nbsp;
+                                {COMMON_LABEL.create + SALE_LABEL.k5m4q17q}
                                 <Button
                                     type="ghost"
                                     icon="rollback"
@@ -156,7 +161,7 @@ class NewActivity extends React.Component {
                                             const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
                                             menuID && jumpPage({ menuID })
                                         }
-                                    }>返回列表</Button>
+                                }>{SALE_LABEL.k5nh24lx}</Button>
                             </span>
                         </div>
                     </div>
@@ -218,11 +223,14 @@ class NewActivity extends React.Component {
     }
 
     _renderModal() {
+        const { intl } = this.props;
+        const create = intl.formatMessage(COMMON_STRING.create);
         const promotionType = ACTIVITY_CATEGORIES[this.state.index].title;
+        const title = <p>{create} {promotionType}</p>;
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{
@@ -249,7 +257,7 @@ class NewActivity extends React.Component {
 
     _onButtonClicked(index, activity) {
         if (!checkPermission("marketing.jichuyingxiaoxin.create")) {
-            message.warn('您没有新建活动的权限，请联系管理员');
+            message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
         const opts = {

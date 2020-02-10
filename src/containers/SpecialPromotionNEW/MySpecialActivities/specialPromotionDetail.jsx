@@ -36,12 +36,15 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import { axiosData } from '../../../helpers/util';
-const levelArray = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-// 可导出的活动类型
+import { injectIntl } from 'i18n/common/injectDecorator';
+import { STRING_SPE } from 'i18n/common/special';
+import { STRING_GIFT } from 'i18n/common/gift';
 const exportablePromotionTypes = [
     // '22', // 报名活动
 ];
+const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
+@injectIntl
 class SpecialPromotionDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -82,7 +85,7 @@ class SpecialPromotionDetail extends React.Component {
                 })
             })
         }
-        
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -153,9 +156,9 @@ class SpecialPromotionDetail extends React.Component {
         }
         return (
             <div>
-                <h5><span></span>基本信息</h5>
+                <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
                 <Row>
-                    <Col span={4} style={{ textAlign: 'right' }}>活动类型</Col>
+                    <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}</Col>
                     <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                     <Col span={18} style={{ textAlign: 'left' }}>{getTitle(record.eventWay)}</Col>
                 </Row>
@@ -163,7 +166,7 @@ class SpecialPromotionDetail extends React.Component {
                     record.eventName !== '' ?
                         (
                             <Row>
-                                <Col span={4} style={{ textAlign: 'right' }}>活动名称</Col>
+                                <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}</Col>
                                 <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                                 <Col span={18} style={{ textAlign: 'left' }}>{record.eventName}</Col>
                             </Row>
@@ -174,7 +177,7 @@ class SpecialPromotionDetail extends React.Component {
                         record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
                         (
                             <Row>
-                                <Col span={4} style={{ textAlign: 'right' }}>活动时间</Col>
+                                <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</Col>
                                 <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                                 <Col span={18} style={{ textAlign: 'left' }}>
                                     {`${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}`}
@@ -183,7 +186,7 @@ class SpecialPromotionDetail extends React.Component {
                         ) : null
                 }
                 <Row>
-                    <Col span={4} style={{ textAlign: 'right' }}>活动说明</Col>
+                    <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
                     <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                     <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
                 </Row>
@@ -203,8 +206,8 @@ class SpecialPromotionDetail extends React.Component {
         if (way == 68) { // 推荐有礼
             return (
                 <div>
-                    <h5><span></span>统计信息</h5>
-                    <div>邀请人奖励统计</div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <div>{this.props.intl.formatMessage(STRING_SPE.d31f11d5hd51190)}</div>
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType !== 0))}
                     </Col>
@@ -212,11 +215,11 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={24}>
                         {this.renderRecommendStatisticsTable()}
                     </Col>
-                    <div>被邀请人奖励统计</div>
+                    <div>{this.props.intl.formatMessage(STRING_SPE.da9060bn7f2110)}</div>
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
                     </Col>
-    
+
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -227,7 +230,7 @@ class SpecialPromotionDetail extends React.Component {
         if (way == 20) {
             return (
                 <div>
-                    <h5><span></span>统计信息</h5>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
                     </Col>
@@ -263,7 +266,7 @@ class SpecialPromotionDetail extends React.Component {
         }
         return (
             <div>
-                <h5><span></span>统计信息</h5>
+                <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                 <Col span={24}>
                     {this.renderGiftInfoTable(records)}
                 </Col>
@@ -281,7 +284,7 @@ class SpecialPromotionDetail extends React.Component {
         const dataSource = this.state.recommendStatitics;
         const columns = [
             {
-                title: '直接拉动注册人数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa2689dd3191)}`,
                 dataIndex: 'directRecommends',
                 key: 'directRecommends',
                 className: 'TableTxtCenter',
@@ -289,21 +292,21 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
             {
-                title: '直接推荐人金额奖励总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1432std364275)}`,
                 dataIndex: 'directRecommendTotalMoney',
                 key: 'directRecommendTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '直接推荐人积分奖励总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.db60c9695722569)}`,
                 dataIndex: 'directRecommendTotalPoint',
                 key: 'directRecommendTotalPoint',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '间接拉动注册人数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1e09if66p6186)}`,
                 dataIndex: 'indirectRecommends',
                 key: 'indirectRecommends',
                 className: 'TableTxtCenter',
@@ -311,42 +314,42 @@ class SpecialPromotionDetail extends React.Component {
                 width: 160,
             },
             {
-                title: '间接推荐人金额奖励总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij820732)}`,
                 dataIndex: 'indirectRecommendTotalMoney',
                 key: 'indirectRecommendTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '间接推荐人积分奖励总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7f8251)}`,
                 dataIndex: 'indirectRecommendTotalPoint',
                 key: 'indirectRecommendTotalPoint',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '已领取金额总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1e09if66p9204)}`,
                 dataIndex: 'receivedTotalMoney',
                 key: 'receivedTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '待领取金额总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d216471b3278a10164)}`,
                 dataIndex: 'unclaimedTotalMoney',
                 key: 'unclaimedTotalMoney',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '已领取积分总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d34ikj453211103)}`,
                 dataIndex: 'receivedTotalPoint',
                 key: 'receivedTotalPoint',
                 className: 'TableTxtCenter',
                 width: 160,
             },
             {
-                title: '待领取积分总计',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d454fhnprm12229)}`,
                 dataIndex: 'unclaimedTotalPoint',
                 key: 'unclaimedTotalPoint',
                 className: 'TableTxtCenter',
@@ -366,9 +369,10 @@ class SpecialPromotionDetail extends React.Component {
     // 礼品信息表格
     renderGiftInfoTable(records) {
         const way = this.state.eventInfo.data.eventWay;
+        const { intl } = this.props
         const columns = [
             {
-                title: '序号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
                 dataIndex: 'idx',
                 key: 'idx',
                 className: 'TableTxtCenter',
@@ -377,7 +381,7 @@ class SpecialPromotionDetail extends React.Component {
                 },
             },
             {
-                title: '礼品名称',
+                title: `${intl.formatMessage(STRING_GIFT.giftName)}`,
                 dataIndex: 'EGiftName',
                 key: 'EGiftName',
                 render: (text, record) => {
@@ -386,31 +390,31 @@ class SpecialPromotionDetail extends React.Component {
             },
             {
                 title: way != '20' && way != '21' && way != '30' && way != '70' ?
-                    '礼品个数' : '礼品总数',
+                    `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}` : `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`,
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
             },
             {
-                title: '发出数量',
+                title: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7g14187)}`,
                 dataIndex: 'EGiftSendCount',
                 key: 'EGiftSendCount',
                 className: 'TableTxtRight',
             },
             {
-                title: '回收数量',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d16hh2cja4i15124)}`,
                 dataIndex: 'resumeGiftsCount',
                 key: 'resumeGiftsCount',
                 className: 'TableTxtRight',
             },
             {
-                title: '回收比例',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d5g3ddeg771632)}`,
                 dataIndex: 'resumeGiftsCountPercent',
                 key: 'resumeGiftsCountPercent',
                 className: 'TableTxtRight',
             },
             {
-                title: '有效天数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dojy8ws411711)}`,
                 dataIndex: 'EGfitValidUntilDayCount',
                 key: 'EGfitValidUntilDayCount',
                 className: 'TableTxtRight',
@@ -442,20 +446,20 @@ class SpecialPromotionDetail extends React.Component {
     renderPointsTable() {
         const columns = [
             {
-                title: '赠送类型',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46m1ib4k18146)}`,
                 dataIndex: 'title',
                 key: 'title',
                 className: 'TableTxtCenter',
             },
             {
-                title: '累计赠送积分数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7g19221)}`,
                 dataIndex: 'sendPointAmount',
                 key: 'sendPointAmount',
                 className: 'TableTxtRight',
                 render: data => data || 0,
             },
             {
-                title: '累计赠送总次数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c6d3681120204)}`,
                 dataIndex: 'sendCount',
                 key: 'sendCount',
                 className: 'TableTxtRight',
@@ -465,7 +469,7 @@ class SpecialPromotionDetail extends React.Component {
         let dataSource;
         try {
             dataSource = [{
-                title: '赠送积分',
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
                 ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
             }];
         } catch (e) {
@@ -524,12 +528,12 @@ class SpecialPromotionDetail extends React.Component {
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
-                    <Col span={3}>关键字</Col>
+                    <Col span={3}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
-                    <Col span={4}><Button type="primary" onClick={this.resetQuery}>查询</Button></Col>
+                    <Col span={4}><Button type="primary" onClick={this.resetQuery}>{this.props.intl.formatMessage(STRING_SPE.da9060bn7g2223)}</Button></Col>
                     {
                         exportablePromotionTypes.includes(`${way}`) && (
-                            <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>导出</Button></Col>
+                            <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button></Col>
                         )
                     }  
                 </Col>
@@ -629,7 +633,7 @@ class SpecialPromotionDetail extends React.Component {
         const eventWay = this.state.eventInfo.data.eventWay;
         const columns = [
             {
-                title: '序号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
                 dataIndex: 'idx',
                 key: 'idx',
                 className: 'TableTxtCenter',
@@ -639,7 +643,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: '客户编号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
                 width: 180,
@@ -649,7 +653,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: eventWay == 65 ? '邀请人姓名' : '姓名',
+                title: eventWay == 65 ? `${this.props.intl.formatMessage(STRING_SPE.d454fhnprm24286)}` : `${this.props.intl.formatMessage(STRING_SPE.de8g85ajma25216)}`,
                 dataIndex: 'name',
                 key: 'name',
                 className: 'TableTxtCenter',
@@ -659,7 +663,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: '手机号',
+                title: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7g26184)}`,
                 dataIndex: 'telephoneNo',
                 key: 'telephoneNo',
                 className: 'TableTxtRight',
@@ -669,19 +673,19 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             eventWay == 20 && ({
-                title: '获奖情况',
+                title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
                 className: 'TableTxtCenter',
                 width: 100,
                 render:(level)=> {
                     if (!level) return '--'
-                    if (level === -1) return '未中奖'
-                    return `${levelArray[level - 1]}等奖`
+                    if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
+                    return `${levelArray[level - 1]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`
                 }
             }),
             {
-                title: '参与时间',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
                 dataIndex: 'joinTime',
                 key: 'joinTime',
                 className: 'TableTxtCenter',
@@ -698,7 +702,7 @@ class SpecialPromotionDetail extends React.Component {
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({
-                title: '参与次数',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d7el6blifo14268)}`,
                 dataIndex: 'joinCount',
                 key: 'joinCount',
                 className: 'TableTxtCenter',
@@ -714,7 +718,7 @@ class SpecialPromotionDetail extends React.Component {
             columns.pop();
             columns.push(...[
                 {
-                    title: '邀请人数',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.d170132798db30202)}`,
                     dataIndex: 'joinCount',
                     key: 'joinCount',
                     className: 'TableTxtCenter',
@@ -726,42 +730,42 @@ class SpecialPromotionDetail extends React.Component {
                     }
                 },
                 {
-                    title: '累计获得金额奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb31180)}`,
                     dataIndex: 'accumulativeMoney',
                     key: 'accumulativeMoney',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: '待领取金额奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.d7elca8l7h3286)}`,
                     dataIndex: 'unclaimedMoney',
                     key: 'unclaimedMoney',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: '已领取金额奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82233275)}`,
                     dataIndex: 'receivedMoney',
                     key: 'receivedMoney',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: '累计获得积分奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.db60c96957243426)}`,
                     dataIndex: 'accumulativePoint',
                     key: 'accumulativePoint',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: '待领取积分奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df35188)}`,
                     dataIndex: 'unclaimedPoint',
                     key: 'unclaimedPoint',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: '已领取积分奖励',
+                    title: `${this.props.intl.formatMessage(STRING_SPE.d5g3ddeg7836148)}`,
                     dataIndex: 'receivedPoint',
                     key: 'receivedPoint',
                     className: 'TableTxtRight',
@@ -794,7 +798,7 @@ class SpecialPromotionDetail extends React.Component {
                     showSizeChanger: false, // 暂时不改变pageSize
                     onShowSizeChange: this.handleUserTablePageSizeChange,
                     pageSize: this.state.pageSize,
-                    showTotal: (total, range) => `本页 ${range[0]} - ${range[1]} / 共 ${total} 条`,
+                    showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)} ${range[0]} - ${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
                     pageSizeOptions: ['5', '10', '20', '40'],
                     onChange: this.handleUserTablePageChange
                 }}

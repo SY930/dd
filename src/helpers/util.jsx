@@ -663,7 +663,16 @@ export function downloadFile(url = '', filename = '') {
     a.remove();
 }
 
-export const generateUniqID = uuid
+export const generateUniqID = uuid;
+/**
+ * [mapValueToLabel 依据value获得label,若没有匹配上返回value]
+ * @param  {[type]} cfg [description]
+ * @param  {[type]} val [description]
+ * @return {[type]}     [description]
+ */
+export function mapValueToLabel(cfg, val) {
+    return _.result(_.find(cfg, { value: val }), 'label');
+}
 
 // 封装营销专用的axios
 // axios.post('/api/v1/universal', {

@@ -16,7 +16,11 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class CollocationDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -82,7 +86,7 @@ class CollocationDetailInfo extends React.Component {
             });
             return true;
         }
-        message.warning('菜品、赠菜数据不完整');
+        message.warning(SALE_LABEL.k5hlhwpg);
         return false;
     }
 
@@ -101,9 +105,9 @@ class CollocationDetailInfo extends React.Component {
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

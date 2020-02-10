@@ -21,8 +21,13 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
+
 const FormItem = Form.Item;
 
+@injectIntl()
 class AddGrade extends React.Component {
     constructor(props) {
         super(props);
@@ -101,7 +106,7 @@ class AddGrade extends React.Component {
         return (
             <FormItem
                 validateStatus={this.state.data[k].dishesFlag ? 'success' : 'error'}
-                help={this.state.data[k].dishesFlag ? null : '请选择赠送菜品'}
+                help={this.state.data[k].dishesFlag ? null : SALE_LABEL.k5hly0bq}
             >
                 <ConnectedPriceListSelector
                     isShopMode={this.props.isShopFoodSelectorMode}
@@ -180,6 +185,14 @@ class AddGrade extends React.Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5koal03 = intl.formatMessage(SALE_STRING.k5koal03);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+        const k5m3on0k = intl.formatMessage(SALE_STRING.k5m3on0k);
+
         // TODO:initialValue
         const { getFieldDecorator, getFieldValue } = this.props;
         // 满赠取消分档
@@ -191,19 +204,19 @@ class AddGrade extends React.Component {
             return (
                 <div className={styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
-                        <span className={styles.CategoryTitle}>档次{/* {this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null} */}</span>
+            <span className={styles.CategoryTitle}>{SALE_LABEL.k5m3oms8}{/* {this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null} */}</span>
                         {// 显示的可操作文字
                             this.props.ruleType == 2 || this.props.ruleType == 3 ? // 满
                 (k == this.uuid ? (
                     k == 0 ? (// 满 第一个档次,//满赠取消分档
-                        <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : '添加新档'}</span>
+                        <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : SALE_LABEL.k5m3omjw}</span>
                     ) : (
                         k == 2 ? (
-                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
+                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                         ) : (// 满 非第一个档次
                             <span>
-                                <span className={styles.CategoryAdd} onClick={this.add}>添加新档</span>
-                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>删除</span>
+        <span className={styles.CategoryAdd} onClick={this.add}>{SALE_LABEL.k5m3omjw}</span>
+                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                             </span>
                         )
                     )
@@ -219,15 +232,15 @@ class AddGrade extends React.Component {
                                         <FormItem
                                             className={styles.FormItemStyle}
                                             validateStatus={this.state.data[k].StageAmountFlag ? 'success' : 'error'}
-                                            help={this.state.data[k].StageAmountFlag ? null : '请输入金额，必须大于0'}
+                                            help={this.state.data[k].StageAmountFlag ? null : SALE_LABEL.k5f4b1b9}
                                         >
                                             <PriceInput
                                                 addonBefore={
-                                                    this.props.ruleType == '2' ? '任意菜品消费满' :
-                                                        this.props.ruleType == '1' ? '任意菜品消费每满' :
-                                                            this.props.ruleType == '3' ? '指定菜品消费满' : '指定菜品消费每满'
+                                                    this.props.ruleType == '2' ? k5koal03 :
+                                                        this.props.ruleType == '1' ? k5m3on0k :
+                                                            this.props.ruleType == '3' ? k5ez4pvb : k5ez4qew
                                                 }
-                                                addonAfter={'元'}
+                                                addonAfter={k5ezdbiy}
                                                 onChange={(val) => { this.onStageAmountChange(val, index) }}
                                                 value={{ number: this.state.data[k].stageAmount }}
                                                 modal="float"
@@ -239,11 +252,11 @@ class AddGrade extends React.Component {
                                 <FormItem
                                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                                     validateStatus={this.state.data[k].foodCountFlag ? 'success' : 'error'}
-                                    help={this.state.data[k].foodCountFlag ? null : '请输入赠送份数'}
+                                    help={this.state.data[k].foodCountFlag ? null : SALE_LABEL.k5hly03e}
                                 >
                                     <PriceInput
-                                        addonBefore={this.props.ruleType == '0' ? '下单即赠送' : '赠送'}
-                                        addonAfter={'份'}
+                                        addonBefore={this.props.ruleType == '0' ? SALE_LABEL.k5g5bcic : SALE_LABEL.k5kn0bn5}
+                                        addonAfter={k5ez4qy4}
                                         onChange={(val) => { this.onFoodCountChange(val, index) }}
                                         value={{ number: this.state.data[k].foodCount }}
                                         modal="int"
@@ -253,7 +266,7 @@ class AddGrade extends React.Component {
                         </Row>
                         <div >
                             <FormItem required={true}>
-                                <span className={styles.spanText}>赠送菜品 </span>
+                            <span className={styles.spanText}>{SALE_LABEL.k5hly0bq}</span>
                             </FormItem>
 
                         </div>

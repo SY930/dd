@@ -5,6 +5,9 @@ import registerPage from '../../../index';
 import {NEW_CUSTOMER_PROMOTION_TYPES} from "../../constants/promotionType";
 import {NEW_CUSTOMER} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const limitedTypes = [
     '67',
@@ -14,6 +17,7 @@ const limitedTypes = [
 @registerPage([NEW_CUSTOMER], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class NewCustomerPage extends Component {
 
     state = {

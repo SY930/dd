@@ -4,7 +4,13 @@ import rootEpic from './redux/modules';
 
 import * as entryCodes from './constants/entryCodes'
 
-const { registeEntryCode } = registerPackage('sale', process.env.JS_VERSION);
+const { registeEntryCode, registeLocale } = registerPackage('sale', process.env.JS_VERSION);
+const DEFAULT_LANGUAGE = 'zh-cn';
+const LOCEL_LANGUAGE_MAP = new Map([
+    ['zh-cn', import('./i18n/locales/zh-cn')],
+    ['zh-tw', import('./i18n/locales/zh-tw')],
+    ['en', import('./i18n/locales/en')],
+]);
 // 注册epic
 mountEpics(rootEpic);
 
@@ -45,5 +51,23 @@ registerLocalPage([
         parent: [entryCodes.SPECIAL_PAGE],
     },
 ]);
+// 注册语言包
+const registeLangPack = async () => {
+    let lang = DEFAULT_LANGUAGE;
+    try {
+        const langTypeInCookie = /language_type=([^;]*)/.exec(document.cookie)[1];
+        langTypeInCookie && (lang = langTypeInCookie)
+    } catch (e) {
+        // cookie 未设置，default zh-cn
+    }
+    console.log('营销中心语言包开始加载:', lang);
+    await LOCEL_LANGUAGE_MAP.get(lang).then((data) => {
+        registeLocale(data.default)
+    });
+    console.log('营销中心语言包加载完成:', lang);
+}
+
+
+registeLangPack();
 
 export default registeEntryCode(entryCodes, completed => import('./containers').then(completed))

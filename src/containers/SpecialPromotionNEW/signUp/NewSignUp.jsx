@@ -15,7 +15,11 @@ import NewPromotion from '../common/NewPromotion';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class NewSignUp extends NewPromotion {
     constructor(props) {
         super(props);
@@ -28,7 +32,7 @@ class NewSignUp extends NewPromotion {
 
         const steps = [
             {
-                title: '基本信息',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (
                     <StepOneWithDateRange
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -39,7 +43,7 @@ class NewSignUp extends NewPromotion {
                 ),
             },
             {
-                title: '活动范围',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <SpecialRangeInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}

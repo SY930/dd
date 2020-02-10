@@ -22,7 +22,7 @@ import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../common/PriceInput';
-
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -30,17 +30,18 @@ const RadioGroup = Radio.Group;
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const Immutable = require('immutable');
 const moment = require('moment');
 
 const type = [
-    { value: '2', name: '消费满一定金额即赠送相应礼品' },
-    { value: '1', name: '消费每满一定金额即赠送相应礼品' },
+    { value: '2', name: SALE_LABEL.k6d8n1ew },
+    { value: '1', name: SALE_LABEL.k6d8n1n8 },
 ];
 const showType = [
-    { value: '1', name: '结账单打印券码' },
-    { value: '0', name: '存入会员电子券包' },
+    { value: '1', name: SALE_LABEL.k6d8n1vk },
+    { value: '0', name: SALE_LABEL.k6d8n23w },
 ];
 export const DEFAULT_GIFT_ITEM = {
     giftNum: {
@@ -52,7 +53,7 @@ export const DEFAULT_GIFT_ITEM = {
         giftName: null,
         giftItemID: null,
         validateStatus: 'error',
-        msg: '必须选择礼券',
+        msg: null,
     },
     // 使用张数
     giftMaxUseNum: {
@@ -80,7 +81,7 @@ const DEFAULT_GIFT_STAGE = [
         ]
     }
 ];
-
+@injectIntl()
 class ReturnGiftDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -338,7 +339,7 @@ class ReturnGiftDetailInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="券显示方式"
+                    label={SALE_LABEL.k67g8m3z}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -359,14 +360,14 @@ class ReturnGiftDetailInfo extends React.Component {
                 </FormItem>
                 {this.state.rule.gainCodeMode == 1 ? this.renderPrintCode() : null}
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <Select
                         size="default"
-                        placeholder="请选择活动类别"
+                        placeholder=""
                         className={`${styles.linkSelectorRight} returnGiftDetailMountClassJs`}
                         getPopupContainer={(node) => node.parentNode}
                         value={this.state.rule.stageType}
@@ -391,7 +392,7 @@ class ReturnGiftDetailInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="打印券码类型"
+                    label={SALE_LABEL.k67g8mcb}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -404,14 +405,18 @@ class ReturnGiftDetailInfo extends React.Component {
                             this.setState({ rule });
                         }}
                     >
-                        <Radio key={0} value={0}>条形码</Radio >
-                        <Radio key={1} value={1}>二维码</Radio >
+                        <Radio key={0} value={0}>{SALE_LABEL.k67g8mkn}</Radio >
+                        <Radio key={1} value={1}>{SALE_LABEL.k67g8msz}</Radio >
                     </RadioGroup >
                 </FormItem>
             </div>
         )
     }
     renderRuleDetail() {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
+        const k67g8n9n = intl.formatMessage(SALE_STRING.k67g8n9n);
         const {
             form: {
                 getFieldDecorator,
@@ -425,15 +430,15 @@ class ReturnGiftDetailInfo extends React.Component {
                         {
                             !isMultiple && (
                                 <div className={selfStyle.fakeLabel}>
-                                    {`档位${index + 1}`}
+                                    {SALE_LABEL.k6d8n0y8}{`${index + 1}`}
                                 </div>
                             )
                         }
                     </Col>
                     <Col span={17}>
-                        
+
                                 <div className={isMultiple ? selfStyle.emptyHeader : selfStyle.grayHeader}>
-                                    {isMultiple ? '消费每满 ' : '消费满'}&nbsp;
+                                    {isMultiple ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}&nbsp;
                                     <FormItem>
                                         {
                                             getFieldDecorator(`stageAmount${index}`, {
@@ -443,11 +448,11 @@ class ReturnGiftDetailInfo extends React.Component {
                                                     {
                                                         validator: (rule, v, cb) => {
                                                             if (!(v.number > 0)) {
-                                                                return cb('金额必须大于0')
+                                                                return cb(k5f4b1b9)
                                                             }
                                                             for (let i = 0; i < index; i ++) {
                                                                 if (arr[i].stageAmount >= +v.number) {
-                                                                    return cb('必须大于前一档位金额')
+                                                                    return cb(k67g8n9n)
                                                                 }
                                                             }
                                                             cb()
@@ -457,10 +462,10 @@ class ReturnGiftDetailInfo extends React.Component {
                                             })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
                                         }
                                     </FormItem>
-                                    &nbsp;元，赠送以下礼品
+                                    &nbsp;{k5ezdbiy}，{SALE_LABEL.k6d8n16k}
                                 </div>
-                        
-                    
+
+
                         <ReturnGift
                             key={`${index}`}
                             weChatCouponList={this.state.weChatCouponList}
@@ -486,31 +491,31 @@ class ReturnGiftDetailInfo extends React.Component {
                                     }
                                     {
                                         (arr.length > 1) && (
-                                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeStage(index)}>
+                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
                                                 <Icon
                                                     className={selfStyle.deleteIcon}
                                                     type="minus-circle-o"
                                                 />
                                             </Popconfirm>
                                         )
-                                    } 
-                                </div> 
+                                    }
+                                </div>
                             )
-                        }                  
+                        }
                     </Col>
                 </Row>
-                
+
             ))
-            
+
         )
     }
 
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

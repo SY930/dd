@@ -5,6 +5,9 @@ import registerPage from '../../../index';
 import {FANS_INTERACTIVITY_PROMOTION_TYPES} from "../../constants/promotionType";
 import {FANS_INTERACTIVITY} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const limitedTypes = [
     '77',
@@ -12,7 +15,7 @@ const limitedTypes = [
 @registerPage([FANS_INTERACTIVITY], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
-
+@injectIntl()
 class NewCustomerPage extends Component {
 
     state = {
@@ -45,9 +48,11 @@ class NewCustomerPage extends Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
         return (
             <BasePage
-                categoryTitle="粉丝互动"
+                categoryTitle={k6316hd0}
                 promotions={
                     FANS_INTERACTIVITY_PROMOTION_TYPES.filter(item => this.promotionFilter(item.key))
                 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip, span } from 'antd';
 import Moment from 'moment';
+import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import GiftCfg from '../../../constants/Gift';
 import { PWDSafe } from './QuatoCardDetailModalTabs';
@@ -11,7 +12,7 @@ function mapValueToLabel(cfg, val) {
 }
 const CARD_SUM_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'rowNum',
         key: 'rowNum',
         className: 'TableTxtCenter',
@@ -45,7 +46,7 @@ const CARD_SUM_COLUMNS = [
         width: 110,
         render: (value, record) => <PWDSafe key={`${record.cardNO}`} value={value} />,
     }, {
-        title: '状态',
+        title: COMMON_LABEL.status,
         dataIndex: 'giftStatus',
         key: 'giftStatus',
         width: 70,

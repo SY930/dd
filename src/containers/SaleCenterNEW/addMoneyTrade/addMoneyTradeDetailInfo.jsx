@@ -39,7 +39,11 @@ import {
 import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
 import AddMoneyTradeDishesTableWithBrand from './AddMoneyTradeDishesTableWithBrand'
 import AddMoneyTradeDishesTableWithoutBrand from './AddMoneyTradeDishesTableWithoutBrand'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class AddfreeAmountTradeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -123,18 +127,18 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageCountFlag = false;
         }
         if (dishes.length === 0) {
-            message.warning('至少要设置一份活动菜品')
+            message.warning(SALE_LABEL.k5kqf033)
             return false;
         }
         if (this.canLimitBeSet() && isLimited == '1' && !(totalFoodMax > 0 && totalFoodMax <= dishes.length)) {
             return false;
         }
         if (dishes.some(dish => !(dish.payPrice > 0))) {
-            message.warning('活动价必须大于0')
+            message.warning(SALE_LABEL.k5kqf0bf)
             return false;
         }
         if (dishes.some(dish => +dish.payPrice > +dish.price)) {
-            message.warning('活动价不能超过售价')
+            message.warning(SALE_LABEL.k5kqf0jr)
             return false;
         }
         this.setState({ stageAmountFlag, stageCountFlag });
@@ -232,7 +236,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             <div style={{ position: 'relative' }}>
                 { !this.canLimitBeSet() && (
                     <div style={{ position: 'absolute', top: 12, left: 60 }}>
-                        （以下活动菜品用户可任选其一参与换购）
+    （{SALE_LABEL.k5kqf0s3}）
                     </div>
                 )}
                 {
@@ -252,7 +256,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         />
                     )
                 }
-            </div>    
+            </div>
         )
     }
     // 换购菜品onchange
@@ -269,9 +273,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -298,13 +302,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         } = this.state;
         if (!(totalFoodMax > 0)) {
             return {
-                msg: '必须大于0',
+                msg: SALE_LABEL.k5f4b1b9,
                 status: 'error'
             }
         }
         if (totalFoodMax > dishes.length) {
             return {
-                msg: '限制份数不能超过活动菜品数',
+                msg: SALE_LABEL.k5kqf10f,
                 status: 'error'
             }
         }
@@ -313,7 +317,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             status: 'success'
         }
     }
-    renderTotalFoodMax() {
+    renderTotalFoodMax = () => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5koakb3 = intl.formatMessage(SALE_STRING.k5koakb3);
+        const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
         const {
             msg,
             status,
@@ -321,7 +329,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         return (
             <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
                 <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                    每单换购数量
+                    {SALE_LABEL.k5kqf18r}
                 </div>
                 <div style={{width: '300px'}}>
                     <Row>
@@ -330,8 +338,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                     value={String(this.state.isLimited)}
                                     getPopupContainer={(node) => node.parentNode}
                             >
-                                <Option key="0" value={'0'}>不限制</Option>
-                                <Option key="1" value={'1'}>限制</Option>
+    <Option key="0" value={'0'}>{k5koakb3}</Option>
+        <Option key="1" value={'1'}>{k5kp4vhr}</Option>
                             </Select>
                         </Col>
                         {
@@ -343,7 +351,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         help={msg}
                                     >
                                         <PriceInput
-                                            addonAfter={'份'}
+                                            addonAfter={k5ez4qy4}
                                             maxNum={5}
                                             value={{ number: this.state.totalFoodMax }}
                                             onChange={this.handleTotalFoodMaxChange}
@@ -359,22 +367,37 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k5koakjf = intl.formatMessage(SALE_STRING.k5koakjf);
+        const k5koakrr = intl.formatMessage(SALE_STRING.k5koakrr);
+
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pdf = intl.formatMessage(SALE_STRING.k5ez4pdf);
+        const k5koalgr = intl.formatMessage(SALE_STRING.k5koalgr);
+        const k5kqf1xr = intl.formatMessage(SALE_STRING.k5kqf1xr);
+
+        const k5kqf2ef = intl.formatMessage(SALE_STRING.k5kqf2ef);
+        const k5kqf2mr = intl.formatMessage(SALE_STRING.k5kqf2mr);
+        const k5kqf2v3 = intl.formatMessage(SALE_STRING.k5kqf2v3);
+        const k5kqf33f = intl.formatMessage(SALE_STRING.k5kqf33f);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         return (
             <div id="_addMoneyTradeDetail">
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <FormItem
-                        label="活动方式"
+                        label={SALE_LABEL.k5ez4n7x}
                         required={true}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
                         <p>
-                            任意或指定消费满一定金额或数量后，再加价一定金额即可换购指定菜品
+                            {SALE_LABEL.k5kqf1h3}
                         </p>
                         <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
-                            <Radio key={'2'} value={2}>{'按金额'}</Radio>
-                            <Radio key={'1'} value={1}>{'按数量'}</Radio>
+                            <Radio key={'2'} value={2}>{k5koakjf}</Radio>
+                            <Radio key={'1'} value={1}>{k5koakrr}</Radio>
                         </RadioGroup>
                     </FormItem>
                     {this.state.stageType == 2 ?
@@ -382,7 +405,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         className={[styles.FormItemStyle, styles.explainBack].join(' ')}
                         wrapperCol={{ span: 17, offset: 4 }}
                         validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
-                        help={this.state.stageAmountFlag ? null : '请输入消费金额'}
+                        help={this.state.stageAmountFlag ? null : SALE_LABEL.k5kqf1pf}
                     >
                         <PriceInput
                             addonBefore={
@@ -391,13 +414,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         value={this.state.ruleType}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
-                                    <Option key="0" value="0">任意消费满</Option>
-                                    <Option key="2" value="2">任意消费每满</Option>
-                                    <Option key="1" value="1">活动菜品消费满</Option>
-                                    <Option key="3" value="3">活动菜品消费每满</Option>
+                            <Option key="0" value="0">{k5ez4ovx}</Option>
+                            <Option key="2" value="2">{k5ez4pdf}</Option>
+                            <Option key="1" value="1">{k5koalgr}</Option>
+                            <Option key="3" value="3">{k5kqf1xr}</Option>
                                 </Select>
                             }
-                            addonAfter={'元'}
+                            addonAfter={k5ezdbiy}
                             value={{ number: this.state.stageAmount }}
                             defaultValue={{ number: this.state.stageAmount }}
                             onChange={this.onStageAmountChange}
@@ -408,7 +431,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         className={[styles.FormItemStyle, styles.explainBack].join(' ')}
                         wrapperCol={{ span: 17, offset: 4 }}
                         validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
-                        help={this.state.stageCountFlag ? null : '请输入菜品数量'}>
+                        help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
                         <PriceInput
                             addonBefore={
                                 <Select size="default"
@@ -416,13 +439,13 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         value={this.state.ruleType}
                                         getPopupContainer={(node) => node.parentNode}
                                 >
-                                    <Option key="0" value="0">任意菜品数量满</Option>
-                                    <Option key="2" value="2">任意菜品数量每满</Option>
-                                    <Option key="1" value="1">活动菜品数量满</Option>
-                                    <Option key="3" value="3">活动菜品数量每满</Option>
+                            <Option key="0" value="0">{k5kqf2ef}</Option>
+                            <Option key="2" value="2">{k5kqf2mr}</Option>
+                            <Option key="1" value="1">{k5kqf2v3}</Option>
+                            <Option key="3" value="3">{k5kqf33f}</Option>
                                 </Select>
                             }
-                            addonAfter={'份'}
+                            addonAfter={k5ez4qy4}
                             value={{ number: this.state.stageCount }}
                             defaultValue={{ number: this.state.stageCount }}
                             onChange={this.onStageCountChange}

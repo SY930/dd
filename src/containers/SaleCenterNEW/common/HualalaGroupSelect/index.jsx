@@ -11,16 +11,19 @@
 import { Checkbox, Col } from 'antd';
 import React from 'react';
 import styles from './treeSelect.less';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../../IntlDecor';
 
 const CheckboxGroup = Checkbox.Group;
-
+@injectIntl()
 class HualalaGroupSelectS extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             options: [],
-            title: '全选',
+            title: SALE_LABEL.k5m3ombk,
 
             checkAll: false,
             selected: [],
@@ -67,6 +70,8 @@ class HualalaGroupSelectS extends React.Component {
     }
 
     componentDidMount() {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         if (this.props.options instanceof Array) {
             const options = this.props.options;
             this.setState({
@@ -74,7 +79,7 @@ class HualalaGroupSelectS extends React.Component {
                     return {
                         key: item[this.props.labelKey],
                         // label: item[this.props.labelKey] || `${item[this.props.labelKey]}+${item.unit}`,
-                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) (售价：${item.prePrice==-1?item.price:item.prePrice}元)`,
+                        label: item[this.props.labelKey] || `${item.foodName}  (${item.unit}) (${SALE_LABEL.k5kqz2fl}：${item.prePrice==-1?item.price:item.prePrice}${k5ezdbiy})`,
                         value: item[this.props.valueKey],
                     }
                 }),
@@ -86,6 +91,8 @@ class HualalaGroupSelectS extends React.Component {
     checkAll: false
      */
     componentWillReceiveProps(nextProps) {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         if (this.props !== nextProps) {
             const arr = nextProps.foodSelections.map((food) => {
                 // return food[nextProps.optionKey || 'itemID']
@@ -95,7 +102,7 @@ class HualalaGroupSelectS extends React.Component {
                 options: nextProps.options.map((item, index) => {
                     return {
                         key: `${index}`,
-                        label: item[nextProps.labelKey] || `${item.foodName}  (${item.unit}) (售价：${item.prePrice==-1?item.price:item.prePrice}元)`,
+                        label: item[nextProps.labelKey] || `${item.foodName}  (${item.unit}) (${SALE_LABEL.k5kqz2fl}：${item.prePrice==-1?item.price:item.prePrice}${k5ezdbiy})`,
                         value: item[nextProps.valueKey],
                         disabled: this.props.isRecommendFood ?
                             (arr.length > 0 ? (!arr.includes(item[nextProps.valueKey])) : false) :
