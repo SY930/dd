@@ -27,17 +27,14 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
 
-
-const unitTypeType = [
-    { value: '1', name: '元' },
-    { value: '10', name: '角' },
-    { value: '100', name: '分' },
-];
 const RadioGroup = Radio.Group;
 
+@injectIntl()
 class RandomCutDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -129,7 +126,7 @@ class RandomCutDetailInfo extends React.Component {
             billRuleValidation = billRule.reduce((p, c) => {
                 if (c.start === null || c.end === null || c.start === '' || c.end === '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
                     c.validationStatus = 'error';
-                    c.helpMsg = '请输入正确金额范围';
+                    c.helpMsg = SALE_LABEL.k67g8jka;
                 }
                 return p && c.validationStatus === 'success';
             }, true);
@@ -143,7 +140,7 @@ class RandomCutDetailInfo extends React.Component {
             priceRuleValidation = priceRule.reduce((p, c) => {
                 if (c.start === null || c.end === null || c.start === '' || c.end === '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
                     c.validationStatus = 'error';
-                    c.helpMsg = '请输入正确比例范围';
+                    c.helpMsg = SALE_LABEL.k67g8jka;
                 }
                 return p && c.validationStatus === 'success';
             }, true);
@@ -204,17 +201,28 @@ class RandomCutDetailInfo extends React.Component {
         }
         this.setState({ ruleType, priceRule, billRule });
     }
-    renderPromotionRule() {
+    renderPromotionRule = () => {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k67g8l6n = intl.formatMessage(SALE_STRING.k67g8l6n);
+        const k67g8lez = intl.formatMessage(SALE_STRING.k67g8lez);
+        const k67g8lnb = intl.formatMessage(SALE_STRING.k67g8lnb);
+        const unitTypeType = [
+            { value: '1', name: k5ezdbiy },
+            { value: '10', name: k67g8lez },
+            { value: '100', name: k67g8lnb },
+        ];
+
         const randomType = [
             {
                 value: '0',
-                name: '按金额随机减',
+                name: SALE_LABEL.k67g8jsm,
                 content: (
                     <div className={styles.radioChild}>
                         <FormItem className={[styles.FormItemStyle, styles.priceInput].join(' ')} wrapperCol={{ span: 21 }}>
                             <PriceInput
-                                addonBefore={'消费满'}
-                                addonAfter={'元'}
+                                addonBefore={SALE_LABEL.k5nh214x}
+                                addonAfter={k5ezdbiy}
                                 onChange={this.onPriceInputChange}
                                 value={{ number: this.state.priceValue }}
                                 defaultValue={{ number: this.state.priceValue }}
@@ -222,9 +230,9 @@ class RandomCutDetailInfo extends React.Component {
                             />
                         </FormItem>
 
-                        {this.renderRulesComponent('priceRule', '至', '减免范围', '元', '元')}
+                        {this.renderRulesComponent('priceRule', k67g8l6n, SALE_LABEL.k67g8k9b, k5ezdbiy, k5ezdbiy)}
 
-                        <FormItem label="最小单位" className={[styles.FormItemStyle, styles.unitType].join(' ')} labelCol={{ span: 4 }} wrapperCol={{ offset: 1, span: 18 }}>
+                        <FormItem label={SALE_LABEL.k67g8khn} className={[styles.FormItemStyle, styles.unitType].join(' ')} labelCol={{ span: 4 }} wrapperCol={{ offset: 1, span: 18 }}>
                             <RadioGroup
                                 value={this.state.unitType}
                                 onChange={(e) => {
@@ -252,19 +260,19 @@ class RandomCutDetailInfo extends React.Component {
             },
             {
                 value: '1',
-                name: '按账单金额比例随机折扣',
+                name: SALE_LABEL.k67g8k0y,
                 content: (
                     <div className={styles.radioChild}>
                         <FormItem className={[styles.FormItemStyle, styles.priceInput].join(' ')} wrapperCol={{ span: 21 }}>
                             <PriceInput
-                                addonBefore={'消费满'}
-                                addonAfter={'元'}
+                                addonBefore={SALE_LABEL.k5nh214x}
+                                addonAfter={k5ezdbiy}
                                 onChange={this.onBillInputChange}
                                 value={{ number: this.state.billValue }}
                                 modal="float"
                             />
                         </FormItem>
-                        {this.renderRulesComponent('billRule', '至', '比例范围', '%', '%')}
+                        {this.renderRulesComponent('billRule', k67g8l6n, SALE_LABEL.k67g8kpz, '%', '%')}
 
                     </div>
                 ),
@@ -272,7 +280,7 @@ class RandomCutDetailInfo extends React.Component {
         ];
         return (
             <div className={styles.randomRule}>
-                <FormItem label="随机类型" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem label={SALE_LABEL.k67g8kyb} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup
                         value={this.state.ruleType}
                         onChange={this.onRuleTypeChange}
@@ -314,7 +322,7 @@ class RandomCutDetailInfo extends React.Component {
             _helpMsg = null
         } else {
             _validationStatus = 'error';
-            _helpMsg = '请输入正确范围'
+            _helpMsg = SALE_LABEL.k67g8jka
         }
 
         _tmp[index] = {
@@ -371,9 +379,9 @@ class RandomCutDetailInfo extends React.Component {
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

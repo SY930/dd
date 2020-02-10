@@ -77,7 +77,7 @@ export default class ShareRules extends Component {
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {`${COMMON_LABEL.delete}【${SALE_LABEL.k636qw6a}${index + 1}】`}
+                        {COMMON_LABEL.delete}【{SALE_LABEL.k636qw6a} {index + 1}】
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>
@@ -285,8 +285,11 @@ export default class ShareRules extends Component {
     }
     getCreateBy = ({ shopID }) => {
         const { shops } = this.props;
-        const res = shops.find(item => item.get('shopID') == shopID)
-        return  `${SALE_LABEL.k639vfmm}${res ? res.get('shopName') : `${SALE_LABEL.k639vfuy}${shopID}`} ${COMMON_LABEL.create}`;
+        const res = shops.find(item => item.get('shopID') == shopID);
+        if(res){
+            return res.get('shopName');
+        }
+        return  <p>{SALE_LABEL.k639vfmm + SALE_LABEL.k639vfuy + shopID + COMMON_LABEL.create}</p>;
     }
     getItemTag = (item) => {
         const { intl } = this.props;
@@ -348,7 +351,7 @@ export default class ShareRules extends Component {
                             }
                             {
                                 filteredShareGroups.map((shareGroup, index) => {
-                                    return (
+                                    const a1 = <span>{SALE_LABEL.k639vfea} {SALE_LABEL.k639vexm}</span>;                                    return (
                                         <div
                                             key={`${index}`}
                                             className={style.shareGroupWrapper}
@@ -358,7 +361,7 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
-                                                    {`${SALE_LABEL.k636qw6a}${index + 1}`}
+                                                {SALE_LABEL.k636qw6a}{`${index + 1}`}
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
@@ -381,7 +384,7 @@ export default class ShareRules extends Component {
                                                             {COMMON_LABEL.edit}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`${SALE_LABEL.k639vegy}${this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : SALE_LABEL.k639vfea}${SALE_LABEL.k639vexm}`}>
+                                                        <Tooltip title={SALE_LABEL.k639vegy + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
                                                             <Button disabled type="ghost" style={{marginRight: 10}}>
                                                                 <Icon type="edit"/>
                                                                 {COMMON_LABEL.edit}
@@ -396,7 +399,7 @@ export default class ShareRules extends Component {
                                                             {COMMON_LABEL.delete}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`${SALE_LABEL.k639vepa}${this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : SALE_LABEL.k639vfea}}${SALE_LABEL.k639vexm}`}>
+                                                        <Tooltip title={SALE_LABEL.k639vepa + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
                                                             <Button disabled type="ghost">
                                                                 <Icon type="delete"/>
                                                                 {COMMON_LABEL.delete}
@@ -408,15 +411,16 @@ export default class ShareRules extends Component {
                                             <div className={style.shareGroupBody}>
                                                 {
                                                     (shareGroup.shareGroupDetailList || []).map(item => {
-                                                        return (
-                                                            <div className={style.shareGroupItem}>
+                                                        const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
+                                                       return (
+                                                            <div className={style.shareGroupItem} key={item.itemID}>
                                                                 <div className={style.typeTag}>
                                                             <span>
                                                                 {this.getItemTag(item)}
                                                             </span>
                                                                 </div>
                                                                 <div className={style.itemTitle}>
-                                                                    {item.action !== 2 ? item.activityName : `${item.activityName}(${SALE_LABEL.k639ve8m})`}
+                                                                    {item.action !== 2 ? item.activityName : aa}
                                                                 </div>
                                                                 <div className={style.itemAction}>
                                                                     {

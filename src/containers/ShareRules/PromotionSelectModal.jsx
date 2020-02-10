@@ -58,7 +58,7 @@ class PromotionSelectModal extends Component {
         const allGiftsArray = allGiftList.toJS();
         const allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
             value: promotion.promotionIDStr,
-            label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+            label: <span>{BASIC_PROMOTION_MAP[promotion.promotionType]} - {promotion.promotionName}</span>,
             type: `${promotion.promotionType}`,
             activityType: '10',
             activitySource: '1'
@@ -70,7 +70,7 @@ class PromotionSelectModal extends Component {
             ...allPromotionArray,
             ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
                 value: item.giftItemID,
-                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
+                label: <span>{GIFT_MAP[item.giftType]} - {item.giftName}</span>,
                 type: `${item.giftType}`,
                 activityType: '30',
                 activitySource: '2'
@@ -143,10 +143,11 @@ class PromotionSelectModal extends Component {
         const k5m5aw4n = intl.formatMessage(SALE_STRING.k5m5aw4n);
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+        const bianji = <p>{COMMON_LABEL.edit} {SALE_LABEL.k636f2q3}</p>;
         return (
             <Modal
                 maskClosable={false}
-                title={`${this.props.isCreate ? COMMON_LABEL.create : COMMON_LABEL.edit}${SALE_LABEL.k636f2q3}`}
+                title={this.props.isCreate ? COMMON_LABEL.create : bianji}
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>
