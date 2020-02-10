@@ -216,6 +216,8 @@ class MySpecialActivities extends React.Component {
                 { value: '67', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g21627)}` },
                 { value: '68', label: `${this.props.intl.formatMessage(STRING_SPE.de8h83kic51727)}` },
                 { value: '31', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8o5o6gt1820)}` },
+                { value: '75', label: '集点卡' },
+                { value: '77', label: '支付后广告' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
