@@ -279,14 +279,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             <FormItem className={styles.FormItemStyle}>
                 <Row>
                     <Col span={4}>
-                        <span className={[styles.gTitle, styles.fakeRequired].join(' ')}>活动菜品</span>
+        <span className={[styles.gTitle, styles.fakeRequired].join(' ')}>{SALE_LABEL.k6hhubf3}</span>
                     </Col>
                     <Col span={4} offset={16}>
                         <a
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            {SALE_STRING.k5gfsv5b}
+                            {SALE_LABEL.k5gfsv5b}
                         </a>
                     </Col>
                 </Row>
