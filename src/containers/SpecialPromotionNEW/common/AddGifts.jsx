@@ -176,7 +176,7 @@ class AddGifts extends React.Component {
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
                     (this.state.infos.length < 10 && type != '66' && type != '21') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
-                            + 添加礼品
+                            + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
                     )
                 }
