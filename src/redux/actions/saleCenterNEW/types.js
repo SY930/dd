@@ -28,7 +28,7 @@ export const CLIENT_CATEGORY_RETURN_GIFT = [
     { key: '1', value: '1', name: '全部会员' },
 ];
 export const CLIENT_CATEGORY_RETURN_POINT = [
-    { key: '1', value: '1', name: '全部会员' },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
 ];
 export const CLIENT_CATEGORY_ADD_UP = [
     { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
@@ -36,8 +36,8 @@ export const CLIENT_CATEGORY_ADD_UP = [
     // { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
 ];
 export const PAYMENTS_OPTIONS = Object.freeze([
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅实收' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu8n3 },
 ]);
 export const CYCLE_TYPE = Object.freeze([{
     value: '0',
@@ -55,25 +55,25 @@ export const CYCLE_TYPE = Object.freeze([{
 
 export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
     idx: 0,
-    name: '全部',
+    name: SALE_LABEL.k5eng042,
     key: '',
     value: '0',
 },
 {
     idx: 1,
-    name: '云店',
+    name: SALE_LABEL.k5krn6qx,
     key: 'POS',
     value: '1',
 },
 {
     idx: 2,
-    name: '微信',
+    name: SALE_LABEL.k5krn6z9,
     key: 'WECHAT',
     value: '2',
 },
     {
     idx: 3,
-    name: '饮食通',
+    name: SALE_LABEL.k5krn77l,
     key: 'YST',
     value: '3',
 },

@@ -254,7 +254,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { birthdayLimit } = this.props;
         return (
             <FormItem
-                label="其他限制"
+                label={SALE_LABEL.k6hhu8vf}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -266,7 +266,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             birthdayLimit: +e.target.checked,
                         })}
                     >
-                        仅限生日当天参与
+                        {SALE_LABEL.k6hhu93r}
                     </Checkbox>
                 </div>
             </FormItem>
