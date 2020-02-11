@@ -14,7 +14,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
-import { STRING_GIFT } from 'i18n/common/gift';
+import { STRING_GIFT, COMMON_SPE } from 'i18n/common/gift';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -233,7 +233,7 @@ class AddGifts extends React.Component {
                     </div>
                     {
                         (arr.length > 1 && this.props.type != '66') && (
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.remove(index)}>
+                            <Popconfirm title={this.props.intl.formatMessage(STRING_SPE.dd5a6d317718137)} onConfirm={() => this.remove(index)}>
                                 <Icon className={selfStyle.removeButton} type="close-circle" />
                             </Popconfirm>
                         )
