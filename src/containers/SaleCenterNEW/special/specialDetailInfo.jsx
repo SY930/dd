@@ -269,7 +269,7 @@ class SpecialDetailInfo extends React.Component {
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         {SALE_LABEL.k6hdpuq9}
                     </div>
-                    <div style={{width: '300px'}}>
+                    <div style={{width: '400px'}}>
                         <Col  span={this.state.isLimited == 0 ? 24 : 12}>
                             <Select onChange={this.handleIsLimitedChange}
                                     value={String(this.state.isLimited)}
@@ -303,7 +303,7 @@ class SpecialDetailInfo extends React.Component {
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         {SALE_LABEL.k6hdpvf9}
                     </div>
-                    <div style={{width: '300px'}}>
+                    <div style={{width: '400px'}}>
                         <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
                             <Select onChange={this.handleIsTotalLimitedChange}
                                     value={String(this.state.isTotalLimited)}
@@ -344,7 +344,7 @@ class SpecialDetailInfo extends React.Component {
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
                         {SALE_LABEL.k6hdpw49}
                     </div>
-                    <div style={{width: '300px'}}>
+                    <div style={{width: '400px'}}>
                         <Col  span={this.state.isCustomerUseCountLimited == 0 ? 24 : 12}>
                             <Select onChange={this.handleIsCustomUseCountLimitedChange}
                                     value={String(this.state.isCustomerUseCountLimited)}
