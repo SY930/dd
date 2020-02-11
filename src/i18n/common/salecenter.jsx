@@ -661,7 +661,25 @@ let COMMON_LABEL = defineMessages({
     k6hdpw49: {id: "Sale.k6hdpw49", defaultMessage: "每人每天限制"},
     k6hdpwcl: {id: "Sale.k6hdpwcl", defaultMessage: "选择菜品"},
     k6hdpwkx: {id: "Sale.k6hdpwkx", defaultMessage: "特价(元)"},
-    k6hdpwt9: {id: "Sale.k6hdpwt9", defaultMessage: "售价(元)"}
+    k6hdpwt9: {id: "Sale.k6hdpwt9", defaultMessage: "售价(元)"},
+    k6hhu86f: {id: "Sale.k6hhu86f", defaultMessage: "全部会员"},
+    k6hhu8er: {id: "Sale.k6hhu8er", defaultMessage: "仅本店入会的会员"},
+    // k6hhu8n3: {id: "Sale.k6hhu8n3", defaultMessage: ""},
+    // k6hhu8vf: {id: "Sale.k6hhu8vf", defaultMessage: ""},
+    // k6hhu93r: {id: "Sale.k6hhu93r", defaultMessage: ""},
+    // k6hhu9c3: {id: "Sale.k6hhu9c3", defaultMessage: ""},
+    // k6hhu9kf: {id: "Sale.k6hhu9kf", defaultMessage: ""},
+    // k6hhu9sr: {id: "Sale.k6hhu9sr", defaultMessage: ""},
+    // k6hhua13: {id: "Sale.k6hhua13", defaultMessage: ""},
+    // k6hhua9f: {id: "Sale.k6hhua9f", defaultMessage: ""},
+    // k6hhuahr: {id: "Sale.k6hhuahr", defaultMessage: ""},
+    // k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: ""},
+    // k6hhuayf: {id: "Sale.k6hhuayf", defaultMessage: ""},
+    // k6hhub6r: {id: "Sale.k6hhub6r", defaultMessage: ""},
+    // k6hhubf3: {id: "Sale.k6hhubf3", defaultMessage: ""},
+    // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},
+    // k6hhubvr: {id: "Sale.k6hhubvr", defaultMessage: ""},
+    // k6hhuc43: {id: "Sale.k6hhuc43", defaultMessage: ""}
 });
 
 for (const key in COMMON_LABEL) {
