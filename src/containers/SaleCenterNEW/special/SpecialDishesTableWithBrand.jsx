@@ -15,8 +15,9 @@ import {
 import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
-import { COMMON_LABEL } from 'i18n/common';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 const FormItem = Form.Item;
 
 const mapStateToProps = (state) => {
@@ -30,7 +31,7 @@ const mapStateToProps = (state) => {
         allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
     }
 }
-
+@injectIntl()
 class SpecialDishesTableWithBrand extends Component {
     constructor(props) {
         super(props);
@@ -165,6 +166,11 @@ class SpecialDishesTableWithBrand extends Component {
             selectorModalVisible,
             data,
         } = this.state;
+        const { intl } = this.props;
+        const k6hfzdh8 = intl.formatMessage(SALE_STRING.k6hfzdh8);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k6hfzdpl = intl.formatMessage(SALE_STRING.k6hfzdpl);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
         const resultTableColumns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -175,7 +181,7 @@ class SpecialDishesTableWithBrand extends Component {
                 render: (text) => `${text + 1}`,
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 50,
@@ -191,7 +197,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '品牌',
+                title: SALE_LABEL.k5dlpn4t,
                 dataIndex: 'brandName',
                 key: 'brandName',
                 width: 72,
@@ -201,7 +207,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '分类',
+                title: SALE_LABEL.k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 90,
@@ -211,7 +217,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '菜品',
+                title: SALE_LABEL.k5gfsuon,
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 90,
@@ -221,7 +227,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '单位',
+                title: SALE_LABEL.k5kqz279,
                 dataIndex: 'unit',
                 key: 'unit',
                 width: 50,
@@ -231,7 +237,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '特价(元)',
+                title: SALE_LABEL.k6hdpwkx,
                 width: 80,
                 dataIndex: 'newPrice',
                 key: 'newPrice',
@@ -242,7 +248,7 @@ class SpecialDishesTableWithBrand extends Component {
                             <PriceInputIcon
                                 type="text"
                                 modal="float"
-                                placeholder="空表示0"
+                                placeholder={k6hfzdh8}
                                 value={{ number: record.newPrice }}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
@@ -264,8 +270,8 @@ class SpecialDishesTableWithBrand extends Component {
                                 this.setState({ priceFilterType: v, data: newData })
                             }}
                         >
-                            <Select.Option key='price' value="price">售价</Select.Option>
-                            <Select.Option key='vipPrice' value="vipPrice">会员价</Select.Option>
+                            <Select.Option key='price' value="price">{SALE_LABEL.k5kqz2fl}</Select.Option>
+                        <Select.Option key='vipPrice' value="vipPrice">{SALE_LABEL.k5m4q0r2}</Select.Option>
                         </Select>
                     </div>
                 ),
@@ -274,19 +280,19 @@ class SpecialDishesTableWithBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: '售价(元)',
+                title: SALE_LABEL.k6hdpwt9,
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
             },
             {
-                title: '折扣',
+                title: SALE_LABEL.k5ezcu1b,
                 dataIndex: 'salePercent',
                 key: 'salePercent',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : '不打折'
+                    return Number(record.newPrice) <= 0 ? '0'+k5ezdc19 : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}${k5ezdc19}` : k6hfzdpl
                 },
             },
         ];
@@ -295,14 +301,14 @@ class SpecialDishesTableWithBrand extends Component {
             <FormItem className={styles.FormItemStyle}>
                 <Row>
                     <Col span={2}>
-                        <span className={styles.gTitle}>选择菜品</span>
+        <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
                     <Col span={4} offset={18}>
                         <a
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            批量添加菜品
+                            {SALE_LABEL.k5gfsv5b}{k5gfsuon}
                         </a>
                     </Col>
                 </Row>

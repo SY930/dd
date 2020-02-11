@@ -20,11 +20,14 @@ import style from './NDiscount.less';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 const InputGroup = Input.Group;
 const Option = Select.Option;
 
 const FormItem = Form.Item;
-
+@injectIntl()
 export class NDiscount extends React.Component {
     constructor(props) {
         super(props);
@@ -115,8 +118,14 @@ export class NDiscount extends React.Component {
 
     render() {
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { intl } = this.props;
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k6hdp5ib = intl.formatMessage(SALE_STRING.k6hdp5ib);
+        const k6hdp67b = intl.formatMessage(SALE_STRING.k6hdp67b);
+        const k6hdp6fn = intl.formatMessage(SALE_STRING.k6hdp6fn);
         const formItemLayout = {
-            label: '折扣设置',
+            label: SALE_LABEL.k6hdp59y,
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
         };
@@ -135,17 +144,17 @@ export class NDiscount extends React.Component {
                     required={true}
                     key={k}
                     validateStatus={this.state.data[k].validateFlag ? 'success' : 'error'}
-                    help={this.state.data[k].validateFlag ? null : '请输入正确的折扣率'}
+                    help={this.state.data[k].validateFlag ? null : k6hdp5ib}
                 >
                     {k === 0 && <PriceInput
                         addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange}>
-                            <Option value="2">第2份当前菜品打</Option>
-                            <Option value="1">第2份指定菜品打</Option>
+                            <Option value="2">{SALE_LABEL.k6hdp5qn}</Option>
+                            <Option value="1">{SALE_LABEL.k6hdp5yz}</Option>
                         </Select>}
-                        addonAfter={'折'}
+                        addonAfter={k5ezdc19}
                         modal="float"
                         discountMode={true}
-                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
+                        placeholder={k5ezdckg}
                         onChange={(value) => {
                             const { data } = this.state;
                             if (value.number == null || value.number == '' || value.number > 10) {
@@ -161,11 +170,11 @@ export class NDiscount extends React.Component {
                         value={{ number: this.state.data[k].value }}
                     />}
                     {k > 0 &&<PriceInput
-                        addonBefore={`第${k + 2}份当前菜品打`}
-                        addonAfter={'折'}
+                        addonBefore={`${k6hdp67b}${k + 2}${k6hdp6fn}`}
+                        addonAfter={k5ezdc19}
                         discountMode={true}
                         modal="float"
-                        placeholder="输入不大于10的数字(例如9.5折, 8折)"
+                        placeholder={k5ezdckg}
                         onChange={(value) => {
                             const { data } = this.state;
                             if (value.number == null || value.number == '' || value.number > 10) {
