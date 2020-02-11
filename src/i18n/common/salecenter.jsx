@@ -160,10 +160,14 @@ const SALE_STRING = {
     k6hfzdh8: {id: "Sale.k6hfzdh8", defaultMessage: "空表示0"},
     k6hfzdpl: {id: "Sale.k6hfzdpl", defaultMessage: "不打折"},
     k6hhua9f: {id: "Sale.k6hhua9f", defaultMessage: "请输入测试手机号，用于测试短信显示效果"},
+<<<<<<< HEAD
     k5m5auqn: {id: "Sale.k5m5auqn", defaultMessage: "营销活动共享"},
     k5m3opsk: {id: "Sale.k5m3opsk", defaultMessage: "活动执行角色"},
     k6hhuayf: {id: "Sale.k6hhuayf", defaultMessage: "按分类"},
     k6hhub6r: {id: "Sale.k6hhub6r", defaultMessage: "按菜品"},
+=======
+    k5eng39086: {id: 'Sale.k5eng39086', defaultMessage: '请选择店铺'},
+>>>>>>> 2d05371b27214c570c389e97452035fe58e32aeb
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
@@ -683,6 +687,7 @@ let COMMON_LABEL = defineMessages({
     k6hhua13: {id: "Sale.k6hhua13", defaultMessage: "测试发送"},
     k6hhuahr: {id: "Sale.k6hhuahr", defaultMessage: "仅会员"},
     k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: "非会员"},
+    k5eng39086: {id: 'Sale.k5eng39086', defaultMessage: '请选择店铺'},
 
     // k6hhubf3: {id: "Sale.k6hhubf3", defaultMessage: ""},
     // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},

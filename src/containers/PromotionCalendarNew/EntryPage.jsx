@@ -453,7 +453,6 @@ export default class EntryPage extends Component {
         } = this.state;
         const { intl } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
-
         const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
         const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
         const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
@@ -462,6 +461,7 @@ export default class EntryPage extends Component {
         const k5krn6qx = intl.formatMessage(SALE_STRING.k5krn6qx);
         const k5krn6z9 = intl.formatMessage(SALE_STRING.k5krn6z9);
         const k5krn77l = intl.formatMessage(SALE_STRING.k5krn77l);
+        const k5eng39086 = intl.formatMessage(SALE_STRING.k5eng39086);
 
         const SUPPORT_ORDER_TYPES = [
             {
@@ -501,7 +501,7 @@ export default class EntryPage extends Component {
         ];
         return (
             <div className={style.searchHeader}>
-    <h5>{SALE_LABEL.k6316ku0}</h5>
+                <h5>{SALE_LABEL.k6316ku0}</h5>
                 <MonthPicker
                     allowClear={false}
                     style={{ width: 160, margin: '0 20px' }}
@@ -515,6 +515,7 @@ export default class EntryPage extends Component {
                     <ShopSelector
                         size="small"
                         value={shopIDList}
+                        placeholder={k5eng39086}
                         onChange={
                             this.handleShopSelectorChange
                         }
