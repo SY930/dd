@@ -23,7 +23,7 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
-
+import { STRING_GIFT } from 'i18n/common/gift';
 
 
 const FormItem = Form.Item;
@@ -41,6 +41,7 @@ import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySp
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import _ from 'lodash';
 import { axiosData } from 'helpers/util';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const moment = require('moment');
 
@@ -343,7 +344,7 @@ class StepTwo extends React.Component {
         }
         return {
             status: 'error',
-            help: '请输入11位手机号',
+            help: this.props.intl.formatMessage(STRING_GIFT.doj6r3ijy267),
         };
     }
     handleSMSTest = () => {
@@ -451,7 +452,7 @@ class StepTwo extends React.Component {
                     }
                 />
                 <FormItem
-                    label="测试发送"
+                    label={SALE_LABEL.k6hhua13}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -462,7 +463,7 @@ class StepTwo extends React.Component {
                         <Col span={18}>
                             <Input
                                 value={this.state.testPhoneNumber}
-                                placeholder="请输入测试手机号，用于测试短信显示效果"
+                                placeholder={this.props.intl.formatMessage(SALE_STRING.k6hhua9f)}
                                 onChange={({ target: { value } }) => this.setState({ testPhoneNumber: value })}
                             />
                         </Col>
@@ -472,7 +473,7 @@ class StepTwo extends React.Component {
                                 style={{ lineHeight: '28px' }}
                                 onClick={this.handleSMSTest}
                             >
-                                测试发送
+                                {SALE_LABEL.k6hhua13}
                             </a>
                         </Col>
                     </Row>

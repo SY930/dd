@@ -159,6 +159,7 @@ const SALE_STRING = {
     k6hdpuyl: {id: "Sale.k6hdpuyl", defaultMessage: "不限份数享受特价"},
     k6hfzdh8: {id: "Sale.k6hfzdh8", defaultMessage: "空表示0"},
     k6hfzdpl: {id: "Sale.k6hfzdpl", defaultMessage: "不打折"},
+    k6hhua9f: {id: "Sale.k6hhua9f", defaultMessage: "请输入测试手机号，用于测试短信显示效果"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
@@ -675,8 +676,8 @@ let COMMON_LABEL = defineMessages({
     k6hhu9c3: {id: "Sale.k6hhu9c3", defaultMessage: "参与限制"},
     k6hhu9kf: {id: "Sale.k6hhu9kf", defaultMessage: "活动期间每人参与次数"},
     k6hhu9sr: {id: "Sale.k6hhu9sr", defaultMessage: "必须是大于0小于1000的整数"},
-    // k6hhua13: {id: "Sale.k6hhua13", defaultMessage: ""},
-    // k6hhua9f: {id: "Sale.k6hhua9f", defaultMessage: ""},
+    k6hhua13: {id: "Sale.k6hhua13", defaultMessage: "测试发送"},
+
     // k6hhuahr: {id: "Sale.k6hhuahr", defaultMessage: ""},
     // k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: ""},
     // k6hhuayf: {id: "Sale.k6hhuayf", defaultMessage: ""},
