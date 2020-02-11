@@ -224,6 +224,8 @@ class RecommendFoodDetailInfo extends React.Component {
         const k6hdp7cz = intl.formatMessage(SALE_STRING.k6hdp7cz);
         const k6hdp7lb = intl.formatMessage(SALE_STRING.k6hdp7lb);
         const k6hdp7tn = intl.formatMessage(SALE_STRING.k6hdp7tn);
+        const k6hdp74n = intl.formatMessage(SALE_STRING.k6hdp74n);
+
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -255,7 +257,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </div>
                                 <div className={selfStyle.blockHeader}>
                                     <FormItem
-                                        label={SALE_LABEL.k6hdp74n + `${index + 1}`}
+                                        label={k6hdp74n + `${index + 1}`}
                                         colon={false}
                                         required={true}
                                         labelCol={{ span: 3 }}

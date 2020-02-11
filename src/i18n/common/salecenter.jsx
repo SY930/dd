@@ -685,7 +685,6 @@ let COMMON_LABEL = defineMessages({
     k6hhuahr: {id: "Sale.k6hhuahr", defaultMessage: "仅会员"},
     k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: "非会员"},
     k5eng39086: {id: 'Sale.k5eng39086', defaultMessage: '请选择店铺'},
-
     // k6hhubf3: {id: "Sale.k6hhubf3", defaultMessage: ""},
     // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},
     // k6hhubvr: {id: "Sale.k6hhubvr", defaultMessage: ""},

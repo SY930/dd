@@ -35,29 +35,7 @@ const mapStateToProps = (state) => {
     }
 };
 
-const getDefaultStageData = () => {
-    return {
-        // foods存放购买菜品的foodInfo
-        foods: [
-            {
-                foodName: '',
-                unit: '份',
-            },
-        ],
-        foodsCountInfo: {}, // 购买菜品对应的count {[item.value]: countNum}
-        // free存放赠送菜品的foodInfo
-        free: [
-            {
-                foodName: '',
-                unit: '份',
-            },
-        ],
-        freeCountInfo: {}, // 赠送菜品对应的count {[item.value]: countNum}
-    };
-}
-const DEFAULT_DATA = [
-    getDefaultStageData(),
-];
+
 
 @injectIntl()
 class CollocationTableWithBrandID extends Component {
@@ -71,10 +49,34 @@ class CollocationTableWithBrandID extends Component {
             currentFoodValues: [],
             currentEditingIndex: 0,
             currentEditingType: 'foods',
-            data: JSON.parse(JSON.stringify(DEFAULT_DATA)),
+            data: JSON.parse(JSON.stringify(this.DEFAULT_DATA)),
         }
     }
-
+    getDefaultStageData = () => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        return {
+            // foods存放购买菜品的foodInfo
+            foods: [
+                {
+                    foodName: '',
+                    unit: k5ez4qy4,
+                },
+            ],
+            foodsCountInfo: {}, // 购买菜品对应的count {[item.value]: countNum}
+            // free存放赠送菜品的foodInfo
+            free: [
+                {
+                    foodName: '',
+                    unit: k5ez4qy4,
+                },
+            ],
+            freeCountInfo: {}, // 赠送菜品对应的count {[item.value]: countNum}
+        };
+    }
+    DEFAULT_DATA = [
+        this.getDefaultStageData(),
+    ];
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapPriceScopeLstToDataThenEmit()
@@ -88,7 +90,7 @@ class CollocationTableWithBrandID extends Component {
         }
         if (this.props.selectedBrands !== prevProps.selectedBrands) {
             if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
-                const data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                const data = JSON.parse(JSON.stringify(this.DEFAULT_DATA));
                 this.setState({data});
                 this.props.onChange(data);
             }
