@@ -89,7 +89,7 @@ export default class NewPromotion extends React.Component {
                     cb();
                 },
                 fail: (info) => {
-                    message.error(COMMON_SPE.d2c8akfh2o6216 + info);
+                message.error(<span>{COMMON_SPE.d2c8akfh2o6216} {info}</span>);
                     this.setState({
                         loading: false,
                     });
@@ -110,7 +110,7 @@ export default class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: (info) => {
-                    message.error(COMMON_SPE.de8fem99k0868+info);
+                    message.error(<span>{COMMON_SPE.de8fem99k0868} {info}</span>);
                     this.setState({
                         loading: false,
                     });
