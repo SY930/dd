@@ -50,9 +50,11 @@ class NewCustomerPage extends Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         return (
             <BasePage
-                categoryTitle="会员拉新"
+                categoryTitle={k6316hto}
                 promotions={
                     NEW_CUSTOMER_PROMOTION_TYPES
                     .filter(item => this.promotionFilter(item.key))

@@ -254,7 +254,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { birthdayLimit } = this.props;
         return (
             <FormItem
-                label="其他限制"
+                label={SALE_LABEL.k6hhu8vf}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -266,7 +266,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             birthdayLimit: +e.target.checked,
                         })}
                     >
-                        仅限生日当天参与
+                        {SALE_LABEL.k6hhu93r}
                     </Checkbox>
                 </div>
             </FormItem>
@@ -407,10 +407,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div style={{height: '40px', paddingLeft: 45, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '16px'}}>
-                        参与限制
+                        {SALE_LABEL.k6hhu9c3}
                     </div>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        活动期间每人参与次数
+                        {SALE_LABEL.k6hhu9kf}
                     </div>
                     <div style={{width: '300px'}}>
                         <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
@@ -418,8 +418,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     value={String(this.state.isTotalLimited)}
                                     getPopupContainer={(node) => node.parentNode}
                             >
-                                <Option key="0" value={'0'}>不限制</Option>
-                                <Option key="1" value={'1'}>限制</Option>
+                                <Option key="0" value={'0'}>{SALE_LABEL.k5dn26n4}</Option>
+                                <Option key="1" value={'1'}>{SALE_LABEL.k5kp4vhr}</Option>
                             </Select>
                         </Col>
                         <Col span={this.state.isTotalLimited == 0 ? 0 : 2}></Col>
@@ -429,10 +429,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     <FormItem
                                         style={{ marginTop: -6 }}
                                         validateStatus={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? 'success' : 'error'}
-                                        help={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : '必须是大于0小于1000的整数'}
+                                        help={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : SALE_LABEL.k6hhu9sr}
                                     >
                                         <PriceInput
-                                            addonAfter={'次'}
+                                            addonAfter={SALE_LABEL.k5kms0pc}
                                             maxNum={999}
                                             value={{ number: this.state.customerUseCountLimit }}
                                             onChange={this.handleCustomerUseCountLimitChange}

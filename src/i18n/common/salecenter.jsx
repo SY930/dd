@@ -183,6 +183,7 @@ let COMMON_LABEL = defineMessages({
     k5dmrraa: {id: 'Sale.k5dmrraa', defaultMessage: '创建时间/修改时间'},
     k5dmw1z4: {id: 'Sale.k5dmw1z4', defaultMessage: '出错了，请稍后再试'},
     k5dn26n4: {id: 'Sale.k5dn26n4', defaultMessage: '不限制'},
+    k5kp4vhr: {id: "Sale.k5kp4vhr", defaultMessage: "限制"},
     k5dnw1q3: {id: 'Sale.k5dnw1q3', defaultMessage: '您确定要删除吗'},
     k5do4z54: {id: 'Sale.k5do4z54', defaultMessage: '删除数据是不可恢复操作, 请慎重考虑'},
     k5do0ps6: {id: 'Sale.k5do0ps6', defaultMessage: '执行成功'},
@@ -661,7 +662,29 @@ let COMMON_LABEL = defineMessages({
     k6hdpw49: {id: "Sale.k6hdpw49", defaultMessage: "每人每天限制"},
     k6hdpwcl: {id: "Sale.k6hdpwcl", defaultMessage: "选择菜品"},
     k6hdpwkx: {id: "Sale.k6hdpwkx", defaultMessage: "特价(元)"},
-    k6hdpwt9: {id: "Sale.k6hdpwt9", defaultMessage: "售价(元)"}
+    k6hdpwt9: {id: "Sale.k6hdpwt9", defaultMessage: "售价(元)"},
+    k6hhu86f: {id: "Sale.k6hhu86f", defaultMessage: "全部会员"},
+    k6hhu8er: {id: "Sale.k6hhu8er", defaultMessage: "仅本店入会的会员"},
+    k6hhu8n3: {id: "Sale.k6hhu8n3", defaultMessage: "仅实收"},
+    k6hhu8vf: {id: "Sale.k6hhu8vf", defaultMessage: "其他限制"},
+    k6hhu93r: {id: "Sale.k6hhu93r", defaultMessage: "仅限生日当天参与"},
+    k5eng042: {id: 'Sale.k5eng042', defaultMessage: '全部'},
+    k5krn6qx: {id: "Sale.k5krn6qx", defaultMessage: "云店"},
+    k5krn6z9: {id: "Sale.k5krn6z9", defaultMessage: "微信"},
+    k5krn77l: {id: "Sale.k5krn77l", defaultMessage: "饮食通"},
+    k6hhu9c3: {id: "Sale.k6hhu9c3", defaultMessage: "参与限制"},
+    k6hhu9kf: {id: "Sale.k6hhu9kf", defaultMessage: "活动期间每人参与次数"},
+    k6hhu9sr: {id: "Sale.k6hhu9sr", defaultMessage: "必须是大于0小于1000的整数"},
+    // k6hhua13: {id: "Sale.k6hhua13", defaultMessage: ""},
+    // k6hhua9f: {id: "Sale.k6hhua9f", defaultMessage: ""},
+    // k6hhuahr: {id: "Sale.k6hhuahr", defaultMessage: ""},
+    // k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: ""},
+    // k6hhuayf: {id: "Sale.k6hhuayf", defaultMessage: ""},
+    // k6hhub6r: {id: "Sale.k6hhub6r", defaultMessage: ""},
+    // k6hhubf3: {id: "Sale.k6hhubf3", defaultMessage: ""},
+    // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},
+    // k6hhubvr: {id: "Sale.k6hhubvr", defaultMessage: ""},
+    // k6hhuc43: {id: "Sale.k6hhuc43", defaultMessage: ""}
 });
 
 for (const key in COMMON_LABEL) {
