@@ -10,6 +10,7 @@
  */
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType'
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { COMMON_GIFT, } from 'i18n/common/gift';
 const Moment = require('moment');
 
 export const ACTIVITY_CYCLE_TYPE = Object.freeze({
@@ -157,103 +158,103 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
 ]);
 
 export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
-    label: '立即生效',
+    label: COMMON_GIFT.d1qc7cfgh16,
     value: '0',
 },
 {
-    label: '1小时生效',
+    label: <span>1{COMMON_GIFT.d7h90e123090127}</span>,
     value: '1',
 },
 {
-    label: '2小时生效',
+    label: <span>2{COMMON_GIFT.d7h90e123090127}</span>,
     value: '2',
 },
 {
-    label: '3小时生效',
+    label: <span>3{COMMON_GIFT.d7h90e123090127}</span>,
     value: '3',
 },
 {
-    label: '4小时生效',
+    label: <span>4{COMMON_GIFT.d7h90e123090127}</span>,
     value: '4',
 },
 {
-    label: '5小时生效',
+    label: <span>5{COMMON_GIFT.d7h90e123090127}</span>,
     value: '5',
 },
 {
-    label: '6小时生效',
+    label: <span>6{COMMON_GIFT.d7h90e123090127}</span>,
     value: '6',
 },
 {
-    label: '7小时生效',
+    label: <span>7{COMMON_GIFT.d7h90e123090127}</span>,
     value: '7',
 },
 {
-    label: '8小时生效',
+    label: <span>8{COMMON_GIFT.d7h90e123090127}</span>,
     value: '8',
 },
 {
-    label: '9小时生效',
+    label: <span>9{COMMON_GIFT.d7h90e123090127}</span>,
     value: '9',
 },
 {
-    label: '10小时生效',
+    label: <span>10{COMMON_GIFT.d7h90e123090127}</span>,
     value: '10',
 },
 {
-    label: '11小时生效',
+    label: <span>11{COMMON_GIFT.d7h90e123090127}</span>,
     value: '11',
 },
 {
-    label: '12小时生效',
+    label: <span>12{COMMON_GIFT.d7h90e123090127}</span>,
     value: '12',
 },
 {
-    label: '13小时生效',
+    label: <span>13{COMMON_GIFT.d7h90e123090127}</span>,
     value: '13',
 },
 {
-    label: '14小时生效',
+    label: <span>14{COMMON_GIFT.d7h90e123090127}</span>,
     value: '14',
 },
 {
-    label: '15小时生效',
+    label: <span>15{COMMON_GIFT.d7h90e123090127}</span>,
     value: '15',
 },
 {
-    label: '16小时生效',
+    label: <span>16{COMMON_GIFT.d7h90e123090127}</span>,
     value: '16',
 },
 {
-    label: '17小时生效',
+    label: <span>17{COMMON_GIFT.d7h90e123090127}</span>,
     value: '17',
 },
 {
-    label: '18小时生效',
+    label: <span>18{COMMON_GIFT.d7h90e123090127}</span>,
     value: '18',
 },
 {
-    label: '19小时生效',
+    label: <span>19{COMMON_GIFT.d7h90e123090127}</span>,
     value: '19',
 },
 {
-    label: '20小时生效',
+    label: <span>20{COMMON_GIFT.d7h90e123090127}</span>,
     value: '20',
 },
 {
-    label: '21小时生效',
+    label: <span>21{COMMON_GIFT.d7h90e123090127}</span>,
     value: '21',
 },
 {
-    label: '22小时生效',
+    label: <span>22{COMMON_GIFT.d7h90e123090127}</span>,
     value: '22',
 },
 {
-    label: '23小时生效',
+    label: <span>23{COMMON_GIFT.d7h90e123090127}</span>,
     value: '23',
 },
 {
-    label: '24小时生效',
+    label: <span>24{COMMON_GIFT.d7h90e123090127}</span>,
     value: '24',
 },
 ]);
@@ -261,123 +262,123 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
 
 export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     {
-        label: '1天生效',
+        label: <span>1{COMMON_GIFT.d7h90e123090127}</span>,
         value: '1',
     },
     {
-        label: '2天生效',
+        label: <span>2{COMMON_GIFT.d7h90e123090127}</span>,
         value: '2',
     },
     {
-        label: '3天生效',
+        label: <span>3{COMMON_GIFT.d7h90e123090127}</span>,
         value: '3',
     },
     {
-        label: '4天生效',
+        label: <span>4{COMMON_GIFT.d7h90e123090127}</span>,
         value: '4',
     },
     {
-        label: '5天生效',
+        label: <span>5{COMMON_GIFT.d7h90e123090127}</span>,
         value: '5',
     },
     {
-        label: '6天生效',
+        label: <span>6{COMMON_GIFT.d7h90e123090127}</span>,
         value: '6',
     },
     {
-        label: '7天生效',
+        label: <span>7{COMMON_GIFT.d7h90e123090127}</span>,
         value: '7',
     },
     {
-        label: '8天生效',
+        label: <span>8{COMMON_GIFT.d7h90e123090127}</span>,
         value: '8',
     },
     {
-        label: '9天生效',
+        label: <span>9{COMMON_GIFT.d7h90e123090127}</span>,
         value: '9',
     },
     {
-        label: '10天生效',
+        label: <span>10{COMMON_GIFT.d7h90e123090127}</span>,
         value: '10',
     },
     {
-        label: '11天生效',
+        label: <span>11{COMMON_GIFT.d7h90e123090127}</span>,
         value: '11',
     },
     {
-        label: '12天生效',
+        label: <span>12{COMMON_GIFT.d7h90e123090127}</span>,
         value: '12',
     },
     {
-        label: '13天生效',
+        label: <span>13{COMMON_GIFT.d7h90e123090127}</span>,
         value: '13',
     },
     {
-        label: '14天生效',
+        label: <span>14{COMMON_GIFT.d7h90e123090127}</span>,
         value: '14',
     },
     {
-        label: '15天生效',
+        label: <span>15{COMMON_GIFT.d7h90e123090127}</span>,
         value: '15',
     },
     {
-        label: '16天生效',
+        label: <span>16{COMMON_GIFT.d7h90e123090127}</span>,
         value: '16',
     },
     {
-        label: '17天生效',
+        label: <span>17{COMMON_GIFT.d7h90e123090127}</span>,
         value: '17',
     },
     {
-        label: '18天生效',
+        label: <span>18{COMMON_GIFT.d7h90e123090127}</span>,
         value: '18',
     },
     {
-        label: '19天生效',
+        label: <span>19{COMMON_GIFT.d7h90e123090127}</span>,
         value: '19',
     },
     {
-        label: '20天生效',
+        label: <span>20{COMMON_GIFT.d7h90e123090127}</span>,
         value: '20',
     },
     {
-        label: '21天生效',
+        label: <span>21{COMMON_GIFT.d7h90e123090127}</span>,
         value: '21',
     },
     {
-        label: '22天生效',
+        label: <span>22{COMMON_GIFT.d7h90e123090127}</span>,
         value: '22',
     },
     {
-        label: '23天生效',
+        label: <span>23{COMMON_GIFT.d7h90e123090127}</span>,
         value: '23',
     },
     {
-        label: '24天生效',
+        label: <span>24{COMMON_GIFT.d7h90e123090127}</span>,
         value: '24',
     },
     {
-        label: '25天生效',
+        label: <span>25{COMMON_GIFT.d7h90e123090127}</span>,
         value: '25',
     },
     {
-        label: '26天生效',
+        label: <span>26{COMMON_GIFT.d7h90e123090127}</span>,
         value: '26',
     },
     {
-        label: '27天生效',
+        label: <span>27{COMMON_GIFT.d7h90e123090127}</span>,
         value: '27',
     },
     {
-        label: '28天生效',
+        label: <span>28{COMMON_GIFT.d7h90e123090127}</span>,
         value: '28',
     },
     {
-        label: '29天生效',
+        label: <span>29{COMMON_GIFT.d7h90e123090127}</span>,
         value: '29',
     },
     {
-        label: '30天生效',
+        label: <span>30{COMMON_GIFT.d7h90e123090127}</span>,
         value: '30',
     },
 ]);
@@ -1095,10 +1096,10 @@ export const SEND_MSG = Object.freeze([{
 
 // 是否发信息
 export const NOTIFICATION_FLAG = Object.freeze([{
-    label: '不发送',
+    label: COMMON_GIFT.d1qcjcuhhg05,
     value: '0',
 }, {
-    label: '推送微信消息',
+    label: COMMON_GIFT.d1qeq24lqo035,
     value: '2',
 },
 ]);
