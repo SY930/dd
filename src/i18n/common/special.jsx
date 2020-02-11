@@ -465,6 +465,10 @@ let STRING_SPE = {
     d4h1eea89g21627: {id: "Sale.d4h1eea89g21627", defaultMessage: "桌边砍"},
     de8h83kic51727: {id: "Sale.de8h83kic51727", defaultMessage: "推荐有礼"},
     d2c8o5o6gt1820: {id: "Sale.d2c8o5o6gt1820", defaultMessage: "关注送礼"},
+    k6hk34239480: {id: "Sale.k6hk34239480", defaultMessage: "现金红包"},
+    k6hk34239sdgsfg: {id: "Sale.k6hk34239sdgsfg", defaultMessage: "红包金额"},
+    d31f9aj936d0165: {id: "Sale.d31f9aj936d0165", defaultMessage: "请选择现金红包"},
+    d16hljfel77133: {id: "Sale.d16hljfel77133", defaultMessage: "红包金额范围1-200元"},
     }
     let COMMON_SPE = defineMessages({
     d2c8987eai0135: {id: "Sale.d2c8987eai0135", defaultMessage: "基本信息"},
@@ -935,6 +939,10 @@ let STRING_SPE = {
     k6hk1aa1: {id: "Sale.k6hk1aa1", defaultMessage: "天，赠送以下礼品"},
     k6hk1aid: {id: "Sale.k6hk1aid", defaultMessage: "集满"},
     k6hk1aqp: {id: "Sale.k6hk1aqp", defaultMessage: "点，赠送以下礼品"},
+    k6hk34239480: {id: "Sale.k6hk34239480", defaultMessage: "现金红包"},
+    k6hk34239sdgsfg: {id: "Sale.k6hk34239sdgsfg", defaultMessage: "红包金额"},
+    d31f9aj936d0165: {id: "Sale.d31f9aj936d0165", defaultMessage: "请选择现金红包"},
+    d16hljfel77133: {id: "Sale.d16hljfel77133", defaultMessage: "红包金额范围1-200元"},
     });
 
     for (const key in COMMON_SPE) {
