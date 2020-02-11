@@ -15,10 +15,10 @@ export default class DecorationUploader extends Component {
     onUrlChange = (info) => {
         const { file: { status } } = info;
         if (status === 'done' && info.file.response && info.file.response.url) {
-            message.success(`${info.file.name} ${SALE_LABEL.k635s3w1}`);
+        message.success(<span>{info.file.name} {SALE_LABEL.k635s3w1}</span>);
             this.props.onChange(`http://res.hualala.com/${info.file.response.url}`)
         } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
-            message.error(`${info.file.name} ${SALE_LABEL.k635s44d}`);
+        message.error(<span>{info.file.name} {SALE_LABEL.k635s44d}</span>);
         }
     }
     beforeUpload = (file) => {
@@ -27,7 +27,7 @@ export default class DecorationUploader extends Component {
         if (limit) {
             isRightSize = file.size / 1024 <= limit;
             if (!isRightSize) {
-                message.error(`${SALE_LABEL.k6346ckg}${limit}KB`);
+            message.error(<span>{SALE_LABEL.k6346ckg} {limit}KB}</span>);
             }
         }
         return isRightSize;

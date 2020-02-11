@@ -45,7 +45,7 @@ class MessageDisplayBox extends React.Component {
                                     message.success(SALE_LABEL.k5do0ps6);
                                     this.props.getMessageTemplateList();
                                 })
-                                .catch(err => message.error(SALE_LABEL.k5doax7i`: ${err}`));
+                            .catch(err => message.error(<span>{SALE_LABEL.k5doax7i}: {err}</span>));
             },
             onCancel() {},
         });
