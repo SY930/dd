@@ -269,10 +269,10 @@ class SpecialDishesTableWithoutBrand extends Component {
         return (
             <FormItem className={styles.FormItemStyle}>
                 <Row>
-                    <Col span={2}>
+                    <Col span={5}>
                         <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
-                    <Col span={4} offset={18}>
+                    <Col span={9} offset={10}>
                         <a
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}

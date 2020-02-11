@@ -641,7 +641,7 @@ let STRING_GIFT = {
     d1dv5m19rk1533: {id: "Gift.Context.d1dv5m19rk1533", defaultMessage: "是否生成券码"},
     d1qeq24lqo035: {id: "Sale.d1qeq24lqo035", defaultMessage: "推送微信消息"},
     d7h90e123090127: {id: "Sale.d7h90e123090127", defaultMessage: "小时生效"},
-
+    d7h90e1230904678: {id: "Sale.d7h90e1230904678", defaultMessage: "天后生效"},
 }
 let COMMON_GIFT = defineMessages({
     giftTitle: {
@@ -1126,6 +1126,7 @@ let COMMON_GIFT = defineMessages({
     du2hknqma897: {id: "Gift.Context.du2hknqma897", defaultMessage: "发出时间"},
     d1qeq24lqo035: {id: "Sale.d1qeq24lqo035", defaultMessage: "推送微信消息"},
     d7h90e123090127: {id: "Sale.d7h90e123090127", defaultMessage: "小时生效"},
+    d7h90e1230904678: {id: "Sale.d7h90e1230904678", defaultMessage: "天后生效"},
 });
 
 for (const key in COMMON_GIFT) {

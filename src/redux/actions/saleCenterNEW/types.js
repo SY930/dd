@@ -9,7 +9,7 @@
  * @Copyright: Copyright(c) 2017-2020 Hualala Co.,Ltd.
  */
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType'
-import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { SALE_LABEL, SALE_STRING, } from 'i18n/common/salecenter';
 import { COMMON_GIFT, } from 'i18n/common/gift';
 const Moment = require('moment');
 
@@ -61,19 +61,19 @@ export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
 },
 {
     idx: 1,
-    name: '云店',
+    name: SALE_LABEL.k5krn6qx,
     key: 'POS',
     value: '1',
 },
 {
     idx: 2,
-    name: '微信',
+    name: SALE_LABEL.k5krn6z9,
     key: 'WECHAT',
     value: '2',
 },
     {
     idx: 3,
-    name: '饮食通',
+    name: SALE_LABEL.k5krn77l,
     key: 'YST',
     value: '3',
 },
@@ -262,123 +262,123 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
 
 export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     {
-        label: <span>1{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>1{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '1',
     },
     {
-        label: <span>2{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>2{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '2',
     },
     {
-        label: <span>3{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>3{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '3',
     },
     {
-        label: <span>4{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>4{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '4',
     },
     {
-        label: <span>5{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>5{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '5',
     },
     {
-        label: <span>6{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>6{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '6',
     },
     {
-        label: <span>7{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>7{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '7',
     },
     {
-        label: <span>8{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>8{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '8',
     },
     {
-        label: <span>9{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>9{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '9',
     },
     {
-        label: <span>10{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>10{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '10',
     },
     {
-        label: <span>11{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>11{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '11',
     },
     {
-        label: <span>12{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>12{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '12',
     },
     {
-        label: <span>13{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>13{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '13',
     },
     {
-        label: <span>14{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>14{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '14',
     },
     {
-        label: <span>15{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>15{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '15',
     },
     {
-        label: <span>16{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>16{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '16',
     },
     {
-        label: <span>17{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>17{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '17',
     },
     {
-        label: <span>18{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>18{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '18',
     },
     {
-        label: <span>19{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>19{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '19',
     },
     {
-        label: <span>20{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>20{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '20',
     },
     {
-        label: <span>21{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>21{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '21',
     },
     {
-        label: <span>22{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>22{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '22',
     },
     {
-        label: <span>23{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>23{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '23',
     },
     {
-        label: <span>24{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>24{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '24',
     },
     {
-        label: <span>25{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>25{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '25',
     },
     {
-        label: <span>26{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>26{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '26',
     },
     {
-        label: <span>27{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>27{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '27',
     },
     {
-        label: <span>28{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>28{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '28',
     },
     {
-        label: <span>29{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>29{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '29',
     },
     {
-        label: <span>30{COMMON_GIFT.d7h90e123090127}</span>,
+        label: <span>30{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '30',
     },
 ]);
