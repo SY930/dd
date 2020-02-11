@@ -165,6 +165,11 @@ const SALE_STRING = {
     k6hhuayf: {id: "Sale.k6hhuayf", defaultMessage: "按分类"},
     k6hhub6r: {id: "Sale.k6hhub6r", defaultMessage: "按菜品"},
     k5eng39086: {id: 'Sale.k5eng39086', defaultMessage: '请选择店铺'},
+    d16hlk3kccf0161: {id: "Sale.d16hlk3kccf0161", defaultMessage: "店铺分组"},
+    dok9lk8l8157: {id: "Sale.dok9lk8l8157", defaultMessage: "经营模式"},
+    dok9lk8l82132: {id: "Sale.dok9lk8l82132", defaultMessage: "城市"},
+    d5g4obe6e1346: {id: "Sale.d5g4obe6e1346", defaultMessage: "管理组织"},
+    d455j75nqf4152: {id: "Sale.d455j75nqf4152", defaultMessage: "店铺属性"}
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
@@ -686,6 +691,11 @@ let COMMON_LABEL = defineMessages({
     k6hhuaq3: {id: "Sale.k6hhuaq3", defaultMessage: "非会员"},
     k5eng39086: {id: 'Sale.k5eng39086', defaultMessage: '请选择店铺'},
     k6hhubf3: {id: "Sale.k6hhubf3", defaultMessage: "活动菜品"},
+    d16hlk3kccf0161: {id: "Sale.d16hlk3kccf0161", defaultMessage: "店铺分组"},
+    dok9lk8l8157: {id: "Sale.dok9lk8l8157", defaultMessage: "经营模式"},
+    dok9lk8l82132: {id: "Sale.dok9lk8l82132", defaultMessage: "城市"},
+    d5g4obe6e1346: {id: "Sale.d5g4obe6e1346", defaultMessage: "管理组织"},
+    d455j75nqf4152: {id: "Sale.d455j75nqf4152", defaultMessage: "店铺属性"}
     // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},
     // k6hhubvr: {id: "Sale.k6hhubvr", defaultMessage: ""},
     // k6hhuc43: {id: "Sale.k6hhuc43", defaultMessage: ""}
