@@ -367,7 +367,7 @@ export default class PrizeContent extends React.Component {
                                     checked={info.giveRedPacket.isOn}
                                     onChange={this.ChangeCheckBoxThree}
                                 />
-                                <span>现金红包</span>
+                                <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239480)}</span>
                                 {info.giveRedPacket.isOn ? 
                                     <div className={style.paleRed}>
                                         <FormItem
@@ -377,7 +377,7 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveRedPacket.redPacketID.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>现金红包</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239480)}</span>
                                             </div> 
                                             <Select
                                                 value={info.giveRedPacket.redPacketID.value}
@@ -399,10 +399,10 @@ export default class PrizeContent extends React.Component {
                                             help={info.giveRedPacket.redPacketValue.msg}
                                         > 
                                             <div className={style.labelSecondDiv}>
-                                                <span>红包金额</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239sdgsfg)}</span>
                                             </div> 
                                             <PriceInput
-                                                addonAfter="元"
+                                                addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
                                                 modal="float"
                                                 maxNum={3}
                                                 value={{ number: info.giveRedPacket.redPacketValue.value }}

@@ -316,7 +316,7 @@ class LotteryThirdStep extends React.Component {
             if(!(_infos[index].giveCoupon.value.isOn) && JSON.stringify(_infos[index].givePoints.value) == "{}"){
                 //优惠券为非选中状态
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d7elcdm04l714)}`;
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
                 _infos[index].giveCoupon.validateStatus = 'success';
@@ -377,7 +377,7 @@ class LotteryThirdStep extends React.Component {
             redPacketObj.msg = null;
         } else {
             redPacketObj.validateStatus = 'error';
-            redPacketObj.msg = '红包金额范围1-200元';
+            redPacketObj.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hljfel77133)}`;
         }
         this.setState({
             infos: this.state.infos.slice(),
@@ -406,7 +406,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveRedPacket.redPacketID.msg = null;
         } else {
             _infos[index].giveRedPacket.redPacketID.validateStatus = 'error';
-            _infos[index].giveRedPacket.redPacketID.msg = '请选择现金红包';
+            _infos[index].giveRedPacket.redPacketID.msg = `${this.props.intl.formatMessage(STRING_SPE.d31f9aj936d0165)}`;
         }
         this.setState({
             infos: _infos,
