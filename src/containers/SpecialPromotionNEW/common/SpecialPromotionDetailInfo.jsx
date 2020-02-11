@@ -37,8 +37,8 @@ import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { doRedirect } from '../../../../src/helpers/util';
 import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
-import { STRING_SPE } from 'i18n/common/special';
-
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 
 const moment = require('moment');
@@ -119,14 +119,14 @@ const MULTIPLE_LEVEL_GIFTS_CONFIG = [
     {
         type: '63',
         propertyName: 'lastConsumeIntervalDays',
-        levelLabel: '距上次消费天数',
-        levelAffix: '天，赠送以下礼品',
+        levelLabel: COMMON_SPE.d1e0750k82809,
+        levelAffix: COMMON_SPE.k6hk1aa1,
     },
     {
         type: '75',
         propertyName: 'needCount',
-        levelLabel: '集满',
-        levelAffix: '点，赠送以下礼品',
+        levelLabel: COMMON_SPE.k6hk1aid,
+        levelAffix: COMMON_SPE.k6hk1aqp,
     },
 ]
 
@@ -2064,7 +2064,7 @@ class SpecialDetailInfo extends Component {
                             <Row key={`${key}`}>
                                 <Col span={4}>
                                     <div className={selfStyle.fakeLabel}>
-                                        {`档位${index + 1}`}
+                                    {SALE_LABEL.k6d8n0y8}{`${index + 1}`}
                                     </div>
                                 </Col>
                                 <Col style={{ position: 'relative' }} span={17}>

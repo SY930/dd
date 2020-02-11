@@ -13,9 +13,8 @@ import {
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 import { injectIntl } from 'i18n/common/injectDecorator';
-import { STRING_SPE } from 'i18n/common/special';
-import { STRING_GIFT, COMMON_SPE } from 'i18n/common/gift';
-
+import { STRING_GIFT } from 'i18n/common/gift';
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -113,7 +112,7 @@ class AddGifts extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {        
+        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
             this.setState({
                 ...this.initGiftInfo(nextProps)
             });
@@ -229,7 +228,7 @@ class AddGifts extends React.Component {
             return (
                 <div key={`${index}`} className={selfStyle.giftWrapper}>
                     <div className={selfStyle.giftNoLabel}>
-                        {`礼品${index + 1}`}
+            {COMMON_SPE.du389nqve1491}{`${index + 1}`}
                     </div>
                     {
                         (arr.length > 1 && this.props.type != '66') && (

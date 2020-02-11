@@ -932,13 +932,16 @@ let STRING_SPE = {
     d4h1eea89g21627: {id: "Sale.d4h1eea89g21627", defaultMessage: "桌边砍"},
     de8h83kic51727: {id: "Sale.de8h83kic51727", defaultMessage: "推荐有礼"},
     d2c8o5o6gt1820: {id: "Sale.d2c8o5o6gt1820", defaultMessage: "关注送礼"},
+    k6hk1aa1: {id: "Sale.k6hk1aa1", defaultMessage: "天，赠送以下礼品"},
+    k6hk1aid: {id: "Sale.k6hk1aid", defaultMessage: "集满"},
+    k6hk1aqp: {id: "Sale.k6hk1aqp", defaultMessage: "点，赠送以下礼品"},
     });
-    
+
     for (const key in COMMON_SPE) {
         const val = COMMON_SPE[key];
         COMMON_SPE[key] = <FormattedMessage {...val} />;
     }
-    
+
 export {
     STRING_SPE,
     COMMON_SPE,

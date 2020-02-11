@@ -1078,19 +1078,19 @@ export const BUSINESS_MODEL = Object.freeze({
 
 // 是否发信息
 export const SEND_MSG = Object.freeze([{
-    label: '不发送',
+    label: COMMON_GIFT.d1qcjcuhhg05,
     value: '0',
 }, {
-    label: '仅发送短信',
+    label: COMMON_GIFT.d1qcjcuhhg143,
     value: '1',
 }, {
-    label: '仅推送微信',
+    label: COMMON_GIFT.d1duuh1lsu215,
     value: '2',
 }, {
-    label: '同时发送短信和微信',
+    label: COMMON_GIFT.d141vvwo7r310,
     value: '4',
 },{
-    label: '微信推送不成功则发送短信',
+    label: COMMON_GIFT.d1qcjcuhhg492,
     value: '3',
 },]);
 
