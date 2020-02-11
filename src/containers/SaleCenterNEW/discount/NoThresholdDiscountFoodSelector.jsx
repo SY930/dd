@@ -327,8 +327,8 @@ class NoThresholdDiscountFoodSelector extends Component {
     }
     renderPromotionRange = () => {
         const { intl } = this.props;
-        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
-        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k6hhuayf);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k6hhub6r);
         // 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
         const PROMOTION_OPTIONS = [
             {
@@ -507,7 +507,7 @@ class NoThresholdDiscountFoodSelector extends Component {
                 <FormItem className={styles.FormItemStyle}>
                     <Row>
                         <Col span={4}>
-                        <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>{k5gfsugb}</div>
+        <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}{k5gfsugb}</div>
                         </Col>
                         <Col span={4} offset={13}>
                             <a

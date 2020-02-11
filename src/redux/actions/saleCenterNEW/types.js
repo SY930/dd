@@ -19,9 +19,9 @@ export const ACTIVITY_CYCLE_TYPE = Object.freeze({
     MONTHLY: '2',
 });
 export const CLIENT_CATEGORY = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhuahr },
+    { key: '2', value: '2', name: SALE_LABEL.k6hhuaq3 },
 ];
 export const CLIENT_CATEGORY_RETURN_GIFT = [
     { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },

@@ -201,8 +201,8 @@ class CategoryAndFoodSelector extends Component {
     }
     renderPromotionRange = () => {
         const { intl } = this.props;
-        const k5gfsugb = intl.formatMessage(SALE_STRING.k5gfsugb);
-        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
+        const k5gfsugb = intl.formatMessage(SALE_STRING.k6hhuayf);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k6hhub6r);
         // 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
         const PROMOTION_OPTIONS = [
             {
