@@ -226,7 +226,7 @@ class AddGrade extends React.Component {
                     </div>
                     <div className={styles.CategoryBody}>
                         <Row>
-                            <Col span={18}>
+                            <Col span={16}>
                                 {
                                     this.props.ruleType != '0' ?
                                         <FormItem
@@ -248,7 +248,7 @@ class AddGrade extends React.Component {
                                         </FormItem> : null
                                 }
                             </Col>
-                            <Col span={this.props.ruleType == '0' ? 24 : 5} offset={this.props.ruleType == '0' ? 0 : 1}>
+                            <Col span={this.props.ruleType == '0' ? 24 : 7} offset={this.props.ruleType == '0' ? 0 : 1}>
                                 <FormItem
                                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                                     validateStatus={this.state.data[k].foodCountFlag ? 'success' : 'error'}
@@ -264,12 +264,11 @@ class AddGrade extends React.Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        <div >
+                        {/* <div >
                             <FormItem required={true}>
                             <span className={styles.spanText}>{SALE_LABEL.k5hly0bq}</span>
                             </FormItem>
-
-                        </div>
+                        </div> */}
                         <div >
                             <div className={styles.CategoryList} style={{ marginBottom: 0 }}>
                                 {this.renderDishsSelectionBox(k)}
