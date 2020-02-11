@@ -19,12 +19,15 @@ import {getMessageTemplateList} from "./actions";
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_CREATE} from "../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
-import { COMMON_LABEL } from 'i18n/common';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 @registerPage([SET_MSG_TEMPLATE], {
     messageTemplateState
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class MessageTemplatesPage extends React.Component {
     constructor(props) {
         super(props);
@@ -100,7 +103,7 @@ class MessageTemplatesPage extends React.Component {
                 <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
                     <div className={styles.headerWithBgColor}>
                         <span className={styles.customHeader}>
-                            短信模板
+                            {SALE_LABEL.k6d9ll1r}
                             <Authority rightCode={SMS_TEMPLATE_CREATE}>
                                 <Button
                                     type="ghost"
@@ -132,16 +135,16 @@ class MessageTemplatesPage extends React.Component {
                                                 display: 'inline-block',
                                                 marginLeft: '27px'
                                             }}>
-                                                您还没有短信模板 , 快去新建吧 ~
+                                                {SALE_LABEL.k6d9lla3}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 :
                                 <div style={{ padding: 30}}>
-                                    {!!pendingTemplates.length && <MessageGroup title="待审核" key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
-                                    {!!verifiedTemplates.length && <MessageGroup title="审核通过" key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
-                                    {!!illegalTemplates.length && <MessageGroup title="审核未通过" key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
+                                    {!!pendingTemplates.length && <MessageGroup title={SALE_LABEL.k6d9llif} key="待审核" messages={pendingTemplates} edit={this.editTemplate}/>}
+                                    {!!verifiedTemplates.length && <MessageGroup title={SALE_LABEL.k6d9llqr} key="审核通过" messages={verifiedTemplates} edit={this.editTemplate}/>}
+                                    {!!illegalTemplates.length && <MessageGroup title={SALE_LABEL.k6d9llz3} key="审核未通过" messages={illegalTemplates} edit={this.editTemplate}/>}
                                 </div>
                         }
                     </Spin>
@@ -172,7 +175,7 @@ class MessageGroup extends React.Component {
                     })}
                     {!messages.length &&
                         <div className={styles.emptyMessageGroup} style={{}}>
-                            {`您目前没有处于 ${title} 状态的短信模板`}
+                            {SALE_LABEL.k6d9lm7f} {title} {SALE_LABEL.k6d9lmfr}
                         </div>
                     }
                 </div>

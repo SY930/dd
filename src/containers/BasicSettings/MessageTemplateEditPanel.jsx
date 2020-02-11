@@ -1,6 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { COMMON_LABEL } from 'i18n/common'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import { isEqual } from 'lodash';
 import {
@@ -20,7 +22,7 @@ import {
 } from "./actions";
 import {isBrandOfHuaTianGroupList, SMS_EDIT_DISABLED_TIP} from "../../constants/projectHuatianConf";
 const FormItem = Form.Item;
-
+@injectIntl()
 class MessageTemplateEditPanel extends React.Component {
 
     constructor(props) {
@@ -78,11 +80,18 @@ class MessageTemplateEditPanel extends React.Component {
         });
         if (!flag) return;
         const { message } = this.state;
-        const strippedMessage = message.replace(/(\[会员姓名])|(\[先生\/女士])/g, '');
+        const { intl } = this.props;
+        const k6d9lmo3 = intl.formatMessage(SALE_STRING.k6d9lmo3);
+        const k6d9lmwf = intl.formatMessage(SALE_STRING.k6d9lmwf);
+        const k6d9ln4r = intl.formatMessage(SALE_STRING.k6d9ln4r);
+        const k6h90qcx = intl.formatMessage(SALE_STRING.k6h90qcx);
+        const myStr = '\\['+k6d9lmwf+'\\]\|\\['+k6d9ln4r+'\/'+k6h90qcx+'\\]';
+        var rex = new RegExp(myStr, 'g');
+        const strippedMessage = message.replace(rex, '');
         if (/[\[\]【】]/.test(strippedMessage)) { // 剔除模板字段(例如[会员姓名])后依然有"【】" "[]"符号, 不允许保存
             this.props.form.setFields({
                 message: {
-                    errors: [new Error('请不要输入"【】" "[]"符号, 或打乱模板字段结构')]
+                    errors: [new Error(k6d9lmo3)]
                 }
             });
         } else { // 验证通过
@@ -95,7 +104,7 @@ class MessageTemplateEditPanel extends React.Component {
                     groupName: this.props.user.accountInfo.groupName
                 })
                     .then(() => {
-                        messageService.success('修改成功');
+                        messageService.success(SALE_STRING.k5do0ps6);
                         this.props.getMessageTemplateList();
                         this.props.cancel && this.props.cancel();
                         this.setState({
@@ -111,7 +120,7 @@ class MessageTemplateEditPanel extends React.Component {
                     groupName: this.props.user.accountInfo.groupName
                 })
                     .then(() => {
-                        messageService.success('创建成功');
+                        messageService.success(SALE_STRING.k5do0ps6);
                         this.props.getMessageTemplateList();
                         this.props.cancel && this.props.cancel();
                         this.setState({
@@ -137,7 +146,9 @@ class MessageTemplateEditPanel extends React.Component {
 
     addMessageInfo(e) {
         let { message } = this.state;
+        console.dir(e.target);
         message += `[${e.target.textContent}]`;
+        console.log('message', message);
         this.props.form.setFieldsValue({
             message
         });
@@ -148,9 +159,10 @@ class MessageTemplateEditPanel extends React.Component {
     }
 
     render() {
+        const title = <span>{COMMON_LABEL.edit} {SALE_LABEL.k6d9ll1r}</span>
         return (
                 <Modal
-                    title="编辑短信模板"
+                    title={title}
                     visible={this.props.visible}
                     footer={
                         <div style={{textAlign: 'center'}}>
@@ -176,38 +188,48 @@ class MessageTemplateEditPanel extends React.Component {
     }
 
     renderModalBody() {
-        const previewMessage = this.state.message.replace(/(\[会员姓名])|(\[先生\/女士])/g, 'XX').concat('回复TD退订【互联网餐厅】');
+        const { intl } = this.props;
+        const k6d9lmwf = intl.formatMessage(SALE_STRING.k6d9lmwf);
+        const k6d9ln4r = intl.formatMessage(SALE_STRING.k6d9ln4r);
+        const k6h90qcx = intl.formatMessage(SALE_STRING.k6h90qcx);
+        const k6h90ql9 = intl.formatMessage(SALE_STRING.k6h90ql9);
+        const k6h90qtl = intl.formatMessage(SALE_STRING.k6h90qtl);
+        const k6h90t4x = intl.formatMessage(SALE_STRING.k6h90t4x);
+        const btnTxt = k6d9ln4r + '/' + k6h90qcx;
+        const myStr = '\\['+k6d9lmwf+'\\]\|\\['+k6d9ln4r+'\/'+k6h90qcx+'\\]';
+        var rex = new RegExp(myStr, 'g');
+        const previewMessage = this.state.message.replace(rex, 'XX').concat(k6h90t4x);
         return (
             <div>
                 <FormItem style={{padding: '0'}} label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
-                    <Button onClick={this.addMessageInfo}>会员姓名</Button>
-                    <Button onClick={this.addMessageInfo}>先生/女士</Button>
+                    <Button onClick={this.addMessageInfo}>{k6d9lmwf}</Button>
+                    <Button onClick={this.addMessageInfo}>{btnTxt}</Button>
                 </FormItem>
                 <Form>
                     <FormItem
-                        label="短信模板"
+                        label={SALE_LABEL.k6d9ll1r}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
                         {this.props.form.getFieldDecorator('message', {
                             rules: [
-                                { required: true, message: '请输入短信模板' },
-                                { max: 500, message: '最多500个字符' },
+                                { required: true, message: k6h90ql9 },
+                                { max: 500, message: k6h90qtl },
                             ],
                             initialValue: this.state.message,
                             onChange: this.handleMsgChange
                         })(
-                            <Input rows={8} type="textarea" placeholder="请输入短信模板" />
+                            <Input rows={8} type="textarea" placeholder={k6h90ql9} />
                         )}
 
                     </FormItem>
                 </Form>
                 <FormItem label="" className={styles.FormItemStyle} wrapperCol={{ span: 17, offset: 4 }} >
                     <p className={styles.smsRulesBox}>
-                        预计字数：{(this.state.message || '').length + 13}字,&nbsp;&nbsp;67字为一条，最多500字（含标点空格）
+                    {SALE_LABEL.k6h90r1x}：{(this.state.message || '').length + 13}{SALE_LABEL.k6h90ril}
                         <br/>
-                        短信条数将由您选择的扣费账户短信余额中扣除, 请注意保证余额充足
+                        {SALE_LABEL.k6h90ra9}
                     </p>
                 </FormItem>
                 <Row>
@@ -218,9 +240,9 @@ class MessageTemplateEditPanel extends React.Component {
                             }}>
                                 <div><span style={{
                                     marginLeft: '-2em',
-                                }}>注：</span>请不要输入"【】" "[]"符号，统计字数中含"回复TD退订【互联网餐厅】"；</div>
-                                <div>输入链接后需要<span style={{color: 'red'}}>输入一个空格</span>，防止链接跟内容解析错误；</div>
-                                <div>字数以最终发出短信内容为准；</div>
+                                }}>{SALE_LABEL.k5m6e3pr}：</span>{SALE_LABEL.k6h90rqx}；</div>
+                                <div>{SALE_LABEL.k6h90s7l}<span style={{color: 'red'}}>{SALE_LABEL.k6h90sfx}</span>，{SALE_LABEL.k6h90so9}；</div>
+                                <div>{SALE_LABEL.k6h90rz9}；</div>
                             </div>
                         } type="warning" />
                     </Col>
@@ -231,7 +253,7 @@ class MessageTemplateEditPanel extends React.Component {
                             type="ghost"
                             onClick={this.togglePreview}
                         >
-                            短信预览
+                            {SALE_LABEL.k6h90swl}
                         </Button>
                         {
                             this.state.showPreview &&
