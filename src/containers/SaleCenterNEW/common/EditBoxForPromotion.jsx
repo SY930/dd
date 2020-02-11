@@ -262,7 +262,7 @@ class EditBoxForPromotion extends React.Component {
         const k5m4q0ae = intl.formatMessage(SALE_STRING.k5m4q0ae);
         const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq);
         const k5m5auib = intl.formatMessage(SALE_STRING.k5m5auib);
-
+        const k5m5auqn = intl.formatMessage(SALE_STRING.k5m5auqn);
         const DISABLED_PROMOTION_TYPE = [
             k5m4q0ae, k5m4q0iq
         ];
@@ -289,7 +289,7 @@ class EditBoxForPromotion extends React.Component {
         return (
             <div className={styles.treeSelectMain}>
                 <HualalaEditorBox
-                    label={SALE_LABEL.k5m5auqn}
+                    label={k5m5auqn}
                     itemName={'finalShowName'}
                     itemID={'promotionIDStr'}
                     data={promotionSelections}

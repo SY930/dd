@@ -113,11 +113,12 @@ class EditBoxForSubject extends React.Component {
 
     render() {
         const { roleCollection, roleSelections } = this.state;
-
+        const { intl } = this.props;
+        const k5m3opsk = intl.formatMessage(SALE_STRING.k5m3opsk);
         return (
             <div className={styles.treeSelectMain}>
                 <BaseHualalaModal
-                    outLabel={SALE_LABEL.k5m3opsk} //   外侧选项+号下方文案
+                    outLabel={k5m3opsk} //   外侧选项+号下方文案
                     outItemName="roleName" //   外侧已选条目选项的label
                     outItemID="roleID" //   外侧已选条目选项的value
                     innerleftTitle={SALE_LABEL.k5m5awlc} //   内部左侧分类title
