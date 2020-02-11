@@ -24,8 +24,8 @@ export const CLIENT_CATEGORY = [
     { key: '2', value: '2', name: '非会员' },
 ];
 export const CLIENT_CATEGORY_RETURN_GIFT = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '全部会员' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
 ];
 export const CLIENT_CATEGORY_RETURN_POINT = [
     { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
