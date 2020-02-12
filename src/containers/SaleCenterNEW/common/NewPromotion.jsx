@@ -132,15 +132,12 @@ class NewPromotion extends React.Component {
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }
-        const { intl } = this.props;
-        const k5do0ps6 = intl.formatMessage(SALE_STRING.k5do0ps6);
-        const k5doax7i = intl.formatMessage(SALE_STRING.k5doax7i);
         if (this.props.isNew === false) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
                 success: () => {
-                    message.success(k5do0ps6, 5);
+                    message.success(SALE_LABEL.k5do0ps6, 5);
                     this.setState({
                         loading: false,
                     });
@@ -148,13 +145,13 @@ class NewPromotion extends React.Component {
                     this.props.clear();
                 },
                 fail: () => {
-                    message.error(k5doax7i);
+                    message.error(SALE_LABEL.k5doax7i);
                     this.setState({
                         loading: false,
                     });
                 },
                 sameCode: () => {
-                    message.error(this.props.intl.formatMessage(SALE_STRING.k5m5ax20));
+                    message.error(SALE_LABEL.k5m5ax20);
                     this.setState({
                         loading: false,
                     });
@@ -165,7 +162,7 @@ class NewPromotion extends React.Component {
                 data: { promotionInfo },
                 success: () => {
                     cb();
-                    message.success(k5do0ps6, 5);
+                    message.success(SALE_LABEL.k5do0ps6, 5);
                     this.setState({
                         loading: false,
                     });
@@ -183,13 +180,13 @@ class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: () => {
-                    message.error(k5doax7i);
+                    message.error(SALE_LABEL.k5doax7i);
                     this.setState({
                         loading: false,
                     });
                 },
                 sameCode: () => {
-                    message.error(this.props.intl.formatMessage(SALE_STRING.k5m5ax20));
+                    message.error(SALE_LABEL.k5m5ax20);
                     this.setState({
                         loading: false,
                     });
