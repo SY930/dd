@@ -12,9 +12,8 @@ import React from 'react';
 import { message } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
-import { COMMON_SPE, STRING_SPE } from 'i18n/common/special';
+import { COMMON_SPE } from 'i18n/common/special';
 
-@injectIntl
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -34,15 +33,6 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     onFinish(cb) {
         const { specialPromotion, user } = this.props;
-        const { intl } = this.props;
-        const d34idrcqen7223 = intl.formatMessage(STRING_SPE.d34idrcqen7223);
-        const de8fem99k0868 = intl.formatMessage(STRING_SPE.de8fem99k0868);
-        const dk460fga2j279 = intl.formatMessage(STRING_SPE.dk460fga2j279);
-        const d4h17ei7f3g366 = intl.formatMessage(STRING_SPE.d4h17ei7f3g366);
-        const dd5a476c91d4150 = intl.formatMessage(STRING_SPE.dd5a476c91d4150);
-        const d4h17ei7f3g518 = intl.formatMessage(STRING_SPE.d4h17ei7f3g518);
-        const d2c8akfh2o6216 = intl.formatMessage(STRING_SPE.d2c8akfh2o6216);
-
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
             || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
@@ -50,7 +40,7 @@ export default class NewPromotion extends React.Component {
                 const equityAccountInfoList = specialPromotion.$eventInfo.equityAccountInfoList;
                 const selectedAccount = equityAccountInfoList.find(entity => entity.accountNo === specialPromotion.$eventInfo.accountNo) || {};
                 if (!selectedAccount.smsCount) {
-                    message.warning(dk460fga2j279);
+                    message.warning(COMMON_SPE.dk460fga2j279);
                     this.setState({
                         loading: false,
                     });
@@ -61,7 +51,7 @@ export default class NewPromotion extends React.Component {
                 if (settleUnitID > 0) {
                     const selectedEntity =  (specialPromotion.$eventInfo.accountInfoList || []).find(entity => entity.settleUnitID === settleUnitID) || {};
                     if (!selectedEntity.smsCount) {
-                        message.warning(d4h17ei7f3g366);
+                        message.warning(COMMON_SPE.d4h17ei7f3g366);
                         this.setState({
                             loading: false,
                         });
@@ -73,7 +63,7 @@ export default class NewPromotion extends React.Component {
                 this.setState({
                     loading: false,
                 });
-                return message.warning(dd5a476c91d4150);
+                return message.warning(COMMON_SPE.dd5a476c91d4150);
             }
         }
         const opts = {
@@ -92,14 +82,14 @@ export default class NewPromotion extends React.Component {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
                 success: () => {
-                    message.success(d4h17ei7f3g518);
+                    message.success(COMMON_SPE.d4h17ei7f3g518);
                     this.setState({
                         loading: false,
                     });
                     cb();
                 },
                 fail: (info) => {
-                message.error(d2c8akfh2o6216 + info);
+                message.error(<span>{COMMON_SPE.d2c8akfh2o6216} {info}</span>);
                     this.setState({
                         loading: false,
                     });
@@ -107,11 +97,11 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
-
+            console.log('this.props.intl', this.props.intl);
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: () => {
-                    message.success(d34idrcqen7223);
+                    message.success(COMMON_SPE.d34idrcqen7223);
                     this.setState({
                         loading: false,
                     });
@@ -120,7 +110,7 @@ export default class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: (info) => {
-                    message.error(de8fem99k0868 + info);
+                    message.error(<span>{COMMON_SPE.de8fem99k0868} {info}</span>);
                     this.setState({
                         loading: false,
                     });
