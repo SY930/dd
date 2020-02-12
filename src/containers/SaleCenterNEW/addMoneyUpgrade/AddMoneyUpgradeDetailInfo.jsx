@@ -169,11 +169,18 @@ class AddMoneyUpgradeDetailInfo extends React.Component {
             }
             : null
         let text = '';
-        upGradeDishes.length === 0 ? text += SALE_LABEL.k5koai82+ SALE_LABEL.k5hkj1ef : null;
-        dishes.length === 0 ? text += SALE_LABEL.k5koaigf+ SALE_LABEL.k5hkj1ef : null;
-        mostNewLimit == 1 && giveFoodMax < 1 ? text += SALE_LABEL.k5koaior+ SALE_LABEL.k5hkj1ef : null;
-        singleNewLimit == 1 && giveFoodCount < 1 ? text += SALE_LABEL.k5koaix3+ SALE_LABEL.k5hkj1ef : null;
-        mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += SALE_LABEL.k5koaj5f : null;
+        const { intl } = this.props;
+        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
+        const k5koai82 = intl.formatMessage(SALE_STRING.k5koai82);
+        const k5koaigf = intl.formatMessage(SALE_STRING.k5koaigf);
+        const k5koaior = intl.formatMessage(SALE_STRING.k5koaior);
+        const k5koaix3 = intl.formatMessage(SALE_STRING.k5koaix3);
+        const k5koaj5f = intl.formatMessage(SALE_STRING.k5koaj5f);
+        upGradeDishes.length === 0 ? text += k5koai82+ k5hkj1ef : null;
+        dishes.length === 0 ? text += k5koaigf+ k5hkj1ef : null;
+        mostNewLimit == 1 && giveFoodMax < 1 ? text += k5koaior+ k5hkj1ef : null;
+        singleNewLimit == 1 && giveFoodCount < 1 ? text += k5koaix3+ k5hkj1ef : null;
+        mostNewLimit == 1 && singleNewLimit == 1 && giveFoodCount > giveFoodMax ? text += k5koaj5f : null;
 
         if (!text) {
             this.props.setPromotionDetail(opts);

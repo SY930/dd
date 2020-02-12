@@ -175,6 +175,11 @@ const SALE_STRING = {
     k5m5ax20: {id: "Sale.k5m5ax20", defaultMessage: "活动编码重复"},
     k6hdp6nz: {id: "Sale.k6hdp6nz", defaultMessage: "请指定第二份菜品"},
     k5kqf033: {id: "Sale.k5kqf033", defaultMessage: "至少要设置一份活动菜品"},
+    k5koai82: {id: "Sale.k5koai82", defaultMessage: "升级前菜品"},
+    k5koaigf: {id: "Sale.k5koaigf", defaultMessage: "升级后菜品"},
+    k5koaior: {id: "Sale.k5koaior", defaultMessage: "单笔订单最多升级换新数量限制"},
+    k5koaix3: {id: "Sale.k5koaix3", defaultMessage: "单笔订单同一菜品最多升级换新数量限制"},
+    k5koaj5f: {id: "Sale.k5koaj5f", defaultMessage: "同一菜品数量不能大于单笔订单最多数量"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
