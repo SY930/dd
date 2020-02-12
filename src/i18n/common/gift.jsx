@@ -1127,6 +1127,11 @@ let COMMON_GIFT = defineMessages({
     d1qeq24lqo035: {id: "Sale.d1qeq24lqo035", defaultMessage: "推送微信消息"},
     d7h90e123090127: {id: "Sale.d7h90e123090127", defaultMessage: "小时生效"},
     d7h90e1230904678: {id: "Sale.d7h90e1230904678", defaultMessage: "天后生效"},
+    doj9y10hl09: {id: "Gift.Context.doj9y10hl09", defaultMessage: "名称"},
+    doj9y10hl132: {id: "Gift.Context.doj9y10hl132", defaultMessage: "时间"},
+    doj9y10hl240: {id: "Gift.Context.doj9y10hl240", defaultMessage: "失败"},
+    d1dv3i58lj319: {id: "Gift.Context.d1dv3i58lj319", defaultMessage: "导出中"},
+    doj9y10hl476: {id: "Gift.Context.doj9y10hl476", defaultMessage: "删除成功"},
 });
 
 for (const key in COMMON_GIFT) {

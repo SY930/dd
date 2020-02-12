@@ -5,14 +5,16 @@ import _ from 'lodash';
 import { axiosData } from '../../../helpers/util';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_GIFT, COMMON_GIFT } from 'i18n/common/gift';
 
 function mapValueToLabel(cfg, val) {
     return _.result(_.find(cfg, { value: val }), 'label') || '--';
 }
 const ExportStatus = [
-    { value: '1', label: '成功' },
-    { value: '0', label: '失败' },
-    { value: '2', label: '导出中' },
+    { value: '1', label: COMMON_GIFT.d1dv0btfl3066 },
+    { value: '0', label: COMMON_GIFT.doj9y10hl240 },
+    { value: '2', label: COMMON_GIFT.d1dv3i58lj319 },
 ];
 const COLUMNS = [{
     title: COMMON_LABEL.serialNumber,
@@ -25,7 +27,7 @@ const COLUMNS = [{
         );
     },
 }, {
-    title: '名称',
+    title: COMMON_GIFT.doj9y10hl09,
     dataIndex: 'recordName',
     className: 'TableTxtCenter',
     width: 200,
@@ -33,7 +35,7 @@ const COLUMNS = [{
         return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
     },
 }, {
-    title: '时间',
+    title: COMMON_GIFT.doj9y10hl132,
     dataIndex: 'createStamp',
     className: 'TableTxtCenter',
     width: 110,
@@ -65,7 +67,7 @@ const COLUMNS = [{
     },
 },
 ];
-
+@injectIntl
 export default class ExportModal extends Component {
     constructor(props) {
         super(props);
@@ -176,7 +178,7 @@ export default class ExportModal extends Component {
     handleDelete = (record) => {
         axiosData('/crm/quotaCardExport/delete.ajax', { itemID: record.itemID }, null, { path: 'data' })
             .then(() => {
-                message.success('删除成功');
+                message.success(COMMON_GIFT.doj9y10hl476);
                 this.getExportRecords(this.props._key);
             });
     }
@@ -197,7 +199,7 @@ export default class ExportModal extends Component {
         }
         axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
-                message.success('删除成功');
+                message.success(COMMON_GIFT.doj9y10hl476);
                 this.getExportRecords(this.props._key);
             });
     }
@@ -206,7 +208,7 @@ export default class ExportModal extends Component {
             <div>
                 <Modal
                     style={{ top: 30 }}
-                    title={'数据导出列表'}
+                    title={this.props.intl.formatMessage(STRING_GIFT.d1dv3i58lj530)}
                     width={'850px'}
                     maskClosable={false}
                     visible={this.state.visible}
@@ -233,7 +235,7 @@ export default class ExportModal extends Component {
                                 pagination={{
                                     pageSize: this.state.pageSizes,
                                     total: this.state.dataSource ? this.state.dataSource.length : 0,
-                                    showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                                    showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u2)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u1)} ${total} ${this.props.intl.formatMessage(STRING_GIFT.d2c68skgm94)}`,
                                 }}
                             />
                             { (!!this.state.dataSource && !!this.state.dataSource.length) && (
@@ -245,7 +247,7 @@ export default class ExportModal extends Component {
                                         left: 0,
                                         bottom: 18
                                     }}
-                                >清空列表</Button>
+                                >{this.props.intl.formatMessage(STRING_GIFT.du2hnhcan645)}</Button>
                             )}
                         </Col>
                     </Row>
