@@ -832,7 +832,7 @@ class LotteryThirdStep extends React.Component {
                 <span 
                     className = { style.graySpan }
                 > 
-                    最多添加10个中奖等级
+                    {this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}
                 </span>
                 <Tabs
                     hideAdd={true}

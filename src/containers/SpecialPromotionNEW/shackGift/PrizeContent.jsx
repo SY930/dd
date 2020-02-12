@@ -16,6 +16,7 @@ import {
 
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { SALE_STRING } from 'i18n/common/salecenter';
 
 
 @injectIntl
@@ -330,7 +331,7 @@ export default class PrizeContent extends React.Component {
                                                 maxNum={9}
                                                 value={{ number: info.giveCoupon.value.giftCount.value }}
                                                 onChange={val => handleGiftCountChange(val, index)}
-                                                addonAfter="张"
+                                                addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
                                                 modal="int"
                                             />
                                         </FormItem>
