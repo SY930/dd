@@ -67,7 +67,7 @@ export default class PrizeContent extends React.Component {
     // 相对有效期 OR 固定有效期
     renderValidOptions = (info, index) => {
         const { handleGiftValidDaysChange, handleDependTypeChange, handleGiftEffectiveTimeChange, handleRangePickerChange  } =this.props;
-        const a = info.giveCoupon.value.giftValidDays.value 
+        const a = info.giveCoupon.value.giftValidDays.value
         if (info.giveCoupon.value.effectType != '2') {
             return (
                 <div>
@@ -76,7 +76,7 @@ export default class PrizeContent extends React.Component {
                         className={style.FormItemSecondStyle}
                         validateStatus={info.giveCoupon.value.giftValidDays.validateStatus}
                         help={info.giveCoupon.value.giftValidDays.msg}
-                    > 
+                    >
                         <PriceInput
                             addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
                             maxNum={5}
@@ -90,11 +90,11 @@ export default class PrizeContent extends React.Component {
                         className={style.FormItemSecondStyle}
                         validateStatus={info.giveCoupon.value.giftEffectiveTime.validateStatus}
                         help={info.giveCoupon.value.giftEffectiveTime.msg}
-                    > 
+                    >
                         <div className={style.labelSecondDiv}>
                             <span>{this.props.intl.formatMessage(STRING_SPE.d21647400695b034)}</span>
                         </div>
-                        <Select 
+                        <Select
                             className={style.LittleSelect}
                             size="default"
                             value={info.giveCoupon.value.dependType == '1' ? '1' : '3'}
@@ -120,7 +120,7 @@ export default class PrizeContent extends React.Component {
                                         return (<Option value={item.value} key={index}>{item.label}</Option>);
                                     })
                             }
-                        </Select> 
+                        </Select>
                     </FormItem>
                 </div>
             );
@@ -146,10 +146,10 @@ export default class PrizeContent extends React.Component {
                 required={true}
                 validateStatus={info.giveCoupon.value.giftEffectiveTime.validateStatus}
                 help={info.giveCoupon.value.giftEffectiveTime.msg}
-            >   
+            >
                 <div className={style.labelSecondDiv}>
                     <span>{this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}</span>
-                </div> 
+                </div>
                 <RangePicker
                     {...pickerProps}
                     disabledDate={this.props.type == '70' ? disabledDate : null}
@@ -158,12 +158,12 @@ export default class PrizeContent extends React.Component {
         );
     }
     render() {
-        const { 
-                info, 
-                filteredGiftInfo, 
-                handleGiftChange, 
-                index, 
-                toggleFun, 
+        const {
+                info,
+                filteredGiftInfo,
+                handleGiftChange,
+                index,
+                toggleFun,
                 changeDisArr,
                 handleGiftCountChange,
                 handleValidateTypeChange,
@@ -192,11 +192,11 @@ export default class PrizeContent extends React.Component {
                                     className={style.FormItemStyle}
                                     validateStatus={info.giftOdds.validateStatus}
                                     help={info.giftOdds.msg}
-                                > 
+                                >
                                     <div className={style.labelDiv}>
                                         <span className={style.requiredIcon}>*</span>
                                         <span>{this.props.intl.formatMessage(STRING_SPE.d21647400695b1248)}</span>
-                                    </div> 
+                                    </div>
                                     <PriceInput
                                         className={style.giftOdds}
                                         addonAfter="%"
@@ -207,7 +207,7 @@ export default class PrizeContent extends React.Component {
                                     />
                                 </FormItem>
                             </div>
-                            
+
                             {/* 赠送积分 */}
                             <FormItem
                                 style={{ padding: 0 }}
@@ -215,24 +215,24 @@ export default class PrizeContent extends React.Component {
                                 className={style.noLabelFormItemStyle}
                                 validateStatus={info.givePoints.validateStatus}
                                 help={info.givePoints.msg}
-                            >  
-                                <Checkbox 
+                            >
+                                <Checkbox
                                     checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
                                     onChange={this.ChangeCheckBoxOne}
                                 />
                                 <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
                                 {JSON.stringify(info.givePoints.value) == "{}" ?
-                                    null :  
+                                    null :
                                     <div className={style.paleRed}>
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.givePoints.value.givePointsValue.validateStatus}
                                             help={info.givePoints.value.givePointsValue.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
-                                            </div> 
+                                            </div>
                                             <PriceInput
                                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.d16hh3h4b8b2184)}
                                                 modal="float"
@@ -246,10 +246,10 @@ export default class PrizeContent extends React.Component {
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.givePoints.value.card.validateStatus}
                                             help={info.givePoints.value.card.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}</span>
-                                            </div> 
+                                            </div>
                                             <Select
                                                 showSearch={true}
                                                 value={this.getCardTypeValue(index)}
@@ -264,7 +264,7 @@ export default class PrizeContent extends React.Component {
                                                 }
                                             </Select>
                                         </FormItem>
-                                    </div>   
+                                    </div>
                                 }
                             </FormItem>
                             {/* 赠送优惠券 */}
@@ -272,14 +272,14 @@ export default class PrizeContent extends React.Component {
                                 wrapperCol={{ span: 24 }}
                                 style={{ padding: 0 }}
                                 className={style.noLabelFormItemStyle}
-                            >  
-                                <Checkbox 
+                            >
+                                <Checkbox
                                     checked={info.giveCoupon.value.isOn}
                                     onChange={this.ChangeCheckBoxTwo}
                                 />
                                 <span>{this.props.intl.formatMessage(STRING_SPE.dd5aa6c59a74233)}</span>
                                 {!(info.giveCoupon.value.isOn) ?
-                                    null :  
+                                    null :
                                     <div className={style.paleRed}>
                                         {/* 优惠券名称 */}
                                         <FormItem
@@ -287,10 +287,10 @@ export default class PrizeContent extends React.Component {
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.giveCoupon.value.giftInfo.validateStatus}
                                             help={info.giveCoupon.value.giftInfo.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.dojyd1ldi5200)}</span>
-                                            </div> 
+                                            </div>
                                             <ExpandTree
                                                 idx={index}
                                                 value={this.getGiftValue(index)}
@@ -323,10 +323,10 @@ export default class PrizeContent extends React.Component {
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.giveCoupon.value.giftCount.validateStatus}
                                             help={info.giveCoupon.value.giftCount.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
-                                            </div> 
+                                            </div>
                                             <PriceInput
                                                 maxNum={9}
                                                 value={{ number: info.giveCoupon.value.giftCount.value }}
@@ -338,10 +338,10 @@ export default class PrizeContent extends React.Component {
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.d2c8gi45an648)}</span>
-                                            </div> 
+                                            </div>
                                             <RadioGroup
                                                 className={style.radioMargin}
                                                 value={info.giveCoupon.value.effectType == '2' ? '2' : '1'}
@@ -355,7 +355,7 @@ export default class PrizeContent extends React.Component {
                                             </RadioGroup>
                                         </FormItem>
                                         {this.renderValidOptions(info, index)}
-                                    </div>   
+                                    </div>
                                 }
                             </FormItem>
                             {/* 赠送红包 */}
@@ -363,23 +363,23 @@ export default class PrizeContent extends React.Component {
                                 style={{ padding: 0 }}
                                 wrapperCol={{ span: 24 }}
                                 className={style.noLabelFormItemStyle}
-                            >  
-                                <Checkbox 
+                            >
+                                <Checkbox
                                     checked={info.giveRedPacket.isOn}
                                     onChange={this.ChangeCheckBoxThree}
                                 />
                                 <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239480)}</span>
-                                {info.giveRedPacket.isOn ? 
+                                {info.giveRedPacket.isOn ?
                                     <div className={style.paleRed}>
                                         <FormItem
                                             wrapperCol={{ span: 12 }}
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.giveRedPacket.redPacketID.validateStatus}
                                             help={info.giveRedPacket.redPacketID.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239480)}</span>
-                                            </div> 
+                                            </div>
                                             <Select
                                                 value={info.giveRedPacket.redPacketID.value}
                                                 onChange={(val) => {handleGiveRedPacketIDChange(val, index)}}
@@ -398,10 +398,10 @@ export default class PrizeContent extends React.Component {
                                             className={style.FormItemSecondStyle}
                                             validateStatus={info.giveRedPacket.redPacketValue.validateStatus}
                                             help={info.giveRedPacket.redPacketValue.msg}
-                                        > 
+                                        >
                                             <div className={style.labelSecondDiv}>
                                                 <span>{this.props.intl.formatMessage(STRING_SPE.k6hk34239sdgsfg)}</span>
-                                            </div> 
+                                            </div>
                                             <PriceInput
                                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
                                                 modal="float"
@@ -413,7 +413,7 @@ export default class PrizeContent extends React.Component {
                                     </div> : null
                                 }
                             </FormItem>
-                            {/* ....... */}                       
+                            {/* ....... */}
                             {/* ....... */}
                             {
                                 info.giveCoupon.validateStatus === 'error' && (
@@ -425,7 +425,7 @@ export default class PrizeContent extends React.Component {
                     </Form>
                 </div>
             </div>
-            
+
         )
     }
 }
