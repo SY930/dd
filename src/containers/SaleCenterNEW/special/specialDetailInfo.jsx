@@ -128,7 +128,8 @@ class SpecialDetailInfo extends React.Component {
             if (+totalAmountLimit < amountLimit) return false;
         }
         if (priceLst.length === 0) {
-            message.warning(SALE_LABEL.k6hdpu19);
+            const k6hdpu19 = this.props.intl.formatMessage(SALE_STRING.k6hdpu19)
+            message.warning(k6hdpu19);
             return false;
         }
         const rule = {};
