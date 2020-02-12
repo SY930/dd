@@ -329,7 +329,7 @@ class MyActivities extends React.Component {
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {`${SALE_LABEL.k5do6vse}【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
+                        {SALE_LABEL.k5do6vse}{`【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>

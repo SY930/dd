@@ -252,7 +252,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            {SALE_STRING.k5gfsv5b}
+                            {SALE_LABEL.k5gfsv5b}
                         </a>
                     </Col>
                 </Row>
