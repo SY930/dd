@@ -18,9 +18,13 @@ import giftBg2 from './assets/1-2.png'
 import giftBg3 from './assets/2-1.png'
 import giftBg4 from './assets/2-2.png'
 import ExpasionGiftImgCropUploader from './ExpasionGiftImgCropUploader'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const { TabPane } = Tabs;
 
+@injectIntl()
 export default class ExpasionGiftDecorationBoard extends Component {
 
     state = {
@@ -48,17 +52,17 @@ export default class ExpasionGiftDecorationBoard extends Component {
         return (
             <div className={style.previewArea}>
                 <div className={style.scrollTip}>
-                    滚动鼠标查看活动
+                    {SALE_LABEL.k635s5a1}
                 </div>
                 <div className={style.typeTitle}>
-                    膨胀大礼包
+                    {SALE_LABEL.k635s5id}
                 </div>
                 <img src={phoneImg} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: bgColor }} className={style.scrollArea}>
                     <img style={{ width: '100%' }} src={bannerImg} alt=""/>
                     <div className={style.timer}>
-                        活动还剩：2天17小时10分30秒
+                        {SALE_LABEL.k635s5qq}
                     </div>
                     <div className={style.giftContainer}>
                         <div className={style.giftWrapper}>
@@ -99,12 +103,12 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 background: buttonBgColor,
                             }}
                         >
-                            立即参与
+                            {SALE_LABEL.k635s5z2}
                         </div>
                     </div>
                     <div className={style.detailBlock}>
                         <div style={{ background: tagColor1 }} className={style.coloredTag}>
-                            活动好礼
+                            {SALE_LABEL.k635s67e}
                         </div>
                         <img className={style.progressBar} src={progressImg} alt=""/>
                         <div className={style.giftRow}>
@@ -147,7 +151,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                         color: buttonColor,
                                     }}
                                 >
-                                    参与即领
+                                    {SALE_LABEL.k635s6fq}
                                 </div>
                             </div>
                             <div className={style.subWrapper}>
@@ -183,7 +187,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 />
                                 </div>
                                 <div className={style.action}>
-                                    邀3人领取
+                                    {SALE_LABEL.k635s6o2}
                                 </div>
                             </div>
                             <div className={style.subWrapper}>
@@ -219,34 +223,34 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 />
                                 </div>
                                 <div className={style.action}>
-                                    邀5人领取
+                                    {SALE_LABEL.k635s6we}
                                 </div>
                             </div>
-                                    
+
                         </div>
                         <div className={style.detailTxt}>
-                            免费领取礼包，更多美味更多实惠等你来！邀请好友，更能升级礼包，更多惊喜等你哦！
+                            {SALE_LABEL.k636f213}
                         </div>
                     </div>
                     <div className={style.friendsInfo}>
                         <div style={{ background: tagColor2 }} className={style.coloredTag}>
-                            助力好友榜
+                            {SALE_LABEL.k636f29f}
                         </div>
                         <div className={style.tip}>
-                            暂无好友助力，快去邀请好友助你升级礼包吧
+                            {SALE_LABEL.k636f2hr}
                         </div>
                     </div>
                     <div className={style.ruleInfo}>
                         <div style={{ background: tagColor3 }} className={style.coloredTag}>
-                            活动规则
+                            {SALE_LABEL.k636f2q3}
                         </div>
                         <div className={style.rule}>
-                            <p>发起人规则：</p>
-                            <p>1、同一位用户在一个活动中，只能发起一次膨胀大礼包活动</p>
-                            <p>2、兑换奖品后活动立即终止</p>
-                            <p style={{ marginTop: 10 }}>助力规则：</p>
-                            <p>1、同一位助力用户只能为同一位发起者膨胀一次，不可多次膨胀</p>
-                            <p>2、同一位助力用户可为不同发起者各膨胀一次</p>
+                            <p>{SALE_LABEL.k636f2yf}：</p>
+                            <p>1、{SALE_LABEL.k636f36s}</p>
+                            <p>2、{SALE_LABEL.k636f3f4}</p>
+                            <p style={{ marginTop: 10 }}>{SALE_LABEL.k636f3ng}：</p>
+                            <p>1、{SALE_LABEL.k636f3vs}</p>
+                            <p>2、{SALE_LABEL.k636f444}</p>
                         </div>
                     </div>
                 </div>
@@ -269,6 +273,8 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 __giftBaseImg3,
             }
         } = this.props;
+        const { intl } = this.props;
+        const k636f4cg = intl.formatMessage(SALE_STRING.k636f4cg);
         return (
             <div>
                 <div className={style.sectionWrapper}>
@@ -288,14 +294,14 @@ export default class ExpasionGiftDecorationBoard extends Component {
                             onChange={value => onChange({key: ['bannerImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>750*666</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                    <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}<span style={{ color: '#379FF1' }}>750*666</span></p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
                 <ExpasionGiftImgCropUploader
-                    title="奖品一"
+                    title={k636f4cg + '一'}
                     baseImgUrl={__giftBaseImg1}
                     thumbImgUrl={giftThumbImg1}
                     imgUrl={giftImg1}
@@ -304,7 +310,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     onImgUrlChange={value => onChange({key: ['giftImg1'], value})}
                 />
                 <ExpasionGiftImgCropUploader
-                    title="奖品二"
+                    title={k636f4cg + '二'}
                     baseImgUrl={__giftBaseImg2}
                     thumbImgUrl={giftThumbImg2}
                     imgUrl={giftImg2}
@@ -313,7 +319,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     onImgUrlChange={value => onChange({key: ['giftImg2'], value})}
                 />
                 <ExpasionGiftImgCropUploader
-                    title="奖品三"
+                    title={k636f4cg + '三'}
                     baseImgUrl={__giftBaseImg3}
                     thumbImgUrl={giftThumbImg3}
                     imgUrl={giftImg3}
@@ -341,12 +347,12 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 <div style={{ margin: 0, borderBottom: '1px solid #EEE' }} className={style.sectionWrapper}>
                     <ColorSettingBlock
                         value={bgColor}
-                        title={<span style={{color: '#333', fontSize: 14}}>请选择活动背景色或者自定义颜色</span>}
+        title={<span style={{color: '#333', fontSize: 14}}>{SALE_LABEL.k636f4ks}</span>}
                         onChange={(value) => onChange({key: ['bgColor'], value})}
                     />
                 </div>
                 <div style={{ margin: 0, paddingBottom: 20, borderBottom: '1px solid #EEE' }} className={style.sectionWrapper}>
-                    <div style={{color: '#333', fontSize: 14, margin: '20px 0 10px 0'}}>请选择文字及按钮颜色</div>
+        <div style={{color: '#333', fontSize: 14, margin: '20px 0 10px 0'}}>{SALE_LABEL.k636f4t4}</div>
                     <div>
                         <ButtonSettingBlock
                             buttonColor={buttonColor}
@@ -360,11 +366,11 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     </div>
                 </div>
                 <div style={{ margin: 0, paddingBottom: 20 }} className={style.sectionWrapper}>
-                    <div style={{color: '#333', fontSize: 14, margin: '20px 0 10px 0'}}>标签颜色</div>
+                        <div style={{color: '#333', fontSize: 14, margin: '20px 0 10px 0'}}>{SALE_LABEL.k636f51g}</div>
                     <div className={style.tagColorBlock}>
                         <div className={style.leftBlock}>
                             <div className={style.colorRow}>
-                                <span>标签一</span>
+                        <span>{SALE_LABEL.k5dlpi06}一</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -375,7 +381,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 </div>
                             </div>
                             <div className={style.colorRow}>
-                                <span>标签二</span>
+                                <span>{SALE_LABEL.k5dlpi06}二</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -386,7 +392,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 </div>
                             </div>
                             <div className={style.colorRow}>
-                                <span>标签三</span>
+                                <span>{SALE_LABEL.k5dlpi06}三</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -398,24 +404,27 @@ export default class ExpasionGiftDecorationBoard extends Component {
                             </div>
                         </div>
                         <div className={style.rightBlock}>
-                            <h5>图例</h5>
+                        <h5>{SALE_LABEL.k636f59s}</h5>
                             <div style={{ background: tagColor1 }} className={style.tagPreview}>
-                                活动好礼
+                                {SALE_LABEL.k635s67e}
                             </div>
                             <div style={{ background: tagColor2 }} className={style.tagPreview}>
-                                助力好友榜
+                                {SALE_LABEL.k636f5i4}
                             </div>
                             <div style={{ background: tagColor3 }} className={style.tagPreview}>
-                                活动规则
+                                {SALE_LABEL.k636f2q3}
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         )
     }
     render() {
+        const { intl } = this.props;
+        const k636f5ys = intl.formatMessage(SALE_STRING.k636f5ys);
+        const k636p01c = intl.formatMessage(SALE_STRING.k636p01c);
         return (
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
@@ -437,16 +446,16 @@ export default class ExpasionGiftDecorationBoard extends Component {
                                 type="primary"
                                 onClick={this.props.onReset}
                             >
-                                恢复默认
+                                {SALE_LABEL.k636f5qg}
                             </Button>
                         </div>
-                        
+
                     }
                 >
-                        <TabPane tab="页面配图" key="1">
+                        <TabPane tab={k636f5ys} key="1">
                             {this.renderIMGSettingPanel()}
                         </TabPane>
-                        <TabPane tab="活动皮肤装修" key="2">
+                        <TabPane tab={k636p01c} key="2">
                             {this.renderColorSettingPanel()}
                         </TabPane>
                     </Tabs>

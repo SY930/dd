@@ -11,7 +11,11 @@ import {
 } from './assets';
 import ButtonSettingBlock from './ButtonSettingBlock'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class ShareGiftDecorationBoard extends Component {
 
     renderPhonePreview() {
@@ -30,31 +34,31 @@ export default class ShareGiftDecorationBoard extends Component {
         return (
             <div className={style.previewArea}>
                 <div className={style.scrollTip}>
-                    滚动鼠标查看活动
+                    {SALE_LABEL.k635s5a1}
                 </div>
                 <div className={style.typeTitle}>
-                    分享裂变
+                    {SALE_LABEL.k636p3a1}
                 </div>
                 <img src={phoneImg} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: bgColor }} className={style.scrollArea}>
                     <img style={{ width: '100%' }} src={bannerImg} alt=""/>
                     <div style={{ margin: '8px 0', textAlign: 'center', color: 'rgba(255,255,255,0.9)' }}>
-                        活动时间：2019.03.20-2019.04.20
+        {SALE_LABEL.k5dk4m5r}：2019.03.20-2019.04.20
                     </div>
                     <div className={style.shareCommonBlock}>
                         <div style={{ background: tagColor1 }} className={style.coloredTag}>
-                            我的礼品
+                            {SALE_LABEL.k636p3id}
                         </div>
                         <img src={giftExample} alt=""/>
                         <img src={giftExample} alt=""/>
                         <div className={style.buttonArea} style={{ background: buttonBgColor, color: buttonColor }}>
-                            邀请好友领壕礼
+                            {SALE_LABEL.k636p3qp}
                         </div>
                     </div>
                     <div className={style.shareCommonBlock}>
                         <div style={{ background: tagColor2 }} className={style.coloredTag}>
-                            好友的礼品
+                            {SALE_LABEL.k636p3z1}
                         </div>
                         <img src={giftExample} alt=""/>
                         <img src={giftExample} alt=""/>
@@ -63,30 +67,30 @@ export default class ShareGiftDecorationBoard extends Component {
                     </div>
                     <div className={style.shareCommonBlock}>
                         <div style={{ background: tagColor3 }} className={style.coloredTag}>
-                            邀请的好友
+                            {SALE_LABEL.k636qs8m}
                         </div>
                         <img src={shareGift1} alt=""/>
                         <br/>
                     </div>
                     <div className={style.ruleInfo}>
                         <div style={{ background: tagColor4 }} className={style.coloredTag}>
-                            活动介绍
+                            {SALE_LABEL.k636qsgy}
                         </div>
                         <div className={style.rule}>
-                            <p className={style.ruleSubTitle}>活动主题</p>
+                            <p className={style.ruleSubTitle}>{SALE_LABEL.k636qspa}</p>
                             <p style={{ paddingLeft: 10 }}>2018-11-17~2018-12.17</p>
-                            <p className={style.ruleSubTitle}>邀请人礼品</p>
-                            <p style={{ paddingLeft: 10 }}>礼品一名称，2张</p>
-                            <p style={{ paddingLeft: 10 }}>礼品二名称，3张</p>
-                            <p className={style.ruleSubTitle}>被邀请人礼品</p>
-                            <p style={{ paddingLeft: 10 }}>礼品一名称，2张</p>
-                            <p style={{ paddingLeft: 10 }}>礼品二名称，3张</p>
-                            <p className={style.ruleSubTitle}>活动详情</p>
-                            <p style={{ paddingLeft: 10 }}>1、被邀请人注册为会员即邀请成功</p>
-                            <p style={{ paddingLeft: 10 }}>2、邀请人最多可参与N次邀请活动</p>       
+                            <p className={style.ruleSubTitle}>{SALE_LABEL.k636qsxm}</p>
+                            <p style={{ paddingLeft: 10 }}>{SALE_LABEL.k636qt5y}</p>
+                            <p style={{ paddingLeft: 10 }}>{SALE_LABEL.k636qtea}</p>
+                            <p className={style.ruleSubTitle}>{SALE_LABEL.k636qtmm}</p>
+                            <p style={{ paddingLeft: 10 }}>{SALE_LABEL.k636qt5y}</p>
+                            <p style={{ paddingLeft: 10 }}>{SALE_LABEL.k636qtea}</p>
+                            <p className={style.ruleSubTitle}>{SALE_LABEL.k636qtuy}</p>
+                            <p style={{ paddingLeft: 10 }}>1、{SALE_LABEL.k636qu3a}</p>
+                            <p style={{ paddingLeft: 10 }}>2、{SALE_LABEL.k636qubm}</p>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         )
@@ -109,11 +113,11 @@ export default class ShareGiftDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>活动背景色</div>
+                    <div className={style.label}>{SALE_LABEL.k636p1no}</div>
                     <ColorSettingBlock value={bgColor} onChange={(value) => onChange({key: ['bgColor'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={1000}
@@ -121,14 +125,14 @@ export default class ShareGiftDecorationBoard extends Component {
                             onChange={value => onChange({key: ['bannerImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸<span style={{ color: '#379FF1' }}>750*666</span>像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}<span style={{ color: '#379FF1' }}>750*666</span></p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 8 }} className={style.label}>按钮样式</div>
+                    <div style={{ top: 8 }} className={style.label}>{SALE_LABEL.k636p2l0}</div>
                     <div>
                         <ButtonSettingBlock
                             buttonColor={buttonColor}
@@ -142,11 +146,11 @@ export default class ShareGiftDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 8 }} className={style.label}>标签样式</div>
+                    <div style={{ top: 8 }} className={style.label}>{SALE_LABEL.k636qujy}</div>
                     <div style={{ height: 210 }} className={style.tagColorBlock}>
                         <div className={style.leftBlock}>
                             <div className={style.colorRow}>
-                                <span>标签一</span>
+                                <span>{SALE_LABEL.k5dlpi06}一</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -157,7 +161,7 @@ export default class ShareGiftDecorationBoard extends Component {
                                 </div>
                             </div>
                             <div className={style.colorRow}>
-                                <span>标签二</span>
+                                <span>{SALE_LABEL.k5dlpi06}二</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -168,7 +172,7 @@ export default class ShareGiftDecorationBoard extends Component {
                                 </div>
                             </div>
                             <div className={style.colorRow}>
-                                <span>标签三</span>
+                                <span>{SALE_LABEL.k5dlpi06}三</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -179,7 +183,7 @@ export default class ShareGiftDecorationBoard extends Component {
                                 </div>
                             </div>
                             <div className={style.colorRow}>
-                                <span>标签四</span>
+                                <span>{SALE_LABEL.k5dlpi06}四</span>
                                 <div className={style.borderedColorWrapper}>
                                     <WrappedColorPicker
                                         alpha={100}
@@ -191,18 +195,18 @@ export default class ShareGiftDecorationBoard extends Component {
                             </div>
                         </div>
                         <div className={style.rightBlock}>
-                            <h5>图例</h5>
+                            <h5>{SALE_LABEL.k636f59s}</h5>
                             <div style={{ background: tagColor1 }} className={style.tagPreview}>
-                                我的礼品
+                            {SALE_LABEL.k636p3id}
                             </div>
                             <div style={{ background: tagColor2 }} className={style.tagPreview}>
-                                好友的礼品
+                            {SALE_LABEL.k636p3z1}
                             </div>
                             <div style={{ background: tagColor3 }} className={style.tagPreview}>
-                                邀请的好友
+                            {SALE_LABEL.k636qs8m}
                             </div>
                             <div style={{ background: tagColor4 }} className={style.tagPreview}>
-                                活动介绍
+                            {SALE_LABEL.k636qsgy}
                             </div>
                         </div>
                     </div>

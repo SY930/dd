@@ -12,18 +12,15 @@ import {
     SALE_CENTER_GIFT_EFFICT_TIME,
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
-
+import { injectIntl } from 'i18n/common/injectDecorator';
+import { STRING_GIFT } from 'i18n/common/gift';
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
 // const TreeNode = Tree.TreeNode;
 // const Search = Input.Search;
-const VALIDATE_TYPE = Object.freeze([{
-    key: 0, value: '1', name: '相对有效期',
-},
-{ key: 1, value: '2', name: '固定有效期' }]);
-
 const defaultData = {
     // 膨胀所需人数
     needCount: {
@@ -71,7 +68,7 @@ const defaultData = {
     },
 };
 
-
+@injectIntl
 class AddGifts extends React.Component {
     constructor(props) {
         super(props);
@@ -94,6 +91,10 @@ class AddGifts extends React.Component {
         this.renderValidOptions = this.renderValidOptions.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.proGiftTreeData = this.proGiftTreeData.bind(this);
+        this.VALIDATE_TYPE = Object.freeze([{
+            key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
+        },
+        { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }])
     }
 
     initGiftInfo = (props = this.props) => {
@@ -111,7 +112,7 @@ class AddGifts extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {        
+        if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
             this.setState({
                 ...this.initGiftInfo(nextProps)
             });
@@ -174,7 +175,7 @@ class AddGifts extends React.Component {
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
                     (this.state.infos.length < 10 && type != '66' && type != '21') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
-                            + 添加礼品
+                            + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
                     )
                 }
@@ -187,6 +188,16 @@ class AddGifts extends React.Component {
     renderItems() {
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
+        const arr = [`${this.props.intl.formatMessage(STRING_SPE.da8oel25o02265)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea393183)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.db60a2a3891c4274)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu5170)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.d31eic607f0657)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.d2c89pf9007224)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu842)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.de8fc980mc940)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd8107)}`,
+            `${this.props.intl.formatMessage(STRING_SPE.du389nqve112)}`];
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const toggle = !disArr[index];
@@ -194,6 +205,7 @@ class AddGifts extends React.Component {
             disArr[index] = toggle;
             this.setState({ disArr })
         }
+        const { intl } = this.props;
         return this.state.infos.map((info, index, arr) => {
             let validateStatus,
                 addonBefore,
@@ -202,13 +214,13 @@ class AddGifts extends React.Component {
                 onChangeFunc;
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 validateStatus = info.giftCount.validateStatus;
-                addonBefore = '礼品个数:';
+                addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
                 help = info.giftCount.msg;
                 valueNuber = info.giftCount.value;
                 onChangeFunc = this.handlegiftCountChange;
             } else {
                 validateStatus = info.giftTotalCount.validateStatus;
-                addonBefore = '礼品总数:';
+                addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 help = info.giftTotalCount.msg;
                 valueNuber = info.giftTotalCount.value;
                 onChangeFunc = this.handlegiftTotalCountChange;
@@ -216,11 +228,11 @@ class AddGifts extends React.Component {
             return (
                 <div key={`${index}`} className={selfStyle.giftWrapper}>
                     <div className={selfStyle.giftNoLabel}>
-                        {`礼品${index + 1}`}
+            {COMMON_SPE.du389nqve1491}{`${index + 1}`}
                     </div>
                     {
                         (arr.length > 1 && this.props.type != '66') && (
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.remove(index)}>
+                            <Popconfirm title={this.props.intl.formatMessage(STRING_SPE.dd5a6d317718137)} onConfirm={() => this.remove(index)}>
                                 <Icon className={selfStyle.removeButton} type="close-circle" />
                             </Popconfirm>
                         )
@@ -236,11 +248,11 @@ class AddGifts extends React.Component {
                                     help={info.needCount.msg}
                                 >
                                     <PriceInput
-                                        addonBefore="膨胀需要人数"
+                                        addonBefore={this.props.intl.formatMessage(STRING_SPE.dk45kc7bd81539)}
                                         maxNum={5}
                                         value={{ number: info.needCount.value }}
                                         onChange={val => this.handleGiftNeedCountChange(val, index)}
-                                        addonAfter="人"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}
                                         modal="int"
                                     />
                                 </FormItem>
@@ -248,7 +260,7 @@ class AddGifts extends React.Component {
                         }
                         {/* 礼品名称 */}
                         <FormItem
-                            label="礼品名称"
+                            label={intl.formatMessage(STRING_GIFT.giftName)}
                             className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin].join(' ')}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
@@ -295,7 +307,7 @@ class AddGifts extends React.Component {
                                 maxNum={9}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
-                                addonAfter="个"
+                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
                                 modal="int"
                             />
 
@@ -304,14 +316,14 @@ class AddGifts extends React.Component {
                         <FormItem
                             className={styles.FormItemStyle}
                         >
-                            <span className={styles.formLabel}>生效方式:</span>
+                            <span className={styles.formLabel}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}:</span>
                             <RadioGroup
                                 className={styles.radioMargin}
                                 value={info.effectType == '2' ? '2' : '1'}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
                             >
                                 {
-                                    VALIDATE_TYPE.map((item, index) => {
+                                    this.VALIDATE_TYPE.map((item, index) => {
                                         return <Radio value={item.value} key={index}>{item.name}</Radio>
                                     })
                                 }
@@ -319,6 +331,27 @@ class AddGifts extends React.Component {
                         </FormItem>
 
                         {this.renderValidOptions(info, index)}
+                        {/* ....... */}
+                        {/* 中奖比率 */}
+                        {
+                            this.props.type == '20' ?
+                                (
+                                    <FormItem
+                                        className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
+                                        validateStatus={info.giftOdds.validateStatus}
+                                        help={info.giftOdds.msg}
+                                    >
+                                        <PriceInput
+                                            addonBefore={this.props.intl.formatMessage(STRING_SPE.d2b1b80326011987)}
+                                            addonAfter="%"
+                                            modal="float"
+                                            value={{ number: info.giftOdds.value }}
+                                            onChange={(val) => { this.handleGiftOddsChange(val, index); }}
+                                        />
+                                    </FormItem>
+                                ) : null
+                        }
+
                     </div>
             );
         });
@@ -333,7 +366,7 @@ class AddGifts extends React.Component {
             _infos[index].giftOdds.msg = null;
         } else {
             _infos[index].giftOdds.validateStatus = 'error';
-            _infos[index].giftOdds.msg = '中奖比率必须在0~100之间';
+            _infos[index].giftOdds.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g120154)}`;
         }
         this.setState({
             infos: _infos,
@@ -351,7 +384,7 @@ class AddGifts extends React.Component {
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giftValidDays.msg = `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvd21186)}`;
         }
         this.setState({
             infos: _infos,
@@ -370,7 +403,7 @@ class AddGifts extends React.Component {
                 if (higherLevelValue > 0 && higherLevelValue <= 1000) {
                     if (_value >= +higherLevelValue) {
                         _infos[index].needCount.validateStatus = 'error';
-                        _infos[index].needCount.msg = '此档位所需人数必须小于下一档位';
+                        _infos[index].needCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d2261)}`;
                     } else {
                         _infos[index].needCount.validateStatus = 'success';
                         _infos[index].needCount.msg = null;
@@ -387,13 +420,13 @@ class AddGifts extends React.Component {
                 if (lowerLevelValue > 0 && lowerLevelValue <= 1000) {
                     if (_value <= +lowerLevelValue) {
                         _infos[index].needCount.validateStatus = 'error';
-                        _infos[index].needCount.msg = '此档位所需人数必须大于上一档位';
+                        _infos[index].needCount.msg = `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd923240)}`;
                     } else {
                         _infos[index].needCount.validateStatus = 'success';
                         _infos[index].needCount.msg = null;
                         _infos[1].needCount.validateStatus = 'success';
                         _infos[1].needCount.msg = null;
-                    }    
+                    }
                 } else {
                     _infos[index].needCount.validateStatus = 'success';
                     _infos[index].needCount.msg = null;
@@ -401,7 +434,7 @@ class AddGifts extends React.Component {
             }
         } else {
             _infos[index].needCount.validateStatus = 'error';
-            _infos[index].needCount.msg = '膨胀需要人数必须大于0, 小于1000';
+            _infos[index].needCount.msg =  `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwv2416)}`;
         }
         this.setState({
             infos: _infos,
@@ -428,7 +461,7 @@ class AddGifts extends React.Component {
                     <FormItem
                         className={[styles.FormItemStyle].join(' ')}
                     >
-                        <span className={styles.formLabel}>相对有效期:</span>
+                        <span className={styles.formLabel}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}:</span>
                         <RadioGroup
                             className={styles.radioMargin}
                             value={info.effectType == '3' ? '1' : '0'}
@@ -444,14 +477,14 @@ class AddGifts extends React.Component {
                             }}
                         >
                             {
-                                [{ value: '0', label: '按小时' }, { value: '1', label: '按天' }].map((item, index) => {
+                                [{ value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}` }, { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}` }].map((item, index) => {
                                     return <Radio value={item.value} key={index}>{item.label}</Radio>
                                 })
                             }
                         </RadioGroup>
                     </FormItem>
                     <FormItem
-                        label="何时生效"
+                        label={this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd27139)}
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -480,7 +513,7 @@ class AddGifts extends React.Component {
                         className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
-                        label={'有效天数'}
+                        label={`${this.props.intl.formatMessage(STRING_SPE.d17009bd421d28267)}`}
                         required={true}
                         validateStatus={info.giftValidDays.validateStatus}
                         help={info.giftValidDays.msg}
@@ -489,7 +522,7 @@ class AddGifts extends React.Component {
 
                         <PriceInput
                             addonBefore=""
-                            addonAfter="天"
+                            addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
                             maxNum={5}
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
@@ -515,7 +548,7 @@ class AddGifts extends React.Component {
         }
         return (
             <FormItem
-                label="固定有效期"
+                label={this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}
                 className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
@@ -538,7 +571,7 @@ class AddGifts extends React.Component {
 
         if (date === null || date === undefined || !date[0] || !date[1]) {
             _infos[index].giftEffectiveTime.validateStatus = 'error';
-            _infos[index].giftEffectiveTime.msg = '请输入有效时间';
+            _infos[index].giftEffectiveTime.msg = `${this.props.intl.formatMessage(STRING_SPE.db60a2a3892030168)}`;
         } else {
             _infos[index].giftEffectiveTime.validateStatus = 'success';
             _infos[index].giftEffectiveTime.msg = null;
@@ -594,7 +627,7 @@ class AddGifts extends React.Component {
             _infos[index].giftInfo.giftName = null;
             _infos[index].giftInfo.giftItemID = null;
             _infos[index].giftInfo.validateStatus = 'error';
-            _infos[index].giftInfo.msg = '必须选择礼券';
+            _infos[index].giftInfo.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`;
             this.setState({
                 infos: _infos,
             }, () => {
@@ -612,7 +645,7 @@ class AddGifts extends React.Component {
             _infos[index].giftTotalCount.msg = null;
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
-            _infos[index].giftTotalCount.msg = '礼品总数必须大于0';
+            _infos[index].giftTotalCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
         }
         this.setState({
             infos: _infos,
@@ -620,21 +653,21 @@ class AddGifts extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
-    handlegiftCountChange(value, index) {
+    handlegiftCountChange = (value, index) => {
         const _infos = this.state.infos;
         _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
             if (_value > 50 && (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70')) {
                 _infos[index].giftCount.validateStatus = 'error';
-                _infos[index].giftCount.msg = '礼品个数必须在1到50之间';
+                _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`;
             } else {
                 _infos[index].giftCount.validateStatus = 'success';
                 _infos[index].giftCount.msg = null;
             }
         } else {
             _infos[index].giftCount.validateStatus = 'error';
-            _infos[index].giftCount.msg = '礼品个数必须大于0';
+            _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.da8oel25o134160)}`;
         }
         this.setState({
             infos: _infos,
@@ -651,16 +684,16 @@ class AddGifts extends React.Component {
         }
         // 不是最后一个
         if (index === 0 && _length === 1) {
-            return (<span className={styles.CategoryAdd} onClick={this.add}>{this.props.type == '70' ? null : this.props.type == '20' ? '添加中奖等级' : '添加礼品'}</span>);
+            return (<span className={styles.CategoryAdd} onClick={this.add}>{this.props.type == '70' ? null : this.props.type == '20' ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)}` : `${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}`}</span>);
         } else if (index < _length - 1) {
             return null;
         } else if (index == _length - 1 && _length == this.state.maxCount) {
-            return (<span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>)
+            return (<span className={styles.CategoryAdd} onClick={() => this.remove(index)}>{this.props.intl.formatMessage(STRING_SPE.dojv8nhwv3776)}</span>)
         } else if (index == _length - 1 && _length < this.state.maxCount) {
             return (
                 <span>
-                    <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>删除</span>
-                    <span className={styles.CategoryAdd} onClick={this.add}>{'添加礼品'}</span>
+                    <span className={styles.CategoryAdd} onClick={() => this.remove(index)}>{this.props.intl.formatMessage(STRING_SPE.dojv8nhwv3776)}</span>
+                    <span className={styles.CategoryAdd} onClick={this.add}>{`${this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}`}`}</span>
                 </span>
             );
         }

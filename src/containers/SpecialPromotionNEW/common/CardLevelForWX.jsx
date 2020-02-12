@@ -32,11 +32,13 @@ import ExcludeCardTable from './ExcludeCardTable';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import ShopSelector from "../../../components/common/ShopSelector";
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
-
+@injectIntl
 class CardLevelForWX extends React.Component {
     constructor(props) {
         super(props);
@@ -275,7 +277,7 @@ class CardLevelForWX extends React.Component {
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
-                    label="适用店铺"
+                    label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -289,7 +291,7 @@ class CardLevelForWX extends React.Component {
                     />
                     {
                         queryCanUseShopStatus === 'error' && (
-                            <Tooltip title="查询可用店铺失败, 点击重试">
+                            <Tooltip title={this.props.intl.formatMessage(STRING_SPE.da8ofl352k0127)}>
                                 <Icon
                                     type="exclamation-circle"
                                     style={{
@@ -308,7 +310,7 @@ class CardLevelForWX extends React.Component {
                     }
                     {
                         queryCanUseShopStatus === 'pending' && (
-                            <Tooltip title="正在查询可用店铺">
+                            <Tooltip title={this.props.intl.formatMessage(STRING_SPE.db60a4a817301199)}>
                                 <Icon
                                     type="loading"
                                     style={{
@@ -347,18 +349,18 @@ class CardLevelForWX extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
-                    label="会员范围"
+                    label={this.props.intl.formatMessage(STRING_SPE.d216426238818026)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
-                        <Radio key={'2'} value={'2'}>{'线上卡类别'}</Radio>
-                        <Radio key={'5'} value={'5'}>{'线上卡等级'}</Radio>
+                        <Radio key={'2'} value={'2'}>{`${this.props.intl.formatMessage(STRING_SPE.d1700a52800c2287)}`}</Radio>
+                        <Radio key={'5'} value={'5'}>{`${this.props.intl.formatMessage(STRING_SPE.d31eif72jb0395)}`}</Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem
-                    label={`适用${cardLevelRangeType == 2 ? '卡类' : '卡等级'}`}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d1qe2lejcb4138)}${cardLevelRangeType == 2 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe2lejcb5102)}` : `${this.props.intl.formatMessage(STRING_SPE.du380iqhn0125)}`}`}
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                     labelCol={{ span: 4 }}
                     required={eventInfo.allCardLevelCheck || excludeEvent.length > 0}
@@ -371,7 +373,7 @@ class CardLevelForWX extends React.Component {
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
-                                notFoundContent={'未搜索到结果'}
+                                notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                 value={this.state.cardLevelIDList}
                                 className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                                 getPopupContainer={(node) => node.parentNode}
@@ -384,15 +386,15 @@ class CardLevelForWX extends React.Component {
                             </Select>)
                             :
                             (<BaseHualalaModal
-                                outLabel={'卡等级'} //   外侧选项+号下方文案
+                                outLabel={`${this.props.intl.formatMessage(STRING_SPE.du380iqhn0125)}`} //   外侧选项+号下方文案
                                 outItemName="cardLevelName" //   外侧已选条目选项的label
                                 outItemID="cardLevelID" //   外侧已选条目选项的value
-                                innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                innerleftTitle={`${this.props.intl.formatMessage(STRING_SPE.du380iqhn1240)}`} //   内部左侧分类title
                                 innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
                                 leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
                                 innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
                                 innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                                innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                innerBottomTitle={`${this.props.intl.formatMessage(STRING_SPE.dd5a318e4162103)}`} //   内部底部box的title
                                 innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                                 itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
                                 treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
@@ -422,11 +424,11 @@ class CardLevelForWX extends React.Component {
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length == 0 && this.state.cardLevelIDList.length === 0 ? (
                         <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
-                            不选择默认全选
+                        {this.props.intl.formatMessage(STRING_SPE.da8ofl352k60)}
                         </p>
                     ) : (eventInfo.allCardLevelCheck || excludeEvent.length > 0) && this.state.cardLevelIDList.length === 0  ? (
                         <p style={{ color: 'red', marginLeft: 110, marginTop: '-5px' }}>
-                            有卡类被占用, 不得为空
+                        {this.props.intl.formatMessage(STRING_SPE.du38h0lpm7158)}
                         </p>
                     ) : null
                 }

@@ -11,7 +11,11 @@ import {
     phoneTop,
 } from './assets';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class FreeGiftDecorationBoard extends Component {
 
     renderPhonePreview() {
@@ -29,22 +33,22 @@ export default class FreeGiftDecorationBoard extends Component {
         return (
             <div className={style.previewArea}>
                 <div className={style.scrollTip}>
-                    滚动鼠标查看活动
+                    {SALE_LABEL.k635s5a1}
                 </div>
                 <div className={style.typeTitle}>
-                    免费领取
+                    {SALE_LABEL.k636p0yo}
                 </div>
                 <img src={iphone} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: activeBg, paddingTop: 80 }} className={style.scrollArea}>
                     <img style={{ width: '100%', position: 'absolute', top: 0 }} src={activeImg || freeGift} alt=""/>
                     <div style={{ position: 'relative', zIndex: 1, margin: '8px 0', textAlign: 'center', color: '#ED6648' }}>
-                        活动日期：2019.09.10~2019.11.12
+        {SALE_LABEL.k636p170}：2019.09.10~2019.11.12
                     </div>
                     <img style={{ position: 'relative', zIndex: 1, display: 'block', margin: '10px auto', width: 254 }} src={freeGift1} alt=""/>
                     <img style={{ position: 'absolute', zIndex: 1, display: 'block', top: 196, left: 49, width: 185 }} src={giftExample} alt=""/>
                     <div style={{ borderRadius: 20, background: btnBg, color: btnTextColor}} className={style.freeButton}>
-                        免费领取
+                        {SALE_LABEL.k636p0yo}
                     </div>
                     <div style={{ position: 'relative', borderColor: listBorderColor }} className={style.friendZone}>
                         <div
@@ -67,7 +71,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 left: 97,
                             }}
                         >
-                            其他小伙伴
+                            {SALE_LABEL.k636p1fc}
                         </div>
                         <img
                             src={freeGift2}
@@ -83,7 +87,7 @@ export default class FreeGiftDecorationBoard extends Component {
             </div>
         )
     }
-    
+
     renderSettingPanel() {
         const {
             decorationInfo: {
@@ -100,11 +104,11 @@ export default class FreeGiftDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>活动背景色</div>
+        <div className={style.label}>{SALE_LABEL.k636p1no}</div>
                     <ColorSettingBlock value={activeBg} onChange={(value) => onChange({key: ['activeBg'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+        <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
@@ -112,16 +116,16 @@ export default class FreeGiftDecorationBoard extends Component {
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸750x666像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+        <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}750x666</p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 5 }} className={style.label}>按钮样式</div>
+        <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2l0}</div>
                     <div className={style.inlineRow}>
-                        <span>按钮底色</span>
+        <span>{SALE_LABEL.k6346bn4}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -130,7 +134,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        <span>文字颜色</span>
+        <span>{SALE_LABEL.k6346bvg}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -142,9 +146,9 @@ export default class FreeGiftDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 5 }} className={style.label}>领取列表</div>
+        <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2co}</div>
                     <div className={style.inlineRow}>
-                        <span>标签底色</span>
+        <span>{SALE_LABEL.k636p1w0}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -156,7 +160,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        <span>边框颜色</span>
+                            <span>{SALE_LABEL.k636p24c}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -165,7 +169,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                        <span>文字颜色</span>
+                            <span>{SALE_LABEL.k6346bvg}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}

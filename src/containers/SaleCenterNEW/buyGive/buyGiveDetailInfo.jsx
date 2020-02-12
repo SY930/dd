@@ -28,26 +28,11 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
-const RULE_TYPE = [
-    {
-        value: '2',
-        label: '购买指定菜品满',
-    },
-    {
-        value: '4',
-        label: '购买指定菜品每满',
-    },
-    {
-        value: '1',
-        label: '购买同一菜品满',
-    },
-    {
-        value: '3',
-        label: '购买同一菜品每满',
-    },
-]
-
+@injectIntl()
 class BuyGiveDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -176,7 +161,30 @@ class BuyGiveDetailInfo extends React.Component {
         this.setState({ giveFoodCount, giveFoodCountFlag });
     }
 
-    renderBuyDishNumInput() {
+    renderBuyDishNumInput = () => {
+        const { intl } = this.props;
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+        const k5hlxzmq = intl.formatMessage(SALE_STRING.k5hlxzmq);
+        const k5hlxzv2 = intl.formatMessage(SALE_STRING.k5hlxzv2);
+        const RULE_TYPE = [
+            {
+                value: '2',
+                label: k5ez4pvb,
+            },
+            {
+                value: '4',
+                label: k5ez4qew,
+            },
+            {
+                value: '1',
+                label: k5hlxzmq,
+            },
+            {
+                value: '3',
+                label: k5hlxzv2,
+            },
+        ]
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -208,7 +216,9 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderGiveDishNumInput() {
+    renderGiveDishNumInput = () => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -218,14 +228,14 @@ class BuyGiveDetailInfo extends React.Component {
             >
 
                 <PriceInput
-                    addonBefore={'菜品赠送数量'}
-                    addonAfter={'份'}
+                    addonBefore={SALE_LABEL.k5hly03e}
+                    addonAfter={k5ez4qy4}
                     value={{ number: this.state.giveFoodCount }}
                     defaultValue={{ number: this.state.giveFoodCount }}
                     onChange={this.onGiveFoodCountChange}
                     modal="int"
                 />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>表示赠送菜品的总数，如输入2，代表所有赠送菜品任选，共赠送2份</span>
+    <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
             </FormItem>
         )
     }
@@ -233,15 +243,15 @@ class BuyGiveDetailInfo extends React.Component {
     renderDishsSelectionBox() {
         return (
             <FormItem
-                label="赠送菜品"
+                label={SALE_LABEL.k5hly0bq}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
                 required={true}
                 validateStatus={this.state.dishsSelectStatus}
-                help={this.state.dishsSelectStatus == 'success' ? null : '赠送菜品不可为空'}
+                help={this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
             >
-                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />           
+                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />
             </FormItem>
         )
     }
@@ -255,9 +265,9 @@ class BuyGiveDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

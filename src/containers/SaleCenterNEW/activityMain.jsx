@@ -73,9 +73,12 @@ import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailIn
 import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
 import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
 import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
+@injectIntl()
 class ActivityMain extends React.Component {
     constructor(props) {
         super(props);
@@ -86,12 +89,16 @@ class ActivityMain extends React.Component {
     }
 
     renderSideBar() {
+        const { intl } = this.props;
+        const k5g5bcqo = intl.formatMessage(SALE_STRING.k5g5bcqo);
+        const k5gfsuwz = intl.formatMessage(SALE_STRING.k5gfsuwz);
+
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         if (this.isOnline()) {
             return (
                 <div className={styles.promotionTip}>
                     <div style={{fontSize: 18 }}>
-                        活动说明
+                        {SALE_LABEL.k5krn6a9}
                     </div>
                     <div style={{ marginBottom: 20, whiteSpace: 'pre-line' }}>
                         {this.props.promotionType ?
@@ -104,14 +111,14 @@ class ActivityMain extends React.Component {
             case 1:
                 return (
                     <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
+                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
                     </div>
                 );
             case 2:
                 return (
                     <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
-                        <ActivitySidebar listsTitle={'2 | 活动范围'} key="2" />
+                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
+                        <ActivitySidebar listsTitle={'2 | '+k5gfsuwz} key="2" />
                     </div>
                 );
             default:
@@ -222,7 +229,7 @@ class ActivityMain extends React.Component {
     }
     isOnline = () => {
         return ONLINE_PROMOTION_TYPES.map(item => `${item.key}`).includes(`${this.props.promotionType}`)
-    }   
+    }
     render() {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         const index = this.props.index;

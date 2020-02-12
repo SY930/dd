@@ -9,8 +9,12 @@ import {
 import Authority from "../../components/common/Authority/index";
 import {SMS_TEMPLATE_DELETE, SMS_TEMPLATE_UPDATE} from "../../constants/authorityCodes";
 import {isBrandOfHuaTianGroupList} from "../../constants/projectHuatianConf";
-const confirm = Modal.confirm;
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+const confirm = Modal.confirm;
+@injectIntl()
 class MessageDisplayBox extends React.Component {
 
     constructor(props) {
@@ -20,15 +24,15 @@ class MessageDisplayBox extends React.Component {
 
     showConfirm() {
         confirm({
-            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+            title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3} ?</span>,
             content:
                     <div>
                         <span style={{color: '#787878'}}>
-                            {`您将删除【${this.props.template ? this.props.template.substring(0, 6) + '...' : ''}】短信模板`}
+        {SALE_LABEL.k5do6vse}{`【${this.props.template ? this.props.template.substring(0, 6) + '...' : ''}】`}{SALE_LABEL.k6d9ll1r}
                         </span>
                         <br/>
                         <span style={{color: '#aeaeae'}}>
-                            删除数据是不可恢复操作, 请慎重考虑
+                            {SALE_LABEL.k5do4z54}
                         </span>
                     </div>
                      ,
@@ -38,10 +42,10 @@ class MessageDisplayBox extends React.Component {
                                     itemID: this.props.id,
                                 })
                                 .then(() => {
-                                    message.success(`删除成功`);
+                                    message.success(SALE_LABEL.k5do0ps6);
                                     this.props.getMessageTemplateList();
                                 })
-                                .catch(err => message.error(`删除失败: ${err}`));
+                            .catch(err => message.error(<span>{SALE_LABEL.k5doax7i}: {err}</span>));
             },
             onCancel() {},
         });
@@ -65,7 +69,7 @@ class MessageDisplayBox extends React.Component {
                                         e.stopPropagation();
                                         this.showConfirm();
                                     }}
-                                    >删除</span>
+                                    >{ COMMON_LABEL.delete }</span>
                                     </Authority>
                                 ) }
                             </div>

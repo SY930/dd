@@ -15,10 +15,12 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../common/ConnectedScopeListSelector';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
-
+@injectIntl()
 class NDiscountDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -103,7 +105,7 @@ class NDiscountDetailInfo extends React.Component {
             return true;
         } else if (nextFlag && stageType == '1') {
             if (!priceLst.length) {
-                message.warning('请指定第二份菜品');
+                message.warning(this.props.intl.formatMessage(SALE_STRING.k6hdp6nz));
                 return false;
             }
             const rule = {
@@ -133,9 +135,9 @@ class NDiscountDetailInfo extends React.Component {
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -181,9 +183,9 @@ class NDiscountDetailInfo extends React.Component {
                     />
                     {
                         this.state.stageType === '1' && (
-                            <FormItem required={true} label="第二份菜品" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                            <FormItem required={true} label={SALE_LABEL.k6hdp6wb} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                                 <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={(dishes) => this.handleDishesChange({dishes})} />
-                            </FormItem>   
+                            </FormItem>
                         )
                     }
                     {this.renderAdvancedSettingButton()}

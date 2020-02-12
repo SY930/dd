@@ -9,20 +9,15 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const RULE_TYPE = [
-    { key: '0', value: '任意消费满' },
-    { key: '1', value: '任意消费每满' },
-    { key: '2', value: '指定菜品消费满' },
-    { key: '3', value: '指定菜品消费每满' },
-];
-
-
+@injectIntl()
 class BuyAFreeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -215,9 +210,9 @@ class BuyAFreeDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -288,7 +283,19 @@ class BuyAFreeDetailInfo extends React.Component {
         }
     }
 
-    renderRules() {
+    renderRules = () => {
+        const { intl } = this.props;
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pdf = intl.formatMessage(SALE_STRING.k5ez4pdf);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const RULE_TYPE = [
+            { key: '0', value: k5ez4ovx },
+            { key: '1', value: k5ez4pdf },
+            { key: '2', value: k5ez4pvb },
+            { key: '3', value: k5ez4qew },
+        ];
         return this.state.data.map((rule, idx) => {
             return (
                 <Row key={`row${idx}`}>
@@ -298,7 +305,7 @@ class BuyAFreeDetailInfo extends React.Component {
                                 className={[styles.selectInInput, styles.FormItemStyle, styles.explainBack].join(' ')}
                                 wrapperCol={{ span: 24 }}
                                 validateStatus={rule.stageAmountFlag ? 'success' : 'error'}
-                                help={rule.stageAmountFlag ? null : '请输入不小于免费数的值'}
+                                help={rule.stageAmountFlag ? null : SALE_LABEL.k5keycn5}
                             >
 
                                 <PriceInput
@@ -321,7 +328,7 @@ class BuyAFreeDetailInfo extends React.Component {
                                             </span>
                                         )
                                     }
-                                    addonAfter={'份'}
+                                    addonAfter={k5ez4qy4}
                                     value={{ number: rule.stageAmount }}
                                     defaultValue={{ number: rule.stageAmount }}
                                     onChange={(val) => { this.onStageAmountChange(val, idx) }}
@@ -335,12 +342,12 @@ class BuyAFreeDetailInfo extends React.Component {
                                 className={styles.FormItemStyle}
                                 wrapperCol={{ span: 24 }}
                                 validateStatus={rule.freeAmountFlag ? 'success' : 'error'}
-                                help={rule.freeAmountFlag ? null : '输入不大于购买数的值'}
+                                help={rule.freeAmountFlag ? null : SALE_LABEL.k5keycet}
                             >
 
                                 <PriceInput
-                                    addonBefore={'免'}
-                                    addonAfter={'份最低价菜品'}
+                                    addonBefore={SALE_LABEL.k5keyd3t}
+                                    addonAfter={SALE_LABEL.k5keydc5}
                                     className={styles.PriceInputContent}
                                     value={{ number: rule.freeAmount }}
                                     defaultValue={{ number: rule.freeAmount }}
@@ -364,13 +371,13 @@ class BuyAFreeDetailInfo extends React.Component {
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <FormItem
-                        label="活动方式"
+                        label={SALE_LABEL.k5ez4n7x}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 20 }}
                     >
                         <p>
-                            任意或指定消费满或每满一定份数菜品,即可在已选购菜品中对一定份数的最低价商品进行免单
+                            {SALE_LABEL.k5keycvh}
                         </p>
                     </FormItem>
 

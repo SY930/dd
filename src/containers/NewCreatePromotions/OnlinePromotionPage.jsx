@@ -7,6 +7,9 @@ import {
     ONLINE_PROMOTION_CREATE_GROUP,
     ONLINE_PROMOTION_CREATE_SHOP,
 } from '../../constants/entryCodes';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 @registerPage([
     ONLINE_PROMOTION_CREATE_GROUP,
@@ -14,12 +17,15 @@ import {
 ], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class NewCustomerPage extends Component {
 
     render() {
+        const { intl } = this.props;
+        const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
         return (
             <BasePage
-                categoryTitle="线上营销"
+                categoryTitle={k6316i20}
                 promotions={
                     ONLINE_PROMOTION_TYPES
                 }

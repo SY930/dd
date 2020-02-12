@@ -15,28 +15,13 @@ import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/co
 
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
 
-const type = [
-    {
-        value: '2',
-        name: '任意菜品消费满',
-    },
-    {
-        value: '1',
-        name: '任意菜品消费每满',
-    },
-    {
-        value: '3',
-        name: '指定菜品消费满',
-    },
-    {
-        value: '4',
-        name: '指定菜品消费每满',
-    },
-];
-
+@injectIntl()
 class FullCutDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -143,12 +128,12 @@ class FullCutDetailInfo extends React.Component {
         const ruleValidation = ruleInfo.reduce((p, c, index, arr) => {
             if (c.start === null || c.end === null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end) || Number(c.start) < Number(c.end)) {
                 c.validationStatus = 'error';
-                c.helpMsg = '满减金额不得为空, 且门槛金额不能小于减免金额';
+                c.helpMsg = SALE_LABEL.k5gdz0vu;
                 return false;
             }
             if (index > 0 && (Number(c.start) <= Number(arr[index - 1].start) || Number(c.end) <= Number(arr[index - 1].end))) {
                 c.validationStatus = 'error';
-                c.helpMsg = '满减金额要大于上一档位的金额';
+                c.helpMsg = SALE_LABEL.k5gdz146;
                 return false;
             }
             return p && c.validationStatus === 'success';
@@ -200,7 +185,7 @@ class FullCutDetailInfo extends React.Component {
             _helpMsg = null
         } else {
             _validationStatus = 'error';
-            _helpMsg = '满减金额不得为空, 且门槛金额不能小于减免金额'
+            _helpMsg = SALE_LABEL.k5gdz0vu
         }
         const _tmp = this.state.ruleInfo;
         if (
@@ -210,7 +195,7 @@ class FullCutDetailInfo extends React.Component {
             (Number(_start) <= Number(_tmp[index - 1].start) || Number(_end) <= Number(_tmp[index - 1].end))
         ) {
             _validationStatus = 'error';
-            _helpMsg = '满减金额要大于上一档位的金额'
+            _helpMsg = SALE_LABEL.k5gdz146
         }
         if (
             _validationStatus === 'success' &&
@@ -221,7 +206,7 @@ class FullCutDetailInfo extends React.Component {
             _tmp[index + 1] = {
                 ..._tmp[index + 1],
                 validationStatus: 'error',
-                helpMsg: '满减金额要大于上一档位的金额',
+                helpMsg: SALE_LABEL.k5gdz146,
             };
         }
         _tmp[index] = {
@@ -237,7 +222,7 @@ class FullCutDetailInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{
                         span: 4,
@@ -246,7 +231,7 @@ class FullCutDetailInfo extends React.Component {
                         span: 17,
                     }}
                 >
-                    <p>任意或指定消费满或每满一定金额即可得到一定的减价优惠</p>
+                <p>{SALE_LABEL.k5gdz1ci}</p>
                 </FormItem>
                 {
                     this.renderRulesComponent()
@@ -256,7 +241,32 @@ class FullCutDetailInfo extends React.Component {
         )
     }
 
-    renderRulesComponent() {
+    renderRulesComponent = () => {
+        const { intl } = this.props;
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pdf = intl.formatMessage(SALE_STRING.k5ez4pdf);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+
+        const type = [
+            {
+                value: '2',
+                name: k5ez4ovx,
+            },
+            {
+                value: '1',
+                name: k5ez4pdf,
+            },
+            {
+                value: '3',
+                name: k5ez4pvb,
+            },
+            {
+                value: '4',
+                name: k5ez4qew,
+            },
+        ];
+
         return (this.state.ruleInfo.map((ruleInfo, index) => {
             const _value = {
                 start: null,
@@ -348,7 +358,7 @@ class FullCutDetailInfo extends React.Component {
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
                             style={{ marginLeft: '109px', width: '70.5%' }}
-                        > 
+                        >
                             <CustomRangeInput
                                 value={_value}
                                 onChange={(value) => {
@@ -441,9 +451,9 @@ class FullCutDetailInfo extends React.Component {
                     offset: 4,
                 }}
             >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -457,17 +467,17 @@ class FullCutDetailInfo extends React.Component {
                     <FormItem
                         label={
                             <span>
-                                满减优惠&nbsp;
-                                <Tooltip title="满减优惠不包含运费，所有商品适用，最大可设置5级满减">
+                                {SALE_LABEL.k5gdz1t6}&nbsp;
+                                <Tooltip title={SALE_LABEL.k5gdz1ku}>
                                     <Icon type="question-circle-o"></Icon>
-                                </Tooltip>                             
+                                </Tooltip>
                             </span>
                         }
                         className={styles.FormItemStyle}
                         labelCol={{span: 4}}
                         wrapperCol={{ span: 17 }}
                     >
-                        
+
                     </FormItem>
                     {this.renderOnlinePromotionRule()}
                 </Form>
@@ -477,7 +487,7 @@ class FullCutDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.ruleType != '1' && this.state.ruleType != '2' ? 
+                    {this.state.ruleType != '1' && this.state.ruleType != '2' ?
                         (
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                         ) : null

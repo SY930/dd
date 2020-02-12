@@ -26,26 +26,27 @@ export const SALE_CENTER_RESET_SCOPE_INFO = 'sale center : reset scope info new'
 
 import { message } from 'antd';
 import { axios } from '@hualala/platform-base';
+import { SALE_LABEL } from 'i18n/common/salecenter';
 
 export const SCENARIOS = Object.freeze([{
     value: '0',
     key: 'All',
-    name: '全部',
+    name: SALE_LABEL.k5eng042,
 },
 {
     value: '1',
     key: 'POS',
-    name: '云店',
+    name: SALE_LABEL.k5krn6qx,
 },
 {
     value: '2',
     key: 'WECHAT',
-    name: '微信',
+    name: SALE_LABEL.k5krn6z9,
 },
     {
     value: '3',
     key: 'YST',
-    name: '饮食通',
+    name: SALE_LABEL.k5krn77l,
 },
 ]);
 

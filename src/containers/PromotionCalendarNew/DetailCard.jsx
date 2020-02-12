@@ -5,7 +5,11 @@ import { Progress } from 'antd';
 import { axiosData } from '../../helpers/util';
 import editIcon from './assets/editIcon.png';
 import previewIcon from './assets/previewIcon.png';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class DetailCard extends Component {
     constructor() {
         super();
@@ -91,12 +95,12 @@ export default class DetailCard extends Component {
                                 strokeWidth={9}
                                 status="active"
                                 percent={+percent}
-                                format={() => ''}  
+                                format={() => ''}
                             />
                             <div className={style.usageInfo}>
-                                <div>发券数：{sendCount}</div>
-                                <div>用券数：{useCount}</div>
-                                <div>用券率：{percent}%</div>
+                                <div>{SALE_LABEL.k6316jwo}：{sendCount}</div>
+                                <div>{SALE_LABEL.k6316k50}：{useCount}</div>
+                                <div>{SALE_LABEL.k6316kdc}：{percent}%</div>
                             </div>
                         </div>
                     )
@@ -109,18 +113,18 @@ export default class DetailCard extends Component {
                     }
                     <img onClick={() => onEditOrPreviewBtnClick(this.props.data, 'preview')} src={previewIcon} alt=""/>
                 </div>
-                
+
                 <div className={style.detailLine}>
-                    活动类型：{title}
+                {SALE_LABEL.k5dk5uwl}：{title}
                 </div>
                 <div className={style.detailLine}>
-                    活动名称：{eventName}
+                {SALE_LABEL.k5dlcm1i}：{eventName}
                 </div>
                 <div className={style.detailLine}>
-                    活动周期：{moment(`${eventStartDate}`, 'YYYYMMDD').format('YYYY/MM/DD')} - {moment(`${eventEndDate}`, 'YYYYMMDD').format('YYYY/MM/DD')}
+                {SALE_LABEL.k6316jg0}：{moment(`${eventStartDate}`, 'YYYYMMDD').format('YYYY/MM/DD')} - {moment(`${eventEndDate}`, 'YYYYMMDD').format('YYYY/MM/DD')}
                 </div>
                 <div className={style.detailLine}>
-                    活动进度：{process}
+                {SALE_LABEL.k6316joc}：{process}
                 </div>
             </div>
         )

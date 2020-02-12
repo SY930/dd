@@ -15,22 +15,19 @@ import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRan
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import NoThresholdDiscountFoodSelector from './NoThresholdDiscountFoodSelector'
 import NoThresholdDiscountFoodSelectorForShop from './NoThresholdDiscountFoodSelectorForShop'
-
-
 import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
-const type = [
-    { value: '0', name: '下单即折扣' },
-    { value: '1', name: '任意菜品消费满' },
-    { value: '2', name: '指定菜品消费满' },
-]
 const FormItem = Form.Item;
 const Immutable = require('immutable');
 const Option = Select.Option;
 const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(value)
 
+@injectIntl()
 class DiscountDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -108,14 +105,14 @@ class DiscountDetailInfo extends React.Component {
         let nextFlag = true;
         const ruleValidation = ruleInfo.reduce((p, c) => {
             if (this.state.ruleType == '0') {
-                if (!isValidNumber(c.end)) {                   
+                if (!isValidNumber(c.end)) {
                     c.validationStatus = 'error';
-                    c.helpMsg = '请输入正确折扣范围';
+                    c.helpMsg = SALE_LABEL.k5gez9pw;
                 }
             } else {
                 if (!isValidNumber(c.start) || !isValidNumber(c.end)) {
                     c.validationStatus = 'error';
-                    c.helpMsg = '请输入正确折扣范围';
+                    c.helpMsg = SALE_LABEL.k5gez9pw;
                 }
             }
             return p && c.validationStatus === 'success';
@@ -169,11 +166,11 @@ class DiscountDetailInfo extends React.Component {
             _helpMsg = null
         } else {
             _validationStatus = 'error';
-            _helpMsg = '请输入正确折扣范围'
+            _helpMsg = SALE_LABEL.k5gez9pw
         }
         if (_end > 10) {
             _validationStatus = 'error';
-            _helpMsg = '请输入正确折扣范围'
+            _helpMsg = SALE_LABEL.k5gez9pw
         }
 
         const _tmp = this.state.ruleInfo;
@@ -203,19 +200,31 @@ class DiscountDetailInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <p> 可以采用下单即折扣、任意或指定消费满一定金额三种方式设置不同折扣</p>
+                <p>{SALE_LABEL.k5gfcri5}</p>
                 </FormItem>
                 {this.renderRulesComponent()}
             </div>
         )
     }
 
-    renderRulesComponent() {
+    renderRulesComponent = () => {
+        const { intl } = this.props;
+        const k5gez90v = intl.formatMessage(SALE_STRING.k5gez90v);
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+
+        const type = [
+            { value: '0', name: k5gez90v },
+            { value: '1', name: k5ez4ovx },
+            { value: '2', name: k5ez4pvb },
+        ];
         return (this.state.ruleInfo.map((ruleInfo, index) => {
             const _value = {
                 start: null,
@@ -243,7 +252,7 @@ class DiscountDetailInfo extends React.Component {
                                 addonBefore={
                                     <Select
                                         size="default"
-                                        placeholder="请选择活动类别"
+                                        placeholder=""
                                         className={`${styles.linkSelectorRight} discountDetailMountClassJs`}
                                         getPopupContainer={(node) => node.parentNode}
                                         value={this.state.ruleType}
@@ -289,10 +298,10 @@ class DiscountDetailInfo extends React.Component {
                                         }
                                     </Select>
                                 }
-                                endPlaceHolder="例如9.5折,8折"
+                                endPlaceHolder={k5ezdckg}
                                 discountMode={true}
-                                relation={this.state.ruleType == '0' ? '默认折扣' : '折扣'}
-                                addonAfterUnit={'折'}
+                                relation={this.state.ruleType == '0' ? SALE_LABEL.k5gez998 : SALE_LABEL.k5ezcu1b}
+                                addonAfterUnit={k5ezdc19}
                                 disabled={this.state.ruleType == '0'}
                                 value={_value}
                                 onChange={(value) => {
@@ -397,9 +406,9 @@ class DiscountDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.formItemForMore].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
             >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display &&
+                {SALE_LABEL.k5ezdx9f} {!this.state.display &&
                     <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
@@ -419,7 +428,7 @@ class DiscountDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
-                    {this.state.isDishVisibleIndex !== '1' ? 
+                    {this.state.isDishVisibleIndex !== '1' ?
                         <ConnectedScopeListSelector
                             component={component}
                             isShopMode={this.props.isShopFoodSelectorMode}

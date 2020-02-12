@@ -29,12 +29,17 @@ import {
 import ShopSelector from '../../../components/common/ShopSelector';
 import BirthdayCardLevelSelector from './BirthdayCardLevelSelector';
 import ExcludeCardTable from '../common/ExcludeCardTable';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+
 
 const RadioGroup = Radio.Group;
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -201,7 +206,7 @@ class StepTwo extends React.Component {
             if (!this.state.groupMembersID) {
                 this.props.form.setFields({
                     setgroupMembersID: {
-                        errors: [new Error('请选择会员群体')],
+                        errors: [new Error(`${this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}`)],
                     },
                 });
                 return false;
@@ -214,7 +219,7 @@ class StepTwo extends React.Component {
                 opts.settleUnitID = this.state.settleUnitID;
                 opts.accountNo = this.state.accountNo;
             } else {
-                message.warning('短信权益账户不得为空')
+                message.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`)
                 return false;
             }
         } else {
@@ -234,7 +239,7 @@ class StepTwo extends React.Component {
     // 会员群体Option
     renderOptions() {
         return  this.state.groupMembersList.map((groupMembers, index) => (
-            <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
+            <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【${this.props.intl.formatMessage(STRING_SPE.de8fb5g9592274)}${groupMembers.totalMembers}${this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}】`}</Option>
         ));
     }
     handleSelectChange(value) {
@@ -245,7 +250,7 @@ class StepTwo extends React.Component {
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         return (
             <FormItem
-                label="会员群体"
+                label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -253,7 +258,7 @@ class StepTwo extends React.Component {
                 {this.props.form.getFieldDecorator('setgroupMembersID', {
                     rules: [{
                         required: true,
-                        message: '请选择会员群体',
+                        message: `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c5106)}`,
                     }],
                     initialValue: this.state.groupMembersID,
                 })(
@@ -261,11 +266,11 @@ class StepTwo extends React.Component {
                         showSearch
                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         style={{ width: '100%' }}
-                        placeholder="请选择会员群体"
+                        placeholder={this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}
                         getPopupContainer={(node) => node.parentNode}
                         onChange={this.handleSelectChange}
                     >
-                        <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
+                        <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                         {this.renderOptions()}
                     </Select>
                 )}
@@ -304,11 +309,11 @@ class StepTwo extends React.Component {
         }
         return (
             <div>
-                <FormItem label={'会员范围'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.d216426238818026)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
-                        <Radio key={'5'} value={'5'}>会员群体</Radio>
-                        <Radio key={'0'} value={'0'}>会员卡类</Radio>
-                        <Radio key={'6'} value={'6'}>会员卡等级</Radio>
+                        <Radio key={'5'} value={'5'}>{this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}</Radio>
+                        <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}</Radio>
+                        <Radio key={'6'} value={'6'}>{this.props.intl.formatMessage(STRING_SPE.dk45j2cah011173)}</Radio>
                     </RadioGroup>
                 </FormItem>
                 {localType === '5' && this.renderMemberGroup()}
@@ -316,10 +321,10 @@ class StepTwo extends React.Component {
                     <CardLevel
                         cardLevelRangeType={cardLevelRangeType}
                         onChange={this.onCardLevelChange}
-                        label="适用卡类"
-                        cusAllLabel="不限"
-                        cusPartialLabel="部分卡类"
-                        cusSelectorLabel="选择卡类"
+                        label={this.props.intl.formatMessage(STRING_SPE.d170093144c212281)}
+                        cusAllLabel={this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}
+                        cusPartialLabel={this.props.intl.formatMessage(STRING_SPE.d34iceo4ed14114)}
+                        cusSelectorLabel={this.props.intl.formatMessage(STRING_SPE.d5671378cd581539)}
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}
@@ -329,7 +334,7 @@ class StepTwo extends React.Component {
                     localType === '6' && (
                         <div>
                             <FormItem
-                                label="适用卡等级"
+                                label={this.props.intl.formatMessage(STRING_SPE.d5g31n12fm1627)}
                                 className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
@@ -337,7 +342,7 @@ class StepTwo extends React.Component {
                                 {getFieldDecorator('cardLevelIDList', {
                                     rules: [{
                                         required: true,
-                                        message: '请选择卡等级',
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d1e04j2h621796)}`,
                                     }],
                                     initialValue: this.state.cardLevelIDList,
                                     onChange: (v) => this.setState({cardLevelIDList: v})
@@ -472,7 +477,7 @@ class StepTwo extends React.Component {
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
         return (
             <Form.Item
-                label="适用店铺"
+                label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -497,15 +502,15 @@ class StepTwo extends React.Component {
             <div>
                 {
                     this.props.type == '52' && (
-                        <FormItem label={'渠道限制'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                        <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.du382scl819184)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <Select onChange={this.handleSourceWayLimitChange}
                                     value={String(info.sourceWayLimit || '0')}
-                                    placeholder="请选择渠道限制"
+                                    placeholder={this.props.intl.formatMessage(STRING_SPE.dojv2jin820221)}
                                     getPopupContainer={(node) => node.parentNode}
                             >
-                                <Option key="0" value="0">不限制</Option>
-                                <Option key="1" value="1">仅线下</Option>
-                                <Option key="2" value="2">仅线上</Option>
+                                <Option key="0" value="0">{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Option>
+                                <Option key="1" value="1">{this.props.intl.formatMessage(STRING_SPE.d2b1b731e10d2291)}</Option>
+                                <Option key="2" value="2">{this.props.intl.formatMessage(STRING_SPE.d170093144c223129)}</Option>
                             </Select>
                         </FormItem>
                     )

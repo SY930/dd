@@ -24,12 +24,6 @@ const SpecialPromotionCfg = {
         { value: '75', label: '集点卡' },
         { value: '77', label: '支付后广告' },
     ],
-    /* 营销活动开关 */
-    EventIsActive: [
-        { value: '', label: '不限' },
-        { value: '0', label: '未启用' },
-        { value: '1', label: '已启用' },
-    ],
 }
 
 export default SpecialPromotionCfg

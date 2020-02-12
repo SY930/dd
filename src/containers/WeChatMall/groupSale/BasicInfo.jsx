@@ -10,7 +10,6 @@ import {
     Icon,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import '../../../components/common/ColorPicker.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;

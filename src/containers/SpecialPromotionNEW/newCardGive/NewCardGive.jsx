@@ -16,7 +16,11 @@ import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import StepTwo from '../birthdayGift/stepTwo';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class NewCardGive extends NewPromotion {
     constructor(props) {
         super(props);
@@ -30,7 +34,7 @@ class NewCardGive extends NewPromotion {
         const steps = [
 
             {
-                title: '基本信息',
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<PromotionBasicInfo
                     type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                     getSubmitFn={(handles) => {
@@ -39,7 +43,7 @@ class NewCardGive extends NewPromotion {
                 />),
             },
             {
-                title: '活动范围',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <StepTwo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
@@ -50,7 +54,7 @@ class NewCardGive extends NewPromotion {
                 ),
             },
             {
-                title: '活动内容',
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 content: (
                     <SpecialDetailInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}

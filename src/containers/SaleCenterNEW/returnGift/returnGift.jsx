@@ -29,6 +29,8 @@ import _ from 'lodash';
 import WeChatCouponCard from "../../WeChatCouponManagement/WeChatCouponCard";
 import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
 import { DEFAULT_GIFT_ITEM } from './returnGiftDetailInfo'
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -45,14 +47,14 @@ import {
 
 
 const type = [
-    { key: 0, value: '0', name: '相对有效期' },
-    { key: 1, value: '1', name: '固定有效期' },
+    { key: 0, value: '0', name: SALE_LABEL.k6d8n2kk },
+    { key: 1, value: '1', name: SALE_LABEL.k6d8n2sw },
 ];
 
 const VALIDATE_TYPE = Object.freeze([{
-    key: 0, value: '0', name: '相对有效期'
+    key: 0, value: '0', name: SALE_LABEL.k6d8n2kk
 },
-{ key: 1, value: '1', name: '固定有效期' }]);
+{ key: 1, value: '1', name: SALE_LABEL.k6d8n2sw }]);
 
 const availableGiftTypes = [// 顺序matters
     '112', '10', '20', '21', '111', '110', '30', '40', '42', '80',
@@ -61,7 +63,7 @@ const availableGiftTypes = [// 顺序matters
 const offlineCanUseGiftTypes = [
     '30', '40', '42', '80',
 ];
-
+@injectIntl()
 class ReturnGift extends React.Component {
     constructor(props) {
         super(props);
@@ -100,23 +102,30 @@ class ReturnGift extends React.Component {
     }
 
     render() {
-        const { isMultiple } = this.props; 
+        const { isMultiple } = this.props;
         return (
             <div className={[selfStyle.listWrapper, !isMultiple ? selfStyle.isNotMultiple : ''].join(' ')}>
                 {this.renderItems()}
                 {
                     this.state.infos.length < 10 && (
                         <div className={selfStyle.addLink} onClick={this.add}>
-                            + 添加礼品
+                            + {SALE_LABEL.k6d8n2c8}
                         </div>
                     )
                 }
-            </div>          
+            </div>
         );
     }
 
 
     renderItems() {
+        const { intl } = this.props;
+        const k5f3y5ml = intl.formatMessage(SALE_STRING.k5f3y5ml);
+
+        const k6d8n46w = intl.formatMessage(SALE_STRING.k6d8n46w);
+        const k6d8n4f8 = intl.formatMessage(SALE_STRING.k6d8n4f8);
+
+
         const filterOffLine = this.props.filterOffLine;// 支持到店属性
         const allCrmGifts = this.props.allCrmGifts.toJS();
         const allWeChatCouponList = this.props.weChatCouponList;
@@ -151,17 +160,17 @@ class ReturnGift extends React.Component {
             return (
                 <div className={selfStyle.giftWrapper}>
                     <div className={selfStyle.giftNoLabel}>
-                        {`礼品${index + 1}`}
+                    {SALE_LABEL.k6d8n318}{`${index + 1}`}
                     </div>
                     {
                         arr.length > 1 && (
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.remove(index)}>
+                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.remove(index)}>
                                 <Icon className={selfStyle.removeButton} type="close-circle" />
                             </Popconfirm>
                         )
                     }
                     <FormItem
-                        label="礼品名称"
+                        label={SALE_LABEL.k6d8n39k}
                         required={true}
                         validateStatus={info.giftInfo.validateStatus}
                         labelCol={{ span: 5 }}
@@ -183,7 +192,7 @@ class ReturnGift extends React.Component {
                             disArr={this.state.disArr || []}
                         >
                             <Input
-                                placeholder="请选择礼品"
+                                placeholder=""
                                 value={(this.getGiftValue(index) || '').split(',')[1]}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
@@ -199,7 +208,7 @@ class ReturnGift extends React.Component {
                     <div className={selfStyle.flexControlWrapper}>
                         <div style={{ width: '50%' }}>
                             <FormItem
-                                label="礼品数量"
+                                label={SALE_LABEL.k6d8n3hw}
                                 required={true}
                                 validateStatus={info.giftNum.validateStatus}
                                 help={info.giftNum.msg}
@@ -207,7 +216,7 @@ class ReturnGift extends React.Component {
                                 wrapperCol={{ span: 14 }}
                             >
                                 <PriceInput
-                                    addonAfter="张"
+                                    addonAfter={k5f3y5ml}
                                     modal="int"
                                     value={{ number: info.giftNum.value }}
                                     onChange={(val) => { this.handleCouponNumberChange(val, index); }}
@@ -224,8 +233,8 @@ class ReturnGift extends React.Component {
                                         help={info.giftMaxUseNum.msg}
                                     >
                                         <PriceInput
-                                            addonBefore="最多"
-                                            addonAfter="张"
+                                            addonBefore={SALE_LABEL.k6d8n3q8}
+                                            addonAfter={k5f3y5ml}
                                             modal="int"
                                             maxNum={6}
                                             value={{ number: info.giftMaxUseNum.value }}
@@ -234,7 +243,7 @@ class ReturnGift extends React.Component {
                                     </FormItem> : null
                             }
                         </div>
-                    </div>    
+                    </div>
                     {
                         info.giftInfo.giftType == '112' ? (
                             <div>
@@ -245,8 +254,8 @@ class ReturnGift extends React.Component {
                                 )}
                                 { !!couponEntity && (
                                     <Alert
-                                        message={`当前状态：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: '未知'}).label}`}
-                                        description="券未激活时无法发放成功，请确认。实际返券张数以微信支付商户平台设置的用户参与次数为准"
+                                        message={`${k6d8n46w}：${(BATCH_STATUS.find(item => item.value === `${couponEntity.couponStockStatus}`) || {label: k6d8n4f8 }).label}`}
+                                        description={SALE_LABEL.k6d8n4nk}
                                         type="warning"
                                         showIcon
                                     />
@@ -255,11 +264,11 @@ class ReturnGift extends React.Component {
                         ) : (
                             <div>
                                 <FormItem
-                                    label="有效期限"
+                                    label={SALE_LABEL.k6d8n3yk}
                                     labelCol={{ span: 5 }}
                                     wrapperCol={{ span: 18 }}
                                 >
-                                    
+
                                     <RadioGroup
                                         value={info.giftValidType > 1 ? '0' : `${info.giftValidType}`}
                                         onChange={val => this.handleValidateTypeChange(val, index)}
@@ -301,7 +310,7 @@ class ReturnGift extends React.Component {
                     >
                         <PriceInput
                             addonBefore=""
-                            addonAfter="天"
+                            addonAfter={SALE_LABEL.k5nh237x}
                             modal="int"
                             maxNum={5}
                             value={{ number: info.giftValidDays.value }}
@@ -309,7 +318,7 @@ class ReturnGift extends React.Component {
                         />
                     </FormItem>
                     <FormItem
-                        label="生效时间"
+                        label={SALE_LABEL.k6d8n4vw}
                         labelCol={{ span: 5 }}
                         wrapperCol={{ span: 18 }}
                     >
@@ -335,7 +344,7 @@ class ReturnGift extends React.Component {
                                 }}
                             >
                                 {
-                                    [{ value: '0', label: '按小时' }, { value: '2', label: '按天' }].map((item, index) => {
+                                    [{ value: '0', label: SALE_LABEL.k6d9lj73 }, { value: '2', label: SALE_LABEL.k6d9ljff }].map((item, index) => {
                                         return <Option value={item.value} key={index}>{item.label}</Option>
                                     })
                                 }
@@ -391,7 +400,7 @@ class ReturnGift extends React.Component {
 
         if (date === null || date === undefined || (date instanceof Array && date.length === 0)) {
             _infos[index].giftEffectiveTime.validateStatus = 'error';
-            _infos[index].giftEffectiveTime.msg = '请输入有效时间';
+            _infos[index].giftEffectiveTime.msg = SALE_LABEL.k6d9ljnr;
         } else {
             _infos[index].giftEffectiveTime.validateStatus = 'success';
             _infos[index].giftEffectiveTime.msg = null;
@@ -412,7 +421,7 @@ class ReturnGift extends React.Component {
             _infos[index].giftValidDays.msg = null;
         } else {
             _infos[index].giftValidDays.validateStatus = 'error';
-            _infos[index].giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giftValidDays.msg = SALE_LABEL.k6d9ljw3;
         }
         this.setState({
             infos: _infos,
@@ -439,12 +448,12 @@ class ReturnGift extends React.Component {
             _infos[index].giftEffectiveTime.value = '0';
             _infos[index].giftEffectiveTime.msg = null;
             _infos[index].giftValidDays.validateStatus = _infos[index].giftValidDays.value > 0 ? 'success' : 'error';
-            _infos[index].giftValidDays.msg = _infos[index].giftValidDays.value > 0 ? null : '请输入有效时间';
+            _infos[index].giftValidDays.msg = _infos[index].giftValidDays.value > 0 ? null : SALE_LABEL.k6d9ljnr;
         } else {
             _infos[index].giftValidDays.validateStatus = 'success';
             _infos[index].giftValidDays.msg = null;
             _infos[index].giftEffectiveTime.validateStatus = _infos[index].giftEffectiveTime.value[1] ? 'success' : 'error';
-            _infos[index].giftEffectiveTime.msg = _infos[index].giftEffectiveTime.value[1] ? null : '请输入有效时间';
+            _infos[index].giftEffectiveTime.msg = _infos[index].giftEffectiveTime.value[1] ? null : SALE_LABEL.k6d9ljnr;
         }
         this.setState({
             infos: _infos,
@@ -488,7 +497,7 @@ class ReturnGift extends React.Component {
             _infos[index].giftInfo.giftType = null;
             _infos[index].giftInfo.giftItemID = null;
             _infos[index].giftInfo.validateStatus = 'error';
-            _infos[index].giftInfo.msg = '必须选择礼券';
+            _infos[index].giftInfo.msg = SALE_LABEL.k67g8lvn;
             this.setState({
                 infos: _infos,
             }, () => {
@@ -508,18 +517,18 @@ class ReturnGift extends React.Component {
             if (isMultiple) {
                 if (_infos[index].giftMaxUseNum.value < +_value) {
                     _infos[index].giftNum.validateStatus = 'error';
-                    _infos[index].giftNum.msg = '礼品数量不超过最多限制';
+                    _infos[index].giftNum.msg = SALE_LABEL.k6d9lk4f;
                 } else {
                     const maxUseValue = _infos[index].giftMaxUseNum.value;
                     _infos[index].giftNum.validateStatus = 'success';
                     _infos[index].giftNum.msg = null;
                     _infos[index].giftMaxUseNum.validateStatus = maxUseValue > 0 && maxUseValue <= 10000 ? 'success' : 'error';
-                    _infos[index].giftMaxUseNum.msg = maxUseValue > 0 && maxUseValue <= 10000 ? null : '最多返券数量必须大于等于1, 小于等于10000';
+                    _infos[index].giftMaxUseNum.msg = maxUseValue > 0 && maxUseValue <= 10000 ? null : SALE_LABEL.k6d9lkcr;
                 }
             }
         } else {
             _infos[index].giftNum.validateStatus = 'error';
-            _infos[index].giftNum.msg = '返券数量必须大于0, 小于等于50';
+            _infos[index].giftNum.msg = SALE_LABEL.k6d9lkl3;
         }
         this.setState({
             infos: _infos,
@@ -536,17 +545,17 @@ class ReturnGift extends React.Component {
         if (_value > 0 && _value <= 10000) {
             if (_infos[index].giftNum.value > +_value) {
                 _infos[index].giftMaxUseNum.validateStatus = 'error';
-                _infos[index].giftMaxUseNum.msg = '最多返券数不少于礼品数量';
+                _infos[index].giftMaxUseNum.msg = SALE_LABEL.k6d9lktf;
             } else {
                 const numValue = _infos[index].giftNum.value;
                 _infos[index].giftMaxUseNum.validateStatus = 'success';
                 _infos[index].giftMaxUseNum.msg = null;
                 _infos[index].giftNum.validateStatus = numValue > 0 && numValue < 51 ? 'success' : 'error';
-                _infos[index].giftNum.msg = numValue > 0 && numValue < 51 ? null : '返券数量必须大于0, 小于等于50';
+                _infos[index].giftNum.msg = numValue > 0 && numValue < 51 ? null : SALE_LABEL.k6d9lkl3;
             }
         } else {
             _infos[index].giftMaxUseNum.validateStatus = 'error';
-            _infos[index].giftMaxUseNum.msg = '最多返券数量必须大于等于1, 小于等于10000';
+            _infos[index].giftMaxUseNum.msg = SALE_LABEL.k6d9lkcr;
         }
         this.setState({
             infos: _infos,

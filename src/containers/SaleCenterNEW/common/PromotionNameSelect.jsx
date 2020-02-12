@@ -5,6 +5,8 @@ import {
 import _ from 'lodash'
 import { axiosData } from '../../../helpers/util'
 import CC2PY, { CC2PYSS } from '../../../components/common/CC2PY';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const Option = Select.Option;
 const Immutable = require('immutable');
@@ -61,9 +63,9 @@ export default class PromotionNameSelect extends React.Component {
                     this.setState({ promotionName })
                     this.props.onChange({ promotionName })
                 }}
-                notFoundContent={'未搜索到结果'}
+                notFoundContent={SALE_LABEL.k5dod8s9}
                 filterOption={false}
-                placeholder="请输入活动名称"
+                placeholder={SALE_LABEL.k5dlcm1i}
             >
                 {
                     (this.state.promotionNameLst || []).map(v => <Option key={v} value={v}>{v}</Option>)

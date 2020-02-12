@@ -11,7 +11,11 @@ import {
     phoneTop,
 } from './assets';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
+@injectIntl()
 export default class LotteryDecorationBoard extends Component {
 
     renderPhonePreview() {
@@ -26,10 +30,10 @@ export default class LotteryDecorationBoard extends Component {
         return (
             <div className={style.previewArea}>
                 <div className={style.scrollTip}>
-                    滚动鼠标查看活动
+                    {SALE_LABEL.k635s5a1}
                 </div>
                 <div className={style.typeTitle}>
-                    摇奖活动
+                    {SALE_LABEL.k636p31p}
                 </div>
                 <img src={iphone} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
@@ -50,7 +54,7 @@ export default class LotteryDecorationBoard extends Component {
                         </svg>
                         <img src={lotteryBtn} alt=""/>
                     </div>
-                    <img style={{ width: '90%', margin: '15px 5%', position: 'relative', zIndex: 10 }} src={lotteryExample} alt=""/>                       
+                    <img style={{ width: '90%', margin: '15px 5%', position: 'relative', zIndex: 10 }} src={lotteryExample} alt=""/>
                 </div>
             </div>
         )
@@ -58,7 +62,7 @@ export default class LotteryDecorationBoard extends Component {
     handleLinearGradientChange = (color1, color2) => {
         this.props.onChange({ key: ['btnBgColor'], value: `linear-gradient(${color1},${color2})` })
     }
-    
+
     renderSettingPanel() {
         const {
             decorationInfo: {
@@ -73,11 +77,11 @@ export default class LotteryDecorationBoard extends Component {
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>活动背景色</div>
+        <div className={style.label}>{SALE_LABEL.k636p1no}</div>
                     <ColorSettingBlock value={bgColor} onChange={(value) => onChange({key: ['bgColor'], value})} />
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
+        <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
@@ -85,16 +89,16 @@ export default class LotteryDecorationBoard extends Component {
                             onChange={value => onChange({key: ['bgImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片大小不要超过1000KB</p>
-                            <p>* 建议尺寸750x666像素</p>
-                            <p>* 支持JPG、PNG、GIF图片文件</p>
+                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                            <p>* {SALE_LABEL.k6346css}750x666</p>
+                            <p>* {SALE_LABEL.k6346d14}</p>
                         </div>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>按钮样式</div>
                     <div className={style.inlineRow}>
-                        <span>按钮底色</span>
+        <span>{SALE_LABEL.k6346bn4}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -111,7 +115,7 @@ export default class LotteryDecorationBoard extends Component {
                         </div>
                     </div>
                     <div style={{ marginTop: 10 }} className={style.inlineRow}>
-                        <span>文字颜色</span>
+        <span>{SALE_LABEL.k6346bvg}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}

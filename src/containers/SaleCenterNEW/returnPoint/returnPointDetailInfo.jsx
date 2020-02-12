@@ -7,14 +7,15 @@ import CustomRangeInput from '../../../containers/SaleCenterNEW/common/CustomRan
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
 import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import styles from '../ActivityPage.less';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 const Immutable = require('immutable');
-const type = [
-    { value: '2', name: '消费满一定金额即赠送相应积分' },
-    { value: '1', name: '消费每满一定金额即赠送相应积分' },
-];
+
 const Option = Select.Option;
 const FormItem = Form.Item;
 
+@injectIntl()
 class ReturnPointDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -82,11 +83,13 @@ class ReturnPointDetailInfo extends React.Component {
     }
 
     handleSubmit = (cbFn) => {
+        const { intl } = this.props;
+        const k6hdptkl = intl.formatMessage(SALE_STRING.k6hdptkl);
         const { ruleInfo, ruleType } = this.state;
         const ruleValidation = ruleInfo.reduce((p, c) => {
             if (c.start == null || c.end == null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
                 c.validationStatus = 'error';
-                c.helpMsg = '请输入正确的金额或返积分比例';
+                c.helpMsg = k6hdptkl;
             }
             return p && c.validationStatus === 'success';
         }, true);
@@ -133,6 +136,9 @@ class ReturnPointDetailInfo extends React.Component {
     };
 
     onCustomRangeInputChange(value, index) {
+        const { intl } = this.props;
+        const k6hdptkl = intl.formatMessage(SALE_STRING.k6hdptkl);
+
         let _validationStatus,
             _helpMsg;
         if ((parseFloat(value.end) >= 0) || (value.start == null && value.end != null) || (value.start != null && value.end == null)) {
@@ -140,7 +146,7 @@ class ReturnPointDetailInfo extends React.Component {
             _helpMsg = null
         } else {
             _validationStatus = 'error';
-            _helpMsg = '请输入正确的金额或返积分比例'
+            _helpMsg = k6hdptkl
         }
 
         const _tmp = this.state.ruleInfo;
@@ -154,17 +160,24 @@ class ReturnPointDetailInfo extends React.Component {
     }
 
     renderPromotionRule() {
+        const { intl } = this.props;
+        const k6hdpt3x = intl.formatMessage(SALE_STRING.k6hdpt3x);
+        const k6hdptc9 = intl.formatMessage(SALE_STRING.k6hdptc9);
+        const type = [
+            { value: '2', name: k6hdpt3x },
+            { value: '1', name: k6hdptc9 },
+        ];
         return (
             <div>
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
 
                     <Select
-                        placeholder="请选择活动类别"
+                        placeholder=""
                         className={`${styles.linkSelectorRight} returnPointClassJs`}
                         getPopupContainer={(node) => node.parentNode}
                         value={`${this.state.ruleType}`}
@@ -197,6 +210,8 @@ class ReturnPointDetailInfo extends React.Component {
         )
     }
     renderRulesComponent() {
+        const { intl } = this.props;
+        const k6hdptsx = intl.formatMessage(SALE_STRING.k6hdptsx);
         return (this.state.ruleInfo.map((ruleInfo, index) => {
             const _value = {
                 start: null,
@@ -219,8 +234,8 @@ class ReturnPointDetailInfo extends React.Component {
                             help={ruleInfo.helpMsg}
                         >
                             <CustomRangeInput
-                                relation={'返积分比例'}
-                                addonBefore={this.state.ruleType == 1 ? '消费每满' : '消费满'}
+                                relation={k6hdptsx}
+                                addonBefore={this.state.ruleType == 1 ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}
                                 addonAfterUnit={'%'}
                                 value={
                                     _value
@@ -316,9 +331,9 @@ class ReturnPointDetailInfo extends React.Component {
     renderAdvancedSettingButton() {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

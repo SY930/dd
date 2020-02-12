@@ -1,7 +1,10 @@
+import { SALE_LABEL } from 'i18n/common/salecenter';
+
+
 export const FILTERS = [{
     name: 'brands',
     key: 'brandID',
-    label: '品牌',
+    label: <span>{SALE_LABEL.k5dlpn4t}</span>,
     valueKey: 'brandID',
     labelKey: 'brandName',
     callserver: 'getShopBrand',
@@ -9,7 +12,7 @@ export const FILTERS = [{
 }, {
     name: 'shopCategories',
     key: 'shopCategoryID',
-    label: '店铺分组',
+    label: <span>{SALE_LABEL.d16hlk3kccf0161}</span>,
     valueKey: 'shopCategoryID',
     labelKey: 'shopCategoryName',
     callserver: 'getShopBrand',
@@ -17,7 +20,7 @@ export const FILTERS = [{
 }, {
     name: 'businessModels',
     key: 'businessModel',
-    label: '经营模式',
+    label: <span>{SALE_LABEL.dok9lk8l8157}</span>,
     valueKey: 'businessModel',
     labelKey: 'businessType',
 }, /*{
@@ -30,7 +33,7 @@ export const FILTERS = [{
 },*/ {
     name: 'citys',
     key: 'cityID',
-    label: '城市',
+    label: <span>{SALE_LABEL.dok9lk8l82132}</span>,
     valueKey: 'cityID',
     labelKey: 'cityName',
     callserver: 'getShopCities',
@@ -38,12 +41,12 @@ export const FILTERS = [{
 }, {
     name: 'orgTags',
     key: 'orgTagIDs',
-    label: '管理组织',
+    label: <span>{SALE_LABEL.d5g4obe6e1346}</span>,
     display: 'tree',
 }, {
     name: 'shopTags',
     key: 'tagIDs',
-    label: '店铺属性',
+    label: <span>{SALE_LABEL.d455j75nqf4152}</span>,
     display: 'treeLeaf',
     valueKey: 'tagID',
     labelKey: 'tagName',

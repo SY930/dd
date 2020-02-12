@@ -8,13 +8,16 @@ import { axiosData } from '../../helpers/util'
 import Calendar from 'rc-calendar'
 import style from './style.less';
 import solarLunar from 'solarlunar'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const disabledDate = current => {
     const yearDiff = moment(moment().format('YYYY0101'), 'YYYYMMDD')
         .diff(moment(current.format('YYYY0101'), 'YYYYMMDD'), 'years', true);
     return Math.abs(yearDiff) > 1;
 }
-
+@injectIntl()
 export default class CalendarModal extends Component {
 
     constructor() {
@@ -36,7 +39,7 @@ export default class CalendarModal extends Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((festivalList) => {
             if (monthStr === this.state.lastQueryMonth) {
-                this.setState({   
+                this.setState({
                     festivalList: Array.isArray(festivalList) ? festivalList : [],
                 })
             }
@@ -132,10 +135,10 @@ export default class CalendarModal extends Component {
         return (
             <Modal
                 onCancel={onCancel}
-                title="日历"
+                title={SALE_LABEL.k6316j7o}
                 width={920}
                 visible={true}
-                footer={[<Button type="ghost" onClick={onCancel}>关闭</Button>]}
+        footer={[<Button type="ghost" onClick={onCancel}>{COMMON_LABEL.close}</Button>]}
             >
                 {this.renderCalendar()}
             </Modal>

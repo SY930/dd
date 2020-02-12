@@ -26,6 +26,10 @@ import styles from './payAfter.less'
 import CropperUploader from 'components/common/CropperUploader'
 import phone from './assets/phone.png';
 import jingdong from './assets/jingdong.png';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+@injectIntl
 class StepThree extends React.Component{
     constructor(props) {
         super(props);
@@ -920,7 +924,7 @@ class StepThree extends React.Component{
                     </div>
                 </div>
                 <div className={styles.speForm}>
-                    <span className={styles.errorSpan}>{errorVisible ? '至少选择一项' : ''}</span>
+                    <span className={styles.errorSpan}>{errorVisible ? `${this.props.intl.formatMessage(STRING_SPE.d7elcdm04l714)}` : ''}</span>
                     <BaseForm
                         getForm={form => this.queryForm = form}
                         formItems={this.state.formItems}
