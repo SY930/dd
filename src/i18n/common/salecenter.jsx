@@ -171,10 +171,19 @@ const SALE_STRING = {
     d5g4obe6e1346: {id: "Sale.d5g4obe6e1346", defaultMessage: "管理组织"},
     d455j75nqf4152: {id: "Sale.d455j75nqf4152", defaultMessage: "店铺属性"},
     k6hdpu19: {id: "Sale.k6hdpu19", defaultMessage: "请至少添加一个菜品"},
+    k5hlhwpg: {id: "Sale.k5hlhwpg", defaultMessage: "菜品、赠菜数据不完整"},
     k5m5ax20: {id: "Sale.k5m5ax20", defaultMessage: "活动编码重复"},
     k6hdp6nz: {id: "Sale.k6hdp6nz", defaultMessage: "请指定第二份菜品"},
     k5kqf033: {id: "Sale.k5kqf033", defaultMessage: "至少要设置一份活动菜品"},
+<<<<<<< HEAD
     k5hkj1mr: {id: "Sale.k5hkj1mr", defaultMessage: "至少选择两个组合条件"},
+=======
+    k5koai82: {id: "Sale.k5koai82", defaultMessage: "升级前菜品"},
+    k5koaigf: {id: "Sale.k5koaigf", defaultMessage: "升级后菜品"},
+    k5koaior: {id: "Sale.k5koaior", defaultMessage: "单笔订单最多升级换新数量限制"},
+    k5koaix3: {id: "Sale.k5koaix3", defaultMessage: "单笔订单同一菜品最多升级换新数量限制"},
+    k5koaj5f: {id: "Sale.k5koaj5f", defaultMessage: "同一菜品数量不能大于单笔订单最多数量"},
+>>>>>>> 560243dc2df91c9ca4a4b3c34ce5d9cf3229ce45
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
