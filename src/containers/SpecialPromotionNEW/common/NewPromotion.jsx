@@ -14,6 +14,7 @@ import { jumpPage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { COMMON_SPE, STRING_SPE } from 'i18n/common/special';
 
+@injectIntl
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);

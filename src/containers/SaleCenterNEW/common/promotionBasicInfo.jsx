@@ -963,7 +963,9 @@ class PromotionBasicInfo extends React.Component {
             })
     }
 
-    rendertags() {
+    rendertags = () => {
+        const { intl } = this.props;
+        const k5nh23ol = intl.formatMessage(SALE_STRING.k5nh23ol);
         if (this.state.tagName === undefined) {
             return (<Option value={'0'} key={'0'} disabled={true}>{SALE_LABEL.k5m5ay7o}...</Option >);
         } else if (typeof this.state.tagName === 'object' && this.state.tagName.length == 0) {
