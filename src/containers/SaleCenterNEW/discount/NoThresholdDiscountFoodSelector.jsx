@@ -366,12 +366,14 @@ class NoThresholdDiscountFoodSelector extends Component {
         );
     }
     renderDishsSelectionBox() {
+        const { intl } = this.props;
+        const k5gfsvlz = intl.formatMessage(SALE_STRING.k5gfsvlz);
         const {
             allBrands,
             allCategories,
             allDishes,
             dishFilter,
-            dishLabel = SALE_LABEL.k5gfsvlz,
+            dishLabel,
             showRequiredMark,
             showEmptyTips,
         } = this.props;
@@ -385,11 +387,12 @@ class NoThresholdDiscountFoodSelector extends Component {
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
+        const dishLabel2 = dishLabel || k5gfsvlz;
         if (this.props.dishOnly) {
             return (
                 <FoodSelector
                     mode="dish"
-                    placeholder={`${dishLabel}`}
+                    placeholder={`${dishLabel2}`}
                     allDishes={dishes}
                     allCategories={categories}
                     allBrands={brands}
@@ -401,7 +404,7 @@ class NoThresholdDiscountFoodSelector extends Component {
         return (
             <div>
                 <FormItem
-                    label={dishLabel}
+                    label={dishLabel2}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -409,7 +412,7 @@ class NoThresholdDiscountFoodSelector extends Component {
                 >
                     <FoodSelector
                         mode="dish"
-                        placeholder={`${dishLabel}`}
+                        placeholder={`${dishLabel2}`}
                         allDishes={dishes}
                         allCategories={categories}
                         allBrands={brands}
