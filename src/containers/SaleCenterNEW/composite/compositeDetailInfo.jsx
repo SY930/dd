@@ -231,7 +231,7 @@ class CompositeDetailInfo extends React.Component {
             }
         });
         if (!groupCountFlag) {
-            message.warning(SALE_LABEL.k5hkj1mr);
+            message.warning(this.props.intl.formatMessage(SALE_STRING.k5hkj1mr));
         }
         if (nextFlag) {
             // 拼出ruleJson

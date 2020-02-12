@@ -174,6 +174,7 @@ const SALE_STRING = {
     k5m5ax20: {id: "Sale.k5m5ax20", defaultMessage: "活动编码重复"},
     k6hdp6nz: {id: "Sale.k6hdp6nz", defaultMessage: "请指定第二份菜品"},
     k5kqf033: {id: "Sale.k5kqf033", defaultMessage: "至少要设置一份活动菜品"},
+    k5hkj1mr: {id: "Sale.k5hkj1mr", defaultMessage: "至少选择两个组合条件"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
