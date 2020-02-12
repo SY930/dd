@@ -151,7 +151,7 @@ class NewPromotion extends React.Component {
                     });
                 },
                 sameCode: () => {
-                    message.error(SALE_LABEL.k5m5ax20);
+                    message.error(this.props.intl.formatMessage(SALE_STRING.k5m5ax20));
                     this.setState({
                         loading: false,
                     });
@@ -186,7 +186,7 @@ class NewPromotion extends React.Component {
                     });
                 },
                 sameCode: () => {
-                    message.error(SALE_LABEL.k5m5ax20);
+                    message.error(this.props.intl.formatMessage(SALE_STRING.k5m5ax20));
                     this.setState({
                         loading: false,
                     });

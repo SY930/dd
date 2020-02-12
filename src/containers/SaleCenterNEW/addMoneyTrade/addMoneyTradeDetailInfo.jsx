@@ -127,7 +127,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             stageCountFlag = false;
         }
         if (dishes.length === 0) {
-            message.warning(SALE_LABEL.k5kqf033)
+            message.warning(this.props.intl.formatMessage(SALE_STRING.k5kqf033))
             return false;
         }
         if (this.canLimitBeSet() && isLimited == '1' && !(totalFoodMax > 0 && totalFoodMax <= dishes.length)) {
