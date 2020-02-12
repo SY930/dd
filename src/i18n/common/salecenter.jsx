@@ -695,8 +695,8 @@ let COMMON_LABEL = defineMessages({
     dok9lk8l8157: {id: "Sale.dok9lk8l8157", defaultMessage: "经营模式"},
     dok9lk8l82132: {id: "Sale.dok9lk8l82132", defaultMessage: "城市"},
     d5g4obe6e1346: {id: "Sale.d5g4obe6e1346", defaultMessage: "管理组织"},
-    d455j75nqf4152: {id: "Sale.d455j75nqf4152", defaultMessage: "店铺属性"}
-    // k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: ""},
+    d455j75nqf4152: {id: "Sale.d455j75nqf4152", defaultMessage: "店铺属性"},
+    k6hhubnf: {id: "Sale.k6hhubnf", defaultMessage: "微信支付代金券"}
     // k6hhubvr: {id: "Sale.k6hhubvr", defaultMessage: ""},
     // k6hhuc43: {id: "Sale.k6hhuc43", defaultMessage: ""}
 });

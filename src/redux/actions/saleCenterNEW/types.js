@@ -111,47 +111,47 @@ export const SALE_CENTER_ACTIVITY_ORDER_TYPE = Object.freeze({
 });
 
 export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
-    label: '代金券',
+    label: SALE_LABEL.k5m5avfn,
     value: '10',
 },
 {
-    label: '菜品优惠券',
+    label: SALE_LABEL.k5m5avnz,
     value: '20',
 },
 {
-    label: '菜品兑换券',
+    label: SALE_LABEL.k5m5avwb,
     value: '21',
 },
 {
-    label: '折扣券',
+    label: SALE_LABEL.k636qvha,
     value: '111',
 },
 {
-    label: '微信支付代金券',
+    label: SALE_LABEL.k6hhubnf,
     value: '112',
 },
 {
-    label: '买赠券',
+    label: SALE_LABEL.k636qvpm,
     value: '110',
 },
 {
-    label: '实物礼品券',
+    label: SALE_LABEL.k67g7tk4,
     value: '30',
 },
 {
-    label: '会员充值券',
+    label: SALE_LABEL.k67g7tsg,
     value: '40',
 },
 {
-    label: '会员积分券',
+    label: SALE_LABEL.k67g7u0s,
     value: '42',
 },
 {
-    label: '会员权益券',
+    label: SALE_LABEL.k67g7u94,
     value: '80',
 },
 {
-    label: '活动券',
+    label: SALE_LABEL.k5m6e393,
     value: '100',
 },
 
@@ -670,15 +670,14 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: SALE_LABEL.k67b3y11,
             example: '',
             key: '66',
-            tip: `
-                ${SALE_LABEL.k636f2yf}: \r\n
-                1、${SALE_LABEL.k636f36s}\r\n
-                2、${SALE_LABEL.k636f3f4}\r\n
-                ${SALE_LABEL.k636f3ng}:\r\n
-                1、${SALE_LABEL.k636f3vs}\r\n
-                2、${SALE_LABEL.k636f444}\r\n
-                ${SALE_LABEL.k67g7vn4}:\r\n
-                ${SALE_LABEL.k67g8jby}`,
+            tip: <p>{SALE_LABEL.k636f2yf}<br/>
+                1、{SALE_LABEL.k636f36s}<br/>
+                2、{SALE_LABEL.k636f3f4}<br/>
+                {SALE_LABEL.k636f3ng}:<br/>
+                1、{SALE_LABEL.k636f3vs}<br/>
+                2、{SALE_LABEL.k636f444}<br/>
+                {SALE_LABEL.k67g7vn4}:<br/>
+                {SALE_LABEL.k67g8jby}</p>,
 
         },
         {
