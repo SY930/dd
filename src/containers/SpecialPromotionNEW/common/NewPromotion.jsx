@@ -12,7 +12,7 @@ import React from 'react';
 import { message } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
-import { COMMON_SPE } from 'i18n/common/special';
+import { COMMON_SPE, STRING_SPE } from 'i18n/common/special';
 
 export default class NewPromotion extends React.Component {
     constructor(props) {
@@ -97,11 +97,13 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
-            console.log('this.props.intl', this.props.intl);
+            const { intl } = this.props;
+            const d34idrcqen7223 = intl.formatMessage(STRING_SPE.d34idrcqen7223);
+            const de8fem99k0868 = intl.formatMessage(STRING_SPE.de8fem99k0868);
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: () => {
-                    message.success(COMMON_SPE.d34idrcqen7223);
+                    message.success(d34idrcqen7223);
                     this.setState({
                         loading: false,
                     });
@@ -110,7 +112,7 @@ export default class NewPromotion extends React.Component {
                     jumpPage({ menuID })
                 },
                 fail: (info) => {
-                    message.error(<span>{COMMON_SPE.de8fem99k0868} {info}</span>);
+                    message.error(de8fem99k0868 + info);
                     this.setState({
                         loading: false,
                     });

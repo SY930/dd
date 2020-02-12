@@ -86,7 +86,9 @@ class CollocationDetailInfo extends React.Component {
             });
             return true;
         }
-        message.warning(SALE_LABEL.k5hlhwpg);
+        const { intl } = this.props;
+        const k5hlhwpg = intl.formatMessage(SALE_STRING.k5hlhwpg);
+        message.warning(k5hlhwpg);
         return false;
     }
 
