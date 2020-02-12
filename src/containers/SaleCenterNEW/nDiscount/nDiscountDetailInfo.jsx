@@ -105,7 +105,7 @@ class NDiscountDetailInfo extends React.Component {
             return true;
         } else if (nextFlag && stageType == '1') {
             if (!priceLst.length) {
-                message.warning(SALE_LABEL.k6hdp6nz);
+                message.warning(this.props.intl.formatMessage(SALE_STRING.k6hdp6nz));
                 return false;
             }
             const rule = {
