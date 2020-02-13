@@ -183,6 +183,7 @@ const SALE_STRING = {
     k5koaj5f: {id: "Sale.k5koaj5f", defaultMessage: "同一菜品数量不能大于单笔订单最多数量"},
     k5do0ps6: {id: 'Sale.k5do0ps6', defaultMessage: '执行成功'},
     k5doax7i: {id: 'Sale.k5doax7i', defaultMessage: '请求失败'},
+    k5gfsvlz: {id: "Sale.k5gfsvlz", defaultMessage: "适用菜品"},
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},

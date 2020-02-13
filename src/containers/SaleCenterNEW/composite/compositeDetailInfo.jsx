@@ -153,6 +153,8 @@ class CompositeDetailInfo extends React.Component {
     handleSubmit() {
         let nextFlag = true;
         const { data, conditions } = this.state;
+        const { intl } = this.props;
+        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
@@ -163,7 +165,7 @@ class CompositeDetailInfo extends React.Component {
                         this.props.form.setFields({
                             [foodIdx]: {
                                 value: {},
-                                errors: [new Error(SALE_LABEL.k5hkj1ef)],
+                                errors: [new Error(k5hkj1ef)],
                             },
                         });
                         nextFlag = false;
