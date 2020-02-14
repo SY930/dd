@@ -1422,7 +1422,15 @@ class GiftAddModalStep extends React.PureComponent {
             },
             // 线上礼品卡(91) 和其他的券类 price字段有微弱不同
             price: {
-                label: value == '91' ? '礼品售价' : '建议售价',
+                label: value == '91' ? '礼品售价' : <div>
+                <span>记录实收金额</span>
+                <Tooltip title={
+                    <p>
+                        记录实收金额：仅用于报表作为实收金额核算
+                    </p>
+                }>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip></div>,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
