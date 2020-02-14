@@ -50,14 +50,35 @@ class PromotionAutoRunModal extends Component {
         const {
             availableList
         } = this.props;
+        console.log('promotionList', promotionList);
+        console.log('selectedRowKeys', selectedRowKeys);
+
+        let tempList = availableList
+            .filter(item => selectedRowKeys.includes(item.promotionID))  // 已选项
+            .sort((a, b) => { // 按照已排序列表中的顺序进行排序
+                    return (promotionList.findIndex(promotion => promotion.promotionID === a.promotionID) -
+                    promotionList.findIndex(promotion => promotion.promotionID === b.promotionID))
+                }
+            );
+        const c1 = promotionList.find(x=>x.promotionID === '-10'); // 会员价
+        const c2 = promotionList.find(x=>x.promotionID === '-20');  // 会员折扣
+        const i1 = selectedRowKeys.includes('-10');
+        const i2 = selectedRowKeys.includes('-20');
+        // 已选列表无 ，但 已选缓存有
+        if(!c2 && i2){
+            const f2 = tempList.findIndex(x=>x.promotionID === '-20');  // 会员折扣
+            const o = tempList.splice(f2, 1)[0];
+            const first = promotionList.findIndex(x=>x.promotionID === '-10');
+            const idx =  first === 0 ? 1 : 0; // 会员价已经是第一了就不动
+            tempList.splice(idx, 0, o);
+        }
+        if(!c1 && i1){
+            const f1 = tempList.findIndex(x=>x.promotionID === '-10'); // 会员价
+            const o = tempList.splice(f1, 1)[0];
+            tempList.splice(0, 0, o);
+        }
         this.setState({
-            promotionList: availableList
-                .filter(item => selectedRowKeys.includes(item.promotionID))  // 已选项
-                .sort((a, b) => { // 按照已排序列表中的顺序进行排序
-                        return (promotionList.findIndex(promotion => promotion.promotionID === a.promotionID) -
-                        promotionList.findIndex(promotion => promotion.promotionID === b.promotionID))
-                    }
-                ),
+            promotionList: tempList,
             innerModalVisible: false
         })
     }
@@ -155,10 +176,16 @@ class PromotionAutoRunModal extends Component {
                 title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 width: 480,
-                render: (promotionName) => {
+                render: (promotionName, row) => {
                     let text = promotionName;
                     if (promotionName === undefined || promotionName === null || promotionName === '') {
                         text = '--';
+                    }
+                    if(row.promotionID === '-10') {
+                        text = '会员价';
+                    }
+                    if(row.promotionID === '-20') {
+                        text = '会员折扣';
                     }
                     return (<span title={text}>{text}</span>);
                 },
