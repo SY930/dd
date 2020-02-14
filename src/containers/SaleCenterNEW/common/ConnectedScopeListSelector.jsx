@@ -5,7 +5,7 @@ import CategoryAndFoodSelector from './CategoryAndFoodSelector'
 import CategoryAndFoodSelectorForShop from './CategoryAndFoodSelectorForShop'
 import CloseableTip from '../../../components/common/CloseableTip'
 import PropTypes from 'prop-types';
-
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const mapStateToProps = (state) => {
     return {
@@ -47,9 +47,9 @@ class ConnectedScopeListSelector extends Component {
                 scopeTip={this.props.promotionType === '2020' ? (
                     <CloseableTip content={
                         <div>
-                            <p>指定菜品：</p>
-                            <p>当未选择任何分类及菜品时，会根据基本档菜品库菜品是否设置了参与打折来执行。即：所有设置了参与打折的菜品都在活动参与范围</p>
-                            <p>当选择了适用菜品，则活动按照设置的菜品执行，不再受基本档菜品是否参与打折的设置影响</p>
+                    <p>{SALE_LABEL.k5m4pzle}：</p>
+                    <p>{SALE_LABEL.k5m4pztq}</p>
+                    <p>{SALE_LABEL.k5m4q022}</p>
                         </div>
                     } />
                 ) : null}

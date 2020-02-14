@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import {Tooltip} from 'antd';
@@ -29,14 +30,14 @@ const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
 
 export const COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'num',
         key: 'num',
         className: 'x-tc',
         // fixed: 'left',
         width: 50,
     }, {
-        title: '操作',
+        title: COMMON_LABEL.actions,
         dataIndex: 'operate',
         className: 'TableTxtCenter',
         key: 'operate',
@@ -51,7 +52,7 @@ export const COLUMNS = [
                                 <a
                                     href="javaScript:;"
                                     disabled={true}
-                                >编辑</a>
+                                >{ COMMON_LABEL.edit }</a>
                             ) : (
                                 <a
                                     href="javaScript:;"
@@ -59,7 +60,7 @@ export const COLUMNS = [
                                         this.handleEdit(record, 'edit')
                                     }
                                     }
-                                >编辑</a>
+                                >{ COMMON_LABEL.edit }</a>
                             )
                         }
                     </Authority>
@@ -69,14 +70,14 @@ export const COLUMNS = [
                             this.handleEdit(record, 'detail')
                         }}
                     >
-                        查看
+                        { COMMON_LABEL.view }
                     </a>
                     <Authority rightCode={GIFT_LIST_DELETE}>
                         {
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a disabled={true}><span>删除</span></a>
+                                <a disabled={true}><span>{ COMMON_LABEL.delete }</span></a>
                             ) : (
-                                <a onClick={() => this.handleDelete(record)}><span>删除</span></a>
+                                <a onClick={() => this.handleDelete(record)}><span>{ COMMON_LABEL.delete }</span></a>
                             )
                         }
                     </Authority>
@@ -90,7 +91,7 @@ export const COLUMNS = [
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                 <a disabled={true}>详情</a>
                             ) : (
-                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{ COMMON_LABEL.detail }</a>
                             )
                         }
                     </Authority>

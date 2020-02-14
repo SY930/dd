@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { COMMON_LABEL } from 'i18n/common';
 import Immutable from 'immutable';
 import {
     Table,
@@ -268,7 +269,7 @@ class GenerateBatchQRCodes extends Component {
                         }}
                     >
                         <Icon type="search" />
-                        查询
+                        { COMMON_LABEL.query }
                     </Button>
 
                     <Button
@@ -286,7 +287,7 @@ class GenerateBatchQRCodes extends Component {
     renderTable() {
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'index',
@@ -305,7 +306,7 @@ class GenerateBatchQRCodes extends Component {
                 },
             },
             {
-                title: '备注',
+                title: COMMON_LABEL.remark,
                 className: 'TableTxtCenter',
                 dataIndex: 'remark',
                 width: 160,
@@ -337,7 +338,7 @@ class GenerateBatchQRCodes extends Component {
                 }
             },
             {
-                title: '状态',
+                title: COMMON_LABEL.status,
                 className: 'TableTxtCenter',
                 width: 80,
                 dataIndex: 'status',
@@ -360,14 +361,14 @@ class GenerateBatchQRCodes extends Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'key7',
                 dataIndex: 'downLoadUrl',
                 render: (text, record, index) => {
                     if (record.status == 6 && text) {
-                        return <a download target="_blank" href={text}>下载</a>
+                        return <a download target="_blank" href={text}>{ COMMON_LABEL.download }</a>
                     }
                     return '--'
                 },
@@ -564,7 +565,7 @@ class GenerateBatchQRCodes extends Component {
                     </Select>
                 </FormItem>
                 <FormItem
-                    label="备注"
+                    label={ COMMON_LABEL.remark }
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}

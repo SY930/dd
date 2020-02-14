@@ -8,6 +8,11 @@ import {
 
 const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+@injectIntl
 class ExpandTree extends React.Component {
     constructor(props) {
         super(props);
@@ -150,7 +155,7 @@ class ExpandTree extends React.Component {
                             >
                                 <Search
                                     style={{ width: '90%', margin: '5px 14px' }}
-                                    placeholder="请输入券名进行搜索"
+                                    placeholder={this.props.intl.formatMessage(STRING_SPE.d142w741jt0118)}
                                     className={'ExpandTreeVisibel'}
                                     value={this.state.searchValue}
                                     onChange={(e) => { this.setState({ searchValue: e.target.value }) }}

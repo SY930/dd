@@ -12,7 +12,6 @@ import React from 'react'
 import { Input, Form, Select, Icon, Button } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import '../../../components/common/ColorPicker.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -23,10 +22,13 @@ import {
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@injectIntl
 class PromotionBasicInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -175,7 +177,7 @@ class PromotionBasicInfo extends React.Component {
                             onClick={() => {
                                 this.setState({ tipDisplay: 'none' });
                             }}
-                        >我知道了
+                        >{this.props.intl.formatMessage(STRING_SPE.d7h7gfdf2d00138)}
                         </Button>
                     </div>
                 </div>
@@ -183,7 +185,7 @@ class PromotionBasicInfo extends React.Component {
         );
         return (
             <FormItem
-                label={'活动类型'}
+                label={`${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -210,19 +212,19 @@ class PromotionBasicInfo extends React.Component {
                 return (
                     <div>
                         <FormItem
-                            label="提前赠送天数"
+                            label={this.props.intl.formatMessage(STRING_SPE.d16hfg98318265)}
                             className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
                             required={true}
                             validateStatus={this.state.advanceDaysFlag ? 'success' : 'error'}
-                            help={this.state.advanceDaysFlag ? null : '请输入提前赠送天数'}
+                            help={this.state.advanceDaysFlag ? null : `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da3180)}`}
                         >
 
                             <PriceInput
                                 addonBefore={''}
-                                addonAfter={'天'}
-                                placeholder={'请输入提前赠送天数'}
+                                addonAfter={`${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}`}
+                                placeholder={`${this.props.intl.formatMessage(STRING_SPE.d4h177f79da3180)}`}
                                 value={{ number: this.state.advanceDays }}
                                 defaultValue={{ number: this.state.advanceDays }}
                                 onChange={this.handleAdvanceDaysChange}
@@ -245,15 +247,15 @@ class PromotionBasicInfo extends React.Component {
 
                 {this.renderPromotionType()}
                 <FormItem
-                    label="活动名称"
+                    label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('promotionName', {
                         rules: [
-                            { required: true, message: '活动名称不能为空' },
-                            { max: 50, message: '不能超过50个字符' },
+                            { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8of2e6el5231)}` },
+                            { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.de8fcgn43i698)}` },
                         /*    {
                             whitespace: true,
                             required: true,
@@ -264,7 +266,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.name,
                     })(
                         <Input
-                            placeholder="请输入活动名称"
+                            placeholder={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc7222)}
                             onChange={this.handleNameChange}
                             ref={node => this.promotionNameInputRef = node}
                         />
@@ -273,7 +275,7 @@ class PromotionBasicInfo extends React.Component {
                 {this.renderMoreInfo()}
 
                 <FormItem
-                    label="是否发送消息"
+                    label={this.props.intl.formatMessage(STRING_SPE.d2c89sj1s6888)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -293,7 +295,7 @@ class PromotionBasicInfo extends React.Component {
                 {
                     (this.state.sendMsg == 1 || this.state.sendMsg == 3 || this.state.sendMsg == 4) && (
                         <FormItem
-                            label="短信签名"
+                            label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -303,7 +305,7 @@ class PromotionBasicInfo extends React.Component {
                                     onChange={this.handleSignIDChange}
                                     getPopupContainer={(node) => node.parentNode}
                             >
-                                <Option value={''} key={''}>默认签名</Option>
+                                <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option>
                                 {
                                     this.props.specialPromotion.get('SMSSignList').toJS().map((item) => {
                                         return (<Option value={`${item.signID}`} key={`${item.signID}`}>{item.signName}</Option>)
@@ -314,19 +316,19 @@ class PromotionBasicInfo extends React.Component {
                     )
                 }
                 <FormItem
-                    label="活动说明"
+                    label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     {getFieldDecorator('description', {
                         rules: [
-                            { required: true, message: '活动说明不能为空' },
-                            { max: 1000, message: '最多1000个字符' },
+                            { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.d7ekp859ld12164)}` },
+                            { max: 1000, message: `${this.props.intl.formatMessage(STRING_SPE.d17009e3e35b1366)}` },
                         ],
                         initialValue: this.state.description,
                     })(
-                        <Input type="textarea" placeholder="请输入活动说明, 最多1000个字符" onChange={this.handleDescriptionChange} />
+                        <Input type="textarea" placeholder={this.props.intl.formatMessage(STRING_SPE.d34id2b3ir14116)} onChange={this.handleDescriptionChange} />
                         )}
                 </FormItem>
 

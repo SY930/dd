@@ -7,6 +7,9 @@ import {
 import axios from 'axios';
 import Cropper from 'react-cropper';
 import style from './doubleCropperModal.less'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 function dataURLtoBlob(dataurl, mimeType) {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -21,7 +24,7 @@ const MIME_EXT_MAP = {
     'image/jpeg': 'jpg',
     'image/png': 'png',
 }
-
+@injectIntl()
 class DoubleCropperModal extends Component {
 
     constructor(props) {
@@ -43,7 +46,7 @@ class DoubleCropperModal extends Component {
             finalUri2 = this.secondCropper.getCroppedCanvas(option).toDataURL();
         } catch (e) {
             console.log('e', e)
-            return message.warning('剪切出现了点问题, 请重试')
+            return message.warning(SALE_LABEL.k5dmw1z4)
         }
         this.setState({
             confirmLoading: true,
@@ -77,7 +80,7 @@ class DoubleCropperModal extends Component {
                     ]);
                     onCancel && onCancel();
                 } else {
-                    message.warning('剪切后的图片上传失败, 请重试');
+                    message.warning(SALE_LABEL.k5doax7i);
                     this.setState({
                         confirmLoading: false,
                     })
@@ -102,7 +105,7 @@ class DoubleCropperModal extends Component {
         return (
             visible ? (
                 <Modal
-                    title="图片裁切"
+                    title={SALE_LABEL.k635s4l1}
                     visible={true}
                     width="700px"
                     onOk={this.handleOk}
@@ -114,7 +117,7 @@ class DoubleCropperModal extends Component {
                         <div className={style.doubleCropperContainer}>
                             <div className={style.column}>
                                 <div className={style.columnTitle}>
-                                    奖品缩略图
+                                    {SALE_LABEL.k635s4td}
                                 </div>
                                 <Cropper
                                     ref={cropper => this.firstCropper = cropper}
@@ -126,7 +129,7 @@ class DoubleCropperModal extends Component {
                             </div>
                             <div className={style.column}>
                                 <div className={style.columnTitle}>
-                                    奖品展示图
+                                    {SALE_LABEL.k635s51p}
                                 </div>
                                 <Cropper
                                     ref={cropper => this.secondCropper = cropper}

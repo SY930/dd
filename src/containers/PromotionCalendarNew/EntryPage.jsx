@@ -78,6 +78,9 @@ import {
     getSpecialPromotionIdx,
     specialPromotionBasicDataAdapter,
 } from '../../redux/actions/saleCenterNEW/types';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const Option = Select.Option;
 const { MonthPicker } = DatePicker;
@@ -86,69 +89,6 @@ const disabledDate = current => {
         .diff(moment(current.format('YYYY0101'), 'YYYYMMDD'), 'years', true);
     return Math.abs(yearDiff) > 1;
 }
-
-const SUPPORT_ORDER_TYPES = [
-    {
-        label: '预定',
-        value: '10',
-    },
-    {
-        label: '闪吃',
-        value: '11',
-    },
-    {
-        label: '外送',
-        value: '20',
-    },
-    {
-        label: '堂食',
-        value: '31',
-    },
-    {
-        label: '自提',
-        value: '21',
-    },
-];
-const CHANNEL_LIST = [
-    {
-        value: 'POS',
-        label: '云店',
-    },
-    {
-        value: 'WECHAT',
-        label: '微信',
-    },
-        {
-        value: 'YST',
-        label: '饮食通',
-    },
-];
-const ALL_CATEGORIES = [
-    {
-        title: '促进销量',
-        list: SALE_PROMOTION_TYPES,
-    },
-    {
-        title: '会员拉新',
-        list: NEW_CUSTOMER_PROMOTION_TYPES,
-    },
-    {
-        title: '促进复购',
-        list: REPEAT_PROMOTION_TYPES,
-    },
-    {
-        title: '粉丝互动',
-        list: FANS_INTERACTIVITY_PROMOTION_TYPES,
-    },
-    {
-        title: '会员关怀',
-        list: LOYALTY_PROMOTION_TYPES,
-    },
-    {
-        title: '线上营销',
-        list: ONLINE_PROMOTION_TYPES,
-    },
-]
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -222,6 +162,7 @@ const mapStateToProps = (state) => {
 
 @registerPage([PROMOTION_CALENDAR_NEW])
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 export default class EntryPage extends Component {
 
     constructor(props) {
@@ -241,6 +182,39 @@ export default class EntryPage extends Component {
     }
 
     catalogPromotionListByEventType = () => {
+        const { intl } = this.props;
+        const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
+        const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
+        const k6316iac = intl.formatMessage(SALE_STRING.k6316iac);
+        const k6316hlc = intl.formatMessage(SALE_STRING.k6316hlc);
+        const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
+        const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
+        const ALL_CATEGORIES = [
+            {
+                title: k6316iio,
+                list: SALE_PROMOTION_TYPES,
+            },
+            {
+                title: k6316hto,
+                list: NEW_CUSTOMER_PROMOTION_TYPES,
+            },
+            {
+                title: k6316iac,
+                list: REPEAT_PROMOTION_TYPES,
+            },
+            {
+                title: k6316hd0,
+                list: FANS_INTERACTIVITY_PROMOTION_TYPES,
+            },
+            {
+                title: k6316hlc,
+                list: LOYALTY_PROMOTION_TYPES,
+            },
+            {
+                title: k6316i20,
+                list: ONLINE_PROMOTION_TYPES,
+            },
+        ];
         const promotionMap = new Map();
         const { promotionInfoList } = this.state;
         promotionInfoList.forEach(promotionInfo => {
@@ -256,7 +230,7 @@ export default class EntryPage extends Component {
                     if (promotionMap.has(key)) {
                         displayArray.push(...promotionMap.get(key).map(item => ({...item, title: subTitle})))
                     }
-                }) 
+                })
             }
         })
         return displayArray;
@@ -330,25 +304,28 @@ export default class EntryPage extends Component {
         })
     }
     handlePromotionEditOrPreviewBtnClick = (entity, type) => {
+        const { intl } = this.props;
+        const k5dohc0d = intl.formatMessage(SALE_STRING.k5dohc0d);
+        const k6316klo = intl.formatMessage(SALE_STRING.k6316klo);
         const { eventType, eventCategory } = entity;
         const typeStr = `${eventType}`;
         this.props.toggleIsUpdate(type === 'edit')
         this.setState({
-            modalTitle: type === 'edit' ? '更新活动信息' : '查看活动信息',
+            modalTitle: type === 'edit' ? k5dohc0d : k6316klo,
         })
         if (eventCategory === 10) {
             this.handleUpdateOpe(entity);
         } else {
             this.handleSpecialUpdateOpe(entity)
         }
-        
+
     }
 
     successFn = (responseJSON) => {
         const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
         const _serverToRedux = false;
         if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
-            message.error('没有查询到相应数据');
+            message.error(SALE_LABEL.k5dod8s9);
             return null;
         }
         if (responseJSON.promotionInfo.master.maintenanceLevel == '1') { // shop
@@ -372,7 +349,7 @@ export default class EntryPage extends Component {
     };
 
     failFn = () => {
-        message.error('啊哦,好像出了点问题~');
+        message.error(SALE_LABEL.k5dmw1z4);
     };
 
     handleUpdateOpe(_record) {
@@ -409,11 +386,11 @@ export default class EntryPage extends Component {
         const _serverToRedux = false;
         const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
         if (_promotionIdx === undefined) {
-            message.warning('出错了, 请刷新重试');
+            message.warning(SALE_LABEL.k5dmw1z4);
             return;
         }
         if (response === undefined || response.data === undefined) {
-            message.error('没有查询到相应数据');
+            message.error(SALE_LABEL.k5dod8s9);
             return null;
         }
         this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
@@ -424,7 +401,7 @@ export default class EntryPage extends Component {
     };
 
     specialFailFn = () => {
-        message.error('啊哦,好像出了点问题~');
+        message.error(SALE_LABEL.k5dmw1z4);
     };
 
 
@@ -474,9 +451,57 @@ export default class EntryPage extends Component {
             startDate,
             loading,
         } = this.state;
+        const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
+        const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
+        const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
+        const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
+        const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
+        const k5krn6qx = intl.formatMessage(SALE_STRING.k5krn6qx);
+        const k5krn6z9 = intl.formatMessage(SALE_STRING.k5krn6z9);
+        const k5krn77l = intl.formatMessage(SALE_STRING.k5krn77l);
+        const k5eng39086 = intl.formatMessage(SALE_STRING.k5eng39086);
+
+        const SUPPORT_ORDER_TYPES = [
+            {
+                label: k5m67a4r,
+                value: '10',
+            },
+            {
+                label: k5m67ad3,
+                value: '11',
+            },
+            {
+                label: k5m67alf,
+                value: '20',
+            },
+            {
+                label: k5krn7fx,
+                value: '31',
+            },
+            {
+                label: k5m67atr,
+                value: '21',
+            },
+        ];
+        const CHANNEL_LIST = [
+            {
+                value: 'POS',
+                label: k5krn6qx,
+            },
+            {
+                value: 'WECHAT',
+                label: k5krn6z9,
+            },
+                {
+                value: 'YST',
+                label: k5krn77l,
+            },
+        ];
         return (
             <div className={style.searchHeader}>
-                <h5>月份</h5>
+                <h5>{SALE_LABEL.k6316ku0}</h5>
                 <MonthPicker
                     allowClear={false}
                     style={{ width: 160, margin: '0 20px' }}
@@ -485,25 +510,26 @@ export default class EntryPage extends Component {
                     value={startDate}
                     onChange={this.handleMonthChange}
                 />
-                <h5>适用店铺</h5>
+                <h5>{SALE_LABEL.k5dlggak}</h5>
                 <div style={{ width: 160, margin: '0 20px' }}>
                     <ShopSelector
                         size="small"
                         value={shopIDList}
+                        placeholder={k5eng39086}
                         onChange={
                             this.handleShopSelectorChange
                         }
                         schemaData={this.state.shopSchema}
                     />
                 </div>
-                
-                <h5>适用场景</h5>
+
+                    <h5>{SALE_LABEL.k5krn6il}</h5>
                 <Select
                     multiple={true}
-                    notFoundContent={'未搜索到结果'}
+                    notFoundContent={SALE_LABEL.k5dod8s9}
                     style={{ width: 220, margin: '0 20px 0 10px' }}
                     value={channelList}
-                    placeholder="全部"
+                    placeholder={k5eng042}
                     onChange={this.handleChannelListChange}
                 >
                     {
@@ -512,13 +538,13 @@ export default class EntryPage extends Component {
                         ))
                     }
                 </Select>
-                <h5>适用业务</h5>
+                <h5>{SALE_LABEL.k5dlpt47}</h5>
                 <Select
                     multiple={true}
                     value={supportOrderTypeList}
-                    notFoundContent={'未搜索到结果'}
+                    notFoundContent={SALE_LABEL.k5dod8s9}
                     style={{ width: 200, margin: '0 20px 0 10px' }}
-                    placeholder="全部"
+                    placeholder={k5eng042}
                     onChange={this.handleSupportOrderTypeChange}
                 >
                     {
@@ -533,7 +559,7 @@ export default class EntryPage extends Component {
                     onClick={this.handleQuery}
                 >
                     <Icon type="search" />
-                    查询
+                    {COMMON_LABEL.query}
                 </Button>
             </div>
         );
@@ -560,7 +586,7 @@ export default class EntryPage extends Component {
         return (
             <div className={style.flexHeader} >
                 <span className={style.title} >
-                    营销日历
+                    {SALE_LABEL.k634693f}
                 </span>
                 <div className={style.spacer} />
                 <Button
@@ -569,7 +595,7 @@ export default class EntryPage extends Component {
                     onClick={this.openCreateModal}
                     style={{ marginRight: 12 }}
                 >
-                    创建活动
+                    {SALE_LABEL.k6316ir0}
                 </Button>
                 <Button
                     type="ghost"
@@ -577,7 +603,7 @@ export default class EntryPage extends Component {
                         jumpPage({ pageID: SALE_CENTER_PAGE })
                     }}
                 >
-                    活动管理
+                    {SALE_LABEL.k63469br}
                 </Button>
             </div>
         )
@@ -613,7 +639,7 @@ export default class EntryPage extends Component {
         if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
             return (
                 <div className={style.spinFather}>
-                    查询详情出错!点击 <a onClick={() => this.handleSpecialUpdateOpe()}>重试</a>
+        {SALE_LABEL.k5doax7i}! <a onClick={() => this.handleSpecialUpdateOpe()}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }
@@ -662,7 +688,7 @@ export default class EntryPage extends Component {
         if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
             return (
                 <div className={style.spinFather}>
-                    查询详情出错!点击 <a onClick={() => this.handleUpdateOpe()}>重试</a>
+        {SALE_LABEL.k5doax7i}! <a onClick={() => this.handleUpdateOpe()}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }

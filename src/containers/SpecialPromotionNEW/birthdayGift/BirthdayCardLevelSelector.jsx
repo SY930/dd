@@ -4,7 +4,11 @@ import Immutable from 'immutable';
 import BaseHualalaModal from "containers/SaleCenterNEW/common/BaseHualalaModal";
 import { fetchSpecialCardLevel } from 'redux/actions/saleCenterNEW/mySpecialActivities.action';
 
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class BirthdayCardLevelSelector extends Component {
     constructor(props) {
         super(props);
@@ -73,15 +77,15 @@ class BirthdayCardLevelSelector extends Component {
         })
         return (
             <BaseHualalaModal
-                outLabel={'卡等级'} //   外侧选项+号下方文案
+                outLabel={`${this.props.intl.formatMessage(STRING_SPE.du380iqhn0125)}`} //   外侧选项+号下方文案
                 outItemName="cardLevelName" //   外侧已选条目选项的label
                 outItemID="cardLevelID" //   外侧已选条目选项的value
-                innerleftTitle={'全部卡类'} //   内部左侧分类title
+                innerleftTitle={`${this.props.intl.formatMessage(STRING_SPE.du380iqhn1240)}`} //   内部左侧分类title
                 innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
                 leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
                 innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
                 innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                innerBottomTitle={`${this.props.intl.formatMessage(STRING_SPE.dd5a318e4162103)}`} //   内部底部box的title
                 innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                 itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
                 treeData={filteredCardInfo} // 树形全部数据源【{}，{}，{}】

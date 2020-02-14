@@ -65,7 +65,7 @@ class NewPromotionCard extends Component {
                     )
                 }
                 <div className={styles.tagsContainer}>
-                    {tags.map(tag => (<div className={styles.tag} key={tag}>{tag}</div>))}
+                    {tags.map((tag, i) => (<div className={styles.tag} key={i}>{tag}</div>))}
                 </div>
                 <div
                     className={styles.promotionDescription}

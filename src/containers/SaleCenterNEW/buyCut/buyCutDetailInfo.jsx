@@ -9,13 +9,16 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
+@injectIntl()
 class BuyCutDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -166,7 +169,10 @@ class BuyCutDetailInfo extends React.Component {
         this.setState({ discountRate, discountRateFlag });
     }
 
-    renderBuyDishNumInput() {
+    renderBuyDishNumInput = () => {
+        const { intl } = this.props;
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -176,19 +182,24 @@ class BuyCutDetailInfo extends React.Component {
             >
 
                 <PriceInput
-                    addonBefore={'购买指定菜品满'}
-                    addonAfter={'份'}
+                    addonBefore={k5ez4pvb}
+                    addonAfter={k5ez4qy4}
                     value={{ number: this.state.stageAmount }}
                     defaultValue={{ number: this.state.stageAmount }}
                     onChange={this.onStageAmountChange}
                     modal="int"
                 />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>表示购买菜品的总数，如输入2，代表所有菜品任意购买满2份</span>
+                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
             </FormItem>
         )
     }
 
-    renderGiveDishNumInput() {
+    renderGiveDishNumInput = () => {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5ezcuto = intl.formatMessage(SALE_STRING.k5ezcuto);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
         if (this.state.cutWay === '0') {
             return (<FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -198,8 +209,8 @@ class BuyCutDetailInfo extends React.Component {
             >
 
                 <PriceInput
-                    addonBefore={'减免金额'}
-                    addonAfter={'元'}
+                    addonBefore={k5ezcuto}
+                    addonAfter={k5ezdbiy}
                     value={{ number: this.state.freeAmount }}
                     defaultValue={{ number: this.state.freeAmount }}
                     onChange={this.onFreeAmountChange}
@@ -213,13 +224,12 @@ class BuyCutDetailInfo extends React.Component {
             wrapperCol={{ span: 17, offset: 4 }}
             required={true}
             validateStatus={this.state.discountRateFlag ? 'success' : 'error'}
-            help={!this.state.discountRateFlag ? '不得为空, 不大于10' : null}
+            help={!this.state.discountRateFlag ? SALE_LABEL.k5ezcavr : null}
         >
-
             <PriceInput
-                addonBefore={'打'}
-                addonAfter={'折'}
-                placeholder="输入不大于10的数字(例如9.5折, 8折)"
+                addonBefore={SALE_LABEL.k5kec1k8}
+                addonAfter={k5ezdc19}
+                placeholder={k5ezdckg}
                 discountMode={true}
                 value={{ number: this.state.discountRate }}
                 defaultValue={{ number: this.state.discountRate }}
@@ -234,14 +244,14 @@ class BuyCutDetailInfo extends React.Component {
         return (
 
             <FormItem
-                label="优惠方式"
+                label={SALE_LABEL.k5kec0v8}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.cutWay} onChange={this.onCutWayChange}>
-                    <Radio value={'0'} key="0">减金额</Radio>
-                    <Radio value={'1'} key="1">打折扣</Radio>
+                <Radio value={'0'} key="0">{SALE_LABEL.k5kec13k}</Radio>
+                <Radio value={'1'} key="1">{SALE_LABEL.k5kec1bw}</Radio>
                 </RadioGroup>
             </FormItem>
         )
@@ -251,9 +261,9 @@ class BuyCutDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -280,7 +290,7 @@ function mapStateToProps(state) {
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-        
+
     }
 }
 

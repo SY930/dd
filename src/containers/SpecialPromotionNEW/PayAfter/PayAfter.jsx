@@ -22,9 +22,10 @@ import {
     fetchGiftListInfoAC,
 } from 'redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import StepThree from './StepThree';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { COMMON_SPE, STRING_SPE } from 'i18n/common/special';
 
-
-
+@injectIntl
 class PayAfter extends NewPromotion {
     constructor(props) {
         super(props);

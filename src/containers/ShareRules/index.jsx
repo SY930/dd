@@ -32,27 +32,18 @@ import {FetchGiftList} from "../GiftNew/_action";
 import {fetchAllPromotionListAC} from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import {fetchPromotionScopeInfo} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
-
-const getItemTag = (item) => {
-    const {
-        activityType,
-        activitySourceType,
-    } = item || {};
-    let tag;
-    activityType == 10 && (tag = BASIC_PROMOTION_MAP[activitySourceType]);
-    activityType == 30 && (tag = GIFT_MAP[activitySourceType]);
-    activityType == 20 && activitySourceType == -10 && (tag = '会员价');
-    activityType == 20 && activitySourceType == -20 && (tag = '会员折扣');
-    return tag || '活动'
-}
 
 @registerPage([SHARE_RULES_GROUP, SHARE_RULES_SHOP], {
     share_rules
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 export default class ShareRules extends Component {
 
     state = {
@@ -82,15 +73,15 @@ export default class ShareRules extends Component {
 
     handleDeleteGroup = ({ itemID }, index) => {
         Modal.confirm({
-            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+            title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3} ?</span>,
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {`您将删除【营销活动共享组${index + 1}】`}
+                        {COMMON_LABEL.delete}【{SALE_LABEL.k636qw6a} {index + 1}】
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>
-                        删除数据是不可恢复操作, 请慎重考虑
+                        {SALE_LABEL.k5do4z54}
                     </span>
                 </div>
             ),
@@ -99,7 +90,7 @@ export default class ShareRules extends Component {
                     masterItemID: itemID,
                     shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
                 }).then(() => {
-                    message.success('删除成功');
+                    message.success(SALE_LABEL.k5do0ps6);
                     this.queryAll()
                 }).catch((error) => {
                 })
@@ -113,7 +104,7 @@ export default class ShareRules extends Component {
             slaveItemID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
         }).then(() => {
-            message.success('移除成功')
+            message.success(SALE_LABEL.k5do0ps6)
             this.queryAll()
         })
     }
@@ -130,11 +121,11 @@ export default class ShareRules extends Component {
             <div className={style.header}>
                 <div className={style.titleArea}>
                     <span className={style.title}>
-                        规则设置
+                        {SALE_LABEL.k636qusa}
                     </span>
                     {
                         !isEmpty && (
-                            <Alert style={{color: '#E4843B'}} message="默认所有的活动优惠不共享，如需共享请选择相应的活动创建共享活动组" type="warning" showIcon />
+                            <Alert style={{color: '#E4843B'}} message={SALE_LABEL.k636qvxy} type="warning" showIcon />
                         )
                     }
                 </div>
@@ -147,7 +138,7 @@ export default class ShareRules extends Component {
                             <Icon
                                 type="plus"
                             />
-                            新建规则
+                            {SALE_LABEL.k636qv0m}
                         </Button>
                     )
                 }
@@ -165,10 +156,23 @@ export default class ShareRules extends Component {
             changeSearchType,
             changeSearchName,
         } = this.props;
+        const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const k636qv8y = intl.formatMessage(SALE_STRING.k636qv8y);
+
+        const k5m5av7b = intl.formatMessage(SALE_STRING.k5m5av7b);
+        const k5m5avfn = intl.formatMessage(SALE_STRING.k5m5avfn);
+        const k5m5avnz = intl.formatMessage(SALE_STRING.k5m5avnz);
+        const k5m5avwb = intl.formatMessage(SALE_STRING.k5m5avwb);
+        const k636qvha = intl.formatMessage(SALE_STRING.k636qvha);
+        const k636qvpm = intl.formatMessage(SALE_STRING.k636qvpm);
+        const k5m5aw4n = intl.formatMessage(SALE_STRING.k5m5aw4n);
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
         return (
             <div className={style.headerActions}>
                 <span className={style.headerLabel}>
-                    活动类型
+                    {SALE_LABEL.k5dk5uwl}
                 </span>
 
                 <Select
@@ -177,29 +181,29 @@ export default class ShareRules extends Component {
                     onChange={(v) => this.setState({ searchTypeInput: v })}
                 >
                     <Option value="">
-                        全部
+                        {k5eng042}
                     </Option>
-                    <OptGroup label="营销活动">
+                    <OptGroup label={k636qv8y}>
                         {
                             AVAILABLE_PROMOTIONS.map(item => (
                                 <Option key={item} value={item}>{BASIC_PROMOTION_MAP[item]}</Option>
                             ))
                         }
                     </OptGroup>
-                    <OptGroup label="哗啦啦券">
-                        <Option value="10">代金券</Option>
-                        <Option value="20">菜品优惠券</Option>
-                        <Option value="21">菜品兑换券</Option>
-                        <Option value="111">折扣券</Option>
-                        <Option value="110">买赠券</Option>
+                    <OptGroup label={k5m5av7b}>
+                    <Option value="10">{k5m5avfn}</Option>
+                    <Option value="20">{k5m5avnz}</Option>
+                    <Option value="21">{k5m5avwb}</Option>
+                    <Option value="111">{k636qvha}</Option>
+                    <Option value="110">{k636qvpm}</Option>
                     </OptGroup>
-                    <OptGroup label="会员权益">
-                        <Option value="-10">会员价</Option>
-                        <Option value="-20">会员折扣</Option>
+                    <OptGroup label={k5m5aw4n}>
+                    <Option value="-10">{k5m4q0r2}</Option>
+                    <Option value="-20">{k5m4q0ze}</Option>
                     </OptGroup>
                 </Select>
                 <span className={style.headerLabel}>
-                    活动名称
+                    {SALE_LABEL.k5dlcm1i}
                 </span>
 
                 <Input
@@ -211,7 +215,7 @@ export default class ShareRules extends Component {
                         this.queryAll()
                     }}
                     style={{ width: 240, marginRight: 20 }}
-                    placeholder="请输入活动名称搜索"
+                    placeholder=""
                 />
                 <Button
                     type="primary"
@@ -223,7 +227,7 @@ export default class ShareRules extends Component {
                     }}
                 >
                     <Icon type="search"/>
-                    查询
+                    { COMMON_LABEL.query }
                 </Button>
 
             </div>
@@ -261,7 +265,7 @@ export default class ShareRules extends Component {
                 activityType: item.activityType,
             }))
         }).then(() => {
-            message.success('保存成功');
+            message.success(SALE_LABEL.k5do0ps6);
             this.queryAll()
             this.handleCancel()
         })
@@ -281,10 +285,28 @@ export default class ShareRules extends Component {
     }
     getCreateBy = ({ shopID }) => {
         const { shops } = this.props;
-        const res = shops.find(item => item.get('shopID') == shopID)
-        return  `由${res ? res.get('shopName') : `店铺${shopID}`}创建`;
+        const res = shops.find(item => item.get('shopID') == shopID);
+        if(res){
+            return res.get('shopName');
+        }
+        return  <p>{SALE_LABEL.k639vfmm + SALE_LABEL.k639vfuy + shopID + COMMON_LABEL.create}</p>;
     }
-
+    getItemTag = (item) => {
+        const { intl } = this.props;
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+        const k639vg3a = intl.formatMessage(SALE_STRING.k639vg3a);
+        const {
+            activityType,
+            activitySourceType,
+        } = item || {};
+        let tag;
+        activityType == 10 && (tag = BASIC_PROMOTION_MAP[activitySourceType]);
+        activityType == 30 && (tag = GIFT_MAP[activitySourceType]);
+        activityType == 20 && activitySourceType == -10 && (tag = k5m4q0r2);
+        activityType == 20 && activitySourceType == -20 && (tag = k5m4q0ze);
+        return tag || k639vg3a
+    }
     render() {
         const {
             shareGroups,
@@ -329,7 +351,7 @@ export default class ShareRules extends Component {
                             }
                             {
                                 filteredShareGroups.map((shareGroup, index) => {
-                                    return (
+                                    const a1 = <span>{SALE_LABEL.k639vfea} {SALE_LABEL.k639vexm}</span>;                                    return (
                                         <div
                                             key={`${index}`}
                                             className={style.shareGroupWrapper}
@@ -339,7 +361,7 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
-                                                    {`营销活动共享组${index + 1}`}
+                                                {SALE_LABEL.k636qw6a}{`${index + 1}`}
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
@@ -359,13 +381,13 @@ export default class ShareRules extends Component {
                                                             onClick={() => this.handleEditShareGroup(shareGroup)}
                                                         >
                                                             <Icon type="edit"/>
-                                                            编辑
+                                                            {COMMON_LABEL.edit}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`只能编辑由${this.props.user.shopID > 0 ? '本店铺' : '集团'}创建的共享组`}>
+                                                        <Tooltip title={SALE_LABEL.k639vegy + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
                                                             <Button disabled type="ghost" style={{marginRight: 10}}>
                                                                 <Icon type="edit"/>
-                                                                编辑
+                                                                {COMMON_LABEL.edit}
                                                             </Button>
                                                         </Tooltip>
                                                     )
@@ -374,13 +396,13 @@ export default class ShareRules extends Component {
                                                     this.isMyShareGroup(shareGroup) ? (
                                                         <Button type="ghost" onClick={() => this.handleDeleteGroup(shareGroup, index)}>
                                                             <Icon type="delete"/>
-                                                            删除
+                                                            {COMMON_LABEL.delete}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`只能删除由${this.props.user.shopID > 0 ? '本店铺' : '集团'}创建的共享组`}>
+                                                        <Tooltip title={SALE_LABEL.k639vepa + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
                                                             <Button disabled type="ghost">
                                                                 <Icon type="delete"/>
-                                                                删除
+                                                                {COMMON_LABEL.delete}
                                                             </Button>
                                                         </Tooltip>
                                                     )
@@ -389,21 +411,22 @@ export default class ShareRules extends Component {
                                             <div className={style.shareGroupBody}>
                                                 {
                                                     (shareGroup.shareGroupDetailList || []).map(item => {
-                                                        return (
-                                                            <div className={style.shareGroupItem}>
+                                                        const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
+                                                       return (
+                                                            <div className={style.shareGroupItem} key={item.itemID}>
                                                                 <div className={style.typeTag}>
                                                             <span>
-                                                                {getItemTag(item)}
+                                                                {this.getItemTag(item)}
                                                             </span>
                                                                 </div>
                                                                 <div className={style.itemTitle}>
-                                                                    {item.action !== 2 ? item.activityName : `${item.activityName}(已删除)`}
+                                                                    {item.action !== 2 ? item.activityName : aa}
                                                                 </div>
                                                                 <div className={style.itemAction}>
                                                                     {
                                                                         (((shareGroup.shareGroupDetailList || []).length) > 2 && item.action !== 2) && (
-                                                                            <Popconfirm title="确定要将该条目移除吗?" onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
-                                                                                <a disabled={!this.isMyShareGroup(shareGroup)}>移除</a>
+                                                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
+                                                    <a disabled={!this.isMyShareGroup(shareGroup)}>{COMMON_LABEL.delete}</a>
                                                                             </Popconfirm>
                                                                         )
                                                                     }
@@ -424,14 +447,14 @@ export default class ShareRules extends Component {
                     !filteredShareGroups.length && !vanillaShareGroups.length && (
                         <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${ displayHeaderActions ? 123 : 75 }px)`  }}>
                             <img src={emptyPage} alt=""/>
-                            <span className={style.primaryTip}>您还未创建共享活动规则</span>
-                            <span className={style.tip}>默认所有的活动优惠不共享，如需共享请选择相应的活动创建共享活动组</span>
+                            <span className={style.primaryTip}>{SALE_LABEL.k639vdry}</span>
+                    <span className={style.tip}>{SALE_LABEL.k636qvxy}</span>
                             <Button
                                 type="primary"
                                 onClick={() => this.setState({ isCreate: true, isEdit: false })}
                                 style={{ marginTop: 20}}
                             >
-                                立即创建
+                            {COMMON_LABEL.create}
                             </Button>
                         </div>
                     )
@@ -440,7 +463,7 @@ export default class ShareRules extends Component {
                     !filteredShareGroups.length && !!vanillaShareGroups.length && (
                         <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${ displayHeaderActions ? 123 : 75 }px)`  }}>
                             <img src={emptyPage} alt=""/>
-                            <span className={style.tip}>没有检索到符合条件的共享组</span>
+                            <span className={style.tip}>{SALE_LABEL.k639ve0a}</span>
                         </div>
                     )
                 }
