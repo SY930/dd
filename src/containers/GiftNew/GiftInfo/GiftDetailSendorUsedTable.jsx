@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Table, Button, Icon, TreeSelect, Input } from 'antd';
 import _ from 'lodash';
+import { COMMON_LABEL } from 'i18n/common';
 import Moment from 'moment';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
@@ -11,7 +12,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS } from './_tableSendConfig';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftSendOrUsedCount extends React.Component {
@@ -28,6 +29,7 @@ class GiftSendOrUsedCount extends React.Component {
             total: 2,
             pageNo: 1,
             pageSize: 10,
+            speGift: ['10', '20', '21', '30', '40', '42', '110', '111'],
             queryParams: {
 
             },
@@ -49,9 +51,10 @@ class GiftSendOrUsedCount extends React.Component {
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
         if (_key === 'send') {
+            const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 formItems: {
                     ...formItems,
                     sendShopID: {
@@ -65,9 +68,10 @@ class GiftSendOrUsedCount extends React.Component {
                 giftType,
             });
         } else if (_key === 'used') {
+            const { speGift } = this.state;
             this.setState({
-                columns: USED_COLUMNS,
-                formKeys: USED_FORMKEYS,
+                columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
+                formKeys: speGift.indexOf(giftType) >= 0 ? USED_SPE_FORMKEYS : USED_FORMKEYS,
                 formItems: {
                     ...formItems,
                     usingShopID: {
@@ -109,15 +113,17 @@ class GiftSendOrUsedCount extends React.Component {
             this.setState({ queryParams: _sendorUsedParams });
         }
         if (_key === 'send') {
+            const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 giftType,
             });
         } else if (_key === 'used') {
+            const { speGift } = this.state;
             this.setState({
-                columns: USED_COLUMNS,
-                formKeys: USED_FORMKEYS,
+                columns: speGift.indexOf(giftType) >= 0 ? USED_SPE_COLUMNS : USED_COLUMNS,
+                formKeys: speGift.indexOf(giftType) >= 0 ? USED_SPE_FORMKEYS : USED_FORMKEYS,
                 giftType,
             });
         }
@@ -300,7 +306,7 @@ class GiftSendOrUsedCount extends React.Component {
         return (
             <div className={styles.giftSendCount}>
                 <Row type="flex" align="bottom">
-                    <Col span={`${key === 'send' ? 24 : 21}`}>
+                    <Col span={`${key === 'send' ? 24 : this.props._key == 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? 24 : 21 : 21}`}>
                         <BaseForm
                             getForm={form => this.queryForm = form}
                             formItems={this.state.formItems}
@@ -311,19 +317,20 @@ class GiftSendOrUsedCount extends React.Component {
                     </Col>
                     <Col
                         span={`${key === 'send' ? 1 : 3}`}
-                        pull={`${key === 'send' ? 3 : 0}`}
-                        style={key === 'send' ? { position: 'absolute', top: 143, left: 749 } : {}}
+                        pull={`${key === 'send' ? 3 : this.props._key == 'used' ? 3 : 0}`}
+                        style={key === 'send' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'relative', top: 0, left: 742 } :{ position: 'absolute', top: 143, left: 749 } :
+                               key === 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'absolute', top: 101, left: 744 } :{}:{}}
                     >
                         {
                             key === 'send' ?
                                 <Row>
-                                    <Col span={24} push={5}><Button type="primary" onClick={() => this.handleQuery()}><Icon type="search" />查询</Button></Col>
-                                    <Col span={0} push={0}><Button type="ghost"><Icon type="export" />导出</Button></Col>
+                                    <Col span={24} push={5}><Button type="primary" onClick={() => this.handleQuery()}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
+                                    <Col span={0} push={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
                                 </Row>
                                 :
                                 <Row>
-                                    <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />查询</Button></Col>
-                                    <Col span={0}><Button type="ghost"><Icon type="export" />导出</Button></Col>
+                                    <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
+                                    <Col span={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
                                 </Row>
                         }
                     </Col>

@@ -19,11 +19,15 @@ import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput'; // 编辑
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -87,8 +91,8 @@ class StepTwo extends React.Component {
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
-                    label="新用户注册卡类"
-                    optionFilterProp="children"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
+                    // optionFilterProp="children"
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -97,15 +101,16 @@ class StepTwo extends React.Component {
                     {
                         this.props.form.getFieldDecorator('defaultCardType', {
                             rules: [
-                                { required: true, message: '必须选择一个卡类型' }
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8omhe07i508)}` }
                             ],
                             initialValue: this.state.defaultCardType,
                             onChange: this.handleDefaultCardTypeChange,
                         })(
                             <Select
                                 showSearch={true}
-                                notFoundContent={'未搜索到结果'}
-                                placeholder="请选择新用户注册成为会员的卡类型"
+                                optionFilterProp="children"
+                                notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 {
@@ -116,7 +121,7 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 <FormItem
-                    label={'参与人数'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.d7h83bcde7c0156)}`}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     required
@@ -127,9 +132,9 @@ class StepTwo extends React.Component {
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v || (!v.number && v.number !== 0)) {
-                                            return cb('参与人数为必填项');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.dd5aa74dce2176)}`);
                                         } else if (v.number === 0) {
-                                            return cb('参与人数必须大于0');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.d7elcpehii2283)}`);
                                         }
                                         cb()
                                     },
@@ -139,9 +144,9 @@ class StepTwo extends React.Component {
                             onChange: this.handleNeedCountChange
                         })(
                             <PriceInput
-                                addonAfter="人"
+                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}
                                 disabled={userCount > 0}
-                                placeholder="邀请好友人数达到参与人数配置方可获得礼品"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d34ikssd62352)}
                                 modal="int"
                                 maxNum={6}
                             />
@@ -149,16 +154,16 @@ class StepTwo extends React.Component {
                     } 
                 </FormItem>
                 <FormItem
-                    label={'邀请人参与次数'}
+                    label={`${this.props.intl.formatMessage(STRING_SPE.du3bv3so2464)}`}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <PriceInput
-                        addonAfter="次"
+                        addonAfter={this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}
                         value={{ number: this.state.partInTimes }}
                         onChange={this.handlePartInTimesChange}
-                        placeholder="邀请人数每达到参与人数要求时，邀请人可多次获得礼品，为空表示不限次数"
+                        placeholder={this.props.intl.formatMessage(STRING_SPE.d7h83bcde7c5292)}
                         modal="int"
                         maxNum={6}
                     />

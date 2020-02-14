@@ -18,7 +18,11 @@ import { saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNE
 import { saleCenterResetScopeInfoAC } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import PromotionBasicInfo from '../common/promotionBasicInfo';
 import CustomProgressBar from '../common/CustomProgressBar';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
+@injectIntl()
 class NewFullCutActivity extends NewPromotion {
     constructor(props) {
         super(props);
@@ -33,10 +37,10 @@ class NewFullCutActivity extends NewPromotion {
         const isOnlieAndShopMode = isOnline &&  user.get('shopID') > 0;
         if (!isOnlieAndShopMode) {
             return super.render();
-        } 
+        }
         const steps = [
             {
-                title: '基本信息',
+                title: SALE_LABEL.k5g5bcqo,
                 content: (
                     <PromotionBasicInfo
                         isNew={isNew}
@@ -48,7 +52,7 @@ class NewFullCutActivity extends NewPromotion {
                 ),
             },
             {
-                title: '活动内容',
+                title: SALE_LABEL.k5g5bcz0,
                 content: React.createElement(
                     this.props.component,
                     {

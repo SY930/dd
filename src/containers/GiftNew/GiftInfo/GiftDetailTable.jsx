@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
+import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import {throttle} from 'lodash';
 import { axiosData, fetchData } from '../../../helpers/util';
@@ -85,11 +86,11 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
-                            <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
-                            <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
-                        </span>
+                        <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
+                        <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
+                    </span>
                 )
             },
         });
@@ -592,7 +593,7 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >新建</Button>
+                                    >{ COMMON_LABEL.create }</Button>
                                 </Authority>
                             </span>
 
@@ -623,7 +624,7 @@ class GiftDetailTable extends Component {
                                     <Authority rightCode={GIFT_LIST_UPDATE}>
                                         <Button type="primary" onClick={() => this.handleQuery()}>
                                             <Icon type="search" />
-                                            查询
+                                            { COMMON_LABEL.query }
                                         </Button>
                                     </Authority>
                                 </li>

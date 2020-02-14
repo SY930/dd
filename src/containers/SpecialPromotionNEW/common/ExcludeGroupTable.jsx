@@ -15,7 +15,11 @@ import {
     Table,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class ExcludeGroupTable extends React.Component {
     constructor(props) {
         super(props);
@@ -38,17 +42,17 @@ class ExcludeGroupTable extends React.Component {
 
 
         const columns = [{
-            title: '活动名称',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}`,
             dataIndex: 'eventName',
             key: 'eventName',
             className: 'TableTxtCenter',
             render: (text, record, index) => {
                 return (
-                    <div key={'eventName'}><h5 className={styles.cardName} key={'eventName'}>{`${record.eventName || '（无）'}`}</h5></div>
+                    <div key={'eventName'}><h5 className={styles.cardName} key={'eventName'}>{`${record.eventName || `${this.props.intl.formatMessage(STRING_SPE.d31eifji3f4063)}`}`}</h5></div>
                 )
             },
         }, {
-            title: '起止日期',
+            title: `${this.props.intl.formatMessage(STRING_SPE.d5g337jqji179)}`,
             dataIndex: 'eventDate',
             key: 'eventDate',
             className: 'TableTxtCenter',
@@ -69,7 +73,7 @@ class ExcludeGroupTable extends React.Component {
                 bordered={true}
                 size="middle"
                 rowKey="uid"
-                title={() => { return '同时段内，已有如下唤醒送礼活动正在进行，请重选时段' }}
+                title={() => { return `${this.props.intl.formatMessage(STRING_SPE.d1e058jhop0290)}` }}
             />
 
         );

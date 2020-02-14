@@ -24,18 +24,12 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
-
-const type = [
-    { value: '0', name: '下单即赠送' },
-    { value: '2', name: '任意菜品消费满' },
-    { value: '1', name: '任意菜品消费每满' },
-    { value: '3', name: '指定菜品消费满' },
-    { value: '4', name: '指定菜品消费每满' },
-];
-
+@injectIntl()
 class FullGiveDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -266,20 +260,33 @@ class FullGiveDetailInfo extends React.Component {
     };
 
 
-    renderPromotionRule() {
+    renderPromotionRule = () => {
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { intl } = this.props;
+        const k5g5bcic = intl.formatMessage(SALE_STRING.k5g5bcic);
+        const k5ez4ovx = intl.formatMessage(SALE_STRING.k5ez4ovx);
+        const k5ez4pdf = intl.formatMessage(SALE_STRING.k5ez4pdf);
+        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
+        const type = [
+            { value: '0', name: k5g5bcic },
+            { value: '2', name: k5ez4ovx },
+            { value: '1', name: k5ez4pdf },
+            { value: '3', name: k5ez4pvb },
+            { value: '4', name: k5ez4qew },
+        ];
         return (
             <div>
 
                 <FormItem
-                    label="活动方式"
+                    label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
 
                     <Select
-                        placeholder="请选择活动类别"
+                        placeholder=""
                         defaultValue={this.state.ruleType}
                         className={`${styles.linkSelectorRight} fullGiveDetailMountClassJs`}
                         getPopupContainer={(node) => node.parentNode}
@@ -334,9 +341,9 @@ class FullGiveDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

@@ -1,38 +1,47 @@
 import React, { Component } from 'react';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import style from './style.less';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
-const DEFAULT_SKIN_COLORS = [
-    {
-        skinColor: '#51a97d',
-        skinColorName: '翡翠绿',
-    },
-    {
-        skinColor: '#feae1b',
-        skinColorName: '柠檬黄',
-    },
-    {
-        skinColor: '#fd6631',
-        skinColorName: '橘红色',
-    },
-    {
-        skinColor: '#ac7e4f',
-        skinColorName: '琥珀色',
-    },
-    {
-        skinColor: '#49a3f8',
-        skinColorName: '天空蓝',
-    },
-    {
-        skinColor: '#e25049',
-        skinColorName: '大红色',
-    },
-];
-
-
+@injectIntl()
 export default class ColorSettingBlock extends Component {
     render() {
-        const { value: color, onChange, title = '请选择您喜欢的颜色或者自定义颜色' } = this.props;
+        const { intl } = this.props;
+        const k63469k3 = intl.formatMessage(SALE_STRING.k63469k3);
+        const k63469sf = intl.formatMessage(SALE_STRING.k63469sf);
+        const k6346a0r = intl.formatMessage(SALE_STRING.k6346a0r);
+        const k6346a93 = intl.formatMessage(SALE_STRING.k6346a93);
+        const k6346ahf = intl.formatMessage(SALE_STRING.k6346ahf);
+        const k6346apr = intl.formatMessage(SALE_STRING.k6346apr);
+        const DEFAULT_SKIN_COLORS = [
+            {
+                skinColor: '#51a97d',
+                skinColorName: k6346a93,
+            },
+            {
+                skinColor: '#feae1b',
+                skinColorName: k63469k3,
+            },
+            {
+                skinColor: '#fd6631',
+                skinColorName: k6346ahf,
+            },
+            {
+                skinColor: '#ac7e4f',
+                skinColorName: k6346a0r,
+            },
+            {
+                skinColor: '#49a3f8',
+                skinColorName: k6346apr,
+            },
+            {
+                skinColor: '#e25049',
+                skinColorName: k63469sf,
+            },
+        ];
+        const { value: color, onChange, title = SALE_LABEL.k6346ay4 } = this.props;
         const isCustomColor = !DEFAULT_SKIN_COLORS.map(item => item.skinColor).includes(color);
         return (
             <div className={style.colorPickersContainer}>
@@ -76,7 +85,7 @@ export default class ColorSettingBlock extends Component {
                             </div>
                         </div>
                         <div className={style.labelBlock}>
-                            自定义颜色
+                            {SALE_LABEL.k6346b6g}
                         </div>
                     </div>
                 </div>

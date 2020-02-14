@@ -26,12 +26,13 @@ import {
     SALE_CENTER_GIFT_EFFICT_DAY,
 } from '../../../redux/actions/saleCenterNEW/types';
 import { axiosData } from '../../../helpers/util';
-
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
 
 const moment = require('moment');
 const { TabPane } = Tabs;
-const TabNum = [ '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-
+const TabNum = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+@injectIntl
 class LotteryThirdStep extends React.Component {
     constructor (props) {
         super(props);
@@ -116,7 +117,7 @@ class LotteryThirdStep extends React.Component {
      */
     initState = () => {
         const { isNew } = this.props;
-        const giftInfo = this.getOrganize(this.props.levelPrize.toJS());
+        const giftInfo = this.getOrganize(this.props.levelPrize ? this.props.levelPrize.toJS() : []);
         let infos = [getDefaultGiftData()];
         if(!isNew){
             giftInfo.forEach((gift, index) => {
@@ -242,7 +243,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftInfo.giftName = null;
             _infos[index].giveCoupon.value.giftInfo.giftItemID = null;
             _infos[index].giveCoupon.value.giftInfo.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftInfo.msg = '必须选择礼券';
+            _infos[index].giveCoupon.value.giftInfo.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`;
             this.setState({
                 infos: _infos,
             });
@@ -291,7 +292,7 @@ class LotteryThirdStep extends React.Component {
             if(!(_infos[index].giveCoupon.value.isOn) && !(_infos[index].giveRedPacket.isOn)){
                 //优惠券为非选中状态
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d170137ab9b7044)}`;
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
                 _infos[index].giveCoupon.validateStatus = 'success';
@@ -315,7 +316,7 @@ class LotteryThirdStep extends React.Component {
             if(!(_infos[index].giveCoupon.value.isOn) && JSON.stringify(_infos[index].givePoints.value) == "{}"){
                 //优惠券为非选中状态
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d7elcdm04l714)}`;
             }else{
                 //取消的时候如果优惠券是选中状态，则直接取消。
                 _infos[index].giveCoupon.validateStatus = 'success';
@@ -335,7 +336,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value = { isOn: false };
             if(JSON.stringify(_infos[index].givePoints.value) == "{}" && !(_infos[index].giveRedPacket.isOn)){
                 _infos[index].giveCoupon.validateStatus = 'error';
-                _infos[index].giveCoupon.msg = '3种礼品至少选择一项';
+                _infos[index].giveCoupon.msg = `${this.props.intl.formatMessage(STRING_SPE.d170137ab9b7044)}`;
             }else{
                 _infos[index].giveCoupon.validateStatus = 'success';
                 _infos[index].giveCoupon.msg = null;
@@ -361,7 +362,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].givePoints.value.givePointsValue.msg = null;
         } else {
             _infos[index].givePoints.value.givePointsValue.validateStatus = 'error';
-            _infos[index].givePoints.value.givePointsValue.msg = '赠送积分值应该大于0';
+            _infos[index].givePoints.value.givePointsValue.msg = `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`;
         }
         this.setState({
             infos: _infos,
@@ -376,7 +377,7 @@ class LotteryThirdStep extends React.Component {
             redPacketObj.msg = null;
         } else {
             redPacketObj.validateStatus = 'error';
-            redPacketObj.msg = '红包金额范围1-200元';
+            redPacketObj.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hljfel77133)}`;
         }
         this.setState({
             infos: this.state.infos.slice(),
@@ -391,7 +392,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].givePoints.value.card.msg = null;
         } else {
             _infos[index].givePoints.value.card.validateStatus = 'error';
-            _infos[index].givePoints.value.card.msg = '请先选择卡类型';
+            _infos[index].givePoints.value.card.msg = `${this.props.intl.formatMessage(STRING_SPE.d7h83ag6gb2224)}`;
         }
         this.setState({
             infos: _infos,
@@ -405,7 +406,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveRedPacket.redPacketID.msg = null;
         } else {
             _infos[index].giveRedPacket.redPacketID.validateStatus = 'error';
-            _infos[index].giveRedPacket.redPacketID.msg = '请选择现金红包';
+            _infos[index].giveRedPacket.redPacketID.msg = `${this.props.intl.formatMessage(STRING_SPE.d31f9aj936d0165)}`;
         }
         this.setState({
             infos: _infos,
@@ -421,7 +422,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftValidDays.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftValidDays.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftValidDays.msg = '有效天数必须大于0';
+            _infos[index].giveCoupon.value.giftValidDays.msg = `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvd21186)}`;
         }
         this.setState({
             infos: _infos,
@@ -439,7 +440,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giftOdds.msg = null;
         } else {
             _infos[index].giftOdds.validateStatus = 'error';
-            _infos[index].giftOdds.msg = '中奖比率必须在0~100之间';
+            _infos[index].giftOdds.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g120154)}`;
         }
         this.setState({
             infos: _infos,
@@ -487,7 +488,7 @@ class LotteryThirdStep extends React.Component {
         _infos[index].giveCoupon.value.giftValidDays.value = 0;
         if (date === null || date === undefined || !date[0] || !date[1]) {
             _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftEffectiveTime.msg = '请输入有效时间';
+            _infos[index].giveCoupon.value.giftEffectiveTime.msg = `${this.props.intl.formatMessage(STRING_SPE.db60a2a3892030168)}`;
         } else {
             _infos[index].giveCoupon.value.giftEffectiveTime.validateStatus = 'success';
             _infos[index].giveCoupon.value.giftEffectiveTime.msg = null;
@@ -518,17 +519,17 @@ class LotteryThirdStep extends React.Component {
     }
 
     /**
-     * 在切换几等奖tab的时候，切换之前要做校验 ,把当前的key设置为activekey
-     * @date 2019-10-22
+     * 在切换几等奖tab的时候，切换之前不用做校验 ,把当前的key设置为activekey
+     * @date 2019-12-12
      * @param {any} targetKey
      * @returns {any}
      */
     onChange = (targetKey) => {
-        if(this.checkEveryDataVaild()){
+        // if(this.checkEveryDataVaild()){
             this.setState({
                 activeKey: targetKey,
             });
-        }
+        // }
     }
 
     /**
@@ -565,13 +566,13 @@ class LotteryThirdStep extends React.Component {
         let panelArr = [];
         //新建逻辑
         if ( isNew && infos.length === 1 ) {
-            panelArr.push({title: '一等奖', content: PrizeContent, key: '0' });
+            panelArr.push({title: `1${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent, key: '0' });
         } else {
             infos.map((item, index) => {
                 if( index == activeKey){
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
+                    panelArr.push({title: `${TabNum[index]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent , key: `${index}`, });
                 }else{
-                    panelArr.push({title: `${TabNum[index]}等奖`, content: PrizeContent , key: `${index}`, });
+                    panelArr.push({title: `${TabNum[index]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`, content: PrizeContent , key: `${index}`, });
                 }
             })
         }
@@ -587,7 +588,7 @@ class LotteryThirdStep extends React.Component {
         const { infos } = this.state;
             if(this.checkEveryDataVaild()){
                 if(infos.length >= 10){
-                    message.warning('最多添加10个中奖等级');
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}`);
                     return;
                 }
                 infos.push({...JSON.parse(JSON.stringify(defaultData)), 'sendType': 0});
@@ -627,7 +628,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.value.giftCount.msg = null;
         } else {
             _infos[index].giveCoupon.value.giftCount.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftCount.msg = '礼品总数必须大于0';
+            _infos[index].giveCoupon.value.giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
         }
         this.setState({
             infos: _infos,
@@ -642,79 +643,94 @@ class LotteryThirdStep extends React.Component {
      * @returns {boolean}
      */
     checkEveryDataVaild = () => {
-        const { activeKey, infos } = this.state;
+        const { infos } = this.state;
         let tempResult = true;
-        for(let i in infos[activeKey] ){
+        // 校验概率必填、加合不超过100%
+        let sumOdds = 0;
+        for (let idx = 0; idx < infos.length; idx++) {
+            if(sumOdds> 100){
+                if(tempResult){
+                    tempResult = false;
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
+                }
+            }else{
+                if(!infos[idx].giftOdds.value){
+                    tempResult = false;
+                    this.handleGiftOddsChange({number: infos[idx].giftOdds.value}, idx);
+                    this.setState({
+                        activeKey: `${idx}`
+                    })
+                    return false;
+                }
+                sumOdds += +infos[idx].giftOdds.value;
+                if(sumOdds > 100){
+                    tempResult = false;
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
+                }
+            }   
+        }
+        // 校验校验每一等级必填
+        for (let activeKey = 0; activeKey < infos.length; activeKey ++) {
             if (JSON.stringify(infos[activeKey].givePoints.value) === '{}' && !infos[activeKey].giveRedPacket.isOn
-            && !infos[activeKey].giveCoupon.value.isOn) {
-                return false;
-            }
-            switch(i){
-                case 'giftOdds':
-                    let sumOdds = 0;
-                    infos.map((item) => {
-                        if(sumOdds> 100){
-                            if(tempResult){
+                && !infos[activeKey].giveCoupon.value.isOn) {
+                    this.setState({
+                        activeKey: `${activeKey}`
+                    })
+                    return false;
+                }
+            for(let i in infos[activeKey] ){
+                switch(i){
+                    case 'givePoints':
+                        if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
+                            //赠送积分是勾选的要确认里面的内容是不是都合适
+                            let tempobj = infos[activeKey].givePoints.value;
+                            if(!(tempobj.givePointsValue.value > 0) || !tempobj.card.value ){
                                 tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
-                            }
-                        }else{
-                            if(!item.giftOdds.value){
-                                tempResult = false;
-                                this.handleGiftOddsChange({number: item.giftOdds.value}, activeKey);
-                            }
-                            sumOdds += +item.giftOdds.value;
-                            if(sumOdds > 100){
-                                tempResult = false;
-                                message.error('不同等级奖项中奖概率相加不能超过100%');
+                                this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
                             }
                         }
-                    });
-                    break;
-                case 'givePoints':
-                    if(JSON.stringify(infos[activeKey].givePoints.value) != "{}"){
-                        //赠送积分是勾选的要确认里面的内容是不是都合适
-                        let tempobj = infos[activeKey].givePoints.value;
-                        if(!(tempobj.givePointsValue.value > 0) || !tempobj.card.value ){
-                            tempResult = false;
-                            this.handleGivePointsValueChange({number: tempobj.givePointsValue.value}, activeKey);
-                        }
-                    }
-                    break;
-                case 'giveRedPacket':
-                    if(infos[activeKey].giveRedPacket.isOn){
-                        //赠送积分是勾选的要确认里面的内容是不是都合适
-                        let tempobj = infos[activeKey].giveRedPacket;
-                        if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
-                            tempResult = false;
-                            this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
-                            this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
-                        }
-                    }
-                    break;
-                case 'giveCoupon':
-                        if(infos[activeKey].giveCoupon.value.isOn){
-                            //优惠券是勾选的确认优惠券里面的内容
-                            let tempobj = infos[activeKey].giveCoupon.value;
-                            if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
+                        break;
+                    case 'giveRedPacket':
+                        if(infos[activeKey].giveRedPacket.isOn){
+                            //赠送积分是勾选的要确认里面的内容是不是都合适
+                            let tempobj = infos[activeKey].giveRedPacket;
+                            if(!(tempobj.redPacketValue.value >= 1 && tempobj.redPacketValue.value <= 200) || !tempobj.redPacketID.value ){
                                 tempResult = false;
-                                this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
+                                this.handleGiveRedPacketValueChange({number: tempobj.redPacketValue.value}, activeKey);
+                                this.handleGiveRedPacketIDChange(tempobj.redPacketID.value, activeKey);
                             }
-                            if(tempobj.effectType == '1' || tempobj.effectType == '3'){
-                                //按小时或者按天
-                                if(!tempobj.giftValidDays.value){
+                        }
+                        break;
+                    case 'giveCoupon':
+                            if(infos[activeKey].giveCoupon.value.isOn){
+                                //优惠券是勾选的确认优惠券里面的内容
+                                let tempobj = infos[activeKey].giveCoupon.value;
+                                if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                     tempResult = false;
-                                    this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
-                                    this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                    this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
                                 }
-                            }else{
-                                //固定有效期
-                                if(tempobj.giftEffectiveTime.value.constructor != Array){
-                                    tempResult = false;
-                                    this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                if(tempobj.effectType == '1' || tempobj.effectType == '3'){
+                                    //按小时或者按天
+                                    if(!tempobj.giftValidDays.value){
+                                        tempResult = false;
+                                        this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
+                                        this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                    }
+                                }else{
+                                    //固定有效期
+                                    if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
+                                        tempResult = false;
+                                        this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                    }
                                 }
                             }
-                        }
+                }
+                if (!tempResult) {
+                    this.setState({
+                        activeKey: `${activeKey}`
+                    })
+                    return false;
+                }
             }
         }
         return tempResult;
@@ -811,12 +827,12 @@ class LotteryThirdStep extends React.Component {
                     disabled={this.props.disabled || infos.length >= 10}
                 > 
                     <Icon type="plus" className={style.addIcon} />
-                    添加中奖等级 
+                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)} 
                 </Button>
                 <span 
                     className = { style.graySpan }
                 > 
-                    最多添加10个中奖等级
+                    {this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}
                 </span>
                 <Tabs
                     hideAdd={true}

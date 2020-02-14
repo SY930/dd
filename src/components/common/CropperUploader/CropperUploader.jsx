@@ -159,7 +159,7 @@ class CropperUploader extends Component {
                 <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
                 <br/>
                 <span>
-                    上传
+                    { this.props.uploadTest ? this.props.uploadTest : '上传'}
                 </span>
             </div> 
         )

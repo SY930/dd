@@ -9,6 +9,8 @@
  * @Copyright: Copyright(c) 2017-2020 Hualala Co.,Ltd.
  */
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType'
+import { SALE_LABEL, SALE_STRING, } from 'i18n/common/salecenter';
+import { COMMON_GIFT, } from 'i18n/common/gift';
 const Moment = require('moment');
 
 export const ACTIVITY_CYCLE_TYPE = Object.freeze({
@@ -17,25 +19,25 @@ export const ACTIVITY_CYCLE_TYPE = Object.freeze({
     MONTHLY: '2',
 });
 export const CLIENT_CATEGORY = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅会员' },
-    { key: '2', value: '2', name: '非会员' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhuahr },
+    { key: '2', value: '2', name: SALE_LABEL.k6hhuaq3 },
 ];
 export const CLIENT_CATEGORY_RETURN_GIFT = [
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '全部会员' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
 ];
 export const CLIENT_CATEGORY_RETURN_POINT = [
-    { key: '1', value: '1', name: '全部会员' },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
 ];
 export const CLIENT_CATEGORY_ADD_UP = [
-    { key: '1', value: '1', name: '全部会员' },
-    { key: '3', value: '3', name: '仅本店入会的会员' },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu86f },
+    { key: '3', value: '3', name: SALE_LABEL.k6hhu8er },
     // { key: 'CUSTOMER_CARD_TYPE', value: 'CUSTOMER_CARD_TYPE', name: '可使用卡类的会员' },
 ];
 export const PAYMENTS_OPTIONS = Object.freeze([
-    { key: '0', value: '0', name: '不限制' },
-    { key: '1', value: '1', name: '仅实收' },
+    { key: '0', value: '0', name: SALE_LABEL.k5dn26n4 },
+    { key: '1', value: '1', name: SALE_LABEL.k6hhu8n3 },
 ]);
 export const CYCLE_TYPE = Object.freeze([{
     value: '0',
@@ -53,25 +55,25 @@ export const CYCLE_TYPE = Object.freeze([{
 
 export const SALE_CENTER_ACTIVITY_CHANNEL_LIST = Object.freeze([{
     idx: 0,
-    name: '全部',
+    name: SALE_LABEL.k5eng042,
     key: '',
     value: '0',
 },
 {
     idx: 1,
-    name: '云店',
+    name: SALE_LABEL.k5krn6qx,
     key: 'POS',
     value: '1',
 },
 {
     idx: 2,
-    name: '微信',
+    name: SALE_LABEL.k5krn6z9,
     key: 'WECHAT',
     value: '2',
 },
     {
     idx: 3,
-    name: '饮食通',
+    name: SALE_LABEL.k5krn77l,
     key: 'YST',
     value: '3',
 },
@@ -109,150 +111,150 @@ export const SALE_CENTER_ACTIVITY_ORDER_TYPE = Object.freeze({
 });
 
 export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
-    label: '代金券',
+    label: SALE_LABEL.k5m5avfn,
     value: '10',
 },
 {
-    label: '菜品优惠券',
+    label: SALE_LABEL.k5m5avnz,
     value: '20',
 },
 {
-    label: '菜品兑换券',
+    label: SALE_LABEL.k5m5avwb,
     value: '21',
 },
 {
-    label: '折扣券',
+    label: SALE_LABEL.k636qvha,
     value: '111',
 },
 {
-    label: '微信支付代金券',
+    label: SALE_LABEL.k6hhubnf,
     value: '112',
 },
 {
-    label: '买赠券',
+    label: SALE_LABEL.k636qvpm,
     value: '110',
 },
 {
-    label: '实物礼品券',
+    label: SALE_LABEL.k67g7tk4,
     value: '30',
 },
 {
-    label: '会员充值券',
+    label: SALE_LABEL.k67g7tsg,
     value: '40',
 },
 {
-    label: '会员积分券',
+    label: SALE_LABEL.k67g7u0s,
     value: '42',
 },
 {
-    label: '会员权益券',
+    label: SALE_LABEL.k67g7u94,
     value: '80',
 },
 {
-    label: '活动券',
+    label: SALE_LABEL.k5m6e393,
     value: '100',
 },
 
 ]);
 
 export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
-    label: '立即生效',
+    label: COMMON_GIFT.d1qc7cfgh16,
     value: '0',
 },
 {
-    label: '1小时生效',
+    label: <span>1{COMMON_GIFT.d7h90e123090127}</span>,
     value: '1',
 },
 {
-    label: '2小时生效',
+    label: <span>2{COMMON_GIFT.d7h90e123090127}</span>,
     value: '2',
 },
 {
-    label: '3小时生效',
+    label: <span>3{COMMON_GIFT.d7h90e123090127}</span>,
     value: '3',
 },
 {
-    label: '4小时生效',
+    label: <span>4{COMMON_GIFT.d7h90e123090127}</span>,
     value: '4',
 },
 {
-    label: '5小时生效',
+    label: <span>5{COMMON_GIFT.d7h90e123090127}</span>,
     value: '5',
 },
 {
-    label: '6小时生效',
+    label: <span>6{COMMON_GIFT.d7h90e123090127}</span>,
     value: '6',
 },
 {
-    label: '7小时生效',
+    label: <span>7{COMMON_GIFT.d7h90e123090127}</span>,
     value: '7',
 },
 {
-    label: '8小时生效',
+    label: <span>8{COMMON_GIFT.d7h90e123090127}</span>,
     value: '8',
 },
 {
-    label: '9小时生效',
+    label: <span>9{COMMON_GIFT.d7h90e123090127}</span>,
     value: '9',
 },
 {
-    label: '10小时生效',
+    label: <span>10{COMMON_GIFT.d7h90e123090127}</span>,
     value: '10',
 },
 {
-    label: '11小时生效',
+    label: <span>11{COMMON_GIFT.d7h90e123090127}</span>,
     value: '11',
 },
 {
-    label: '12小时生效',
+    label: <span>12{COMMON_GIFT.d7h90e123090127}</span>,
     value: '12',
 },
 {
-    label: '13小时生效',
+    label: <span>13{COMMON_GIFT.d7h90e123090127}</span>,
     value: '13',
 },
 {
-    label: '14小时生效',
+    label: <span>14{COMMON_GIFT.d7h90e123090127}</span>,
     value: '14',
 },
 {
-    label: '15小时生效',
+    label: <span>15{COMMON_GIFT.d7h90e123090127}</span>,
     value: '15',
 },
 {
-    label: '16小时生效',
+    label: <span>16{COMMON_GIFT.d7h90e123090127}</span>,
     value: '16',
 },
 {
-    label: '17小时生效',
+    label: <span>17{COMMON_GIFT.d7h90e123090127}</span>,
     value: '17',
 },
 {
-    label: '18小时生效',
+    label: <span>18{COMMON_GIFT.d7h90e123090127}</span>,
     value: '18',
 },
 {
-    label: '19小时生效',
+    label: <span>19{COMMON_GIFT.d7h90e123090127}</span>,
     value: '19',
 },
 {
-    label: '20小时生效',
+    label: <span>20{COMMON_GIFT.d7h90e123090127}</span>,
     value: '20',
 },
 {
-    label: '21小时生效',
+    label: <span>21{COMMON_GIFT.d7h90e123090127}</span>,
     value: '21',
 },
 {
-    label: '22小时生效',
+    label: <span>22{COMMON_GIFT.d7h90e123090127}</span>,
     value: '22',
 },
 {
-    label: '23小时生效',
+    label: <span>23{COMMON_GIFT.d7h90e123090127}</span>,
     value: '23',
 },
 {
-    label: '24小时生效',
+    label: <span>24{COMMON_GIFT.d7h90e123090127}</span>,
     value: '24',
 },
 ]);
@@ -260,123 +262,123 @@ export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([{
 
 export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     {
-        label: '1天生效',
+        label: <span>1{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '1',
     },
     {
-        label: '2天生效',
+        label: <span>2{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '2',
     },
     {
-        label: '3天生效',
+        label: <span>3{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '3',
     },
     {
-        label: '4天生效',
+        label: <span>4{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '4',
     },
     {
-        label: '5天生效',
+        label: <span>5{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '5',
     },
     {
-        label: '6天生效',
+        label: <span>6{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '6',
     },
     {
-        label: '7天生效',
+        label: <span>7{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '7',
     },
     {
-        label: '8天生效',
+        label: <span>8{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '8',
     },
     {
-        label: '9天生效',
+        label: <span>9{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '9',
     },
     {
-        label: '10天生效',
+        label: <span>10{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '10',
     },
     {
-        label: '11天生效',
+        label: <span>11{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '11',
     },
     {
-        label: '12天生效',
+        label: <span>12{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '12',
     },
     {
-        label: '13天生效',
+        label: <span>13{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '13',
     },
     {
-        label: '14天生效',
+        label: <span>14{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '14',
     },
     {
-        label: '15天生效',
+        label: <span>15{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '15',
     },
     {
-        label: '16天生效',
+        label: <span>16{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '16',
     },
     {
-        label: '17天生效',
+        label: <span>17{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '17',
     },
     {
-        label: '18天生效',
+        label: <span>18{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '18',
     },
     {
-        label: '19天生效',
+        label: <span>19{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '19',
     },
     {
-        label: '20天生效',
+        label: <span>20{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '20',
     },
     {
-        label: '21天生效',
+        label: <span>21{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '21',
     },
     {
-        label: '22天生效',
+        label: <span>22{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '22',
     },
     {
-        label: '23天生效',
+        label: <span>23{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '23',
     },
     {
-        label: '24天生效',
+        label: <span>24{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '24',
     },
     {
-        label: '25天生效',
+        label: <span>25{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '25',
     },
     {
-        label: '26天生效',
+        label: <span>26{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '26',
     },
     {
-        label: '27天生效',
+        label: <span>27{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '27',
     },
     {
-        label: '28天生效',
+        label: <span>28{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '28',
     },
     {
-        label: '29天生效',
+        label: <span>29{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '29',
     },
     {
-        label: '30天生效',
+        label: <span>30{COMMON_GIFT.d7h90e1230904678}</span>,
         value: '30',
     },
 ]);
@@ -384,162 +386,162 @@ export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
 export const ACTIVITY_CATEGORIES = (function () {
     const basic = [{
         idx: 0,
-        title: '满减/每满减',
+        title: SALE_LABEL.k67b3v0o,
         color: '#84aac6',
-        text: '顾客只要消费满一定金额即可得到一定的减价优惠',
-        example: '例如:菜金满100减10元/酒水每满100减5元',
+        text: SALE_LABEL.k67cp2qm,
+        example: SALE_LABEL.k67cpr2v,
         key: '2010',
     },
     {
         idx: 1,
-        title: '满赠/每满赠',
+        title: SALE_LABEL.k67b3v90,
         color: '#c49b79',
-        text: '顾客消费满足条件,商家即赠送菜品',
-        example: '例如:菜金满100赠可乐一瓶',
+        text: SALE_LABEL.k67cp2yy,
+        example: SALE_LABEL.k67cprb7,
         key: '1030',
     },
     {
         idx: 2,
-        title: '折扣',
+        title: SALE_LABEL.k5ezcu1b,
         color: '#9dc568',
-        text: '可设置显示账单折扣,菜品折扣',
-        example: '例如:全部菜品9折,酒水不打折',
+        text: SALE_LABEL.k67cp14a,
+        example: SALE_LABEL.k67cppov,
         key: '2020',
     },
     {
         idx: 3,
-        title: '特价菜',
+        title: SALE_LABEL.k67b2sac,
         color: '#e5be6c',
-        text: '直接降价促销',
-        example: '例如:周一凉菜类会员立减10元',
+        text: SALE_LABEL.k67cp1cm,
+        example: SALE_LABEL.k67cppx7,
         key: '1010',
     },
     {
         idx: 4,
-        title: '买赠',
+        title: SALE_LABEL.k67b3vhc,
         color: '#c49b79',
-        text: '顾客买X赠送Y,常用于单品推新的促销和曝光度',
-        example: '例如:点新菜品2份以上可免费送可乐一瓶',
+        text: SALE_LABEL.k67cp37a,
+        example: SALE_LABEL.k67cprjj,
         key: '1020',
     },
     {
         idx: 5,
-        title: '第二份打折',
+        title: SALE_LABEL.k67b2sr0,
         color: '#84aac6',
-        text: '更实在的折扣优惠,常用于情侣消费,朋友消费',
-        example: '例如:午餐12点-13点可乐第二份8折,第三份半价',
+        text: SALE_LABEL.k67cp1ta,
+        example: SALE_LABEL.k67cpq5j,
         key: '1050',
     },
     {
         idx: 6,
-        title: '消费返礼品',
+        title: SALE_LABEL.k5m4q0ae,
         color: '#9dc568',
-        text: '消费后获得奖励将使顾客下次光临的时间大大提前',
-        example: '例如:消费满100元送1张10元代金券',
+        text: SALE_LABEL.k67b4tme,
+        example: SALE_LABEL.k67cporj,
         key: '3010',
     },
     {
         idx: 7,
-        title: '消费返积分',
+        title: SALE_LABEL.k5m4q0iq,
         color: '#c49b79',
-        text: '会员消费满X元送积分,积分可兑换礼品或抵现',
-        example: '例如:消费每满1元返1分',
+        text: SALE_LABEL.k67b4tuq,
+        example: SALE_LABEL.k67cpozv,
         key: '3020',
     },
     {
         idx: 8,
-        title: '团购活动',
+        title: SALE_LABEL.k67b2sio,
         color: '#e5be6c',
-        text: '对接美团点评团购券,并拆分券实收和优惠金额',
+        text: SALE_LABEL.k67cp1ky,
         example: '',
         key: '4010',
     },
     {
         idx: 9,
-        title: '随机立减',
+        title: SALE_LABEL.k67b2pqo,
         color: '#84aac6',
-        text: '消费满X元随机立减一定金额,顾客可获得幸福感',
-        example: '例如:消费满100元随机立减1-5元',
+        text: SALE_LABEL.k67b4sxe,
+        example: SALE_LABEL.k67cpoj7,
         key: '2030',
     },
     {
         idx: 10,
-        title: '买减/买折',
+        title: SALE_LABEL.k67b3vy0,
         color: '#84aac6',
-        text: '购买一定份数的指定菜品可享受相应折扣或减价',
-        example: '例如:购买1份土豆丝+1份黄瓜即可打9折或减价3元',
+        text: SALE_LABEL.k67cp3ny,
+        example: SALE_LABEL.k67g7rxs,
         key: '2040',
     },
     {
         idx: 11,
-        title: '搭赠',
+        title: SALE_LABEL.k67b3weo,
         color: '#84aac6',
-        text: '购买指定菜品组合时可搭配赠送指定菜品',
-        example: '例如:购买土豆与茄子组合即可赠送西红柿',
+        text: SALE_LABEL.k67cp44m,
+        example: SALE_LABEL.k67g7seg,
         key: '1040',
     },
     {
         idx: 12,
-        title: '加价换购',
+        title: SALE_LABEL.k67b3uk0,
         color: '#84aac6',
-        text: '任意或指定消费满X元再加Y元即可换购指定菜品',
-        example: '例如:任意消费满100元加10元即可换购土豆丝一份',
+        text: SALE_LABEL.k67cp21m,
+        example: SALE_LABEL.k67cpqdv,
         key: '1070',
     },
     {
         idx: 13,
-        title: '组合减免/折扣',
+        title: SALE_LABEL.k67b3w6c,
         color: '#84aac6',
-        text: '购买X组菜品组合即可享受相应折扣或减价',
-        example: '例如:购买任意两组菜品组合即可打9折或减价3元',
+        text: SALE_LABEL.k67cp3wa,
+        example: SALE_LABEL.k67g7s64,
         key: '2050',
     },
     {
         idx: 14,
-        title: '买三免一',
+        title: SALE_LABEL.k67b3vpo,
         color: '#84aac6',
-        text: '消费满X份菜品即可在X中免单Y份最低价菜品',
-        example: '例如:消费满4份热菜即可在4份中免单最低价的1份',
+        text: SALE_LABEL.k67cp3fm,
+        example: SALE_LABEL.k67g7rpg,
         key: '1060',
     },
     {
         idx: 15,
-        title: '累计次数减免',
+        title: SALE_LABEL.k67b2qwc,
         color: '#84aac6',
-        text: '提高老客户忠诚度，开展累计消费次数减免的活动',
-        example: '例如:累计消费2次减免2元，累计消费3次减免5元',
+        text: SALE_LABEL.k67b4ujq,
+        example: SALE_LABEL.k67cppgj,
         key: '2070',
     },
     {
         idx: 16,
-        title: '累计次数赠送',
+        title: SALE_LABEL.k67b2qo0,
         color: '#84aac6',
-        text: '提高老客户忠诚度，开展累计消费次数赠送的活动',
-        example: '例如:累计消费2次赠送A菜，累计消费3次赠送B菜',
+        text: SALE_LABEL.k67b4ube,
+        example: SALE_LABEL.k67cpp87,
         key: '1080',
     },
     {
         idx: 17,
-        title: '菜品推荐',
+        title: SALE_LABEL.k5m5auib,
         color: '#84aac6',
-        text: '向用户推荐菜品，提高目标菜品曝光率和客单价',
-        example: '例如:客户点A菜推荐B菜，点C菜推荐D菜和F菜',
+        text: SALE_LABEL.k67cp29y,
+        example: SALE_LABEL.k67cpqm7,
         key: '5010',
     },
     {
         idx: 18,
-        title: '加价升级换新',
+        title: SALE_LABEL.k67b3usc,
         color: '#84aac6',
-        text: '加价升级换新是区别加价换购的一个营销活动',
-        example: '例如:消费满88元，点中杯拿铁，加2元，可升级成大杯拿铁',
+        text: SALE_LABEL.k67cp2ia,
+        example: SALE_LABEL.k67cpquj,
         key: '1090',
     },
     {
         idx: 19,
         color: '#84aac6',
-        title: '低价促销',
-        text: '消费一定的菜品, 可对价格最低菜品进行减免、折扣、特定售价等优惠活动',
-        example: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠',
+        title: SALE_LABEL.k67b3wn0,
+        text: SALE_LABEL.k67cp4cy,
+        example: SALE_LABEL.k67g7uy4,
         key: '2080',
     },
     {
@@ -557,150 +559,162 @@ export const ACTIVITY_CATEGORIES = (function () {
 export const CHARACTERISTIC_CATEGORIES = (function () {
     const basic = [{
         idx: 0,
-        title: '生日赠送',
-        text: '生日总要HAPPY一下，此时赠送礼品恰到好处的吸引客户进店消费',
+        title: SALE_LABEL.k67b2r4o,
+        text: SALE_LABEL.k67b4us2,
         example: '',
         key: '51',
     },
     {
         idx: 1,
-        title: '开卡赠送',
-        text: '开启开卡赠送礼品，可以带来更多的新客户',
+        title: SALE_LABEL.k67b2p1n,
+        text: SALE_LABEL.k67b4s02,
         example: '',
         key: '52',
     },
     {
         idx: 2,
-        title: '免费领取',
-        text: '限时免费领取礼品，达到短期拉新的效果',
+        title: SALE_LABEL.k636p0yo,
+        text: SALE_LABEL.k67b4rb2,
         example: '',
         key: '21',
     },
     {
         idx: 3,
-        title: '摇奖活动',
-        text: '人人都希望中奖，意外的礼品总是刺激着顾客的就餐神经',
+        title: SALE_LABEL.k636p31p,
+        text: SALE_LABEL.k67b4s8e,
         example: '',
         key: '20',
     },
     {
         idx: 4,
-        title: '积分兑换',
-        text: '顾客可以使用积分兑换相应的礼品，增加顾客的消费黏性',
+        title: SALE_LABEL.k67b2qfo,
+        text: SALE_LABEL.k67b4u32,
         example: '',
         key: '30',
     },
     {
         idx: 5,
-        title: '报名活动',
-        text: '通过报名设置，筛选企业不同价值的客户',
+        title: SALE_LABEL.k67b2pic,
+        text: SALE_LABEL.k67b4sp2,
         example: '',
         key: '22',
     },
     {
 
         idx: 6,
-        title: '群发礼品',
-        text: '在最恰当的时间，送去最温馨的优惠礼品，顾客倍感惊喜',
+        title: SALE_LABEL.k67b2pz0,
+        text: SALE_LABEL.k67b4t5q,
         example: '',
         key: '53',
     },
     {
         idx: 7,
-        title: '群发短信',
-        text: '群发短消息，将问候和优惠及时传递给你的每一位顾客',
+        title: SALE_LABEL.k67b2q7c,
+        text: SALE_LABEL.k67b4te2,
         example: '',
         key: '50',
     },
     {
         idx: 8,
-        title: '完善资料送礼',
-        text: '获取会员更详细的资料，例如生日，住址，手机号，邮箱等资料，与会员建立更多维度的维系渠道',
+        title: SALE_LABEL.k67b2s20,
+        text: SALE_LABEL.k67cp0vy,
         example: '',
         key: '60',
     },
     {
         idx: 9,
-        title: '升级送礼',
-        text: '选择升级后的会员等级为某等级，升级后是这个等级中的，赠送礼品',
+        title: SALE_LABEL.k67b2rto,
+        text: SALE_LABEL.k67cp0nm,
         example: '',
         key: '61',
-        tip: '同一个时间上一个升级后的等级只能有一个存在，即不允许同一时间升级后的等级参加两个升级送礼的活动',
+        tip: SALE_LABEL.k67g7v6g,
     },
     {
         idx: 10,
-        title: '累计消费送礼',
-        text: '当客人消费达到累计的次数或者金额后，商家能够赠送相应的礼品，客人体验感会更好',
+        title: SALE_LABEL.k67b2rlc,
+        text: SALE_LABEL.k67b4v8q,
         example: '',
         key: '62',
-        tip: '同一时间上一个卡类的累计消费送礼只能有一个，即不允许同一时间一个卡类存在两个累计消费送礼的活动',
+        tip: SALE_LABEL.k67g7ves,
     },
     {
         idx: 11,
-        title: '线上餐厅送礼',
-        text: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。',
+        title: SALE_LABEL.k67b2otb,
+        text: SALE_LABEL.k67b4rrq,
         example: '',
         key: '23',
     },
         {
             idx: 12,
-            title: '唤醒送礼',
-            text: '统计会员即将流失的天数，针对即将流失的会员，可以选择发送礼品和发送信息',
+            title: SALE_LABEL.k67b2rd0,
+            text: SALE_LABEL.k67b4v0e,
             example: '',
             key: '63',
         },
         {
             idx: 13,
-            title: '评价送礼',
-            text: '客户消费完毕后有可对消费的订单评价，评价后可获取一定的奖励',
+            title: SALE_LABEL.k67b2p9z,
+            text: SALE_LABEL.k67b4sgq,
             example: '',
             key: '64',
         },
         {
             idx: 14,
-            title: '关注送礼',
-            text: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数',
+            title: SALE_LABEL.k639vhpm,
+            text: SALE_LABEL.k67b4rje,
             example: '',
             key: '31',
         },
         {
             idx: 15,
-            title: '分享裂变',
-            text: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户',
+            title: SALE_LABEL.k636p3a1,
+            text: SALE_LABEL.k67b3xsp,
             example: '',
             key: '65',
         },
         {
             idx: 16,
-            title: '膨胀大礼包',
-            text: '参与活动领礼品，邀请好友助力礼品更丰厚',
+            title: SALE_LABEL.k635s5id,
+            text: SALE_LABEL.k67b3y11,
             example: '',
             key: '66',
-            tip: `
-                发起人规则: \r\n
-                1、同一位用户在一个活动中，只能发起一次膨胀大礼包活动\r\n
-                2、兑换奖品后活动立即终止\r\n
-                助力规则:\r\n
-                1、同一位助力用户只能为同一位发起者膨胀一次，不可多次膨胀\r\n
-                2、同一位助力用户可为不同发起者各膨胀一次\r\n
-                提升:\r\n
-                膨胀大礼包为免费裂变拉新活动，请合理设计礼品及对应助力人数`,
+            tip: <p>{SALE_LABEL.k636f2yf}<br/>
+                1、{SALE_LABEL.k636f36s}<br/>
+                2、{SALE_LABEL.k636f3f4}<br/>
+                {SALE_LABEL.k636f3ng}:<br/>
+                1、{SALE_LABEL.k636f3vs}<br/>
+                2、{SALE_LABEL.k636f444}<br/>
+                {SALE_LABEL.k67g7vn4}:<br/>
+                {SALE_LABEL.k67g8jby}</p>,
 
         },
         {
             idx: 17,
-            title: '桌边砍',
-            text: '针对买单环节发起邀请同行好友砍价, 沉淀高价值的到店用户',
+            title: SALE_LABEL.k639vh8y,
+            text: SALE_LABEL.k67b3y9d,
             example: '',
             key: '67',
         },
         {
             idx: 18,
-            title: '推荐有礼',
-            text: '老客户推荐新用户，双方都能拿到礼品返还，适合长期会员拉新使用',
+            title: SALE_LABEL.k639vhha,
+            text: SALE_LABEL.k67b3yhp,
             example: '',
             key: '68',
         },
+        {
+            idx: 19,
+            title: '集点卡',
+            text: '消费后获得集点，促进会员多次消费',
+            example: '',
+            key: '75',
+        },{
+            idx: 20,
+            title: '支付后广告',
+            text: '支付成功页自定义投放广告内容，便于餐后营销',
+            example: '',
+            key: '77',
+        }
     ];
     return basic;
 }());
@@ -932,6 +946,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         return {
             rule: ruleJson,
             blackList: ruleJson.blackList || false,
+            customerUseCountLimit: ruleJson.customerUseCountLimit || 0,
             foodCategory: [],
             excludeDishes: [], // excluded dish
             dishes: [], // selected dish
@@ -1070,28 +1085,28 @@ export const BUSINESS_MODEL = Object.freeze({
 
 // 是否发信息
 export const SEND_MSG = Object.freeze([{
-    label: '不发送',
+    label: COMMON_GIFT.d1qcjcuhhg05,
     value: '0',
 }, {
-    label: '仅发送短信',
+    label: COMMON_GIFT.d1qcjcuhhg143,
     value: '1',
 }, {
-    label: '仅推送微信',
+    label: COMMON_GIFT.d1duuh1lsu215,
     value: '2',
 }, {
-    label: '同时发送短信和微信',
+    label: COMMON_GIFT.d141vvwo7r310,
     value: '4',
 },{
-    label: '微信推送不成功则发送短信',
+    label: COMMON_GIFT.d1qcjcuhhg492,
     value: '3',
 },]);
 
 // 是否发信息
 export const NOTIFICATION_FLAG = Object.freeze([{
-    label: '不发送',
+    label: COMMON_GIFT.d1qcjcuhhg05,
     value: '0',
 }, {
-    label: '推送微信消息',
+    label: COMMON_GIFT.d1qeq24lqo035,
     value: '2',
 },
 ]);

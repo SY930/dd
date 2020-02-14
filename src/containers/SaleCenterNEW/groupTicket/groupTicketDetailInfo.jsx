@@ -20,11 +20,13 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common/ConnectedScopeListSelector';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
 
-
+@injectIntl()
 class GroupTicketDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -218,23 +220,31 @@ class GroupTicketDetailInfo extends React.Component {
     onCostIncomeChange(val) {
         this.setState({ costIncome: val })
     }
-    renderGroupTicket() {
+    renderGroupTicket = () => {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+
+        const k5f3y5ml = intl.formatMessage(SALE_STRING.k5f3y5ml);
+        const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
+        const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
+        const k5f3y7iv = intl.formatMessage(SALE_STRING.k5f3y7iv);
+        const k5f3y89j = intl.formatMessage(SALE_STRING.k5f3y89j);
         const voucherVerify = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'voucherVerify']);
         const { giftMaxUseNum } = this.state;
         return (
             <div>
                 <FormItem
-                    label="券购买金额"
+                    label={SALE_LABEL.k5f49c4d}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     required={true}
                     validateStatus={this.state.giftPriceFlag ? 'success' : 'error'}
-                    help={this.state.giftPriceFlag ? null : '请输入券购买金额'}
+                    help={this.state.giftPriceFlag ? null : SALE_LABEL.k5f49c4}
                 >
                     <PriceInput
                         addonBefore={''}
-                        addonAfter={'元'}
+                        addonAfter={k5ezdbiy}
                         value={{ number: this.state.giftPrice }}
                         defaultValue={{ number: this.state.giftPrice }}
                         onChange={this.onGiftPriceChange}
@@ -243,17 +253,17 @@ class GroupTicketDetailInfo extends React.Component {
                 </FormItem>
 
                 <FormItem
-                    label="券面金额"
+                    label={SALE_LABEL.k5f49i2k}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     required={true}
                     validateStatus={this.state.giftValueFlag ? 'success' : 'error'}
-                    help={this.state.giftValueFlag ? null : '请输入券面金额'}
+                    help={this.state.giftValueFlag ? null : SALE_LABEL.k5f49i2k}
                 >
                     <PriceInput
                         addonBefore={''}
-                        addonAfter={'元'}
+                        addonAfter={k5ezdbiy}
                         value={{ number: this.state.giftValue }}
                         defaultValue={{ number: this.state.giftValue }}
                         onChange={this.onGiftValueChange}
@@ -262,17 +272,17 @@ class GroupTicketDetailInfo extends React.Component {
                 </FormItem>
 
                 <FormItem
-                    label="券交易手续费"
+                    label={SALE_LABEL.k5f49nwg}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     required={voucherVerify == 1}
                     validateStatus={this.state.transFeeFlag || voucherVerify != 1 ? 'success' : 'error'}
-                    help={this.state.transFeeFlag || voucherVerify != 1 ? null : '选择核销后必须输入券交易手续费'}
+                    help={this.state.transFeeFlag || voucherVerify != 1 ? null : SALE_LABEL.k5f49wf8}
                 >
                     <PriceInput
                         addonBefore={''}
-                        addonAfter={'元'}
+                        addonAfter={k5ezdbiy}
                         discountMode
                         discountFloat={5}
                         onChange={this.onTransFeeChange}
@@ -282,7 +292,7 @@ class GroupTicketDetailInfo extends React.Component {
                     />
                 </FormItem>
                 <FormItem
-                    label="费用是否计入实收"
+                    label={SALE_LABEL.k5f4a4be}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -293,12 +303,12 @@ class GroupTicketDetailInfo extends React.Component {
                             defaultValue={'1'}
                             getPopupContainer={(node) => node.parentNode}
                     >
-                        <Option value="0">否</Option>
-                        <Option value="1">是</Option>
+    <Option value="0">{k5f3y6yg}</Option>
+        <Option value="1">{k5f3y6b4}</Option>
                     </Select>
                 </FormItem>
 
-                <FormItem label="团购券使用" className={[styles.FormItemStyle, styles.groupTicket, styles.priceInputSingle].join(' ')} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                <FormItem label={SALE_LABEL.k5f4aaf0} className={[styles.FormItemStyle, styles.groupTicket, styles.priceInputSingle].join(' ')} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <Select
                         size="default"
                         value={`${this.state.stageType}`}
@@ -310,13 +320,13 @@ class GroupTicketDetailInfo extends React.Component {
                             this.setState({ stageType });
                         }}
                     >
-                        <Option value="2" key="2">账单金额满</Option>
-                        <Option value="1" key="1">账单金额每满</Option>
+    <Option value="2" key="2">{k5f3y7iv}</Option>
+                    <Option value="1" key="1">{k5f3y89j}</Option>
                     </Select>
                     <span className={styles.priceInLine}>
                         <PriceInput
                             addonBefore={''}
-                            addonAfter={'元'}
+                            addonAfter={k5ezdbiy}
                             onChange={this.onStageAmountChange}
                             value={{ number: this.state.stageAmount }}
                             defaultValue={{ number: this.state.stageAmount }}
@@ -325,18 +335,18 @@ class GroupTicketDetailInfo extends React.Component {
                     </span>
                     <span id="customLabel" className={[styles.inputLabel, styles.inputLabelTwo].join(' ')}
                           style={{width: this.state.stageType == 2 ? '22%' : '30%' }}
-                    >{this.state.stageType == 2 ? '最多使用团购券':'可使用一张, 最多使用'}</span>
+                    >{this.state.stageType == 2 ? SALE_LABEL.k5f4ahaw:SALE_LABEL.k5f4ao7n}</span>
                     <FormItem
                         className={styles.priceInLine}
                         style={{ marginTop: -20, width: this.state.stageType == 2 ? '28%' : '20%' }}
                         validateStatus={giftMaxUseNum > 0 && giftMaxUseNum < 1000 ? 'success' : 'error'}
                         help={
                             giftMaxUseNum > 0 && giftMaxUseNum <= 999 ? null :
-                                giftMaxUseNum > 999 ? '最多使用999张' : '必须大于0'}
+                                giftMaxUseNum > 999 ? SALE_LABEL.k5f4avmq : SALE_LABEL.k5f4b1b9}
                     >
                         <PriceInput
                             addonBefore={''}
-                            addonAfter={'张'}
+                            addonAfter={k5f3y5ml}
                             maxNum={4}
                             onChange={this.onGiftMaxUseNumChange}
                             value={{ number: this.state.giftMaxUseNum }}
@@ -353,9 +363,9 @@ class GroupTicketDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+    <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>

@@ -10,18 +10,21 @@ import styles from '../ActivityPage.less';
 import checkStyle from './checkStyle.less';
 import CategoryAndFoodSelector from '../common/CategoryAndFoodSelector'
 import CategoryAndFoodSelectorForShop from '../common/CategoryAndFoodSelectorForShop'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const ButtonGroup = Button.Group;
 const Immutable = require('immutable');
 
+@injectIntl()
 class CompositeDetailInfo extends React.Component {
     constructor(props) {
         super(props);
         this.defaultRun = '0';
         const _scopeLst = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'scopeLst']).toJS();
-        console.log('_scopeLst', _scopeLst)
         this.state = {
             display: false,
             // data 用来存放 条件中的菜品信息
@@ -40,7 +43,6 @@ class CompositeDetailInfo extends React.Component {
                 },
             ],
         };
-        console.log('this.state.data', this.state.data)
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.renderPromotionSetting = this.renderPromotionSetting.bind(this);
@@ -89,19 +91,18 @@ class CompositeDetailInfo extends React.Component {
                     flag: 0, // 按菜品还是按分类
                     scopeLst: [], // 选择的菜品信息
                     validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
+                    msg: SALE_LABEL.k5hkj0xq, // 错误信息
                 },
                 {
                     count: null, // 需购买份数
                     flag: 0, // 按菜品还是按分类
                     scopeLst: [], // 选择的菜品信息
                     validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
+                    msg: SALE_LABEL.k5hkj0xq, // 错误信息
                 },
             ];
         }
         const data = [];
-        console.log(scopeLst)
         scopeLst.map((scope) => {
             if (!data[scope.stageNo]) {
                 data[scope.stageNo] = {
@@ -109,7 +110,7 @@ class CompositeDetailInfo extends React.Component {
                     flag: 0, // 按菜品还是按分类
                     scopeLst: [], // 选择的菜品信息
                     validateStatus: 'success', // 验证信息
-                    msg: '请输入菜品数量', // 错误信息
+                    msg: SALE_LABEL.k5hkj0xq, // 错误信息
                 };
             }
             data[scope.stageNo].count = scope.num;
@@ -120,7 +121,6 @@ class CompositeDetailInfo extends React.Component {
                 brandID: scope.brandID ? `${scope.brandID}` : '0',
             });
         })
-        console.log('data111', data)
         return data;
     }
 
@@ -153,6 +153,8 @@ class CompositeDetailInfo extends React.Component {
     handleSubmit() {
         let nextFlag = true;
         const { data, conditions } = this.state;
+        const { intl } = this.props;
+        const k5hkj1ef = intl.formatMessage(SALE_STRING.k5hkj1ef);
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
@@ -163,7 +165,7 @@ class CompositeDetailInfo extends React.Component {
                         this.props.form.setFields({
                             [foodIdx]: {
                                 value: {},
-                                errors: [new Error('菜品不得为空')],
+                                errors: [new Error(k5hkj1ef)],
                             },
                         });
                         nextFlag = false;
@@ -192,7 +194,7 @@ class CompositeDetailInfo extends React.Component {
             }
         }
         if (!conditionsFlag) {
-            message.warning('组合条件不能重复!');
+            message.warning(SALE_LABEL.k5hkj162);
         }
         data.forEach((dishInfo, dishIdx) => {
             // 校验
@@ -231,7 +233,7 @@ class CompositeDetailInfo extends React.Component {
             }
         });
         if (!groupCountFlag) {
-            message.warning('至少选择两个组合条件!');
+            message.warning(this.props.intl.formatMessage(SALE_STRING.k5hkj1mr));
         }
         if (nextFlag) {
             // 拼出ruleJson
@@ -282,7 +284,7 @@ class CompositeDetailInfo extends React.Component {
                 flag: 0, // 按菜品还是按分类
                 scopeLst: [], // 选择的菜品信息
                 validateStatus: 'success', // 验证信息
-                msg: '请输入菜品数量', // 错误信息
+                msg: SALE_LABEL.k5hkj0xq, // 错误信息
             },
         );
         this.setState({ data });
@@ -342,9 +344,9 @@ class CompositeDetailInfo extends React.Component {
         return (
 
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>更多活动用户限制和互斥限制请使用</span>
+                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                    高级设置 {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -469,6 +471,9 @@ class CompositeDetailInfo extends React.Component {
 
     renderPromotionSetting() {
         const { isShopFoodSelectorMode } = this.props;
+        const { intl } = this.props;
+        const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
         return (
             this.state.data.map((item, idx) => {
                 const count = item.count;
@@ -476,7 +481,7 @@ class CompositeDetailInfo extends React.Component {
                     <Form style={{ margin: '0 0 30px 10px' }}>
                         <FormItem
                             key={`group${idx}`}
-                            label={`条件${idx + 1}`}
+                            label={`${k5hkj1v3}${idx + 1}`}
                             className={[styles.FormItemStyle, styles.inputWrappers].join(' ')}
                             style={{ padding: '0' }}
                             wrapperCol={{ span: 17 }}
@@ -485,7 +490,7 @@ class CompositeDetailInfo extends React.Component {
                             help={item.validateStatus == 'success' ? null : item.msg}
                         >
                             <div className={styles.inputWrapper}>
-                                <span>任意选择下组中</span>
+                                <span>{SALE_LABEL.k5hkj23f}</span>
                                 <PriceInput
                                     key={`price${idx}`}
                                     type="text"
@@ -495,7 +500,7 @@ class CompositeDetailInfo extends React.Component {
                                         this.handleCountChange(idx, val);
                                     }}
                                 />
-                                <span>种菜品</span>
+                                <span>{k5gfsuon}</span>
                                 {this.renderGroupIcon(idx)}
 
                             </div>
@@ -589,9 +594,12 @@ class CompositeDetailInfo extends React.Component {
     }
 
     renderConditions() {
+        const { intl } = this.props;
+        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+        const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
         const options = this.state.data.map((dataItem, dataIndex) => {
             return {
-                label: `条件${dataIndex + 1}`,
+                label: `${k5hkj1v3}${dataIndex + 1}`,
                 value: dataIndex,
             }
         });
@@ -615,15 +623,15 @@ class CompositeDetailInfo extends React.Component {
                         <Col span={9}>
                             <FormItem className={styles.radioInLine}>
                                 <ButtonGroup size="small" >
-                                    <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>减免</Button>
-                                    <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>减至</Button>
-                                    <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>折扣</Button>
+                                    <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>{SALE_LABEL.k5ezcd0f}</Button>
+                                    <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>{SALE_LABEL.k5hkj2k3}</Button>
+                                    <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>{SALE_LABEL.k5ezcu1b}</Button>
                                 </ButtonGroup>
                                 <FormItem validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus} style={{ paddingTop: '0px' }}>
                                     {
                                         item.flag == '0' &&
                                             <PriceInput
-                                                addonAfter="元"
+                                                addonAfter={k5ezdbiy}
                                                 key={`cut${idx}`}
                                                 type="text"
                                                 modal="float"
@@ -635,7 +643,7 @@ class CompositeDetailInfo extends React.Component {
                                     {
                                         item.flag == '2' &&
                                             <PriceInput
-                                                addonAfter="元"
+                                                addonAfter={k5ezdbiy}
                                                 key={`cut${idx}`}
                                                 type="text"
                                                 modal="float"
@@ -749,13 +757,15 @@ class CompositeDetailInfo extends React.Component {
     }
 
     render() {
+        const { intl } = this.props;
+        const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     {this.renderPromotionSetting()}
                     <Row>
                         <Col span={5} offset={2}>
-                            条件组合:
+                            {k5hkj1v3}:
                             <CloseableTip
                                 style={{
                                     position: 'absolute',
@@ -764,12 +774,11 @@ class CompositeDetailInfo extends React.Component {
                                 }}
                                 content={
                                     <div>
-                                        <p style={{ textIndent: '2em' }}>1、当只设置一个条件组合时，活动可多次执行。例如，条件设置：1杯饮品+1个甜品，减免5元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，减免10元，依次类推。</p>
+                                <p style={{ textIndent: '2em' }}>1、{SALE_LABEL.k5hl5wkk}</p>
                                         <br/>
-                                        <p style={{ textIndent: '2em' }}>2、当设置2个及2个以上条件组合时，活动只能执行一次。例如，条件设置1：1杯饮品+1个甜品，减免5元。条件设置2：1杯饮品+1个甜品+1个套餐，减免15元。结果：同一账单，1杯咖啡+1块蛋糕，减免5元；2杯咖啡+2块蛋糕，也是减免5元。
-                                        </p>
+                                        <p style={{ textIndent: '2em' }}>2、{SALE_LABEL.k5hl5wsw}</p>
                                         <br/>
-                                        <p>注意：同一菜品不要在多个条件中重复设置</p>
+                                        <p>{SALE_LABEL.k5hl5x18}</p>
                                     </div>
                                 }
                                 customStyle={{ top: -275, left: 56 }}

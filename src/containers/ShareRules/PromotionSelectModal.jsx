@@ -9,6 +9,10 @@ import {
 } from 'antd';
 import {debounce} from 'lodash';
 import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
+
 const TreeNode = Tree.TreeNode;
 
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -16,7 +20,7 @@ const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 const AVAILABLE_GIFTS = [
     '10', '20', '21', '110', '111',
 ];
-
+@injectIntl()
 class PromotionSelectModal extends Component {
 
     state = {
@@ -44,6 +48,9 @@ class PromotionSelectModal extends Component {
     }
 
     getAllOptions = () => {
+        const { intl } = this.props;
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
         const {
             allPromotionList,
             allGiftList,
@@ -51,7 +58,7 @@ class PromotionSelectModal extends Component {
         const allGiftsArray = allGiftList.toJS();
         const allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
             value: promotion.promotionIDStr,
-            label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+            label: <span>{BASIC_PROMOTION_MAP[promotion.promotionType]} - {promotion.promotionName}</span>,
             type: `${promotion.promotionType}`,
             activityType: '10',
             activitySource: '1'
@@ -63,21 +70,21 @@ class PromotionSelectModal extends Component {
             ...allPromotionArray,
             ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
                 value: item.giftItemID,
-                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
+                label: <span>{GIFT_MAP[item.giftType]} - {item.giftName}</span>,
                 type: `${item.giftType}`,
                 activityType: '30',
                 activitySource: '2'
             })),
             {
                 value: '-10',
-                label: '会员价',
+                label: k5m4q0r2,
                 activityType: '20',
                 type: '-10',
                 activitySource: '3'
             },
             {
                 value: '-20',
-                label: '会员折扣',
+                label: k5m4q0ze,
                 activityType: '20',
                 type: '-20',
                 activitySource: '3'
@@ -123,14 +130,32 @@ class PromotionSelectModal extends Component {
         const { searchInput, currentCategory, selected } = this.state;
         const filteredOptions = searchInput ? allOptions.filter(item => item.label.includes(searchInput)) : allOptions.filter(item => item.type === currentCategory);
         const selectedOptions = allOptions.filter(item => selected.includes(item.value));
+
+        const { intl } = this.props;
+        const k5m4q17q = intl.formatMessage(SALE_STRING.k5m4q17q);
+        const k5m5av7b = intl.formatMessage(SALE_STRING.k5m5av7b);
+
+        const k5m5avfn = intl.formatMessage(SALE_STRING.k5m5avfn);
+        const k5m5avnz = intl.formatMessage(SALE_STRING.k5m5avnz);
+        const k5m5avwb = intl.formatMessage(SALE_STRING.k5m5avwb);
+        const k636qvha = intl.formatMessage(SALE_STRING.k636qvha);
+        const k636qvpm = intl.formatMessage(SALE_STRING.k636qvpm);
+        const k5m5aw4n = intl.formatMessage(SALE_STRING.k5m5aw4n);
+        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
+        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+        const bianji = <p>{COMMON_LABEL.edit} {SALE_LABEL.k636f2q3}</p>;
         return (
             <Modal
                 maskClosable={false}
-                title={`${this.props.isCreate ? '创建' : '编辑'}营销活动规则`}
+                title={this.props.isCreate ? COMMON_LABEL.create : bianji}
                 visible={true}
                 footer={[
-                    <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>取消</Button>,
-                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>保存</Button>,
+                    <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>
+                        { COMMON_LABEL.cancel }
+                    </Button>,
+                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>
+                        { COMMON_LABEL.save }
+                    </Button>,
                 ]}
                 onCancel={this.props.handleCancel}
                 width="922px"
@@ -140,7 +165,7 @@ class PromotionSelectModal extends Component {
                     height: '100%',
                 }}
                 >
-                    <HualalaTreeSelect level1Title={'全部营销活动'}>
+                    <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
                         {/* //搜索框 */}
                         <HualalaSearchInput onChange={this.debouncedHandleSearchInputChange} />
                         {/* //左侧树 */}
@@ -149,23 +174,23 @@ class PromotionSelectModal extends Component {
                             title={'content'}
                             selectedKeys={[currentCategory]}
                         >
-                            <TreeNode key={'salePromotion'} title={'基础营销'}>
+                            <TreeNode key={'salePromotion'} title={k5m4q17q}>
                                 {
                                     AVAILABLE_PROMOTIONS.map(item => (
                                         <TreeNode key={item} value={item} title={BASIC_PROMOTION_MAP[item]} />
                                     ))
                                 }
                             </TreeNode>
-                            <TreeNode key={'hualala'} title={'哗啦啦券'}>
-                                <TreeNode key={'10'} title={'代金券'} />
-                                <TreeNode key={'20'} title={'菜品优惠券'} />
-                                <TreeNode key={'21'} title={'菜品兑换券'} />
-                                <TreeNode key={'111'} title={'折扣券'} />
-                                <TreeNode key={'110'} title={'买赠券'} />
+                            <TreeNode key={'hualala'} title={k5m5av7b}>
+                                <TreeNode key={'10'} title={k5m5avfn} />
+                                <TreeNode key={'20'} title={k5m5avnz} />
+                                <TreeNode key={'21'} title={k5m5avwb} />
+                                <TreeNode key={'111'} title={k636qvha} />
+                                <TreeNode key={'110'} title={k636qvpm} />
                             </TreeNode>
-                            <TreeNode key={'userRight'} title={'会员权益'}>
-                                <TreeNode key={'-10'} title={'会员价'} />
-                                <TreeNode key={'-20'} title={'会员折扣'} />
+                            <TreeNode key={'userRight'} title={k5m5aw4n}>
+                                <TreeNode key={'-10'} title={k5m4q0r2} />
+                                <TreeNode key={'-20'} title={k5m4q0ze} />
                             </TreeNode>
                         </Tree>
                         {/* //右侧复选框 */}
@@ -180,7 +205,7 @@ class PromotionSelectModal extends Component {
                         <HualalaSelected
                             itemName={'label'}
                             itemID={'value'}
-                            selectdTitle={'已选营销活动'}
+                            selectdTitle={SALE_LABEL.k5m5awd0}
                             value={selectedOptions}
                             onChange={this.handleSingleRemove}
                             onClear={() => this.setState({selected: []})}

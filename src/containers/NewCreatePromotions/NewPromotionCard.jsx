@@ -65,7 +65,7 @@ class NewPromotionCard extends Component {
                     )
                 }
                 <div className={styles.tagsContainer}>
-                    {tags.map(tag => (<div className={styles.tag} key={tag}>{tag}</div>))}
+                    {tags.map((tag, i) => (<div className={styles.tag} key={i}>{tag}</div>))}
                 </div>
                 <div
                     className={styles.promotionDescription}
@@ -83,9 +83,9 @@ class NewPromotionCard extends Component {
                 </div>
                 <div className={styles.cardLogo} style={{
                     right,
-                    bottom
+                    bottom,
                 }}>
-                    <img src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                    <img style={{  width: key == 75 ? 70 : key == 77 ? 58 : 'auto' }} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
                 </div>
             </div>
         )

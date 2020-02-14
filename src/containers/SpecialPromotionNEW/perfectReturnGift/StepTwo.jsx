@@ -10,6 +10,11 @@ const CheckboxGroup = Checkbox.Group;
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -65,24 +70,24 @@ class StepTwo extends React.Component {
     // 参与范围
     render() {
         const options = [
-            { label: '姓名', value: 'customerName' },
-            { label: '手机号', value: 'customerMobile' },
-            { label: '生日', value: 'customerBirthday' },
-            { label: '性别', value: 'customerSex' },
-            { label: '常用地址', value: 'address' },
-            { label: '单位名称', value: 'companyName' },
-            { label: '电子邮箱', value: 'customerEmail' },
-            { label: '证件号码', value: 'IDCard' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajma25216)}`, value: 'customerName' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7g26184)}`, value: 'customerMobile' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d2b1c70516440269)}`, value: 'customerBirthday' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d454fkcq7p150)}`, value: 'customerSex' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d5672bd5571b261)}`, value: 'address' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d5672bd5571b3110)}`, value: 'companyName' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d7h838fdae14165)}`, value: 'customerEmail' },
+            { label: `${this.props.intl.formatMessage(STRING_SPE.d17013400d7d5291)}`, value: 'IDCard' },
         ];
         return (
             <Form>
                 <FormItem
-                    label="完善资料选择"
+                    label={this.props.intl.formatMessage(STRING_SPE.da9064ecge6154)}
                     className={styles.noPadding}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 20 }}
                     validateStatus={this.state.valueFlag}
-                    help={this.state.valueFlag == 'success' ? null : '至少选择一项'}
+                    help={this.state.valueFlag == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d7elcdm04l714)}`}
                 >
                     <CheckboxGroup options={options} value={this.state.customerInfoCheck} onChange={this.handleChange} />
                 </FormItem>

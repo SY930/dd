@@ -10,7 +10,11 @@ import {
 } from 'antd';
 import {getMessageTemplateList} from "../../BasicSettings/actions";
 import {SET_MSG_TEMPLATE} from "../../../constants/entryCodes";
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 
+
+@injectIntl
 class MsgSelector extends React.Component {
 
     constructor(props) {
@@ -55,7 +59,7 @@ class MsgSelector extends React.Component {
         e.preventDefault();
         e.stopPropagation();
         const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
-        menuID && jumpPage({menuID});
+        menuID && jumpPage({ menuID });
         const cancelBtn = document.querySelector('.cancelBtnJs');
         cancelBtn && cancelBtn.click();
     }
@@ -66,7 +70,7 @@ class MsgSelector extends React.Component {
         (this.props.selectedMessage && !messageTemplateList.includes(this.props.selectedMessage)) && messageTemplateList.unshift(this.props.selectedMessage);
         return (
 
-            <div style={{maxHeight: '272px', overflowY: 'auto'}}>
+            <div style={{maxHeight: '240px', overflowY: 'auto'}}>
                 {!!messageTemplateList.length &&  messageTemplateList.map((message, index) => {
                     return (
                         <MessageDisplayBox  selected={message === this.props.selectedMessage}
@@ -79,13 +83,13 @@ class MsgSelector extends React.Component {
                 {
                     !messageTemplateList.length &&
                     <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
-                        当前没有审核通过的的短信模板，<a onClick={this.jumpAway}>去设置</a>
+                     {this.props.intl.formatMessage(STRING_SPE.dojvjdafo0208)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
                     </div>
                 }
                 {
                     !!messageTemplateList.length &&
                     <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
-                        没有更多审核通过的的短信模板了，<a onClick={this.jumpAway}>去设置</a>
+                    {this.props.intl.formatMessage(STRING_SPE.d1e05b4srh236)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
                     </div>
                 }
             </div>
@@ -107,14 +111,14 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function MessageDisplayBox(props) {
+function MessageDisplayBox(props){
     const classNames = classnames(
         {[styles.messageDisplayBox]: !props.selected},
         {[styles.leanBox]: !props.selected},
         {[styles.isSelectedMessage]: props.selected}
     );
     return (
-        <div title={props.selected ? '已选模板' : '点击选择'}
+        <div title={props.selected ? `${COMMON_SPE.d7h7h72c98c018}` : `${COMMON_SPE.du38ot6hu1140}`}
             className={classNames}
             onClick={props.onClick}
         >

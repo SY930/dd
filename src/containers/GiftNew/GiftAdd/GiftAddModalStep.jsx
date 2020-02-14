@@ -1656,6 +1656,8 @@ class GiftAddModalStep extends React.PureComponent {
         }
         if (this.props.gift.value == '20') {
             formItems.moneyLimitTypeAndValue.label = '账单金额';
+        } else if(this.props.gift.value == '21' || this.props.gift.value == '111'){
+            formItems.moneyLimitTypeAndValue.label = '账单金额限制';
         } else {
             formItems.moneyLimitTypeAndValue.label = '金额限制';
         }

@@ -32,12 +32,18 @@ import ShareGifts from './shareGifts';
 import ExpansionGifts from './expansionGifts';
 import InstantDiscount from './instantDiscount';
 import RecommendGifts from './recommendGifts';
+import AccumulateGift from './accumulateGift';
+import PayAfter from './PayAfter/PayAfter'; // 摇奖
 import styles from '../SaleCenterNEW/ActivityPage.less';
 
 import {
     CHARACTERISTIC_CATEGORIES,
 } from '../../redux/actions/saleCenterNEW/types';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
+@injectIntl
 class ActivityMain extends React.Component {
     constructor(props) {
         super(props);
@@ -56,14 +62,14 @@ class ActivityMain extends React.Component {
             case 1:
                 return (
                     <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
+                        <ActivitySidebar listsTitle={`1 | ${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`} key="1" />
                     </div>
                 );
             case 2:
                 return (
                     <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | 基本信息'} key="1" />
-                        <ActivitySidebar listsTitle={'2 | 活动范围'} key="2" />
+                        <ActivitySidebar listsTitle={`1 | ${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`} key="1" />
+                        <ActivitySidebar listsTitle={`2 | ${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`} key="2" />
                     </div>
                 );
             default:
@@ -102,6 +108,8 @@ class ActivityMain extends React.Component {
             ExpansionGifts,
             InstantDiscount,
             RecommendGifts,
+            AccumulateGift,
+            PayAfter,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {
@@ -152,8 +160,4 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityMain);
+export default connect(mapStateToProps)(ActivityMain);

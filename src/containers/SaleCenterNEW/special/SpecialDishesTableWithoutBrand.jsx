@@ -15,7 +15,9 @@ import {
 import FoodSelectModal from '../../../components/common//FoodSelector/ShopFoodSelectModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
-
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 const FormItem = Form.Item;
 
 const mapStateToProps = (state) => {
@@ -25,7 +27,7 @@ const mapStateToProps = (state) => {
         allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
     }
 }
-
+@injectIntl()
 class SpecialDishesTableWithoutBrand extends Component {
     constructor(props) {
         super(props);
@@ -138,13 +140,19 @@ class SpecialDishesTableWithoutBrand extends Component {
         )
     }
     render() {
+        const { intl } = this.props;
+        const k6hfzdh8 = intl.formatMessage(SALE_STRING.k6hfzdh8);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k6hfzdpl = intl.formatMessage(SALE_STRING.k6hfzdpl);
+        const k6delete = intl.formatMessage(COMMON_STRING.delete);
+        const k5gfsuon = intl.formatMessage(SALE_STRING.k5gfsuon);
         const {
             selectorModalVisible,
             data,
         } = this.state;
         const resultTableColumns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 key: 'index',
                 width: 50,
@@ -152,7 +160,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 render: (text) => `${text + 1}`,
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
                 key: 'operation',
                 width: 50,
@@ -160,15 +168,15 @@ class SpecialDishesTableWithoutBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div className="editable-row-operations">
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
-                                <a title="删除" alt="删除">删除</a>
+                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleDel(record)}>
+                                <a title={k6delete} alt="">{k6delete}</a>
                             </Popconfirm>
                         </div>
                     );
                 },
             },
             {
-                title: '分类',
+                title: SALE_LABEL.k5gfsugb,
                 dataIndex: 'foodCategoryName',
                 key: 'foodCategoryName',
                 width: 90,
@@ -178,7 +186,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '菜品',
+                title: SALE_LABEL.k5gfsuon,
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 90,
@@ -188,7 +196,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '单位',
+                title: SALE_LABEL.k5kqz279,
                 dataIndex: 'unit',
                 key: 'unit',
                 width: 50,
@@ -198,7 +206,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 },
             },
             {
-                title: '特价(元)',
+                title: SALE_LABEL.k6hdpwkx,
                 width: 80,
                 dataIndex: 'newPrice',
                 key: 'newPrice',
@@ -209,7 +217,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                             <PriceInputIcon
                                 type="text"
                                 modal="float"
-                                placeholder="空表示0"
+                                placeholder={k6hfzdh8}
                                 value={{ number: record.newPrice }}
                                 index={index}
                                 onChange={(val) => { this.onCellChange(val, record) }}
@@ -231,8 +239,8 @@ class SpecialDishesTableWithoutBrand extends Component {
                                 this.setState({ priceFilterType: v, data: newData })
                             }}
                         >
-                            <Select.Option key='price' value="price">售价</Select.Option>
-                            <Select.Option key='vipPrice' value="vipPrice">会员价</Select.Option>
+                            <Select.Option key='price' value="price">{SALE_LABEL.k5kqz2fl}</Select.Option>
+                            <Select.Option key='vipPrice' value="vipPrice">{SALE_LABEL.k5m4q0r2}</Select.Option>
                         </Select>
                     </div>
                 ),
@@ -241,35 +249,35 @@ class SpecialDishesTableWithoutBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: '售价(元)',
+                title: SALE_LABEL.k6hdpwt9,
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
             },
             {
-                title: '折扣',
+                title: SALE_LABEL.k5ezcu1b,
                 dataIndex: 'salePercent',
                 key: 'salePercent',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : '不打折'
+                    return Number(record.newPrice) <= 0 ? '0'+k5ezdc19 : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}${k5ezdc19}` : k6hfzdpl
                 },
             },
         ];
-        const displayDataSource = data.map((item, index) => ({...item, index}))
+        const displayDataSource = data.map((item, index) => ({...item, index}));
         return (
             <FormItem className={styles.FormItemStyle}>
                 <Row>
-                    <Col span={2}>
-                        <span className={styles.gTitle}>选择菜品</span>
+                    <Col span={5}>
+                        <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
-                    <Col span={4} offset={18}>
+                    <Col span={9} offset={10}>
                         <a
                             className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            批量添加菜品
+                            {SALE_LABEL.k5gfsv5b}{k5gfsuon}
                         </a>
                     </Col>
                 </Row>

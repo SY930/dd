@@ -24,12 +24,16 @@ import SendMsgInfo from '../common/SendMsgInfo';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import _ from 'lodash';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
 
 const moment = require('moment');
 const Immutable = require('immutable');
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -80,7 +84,7 @@ class StepTwo extends React.Component {
                     opts.settleUnitID = this.state.settleUnitID;
                     opts.accountNo = this.state.accountNo;
                 } else {
-                    message.warning('短信权益账户不得为空')
+                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`)
                     return false;
                 }
             } else {
@@ -207,8 +211,8 @@ class StepTwo extends React.Component {
             })
         });
         shopsData.unshift({
-            label: '不限',
-            value: '0,不限',
+            label: `${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
+            value: `0,${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
             key: '0',
         });
         return shopsData;
@@ -247,7 +251,7 @@ class StepTwo extends React.Component {
         return (
             <Form>
                 <FormItem
-                    label="会员群体"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -255,20 +259,20 @@ class StepTwo extends React.Component {
                     {getFieldDecorator('setgroupMembersID', {
                         rules: [{
                             required: true,
-                            message: '请选择会员群体',
+                            message: `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c5106)}`,
                         }],
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
                             showSearch
-                            notFoundContent={'未搜索到结果'}
+                            notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             style={{ width: '100%' }}
-                            placeholder="请选择会员群体"
+                            placeholder={this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c5106)}
                             getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
-                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
+                            <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                             {this.renderOptions()}
                         </Select>
                     )

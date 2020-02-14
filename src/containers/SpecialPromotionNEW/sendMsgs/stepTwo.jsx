@@ -12,12 +12,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     Form,
-    DatePicker,
     Select,
-    Col,
+    Input,
     Radio,
+    Row,
+    Col,
     TreeSelect,
+    message,
 } from 'antd';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE } from 'i18n/common/special';
+
+import { STRING_GIFT } from 'i18n/common/gift';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -33,22 +40,23 @@ import SendMsgInfo from '../common/SendMsgInfo';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import _ from 'lodash';
+import { axiosData } from 'helpers/util';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 
 const moment = require('moment');
 
 const Immutable = require('immutable');
-
+@injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             message: '',
-            cardInfo: [],
+            groupMembersList: [],
             lastTransTimeFilter: '0', // 最后消费时间限制
             lastTransTime: '', // 最后消费时间
-            lastTransTimeStatus: 'success', // 最后消费时间校验状态
             lastTransShopID: '0', // 最后消费店铺ID
-            lastTransShopName: '不限', // 最后消费店铺名称
+            lastTransShopName: `${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`, // 最后消费店铺名称
             isVipBirthdayMonth: '0', // 当月生日
             shopsData: [],
             groupMembersID: '0',
@@ -57,6 +65,7 @@ class StepTwo extends React.Component {
             cardCount: '',
             settleUnitID: '',
             accountNo: '',
+            testPhoneNumber: undefined,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -69,45 +78,53 @@ class StepTwo extends React.Component {
         this.renderOptions = this.renderOptions.bind(this);
     }
 
-    handleSubmit() {
-        // console.log('going to 2 finish');
+    validate() {
         let flag = true;
-        let groupMembers = {};
-        this.state.cardInfo.map((info, index) => {
-            if (this.state.groupMembersID == info.groupMembersID) {
-                groupMembers = info;
-            }
-        })
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 flag = false;
             }
-            // 校验最后消费时间
-            if (this.state.lastTransTimeFilter != '0' && (this.state.lastTransTime == '' || this.state.lastTransTime == '0')) {
+        });
+        // 对权益账户短信条数做校验
+        if (flag && this.state.accountNo > 0) {
+            const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
+            const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
+            if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
                 flag = false;
-                this.setState({
-                    lastTransTimeStatus: 'error',
-                })
+                message.warning('所选权益账户短信条数不足，请更换账户或充值')
             }
-            if (flag) {
-                this.props.setSpecialBasicInfo({
-                    smsTemplate: this.state.message,
-                    lastTransTimeFilter: this.state.lastTransTimeFilter,
-                    lastTransTime: this.state.lastTransTime || '',
-                    lastTransShopID: this.state.lastTransShopID,
-                    lastTransShopName: this.state.lastTransShopName,
-                    isVipBirthdayMonth: this.state.isVipBirthdayMonth,
-                    cardGroupID: this.state.groupMembersID || '0',
-                    cardGroupName: groupMembers.groupMembersName,
-                    cardCount: groupMembers.totalMembers,
-                    cardGroupRemark: groupMembers.groupMembersRemark,
-                    cardLevelRangeType: this.state.cardLevelRangeType || '0',
-                    settleUnitID: this.state.settleUnitID || '0',
-                    accountNo: this.state.accountNo,
-                })
+        }
+        // 校验最后消费时间
+        if (this.state.lastTransTimeFilter != '0' && (this.state.lastTransTime == '' || this.state.lastTransTime == '0')) {
+            flag = false;
+        }
+        return flag;
+    }
+    handleSubmit() {
+        let groupMembers = {};
+        this.state.groupMembersList.map((info, index) => {
+            if (this.state.groupMembersID == info.groupMembersID) {
+                groupMembers = info;
             }
         });
-
+        let flag = this.validate();
+        if (flag) {
+            this.props.setSpecialBasicInfo({
+                smsTemplate: this.state.message,
+                lastTransTimeFilter: this.state.lastTransTimeFilter,
+                lastTransTime: this.state.lastTransTime || '',
+                lastTransShopID: this.state.lastTransShopID,
+                lastTransShopName: this.state.lastTransShopName,
+                isVipBirthdayMonth: this.state.isVipBirthdayMonth,
+                cardGroupID: this.state.groupMembersID || '0',
+                cardGroupName: groupMembers.groupMembersName,
+                cardCount: groupMembers.totalMembers,
+                cardGroupRemark: groupMembers.groupMembersRemark,
+                cardLevelRangeType: this.state.cardLevelRangeType || '0',
+                settleUnitID: this.state.settleUnitID || '0',
+                accountNo: this.state.accountNo,
+            })
+        }
         return flag;
     }
 
@@ -180,11 +197,11 @@ class StepTwo extends React.Component {
         if (nextProps.mySpecialActivities.$groupMembers) {
             if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
                 this.setState({
-                    cardInfo: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
+                    groupMembersList: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
                 })
             } else {
                 this.setState({
-                    cardInfo: [],
+                    groupMembersList: [],
                 })
             }
         }
@@ -240,8 +257,8 @@ class StepTwo extends React.Component {
             })
         });
         shopsData.unshift({
-            label: '不限',
-            value: '0,不限',
+            label: `${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
+            value: `0,${this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}`,
             key: '0',
         });
         return shopsData;
@@ -303,14 +320,51 @@ class StepTwo extends React.Component {
     }
     // 会员等级Option
     renderOptions() {
-        const cardInfo = this.state.cardInfo;
-        const options = [];
-        cardInfo.map((groupMembers) => {
-            options.push(
-                <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
-            )
-        });
-        return options;
+        const groupMembersList = this.state.groupMembersList;
+        return groupMembersList.map((groupMembers) => (
+            <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>
+        ));
+    }
+    getMinMessageCount() {
+        const { groupMembersList, groupMembersID } = this.state;
+        const totalCustomerCount = this.props.specialPromotion.get('customerCount');
+        if (groupMembersID > 0) {
+            const groupMemberItem = groupMembersList.find(item => item.groupMembersID === groupMembersID) || {};
+            return groupMemberItem.totalMembers || 0;
+        }
+        return totalCustomerCount || 0;
+    }
+    /**
+     * 测试手机号是否输入合法
+     */
+    testPhoneNumberValidation() {
+        const { testPhoneNumber } = this.state;
+        if (!testPhoneNumber || /^[0-9]{11}$/.test(testPhoneNumber)) {
+            return { status: 'success' };
+        }
+        return {
+            status: 'error',
+            help: this.props.intl.formatMessage(STRING_GIFT.doj6r3ijy267),
+        };
+    }
+    handleSMSTest = () => {
+        if (this.validate()) {
+            const { accountNo, testPhoneNumber, message: smsTemplate } = this.state;
+            axiosData(
+                '/specialPromotion/sendSmsToCustomer.ajax',
+                {
+                    accountNo,
+                    signID: this.props.specialPromotion.getIn(['$eventInfo', 'signID']),
+                    customerMobile: testPhoneNumber,
+                    smsTemplate,
+                },
+                null,
+                {},
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
+            ).then(_ => {
+                message.success('发送成功')
+            })
+        }
     }
 
     render() {
@@ -322,7 +376,7 @@ class StepTwo extends React.Component {
                 showSearch: true,
                 onChange: this.onShopChange,
                 showCheckedStrategy: SHOW_PARENT,
-                searchPlaceholder: '请搜索店铺',
+                searchPlaceholder: `${this.props.intl.formatMessage(STRING_SPE.d7h83a8d5h30160)}`,
                 treeNodeFilterProp: 'label',
                 allowClear: true,
                 getPopupContainer: () => document.querySelector('.crmOperationTree'),
@@ -349,7 +403,7 @@ class StepTwo extends React.Component {
         return (
             <Form>
                 <FormItem
-                    label="会员群体"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -357,20 +411,20 @@ class StepTwo extends React.Component {
                     {getFieldDecorator('setgroupMembersID', {
                         rules: [{
                             required: true,
-                            message: '请选择会员群体',
+                            message: `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c5106)}`,
                         }],
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
                             style={{ width: '100%' }}
                             showSearch
-                            notFoundContent={'未搜索到结果'}
+                            notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            placeholder="请选择会员群体"
+                            placeholder={this.props.intl.formatMessage(STRING_SPE.d7h7g9a5h130183)}
                             getPopupContainer={(node) => node.parentNode}
                             onChange={this.handleSelectChange}
                         >
-                            <Option key={'0'}>{totalCustomerCount ? `全部会员【共${totalCustomerCount}人】` : `全部会员`}</Option>
+                            <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                             {this.renderOptions()}
                         </Select>
                     )
@@ -381,6 +435,7 @@ class StepTwo extends React.Component {
                     form={this.props.form}
                     value={this.state.message}
                     settleUnitID={this.state.settleUnitID}
+                    minMessageCount={this.getMinMessageCount()}
                     onChange={
                         (val) => {
                             if (val instanceof Object) {
@@ -396,6 +451,33 @@ class StepTwo extends React.Component {
                         }
                     }
                 />
+                <FormItem
+                    label={SALE_LABEL.k6hhua13}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    validateStatus={this.testPhoneNumberValidation().status}
+                    help={this.testPhoneNumberValidation().help}
+                >
+                    <Row gutter={16}>
+                        <Col span={18}>
+                            <Input
+                                value={this.state.testPhoneNumber}
+                                placeholder={this.props.intl.formatMessage(SALE_STRING.k6hhua9f)}
+                                onChange={({ target: { value } }) => this.setState({ testPhoneNumber: value })}
+                            />
+                        </Col>
+                        <Col span={6}>
+                            <a
+                                disabled={!this.state.testPhoneNumber || this.testPhoneNumberValidation().status === 'error'}
+                                style={{ lineHeight: '28px' }}
+                                onClick={this.handleSMSTest}
+                            >
+                                {SALE_LABEL.k6hhua13}
+                            </a>
+                        </Col>
+                    </Row>
+                </FormItem>
             </Form>
         );
     }

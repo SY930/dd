@@ -21,12 +21,8 @@ const SpecialPromotionCfg = {
         { value: '67', label: '桌边砍' },
         { value: '68', label: '推荐有礼' },
         { value: '31', label: '关注送礼' },
-    ],
-    /* 营销活动开关 */
-    EventIsActive: [
-        { value: '', label: '不限' },
-        { value: '0', label: '未启用' },
-        { value: '1', label: '已启用' },
+        { value: '75', label: '集点卡' },
+        { value: '77', label: '支付后广告' },
     ],
 }
 

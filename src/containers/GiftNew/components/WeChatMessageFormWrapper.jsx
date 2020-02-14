@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     queryWeChatMessageTemplates,
@@ -273,17 +274,17 @@ class WeChatMessageFormWrapper extends Component {
             action: '/api/common/imageUpload',
             className: [styles1.avatarUploader, styles1.thinAvatarUploader].join(' '),
             accept: 'image/*',
-            beforeUpload: file => {
-                const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
-                if (!isAllowed) {
-                    message.error('仅支持png和jpeg/jpg格式的图片');
-                }
-                const isLt1M = file.size / 1024 / 1024 < 4;
-                if (!isLt1M) {
-                    message.error('图片不要大于4MB');
-                }
-                return isAllowed && isLt1M;
-            },
+            // beforeUpload: file => {
+            //     const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
+            //     if (!isAllowed) {
+            //         message.error('仅支持png和jpeg/jpg格式的图片');
+            //     }
+            //     const isLt1M = file.size / 1024 / 1024 < 4;
+            //     if (!isLt1M) {
+            //         message.error('图片不要大于4MB');
+            //     }
+            //     return isAllowed && isLt1M;
+            // },
             onChange: (info) => {
                 const status = info.file.status;
                 if (status === 'done' && info.file.response && info.file.response.url) {
@@ -408,14 +409,14 @@ class WeChatMessageFormWrapper extends Component {
                         }}
                         onClick={this.reset}
                     >
-                        取消
+                        { COMMON_LABEL.cancel }
                     </Button>
                     <Button
                         type="primary"
                         loading={isSaving}
                         onClick={this.save}
                     >
-                        保存
+                        { COMMON_LABEL.save }
                     </Button>
                 </div>
             </div>

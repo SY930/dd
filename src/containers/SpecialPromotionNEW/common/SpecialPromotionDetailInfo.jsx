@@ -1,13 +1,3 @@
-/**
- * @Author: ZBL
- * @Date:   2017-03-02T11:12:25+08:00
- * @Email:  wangxiaofeng@hualala.com
- * @Filename: FullCutContent.jsx
- * @Last modified by:   chenshuang
- * @Last modified time: 2017-04-07T13:52:34+08:00
- * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
- */
-
 import React, { Component } from 'react'
 import {
     Row,
@@ -26,6 +16,7 @@ import {
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
+import selfStyle from './addGifts.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialGiftInfoAC,
@@ -44,6 +35,12 @@ import ENV from "../../../helpers/env";
 import styles1 from '../../GiftNew/GiftAdd/GiftAdd.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { doRedirect } from '../../../../src/helpers/util';
+import { COMMON_LABEL } from 'i18n/common';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+
+
 const moment = require('moment');
 const FormItem = Form.Item;
 
@@ -118,10 +115,25 @@ const shareInfoEnabledTypes = [
     '66',
 ]
 
+const MULTIPLE_LEVEL_GIFTS_CONFIG = [
+    {
+        type: '63',
+        propertyName: 'lastConsumeIntervalDays',
+        levelLabel: COMMON_SPE.d1e0750k82809,
+        levelAffix: COMMON_SPE.k6hk1aa1,
+    },
+    {
+        type: '75',
+        propertyName: 'needCount',
+        levelLabel: COMMON_SPE.k6hk1aid,
+        levelAffix: COMMON_SPE.k6hk1aqp,
+    },
+]
+
+@injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
         super(props);
-        this.handlePrev = this.handlePrev.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.gradeChange = this.gradeChange.bind(this);
         const {
@@ -130,7 +142,7 @@ class SpecialDetailInfo extends Component {
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
-        const giftGetRule = props.specialPromotion.getIn(['$eventInfo', 'giftGetRule'], 0);
+        const giftGetRule = props.specialPromotion.getIn(['$eventInfo', 'giftGetRule'], props.type == '75' ? 2 : 0);
         const discountRatio = props.specialPromotion.getIn(['$eventInfo', 'discountRate']);
         const discountMinRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMinRate']);
         const discountMaxRatio = props.specialPromotion.getIn(['$eventInfo', 'discountMaxRate']);
@@ -143,6 +155,7 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             eventRecommendSettings,
+            cleanCount: props.specialPromotion.getIn(['$eventInfo', 'cleanCount'], 1),
             /** 膨胀大礼包相关 */
             giftGetRule,
             /** 膨胀大礼包相关结束 */
@@ -175,14 +188,13 @@ class SpecialDetailInfo extends Component {
         }
     }
     componentDidMount() {
+        const { type, isLast = true, } = this.props;
         this.props.getSubmitFn({
-            prev: this.handlePrev,
-            next: undefined,
-            finish: this.handleSubmit,
-            cancel: undefined,
+            finish: isLast ? this.handleSubmit : undefined,
+            next: !isLast ? this.handleSubmit : undefined,
         });
         this.props.fetchGiftListInfo();
-        if (this.props.type == 67) {
+        if (type == 67) {
             const user = this.props.user;
             const opts = {
                 _groupID: user.accountInfo.groupID,
@@ -194,9 +206,13 @@ class SpecialDetailInfo extends Component {
                 data: opts,
             });
         }
-        if (this.props.type == 68) {
+        if (type == 68) {
             this.props.queryAllSaveMoneySet()
         }
+    }
+    getMultipleLevelConfig = () => {
+        const { type } = this.props;
+        return MULTIPLE_LEVEL_GIFTS_CONFIG.find(item => item.type === `${type}`)
     }
 
     componentDidUpdate(prevProps) {
@@ -207,6 +223,19 @@ class SpecialDetailInfo extends Component {
                 eventRecommendSettings: [getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)],
                 saveMoneySetIds: [],
                 saveMoneySetType: '0',
+            });
+            this.props.form.resetFields();
+        }
+        if (prevProps.specialPromotion.getIn(['$eventInfo', 'needCount']) !==
+        this.props.specialPromotion.getIn(['$eventInfo', 'needCount'])) {
+            this.setState({
+                wakeupSendGiftsDataArray: [
+                    {
+                        key: getIntervalID(),
+                        intervalDays: undefined,
+                        gifts: this.initiateDefaultGifts(),
+                    }
+                ]
             });
             this.props.form.resetFields();
         }
@@ -232,18 +261,18 @@ class SpecialDetailInfo extends Component {
         const data = this.initiateDefaultGifts();
         giftInfo.forEach((gift, index) => {
             if (data[index] !== undefined) {
-                data[index].needCount.value = gift.needCount || 0;
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
             } else {
                 const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType'
                 const typeValue = this.props.type == '68' ? gift.recommendType : gift.sendType;
-                data[index] = getDefaultGiftData(typeValue, typePropertyName); 
+                data[index] = getDefaultGiftData(typeValue, typePropertyName);
             }
             data[index].giftEffectiveTime.value = gift.effectType != '2' ? gift.giftEffectTimeHours
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
+            data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
@@ -266,11 +295,17 @@ class SpecialDetailInfo extends Component {
             }
         }
         let wakeupSendGiftsDataArray = [];
-        if (this.props.type == 63) {
+        const multiConfig = this.getMultipleLevelConfig();
+        if (multiConfig) {
             const intervalDaysArray = data.reduce((acc, curr) => {
-                if (curr.lastConsumeIntervalDays > 0) {
-                    if (acc.indexOf(curr.lastConsumeIntervalDays) === -1) {
-                        acc.push(curr.lastConsumeIntervalDays);
+                // 不同活动里的needCount 输入框层级不一样，数据类型也不一样
+                if (typeof curr[multiConfig.propertyName] === 'object') {
+                    curr[multiConfig.propertyName] = curr[multiConfig.propertyName].value;
+                }
+                const propertyValue = curr[multiConfig.propertyName];
+                if (propertyValue  >= 0) { // undefined >= 0 is false
+                    if (acc.indexOf(propertyValue) === -1) {
+                        acc.push(propertyValue);
                     }
                 }
                 return acc;
@@ -291,7 +326,7 @@ class SpecialDetailInfo extends Component {
                     .map(days => ({
                         key: getIntervalID(),
                         intervalDays: days,
-                        gifts: data.filter(gift => gift.lastConsumeIntervalDays === days)
+                        gifts: data.filter(gift => gift[multiConfig.propertyName] === days)
                     }))
             }
         }
@@ -318,7 +353,7 @@ class SpecialDetailInfo extends Component {
     }
 
     // 拼出礼品信息
-    getGiftInfo(data) {
+    getGiftInfo = (data) => {
         const giftArr = data.map((giftInfo, index) => {
             let gifts;
             if (giftInfo.effectType != '2') {
@@ -328,7 +363,6 @@ class SpecialDetailInfo extends Component {
                     giftEffectTimeHours: giftInfo.giftEffectiveTime.value,
                     giftValidUntilDayCount: giftInfo.giftValidDays.value,
                     giftID: giftInfo.giftInfo.giftItemID,
-                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             } else {
@@ -338,7 +372,6 @@ class SpecialDetailInfo extends Component {
                     effectTime: giftInfo.giftEffectiveTime.value[0] && giftInfo.giftEffectiveTime.value[0] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[0].format('YYYYMMDD')) : '',
                     validUntilDate: giftInfo.giftEffectiveTime.value[1] && giftInfo.giftEffectiveTime.value[1] != '0' ? parseInt(giftInfo.giftEffectiveTime.value[1].format('YYYYMMDD')) : '',
                     giftID: giftInfo.giftInfo.giftItemID,
-                    needCount: giftInfo.needCount.value,
                     giftName: giftInfo.giftInfo.giftName,
                 }
             }
@@ -353,6 +386,7 @@ class SpecialDetailInfo extends Component {
             gifts.sendType = giftInfo.sendType || 0;
             gifts.recommendType = giftInfo.recommendType || 0;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
+            gifts.needCount = typeof giftInfo.needCount === 'object' ? giftInfo.needCount.value : giftInfo.needCount;
             return gifts
         });
         return giftArr;
@@ -364,18 +398,18 @@ class SpecialDetailInfo extends Component {
             return needCount;
         }
         return {
-            msg: '膨胀需要人数必须大于0, 小于1000',
+            msg: `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwv2416)}`,
             validateStatus: 'error',
             value: '',
         }
     }
-    handlePrev() {
+    handlePrev = () => {
         return this.handleSubmit(true)
     }
-    handleSubmit(isPrev) {
+    handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
-        this.props.form.validateFieldsAndScroll((error, basicValues) => {
+        this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
             }
@@ -386,7 +420,7 @@ class SpecialDetailInfo extends Component {
                     if ((basicValues['recharge1'].number === '' || basicValues['recharge1'].number == undefined) &&
                         (basicValues['point1'].number === '' || basicValues['point1'].number == undefined)
                     ) {
-                        helpMessageArray[0] = '储值比例与积分比例至少要设置一项';
+                        helpMessageArray[0] = `${this.props.intl.formatMessage(STRING_SPE.d1430qdd6r0109)}`;
                         flag = false;
                     } else {
                         helpMessageArray[0] = '';
@@ -396,7 +430,7 @@ class SpecialDetailInfo extends Component {
                     if ((basicValues['consumption1'].number === '' || basicValues['consumption1'].number == undefined) &&
                         (basicValues['point1'].number === '' || basicValues['point1'].number == undefined)
                     ) {
-                        helpMessageArray[0] = '消费比例与积分比例至少要设置一项';
+                        helpMessageArray[0] = `${this.props.intl.formatMessage(STRING_SPE.d34igk92gh1246)}`;
                         flag = false;
                     } else {
                         helpMessageArray[0] = '';
@@ -406,7 +440,7 @@ class SpecialDetailInfo extends Component {
                     if ((basicValues['recharge2'].number === '' || basicValues['recharge2'].number == undefined) &&
                         (basicValues['point2'].number === '' || basicValues['point2'].number == undefined)
                     ) {
-                        helpMessageArray[1] = '储值比例与积分比例至少要设置一项';
+                        helpMessageArray[1] = `${this.props.intl.formatMessage(STRING_SPE.d1430qdd6r0109)}`;
                         flag = false;
                     } else {
                         helpMessageArray[1] = '';
@@ -416,7 +450,7 @@ class SpecialDetailInfo extends Component {
                     if ((basicValues['consumption2'].number === '' || basicValues['consumption2'].number == undefined) &&
                         (basicValues['point2'].number === '' || basicValues['point2'].number == undefined)
                     ) {
-                        helpMessageArray[1] = '消费比例与积分比例至少要设置一项';
+                        helpMessageArray[1] = `${this.props.intl.formatMessage(STRING_SPE.d34igk92gh1246)}`;
                         flag = false;
                     } else {
                         helpMessageArray[1] = '';
@@ -431,6 +465,7 @@ class SpecialDetailInfo extends Component {
             data,
             shareImagePath,
             shareTitle,
+            cleanCount,
             discountMinRate,
             discountMaxRate,
             discountRate,
@@ -441,7 +476,7 @@ class SpecialDetailInfo extends Component {
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
-        // 桌边砍可以不启用礼品
+        // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo(
             {
@@ -456,111 +491,99 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        // 校验礼品数量
-        function checkgiftTotalCount(giftTotalCount) {
-            const _value = parseFloat(giftTotalCount.value);
-            if (_value > 0) {
-                return giftTotalCount;
-            }
-            return {
-                msg: '礼品总数必须大于0',
-                validateStatus: 'error',
-                value: '',
-            }
-        }
-        function checkgiftCount(giftCount, index, giftInfoArray) {
-            const _value = parseFloat(giftCount.value);
-            if (!(_value > 0 && _value < 51)) {
-                return {
-                    msg: '礼品个数必须在1到50之间',
-                    validateStatus: 'error',
-                    value: '',
-                }
-            }
-            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-                let hasDuplica;
-                for (let i = 0; i < index; i++) {
-                    if (giftInfoArray[i]) {
-                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-                    }
-                }
-                if (hasDuplica) {
-                    return {
-                        ...giftCount,
-                        validateStatus: 'error',
-                        msg: '礼品种类与个数不能完全重复',
-                    }
-                }
-            }
-            return {
-                ...giftCount,
-                validateStatus: 'success',
-                msg: '',
-            };
-        }
+        // checkgiftCount = (giftCount, index, giftInfoArray) => {
+        //     const _value = parseFloat(giftCount.value);
+        //     if (!(_value > 0 && _value < 51)) {
+        //         return {
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
+        //             validateStatus: 'error',
+        //             value: '',
+        //         }
+        //     }
+        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+        //         let hasDuplica;
+        //         for (let i = 0; i < index; i++) {
+        //             if (giftInfoArray[i]) {
+        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+        //             }
+        //         }
+        //         if (hasDuplica) {
+        //             return {
+        //                 ...giftCount,
+        //                 validateStatus: 'error',
+        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+        //             }
+        //         }
+        //     }
+        //     return {
+        //         ...giftCount,
+        //         validateStatus: 'success',
+        //         msg: '',
+        //     };
+        // }
 
-        // 有效天数
-        function checkGiftValidDays(giftValidDays, index) {
-            const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
-            if (_value > 0 || (_value[0] && _value[1])) {
-                return giftValidDays;
-            }
-            return {
-                msg: '请输入正确有效期',
-                validateStatus: 'error',
-                value: '',
-            }
-        }
+        // // 有效天数
+        // checkGiftValidDays = (giftValidDays, index) => {
+        //     const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
+        //     if (_value > 0 || (_value[0] && _value[1])) {
+        //         return giftValidDays;
+        //     }
+        //     return {
+        //         msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
+        //         validateStatus: 'error',
+        //         value: '',
+        //     }
+        // }
 
-        // 校验中奖比率
-        function checkGiftOdds(giftOdds) {
-            if (type == '20') {
-                const _value = parseFloat(giftOdds.value);
-                if (_value >= 0 && _value <= 100) {
-                    return giftOdds;
-                }
-                return {
-                    msg: '中奖比率必填, 大于等于0, 小于等于100',
-                    validateStatus: 'error',
-                    value: '',
-                }
-            }
-            return giftOdds;
-        }
+        // // 校验中奖比率
+        // checkGiftOdds = (giftOdds) => {
+        //     if (type == '20') {
+        //         const _value = parseFloat(giftOdds.value);
+        //         if (_value >= 0 && _value <= 100) {
+        //             return giftOdds;
+        //         }
+        //         return {
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
+        //             validateStatus: 'error',
+        //             value: '',
+        //         }
+        //     }
+        //     return giftOdds;
+        // }
 
-        // 校验礼品信息
-        function checkGiftInfo(giftInfo, index, giftInfoArray) {
-            if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
-                return {
-                    giftItemID: null,
-                    giftName: null,
-                    validateStatus: 'error',
-                    msg: '必须选择礼券',
-                }
-            }
-            if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-                let hasDuplica;
-                for (let i = 0; i < index; i++) {
-                    if (giftInfoArray[i]) {
-                        hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-                        giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-                    }
-                }
-                if (hasDuplica) {
-                    return {
-                        ...giftInfo,
-                        validateStatus: 'error',
-                        msg: '礼品种类与个数不能完全重复',
-                    }
-                }
-            }
-            return {
-                ...giftInfo,
-                validateStatus: 'success',
-                msg: '',
-            };
-        }
+        // // 校验礼品信息
+        // checkGiftInfo = (giftInfo, index, giftInfoArray) => {
+        //     if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
+        //         return {
+        //             giftItemID: null,
+        //             giftName: null,
+        //             validateStatus: 'error',
+        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
+        //         }
+        //     }
+        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+        //         let hasDuplica;
+        //         for (let i = 0; i < index; i++) {
+        //             if (giftInfoArray[i]) {
+        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+        //             }
+        //         }
+        //         if (hasDuplica) {
+        //             return {
+        //                 ...giftInfo,
+        //                 validateStatus: 'error',
+        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+        //             }
+        //         }
+        //     }
+        //     return {
+        //         ...giftInfo,
+        //         validateStatus: 'success',
+        //         msg: '',
+        //     };
+        // }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -571,10 +594,10 @@ class SpecialDetailInfo extends Component {
                 data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
             }
         }
-        if (this.props.type == '63') {
+        if (this.getMultipleLevelConfig()) {
             data = this.state.wakeupSendGiftsDataArray.reduce((acc, curr) => {
                 curr.gifts.forEach(gift => {
-                    gift.lastConsumeIntervalDays = curr.intervalDays;
+                    gift[this.getMultipleLevelConfig().propertyName] = curr.intervalDays || 0;
                 })
                 acc.push(...curr.gifts);
                 return acc;
@@ -585,20 +608,20 @@ class SpecialDetailInfo extends Component {
             if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
                 // check gift count
                 return Object.assign(ruleInfo, {
-                    giftCount: checkgiftCount(ruleInfo.giftCount, index, data),
-                    giftInfo: checkGiftInfo(ruleInfo.giftInfo, index, data),
-                    giftOdds: checkGiftOdds(ruleInfo.giftOdds),
+                    giftCount: this.checkgiftCount(ruleInfo.giftCount, index, data),
+                    giftInfo: this.checkGiftInfo(ruleInfo.giftInfo, index, data),
+                    giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                     needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                    [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                    [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? this.checkGiftValidDays(ruleInfo.giftValidDays, index) : this.checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
                 });
             }
             // check total count
             return Object.assign(ruleInfo, {
-                giftTotalCount: checkgiftTotalCount(ruleInfo.giftTotalCount),
-                giftInfo: checkGiftInfo(ruleInfo.giftInfo),
-                giftOdds: checkGiftOdds(ruleInfo.giftOdds),
+                giftTotalCount: this.checkgiftTotalCount(ruleInfo.giftTotalCount),
+                giftInfo: this.checkGiftInfo(ruleInfo.giftInfo),
+                giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
                 needCount: this.checkNeedCount(ruleInfo.needCount, index),
-                [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? checkGiftValidDays(ruleInfo.giftValidDays, index) : checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
+                [giftValidDaysOrEffect]: ruleInfo.effectType != '2' ? this.checkGiftValidDays(ruleInfo.giftValidDays, index) : this.checkGiftValidDays(ruleInfo.giftEffectiveTime, index),
             });
         });
         const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
@@ -620,7 +643,7 @@ class SpecialDetailInfo extends Component {
         this.setState({ data });
         if (validateFlag) {
             if (validOdds > 100) {
-                message.warning('中奖比率之和不能大于100!');
+                message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
             const giftInfo = this.getGiftInfo(data);
@@ -639,9 +662,10 @@ class SpecialDetailInfo extends Component {
                 saveMoneySetIds,
                 shareImagePath,
                 shareTitle,
+                cleanCount,
             });
             this.props.setSpecialGiftInfo(giftInfo);
-            if (this.props.type == '68') {
+            if (this.props.type == '68') { // 推荐有礼表项
                 let { eventRecommendSettings } = this.state;
                 const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
                 const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -676,8 +700,112 @@ class SpecialDetailInfo extends Component {
         }
         return false;
     }
+    // 校验礼品数量
+    checkgiftTotalCount = (giftTotalCount) => {
+        const _value = parseFloat(giftTotalCount.value);
+        if (_value > 0) {
+            return giftTotalCount;
+        }
+        return {
+            msg: `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`,
+            validateStatus: 'error',
+            value: '',
+        }
+    }
+    checkgiftCount = (giftCount, index, giftInfoArray) => {
+        const _value = parseFloat(giftCount.value);
+        if (!(_value > 0 && _value < 51)) {
+            return {
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
+                validateStatus: 'error',
+                value: '',
+            }
+        }
+        if (this.props.type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+            let hasDuplica;
+            for (let i = 0; i < index; i++) {
+                if (giftInfoArray[i]) {
+                    hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                    giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                }
+            }
+            if (hasDuplica) {
+                return {
+                    ...giftCount,
+                    validateStatus: 'error',
+                    msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+                }
+            }
+        }
+        return {
+            ...giftCount,
+            validateStatus: 'success',
+            msg: '',
+        };
+    }
 
-    gradeChange(gifts, typeValue) {
+    // 有效天数
+    checkGiftValidDays = (giftValidDays, index) => {
+        const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
+        if (_value > 0 || (_value[0] && _value[1])) {
+            return giftValidDays;
+        }
+        return {
+            msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
+            validateStatus: 'error',
+            value: '',
+        }
+    }
+
+    // 校验中奖比率
+    checkGiftOdds = (giftOdds) => {
+        if (this.props.type == '20') {
+            const _value = parseFloat(giftOdds.value);
+            if (_value >= 0 && _value <= 100) {
+                return giftOdds;
+            }
+            return {
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
+                validateStatus: 'error',
+                value: '',
+            }
+        }
+        return giftOdds;
+    }
+
+    // 校验礼品信息
+    checkGiftInfo = (giftInfo, index, giftInfoArray) => {
+        if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
+            return {
+                giftItemID: null,
+                giftName: null,
+                validateStatus: 'error',
+                msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
+            }
+        }
+        if (this.props.type == 66) { // 膨胀大礼包，每个档位礼品不能重复
+            let hasDuplica;
+            for (let i = 0; i < index; i++) {
+                if (giftInfoArray[i]) {
+                    hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
+                    giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
+                }
+            }
+            if (hasDuplica) {
+                return {
+                    ...giftInfo,
+                    validateStatus: 'error',
+                    msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
+                }
+            }
+        }
+        return {
+            ...giftInfo,
+            validateStatus: 'success',
+            msg: '',
+        };
+    }
+    gradeChange = (gifts, typeValue) => {
         const typePropertyName = this.props.type == '68' ? 'recommendType' : 'sendType';
         if (!Array.isArray(gifts)) return;
         const { data } = this.state;
@@ -763,8 +891,21 @@ class SpecialDetailInfo extends Component {
         })
     }
     handleGiftGetRuleChange = ({ target: { value } }) => {
+        if (value === 2 && this.props.type == '75') {
+            let { wakeupSendGiftsDataArray } = this.state;
+            wakeupSendGiftsDataArray = wakeupSendGiftsDataArray.slice(0, 1);
+            wakeupSendGiftsDataArray[0].intervalDays = undefined;
+            this.setState({
+                wakeupSendGiftsDataArray
+            })
+        }
         this.setState({
             giftGetRule: value,
+        })
+    }
+    handleCleanCountChange = ({ target: { value } }) => {
+        this.setState({
+            cleanCount: value,
         })
     }
     handleRecommendSettingsChange = (index, propertyName) => (val) => {
@@ -809,11 +950,11 @@ class SpecialDetailInfo extends Component {
         const { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].intervalDays = val;
         this.setState({
-            wakeupSendGiftsDataArray,
+            wakeupSendGiftsDataArray: wakeupSendGiftsDataArray.slice(),
         })
     }
     handleWakeupIntervalGiftsChange = (val, index) => {
-        const { wakeupSendGiftsDataArray } = this.state;
+        let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
         this.setState({
             wakeupSendGiftsDataArray,
@@ -849,29 +990,29 @@ class SpecialDetailInfo extends Component {
             beforeUpload: file => {
                 const isAllowed = file.type === 'image/jpeg' || file.type === 'image/png';
                 if (!isAllowed) {
-                    message.error('仅支持png和jpeg/jpg格式的图片');
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi66278)}`);
                 }
                 const isLt1M = file.size / 1024 / 1024 < 1;
                 if (!isLt1M) {
-                    message.error('图片不要大于1MB');
+                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d1qe50ueom7150)}`);
                 }
                 return isAllowed && isLt1M;
             },
             onChange: (info) => {
                 const status = info.file.status;
                 if (status === 'done' && info.file.response && info.file.response.url) {
-                    message.success(`${info.file.name} 上传成功`);
+                    message.success(`${info.file.name} ${this.props.intl.formatMessage(STRING_SPE.de8fm0fh7m8261)}`);
                     this.setState({
                         shareImagePath: `${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`,
                     })
                 } else if (status === 'error' || (info.file.response && !info.file.response.url)) {
                     if (info.file.response.code === '0011111100000001') {
-                        message.warning('因长时间未操作，会话已过期，请重新登陆');
+                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.d7el5efn1g9194)}`);
                         setTimeout(() => {
                             doRedirect()
                         }, 2000)
                     } else {
-                        message.error(`${info.file.name} 上传失败`);
+                        message.error(`${info.file.name} ${this.props.intl.formatMessage(STRING_SPE.d5g37mj8lj10275)}`);
                     }
                 }
             },
@@ -893,36 +1034,36 @@ class SpecialDetailInfo extends Component {
                             }
                         </Upload>
                         <p className="ant-upload-hint">
-                            点击上传图片，图片格式为jpg、png, 小于1MB
+                        {this.props.intl.formatMessage(STRING_SPE.de8fm0fh7m11217)}
                             <br/>
-                            建议尺寸: 520*416像素
+                            {this.props.intl.formatMessage(STRING_SPE.d1kge806b911258)}
                         </p>
                     </FormItem>
                 </Col>
             </Row>
         )
     }
-    renderShareInfo() {
+    renderShareInfo = () => {
         return (
             <div>
                 <FormItem
-                    label="小程序分享标题"
+                    label={this.props.intl.formatMessage(STRING_SPE.d1430qdd6s1381)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     {this.props.form.getFieldDecorator('shareTitle', {
                         rules: [
-                            { max: 50, message: '最多50个字符' },
+                            { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.d2c8d07mpg149)}` },
                         ],
                         initialValue: this.state.shareTitle,
                         onChange: this.handleShareTitleChange,
                     })(
-                        <Input placeholder="不填写则显示默认标题" />
+                        <Input placeholder={this.props.intl.formatMessage(STRING_SPE.d454apk46m15158)} />
                     )}
                 </FormItem>
                 <FormItem
-                    label="小程序分享图片"
+                    label={this.props.intl.formatMessage(STRING_SPE.d7el5efn1g1619)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -930,10 +1071,10 @@ class SpecialDetailInfo extends Component {
                 >
                     {this.renderImgUrl()}
                 </FormItem>
-            </div>  
+            </div>
         )
     }
-    renderFlexFormControl() {
+    renderFlexFormControl = () => {
         const {
             discountWay,
             discountType,
@@ -952,7 +1093,7 @@ class SpecialDetailInfo extends Component {
         return (
             <div style={{ display: 'flex' }}>
                 <FormItem
-                    label="邀请一人"
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a6d3176e17223)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 10 }}
                     wrapperCol={{ span: 12 }}
@@ -962,8 +1103,8 @@ class SpecialDetailInfo extends Component {
                         onChange={this.handleDiscountWayChange}
                         value={`${discountWay}`}
                     >
-                        <RadioButton value="0">减免</RadioButton>
-                        <RadioButton value="1">减折</RadioButton>
+                        <RadioButton value="0">{this.props.intl.formatMessage(STRING_SPE.d5g37mj8lj1899)}</RadioButton>
+                        <RadioButton value="1">{this.props.intl.formatMessage(STRING_SPE.d7h8110eaea19152)}</RadioButton>
                     </RadioGroup>
                 </FormItem>
                 {
@@ -982,7 +1123,7 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免金额必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a20108)}`);
                                                 }
                                                 cb()
                                             },
@@ -990,7 +1131,7 @@ class SpecialDetailInfo extends Component {
                                     ],
                                 })(
                                     <PriceInput
-                                        addonAfter="元"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
                                         maxNum={3}
                                         modal="float"
                                     />
@@ -1015,9 +1156,9 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免折扣必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi722273)}`);
                                                 } else if (v.number > 100) {
-                                                    return cb('比例不超过100%');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.dd5a6d3176f236)}`);
                                                 }
                                                 cb()
                                             },
@@ -1053,11 +1194,11 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免折扣必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi722273)}`);
                                                 } else if (v.number > 100) {
-                                                    return cb('比例不超过100%');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.dd5a6d3176f236)}`);
                                                 } else if (v.number > +discountMaxRate) { // 字符串和字符串做比较，有坑
-                                                    return cb('不能大于最高折扣');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d454apk46n2467)}`);
                                                 }
                                                 cb()
                                             },
@@ -1086,11 +1227,11 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免折扣必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi722273)}`);
                                                 } else if (v.number > 100) {
-                                                    return cb('比例不超过100%');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.dd5a6d3176f236)}`);
                                                 } else if (v.number < +discountMinRate) {
-                                                    return cb('不能小于最低折扣');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d7h8110eaeb25105)}`);
                                                 }
                                                 cb()
                                             },
@@ -1106,9 +1247,9 @@ class SpecialDetailInfo extends Component {
                             }
                         </FormItem>
                         </div>
-                        
+
                     )
-                }           
+                }
                 {
                     (discountType === 1 && discountWay === 0) && (
                         <div
@@ -1128,9 +1269,9 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免金额必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a20108)}`);
                                                 } else if (v.number > +discountMaxAmount) {
-                                                    return cb('不能大于最高减免');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d1e0750k7v26111)}`);
                                                 }
                                                 cb()
                                             },
@@ -1138,7 +1279,7 @@ class SpecialDetailInfo extends Component {
                                     ],
                                 })(
                                     <PriceInput
-                                        addonAfter="元"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
                                         maxNum={3}
                                         modal="float"
                                     />
@@ -1159,9 +1300,9 @@ class SpecialDetailInfo extends Component {
                                         {
                                             validator: (rule, v, cb) => {
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('减免金额必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a20108)}`);
                                                 } else if (v.number < +discountMinAmount) {
-                                                    return cb('不能小于最低减免');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d31ejgjgeda0286)}`);
                                                 }
                                                 cb()
                                             },
@@ -1169,20 +1310,20 @@ class SpecialDetailInfo extends Component {
                                     ],
                                 })(
                                     <PriceInput
-                                        addonAfter="元"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
                                         maxNum={3}
                                         modal="float"
                                     />
                                 )
                             }
                         </FormItem>
-                        </div> 
+                        </div>
                     )
-                }           
+                }
             </div>
         )
     }
-    renderInstantDiscountForm() {
+    renderInstantDiscountForm = () => {
         const {
             moneyLimitType,
             moneyLimitValue,
@@ -1210,15 +1351,15 @@ class SpecialDetailInfo extends Component {
                 }}
             >
                 <FormItem
-                    label="活动方式"
+                    label={this.props.intl.formatMessage(STRING_SPE.d1kge806b9227266)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <p>支付账单时, 根据用户达成目标的阶梯, 进行相应的折扣或减免</p>
+                    <p>{this.props.intl.formatMessage(STRING_SPE.d4h18iegahe28194)}</p>
                 </FormItem>
                 <FormItem
-                    label="账单限制"
+                    label={this.props.intl.formatMessage(STRING_SPE.d56720d572d929270)}
                     className={styles.FormItemStyle}
                     required={moneyLimitType === 1}
                     labelCol={{ span: 4 }}
@@ -1231,8 +1372,8 @@ class SpecialDetailInfo extends Component {
                                 getPopupContainer={(node) => node.parentNode}
                                 onChange={this.handleMoneyLimitTypeChange}
                             >
-                                <Select.Option value="0">不限制</Select.Option>
-                                <Select.Option value="1">满</Select.Option>
+                                <Select.Option value="0">{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Select.Option>
+                                <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d5g37mj8lk30103)}</Select.Option>
                             </Select>
                         ) : getFieldDecorator('moneyLimitValue', {
                             onChange: this.handleMoneyLimitValueChange,
@@ -1241,7 +1382,7 @@ class SpecialDetailInfo extends Component {
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v || !v.number) {
-                                            return cb('账单限制不能为空');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.d1e0750k7v31191)}`);
                                         }
                                         cb()
                                     },
@@ -1255,11 +1396,11 @@ class SpecialDetailInfo extends Component {
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleMoneyLimitTypeChange}
                                     >
-                                        <Select.Option value="0">不限制</Select.Option>
-                                        <Select.Option value="1">满</Select.Option>
+                                        <Select.Option value="0">{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Select.Option>
+                                        <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d5g37mj8lk30103)}</Select.Option>
                                     </Select>
                                 )}
-                                addonAfter={'元'}
+                                addonAfter={`${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}`}
                                 maxNum={8}
                                 modal="float"
                             />
@@ -1267,7 +1408,7 @@ class SpecialDetailInfo extends Component {
                     }
                 </FormItem>
                 <FormItem
-                    label="活动类型"
+                    label={this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1277,15 +1418,15 @@ class SpecialDetailInfo extends Component {
                         getPopupContainer={(node) => node.parentNode}
                         onChange={this.handleDiscountTypeChange}
                     >
-                        <Select.Option value="0">每邀请一人优惠固定数额</Select.Option>
-                        <Select.Option value="1">每邀请一人优惠随机数额</Select.Option>
+                        <Select.Option value="0">{this.props.intl.formatMessage(STRING_SPE.d7h8110eaeb3297)}</Select.Option>
+                        <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d1430qdd6t3378)}</Select.Option>
                     </Select>
                 </FormItem>
                 {
                     this.renderFlexFormControl()
                 }
                 <FormItem
-                    label="优惠上限"
+                    label={this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi734293)}
                     required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -1299,9 +1440,9 @@ class SpecialDetailInfo extends Component {
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v || !(v.number > 0)) {
-                                            return cb('优惠上限必须大于0');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.dd5a6d3176f35162)}`);
                                         } else if (v.number > 100) {
-                                            return cb('优惠上限不能超过100%');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.de8fm0fh8036225)}`);
                                         }
                                         cb()
                                     },
@@ -1309,7 +1450,7 @@ class SpecialDetailInfo extends Component {
                             ],
                         })(
                             <PriceInput
-                                addonBefore="账单金额的"
+                                addonBefore={this.props.intl.formatMessage(STRING_SPE.dojwosi433749)}
                                 addonAfter="%"
                                 maxNum={4}
                                 modal="float"
@@ -1325,15 +1466,15 @@ class SpecialDetailInfo extends Component {
                         width="100%"
                         content={
                             <div>
-                                <p>优惠上限</p>
+                                <p>{this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi734293)}</p>
                                 <br/>
-                                <p>当参与活动人数已帮砍的金额达到了优惠上限,则在活动时限内,依然会每新增一人帮砍0.01元。</p>
+                                <p>{this.props.intl.formatMessage(STRING_SPE.d1e0750k8038217)}</p>
                             </div>
                         }
                     />
                 </FormItem>
                 <FormItem
-                    label="活动限时"
+                    label={this.props.intl.formatMessage(STRING_SPE.d16hg8i3la839116)}
                     required
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -1347,9 +1488,9 @@ class SpecialDetailInfo extends Component {
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v || !(v.number > 0)) {
-                                            return cb('活动限时必须大于0');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.d1kge806b9340259)}`);
                                         } else if (v.number > 10) {
-                                            return cb('活动限时不能超过10分钟');
+                                            return cb(`${this.props.intl.formatMessage(STRING_SPE.d1700e50510041167)}`);
                                         }
                                         cb()
                                     },
@@ -1357,7 +1498,7 @@ class SpecialDetailInfo extends Component {
                             ],
                         })(
                             <PriceInput
-                                addonAfter="分钟"
+                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d1e0750k804214)}
                                 maxNum={3}
                                 modal="int"
                             />
@@ -1365,7 +1506,7 @@ class SpecialDetailInfo extends Component {
                     }
                 </FormItem>
                 <FormItem
-                    label="邀请规则"
+                    label={this.props.intl.formatMessage(STRING_SPE.d16hg8i3la843288)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1376,7 +1517,7 @@ class SpecialDetailInfo extends Component {
                         disabled
                     >
                         {/* <Select.Option value="0">被邀请人关注公众号即完成邀请</Select.Option> */}
-                        <Select.Option value="1">被邀请人注册会员即完成邀请</Select.Option>
+                        <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d34igk92gk44272)}</Select.Option>
                     </Select>
                     <CloseableTip
                         style={{
@@ -1387,15 +1528,15 @@ class SpecialDetailInfo extends Component {
                         width="100%"
                         content={
                             <div>
-                                <p>活动规则</p>
+                                <p>{this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}</p>
                                 <br/>
-                                <p>被邀请人需要关注公众号,关注后会推送选定的会员卡类型的领卡链接,被邀请人注册会员后,发起人即完成砍价任务</p>
+                                <p>{this.props.intl.formatMessage(STRING_SPE.de8fm0fh8046149)}</p>
                             </div>
                         }
                     />
                 </FormItem>
                 <FormItem
-                    label="公众号"
+                    label={this.props.intl.formatMessage(STRING_SPE.d2b1beb4216347268)}
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -1404,13 +1545,13 @@ class SpecialDetailInfo extends Component {
                     {
                         getFieldDecorator('mpId', {
                             rules: [
-                                { required: true, message: '必须选择一个公众号' }
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.d454b2jmak0207)}` }
                             ],
                             initialValue: mpIDList.length ? mpIDList[0] : undefined,
                             onChange: this.handleMpIdChange,
                         })(
                             <Select
-                                placeholder="请选择被邀请人需要关注的公众号"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.dojwosi43484)}
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 {
@@ -1423,7 +1564,7 @@ class SpecialDetailInfo extends Component {
                     }
                 </FormItem>
                 <FormItem
-                    label="会员卡类型"
+                    label={this.props.intl.formatMessage(STRING_SPE.d1qe50ueoo49243)}
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}
@@ -1432,14 +1573,14 @@ class SpecialDetailInfo extends Component {
                     {
                         getFieldDecorator('defaultCardType', {
                             rules: [
-                                { required: true, message: '必须选择一个卡类型' }
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8omhe07i508)}` }
                             ],
                             initialValue: defaultCardType,
                             onChange: this.handleDefaultCardTypeChange,
                         })(
                             <Select
                                 showSearch={true}
-                                placeholder="请选择被邀请人需要注册的会员卡类型"
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.d7h8110eaec5124)}
                                 getPopupContainer={(node) => node.parentNode}
                             >
                                 {
@@ -1450,16 +1591,16 @@ class SpecialDetailInfo extends Component {
                     }
                 </FormItem>
                 <FormItem
-                    label="礼品启用状态"
+                    label={this.props.intl.formatMessage(STRING_SPE.dojwosi4352250)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
                     <Switch
                         checked={!this.state.disabledGifts}
-                        checkedChildren="开启"
+                        checkedChildren={COMMON_LABEL.open}
                         disabled={userCount > 0}
-                        unCheckedChildren="关闭"
+                        unCheckedChildren={COMMON_LABEL.close}
                         onChange={(bool) => this.setState({disabledGifts: !bool})}
                     ></Switch>
                 </FormItem>
@@ -1501,7 +1642,7 @@ class SpecialDetailInfo extends Component {
             <Row gutter={8}>
                 <Col span={10} offset={1}>
                     <FormItem
-                        label="积分比例"
+                        label={this.props.intl.formatMessage(STRING_SPE.d31ejg5ddi853253)}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -1517,9 +1658,9 @@ class SpecialDetailInfo extends Component {
                                                 return cb();
                                             }
                                             if (!v || !(v.number > 0)) {
-                                                return cb('积分比例必须大于0');
+                                                return cb(`${this.props.intl.formatMessage(STRING_SPE.d16hg8i3la85466)}`);
                                             } else if (v.number > 100) {
-                                                return cb('积分比例不能超过100%');
+                                                return cb(`${this.props.intl.formatMessage(STRING_SPE.d1e0750k8155219)}`);
                                             }
                                             cb()
                                         },
@@ -1537,7 +1678,7 @@ class SpecialDetailInfo extends Component {
                 </Col>
                 <Col span={10}>
                     <FormItem
-                        label="单笔积分上限"
+                        label={this.props.intl.formatMessage(STRING_SPE.d16hg8i3la95687)}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
@@ -1549,8 +1690,8 @@ class SpecialDetailInfo extends Component {
                                 rules: [],
                             })(
                                 <PriceInput
-                                    addonAfter="分"
-                                    placeholder="不填表示不限制"
+                                    addonAfter={this.props.intl.formatMessage(STRING_SPE.db60b58ca13657133)}
+                                    placeholder={this.props.intl.formatMessage(STRING_SPE.d5g37mj8lm5884)}
                                     maxNum={6}
                                     modal="float"
                                 />
@@ -1576,7 +1717,7 @@ class SpecialDetailInfo extends Component {
                 <Row gutter={8}>
                     <Col span={10} offset={1}>
                         <FormItem
-                            label="储值金额比例"
+                            label={this.props.intl.formatMessage(STRING_SPE.d1700e5051015963)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
@@ -1592,9 +1733,9 @@ class SpecialDetailInfo extends Component {
                                                     return cb();
                                                 }
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('储值金额比例必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d1700e5051016014)}`);
                                                 } else if (v.number > 100) {
-                                                    return cb('储值金额比例不能超过100%');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.de8fm0fh816121)}`);
                                                 }
                                                 cb()
                                             },
@@ -1612,7 +1753,7 @@ class SpecialDetailInfo extends Component {
                     </Col>
                     <Col span={10}>
                         <FormItem
-                            label="单笔返利上限"
+                            label={this.props.intl.formatMessage(STRING_SPE.dk469ad5m86244)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
@@ -1624,8 +1765,8 @@ class SpecialDetailInfo extends Component {
                                     rules: [],
                                 })(
                                     <PriceInput
-                                        addonAfter="元"
-                                        placeholder="不填表示不限制"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
+                                        placeholder={this.props.intl.formatMessage(STRING_SPE.d5g37mj8lm5884)}
                                         maxNum={6}
                                         modal="float"
                                     />
@@ -1653,7 +1794,7 @@ class SpecialDetailInfo extends Component {
                 <Row gutter={8}>
                     <Col span={10} offset={1}>
                         <FormItem
-                            label="消费金额比例"
+                            label={this.props.intl.formatMessage(STRING_SPE.d2b1beb421646350)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
@@ -1669,9 +1810,9 @@ class SpecialDetailInfo extends Component {
                                                     return cb();
                                                 }
                                                 if (!v || !(v.number > 0)) {
-                                                    return cb('消费金额比例必须大于0');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.de8fm0fh816433)}`);
                                                 } else if (v.number > 100) {
-                                                    return cb('消费金额比例不能超过100%');
+                                                    return cb(`${this.props.intl.formatMessage(STRING_SPE.d1e0750k8165174)}`);
                                                 }
                                                 cb()
                                             },
@@ -1689,7 +1830,7 @@ class SpecialDetailInfo extends Component {
                     </Col>
                     <Col span={10}>
                         <FormItem
-                            label="单笔返利上限"
+                            label={this.props.intl.formatMessage(STRING_SPE.dk469ad5m86244)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
@@ -1701,8 +1842,8 @@ class SpecialDetailInfo extends Component {
                                     rules: [],
                                 })(
                                     <PriceInput
-                                        addonAfter="元"
-                                        placeholder="不填表示不限制"
+                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}
+                                        placeholder={this.props.intl.formatMessage(STRING_SPE.d5g37mj8lm5884)}
                                         maxNum={6}
                                         modal="float"
                                     />
@@ -1714,7 +1855,7 @@ class SpecialDetailInfo extends Component {
                 </Row>
                 {this.renderPointControl(recommendType, index)}
                 <FormItem
-                    label="奖励范围"
+                    label={this.props.intl.formatMessage(STRING_SPE.d1kge806b946655)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 12 }}
@@ -1724,16 +1865,16 @@ class SpecialDetailInfo extends Component {
                         getPopupContainer={(node) => node.parentNode}
                         onChange={this.handleRecommendSettingsChange(index, 'rewardRange')}
                     >
-                        <Select.Option value="0">仅会员现金卡值消费部分</Select.Option>
-                        <Select.Option value="1">包含会员卡值的全部账单金额</Select.Option>
-                        <Select.Option value="2">不包含会员卡值的账单金额</Select.Option>
-                        <Select.Option value="3">仅账单实收金额</Select.Option>
+                        <Select.Option value="0">{this.props.intl.formatMessage(STRING_SPE.db60b58ca13667255)}</Select.Option>
+                        <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d34igk92gl6822)}</Select.Option>
+                        <Select.Option value="2">{this.props.intl.formatMessage(STRING_SPE.d454apk46p69270)}</Select.Option>
+                        <Select.Option value="3">{this.props.intl.formatMessage(STRING_SPE.d7h8110eaed70124)}</Select.Option>
                     </Select>
                 </FormItem>
             </div>
         )
     }
-    renderSaveMoneySetSelector() {
+    renderSaveMoneySetSelector = () => {
         const {
             saveMoneySetType,
         } = this.state;
@@ -1741,7 +1882,7 @@ class SpecialDetailInfo extends Component {
         return (
             <div>
                 <FormItem
-                    label="储值场景限制"
+                    label={this.props.intl.formatMessage(STRING_SPE.d1kge806b947149)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1750,14 +1891,14 @@ class SpecialDetailInfo extends Component {
                         onChange={this.handleSaveMoneySetTypeChange}
                         value={saveMoneySetType}
                     >
-                        <Radio key={'0'} value={'0'}>所有储值场景</Radio>
-                        <Radio key={'1'} value={'1'}>仅储值套餐</Radio>
+                        <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d1430qdd6v7262)}</Radio>
+                        <Radio key={'1'} value={'1'}>{this.props.intl.formatMessage(STRING_SPE.d34igk92gm73182)}</Radio>
                     </RadioGroup>
                 </FormItem>
                 {
                     saveMoneySetType == 1 && (
                         <FormItem
-                            label="储值套餐"
+                            label={this.props.intl.formatMessage(STRING_SPE.d2b1beb4216574112)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -1765,16 +1906,16 @@ class SpecialDetailInfo extends Component {
                             {
                                 this.props.form.getFieldDecorator('saveMoneySetIds', {
                                     rules: [
-                                        { required: true, message: '至少要选择一个储值套餐' }
+                                        { required: true, message: `{this.props.intl.formatMessage(STRING_SPE.d5g37mj8ln75102)}` }
                                     ],
                                     initialValue: this.state.saveMoneySetIds,
                                     onChange: this.handleSaveMoneySetIdsChange,
                                 })(
                                     <Select
                                         showSearch={true}
-                                        notFoundContent={'未搜索到结果'}
+                                        notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                         multiple
-                                        placeholder="请选择活动适用的储值套餐"
+                                        placeholder={this.props.intl.formatMessage(STRING_SPE.d1qe50ueoq76275)}
                                         getPopupContainer={(node) => node.parentNode}
                                     >
                                         {
@@ -1791,10 +1932,10 @@ class SpecialDetailInfo extends Component {
                     )
                 }
             </div>
-            
+
         )
     }
-    renderRecommendGiftsDetail() {
+    renderRecommendGiftsDetail = () => {
         const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
         const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
         let renderRecommentReward;
@@ -1809,7 +1950,7 @@ class SpecialDetailInfo extends Component {
             <div>
                 {recommendRule == 2 && this.renderSaveMoneySetSelector()}
                 <p className={styles.coloredBorderedLabel}>
-                    直接推荐人奖励： 
+                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957782)}
                     <span style={{color: '#f04134'}}>{helpMessageArray[0]}</span>
                 </p>
                 {renderRecommentReward(1)}
@@ -1817,7 +1958,7 @@ class SpecialDetailInfo extends Component {
                     recommendRange > 0 && (
                         <div>
                             <p className={styles.coloredBorderedLabel}>
-                                间接推荐人奖励：
+                                {this.props.intl.formatMessage(STRING_SPE.d2c8d07mpk78251)}
                                 <span style={{color: '#f04134'}}>{helpMessageArray[1]}</span>
                             </p>
                             {renderRecommentReward(2)}
@@ -1825,8 +1966,8 @@ class SpecialDetailInfo extends Component {
                     )
                 }
                 <p className={styles.coloredBorderedLabel}>
-                    被推荐人奖励：
-                    <Tooltip title="被推荐人在且仅在被邀请成为会员时可以领取一次被推荐人奖励。">
+                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957926)}
+                    <Tooltip title={this.props.intl.formatMessage(STRING_SPE.d56721718236081)}>
                         <Icon style={{ fontWeight: 'normal' }} type="question-circle" />
                     </Tooltip>
                 </p>
@@ -1834,37 +1975,153 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    renderWakeupGiftsDetail() {
+    renderAccumulateGiftsDetail() {
+        const {
+            giftGetRule,
+            cleanCount,
+            wakeupSendGiftsDataArray,
+        } = this.state;
+        const { isNew } = this.props;
+        return (
+            <div>
+                <FormItem
+                    label="礼品领取方式"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        onChange={this.handleGiftGetRuleChange}
+                        value={giftGetRule}
+                        disabled={!isNew}
+                    >
+                        <Radio key={'2'} value={2}>集满全部点数领取</Radio>
+                        <Radio key={'3'} value={3}>阶梯点数领取</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    giftGetRule === 3 && (
+                        <FormItem
+                            label="阶梯礼品兑换后"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup
+                                onChange={this.handleCleanCountChange}
+                                value={cleanCount}
+                                disabled={!isNew}
+                            >
+                                <Radio value={1}>扣减所用点数</Radio>
+                                <Radio value={0}>不扣减所用点数</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                    )
+                }
+                {
+                    giftGetRule === 2 ? (
+                        <Row>
+                            <Col span={17} offset={4}>
+                                <AddGifts
+                                    disabledGifts={!isNew}
+                                    key={wakeupSendGiftsDataArray[0].key}
+                                    maxCount={10}
+                                    type={this.props.type}
+                                    isNew={this.props.isNew}
+                                    value={wakeupSendGiftsDataArray[0].gifts}
+                                    onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, 0)}
+                                />
+                            </Col>
+                        </Row>
+                    ) : this.renderMultipleLevelGiftsDetail()
+                }
+            </div>
+        )
+    }
+    getMultipleLevelValueLimit = () => {
+        const { type, specialPromotion } = this.props;
+        if (type == '75') {
+            return specialPromotion.getIn(['$eventInfo', 'needCount'])
+        }
+    }
+    renderMultipleLevelGiftsDetail() {
         const { wakeupSendGiftsDataArray } = this.state;
         const {
             form: {
                 getFieldDecorator,
-            }
+            },
+            isNew,
+            type,
         } = this.props;
+        const disabledGifts = type == 75 && !isNew;
+        const multiConfig = this.getMultipleLevelConfig();
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
             <div>
                 {
                     wakeupSendGiftsDataArray.map(({intervalDays, gifts, key}, index, arr) => (
                         <div key={`${key}`}>
-                            <FormItem
-                                label="距上次消费天数"
-                                className={styles.FormItemStyle}
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                style={{ position: 'relative', marginBottom: 14 }}
-                                required
-                            >
+                            <Row key={`${key}`}>
+                                <Col span={4}>
+                                    <div className={selfStyle.fakeLabel}>
+                                    {SALE_LABEL.k6d8n0y8}{`${index + 1}`}
+                                    </div>
+                                </Col>
+                                <Col style={{ position: 'relative' }} span={17}>
+                                <div className={selfStyle.grayHeader}>
+                                {multiConfig.levelLabel}&nbsp;
+                                <FormItem>
+                                    {
+                                        getFieldDecorator(`intervalDays${key}`, {
+                                            onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
+                                            initialValue: { number: intervalDays },
+                                            rules: [
+                                                {
+                                                    validator: (rule, v, cb) => {
+                                                        if (!v || !(v.number > 0)) {
+                                                            return cb('必须大于0');
+                                                        }
+                                                        const limit = this.getMultipleLevelValueLimit();
+                                                        if (limit && !(v.number <= limit)) {
+                                                            return cb(`不能大于${limit}`);
+                                                        }
+                                                        if (limit && index === arr.length - 1 && v.number != limit) { // 最后一档必须填满限制
+                                                            return cb(`最后一档必须等于${limit}`);
+                                                        }
+                                                        for (let i = 0; i < index; i++) {
+                                                            const days = arr[i].intervalDays;
+                                                            if (days > 0) {
+                                                                // 档位设置不可以重叠
+                                                                if (v.number <= +days) {
+                                                                    return cb('档位数值需大于上一档位');
+                                                                }
+                                                            }
+                                                        }
+                                                        cb()
+                                                    },
+                                                },
+                                            ],
+                                        })(
+                                            <PriceInput
+                                                disabled={userCount > 0 || disabledGifts}
+                                                maxNum={5}
+                                                modal="int"
+                                            />
+                                        )
+                                    }
+                                </FormItem>
+                                {multiConfig.levelAffix}
+                                </div>
                                 {
-                                    userCount > 0 ? null : (
+                                    (userCount > 0 || disabledGifts) ? null : (
                                         <div style={{
                                             position: 'absolute',
                                             width: 65,
-                                            top: 3,
+                                            top: 10,
                                             right: -70,
                                         }}>
                                             {
-                                                (index === arr.length - 1 && arr.length < 5) && (
+                                                (index === arr.length - 1 && arr.length < 10) && (
                                                     <Icon
                                                         onClick={this.addInterval}
                                                         style={{ marginRight: 5 }}
@@ -1875,7 +2132,7 @@ class SpecialDetailInfo extends Component {
                                             }
                                             {
                                                 (arr.length > 1) && (
-                                                    <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeInterval(index)}>
+                                                    <Popconfirm title={this.props.intl.formatMessage(STRING_SPE.dd5a6d317718137)} onConfirm={() => this.removeInterval(index)}>
                                                         <Icon
                                                             style={{ marginRight: 5 }}
                                                             className={styles.deleteIcon}
@@ -1887,42 +2144,14 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                     )
                                 }
-                                {
-                                    getFieldDecorator(`intervalDays${key}`, {
-                                        onChange: ({number: val}) => this.handleIntervalDaysChange(val, index),
-                                        initialValue: { number: intervalDays },
-                                        rules: [
-                                            {
-                                                validator: (rule, v, cb) => {
-                                                    if (!v || !(v.number > 0)) {
-                                                        return cb('距上次消费天数必须大于0');
-                                                    }
-                                                    for (let i = 0; i < index; i++) {
-                                                        const days = arr[i].intervalDays;
-                                                        if (days > 0) {
-                                                            // 时间段设置不可以重叠
-                                                            if (v.number <= +days) {
-                                                                return cb('档位天数需大于上一档位天数');
-                                                            }
-                                                        }
-                                                    }
-                                                    cb()
-                                                },
-                                            },
-                                        ],
-                                    })(
-                                        <PriceInput
-                                            disabled={userCount > 0}
-                                            addonAfter="天"
-                                            maxNum={5}
-                                            modal="int"
-                                        />
-                                    )
-                                }
-                            </FormItem>
+                                </Col>
+                            </Row>
                             <Row>
                                 <Col span={17} offset={4}>
                                     <AddGifts
+                                        disabledGifts={disabledGifts}
+                                        key={`${key}`}
+                                        isAttached={true}
                                         maxCount={10}
                                         type={this.props.type}
                                         isNew={this.props.isNew}
@@ -1943,19 +2172,22 @@ class SpecialDetailInfo extends Component {
             return this.renderRecommendGiftsDetail();
         }
         if (type == '63') { // 唤醒送礼，多个天数档位设置需要去重
-            return this.renderWakeupGiftsDetail();
+            return this.renderMultipleLevelGiftsDetail();
+        }
+        if (type == '75') { // 集点卡 礼品逻辑
+            return this.renderAccumulateGiftsDetail();
         }
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
                 {
-                    type == '65' && <p className={styles.coloredBorderedLabel}>邀请人礼品获得礼品列表：</p>
+                    type == '65' && <p className={styles.coloredBorderedLabel}>{this.props.intl.formatMessage(STRING_SPE.dk469ad5m988265)}：</p>
                 }
                 {
                     type == '66' && (
                         <FormItem
-                            label="礼品领取方式"
+                            label={this.props.intl.formatMessage(STRING_SPE.d1700e50510284270)}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -1965,8 +2197,8 @@ class SpecialDetailInfo extends Component {
                                 value={this.state.giftGetRule}
                                 disabled={userCount > 0}
                             >
-                                <Radio key={'0'} value={0}>领取符合条件的最高档位礼品</Radio>
-                                <Radio key={'1'} value={1}>领取符合条件的所有档位礼品</Radio>
+                                <Radio key={'0'} value={0}>{this.props.intl.formatMessage(STRING_SPE.d1qe50ueoq85139)}</Radio>
+                                <Radio key={'1'} value={1}>{this.props.intl.formatMessage(STRING_SPE.dd5a6d3177186273)}</Radio>
                             </RadioGroup>
                         </FormItem>
                     )
@@ -1988,7 +2220,7 @@ class SpecialDetailInfo extends Component {
                     </Col>
                 </Row>
                 {
-                   type == '65' && <p className={styles.coloredBorderedLabel}>被邀请人礼品获得礼品列表：</p>
+                   type == '65' && <p className={styles.coloredBorderedLabel}>{this.props.intl.formatMessage(STRING_SPE.dk469ad5m987288)}</p>
                 }
                 {
                     type == '65' && (

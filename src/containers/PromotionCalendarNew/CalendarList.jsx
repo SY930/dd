@@ -7,6 +7,9 @@ import {
 import DetailCard from './DetailCard';
 import CalendarModal from './CalendarModal';
 import memoizeOne from 'memoize-one';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
 const isNameLengthLargerThanWidth = (item) => {
     const {
@@ -18,13 +21,14 @@ const isNameLengthLargerThanWidth = (item) => {
     return {
         isOverflow: expectWidth > (right - left),
         expectWidth
-    } 
+    }
 }
 
 
 const MONTH_FORMAT = 'YYYYMM';
 const DAY_FORMAT = 'YYYYMMDD';
 const DAY_LENGTH_IN_PX = 15;
+@injectIntl()
 class CalendarList extends Component {
     constructor() {
         super();
@@ -88,13 +92,15 @@ class CalendarList extends Component {
         const endDate = `${monthsInfo[this.state.monthsCount - 1].monthMoment.format(MONTH_FORMAT)}${monthsInfo[this.state.monthsCount - 1].daysCount}`;
         const endMoment = moment(endDate, DAY_FORMAT);
         const today = moment().format(DAY_FORMAT);
+        const { intl } = this.props;
+        const k6316izc = intl.formatMessage(SALE_STRING.k6316izc);
         return list.map(item => {
             if (item.isCategoryPlaceHolder) return item;
             const { eventStartDate, eventEndDate } = item;
             /** 计算活动日期进度 */
             let process;
             if (eventStartDate == 20000101 && eventEndDate == 29991231) {
-                process = '进行中';
+                process = k6316izc;
             } else if (eventStartDate > today) {
                 process = '0%';
             } else if (eventEndDate < today) {
@@ -264,7 +270,7 @@ class CalendarList extends Component {
                                             </div>
                                         </div>
                                     </Popover>
-                                    
+
                                 </div>
                             )
                         })}

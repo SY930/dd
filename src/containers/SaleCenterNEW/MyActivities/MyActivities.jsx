@@ -17,7 +17,8 @@ import {
     TreeSelect,
     Spin,
 } from 'antd';
-import {throttle, isEqual} from 'lodash'
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { throttle } from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
@@ -94,14 +95,14 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
-
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
-
 
 const mapStateToProps = (state) => {
     return {
@@ -195,6 +196,7 @@ const mapDispatchToProps = (dispatch) => {
     sale_mySpecialActivities_NEW,
 })
 @connect(mapStateToProps, mapDispatchToProps)
+@injectIntl()
 class MyActivities extends React.Component {
     constructor(props) {
         super(props);
@@ -312,7 +314,7 @@ class MyActivities extends React.Component {
     }
 
     handleDecorationStart = (record) => {
-        const { promotionType, promotionIDStr, promotionName } = record; 
+        const { promotionType, promotionIDStr, promotionName } = record;
         this.props.selectPromotionForDecoration({
             type: `${promotionType}`,
             id: promotionIDStr,
@@ -323,15 +325,15 @@ class MyActivities extends React.Component {
 
     confirmDelete = (record) => {
         confirm({
-            title: <span style={{color: '#434343'}}>您确定要删除吗 ?</span>,
+        title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3}</span>,
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {`您将删除【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】活动`}
+                        {SALE_LABEL.k5do6vse}{`【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>
-                        删除数据是不可恢复操作, 请慎重考虑
+                       {SALE_LABEL.k5do4z54}
                     </span>
                 </div>
             ),
@@ -350,7 +352,7 @@ class MyActivities extends React.Component {
                     {path: 'data'},
                     'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ).then(() => {
-                    message.success(`删除成功`);
+                    message.success(SALE_LABEL.k5do0ps6);
                     this.tryToRefresh();
                     this.tryToUpdateNameList();
                 }).catch((error) => {});
@@ -360,7 +362,7 @@ class MyActivities extends React.Component {
     }
 
     toggleStateCallBack = () => {
-        message.success('使用状态修改成功');
+        message.success(SALE_LABEL.k5do0ps6);
         this.tryToRefresh()
     }
 
@@ -414,13 +416,13 @@ class MyActivities extends React.Component {
             const _promoitonList = nextProps.myActivities.get('$promotionList').toJS();
             switch (_promoitonList.status) {
                 case 'timeout':
-                    message.error('请求超时');
+                    message.error(SALE_LABEL.k5doarw8);
                     this.setState({
                         loading: false,
                     });
                     break;
                 case 'fail':
-                    message.error('请求失败');
+                    message.error(SALE_LABEL.k5doax7i);
                     this.setState({
                         loading: false,
                     });
@@ -524,7 +526,7 @@ class MyActivities extends React.Component {
                     dataSource: [],
                     total: 0,
                 });
-                message.warning('暂无数据');
+                message.warning(SALE_LABEL.k5dod8s9);
             });
         }
     }
@@ -570,7 +572,7 @@ class MyActivities extends React.Component {
         axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             this.tryToRefresh()
         }).catch(err => {
-            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+            message.warning(err || SALE_LABEL.k5doax7i);
         })
     }
 
@@ -600,9 +602,11 @@ class MyActivities extends React.Component {
         return this.props.entryCode === ONLINE_PROMOTION_MANAGEMENT_GROUP;
     }
     getAllPromotionTypes = () => {
+        const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const all = {
             key: 'ALL',
-            title: '全部',
+            title: k5eng042,
         }
         if (this.isOnlinePromotionPage()) { // 基础营销集团视角
             return [
@@ -620,7 +624,7 @@ class MyActivities extends React.Component {
         const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
         const _serverToRedux = false;
         if (responseJSON.promotionInfo === undefined || responseJSON.promotionInfo.master === undefined) {
-            message.error('没有查询到相应数据');
+            message.error(SALE_LABEL.k5dod8s9);
             return null;
         }
         if (responseJSON.promotionInfo.master.maintenanceLevel === '1') { // shop
@@ -639,14 +643,14 @@ class MyActivities extends React.Component {
         this.setState({
             promotionInfo: responseJSON.promotionInfo,
             selectedRecord: responseJSON.promotionInfo, // arguments[1],
-            modalTitle: '更新活动信息',
+            modalTitle: SALE_LABEL.k5dohc0d,
             isNew: false,
             index: _promotionIdx,
         });
     };
 
     failFn = () => {
-        message.error('啊哦,好像出了点问题~');
+        message.error(SALE_LABEL.k5dmw1z4);
     };
 
     handleUpdateOpe() {
@@ -715,7 +719,7 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                    查询详情出错!点击 <a onClick={this.handleUpdateOpe}>重试</a>
+                {SALE_LABEL.k5doax7i} <a onClick={this.handleUpdateOpe}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }
@@ -760,12 +764,13 @@ class MyActivities extends React.Component {
         const {
             queryPromotionAutoRunList,
             openPromotionAutoRunListModal,
+            intl,
         } = this.props;
         return (
             <div className="layoutsTool" style={{height: '64px'}}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
-                        {this.isOnlinePromotionPage() ? '线上营销信息' : '基础营销信息'}
+                        {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
                     </span>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
@@ -778,7 +783,7 @@ class MyActivities extends React.Component {
                                     icon="plus"
                                     className={styles.customPrimaryButton}
                                 >
-                                    自动执行
+                                    {SALE_LABEL.k5dbiuws}
                                 </Button>
                             </Authority>
                         )
@@ -792,18 +797,20 @@ class MyActivities extends React.Component {
         const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData'])) ?
             this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']).toJS() :
             this.props.promotionScopeInfo.getIn(['refs', 'data', 'constructedData']);
+        const { intl } = this.props;
+        const k5ddu8nr = intl.formatMessage(SALE_STRING.k5ddu8nr);
         const tProps = this.state.selectedShop != null ?
             {
                 treeData,
                 value: this.state.selectedShop,
                 onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '请选择店铺',
+                placeholder: k5ddu8nr,
                 allowClear: true,
             } : {
                 treeData,
                 value: undefined,
                 onChange: value => this.onTreeSelect(value, treeData),
-                placeholder: '请选择店铺',
+                placeholder: k5ddu8nr,
                 allowClear: true,
             };
         return (
@@ -818,29 +825,31 @@ class MyActivities extends React.Component {
         );
     }
 
-    renderFilterBar() {
-        const opt = this.getParams()
+    renderFilterBar = () => {
+        const opt = this.getParams();
+        const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         return (
             <div>
                 <div className="layoutsSearch">
                     <ul>
                         <li>
-                            <h5>活动时间</h5>
+                            <h5>{SALE_LABEL.k5dk4m5r}</h5>
                         </li>
                         <li>
                             <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
                         </li>
 
                         <li>
-                            <h5>活动类型</h5>
+                            <h5>{SALE_LABEL.k5dk5uwl}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                placeholder="请选择类型"
-                                defaultValue="全部"
+                                placeholder=""
+                                defaultValue="ALL"
                                 onChange={(value) => {
                                     this.setState({
                                         promotionType: value === 'ALL' ? '' : value,
@@ -858,27 +867,27 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>使用状态</h5>
+                            <h5>{SALE_LABEL.k5dlbwqo}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 60 }}
                                 defaultValue="0"
-                                placeholder="请选择使用状态"
+                                placeholder=""
                                 onChange={(value) => {
                                     this.setState({
                                         promotionState: value,
                                     });
                                 }}
                             >
-                                <Option value={TRIPLE_STATE.ALL}>全部</Option>
-                                <Option value={TRIPLE_STATE.OPTION1}>启用</Option>
-                                <Option value={TRIPLE_STATE.OPTION2}>禁用</Option>
+                                <Option value={TRIPLE_STATE.ALL}>{k5eng042}</Option>
+                                <Option value={TRIPLE_STATE.OPTION1}>{COMMON_LABEL.enable}</Option>
+                                <Option value={TRIPLE_STATE.OPTION2}>{COMMON_LABEL.disable}</Option>
                             </Select>
                         </li>
 
                         <li>
-                            <h5>活动名称</h5>
+                            <h5>{SALE_LABEL.k5dlcm1i}</h5>
                         </li>
                         <li>
                             <PromotionNameSelect
@@ -892,11 +901,11 @@ class MyActivities extends React.Component {
 
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{ COMMON_LABEL.query }</Button>
                             </Authority>
                         </li>
                         <li>
-                            <a onClick={this.toggleExpandState}>高级查询 {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
+                            <a onClick={this.toggleExpandState}>{SALE_LABEL.k5dldshc} {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
                         </li>
                         {
                             !this.isOnlinePromotionPage() && (
@@ -905,7 +914,7 @@ class MyActivities extends React.Component {
                                         <Button
                                             type="ghost"
                                             onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />导出</Button>
+                                        ><Icon type="export" />{ COMMON_LABEL.export }</Button>
                                     </Authority>
                                 </li>
                             )
@@ -936,24 +945,28 @@ class MyActivities extends React.Component {
         if (Immutable.List.isList($brands)) {
             brands = $brands.toJS();
         }
-
+        const { intl } = this.props;
+        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
+        const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
+        const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
         if (this.state.expand) {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
 
                         <li>
-                            <h5>适用店铺</h5>
+                            <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
                         <li>
                             {this.renderShopsInTreeSelectMode()}
                         </li>
                         <li>
-                            <h5>有效状态</h5>
+                            <h5>{SALE_LABEL.k5dli0fu}</h5>
                         </li>
                         <li>
                             <Select
-                                placeholder="请选择有效状态"
+                                placeholder=""
                                 defaultValue={'0'}
                                 style={{ width: 100 }}
                                 onChange={(value) => {
@@ -962,19 +975,19 @@ class MyActivities extends React.Component {
                                     });
                                 }}
                             >
-                                <Option key="0" value={'0'}>全部</Option>
-                                <Option key="1" value={'1'}>未开始</Option>
-                                <Option key="2" value={'2'}>执行中</Option>
-                                <Option key="3" value={'3'}>已结束</Option>
+                                <Option key="0" value={'0'}>{k5eng042}</Option>
+                            <Option key="1" value={'1'}>{k5dlp2gl}</Option>
+                            <Option key="2" value={'2'}>{k5dlp7zc}</Option>
+                            <Option key="3" value={'3'}>{k5dlpczr}</Option>
                             </Select>
                         </li>
 
                         <li>
-                            <h5>统计类别</h5>
+                            <h5>{SALE_LABEL.k5dljb1v}</h5>
                         </li>
                         <li>
                             <Select
-                                placeholder="请选择统计类别"
+                                placeholder=""
                                 onChange={(value) => {
                                     this.setState({
                                         promotionCategory: value,
@@ -994,13 +1007,13 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>标签</h5>
+                            <h5>{SALE_LABEL.k5dlpi06}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 120 }}
                                 allowClear={true}
-                                placeholder="请选择标签"
+                                placeholder=""
                                 onChange={(tags) => {
                                     this.setState({
                                         promotionTags: tags || '',
@@ -1018,13 +1031,13 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>品牌</h5>
+                            <h5>{SALE_LABEL.k5dlpn4t}</h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 100 }}
                                 allowClear={true}
-                                placeholder="请选择品牌"
+                                placeholder=""
                                 onChange={(brands) => {
                                     this.setState({
                                         promotionBrands: brands,
@@ -1042,7 +1055,7 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>适用业务</h5>
+                            <h5>{SALE_LABEL.k5dlpt47}</h5>
                         </li>
                         <li>
                             <Select
@@ -1053,7 +1066,7 @@ class MyActivities extends React.Component {
                                     });
                                 }}
                                 allowClear={true}
-                                placeholder="请选择适用业务"
+                                placeholder=""
                             >
                                 {
                                     SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST.map((order) => {
@@ -1072,9 +1085,20 @@ class MyActivities extends React.Component {
     }
 
     renderTables() {
+        const { intl } = this.props;
+        const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
+        const k5engebq = intl.formatMessage(SALE_STRING.k5engebq);
+        const k5engk5b = intl.formatMessage(SALE_STRING.k5engk5b);
+        const k5engpht = intl.formatMessage(SALE_STRING.k5engpht);
+        const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
+        const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
+        const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
+        const k5ey8jvj = intl.formatMessage(SALE_STRING.k5ey8jvj);
+        const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
+        const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
         const columns = [
             {
-                title: '序号',
+                title: COMMON_LABEL.serialNumber,
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 50,
@@ -1084,12 +1108,12 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '操作',
+                title: COMMON_LABEL.actions,
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? '禁用' : '启用');
+                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
                         if (!isGroupOfHuaTianGroupList()) {
@@ -1123,7 +1147,7 @@ class MyActivities extends React.Component {
                                         this.handleUpdateOpe(text, record, index);
                                     }}
                                 >
-                                    查看
+                                    { COMMON_LABEL.view }
                                 </a>
                             </Authority>
                             {
@@ -1136,7 +1160,7 @@ class MyActivities extends React.Component {
                                                 this.props.toggleIsUpdate(true)
                                                 this.handleUpdateOpe(text, record, index);
                                             }}
-                                        >编辑</a>
+                                        >{ COMMON_LABEL.edit }</a>
                                     </Authority>
                                 )
                             }
@@ -1148,7 +1172,7 @@ class MyActivities extends React.Component {
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
-                                >删除</a>
+                                >{ COMMON_LABEL.delete }</a>
                             </Authority>
                     </span>
 
@@ -1156,7 +1180,7 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '排序',
+                title: COMMON_LABEL.sort,
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
@@ -1165,16 +1189,16 @@ class MyActivities extends React.Component {
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
+                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
                         </span>
                     )
                 },
             },
             {
-                title: '活动类型',
+                title: SALE_LABEL.k5dk5uwl,
                 dataIndex: 'promotionType',
                 key: 'promotionType',
                 width: 120,
@@ -1187,7 +1211,7 @@ class MyActivities extends React.Component {
             },
 
             {
-                title: '活动名称',
+                title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 key: 'promotionName',
                 width: 200,
@@ -1200,7 +1224,7 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '活动编码',
+                title: SALE_LABEL.k5dmmiar,
                 dataIndex: 'promotionCode',
                 key: 'promotionCode',
                 width: 140,
@@ -1208,31 +1232,31 @@ class MyActivities extends React.Component {
             },
 
             {
-                title: '有效时间',
+                title: SALE_LABEL.k5dml2ik,
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
                 width: 180,
                 render: (validDate) => {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
-                        return '不限制';
+                        return SALE_LABEL.k5dn26n4;
                     }
                     return `${validDate.start} - ${validDate.end}`;
                 },
             },
 
             {
-                title: '有效状态',
+                title: SALE_LABEL.k5dli0fu,
                 dataIndex: 'status',
                 key: 'valid',
                 width: 72,
                 render: (status) => {
-                    return status == '1' ? '未开始' : status == '2' ? '执行中' : '已结束';
+                    return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
                 },
             },
 
             {
-                title: '创建人/修改人',
+                title: SALE_LABEL.k5dmps71,
                 dataIndex: '',
                 key: 'createBy',
                 width: 140,
@@ -1245,7 +1269,7 @@ class MyActivities extends React.Component {
             },
 
             {
-                title: '创建时间/修改时间',
+                title: SALE_LABEL.k5dmrraa,
                 dataIndex: '',
                 className: 'TableTxtCenter',
                 key: 'createTime',
@@ -1258,13 +1282,13 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '使用状态',
+                title: SALE_LABEL.k5dlbwqo,
                 dataIndex: 'isActive',
                 className: 'TableTxtCenter',
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return (isActive == '1' ? '启用' : '禁用');
+                    return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
                 },
             },
         ];
@@ -1284,7 +1308,7 @@ class MyActivities extends React.Component {
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
                         total: this.state.total ? this.state.total : 0,
-                        showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                        showTotal: (total, range) => `${k5ey8jvj}${range[0]}-${range[1]} / ${k5ey8l0e} ${total} ${k5ey8lip}`,
                         onChange: (page, pageSize) => {
                             this.setState({
                                 pageNo: page,
@@ -1294,7 +1318,7 @@ class MyActivities extends React.Component {
                                 pageNo: page,
                                 usageMode: -1,
                                 ...this.getParams(),
-                                fail: () => message.error('出错了，请稍后再试'),
+                                fail: () => message.error(SALE_LABEL.k5dmw1z4),
                             };
                             opt.cb = this.showNothing;
                             this.props.query(opt);

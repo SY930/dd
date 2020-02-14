@@ -19,13 +19,18 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import CollocationTableWithBrandID from '../common/CollocationTableWithBrandID';
+import CollocationTableWithoutBrandID from '../common/CollocationTableWithoutBrandID';
 import RecommendTimeInterval from './RecommendTimeInterval';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const Immutable = require('immutable');
 
 // 推荐菜品只有集团可以设置,若以后门店也可设置，菜品选择组件需要仔细修改!important
+@injectIntl()
 class RecommendFoodDetailInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -39,7 +44,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     endTime: '2359',
                 },
                 priceList: [],
-                scopeList: [],             
+                scopeList: [],
             },)
         } else { // 编辑，已经查询并存到了store，rule字段在后端存储是json string
             foodRuleList.forEach(item => {
@@ -72,6 +77,12 @@ class RecommendFoodDetailInfo extends React.Component {
     handleSubmit = () => {
         const { foodRuleList } = this.state;
         let nextFlag = true;
+        const { intl } = this.props;
+        const k6hdp74n = intl.formatMessage(SALE_STRING.k6hdp74n);
+        const k6hdp8in = intl.formatMessage(SALE_STRING.k6hdp8in);
+        const k6hdp8qz = intl.formatMessage(SALE_STRING.k6hdp8qz);
+        const k6hdp8zb = intl.formatMessage(SALE_STRING.k6hdp8zb);
+
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) {
                 nextFlag = false;
@@ -86,7 +97,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 priceListAuto = []
             } = foodRuleList[i];
             if (!data.length && !priceListAuto.length) {
-                message.warning(`使用时段${i+1}中猜你喜欢和热销推荐不能全部为空`)
+                message.warning(`${k6hdp74n}${i+1}${k6hdp8in}`)
                 return false;
             }
             const unCompleteIndex = data.findIndex(group => {
@@ -95,7 +106,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     ))
             });
             if (unCompleteIndex > -1) {
-                message.warning(`使用时段${i+1}中组合${unCompleteIndex + 1}没有搭配完整`)
+                message.warning(`${k6hdp74n}${i+1}${k6hdp8qz}${unCompleteIndex + 1}${k6hdp8zb}`)
                 return false;
             }
             data.forEach((group, groupIdx) => {
@@ -209,6 +220,12 @@ class RecommendFoodDetailInfo extends React.Component {
         const {
             foodRuleList,
         } = this.state;
+        const { intl } = this.props;
+        const k6hdp7cz = intl.formatMessage(SALE_STRING.k6hdp7cz);
+        const k6hdp7lb = intl.formatMessage(SALE_STRING.k6hdp7lb);
+        const k6hdp7tn = intl.formatMessage(SALE_STRING.k6hdp7tn);
+        const k6hdp74n = intl.formatMessage(SALE_STRING.k6hdp74n);
+
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -228,7 +245,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                     }
                                     {
                                         (foodRuleList.length > 1) && (
-                                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.removeRule(index)}>
+                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeRule(index)}>
                                                 <Icon
                                                     style={{ marginRight: 10 }}
                                                     className={selfStyle.deleteIcon}
@@ -240,12 +257,12 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </div>
                                 <div className={selfStyle.blockHeader}>
                                     <FormItem
-                                        label={`使用时段${index + 1}`}
+                                        label={k6hdp74n + `${index + 1}`}
                                         colon={false}
                                         required={true}
                                         labelCol={{ span: 3 }}
                                         wrapperCol={{ span: 20 }}
-                                    >      
+                                    >
                                         {
                                             this.props.form.getFieldDecorator(`timeinfo${index}`, {
                                                 initialValue: item.rule, // {startTime: 'HHmm', endTime: 'HHmm'}
@@ -254,10 +271,10 @@ class RecommendFoodDetailInfo extends React.Component {
                                                     {
                                                         validator: (rule, v, cb) => {
                                                             if (!v || !v.startTime || !v.endTime) {
-                                                                return cb('使用时段必须填写完整');
+                                                                return cb(k6hdp7cz);
                                                             }
                                                             if (v.startTime > v.endTime) {
-                                                                return cb('结束时间不能早于开始时间');
+                                                                return cb(k6hdp7lb);
                                                             }
                                                             for (let i = 0; i < index; i++) {
                                                                 const rule = foodRuleList[i].rule;
@@ -272,7 +289,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                                                             rule.endTime >= v.startTime
                                                                             && rule.endTime <= v.endTime
                                                                     )) {
-                                                                        return cb('时段设置不能有交叉');
+                                                                        return cb(k6hdp7tn);
                                                                     }
                                                                 }
                                                             }
@@ -286,19 +303,29 @@ class RecommendFoodDetailInfo extends React.Component {
                                 </div>
                                 <div className={selfStyle.blockContent}>
                                     <FormItem
-                                        label="猜你喜欢"
+                                        label={SALE_LABEL.k6hdp81z}
                                         colon={false}
                                         labelCol={{ span: 3 }}
                                         wrapperCol={{ span: 20 }}
-                                    >      
-                                        <CollocationTableWithBrandID
-                                            prices={item.priceList}
-                                            scopes={item.scopeList}
-                                            onChange={(val) => this.handDishesChange(val, index)}
-                                        />             
-                                    </FormItem>                  
+                                    >
+                                        {
+                                            this.props.isShopFoodSelectorMode ? (
+                                                <CollocationTableWithoutBrandID
+                                                    prices={item.priceList}
+                                                    scopes={item.scopeList}
+                                                    onChange={(val) => this.handDishesChange(val, index)}
+                                                />
+                                            ) : (
+                                                <CollocationTableWithBrandID
+                                                    prices={item.priceList}
+                                                    scopes={item.scopeList}
+                                                    onChange={(val) => this.handDishesChange(val, index)}
+                                                />
+                                            )
+                                        }
+                                    </FormItem>
                                     <FormItem
-                                        label="热销推荐"
+                                        label={SALE_LABEL.k6hdp8ab}
                                         colon={false}
                                         style={{marginTop: 12}}
                                         labelCol={{ span: 3 }}
@@ -308,13 +335,13 @@ class RecommendFoodDetailInfo extends React.Component {
                                             this.props.form.getFieldDecorator(`priceList${index}`, {
                                                 initialValue: item.priceList.filter(item => item.stageNo == -1),
                                                 onChange: (val) =>  this.autoDishesChange(val, index)
-                                            })(<ConnectedPriceListSelector />)
+                                            })(<ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} />)
                                         }
                                     </FormItem>
-                                </div>               
+                                </div>
                             </div>
                         ))
-                    }     
+                    }
                 </Form>
             </div>
         )
@@ -323,6 +350,7 @@ class RecommendFoodDetailInfo extends React.Component {
 
 function mapStateToProps(state) {
     return {
+        isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
         $foodRuleList: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'foodRuleList']),
     }
 }

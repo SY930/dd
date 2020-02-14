@@ -28,12 +28,16 @@ import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '..
 import EditBoxForPromotion from './EditBoxForPromotion';
 import EditBoxForRole from './EditBoxForRole';
 import BaseHualalaModal from './BaseHualalaModal';
-
+import PriceInput from "../common/PriceInput";
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
+@injectIntl()
 class AdvancedPromotionDetailSetting extends React.Component {
     constructor(props) {
         super(props);
@@ -51,6 +55,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardInfo: [],
             cardScopeIDs: [],
             userSettingOPtios: [],
+            isTotalLimited: '0',
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -81,6 +86,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
+        const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
+        const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         let userSettingOPtios = []
@@ -117,6 +124,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardScopeType,
             cardScopeIDs,
             userSettingOPtios,
+            customerUseCountLimit,
+            isTotalLimited,
         }, () => {
             this.props.setPromotionDetail({
                 userSetting: this.state.userSetting,
@@ -179,7 +188,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     renderUserSetting() {
         return (
             <FormItem
-                label={'活动适用用户'}
+                label={SALE_LABEL.k5m3on8w}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -216,7 +225,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     renderPaymentSetting() {
         return (
             <FormItem
-                label="支付限制"
+                label={SALE_LABEL.k5m3onh8}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -245,7 +254,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { birthdayLimit } = this.props;
         return (
             <FormItem
-                label="其他限制"
+                label={SALE_LABEL.k6hhu8vf}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -257,7 +266,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             birthdayLimit: +e.target.checked,
                         })}
                     >
-                        仅限生日当天参与
+                        {SALE_LABEL.k6hhu93r}
                     </Checkbox>
                 </div>
             </FormItem>
@@ -274,7 +283,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 return {
                     promotionIDStr: promotion.promotionIDStr || '',
                     sharedType: promotion.sharedType ? promotion.sharedType : '10',
-                    finalShowName: promotion.finalShowName || '展示名称未匹配',
+                    finalShowName: promotion.finalShowName || SALE_LABEL.k5m3onpk,
                 }
             }),
         });
@@ -284,7 +293,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         this.setState({
             mutexSubjects: val,
         });
-
         this.props.setPromotionDetail({
             mutexSubjects: val.map((subject) => {
                 return subject.subjectKey;
@@ -302,21 +310,24 @@ class AdvancedPromotionDetailSetting extends React.Component {
             }),
         });
     };
-    renderExcludedPromotionBlackList() {
+    renderExcludedPromotionBlackList = () => {
+        const { intl } = this.props;
+        const k5m3oo68 = intl.formatMessage(SALE_STRING.k5m3oo68);
+        const k5m3opbw = intl.formatMessage(SALE_STRING.k5m3opbw);
         const tip = (
             <div style={{ display: this.state.display, height: 330, width: 460 }} className={styles.tip}>
-                <div><p style={{ marginBottom: 10 }}>共享名单方式</p></div>
+    <div><p style={{ marginBottom: 10 }}>{SALE_LABEL.k5m3onxw}</p></div>
                 <Row style={{ height: '72px' }}>
-                    <Col span={3} style={{ marginTop: -7 }}>白名单:</Col>
-                    <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>不共享</span></Col>
+                    <Col span={3} style={{ marginTop: -7 }}>{k5m3oo68}:</Col>
+        <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span></Col>
                 </Row>
                 <Row style={{ height: '72px' }}>
-                    <Col span={3} style={{ marginTop: -7 }}>黑名单:</Col>
-                    <Col span={20}>本活动与下方选择的活动<span style={{ color: '#222222' }}>不共享</span>，空白（不选择）表示本活动与所有活动<span style={{ color: '#222222' }}>共享</span></Col>
+                    <Col span={3} style={{ marginTop: -7 }}>{k5m3opbw}:</Col>
+        <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span></Col>
                 </Row>
                 <Row style={{ height: '72px' }}>
-                    <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>注意</span>:</Col>
-                    <Col span={20}>微信餐厅对满赠、买赠、第二份打折、搭赠、加价换购、加价升级换新这六个菜品类营销活动不受互斥规则限制，在微信餐厅上都按同享执行</Col>
+        <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>{SALE_LABEL.k5m6e3pr}</span>:</Col>
+        <Col span={20}>{SALE_LABEL.k5m3oomw}</Col>
                 </Row>
                 <div style={{ marginRight: 14 }}>
                     <div className={styles.tipBtn}>
@@ -326,7 +337,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                             onClick={() => {
                                 this.setState({ display: 'none' });
                             }}
-                        >我知道了
+                        >{SALE_LABEL.k5m3oov8}
                         </Button>
                     </div>
                 </div>
@@ -334,14 +345,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
         );
         return (
             <FormItem
-                label="共享名单方式"
+                label={SALE_LABEL.k5m3onxw}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.blackListRadio} onChange={this.handleBlackListRadioChange}>
-                    <Radio key={'0'} value={'0'}>白名单</Radio>
-                    <Radio key={'1'} value={'1'}>黑名单</Radio>
+        <Radio key={'0'} value={'0'}>{k5m3oo68}</Radio>
+        <Radio key={'1'} value={'1'}>{k5m3opbw}</Radio>
                     <Icon
                         type="question-circle-o"
                         className={styles.question}
@@ -360,11 +371,19 @@ class AdvancedPromotionDetailSetting extends React.Component {
             blackList: e.target.value != '0',
         });
     }
+    handleIsTotalLimitedChange = (value) => {
+        this.setState({
+            isTotalLimited: value,
+            customerUseCountLimit: 0,
+        })
+        this.props.setPromotionDetail({
+            customerUseCountLimit: 0,
+        });
+    }
     renderExcludedPromotionSelection() {
         return (
-
             <FormItem
-                label={this.state.blackListRadio == '1' ? '活动共享黑名单' : '活动共享白名单'}
+                label={this.state.blackListRadio == '1' ? SALE_LABEL.k5m3op3k : SALE_LABEL.k5m3opk8}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -376,12 +395,62 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
+    handleCustomerUseCountLimitChange = (value) => {
+        this.setState({
+            customerUseCountLimit: value.number,
+        })
+        this.props.setPromotionDetail({
+            customerUseCountLimit: value.number,
+        });
+    }
+    renderParticipateLimit() {
+        return (
+            <div style={{height: '40px', paddingLeft: 45, marginTop: '8px'}} className={styles.flexContainer}>
+                    <div style={{lineHeight: '28px', marginRight: '16px'}}>
+                        {SALE_LABEL.k6hhu9c3}
+                    </div>
+                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                        {SALE_LABEL.k6hhu9kf}
+                    </div>
+                    <div style={{width: '300px'}}>
+                        <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
+                            <Select onChange={this.handleIsTotalLimitedChange}
+                                    value={String(this.state.isTotalLimited)}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>{SALE_LABEL.k5dn26n4}</Option>
+                                <Option key="1" value={'1'}>{SALE_LABEL.k5kp4vhr}</Option>
+                            </Select>
+                        </Col>
+                        <Col span={this.state.isTotalLimited == 0 ? 0 : 2}></Col>
+                        {
+                            this.state.isTotalLimited == 1 ?
+                                <Col span={10}>
+                                    <FormItem
+                                        style={{ marginTop: -6 }}
+                                        validateStatus={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? 'success' : 'error'}
+                                        help={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : SALE_LABEL.k6hhu9sr}
+                                    >
+                                        <PriceInput
+                                            addonAfter={SALE_LABEL.k5kms0pc}
+                                            maxNum={999}
+                                            value={{ number: this.state.customerUseCountLimit }}
+                                            onChange={this.handleCustomerUseCountLimitChange}
+                                            modal="int"
+                                        />
+                                    </FormItem>
+                                </Col> : null
+                        }
+                    </div>
+                </div>
+        )
+    }
 
     renderRoleOptions() {
         return (
 
             <FormItem
-                label="活动执行角色"
+                label={SALE_LABEL.k5m3opsk}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -409,6 +478,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
     }
     renderCardLeval = () => {
+        const { intl } = this.props;
+        const k5m3oq98 = intl.formatMessage(SALE_STRING.k5m3oq98);
+        const k5m4pxa1 = intl.formatMessage(SALE_STRING.k5m4pxa1);
+
         const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
         const boxData = []
         cardScopeIDs.forEach((id) => {
@@ -424,7 +497,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         return (
             <div>
                 <FormItem
-                    label="会员范围"
+                    label={SALE_LABEL.k5m3oq0w}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -439,26 +512,26 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         }
                         }
                     >
-                        <Radio key={0} value={0}>卡类别</Radio >
-                        <Radio key={1} value={1}>卡等级</Radio >
+                    <Radio key={0} value={0}>{k5m3oq98}</Radio >
+                    <Radio key={1} value={1}>{k5m4pxa1}</Radio >
                         {
                             this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
-                            <Radio key={2} value={2}>会员标签</Radio > : null
+                        <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
                         }
                     </RadioGroup >
                 </FormItem>
                 {
-                    cardScopeType === 2 ? 
+                    cardScopeType === 2 ?
                     (
                         <FormItem
-                            label={'会员标签'}
+                            label={SALE_LABEL.k5m4pxid}
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
                         >
                            <Select
                                 size={'default'}
-                                notFoundContent={'未搜索到结果'}
+                                notFoundContent={SALE_LABEL.k5m4pxqp}
                                 multiple={true}
                                 showSearch={true}
                                 value={cardScopeIDs}
@@ -476,10 +549,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                 }
                             </Select>
                         </FormItem>
-                    ): 
+                    ):
                     (
                         <FormItem
-                            label={`适用${cardScopeType == 0 ? '卡类' : '卡等级'}`}
+                            label={SALE_LABEL.k5m6e3y3 + cardScopeType == 0 ? k5m3oq98 : k5m4pxa1 }
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -489,7 +562,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     ?
                                     (<Select
                                         size={'default'}
-                                        notFoundContent={'未搜索到结果'}
+                                        notFoundContent={SALE_LABEL.k5m4pxqp}
                                         multiple={true}
                                         showSearch={true}
                                         value={cardScopeIDs}
@@ -503,20 +576,20 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                     >
                                         {
                                             cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
-        
+
                                         }
                                     </Select>)
                                     :
                                     (<BaseHualalaModal
-                                        outLabel={'卡等级'} //   外侧选项+号下方文案
+                                        outLabel={k5m4pxa1} //   外侧选项+号下方文案
                                         outItemName="cardLevelName" //   外侧已选条目选项的label
                                         outItemID="cardLevelID" //   外侧已选条目选项的value
-                                        innerleftTitle={'全部卡类'} //   内部左侧分类title
+                                        innerleftTitle={SALE_LABEL.k5m4pyfq} //   内部左侧分类title
                                         innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
                                         leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
                                         innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
                                         innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                                        innerBottomTitle={'已选卡等级'} //   内部底部box的title
+                                        innerBottomTitle={SALE_LABEL.k5m4py7e} //   内部底部box的title
                                         innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                                         itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
                                         treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
@@ -530,11 +603,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                         }}
                                     />)
                             }
-                        </FormItem>         
+                        </FormItem>
                     )
                 }
                 {
-                    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>不选择默认全选</p> : null
+    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
             </div>
         )
@@ -554,6 +627,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         this.renderPaymentSetting($promotionDetail)
                         : null
                 }
+                { promotionType === '3010' && this.renderParticipateLimit()}
                 { promotionType === '3020' && this.renderBirthdayLimit()}
                 {_stash ? null : this.renderExcludedPromotionBlackList()}
                 {_stash ? null : this.renderExcludedPromotionSelection()}

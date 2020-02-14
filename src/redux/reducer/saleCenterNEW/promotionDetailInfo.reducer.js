@@ -121,6 +121,7 @@ const $initialState = Immutable.fromJS({
         upGradeDishes: [], // 例如：升级换新的加价前商品
         needSyncToAliPay: 0,
         birthdayLimit: 0,
+        customerUseCountLimit: 0,
     },
     foodCategoryCollection: [],
     goodCategories: [],
@@ -301,6 +302,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
         case SALE_CENTER_SET_PROMOTION_DETAIL:
             if (action.payload.rule) { // 把黑名单合进去rulejson
                 action.payload.rule.blackList = $$state.get('$promotionDetail').toJS().blackList || false;
+                action.payload.rule.customerUseCountLimit = $$state.get('$promotionDetail').toJS().customerUseCountLimit || 0;
             }
             const $payload = Immutable.fromJS(action.payload);
             return $$state.mergeIn(['$promotionDetail'], $payload);

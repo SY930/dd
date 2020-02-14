@@ -1,7 +1,8 @@
 import React from 'react';
 import { Tooltip, span } from 'antd';
+import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
-import { mapValueToLabel } from './CommonFn';
+import { mapValueToLabel } from 'helpers/util';
 
 const format = 'YYYY/MM/DD HH:mm';
 const FORMITEMS = {
@@ -14,7 +15,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     giftStatus: {
-        label: '状态',
+        label: COMMON_LABEL.status,
         type: 'combo',
         defaultValue: '',
         options: GiftCfg.giftSendStatus,
@@ -22,7 +23,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     WXgiftCardStatus: {
-        label: '状态',
+        label: COMMON_LABEL.status,
         type: 'combo',
         defaultValue: '',
         options: GiftCfg.WXgiftCardStatus,
@@ -54,14 +55,22 @@ const FORMITEMS = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
     },
+    giftPWD: {
+        label: '券编码',
+        type: 'text',
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+    }
 };
+const SEND_GIFTPWD_FORMKEYS = [{ col: { span: 12 }, keys: ['giftPWD','getWay', 'timeRangeSend', ] },
+{ col: { span: 12, offset: 0 }, keys: ['mobileNum', 'giftStatus', 'sendShopID'] }];
 const SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
 { col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
 const WX_SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
 { col: { span: 12, offset: 0 }, keys: ['WXgiftCardStatus'] }];
 const BASE_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.serialNumber,
         dataIndex: 'num',
         width:50,
         className:'TableTxtCenter',
@@ -144,7 +153,7 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
         render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
     },
     {
-        title: '状态',
+        title: COMMON_LABEL.status,
         dataIndex: 'giftStatus',
         className:'TableTxtCenter',
         key: 'giftStatus',
@@ -179,21 +188,34 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
     },
 ]
 const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
-    title: '状态',
+    title: COMMON_LABEL.status,
     dataIndex: 'giftStatus',
     key: 'giftStatus',
     render: (value) => {
         return <span>{mapValueToLabel(GiftCfg.WXgiftCardStatus, String(value))}</span>
     },
 }, ...BASE_COLUMNS.slice(5)]
+const USED_SPE_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed', 'giftPWD'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
-const USED_COLUMNS = [
+
+const USED_SPE_COLUMNS = [
     {
-        title: '序号',
+        title: COMMON_LABEL.status,
         dataIndex: 'num',
+        width: 80,
         className:'TableTxtCenter',
         key: 'num',
-    }, {
+    },{
+        title: '券编码',
+        dataIndex: 'giftPWD',
+        width: 150,
+        className:'TableTxtCenter',
+        key: 'giftPWD',
+        render: (value) => {
+            const label = String(value);
+            return <Tooltip title={label}><span>{label}</span></Tooltip>
+        },
+    },{
         title: '获得方式',
         dataIndex: 'getWay',
         width: 80,
@@ -264,4 +286,81 @@ const USED_COLUMNS = [
         key: 'transCardNo',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS };
+const USED_COLUMNS = [
+    {
+        title: '序号',
+        dataIndex: 'num',
+        className:'TableTxtCenter',
+        key: 'num',
+    },{
+        title: '获得方式',
+        dataIndex: 'getWay',
+        width: 80,
+        className:'TableTxtCenter',
+        key: 'getWay',
+        render: (value) => {
+            const label = mapValueToLabel(GiftCfg.getWay, String(value));
+            return <Tooltip title={label}><span>{label}</span></Tooltip>
+        },
+    }, {
+        title: '获得时间',
+        width: 150,
+        dataIndex: 'createTime',
+        className:'TableTxtCenter',
+        key: 'createTime',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '获得店铺',
+        className:'TableTxtCenter',
+        dataIndex: 'sendShopName',
+        key: 'sendShopName',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '使用时间',
+        className:'TableTxtCenter',
+        dataIndex: 'usingTime',
+        key: 'usingTime',
+        render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+    }, {
+        title: '使用店铺',
+        className:'TableTxtCenter',
+        dataIndex: 'usingShopName',
+        key: 'usingShopName',
+        render: (value = '') => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '客户编号',
+        className:'TableTxtCenter',
+        dataIndex: 'customerID',
+        key: 'customerID',
+        width: 200,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    },{
+        title: '姓名',
+        className:'TableTxtCenter',
+        dataIndex: 'customerName',
+        key: 'customerName',
+    }, {
+        title: '性别',
+        className:'TableTxtCenter',
+        dataIndex: 'customerSex',
+        key: 'customerSex',
+        render: (value) => {
+            return <span>{mapValueToLabel(GiftCfg.sex, String(value))}</span>
+        },
+    }, {
+        title: '手机号',
+        dataIndex: 'customerMobile',
+        className:'TableTxtCenter',
+        width: 100,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+        key: 'customerMobile',
+    }, {
+        title: '会员卡号',
+        width: 120,
+        className:'TableTxtCenter',
+        dataIndex: 'transCardNo',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+        key: 'transCardNo',
+    },
+];
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS };

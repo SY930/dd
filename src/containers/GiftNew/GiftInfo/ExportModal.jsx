@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import { Row, Col, Modal, Button, Table, message } from 'antd';
-import { connect } from 'react-redux';
+import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import { axiosData } from '../../../helpers/util';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
+import { injectIntl } from 'i18n/common/injectDecorator'
+import { STRING_GIFT, COMMON_GIFT } from 'i18n/common/gift';
 
 function mapValueToLabel(cfg, val) {
     return _.result(_.find(cfg, { value: val }), 'label') || '--';
 }
 const ExportStatus = [
-    { value: '1', label: '成功' },
-    { value: '0', label: '失败' },
-    { value: '2', label: '导出中' },
+    { value: '1', label: COMMON_GIFT.d1dv0btfl3066 },
+    { value: '0', label: COMMON_GIFT.doj9y10hl240 },
+    { value: '2', label: COMMON_GIFT.d1dv3i58lj319 },
 ];
 const COLUMNS = [{
-    title: '序号',
+    title: COMMON_LABEL.serialNumber,
     dataIndex: 'index',
     width: 20,
     className: styles.tdCenter,
@@ -25,7 +27,7 @@ const COLUMNS = [{
         );
     },
 }, {
-    title: '名称',
+    title: COMMON_GIFT.doj9y10hl09,
     dataIndex: 'recordName',
     className: 'TableTxtCenter',
     width: 200,
@@ -33,12 +35,12 @@ const COLUMNS = [{
         return <span style={{ whiteSpace: 'pre-wrap' }}>{text || '--'}</span>
     },
 }, {
-    title: '时间',
+    title: COMMON_GIFT.doj9y10hl132,
     dataIndex: 'createStamp',
     className: 'TableTxtCenter',
     width: 110,
 }, {
-    title: '状态',
+    title: COMMON_LABEL.status,
     dataIndex: 'exportStatus',
     className: 'TableTxtCenter',
     width: 40,
@@ -46,7 +48,7 @@ const COLUMNS = [{
         return <span>{mapValueToLabel(ExportStatus, String(text))}</span>
     },
 }, {
-    title: '操作',
+    title: COMMON_LABEL.actions,
     dataIndex: 'payType',
     className: 'TableTxtCenter',
     width: 40,
@@ -55,21 +57,17 @@ const COLUMNS = [{
             <span>
                 {
                     record.exportStatus == '1' ?
-                        // <Authority rightCode="crm.huiyuandengjixin.query">
-                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>下载文件</a>
-                        // </Authority>
+                        <a href="#" className="linkColor" onClick={this.handleDownLoad.bind(this, record)}>{ COMMON_LABEL.download }</a>
                         :
                         null
                 }
-                {/* <Authority rightCode="crm.huiyuanquntidaochujilu.delete"> */}
-                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>删除</a>
-                {/* </Authority> */}
+                <a href="#" className="linkColor" onClick={this.handleDelete.bind(this, record)}>{ COMMON_LABEL.delete }</a>
             </span>
         )
     },
 },
 ];
-
+@injectIntl
 export default class ExportModal extends Component {
     constructor(props) {
         super(props);
@@ -180,7 +178,7 @@ export default class ExportModal extends Component {
     handleDelete = (record) => {
         axiosData('/crm/quotaCardExport/delete.ajax', { itemID: record.itemID }, null, { path: 'data' })
             .then(() => {
-                message.success('删除成功');
+                message.success(COMMON_GIFT.doj9y10hl476);
                 this.getExportRecords(this.props._key);
             });
     }
@@ -201,7 +199,7 @@ export default class ExportModal extends Component {
         }
         axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
-                message.success('删除成功');
+                message.success(COMMON_GIFT.doj9y10hl476);
                 this.getExportRecords(this.props._key);
             });
     }
@@ -210,15 +208,15 @@ export default class ExportModal extends Component {
             <div>
                 <Modal
                     style={{ top: 30 }}
-                    title={'数据导出列表'}
+                    title={this.props.intl.formatMessage(STRING_GIFT.d1dv3i58lj530)}
                     width={'850px'}
                     maskClosable={false}
                     visible={this.state.visible}
                     wrapClassName={styles.crmShopCreditPayRecordWrap}
                     onCancel={() => this.handleClose()}
                     footer={
-                        [<Button key={'close'} type="ghost" onClick={() => this.handleClose()}>关闭</Button>,
-                        <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>刷新</Button>,
+                        [<Button key={'close'} type="ghost" onClick={() => this.handleClose()}>{ COMMON_LABEL.close }</Button>,
+                        <Button key={'refresh'} type="ghost" onClick={() => this.handleRefresh()}>{ COMMON_LABEL.refresh }</Button>,
                         ]}
                 >
                     <Row>
@@ -237,7 +235,7 @@ export default class ExportModal extends Component {
                                 pagination={{
                                     pageSize: this.state.pageSizes,
                                     total: this.state.dataSource ? this.state.dataSource.length : 0,
-                                    showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                                    showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u2)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u1)} ${total} ${this.props.intl.formatMessage(STRING_GIFT.d2c68skgm94)}`,
                                 }}
                             />
                             { (!!this.state.dataSource && !!this.state.dataSource.length) && (
@@ -249,7 +247,7 @@ export default class ExportModal extends Component {
                                         left: 0,
                                         bottom: 18
                                     }}
-                                >清空列表</Button>
+                                >{this.props.intl.formatMessage(STRING_GIFT.du2hnhcan645)}</Button>
                             )}
                         </Col>
                     </Row>

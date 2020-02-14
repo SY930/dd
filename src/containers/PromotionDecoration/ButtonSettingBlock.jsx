@@ -2,25 +2,11 @@ import React, { Component } from 'react';
 import ColoredButton from './ColoredButton';
 import style from './buttonSettingBlock.less';
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
+import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import {injectIntl} from './IntlDecor';
 
-const DEFAULT_COLOR_THEME = [
-    {
-        label: '柠檬黄',
-        buttonBgColor: '#FFC455',
-        buttonColor: '#AD0701',
-    },
-    {
-        label: '大红色',
-        buttonBgColor: '#D14C41',
-        buttonColor: '#FFFFFF',
-    },
-    {
-        label: '琥珀色',
-        buttonBgColor: '#A47E48',
-        buttonColor: '#FFFFFF',
-    },
-]
-
+@injectIntl()
 export default class ButtonSettingBlock extends Component {
     render() {
         const {
@@ -28,6 +14,27 @@ export default class ButtonSettingBlock extends Component {
             buttonColor,
             onChange,
         } = this.props;
+        const { intl } = this.props;
+        const k63469k3 = intl.formatMessage(SALE_STRING.k63469k3);
+        const k63469sf = intl.formatMessage(SALE_STRING.k63469sf);
+        const k6346a0r = intl.formatMessage(SALE_STRING.k6346a0r);
+        const DEFAULT_COLOR_THEME = [
+            {
+                label: k63469k3,
+                buttonBgColor: '#FFC455',
+                buttonColor: '#AD0701',
+            },
+            {
+                label: k63469sf,
+                buttonBgColor: '#D14C41',
+                buttonColor: '#FFFFFF',
+            },
+            {
+                label: k6346a0r,
+                buttonBgColor: '#A47E48',
+                buttonColor: '#FFFFFF',
+            },
+        ];
         return (
             <div>
                 <div className={style.defaultRowWrapper}>
@@ -44,10 +51,10 @@ export default class ButtonSettingBlock extends Component {
                     }
                 </div>
                 <div className={style.subTitle}>
-                    自定义样式
+                    {SALE_LABEL.k6346bes}
                 </div>
                 <div className={style.colorPickerWrapper}>
-                    <span>按钮底色</span>
+                    <span>{SALE_LABEL.k6346bn4}</span>
                     <div className={style.borderWrapper}>
                         <WrappedColorPicker
                             alpha={100}
@@ -56,8 +63,8 @@ export default class ButtonSettingBlock extends Component {
                             placement="topLeft"
                         />
                     </div>
-                    
-                    <span>文字颜色</span>
+
+                    <span>{SALE_LABEL.k6346bvg}</span>
                     <div className={style.borderWrapper}>
                         <WrappedColorPicker
                             alpha={100}
