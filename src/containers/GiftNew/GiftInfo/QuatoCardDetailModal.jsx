@@ -63,7 +63,7 @@ class QuatoCardDetailModal extends Component {
     render() {
         const { visible, data } = this.props;
         const infoItem = [
-            { col: { span: 8 }, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftValue: '卡面值', price: '建议售价' } },
+            { col: { span: 8 }, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftValue: '卡面值', price: '记录实收金额' } },
             { col: { span: 16 }, labelCol: { span: 4 }, itemCol: { span: 20 }, keys: { giftCost: '工本费用', giftRule: '礼品规则', giftRemark: '使用说明' } },
         ];
         const value = data.giftType;

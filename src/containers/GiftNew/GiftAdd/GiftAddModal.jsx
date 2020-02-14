@@ -280,11 +280,21 @@ class GiftAddModal extends React.Component {
             },
             price: {
                 type: 'text',
-                label: '建议售价',
+                label: 
+                <div style={{ display: 'inline-block'}}>
+                    <span>记录实收金额</span>
+                    <Tooltip title={
+                        <p>
+                            记录实收金额：仅用于报表作为实收金额核算
+                        </p>
+                    }>
+                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                    </Tooltip>
+                </div>,
                 disabled: type !== 'add',
-                placeholder: '请输入建议售价金额',
+                placeholder: '请输入记录实收金额金额',
                 surfix: '元',
-                rules: [{ required: true, message: '建议售价不能为空' },
+                rules: [{ required: true, message: '记录实收金额不能为空' },
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
                 {
                     validator: (rule, v, cb) => {
@@ -292,7 +302,7 @@ class GiftAddModal extends React.Component {
                         const giftValue = getFieldValue('giftValue');
                         Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                     },
-                    message: '建议售价不能高于礼品价值',
+                    message: '记录实收金额不能高于礼品价值',
                 }, {
                     validator: (rule, v, cb) => {
                         const { getFieldValue } = this.baseForm;
@@ -300,7 +310,7 @@ class GiftAddModal extends React.Component {
                         const giftCost = getFieldValue('giftCost');
                         Number(v || 0) + Number(giftCost || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                     },
-                    message: '建议售价只能小于或等于礼品价值扣除工本费后的数额',
+                    message: '记录实收金额只能小于或等于礼品价值扣除工本费后的数额',
                 }],
             },
             giftRemark: {
