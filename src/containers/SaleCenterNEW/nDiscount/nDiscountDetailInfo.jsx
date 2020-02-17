@@ -18,7 +18,7 @@ import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
-
+const RadioGroup = Radio.Group;
 const Immutable = require('immutable');
 @injectIntl()
 class NDiscountDetailInfo extends React.Component {
@@ -31,7 +31,8 @@ class NDiscountDetailInfo extends React.Component {
                 0: {},
             },
             stageType: '2',
-            priceLst: []
+            priceLst: [],
+            shortRule: '0',
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -71,12 +72,15 @@ class NDiscountDetailInfo extends React.Component {
         if (_rule.stageType) {
             this.setState({ stageType: String(_rule.stageType) });
         }
+        if (_rule.shortRule) {
+            this.setState({ shortRule: String(_rule.shortRule) });
+        }
     }
 
 
     handleSubmit = () => {
         let nextFlag = true;
-        const { nDiscount, priceLst, stageType } = this.state;
+        const { nDiscount, priceLst, stageType, shortRule = '0' } = this.state;
         const disArr = [];
 
         Object.keys(nDiscount).map((key) => {
@@ -116,9 +120,10 @@ class NDiscountDetailInfo extends React.Component {
                         discountRate: Number(nDis.value),
                     }
                 }),
+                shortRule,
             };
             this.props.setPromotionDetail({
-                rule, priceLst
+                rule, priceLst,
             });
             return true;
         }
@@ -164,13 +169,18 @@ class NDiscountDetailInfo extends React.Component {
         this.setState({priceLst})
     }
 
-
+    onReqChange = ({ target }) => {
+        const { value } = target;
+        this.setState({ shortRule: value });
+    }
     render() {
-        const { priceLst } = this.state;
+        const { priceLst, stageType, shortRule = '0' } = this.state;
         const _priceLst = priceLst.map(food => ({
             'scopeType': '2',
             'foodNameWithUnit': food.foodName + food.foodUnitName,
         }));
+        //并且选择的「第二份菜品」数量大于等于2时再联动出现“执行要求”的选项。默认选中“按优惠力度大执行”。
+        const gtTwo = priceLst[1];
         return (
             <div>
                 <Form className={styles.FormStyle}>
@@ -178,13 +188,26 @@ class NDiscountDetailInfo extends React.Component {
                     <NDiscount
                         onChange={this.handleDiscountTypeChange}
                         form={this.props.form}
-                        stageType={this.state.stageType}
+                        stageType={stageType}
                         value={this.state.nDiscount}
                     />
                     {
-                        this.state.stageType === '1' && (
+                        stageType === '1' && (
                             <FormItem required={true} label={SALE_LABEL.k6hdp6wb} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                                 <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={(dishes) => this.handleDishesChange({dishes})} />
+                            </FormItem>
+                        )
+                    }
+                    {
+                        stageType === '1' && gtTwo && (
+                            <FormItem label="执行要求" className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                <RadioGroup
+                                    value={shortRule}
+                                    onChange={this.onReqChange}
+                                >
+                                    <Radio value="0">按优惠力度大执行</Radio >
+                                    <Radio value="1">按优惠力度小执行</Radio >
+                                </RadioGroup >
                             </FormItem>
                         )
                     }
