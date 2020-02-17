@@ -52,7 +52,7 @@ import {
     fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
-
+import GiftPrice from "../components/GiftPrice";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -229,7 +229,9 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return [];
     }
-
+    onUnitChange = (params) => {
+        this.setState(params);
+    }
     handleFormChange(key, value) {
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
@@ -574,8 +576,8 @@ class GiftAddModalStep extends React.PureComponent {
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
-            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType; 
-            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue; 
+            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
+            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -1181,7 +1183,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, } = this.state;
+            { firstKeys, secondKeys, values, costUnit, priceUnit } = this.state;
         const dates = Object.assign({}, data);
         const displayFirstKeys = firstKeys[describe];
         const displaySecondKeys = secondKeys[describe];
@@ -1209,6 +1211,8 @@ class GiftAddModalStep extends React.PureComponent {
         if (value == '21') {
             giftValueLabel = '兑换金额';
         }
+        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: costUnit, name: 'costUnit' };
+        const isUnit = ['10', '91'].includes(value);
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1242,9 +1246,10 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
+                prefix: isUnit ? <GiftPrice {...giftProps} /> : null,
                 surfix: '元',
                 rules: [
-                    { required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` },
+                    { required: true, message: `${isUnit ? '礼品价值' : '可抵扣金额'}不能为空` },
                     {
                         validator: (rule, v, cb) => {
                             if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
@@ -1426,6 +1431,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
+                prefix: value === '91' ? null : <GiftPrice {...giftProps} value={priceUnit} name="priceUnit" />,
                 surfix: '元',
                 rules: value == '91' ?
                     [

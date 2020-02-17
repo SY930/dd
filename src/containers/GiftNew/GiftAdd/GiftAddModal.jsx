@@ -26,6 +26,7 @@ import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
 import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
+import GiftPrice from "../components/GiftPrice";
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -173,10 +174,14 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
-
+    onUnitChange = (params) => {
+        this.setState(params);
+    }
     render() {
+        const { costUnit, priceUnit } = this.state;
         const { gift: { name: describe, value, data }, visible, type } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品价值';
+        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: costUnit, name: 'costUnit' };
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -225,6 +230,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 placeholder: `请输入${valueLabel}`,
                 disabled: type !== 'add',
+                prefix: value == '42' ? null : <GiftPrice {...giftProps} />,
                 surfix: value == '42' ? '分' : '元',
                 rules: value == '30'
                     ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }]
@@ -284,6 +290,7 @@ class GiftAddModal extends React.Component {
                 disabled: type !== 'add',
                 placeholder: '请输入建议售价金额',
                 surfix: '元',
+                prefix: <GiftPrice {...giftProps} value={priceUnit} name="priceUnit" />,
                 rules: [{ required: true, message: '建议售价不能为空' },
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
                 {
