@@ -541,7 +541,7 @@ class PromotionScopeInfo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             defaultValue={'1'}
                         >
-                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="0">{k5f3y6yg}</Option>
                             <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
@@ -554,7 +554,7 @@ class PromotionScopeInfo extends React.Component {
                             getPopupContainer={(node) => node.parentNode}
                             defaultValue={'0'}
                         >
-                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="0">{k5f3y6yg}</Option>
                             <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
@@ -572,7 +572,7 @@ class PromotionScopeInfo extends React.Component {
                             value={this.state.invoice}
                             getPopupContainer={(node) => node.parentNode}
                         >
-                            <Option value="0">{k5m67bir}</Option>
+                            <Option value="0">{k5f3y6yg}</Option>
                             <Option value="1">{k5f3y6b4}</Option>
                         </Select>
                     </Col>
