@@ -358,7 +358,7 @@ class CheckInSecondStep extends React.Component {
                             })}
                     </RadioGroup >
                 </FormItem>
-                {this.renderRuleDetail()}
+                {this.state.rule.giftGetRule == 4 ? this.renderSimpleRuleDetail() : this.renderRuleDetail()}
             </div>
         )
     }
@@ -385,95 +385,78 @@ class CheckInSecondStep extends React.Component {
                             )
                         }
                     </Col>
-                    {this.renderInnerContent(stageAmount, gifts, index, arr)}
+                    <Col span={17}>
+
+                                <div className={isMultiple ? selfStyle.emptyHeader : selfStyle.grayHeader}>
+                                    {isMultiple ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}&nbsp;
+                                    <FormItem>
+                                        {
+                                            getFieldDecorator(`stageAmount${index}`, {
+                                                initialValue: {number: stageAmount},
+                                                onChange: (val) => this.handleStageAmountChange(val, index),
+                                                rules: [
+                                                    {
+                                                        validator: (rule, v, cb) => {
+                                                            if (!(v.number > 0)) {
+                                                                return cb(k5f4b1b9)
+                                                            }
+                                                            for (let i = 0; i < index; i ++) {
+                                                                if (arr[i].stageAmount >= +v.number) {
+                                                                    return cb(k67g8n9n)
+                                                                }
+                                                            }
+                                                            cb()
+                                                        }
+                                                    },
+                                                ],
+                                            })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
+                                        }
+                                    </FormItem>
+                                    &nbsp;{k5ezdbiy}，{SALE_LABEL.k6d8n16k}
+                                </div>
+
+
+                        <ReturnGift
+                            key={`${index}`}
+                            weChatCouponList={this.state.weChatCouponList}
+                            isMultiple={isMultiple}
+                            value={gifts}
+                            onChange={(val) => this.handleStageChange(val, index)}
+                            filterOffLine={this.state.rule.gainCodeMode != '0'}
+                        />
+                    </Col>
+                    <Col span={2}>
+                        {
+                            (!isMultiple) && (
+                                <div className={selfStyle.buttonArea}>
+                                    {
+                                        (arr.length < 5 && index === arr.length - 1) && (
+                                            <Icon
+                                                onClick={this.addStage}
+                                                style={{ marginBottom: 10 }}
+                                                className={selfStyle.plusIcon}
+                                                type="plus-circle-o"
+                                            />
+                                        )
+                                    }
+                                    {
+                                        (arr.length > 1) && (
+                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
+                                                <Icon
+                                                    className={selfStyle.deleteIcon}
+                                                    type="minus-circle-o"
+                                                />
+                                            </Popconfirm>
+                                        )
+                                    }
+                                </div>
+                            )
+                        }
+                    </Col>
                 </Row>
 
             ))
 
-        )
-    }
-    renderInnerContent = (stageAmount, gifts, index, arr) => {
-        const { intl } = this.props;
-        const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
-        const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
-        const k67g8n9n = intl.formatMessage(SALE_STRING.k67g8n9n);
-        const {
-            form: {
-                getFieldDecorator,
-            },
-        } = this.props;
-        const isMultiple = this.state.rule.stageType == 1;
-        return (
-                <React.Fragment>
-                    <Col span={17}>
-
-                                    <div className={isMultiple ? selfStyle.emptyHeader : selfStyle.grayHeader}>
-                                        {isMultiple ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}&nbsp;
-                                        <FormItem>
-                                            {
-                                                getFieldDecorator(`stageAmount${index}`, {
-                                                    initialValue: {number: stageAmount},
-                                                    onChange: (val) => this.handleStageAmountChange(val, index),
-                                                    rules: [
-                                                        {
-                                                            validator: (rule, v, cb) => {
-                                                                if (!(v.number > 0)) {
-                                                                    return cb(k5f4b1b9)
-                                                                }
-                                                                for (let i = 0; i < index; i ++) {
-                                                                    if (arr[i].stageAmount >= +v.number) {
-                                                                        return cb(k67g8n9n)
-                                                                    }
-                                                                }
-                                                                cb()
-                                                            }
-                                                        },
-                                                    ],
-                                                })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
-                                            }
-                                        </FormItem>
-                                        &nbsp;{k5ezdbiy}，{SALE_LABEL.k6d8n16k}
-                                    </div>
-
-
-                            <ReturnGift
-                                key={`${index}`}
-                                weChatCouponList={this.state.weChatCouponList}
-                                isMultiple={isMultiple}
-                                value={gifts}
-                                onChange={(val) => this.handleStageChange(val, index)}
-                                filterOffLine={this.state.rule.gainCodeMode != '0'}
-                            />
-                        </Col>
-                        <Col span={2}>
-                            {
-                                (!isMultiple) && (
-                                    <div className={selfStyle.buttonArea}>
-                                        {
-                                            (arr.length < 5 && index === arr.length - 1) && (
-                                                <Icon
-                                                    onClick={this.addStage}
-                                                    style={{ marginBottom: 10 }}
-                                                    className={selfStyle.plusIcon}
-                                                    type="plus-circle-o"
-                                                />
-                                            )
-                                        }
-                                        {
-                                            (arr.length > 1) && (
-                                                <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
-                                                    <Icon
-                                                        className={selfStyle.deleteIcon}
-                                                        type="minus-circle-o"
-                                                    />
-                                                </Popconfirm>
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </Col>
-                    </React.Fragment>
         )
     }
     render() {
