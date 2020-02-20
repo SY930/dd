@@ -2047,3 +2047,37 @@
     margin-top: -4px;
     margin-bottom: 7px;
 }
+.vip1, .vip2{
+    &::before{
+        content: '';
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        background: url(http://res.hualala.com/basicdoc/7721c0ac-8c12-4d31-b6eb-6ecbe8168dd7.png) no-repeat;
+        background-size: contain;
+        vertical-align: -10px;
+        margin-right: 10px;
+        margin-left: 5px;
+    }
+}
+.vip2{
+    &::before{
+        background-image: url(http://res.hualala.com/basicdoc/55225714-a9d3-4643-b5eb-b8d626d80287.png);
+    }
+}
+.autoTitle{
+    border-left: 3px solid #1AB495;
+    padding-left: 5px;
+    margin: 10px 0;
+    line-height: 1;
+    font-size: 14px;
+    &:first-child{
+        margin-top: 0;
+    }
+}
+.ckGroup{
+    margin-left: 20px;
+    &>label{
+        display: block;
+    }
+}
