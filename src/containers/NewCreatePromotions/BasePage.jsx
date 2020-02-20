@@ -73,7 +73,6 @@ class BasePage extends Component {
 
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
-        debugger;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);
         }
@@ -81,7 +80,6 @@ class BasePage extends Component {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
-            debugger;
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
         }

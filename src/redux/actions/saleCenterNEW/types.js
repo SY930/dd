@@ -547,7 +547,7 @@ export const ACTIVITY_CATEGORIES = (function () {
     {
 
         idx: 20,
-        title: '签到活动',
+        title: '签到',
         text: '这是一个签到活动描述',
         example: '',
         key: '1110',
@@ -714,7 +714,12 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: '支付成功页自定义投放广告内容，便于餐后营销',
             example: '',
             key: '77',
-        }
+        },{
+            title: '签到',
+            text: '签到获取礼品，提升用户日活量',
+            example: '',
+            key: '1110',
+        },
     ];
     return basic;
 }());
