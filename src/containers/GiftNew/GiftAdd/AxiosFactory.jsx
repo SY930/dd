@@ -16,21 +16,7 @@ import _ from 'lodash';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
 
-/**
- * 获取礼品列表
- */
-async function getGiftList(data) {
-    const method = `${api}baseInfo/list`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { result: { code, message: msg },
-        baseInfoList = [] } = response;
-    if (code === '000') {
-        return baseInfoList;
-    }
-    message.error(msg);
-    return [];
-}
+
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
     const params = { service, type, data, method };
@@ -42,35 +28,6 @@ async function getCardList(data) {
     }
     message.error(msg);
     return [];
-}
-/**
- * 删除礼品
- */
-async function deleteGift(data) {
-    const method = `${api}authInfo/authorizeAndSave`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
-    if (code === '000') {
-        return true;
-    }
-    message.error(msg);
-    return false;
-}
-
-/**
- * 增加礼品
- */
-async function postGift(data) {
-    const method = `${api}minipTemplate/auditApp`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
-    if (code === '000') {
-        return true;
-    }
-    message.error(msg);
-    return false;
 }
 function proGiftTreeData(giftTypes) {
     const _giftTypes = _.filter(giftTypes, (giftItem) => {
@@ -91,6 +48,8 @@ function proGiftTreeData(giftTypes) {
                 label: gift.giftName,
                 value: String(gift.giftItemID),
                 key: gift.giftItemID,
+                giftValue: gift.giftValue,
+                giftType: giftTypeItem.label,
             });
             gifts.push({
                 label: gift.giftName,
@@ -102,5 +61,5 @@ function proGiftTreeData(giftTypes) {
     // this.setState({giftTreeData: treeData})
 }
 export {
-    getGiftList, deleteGift, postGift, getCardList,
+    getCardList,
 }

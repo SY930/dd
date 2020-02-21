@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Button, Table, Popconfirm } from 'antd';
+import { Button, Table } from 'antd';
+import moment from 'moment';
 import styles from './Crm.less';
 import GiftModal from './GiftModal';
-import { getGiftList, deleteGift, postGift, getCardList } from './AxiosFactory';
+import { getCardList } from './AxiosFactory';
+import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
 const href = 'javascript:;';
+const DF = 'YYYYMMDD';
 /** 任意金额组件 */
 export default class GiftInfo extends Component {
     state = {
@@ -21,32 +24,41 @@ export default class GiftInfo extends Component {
         const { tc } = styles;
         const render = (v) => {
             return (
-                <Popconfirm
-                    title="确定删除吗?"
-                    onConfirm={() => { this.onDelete(v) }}
-                >
-                    <a href={href}>删除</a>
-                </Popconfirm>
+                <a href={href} name={v} onClick={this.onDelete}>删除</a>
             );
+        };
+        const render1 = (v,o) => {
+            const { effectType, validUntilDate, effectTime,
+                giftValidUntilDayCount, rangeDate } = o;
+            let text = '';
+            if(effectType==='1') {
+                const options = (validUntilDate === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                const { label } = options.find(x=>x.value===effectTime);
+                text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
+            } else {
+                const [a, b] = rangeDate;
+                text = a.format(DF) +' - '+ b.format(DF);
+            }
+            return (<span>{text}</span>);
         };
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
-            { width: 80, title: '礼品类型', dataIndex: 'op', className: tc },
+            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc },
-            { width: 100, title: '礼品金额(元)', dataIndex: 'b', className: tc },
-            { width: 70, title: '礼品个数', dataIndex: 'c', className: tc },
-            { width: 100, title: '礼品有效期', dataIndex: 'd', className: tc },
-            { width: 70, title: '操作', dataIndex: 'id', className: tc, render },
+            { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
+            { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
+            { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render: render1, className: tc },
+            { width: 60, title: '操作', dataIndex: 'index', className: tc, render },
         ];
     }
     /* 生成表格数据 */
     generateDataSource() {
-        // const { value: list } = this.props;
-        const list = [{ id: 11, op: 2, giftName: 2, b: 3, c: 33, d: 43 }];
-        return list.map((x, i) => ({
-            key: x.id,
+        const { value } = this.props;
+        return value.map((x, i) => ({
+            key: x.giftItemID,
             idx: i + 1,
+            index: i,
             ...x,
         }));
     }
@@ -55,22 +67,29 @@ export default class GiftInfo extends Component {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     /** 增加 */
-    onPost = () => {
-        postGift().then((flag) => {
-            if (flag) {
-                message.success('success');
-                // getGiftList();
+    onPost = (params) => {
+        const { giftTreeData } = this.state;
+        const { value, onChange } = this.props;
+        const { giftItemID } = params;
+        let obj = null;
+        giftTreeData.forEach(x => {
+            const { children } = x;
+            const card = children.find(y=>y.value === giftItemID);
+            if(card){
+                const { value: giftItemID, giftType, label: giftName, giftValue } = card;
+                obj = { giftType, giftItemID, giftName, giftValue };
             }
         });
+        const list = [...value, { ...params, ...obj }];
+        onChange(list);
     }
     /** 删除 */
-    onDelete = (id) => {
-        deleteGift(id).then((flag) => {
-            if (flag) {
-                message.success('success');
-                // getGiftList();
-            }
-        });
+    onDelete = ({ target }) => {
+        const { name: index } = target;
+        const { value, onChange } = this.props;
+        const list = [...value];
+        list.splice(index, 1);
+        onChange(list);
     }
     render() {
         const { visible, giftTreeData } = this.state;

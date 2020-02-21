@@ -79,6 +79,28 @@ class GiftAddModal extends React.Component {
                 break;
             default: this.props.changeGiftFormKeyValue({key, value});
         }
+        // 赠送卡值freePrice =  礼品卡面值 （giftDenomination） - 工本费 （giftCost） - 现金卡值 cardPrice
+        if(key === 'giftDenomination'){
+            const giftDenomination = +value || 0;
+            const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
+            const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
+            const sum = giftDenomination - giftCost - cardPrice;
+            this.baseForm.setFieldsValue({'freePrice': sum });
+        }
+        if(key === 'giftCost'){
+            const giftCost = +value || 0;
+            const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
+            const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
+            const sum = giftDenomination - giftCost - cardPrice;
+            this.baseForm.setFieldsValue({'freePrice': sum });
+        }
+        if(key === 'cardPrice'){
+            const cardPrice = +value || 0;
+            const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
+            const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
+            const sum = giftDenomination - cardPrice - giftCost;
+            this.baseForm.setFieldsValue({'freePrice': sum });
+        }
     }
     handleSubmit() {
         const { groupTypes } = this.state;
@@ -104,7 +126,13 @@ class GiftAddModal extends React.Component {
             params.shopIDs = shopIDs || ',';
             // 定额卡工本费
             if (value == '90') {
+                // http://wiki.hualala.com/pages/viewpage.action?pageId=46105225
+                // 变量都被换了
+                const { cardPrice } = params;
                 params.giftCost = `${Number(params.giftCost || 0)}`;
+                params.giftValue = cardPrice || '0';
+            }else{
+                params.giftValue = params.giftValue || '0';
             }
             if (type === 'add') {
                 callServer = '/coupon/couponService_addBoard.ajax';
@@ -119,14 +147,12 @@ class GiftAddModal extends React.Component {
                 params.giftItemID = data.giftItemID;
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
-            params.giftValue = params.giftValue || '0';
             if (params.sellerCode) {
                 const [ settleId, merchantNo, settleName ] = params.sellerCode.split(':');
                 params.settleId = settleId;
                 params.merchantNo = merchantNo;
                 params.settleName = settleName;
             }
-            params.giftValue = params.giftValue || '0';
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -177,7 +203,6 @@ class GiftAddModal extends React.Component {
 
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
-        const giftTreeData = treeData;
         const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
         const formItems = {
             giftType: {
@@ -266,14 +291,14 @@ class GiftAddModal extends React.Component {
                     {
                         validator: (rule, v, cb) => {
                             const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('giftValue');
+                            const giftValue = getFieldValue('cardPrice');
                             Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                         },
                         message: '工本费不能高于礼品价值',
                     }, {
                         validator: (rule, v, cb) => {
                             const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('giftValue');
+                            const giftValue = getFieldValue('cardPrice');
                             const price = getFieldValue('price');
                             Number(v || 0) + Number(price || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                         },
@@ -286,24 +311,7 @@ class GiftAddModal extends React.Component {
                 disabled: type !== 'add',
                 placeholder: '请输入建议售价金额',
                 surfix: '元',
-                rules: [{ required: true, message: '建议售价不能为空' },
-                { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
-                {
-                    validator: (rule, v, cb) => {
-                        const { getFieldValue } = this.baseForm;
-                        const giftValue = getFieldValue('giftValue');
-                        Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
-                    },
-                    message: '建议售价不能高于礼品价值',
-                }, {
-                    validator: (rule, v, cb) => {
-                        const { getFieldValue } = this.baseForm;
-                        const giftValue = getFieldValue('giftValue');
-                        const giftCost = getFieldValue('giftCost');
-                        Number(v || 0) + Number(giftCost || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
-                    },
-                    message: '建议售价只能小于或等于礼品价值扣除工本费后的数额',
-                }],
+                rules: ['required', 'price'],
             },
             giftRemark: {
                 label: '活动详情',
@@ -440,11 +448,37 @@ class GiftAddModal extends React.Component {
                     },
                 ],
             },
+            giftDenomination: {
+                type: 'text',
+                label: '礼品卡面值',
+                surfix: '元',
+                rules: [{
+                    required: true,
+                    validator: (rule, value, callback) => {
+                        const { getFieldValue } = this.baseForm;
+                        const cardPrice = getFieldValue('cardPrice');
+                        if (+value <= +cardPrice) {
+                            return callback('礼品卡面值要大于现金卡值');
+                        }
+                        return callback();
+                    },
+                }],
+            },
             cardPrice: {
                 type: 'text',
                 label: '现金卡值',
                 surfix: '元',
-                rules: ['required', 'price'],
+                rules: [{
+                    required: true,
+                    validator: (rule, value, callback) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftDenomination = getFieldValue('giftDenomination');
+                        if (+giftDenomination <= +value) {
+                            return callback('礼品卡面值要大于现金卡值');
+                        }
+                        return callback();
+                    },
+                }],
             },
             freePrice: {
                 type: 'text',
@@ -453,7 +487,7 @@ class GiftAddModal extends React.Component {
                 props: {placeholder: ''},
                 surfix: '元',
             },
-            giftList: {
+            quotaCardGiftConfList: {
                 type: 'custom',
                 label: '礼品详情',
                 defaultValue: [],
@@ -521,12 +555,12 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
+                        'giftDenomination',
                         'cardPrice',
                         'freePrice',
-                        'giftValue',
                         'giftCost',
                         'price',
-                        'giftList',
+                        'quotaCardGiftConfList',
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
@@ -557,6 +591,10 @@ class GiftAddModal extends React.Component {
         let formData = {};
         if (type == 'edit') {
             formData = data === undefined ? {} : data;
+            if(value==='90'){
+                const { giftValue } = data || {};
+                formData.cardPrice = giftValue;
+            }
         }
         if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
             formData.shopNames = data.shopNames.map(shop => shop.id);

@@ -1,11 +1,12 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, TreeSelect } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
-import { SALE_CENTER_GIFT_EFFICT_TIME } from '../../../redux/actions/saleCenterNEW/types';
+import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
-const formKeys = ['giftName', 'giftCount', 'effectType', 'validUntilDate', 'effectTime', 'giftValidUntilDayCount'];
+const formKeys1 = ['giftItemID', 'giftCount', 'effectType', 'validUntilDate', 'effectTime', 'giftValidUntilDayCount'];
+const formKeys2 = ['giftItemID', 'giftCount', 'effectType', 'rangeDate'];
 const formItems = {
-    giftName: {
+    giftItemID: {
         type: 'custom',
         label: '礼品名称',
         rules: ['required'],
@@ -39,13 +40,18 @@ const formItems = {
         type: 'combo',
         label: '生效时间',
         options: SALE_CENTER_GIFT_EFFICT_TIME,
-        defaultValue: '',
+        defaultValue: '0',
     },
     giftValidUntilDayCount: {
         type: 'text',
         label: '有效天数',
         surfix: '天',
         rules: ['required', 'numbers'],
+    },
+    rangeDate: {
+        type: 'datepickerRange',
+        label: '固定有效期',
+        rules: ['required'],
     },
 };
 const formItemLayout = {
@@ -55,28 +61,42 @@ const formItemLayout = {
 export default class GiftModal extends Component {
     /* 页面需要的各类状态属性 */
     state = {
+        options: [],    //生效时间下拉框
+        formKeys: formKeys1,
     };
     /* 表单提交 */
     onOk = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { onClose } = this.props;
-                onPut().then((flag) => {
-                    flag && onClose();
-                });
+                const { onClose, onPost } = this.props;
+                onPost(v);
+                onClose();
             }
         });
     }
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
+        if(key === 'validUntilDate') {
+            const options = (value === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+            this.setState({ options });
+            this.form.setFieldsValue({ 'effectTime': value });
+        }
+        if(key==='effectType'){
+            if(value === '1') {
+                this.setState({ formKeys: formKeys1 });
+            } else {
+                this.setState({ formKeys: formKeys2 });
+            }
+        }
     }
     /** 得到form */
     getForm = (node) => {
         this.form = node;
     }
     resetFormItems() {
+        const { options } = this.state;
         const { treeData } = this.props;
-        const { giftName } = formItems;
+        const { giftItemID, effectTime } = formItems;
         const render = d => d()(
             <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -88,10 +108,12 @@ export default class GiftModal extends Component {
             />);
         return {
             ...formItems,
-            giftName: { ...giftName, render },
+            giftItemID: { ...giftItemID, render },
+            effectTime: { ...effectTime, options },
         }
     }
     render() {
+        const { formKeys } = this.state;
         const { onClose } = this.props;
         const newFormItems = this.resetFormItems();
         return (
