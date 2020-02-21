@@ -40,6 +40,8 @@ class GiftAddModal extends React.Component {
             values: {},
             transferType: 0,
             isUpdate: true,
+            giftValueCurrencyType: '¥',
+            priceCurrencyType: '¥',
         };
         this.baseForm = null;
         this.refMap = null;
@@ -48,10 +50,12 @@ class GiftAddModal extends React.Component {
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
     componentDidMount() {
-        const { getPromotionShopSchema} = this.props;
+        const { getPromotionShopSchema, gift: {data}} = this.props;
+        const { giftValueCurrencyType = '¥', priceCurrencyType = '¥' } = data;
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
+            giftValueCurrencyType, priceCurrencyType,
         })
         // 礼品名称 auto focus
         try {
@@ -81,7 +85,7 @@ class GiftAddModal extends React.Component {
         }
     }
     handleSubmit() {
-        const { groupTypes } = this.state;
+        const { groupTypes, giftValueCurrencyType, priceCurrencyType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
@@ -130,7 +134,7 @@ class GiftAddModal extends React.Component {
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
-            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+            axiosData(callServer, { ...params, groupName, giftValueCurrencyType, priceCurrencyType }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
@@ -175,13 +179,15 @@ class GiftAddModal extends React.Component {
         )
     }
     onUnitChange = (params) => {
-        this.setState(params);
+        const { key, value } = params;
+        this.setState({ [key]: value });
+        this.props.changeGiftFormKeyValue(params);
     }
     render() {
-        const { costUnit, priceUnit } = this.state;
+        const { giftValueCurrencyType, priceCurrencyType } = this.state;
         const { gift: { name: describe, value, data }, visible, type } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品价值';
-        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: costUnit, name: 'costUnit' };
+        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: giftValueCurrencyType, name: 'giftValueCurrencyType' };
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -290,7 +296,7 @@ class GiftAddModal extends React.Component {
                 disabled: type !== 'add',
                 placeholder: '请输入建议售价金额',
                 surfix: '元',
-                prefix: <GiftPrice {...giftProps} value={priceUnit} name="priceUnit" />,
+                prefix: <GiftPrice {...giftProps} value={priceCurrencyType} name="priceCurrencyType" />,
                 rules: [{ required: true, message: '建议售价不能为空' },
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
                 {
