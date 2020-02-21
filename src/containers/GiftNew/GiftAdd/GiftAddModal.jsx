@@ -26,6 +26,7 @@ import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
 import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
+import GiftInfo from './GiftInfo';
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -175,8 +176,9 @@ class GiftAddModal extends React.Component {
     }
 
     render() {
-        const { gift: { name: describe, value, data }, visible, type } = this.props;
-        const valueLabel = value == '42' ? '积分数额' : '礼品价值';
+        const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
+        const giftTreeData = treeData;
+        const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -437,7 +439,26 @@ class GiftAddModal extends React.Component {
                         message: '金额限制不小于1元，不超过1000.00元',
                     },
                 ],
-            }
+            },
+            cardPrice: {
+                type: 'text',
+                label: '现金卡值',
+                surfix: '元',
+                rules: ['required', 'price'],
+            },
+            freePrice: {
+                type: 'text',
+                label: '赠送卡值',
+                disabled: true,
+                props: {placeholder: ''},
+                surfix: '元',
+            },
+            giftList: {
+                type: 'custom',
+                label: '礼品详情',
+                defaultValue: [],
+                render: d => d()(<GiftInfo />),
+            },
         };
         const formKeys = {
             '实物礼品券': [
@@ -500,9 +521,12 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
+                        'cardPrice',
+                        'freePrice',
                         'giftValue',
                         'giftCost',
                         'price',
+                        'giftList',
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
@@ -560,6 +584,7 @@ function mapStateToProps(state) {
         shopSchema: state.sale_shopSchema_New,
         menuList: state.user.get('menuList'),
         myActivities: state.sale_myActivities_NEW,
+        treeData: state,
     }
 }
 
