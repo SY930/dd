@@ -921,7 +921,7 @@ class StepOneWithDateRange extends React.Component {
                             </Row> : null
                     }
                     {
-                        this.props.type == '1110' && 
+                        this.props.type == '76' && 
                         <FormItem
                             label="是否发送消息"
                             className={styles.FormItemStyle}

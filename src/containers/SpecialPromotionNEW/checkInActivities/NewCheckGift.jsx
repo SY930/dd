@@ -59,7 +59,7 @@ class NewCheckGift extends NewPromotion {
                     <CheckInSecondStep
                         isLast={false}
                         getSubmitFn={(handles) => {
-                            this.handles[2] = handles;
+                            this.handles[1] = handles;
                         }}
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         isNew={this.props.isNew}
@@ -71,7 +71,7 @@ class NewCheckGift extends NewPromotion {
                 content: (
                     <StepFour
                         getSubmitFn={(handles) => {
-                            this.handles[3] = handles;
+                            this.handles[2] = handles;
                         }}
                         isNew={this.props.isNew}
                     />

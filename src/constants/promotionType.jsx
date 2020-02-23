@@ -135,7 +135,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         isSpecial: true,
         text: '签到获取礼品，提升用户日活量',
         example: '',
-        key: '1110',
+        key: '76',
         right: 14,
         bottom: 12,
     },

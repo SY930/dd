@@ -97,6 +97,7 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
+            debugger;
             console.log('this.props.intl', this.props.intl);
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,

@@ -550,7 +550,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         title: '签到',
         text: '这是一个签到活动描述',
         example: '',
-        key: '1110',
+        key: '76',
     },
     ];
     return basic;
@@ -715,10 +715,11 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: '',
             key: '77',
         },{
+            idx: 21,
             title: '签到',
             text: '签到获取礼品，提升用户日活量',
             example: '',
-            key: '1110',
+            key: '76',
         },
     ];
     return basic;
