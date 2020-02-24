@@ -920,6 +920,23 @@ class StepOneWithDateRange extends React.Component {
                                 </Col>
                             </Row> : null
                     }
+                    {
+                        this.props.type == '76' && 
+                        <FormItem
+                            label="是否发送消息"
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <Select size="default"
+                                    value={`${this.state.smsGate}`}
+                                    onChange={this.handleSmsGateChange}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {SEND_MSG.map(item => (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>))}
+                            </Select>
+                        </FormItem>  
+                    }
                     {fullOptionSmsGate.includes(String(this.props.type))
                          ?
                             <FormItem

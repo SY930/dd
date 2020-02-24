@@ -102,12 +102,13 @@ class ReturnGift extends React.Component {
     }
 
     render() {
-        const { isMultiple } = this.props;
+        const { isMultiple, maxAddGift } = this.props;
+        let maxGift = maxAddGift ? maxAddGift : 10;
         return (
             <div className={[selfStyle.listWrapper, !isMultiple ? selfStyle.isNotMultiple : ''].join(' ')}>
                 {this.renderItems()}
                 {
-                    this.state.infos.length < 10 && (
+                    this.state.infos.length < maxGift && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {SALE_LABEL.k6d8n2c8}
                         </div>

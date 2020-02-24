@@ -23,6 +23,7 @@ const SpecialPromotionCfg = {
         { value: '31', label: '关注送礼' },
         { value: '75', label: '集点卡' },
         { value: '77', label: '支付后广告' },
+        { value: '76', label: '签到' },
     ],
 }
 

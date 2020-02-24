@@ -544,6 +544,14 @@ export const ACTIVITY_CATEGORIES = (function () {
         example: SALE_LABEL.k67g7uy4,
         key: '2080',
     },
+    {
+
+        idx: 20,
+        title: '签到',
+        text: '这是一个签到活动描述',
+        example: '',
+        key: '76',
+    },
     ];
     return basic;
 }());
@@ -706,7 +714,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: '支付成功页自定义投放广告内容，便于餐后营销',
             example: '',
             key: '77',
-        }
+        },{
+            idx: 21,
+            title: '签到',
+            text: '签到获取礼品，提升用户日活量',
+            example: '',
+            key: '76',
+        },
     ];
     return basic;
 }());
