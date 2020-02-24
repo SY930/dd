@@ -90,15 +90,16 @@ const DEFAULT_GIFT_STAGE = [
 class CheckInSecondStep extends React.Component {
     constructor(props) {
         super(props);
-        const { parsedRule, data, simpleData } = this.getInitState();
+        const { parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr } = this.getInitState();
         this.state = {
             display: !props.isNew,
             rule: parsedRule,
+            giftGetRule,
             data,
             simpleData,
             needSyncToAliPay: 0,
             weChatCouponList: [],
-            formData: [],
+            formData: resultFormData,
             formKeys: [],
             cardTypeArr: [],
             showGift1: false,
@@ -109,8 +110,9 @@ class CheckInSecondStep extends React.Component {
             showGift6: false,
             showGift7: false,
             showGift8: false,
+            showGiftTrue: showGiftTrue,
+            changeFormKeysArr: changeFormKeysArr,
         }
-        
         this.baseForm1 = null;
         this.baseForm2 = null;
         this.baseForm3 = null;
@@ -124,41 +126,197 @@ class CheckInSecondStep extends React.Component {
         this.formItems = [];
     }
 
-    groupGiftsByStageAmount(giftList) {
-        const giftMap = new Map();
-        giftList.forEach(gift => {
-            const emptyGift = JSON.parse(JSON.stringify(DEFAULT_GIFT_ITEM));
-            emptyGift.giftNum.value = gift.giftNum;
-            emptyGift.giftMaxUseNum.value = gift.giftMaxUseNum || 1;
-            emptyGift.giftInfo.giftName = gift.giftName;
-            emptyGift.giftInfo.giftItemID = gift.giftItemID;
-            emptyGift.giftInfo.msg = null;
-            emptyGift.giftInfo.validateStatus = 'success';
-            emptyGift.giftInfo.giftType = gift.giftType || null;
-            emptyGift.giftInfo.giftValue = gift.freeCashVoucherValue || null;
-            emptyGift.giftValidDays.value = gift.giftValidDays || '0';
-            emptyGift.giftValidType = gift.giftType == 112 ? '0' : gift.giftValidType;
-            emptyGift.giftEffectiveTime.value = gift.giftType == 112 ? 0 : gift.giftStartTime ? [moment(gift.giftStartTime, 'YYYYMMDDHHmmss'), moment(gift.giftEndTime, 'YYYYMMDDHHmmss')] : gift.giftValidType == 0 ? gift.giftEffectiveTime / 60 : gift.giftEffectiveTime;
-            if (giftMap.has(`${gift.stageAmount}`)) {
-                const arr = giftMap.get(`${gift.stageAmount}`);
-                arr.push(emptyGift)
-            } else {
-                giftMap.set(`${gift.stageAmount}`, [emptyGift]);
+    formBeginGetData = (giftList) => {
+        let tempObj = {};
+        giftList.forEach((item) => {
+            if(tempObj[item.needCount]){
+                if(tempObj[item.needCount][item.presentType]){
+                    let athObj = {};
+                    athObj = item;
+                    tempObj[item.needCount][item.presentType].push(athObj);
+                }else{
+                    tempObj[item.needCount][item.presentType] = [];
+                    let athObj = {};
+                    athObj = item;
+                    tempObj[item.needCount][item.presentType].push(athObj);
+                }
+            }else{
+                tempObj[item.needCount] = {};
+                tempObj[item.needCount][item.presentType] = [];
+                let athObj = {};
+                athObj = item;
+                tempObj[item.needCount][item.presentType].push(athObj);
             }
-        });
-        return Array.from(giftMap.entries()).map(([stageAmount, gifts]) => ({stageAmount, gifts})).sort((a, b) => a.stageAmount - b.stageAmount)
+        })
+        return tempObj;
     }
 
-    getInitState() {
+    groupGiftsByStageAmount = (obj) => {
+        let keyArr = Object.keys(obj);
+        let resultArr = [];
+        const formData = {};
+        let tempShowGift = [];
+        let tempKeysArr = [];
+        keyArr.forEach((item, index) => {
+            let EveryObj = {};
+            let tempObj = obj[item];
+            if(!tempObj[1]){
+                //如果该档位没有礼品的数据则此档位上传空的礼品数据
+                formData[`ifHaveGift${index+2}`] = [];
+                EveryObj.stageAmount = item
+                let tempGift = []
+                let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+                tempGift.push(dataObj);
+                EveryObj.gifts = tempGift;
+            }else{
+                //如果该档位有礼品的数据则此档位上传空的礼品数据，应该控制相应的表单展示和礼品展示（状态管理）
+                EveryObj.stageAmount = item;
+                let tempGift = [];
+                let tempVar = `baseForm${index + 2}`;
+                //选择相应的表单展示
+                formData[`ifHaveGift${index+2}`] = ['1'];
+                //更改相应的表单隐藏state;
+                tempShowGift.push([`showGift${index + 2}`]);
+                tempObj[1].forEach((item) => {
+
+                    let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+                    // tempObj.sortIndex = index+1;
+                    //     tempObj.presentType = 1;
+                    //     tempObj.effectType = giftItem.giftValidType == 1 ? 2 : giftItem.giftValidType == 2 ? 3 : 1;
+                    //     if(tempObj.effectType != 2){
+                    //         tempObj.giftEffectTimeHours = giftItem.giftEffectiveTime.value;
+                    //     } else {
+                    //         tempObj.effectTime = giftItem.giftEffectiveTime.value[0].format('YYYYMMDD');;
+                    //         tempObj.validUntilDate = giftItem.giftEffectiveTime.value[1].format('YYYYMMDD');;
+                    //     }
+                    //     tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
+                    //     tempObj.giftID = giftItem.giftInfo.giftItemID;
+                    //     tempObj.giftTotalCount = giftItem.giftNum.value;
+                    //     tempObj.needCount = stageAmount;
+                    //     tempData.push(tempObj);
+                    dataObj.giftNum.value = item.giftTotalCount;
+                    dataObj.giftMaxUseNum.value = item.giftMaxUseNum || 1;
+                    dataObj.giftInfo.giftName = item.giftName;
+                    dataObj.giftInfo.giftItemID = item.giftID;
+                    dataObj.giftInfo.msg = null;
+                    dataObj.giftInfo.validateStatus = 'success';
+                    dataObj.giftInfo.giftType = item.giftType || null;
+                    dataObj.giftInfo.giftValue = item.giftValue || null;
+                    dataObj.giftValidDays.value = item.giftValidUntilDayCount || '0';
+                    dataObj.giftValidType = item.effectType == 2 ? 1 :  item.effectType == 3 ? 2 : 0;
+                    if(item.effectType == 2) {
+                        dataObj.giftEffectiveTime.value = [];
+                        dataObj.giftEffectiveTime.value[0] = moment(item.effectTime, 'YYYYMMDD');
+                        dataObj.giftEffectiveTime.value[1] = moment(item.validUntilDate, 'YYYYMMDD');
+                    }else{
+                        dataObj.giftEffectiveTime.value = item.effectType != '2' ? item.giftEffectTimeHours
+                        : [moment(item.effectTime, 'YYYYMMDD'), moment(item.validUntilDate, 'YYYYMMDD')]; 
+                    }
+                    //整合每一个gifts数组中的data数据
+                    tempGift.push(dataObj);
+                })
+                EveryObj.gifts = tempGift;
+            }
+            if(!tempObj[2]){
+                //证明此档位没有勾选赠送积分
+                formData[`ifGivePoints${index+2}`] = [];
+            }else {
+                formData[`ifGivePoints${index+2}`] = ['1'];
+                formData[`presentValue${index+2}`] = tempObj[2][0].presentValue;
+                formData[`cardTypeID${index+2}`] = tempObj[2][0].cardTypeID;
+                let athObj = {};
+                athObj[`formKeys${index+2}`] = [`ifGivePoints${index+2}`, `presentValue${index+2}`, `cardTypeID${index+2}`, `ifHaveGift${index+2}`]
+                tempKeysArr.push(athObj)
+            }
+            resultArr.push(EveryObj);
+        })
+        return {resultArr, formData, tempShowGift, tempKeysArr};
+    }
+
+    groupSimpleGiftsByStageAmount = (obj) => {
+        let keyArr = Object.keys(obj);
+        let resultArr = [];
+        const formData = {};
+        let tempShowGift = [];
+        let tempKeysArr = [];
+        keyArr.forEach((item, index) => {
+            let EveryObj = {};
+            let tempObj = obj[item];
+            if(!tempObj[1]){
+                //如果该档位没有礼品的数据则此档位上传空的礼品数据
+                formData[`ifHaveGift1`] = [];
+                EveryObj.stageAmount = item
+                let tempGift = []
+                let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+                tempGift.push(dataObj);
+                EveryObj.gifts = tempGift;
+            }else{
+                //如果该档位有礼品的数据则此档位上传空的礼品数据，应该控制相应的表单展示和礼品展示（状态管理）
+                EveryObj.stageAmount = item;
+                let tempGift = [];
+                let tempVar = `baseForm1`;
+                //选择相应的表单展示
+                formData[`ifHaveGift1`] = ['1'];
+                //更改相应的表单隐藏state;
+                tempShowGift.push([`showGift1`]);
+                tempObj[1].forEach((item) => {
+                    let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
+                    dataObj.giftNum.value = item.giftTotalCount;
+                    dataObj.giftMaxUseNum.value = item.giftMaxUseNum || 1;
+                    dataObj.giftInfo.giftName = item.giftName;
+                    dataObj.giftInfo.giftItemID = item.giftID;
+                    dataObj.giftInfo.msg = null;
+                    dataObj.giftInfo.validateStatus = 'success';
+                    dataObj.giftInfo.giftType = item.giftType || null;
+                    dataObj.giftInfo.giftValue = item.giftValue || null;
+                    dataObj.giftValidDays.value = item.giftValidUntilDayCount || '0';
+                    dataObj.giftValidType = item.effectType == 2 ? 1 :  item.effectType == 3 ? 2 : 0;
+                    if(item.effectType == 2) {
+                        dataObj.giftEffectiveTime.value = [];
+                        dataObj.giftEffectiveTime.value[0] = moment(item.effectTime, 'YYYYMMDD');
+                        dataObj.giftEffectiveTime.value[1] = moment(item.validUntilDate, 'YYYYMMDD');
+                    }else{
+                        dataObj.giftEffectiveTime.value = item.giftEffectTimeHours;
+                    }
+                    //整合每一个gifts数组中的data数据
+                    tempGift.push(dataObj);
+                })
+                EveryObj.gifts = tempGift;
+            }
+            if(!tempObj[2]){
+                //证明此档位没有勾选赠送积分
+                formData[`ifGivePoints1`] = [];
+            }else {
+                formData[`ifGivePoints1`] = ['1'];
+                formData[`presentValue1`] = tempObj[2][0].presentValue;
+                formData[`cardTypeID1`] = tempObj[2][0].cardTypeID;
+                let athObj = {};
+                athObj[`formKeys1`] = [`ifGivePoints1`, `presentValue1`, `cardTypeID1`, `ifHaveGift1`]
+                tempKeysArr.push(athObj)
+            }
+            resultArr.push(EveryObj);
+        })
+        return {resultArr, formData, tempShowGift, tempKeysArr};
+    }
+
+    getInitState = () => {
         const $rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const stageType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule', 'stageType']);
         const $giftList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'giftList'], Immutable.fromJS([]));
+        const specialPromotion = this.props.specialPromotion.toJS();
+        const eventInfo = specialPromotion.$eventInfo;
+        const giftInfo = specialPromotion.$giftInfo;
+        let resultFormData = {}
+        let showGiftTrue = [];
+        let changeFormKeysArr = [];
         let parsedRule;
         let data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
+        let simpleData;
+        let giftGetRule = eventInfo.giftGetRule ? eventInfo.giftGetRule + '' : '4';
         if (stageType) {
             parsedRule = {
                 stageType,
-                giftGetRule: $rule.get('giftGetRule') || '5',
+                giftGetRule: eventInfo.giftGetRule ? eventInfo.giftGetRule + '' : '5',
                 printCode: $rule.get('printCode') || 0,
             }
         } else {
@@ -168,32 +326,38 @@ class CheckInSecondStep extends React.Component {
                 printCode: 0,
             }
         }
-        if ($giftList.size > 0) {
-            const giftList = $giftList.toJS();
-            data = this.groupGiftsByStageAmount(giftList);
-        } else if (stageType == 1) {// 每满
-            data[0].stageAmount = $rule.get('stageAmount')
-            data[0].gifts[0].giftNum.value = $rule.get('giftNum');
-            data[0].gifts[0].giftInfo.giftName = $rule.get('giftName');
-            data[0].gifts[0].giftInfo.msg = null;
-            data[0].gifts[0].giftInfo.validateStatus = 'success';
-            data[0].gifts[0].giftInfo.giftItemID = $rule.get('giftItemID');
-            data[0].gifts[0].giftInfo.giftType = $rule.get('giftType') || null;
-            data[0].gifts[0].giftInfo.giftValue = $rule.get('freeCashVoucherValue') || null;
-            data[0].gifts[0].giftValidDays.value = $rule.get('giftValidDays') || '0';
-            data[0].gifts[0].giftMaxUseNum.value = $rule.get('giftMaxUseNum') || $rule.get('giftMaxNum');
-            data[0].gifts[0].giftValidType = $rule.get('giftType') == 112 ? '0' : $rule.get('giftValidType');
-            data[0].gifts[0].giftEffectiveTime.value = $rule.get('giftType') == 112 ? 0 : $rule.get('giftStartTime') ? [moment($rule.get('giftStartTime'), 'YYYYMMDDHHmmss'), moment($rule.get('giftEndTime'), 'YYYYMMDDHHmmss')] :$rule.get('giftValidType') == 0 ? $rule.get('giftEffectiveTime') / 60 : $rule.get('giftEffectiveTime');
-        } else if (stageType == 2) {// 满
-            const giftList = $rule.getIn(['stage'], Immutable.fromJS([])).toJS();
-            data = this.groupGiftsByStageAmount(giftList);
+        if (giftInfo.length > 0) {
+            var beginObj = this.formBeginGetData(giftInfo);
+            if(giftGetRule == 4){
+                //先根据giftInfo来写出simpleData的结构
+                const { resultArr } = this.groupSimpleGiftsByStageAmount(beginObj);
+                simpleData = resultArr;
+                const { formData } = this.groupSimpleGiftsByStageAmount(beginObj);
+                resultFormData = formData;
+                const { tempShowGift } = this.groupSimpleGiftsByStageAmount(beginObj);
+                showGiftTrue = tempShowGift;
+                const { tempKeysArr } = this.groupSimpleGiftsByStageAmount(beginObj);
+                changeFormKeysArr = tempKeysArr;
+            }else{
+                //先根据giftInfo来写出data的结构
+                const { resultArr } = this.groupGiftsByStageAmount(beginObj);
+                data = resultArr;
+                const { formData } = this.groupGiftsByStageAmount(beginObj);
+                resultFormData = formData;
+                const { tempShowGift } = this.groupGiftsByStageAmount(beginObj);
+                showGiftTrue = tempShowGift;
+                const { tempKeysArr } = this.groupGiftsByStageAmount(beginObj);
+                changeFormKeysArr = tempKeysArr;
+            }   
         }
         if (data.length === 0) {
             data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
-        }
-        const simpleData = JSON.parse(JSON.stringify(data));
+        }       
+        if(this.props.isNew){
+            simpleData = JSON.parse(JSON.stringify(data));
+        }   
         return {
-            parsedRule, data, simpleData
+            parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr
         }
     }
 
@@ -229,6 +393,17 @@ class CheckInSecondStep extends React.Component {
                 this.initFormItems();
             })
         });
+        const { showGiftTrue, changeFormKeysArr } = this.state;
+        showGiftTrue.forEach((item) => {
+            let tempObj = {};
+            tempObj[item] = true;
+            this.setState(tempObj);
+        })
+        changeFormKeysArr.forEach((item) => {
+            let tempObj = {};
+            tempObj[Object.keys(item)[0]] = item[Object.keys(item)[0]];
+            this.setState(tempObj);
+        })
     }
 
     initFormItems = () => {
@@ -372,7 +547,7 @@ class CheckInSecondStep extends React.Component {
         })
     }
     handleValidForm = () => {
-        if(this.state.rule.giftGetRule == 4){
+        if(this.state.giftGetRule == 4){
             let flag = true;
             this.baseForm1.validateFieldsAndScroll((error, basicValues) => {
                 if (error) {
@@ -385,7 +560,7 @@ class CheckInSecondStep extends React.Component {
             });
             return flag;
         }
-        if(this.state.rule.giftGetRule == 5){
+        if(this.state.giftGetRule == 5){
             let baseStr = 'baseForm';
             let flag = true;
             for(let i = 0; i <this.state.data.length; i++){
@@ -418,7 +593,7 @@ class CheckInSecondStep extends React.Component {
         let giftList = [];
         let validateFlag = true;
         // FIXME: 这个校验在不人为输入(触发相应onChange)时等于无效, 比如编辑时直接下一步下一步保存时, 如果产品要求, 可以改掉
-        if(this.state.rule.giftGetRule == 5){
+        if(this.state.giftGetRule == 5){
             giftList = data.reduce((acc, curr, index) => {
                 acc.push(...curr.gifts.map(item => ({...item, stageAmount: curr.stageAmount, giftIndex: index,})));
                 return acc;
@@ -459,7 +634,7 @@ class CheckInSecondStep extends React.Component {
                 return p && _validStatusOfCurrentIndex;
             }, true);
         } 
-        let giftGetRule = this.state.rule.giftGetRule;
+        let giftGetRule = this.state.giftGetRule;
         let gifts = this.gatherGiftsInfo(giftGetRule);
         if (validateFlag) {
             this.props.setSpecialBasicInfo({
@@ -497,6 +672,7 @@ class CheckInSecondStep extends React.Component {
                     tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
                     tempObj.giftID = giftItem.giftInfo.giftItemID;
                     tempObj.giftTotalCount = giftItem.giftNum.value;
+                    tempObj.needCount = 1;
                     tempData.push(tempObj);
                 })
             } 
@@ -506,6 +682,7 @@ class CheckInSecondStep extends React.Component {
                 tempObj.sortIndex = 1;
                 tempObj.presentValue = this.baseForm1.getFieldValue('presentValue1');
                 tempObj.cardTypeID = this.baseForm1.getFieldValue('cardTypeID1');
+                tempObj.needCount = 1;
                 tempData.push(tempObj)
             } 
         }else{
@@ -629,11 +806,10 @@ class CheckInSecondStep extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup
-                        value={this.state.rule.giftGetRule}
+                        value={this.state.giftGetRule}
                         onChange={(e) => {
-                            const { rule } = this.state;
-                            rule.giftGetRule = e.target.value;
-                            this.setState({ rule });
+                            const giftGetRule = e.target.value;
+                            this.setState({ giftGetRule });
                         }}
                     >
                         {showType
@@ -642,7 +818,7 @@ class CheckInSecondStep extends React.Component {
                             })}
                     </RadioGroup >
                 </FormItem>
-                {this.state.rule.giftGetRule == 4 ? this.renderSimpleRule() : this.renderRuleDetail()}
+                {this.state.giftGetRule == 4 ? this.renderSimpleRule() : this.renderRuleDetail()}
             </div>
         )
     }
@@ -827,7 +1003,7 @@ class CheckInSecondStep extends React.Component {
                                 (!isMultiple) && (
                                     <div className={selfStyle.buttonArea}>
                                         {
-                                            (arr.length < 5 && index === arr.length - 1) && (
+                                            (arr.length < 7 && index === arr.length - 1) && (
                                                 <Icon
                                                     onClick={this.addStage}
                                                     style={{ marginBottom: 10 }}
@@ -873,6 +1049,7 @@ function mapStateToProps(state) {
     return {
         user: state.user.toJS(),
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
     }
 }

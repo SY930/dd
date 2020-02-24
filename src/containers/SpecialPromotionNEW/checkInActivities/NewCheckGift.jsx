@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import StepFour from '../accumulateGift/StepFour';
+import StepFour from './StepFour';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'; // 选择礼品
 
 import NewPromotion from '../common/NewPromotion';
