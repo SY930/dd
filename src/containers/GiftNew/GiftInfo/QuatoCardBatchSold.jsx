@@ -304,7 +304,7 @@ class QuotaCardBatchSold extends React.Component {
                         required: true, message: '售价不能为空',
                     }, {
                         validator: (rule, v, cb) => {
-                            this.checkPrice(rule, v, cb)
+                            // this.checkPrice(rule, v, cb)
                         },
                     },
                 ],

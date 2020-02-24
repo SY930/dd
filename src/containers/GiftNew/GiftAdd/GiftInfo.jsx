@@ -28,16 +28,16 @@ export default class GiftInfo extends Component {
             );
         };
         const render1 = (v,o) => {
-            const { effectType, validUntilDate, effectTime,
+            const { effectType, countType, giftEffectTimeHours,
                 giftValidUntilDayCount, rangeDate } = o;
             let text = '';
             if(effectType==='1') {
-                const options = (validUntilDate === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
-                const { label } = options.find(x=>x.value===effectTime);
+                const options = (countType === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                const { label } = options.find(x=>x.value===giftEffectTimeHours);
                 text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
             } else {
-                const [a, b] = rangeDate;
-                text = a.format(DF) +' - '+ b.format(DF);
+                const [start, end] = rangeDate;
+                text = start.format(DF) +' - '+ end.format(DF);
             }
             return (<span>{text}</span>);
         };
@@ -70,7 +70,14 @@ export default class GiftInfo extends Component {
     onPost = (params) => {
         const { giftTreeData } = this.state;
         const { value, onChange } = this.props;
-        const { giftItemID } = params;
+        const { giftItemID, effectType, rangeDate } = params;
+        let date = {};
+        if(effectType === '2') {
+            const [start, end] = rangeDate;
+            const effectTime = start.format(DF);
+            const validUntilDate = end.format(DF);
+            date = { effectTime, validUntilDate };
+        }
         let obj = null;
         giftTreeData.forEach(x => {
             const { children } = x;
@@ -80,7 +87,7 @@ export default class GiftInfo extends Component {
                 obj = { giftType, giftItemID, giftName, giftValue };
             }
         });
-        const list = [...value, { ...params, ...obj }];
+        const list = [...value, { ...params, ...obj, ...date }];
         onChange(list);
     }
     /** 删除 */

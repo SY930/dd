@@ -3,7 +3,7 @@ import { Modal, TreeSelect } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
-const formKeys1 = ['giftItemID', 'giftCount', 'effectType', 'validUntilDate', 'effectTime', 'giftValidUntilDayCount'];
+const formKeys1 = ['giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
 const formKeys2 = ['giftItemID', 'giftCount', 'effectType', 'rangeDate'];
 const formItems = {
     giftItemID: {
@@ -27,7 +27,7 @@ const formItems = {
             { label: '固定有效期', value: '2' },
         ],
     },
-    validUntilDate: {
+    countType: {
         type: 'radio',
         label: '相对有效期',
         defaultValue: '0',
@@ -36,7 +36,7 @@ const formItems = {
             { label: '按天', value: '1' },
         ],
     },
-    effectTime: {
+    giftEffectTimeHours: {
         type: 'combo',
         label: '生效时间',
         options: SALE_CENTER_GIFT_EFFICT_TIME,
@@ -76,10 +76,10 @@ export default class GiftModal extends Component {
     }
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        if(key === 'validUntilDate') {
+        if(key === 'countType') {
             const options = (value === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
             this.setState({ options });
-            this.form.setFieldsValue({ 'effectTime': value });
+            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if(key==='effectType'){
             if(value === '1') {
@@ -96,7 +96,7 @@ export default class GiftModal extends Component {
     resetFormItems() {
         const { options } = this.state;
         const { treeData } = this.props;
-        const { giftItemID, effectTime } = formItems;
+        const { giftItemID, giftEffectTimeHours } = formItems;
         const render = d => d()(
             <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -109,7 +109,7 @@ export default class GiftModal extends Component {
         return {
             ...formItems,
             giftItemID: { ...giftItemID, render },
-            effectTime: { ...effectTime, options },
+            giftEffectTimeHours: { ...giftEffectTimeHours, options },
         }
     }
     render() {

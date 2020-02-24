@@ -11,6 +11,7 @@ import {
 } from '../_action';
 import styles from './GiftInfo.less';
 import { COMMON_LABEL } from 'i18n/common';
+import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
 class QuatoCardDetailModal extends Component {
     constructor(props) {
@@ -127,8 +128,46 @@ class InfoDisplay extends Component {
     constructor(props) {
         super(props);
     }
+    /* 生成表格头数据 */
+    generateColumns() {
+        const { tc } = styles;
+        const render = (v,o) => {
+            const { effectType, countType, giftEffectTimeHours,
+                giftValidUntilDayCount, rangeDate } = o;
+            let text = '';
+            if(effectType==='1') {
+                const options = (countType === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                const { label } = options.find(x=>x.value===giftEffectTimeHours);
+                text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
+            } else {
+                const [start, end] = rangeDate;
+                text = start.format(DF) +' - '+ end.format(DF);
+            }
+            return (<span>{text}</span>);
+        };
+        // 表格头部的固定数据
+        return [
+            { width: 40, title: '序号', dataIndex: 'idx', className: tc },
+            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc },
+            { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc },
+            { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
+            { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
+            { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render, className: tc },
+        ];
+    }
+    /* 生成表格数据 */
+    generateDataSource(list) {
+        return list.map((x, i) => ({
+            key: x.giftItemID,
+            idx: i + 1,
+            index: i,
+            ...x,
+        }));
+    }
     render() {
         const { infoItem, infoData = {} } = this.props;
+        const columns = this.generateColumns();
+        const dataSource = this.generateDataSource([]);
         return (
             <Row>
                 {
@@ -153,6 +192,15 @@ class InfoDisplay extends Component {
                         </Col>)
                     })
                 }
+                <di>
+                    <p>礼品详情</p>
+                    <Table
+                        bordered={true}
+                        columns={columns}
+                        dataSource={dataSource}
+                        pagination={false}
+                    />
+                </di>
             </Row>
         )
     }
