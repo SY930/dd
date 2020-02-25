@@ -360,6 +360,19 @@ class CheckInSecondStep extends React.Component {
                 resultFormData[`ifHaveGift${i + 2}`] = ['1'];
             }
             showGift1 = true;
+        }
+        if( giftGetRule == 5 ) {
+            simpleData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
+            resultFormData.ifHaveGift1 = ['1'];
+            for(let i = 0; i < 7; i++) {
+                resultFormData[`ifHaveGift${i + 2}`] = ['1'];
+            }
+            showGift1 = true;
+        }else{
+            for(let i = 0; i < 7; i++) {
+                resultFormData[`ifHaveGift${i + 2}`] = ['1'];
+            }
+            showGift1 = true;
         }   
         return {
             parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1
@@ -991,15 +1004,17 @@ class CheckInSecondStep extends React.Component {
                                         onChange={(key, value) => this.handleFormChange(key, value)}
                                     />
                                     {
-                                        this.state[`showGift${index+2}`] ? <ReturnGift
-                                        key={`${index}`}
-                                        weChatCouponList={this.state.weChatCouponList}
-                                        isMultiple={isMultiple}
-                                        maxAddGift={50}
-                                        value={gifts}
-                                        onChange={(val) => this.handleStageChange(val, index)}
-                                        filterOffLine={this.state.rule.gainCodeMode != '0'}
-                                    /> : null
+                                        this.state[`showGift${index+2}`] ? 
+                                            <ReturnGift
+                                            key={`${index}`}
+                                            weChatCouponList={this.state.weChatCouponList}
+                                            isMultiple={isMultiple}
+                                            maxAddGift={50}
+                                            value={gifts}
+                                            onChange={(val) => this.handleStageChange(val, index)}
+                                            filterOffLine={this.state.rule.gainCodeMode != '0'}
+                                            ifExcludeWechat={true}
+                                        /> : null
                                     }      
                                 </Col>
                             </Row>
