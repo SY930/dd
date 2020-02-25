@@ -544,14 +544,6 @@ export const ACTIVITY_CATEGORIES = (function () {
         example: SALE_LABEL.k67g7uy4,
         key: '2080',
     },
-    {
-
-        idx: 20,
-        title: '签到',
-        text: '这是一个签到活动描述',
-        example: '',
-        key: '76',
-    },
     ];
     return basic;
 }());

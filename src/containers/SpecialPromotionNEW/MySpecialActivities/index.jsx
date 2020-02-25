@@ -909,7 +909,7 @@ class MySpecialActivities extends React.Component {
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}"` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
+                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
                 },
             },
         ];
