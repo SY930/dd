@@ -90,7 +90,7 @@ const DEFAULT_GIFT_STAGE = [
 class CheckInSecondStep extends React.Component {
     constructor(props) {
         super(props);
-        const { parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr } = this.getInitState();
+        const { parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1 } = this.getInitState();
         this.state = {
             display: !props.isNew,
             rule: parsedRule,
@@ -102,7 +102,7 @@ class CheckInSecondStep extends React.Component {
             formData: resultFormData,
             formKeys: [],
             cardTypeArr: [],
-            showGift1: false,
+            showGift1: showGift1,
             showGift2: false,
             showGift3: false,
             showGift4: false,
@@ -306,6 +306,7 @@ class CheckInSecondStep extends React.Component {
         const specialPromotion = this.props.specialPromotion.toJS();
         const eventInfo = specialPromotion.$eventInfo;
         const giftInfo = specialPromotion.$giftInfo;
+        let showGift1 = false;
         let resultFormData = {}
         let showGiftTrue = [];
         let changeFormKeysArr = [];
@@ -355,9 +356,14 @@ class CheckInSecondStep extends React.Component {
         }       
         if(this.props.isNew){
             simpleData = JSON.parse(JSON.stringify(data));
+            resultFormData.ifHaveGift1 = ['1'];
+            for(let i = 0; i < 7; i++) {
+                resultFormData[`ifHaveGift${i + 2}`] = ['1'];
+            }
+            showGift1 = true;
         }   
         return {
-            parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr
+            parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1
         }
     }
 
@@ -860,7 +866,7 @@ class CheckInSecondStep extends React.Component {
                                         weChatCouponList={this.state.weChatCouponList}
                                         isMultiple={isMultiple}
                                         value={gifts}
-                                        maxAddGift={50}
+                                        maxAddGift={10}
                                         onChange={(val) => this.handleSimpleStageChange(val, index)}
                                         filterOffLine={this.state.rule.gainCodeMode != '0'}
                                     />
