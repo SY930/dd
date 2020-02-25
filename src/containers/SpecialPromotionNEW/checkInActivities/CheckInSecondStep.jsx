@@ -869,6 +869,7 @@ class CheckInSecondStep extends React.Component {
                                         maxAddGift={10}
                                         onChange={(val) => this.handleSimpleStageChange(val, index)}
                                         filterOffLine={this.state.rule.gainCodeMode != '0'}
+                                        ifExcludeWechat={true}
                                     />
                                 </Col>
                             </div>
