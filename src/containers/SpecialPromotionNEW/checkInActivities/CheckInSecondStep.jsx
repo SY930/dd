@@ -860,7 +860,7 @@ class CheckInSecondStep extends React.Component {
                                         weChatCouponList={this.state.weChatCouponList}
                                         isMultiple={isMultiple}
                                         value={gifts}
-                                        maxAddGift={50}
+                                        maxAddGift={10}
                                         onChange={(val) => this.handleSimpleStageChange(val, index)}
                                         filterOffLine={this.state.rule.gainCodeMode != '0'}
                                     />
