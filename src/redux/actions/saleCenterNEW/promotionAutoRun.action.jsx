@@ -111,8 +111,7 @@ export const queryPromotionAutoRunList = (opts) => {
                 }
             ];
             const [a1, a2] = values;
-            const s1 = a1 || topEvents;
-            const newVals = [s1, [...topEvents, ...a2]];
+            const newVals = [a1, [...topEvents, ...a2]];
             dispatch(queryPromotionAutoRunListSuccess(newVals));
         }).catch((error) => {
             dispatch(queryPromotionAutoRunListFail(error));
