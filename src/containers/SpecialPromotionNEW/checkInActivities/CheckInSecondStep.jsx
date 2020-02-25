@@ -915,7 +915,7 @@ class CheckInSecondStep extends React.Component {
             })   
         }else{
             let tempStr = `formKeys${num}`;
-            let tempArr = this.state[tempStr];
+            let tempArr = Array.from(new Set(this.state[tempStr]));
             if(tempArr.indexOf(`cardTypeID${num}`) != -1){
                 tempArr.splice(tempArr.indexOf(`cardTypeID${num}`), 1);
                 tempArr.splice(tempArr.indexOf(`presentValue${num}`), 1);
