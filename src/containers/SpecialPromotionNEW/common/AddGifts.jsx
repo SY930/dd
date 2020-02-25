@@ -173,7 +173,7 @@ class AddGifts extends React.Component {
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66' && type != '21') && (
+                    (this.state.infos.length < 10 && type != '66' && type != '21' && type != '30') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
