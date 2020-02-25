@@ -295,14 +295,6 @@ class GiftAddModal extends React.Component {
                             Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
                         },
                         message: '工本费不能高于礼品价值',
-                    }, {
-                        validator: (rule, v, cb) => {
-                            const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('cardPrice');
-                            const price = getFieldValue('price');
-                            Number(v || 0) + Number(price || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
-                        },
-                        message: '礼品价值扣除工本费后的数额应大于或等于售价',
                     }],
             },
             price: {
@@ -452,6 +444,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 label: '礼品卡面值',
                 surfix: '元',
+                disabled: type !== 'add',
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
@@ -468,6 +461,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 label: '现金卡值',
                 surfix: '元',
+                disabled: type !== 'add',
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {

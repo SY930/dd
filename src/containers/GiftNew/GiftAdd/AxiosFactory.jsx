@@ -49,7 +49,7 @@ function proGiftTreeData(giftTypes) {
                 value: String(gift.giftItemID),
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
-                giftType: giftTypeItem.label,
+                giftType: gt.giftType,
             });
             gifts.push({
                 label: gift.giftName,

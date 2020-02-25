@@ -5,6 +5,7 @@ import styles from './Crm.less';
 import GiftModal from './GiftModal';
 import { getCardList } from './AxiosFactory';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
+import GiftCfg from '../../../constants/Gift';
 
 const href = 'javascript:;';
 const DF = 'YYYYMMDD';
@@ -28,23 +29,27 @@ export default class GiftInfo extends Component {
             );
         };
         const render1 = (v,o) => {
-            const { effectType, countType, giftEffectTimeHours,
-                giftValidUntilDayCount, rangeDate } = o;
+            const { effectType, giftEffectTimeHours,
+                giftValidUntilDayCount, effectTime, validUntilDate } = o;
             let text = '';
-            if(effectType==='1') {
-                const options = (countType === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
-                const { label } = options.find(x=>x.value===giftEffectTimeHours);
+            if([1,3].includes(+effectType)) {
+                const options = (+effectType === 1) ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                const { label } = options.find(x=>+x.value===+giftEffectTimeHours);
                 text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
             } else {
-                const [start, end] = rangeDate;
-                text = start.format(DF) +' - '+ end.format(DF);
+                text = effectTime +' - '+ validUntilDate;
             }
             return (<span>{text}</span>);
+        };
+        const render3 = (v) => {
+            const { giftTypeName } = GiftCfg;
+            const { label } = giftTypeName.find(x=>+x.value === +v);
+            return (<span>{label}</span>);
         };
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
-            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc },
+            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc },
             { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
             { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
@@ -56,7 +61,7 @@ export default class GiftInfo extends Component {
     generateDataSource() {
         const { value } = this.props;
         return value.map((x, i) => ({
-            key: x.giftItemID,
+            key: x.giftItemID + i,
             idx: i + 1,
             index: i,
             ...x,
@@ -70,7 +75,8 @@ export default class GiftInfo extends Component {
     onPost = (params) => {
         const { giftTreeData } = this.state;
         const { value, onChange } = this.props;
-        const { giftItemID, effectType, rangeDate } = params;
+        // effectType有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
+        const { giftItemID, effectType, rangeDate, countType } = params;
         let date = {};
         if(effectType === '2') {
             const [start, end] = rangeDate;
@@ -78,16 +84,20 @@ export default class GiftInfo extends Component {
             const validUntilDate = end.format(DF);
             date = { effectTime, validUntilDate };
         }
+        let newEffectType = effectType;
+        if(countType === '1') {
+            newEffectType = '3';
+        }
         let obj = null;
         giftTreeData.forEach(x => {
             const { children } = x;
             const card = children.find(y=>y.value === giftItemID);
             if(card){
-                const { value: giftItemID, giftType, label: giftName, giftValue } = card;
-                obj = { giftType, giftItemID, giftName, giftValue };
+                const { value: giftItemID, giftType, giftTypeName, label: giftName, giftValue } = card;
+                obj = { giftType, giftTypeName, giftItemID, giftName, giftValue };
             }
         });
-        const list = [...value, { ...params, ...obj, ...date }];
+        const list = [...value, { ...params, ...obj, ...date, effectType: newEffectType }];
         onChange(list);
     }
     /** 删除 */
