@@ -191,10 +191,9 @@ class CheckInSecondStep extends React.Component {
                     //     }
                     //     tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
                     //     tempObj.giftID = giftItem.giftInfo.giftItemID;
-                    //     tempObj.giftTotalCount = giftItem.giftNum.value;
                     //     tempObj.needCount = stageAmount;
                     //     tempData.push(tempObj);
-                    dataObj.giftNum.value = item.giftTotalCount;
+                    dataObj.giftNum.value = item.giftCount;
                     dataObj.giftMaxUseNum.value = item.giftMaxUseNum || 1;
                     dataObj.giftInfo.giftName = item.giftName;
                     dataObj.giftInfo.giftItemID = item.giftID;
@@ -261,7 +260,7 @@ class CheckInSecondStep extends React.Component {
                 tempShowGift.push([`showGift1`]);
                 tempObj[1].forEach((item) => {
                     let dataObj = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE))[0].gifts[0];
-                    dataObj.giftNum.value = item.giftTotalCount;
+                    dataObj.giftNum.value = item.giftCount;
                     dataObj.giftMaxUseNum.value = item.giftMaxUseNum || 1;
                     dataObj.giftInfo.giftName = item.giftName;
                     dataObj.giftInfo.giftItemID = item.giftID;
@@ -677,7 +676,7 @@ class CheckInSecondStep extends React.Component {
                     }
                     tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
                     tempObj.giftID = giftItem.giftInfo.giftItemID;
-                    tempObj.giftTotalCount = giftItem.giftNum.value;
+                    tempObj.giftCount = giftItem.giftNum.value;
                     tempObj.needCount = 1;
                     tempData.push(tempObj);
                 })
@@ -708,7 +707,7 @@ class CheckInSecondStep extends React.Component {
                         }
                         tempObj.giftValidUntilDayCount = giftItem.giftValidDays.value;
                         tempObj.giftID = giftItem.giftInfo.giftItemID;
-                        tempObj.giftTotalCount = giftItem.giftNum.value;
+                        tempObj.giftCount = giftItem.giftNum.value;
                         tempObj.needCount = stageAmount;
                         tempData.push(tempObj);
                     })
