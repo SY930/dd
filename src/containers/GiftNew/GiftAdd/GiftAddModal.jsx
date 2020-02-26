@@ -40,6 +40,7 @@ class GiftAddModal extends React.Component {
             values: {},
             transferType: 0,
             isUpdate: true,
+            disCashKeys: false,     // 定额卡模式下，是否要隐藏现金卡值和赠送卡值
         };
         this.baseForm = null;
         this.refMap = null;
@@ -81,25 +82,33 @@ class GiftAddModal extends React.Component {
         }
         // 赠送卡值freePrice =  礼品卡面值 （giftDenomination） - 工本费 （giftCost） - 现金卡值 cardPrice
         if(key === 'giftDenomination'){
+            const disCashKeys = (+value === 0);
+            this.setState({ disCashKeys });     // 卡面值=0，赠送值和现金值 不显示
             const giftDenomination = +value || 0;
             const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
             const sum = giftDenomination - giftCost - cardPrice;
-            this.baseForm.setFieldsValue({'freePrice': sum });
+            let freePrice = sum;
+            if(sum < 0) { freePrice = 0; }
+            this.baseForm.setFieldsValue({ freePrice });
         }
         if(key === 'giftCost'){
             const giftCost = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
             const sum = giftDenomination - giftCost - cardPrice;
-            this.baseForm.setFieldsValue({'freePrice': sum });
+            let freePrice = sum;
+            if(sum < 0) { freePrice = 0; }
+            this.baseForm.setFieldsValue({ freePrice });
         }
         if(key === 'cardPrice'){
             const cardPrice = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
             const sum = giftDenomination - cardPrice - giftCost;
-            this.baseForm.setFieldsValue({'freePrice': sum });
+            let freePrice = sum;
+            if(sum < 0) { freePrice = 0; }
+            this.baseForm.setFieldsValue({ freePrice });
         }
     }
     handleSubmit() {
@@ -292,9 +301,13 @@ class GiftAddModal extends React.Component {
                         validator: (rule, v, cb) => {
                             const { getFieldValue } = this.baseForm;
                             const giftValue = getFieldValue('cardPrice');
-                            Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                            if(giftValue === undefined){
+                                cb();
+                            }else{
+                                Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                            }
                         },
-                        message: '工本费不能高于礼品价值',
+                        message: '工本费不能高于现金卡值',
                     }],
             },
             price: {
@@ -450,8 +463,8 @@ class GiftAddModal extends React.Component {
                     validator: (rule, value, callback) => {
                         const { getFieldValue } = this.baseForm;
                         const cardPrice = getFieldValue('cardPrice');
-                        if (+value <= +cardPrice) {
-                            return callback('礼品卡面值要大于现金卡值');
+                        if (+value < +cardPrice) {
+                            return callback('礼品卡面值要大于等于现金卡值');
                         }
                         return callback();
                     },
@@ -467,8 +480,8 @@ class GiftAddModal extends React.Component {
                     validator: (rule, value, callback) => {
                         const { getFieldValue } = this.baseForm;
                         const giftDenomination = getFieldValue('giftDenomination');
-                        if (+giftDenomination <= +value) {
-                            return callback('礼品卡面值要大于现金卡值');
+                        if (+giftDenomination < +value) {
+                            return callback('礼品卡面值要大于等于现金卡值');
                         }
                         return callback();
                     },
@@ -593,6 +606,28 @@ class GiftAddModal extends React.Component {
         if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
+        let newFormKeys = [...formKeys[describe]];
+        if (this.state.disCashKeys) {
+            const keys = [
+                {
+                    col: { span: 24, pull: 2 },
+                    keys: [
+                        'giftType',
+                        'giftName',
+                        'selectBrands',
+                        'giftDenomination',
+                        'giftCost',
+                        'price',
+                        'quotaCardGiftConfList',
+                        'giftRemark',
+                        'giftRule',
+                        'showGiftRule',
+                        'isSynch',
+                    ]
+                }
+            ];
+            newFormKeys = keys;
+        }
         return (
             <div className={styles.giftAddModal}>
                 <BaseForm
@@ -600,7 +635,7 @@ class GiftAddModal extends React.Component {
                     getRefs={refs => this.refMap = refs}
                     formItems={formItems}
                     formData={formData}
-                    formKeys={formKeys[describe]}
+                    formKeys={newFormKeys}
                     onChange={(key, value) => this.handleFormChange(key, value)}
                     key={`${describe}-${type}`}
                 />
