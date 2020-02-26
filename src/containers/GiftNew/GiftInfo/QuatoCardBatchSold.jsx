@@ -302,11 +302,7 @@ class QuotaCardBatchSold extends React.Component {
                         message: '必须是整数部分不超过8位且小数部分不超过2位的数',
                     }, {
                         required: true, message: '售价不能为空',
-                    }, {
-                        validator: (rule, v, cb) => {
-                            // this.checkPrice(rule, v, cb)
-                        },
-                    },
+                    }
                 ],
             },
         };
