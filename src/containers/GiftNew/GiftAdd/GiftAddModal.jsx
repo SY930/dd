@@ -299,15 +299,22 @@ class GiftAddModal extends React.Component {
                     { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于或等于0的值，整数不超过9位，小数不超过2位' },
                     {
                         validator: (rule, v, cb) => {
+                            // value 卡片工本费
+                            // giftDenomination 礼品卡面值
+                            // cardPrice 现金卡值
                             const { getFieldValue } = this.baseForm;
                             const giftValue = getFieldValue('cardPrice');
+                            const giftDenomination = getFieldValue('giftDenomination');
                             if(giftValue === undefined){
-                                cb();
-                            }else{
-                                Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                                return cb();
                             }
+
+                            if (+v > (giftDenomination - giftValue)) {
+                                console.log('+value', +v, (giftDenomination - giftValue));
+                                return cb('卡片工本费需≤礼品卡面值-现金卡值');
+                            }
+                            return cb();
                         },
-                        message: '工本费不能高于现金卡值',
                     }],
             },
             price: {
@@ -491,7 +498,7 @@ class GiftAddModal extends React.Component {
                         const { getFieldValue } = this.baseForm;
                         const giftDenomination = getFieldValue('giftDenomination');
                         if (+giftDenomination < +value) {
-                            return callback('礼品卡面值要大于等于现金卡值');
+                            return callback('现金卡值需≤礼品卡面值');
                         }
                         return callback();
                     },
