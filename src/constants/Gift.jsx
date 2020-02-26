@@ -240,6 +240,7 @@ const GiftCfg = {
         { value: '3011', label: '批量生成' },
         { value: '77', label: '支付后广告', include: true },
         { value: '76', label: '签到活动' },
+        { value: '123', label: '礼品定额卡发放', include: true },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
