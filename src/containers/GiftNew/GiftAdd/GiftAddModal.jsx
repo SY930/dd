@@ -87,8 +87,8 @@ class GiftAddModal extends React.Component {
             const giftDenomination = +value || 0;
             const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
-            const sum = giftDenomination - giftCost - cardPrice;
-            let freePrice = sum;
+            const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
+            let freePrice = sum / 100;  // 防止失精
             if(sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
@@ -96,8 +96,8 @@ class GiftAddModal extends React.Component {
             const giftCost = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
-            const sum = giftDenomination - giftCost - cardPrice;
-            let freePrice = sum;
+            const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
+            let freePrice = sum / 100;  // 防止失精
             if(sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
@@ -105,8 +105,8 @@ class GiftAddModal extends React.Component {
             const cardPrice = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
-            const sum = giftDenomination - cardPrice - giftCost;
-            let freePrice = sum;
+            const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
+            let freePrice = sum / 100;  // 防止失精
             if(sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
