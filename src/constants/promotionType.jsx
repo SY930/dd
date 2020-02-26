@@ -130,6 +130,16 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
  */
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
+        title: '签到',
+        tags: [SALE_LABEL.k639vgjy],
+        isSpecial: true,
+        text: '签到获取礼品，提升用户日活量',
+        example: '',
+        key: '76',
+        right: 14,
+        bottom: 12,
+    },
+    {
         title: '支付后广告',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         tags: ['微信'],
@@ -264,8 +274,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '2070',
         right: 22,
         bottom: 13,
-    },
-
+    },    
 ];
 
 /**

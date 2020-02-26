@@ -706,7 +706,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: '支付成功页自定义投放广告内容，便于餐后营销',
             example: '',
             key: '77',
-        }
+        },{
+            idx: 21,
+            title: '签到',
+            text: '签到获取礼品，提升用户日活量',
+            example: '',
+            key: '76',
+        },
     ];
     return basic;
 }());

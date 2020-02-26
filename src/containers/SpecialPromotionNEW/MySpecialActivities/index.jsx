@@ -218,6 +218,7 @@ class MySpecialActivities extends React.Component {
                 { value: '31', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8o5o6gt1820)}` },
                 { value: '75', label: '集点卡' },
                 { value: '77', label: '支付后广告' },
+                { value: '76', label: '签到' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -908,7 +909,7 @@ class MySpecialActivities extends React.Component {
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
-                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}"` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
+                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
                 },
             },
         ];

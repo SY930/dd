@@ -16,6 +16,7 @@ import NewBirthdayGift from './birthdayGift/NewBirthdayGift'; // 生日赠送
 import NewCardGive from './newCardGive/NewCardGive'; // 开卡赠送
 import NewFreeGet from './freeGet/NewFreeGet'; // 免费领取
 import NewShackGift from './shackGift/NewShackGift'; // 摇奖
+import NewCheckGift from './checkInActivities/NewCheckGift'; // 签到
 import NewScoreConvert from './scoreConvert/NewScoreConvert'; // 积分兑换
 import NewSignUp from './signUp/NewSignUp'; // 报名活动
 import NewSendGifts from './sendGifts/NewSendGifts'; // 群发礼品
@@ -110,6 +111,7 @@ class ActivityMain extends React.Component {
             RecommendGifts,
             AccumulateGift,
             PayAfter,
+            NewCheckGift,
         ];
         const pages = _pages.map((promotion, index) => {
             return React.createElement(promotion, {

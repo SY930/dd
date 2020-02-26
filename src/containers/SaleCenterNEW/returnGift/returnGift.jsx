@@ -59,6 +59,9 @@ const VALIDATE_TYPE = Object.freeze([{
 const availableGiftTypes = [// 顺序matters
     '112', '10', '20', '21', '111', '110', '30', '40', '42', '80',
 ];
+const noWechatGiftTypes = [// 顺序matters
+    '10', '20', '21', '111', '110', '30', '40', '42', '80',
+];
 
 const offlineCanUseGiftTypes = [
     '30', '40', '42', '80',
@@ -102,12 +105,13 @@ class ReturnGift extends React.Component {
     }
 
     render() {
-        const { isMultiple } = this.props;
+        const { isMultiple, maxAddGift } = this.props;
+        let maxGift = maxAddGift ? maxAddGift : 10;
         return (
             <div className={[selfStyle.listWrapper, !isMultiple ? selfStyle.isNotMultiple : ''].join(' ')}>
                 {this.renderItems()}
                 {
-                    this.state.infos.length < 10 && (
+                    this.state.infos.length < maxGift && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {SALE_LABEL.k6d8n2c8}
                         </div>
@@ -129,16 +133,20 @@ class ReturnGift extends React.Component {
         const filterOffLine = this.props.filterOffLine;// 支持到店属性
         const allCrmGifts = this.props.allCrmGifts.toJS();
         const allWeChatCouponList = this.props.weChatCouponList;
-        let _giftInfo = [{
-            giftType: '112',
-            index: 0,
-            crmGifts: allWeChatCouponList
-        }];
+        let _giftInfo = [];
+        if(!this.props.ifExcludeWechat) {
+            _giftInfo = [{
+                giftType: '112',
+                index: 0,
+                crmGifts: allWeChatCouponList
+            }];
+        }
+        const resultGiftTypes = this.props.ifExcludeWechat ? noWechatGiftTypes : availableGiftTypes
         allCrmGifts.forEach((giftTypes) => {
-            if (availableGiftTypes.includes(String(giftTypes.giftType))) {
+            if (resultGiftTypes.includes(String(giftTypes.giftType))) {
                 _giftInfo.push({
                     giftType: giftTypes.giftType,
-                    index: availableGiftTypes.indexOf(String(giftTypes.giftType)),
+                    index: resultGiftTypes.indexOf(String(giftTypes.giftType)),
                     crmGifts: giftTypes.crmGifts,
                 })
             }

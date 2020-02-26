@@ -11,6 +11,7 @@ import {injectIntl} from './IntlDecor';
 
 const limitedTypes = [
     '77',
+    '76',
 ]
 @registerPage([FANS_INTERACTIVITY], {
 })
