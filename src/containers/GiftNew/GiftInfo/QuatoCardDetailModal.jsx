@@ -12,6 +12,7 @@ import {
 import styles from './GiftInfo.less';
 import { COMMON_LABEL } from 'i18n/common';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
+import GiftCfg from '../../../constants/Gift';
 
 class QuatoCardDetailModal extends Component {
     constructor(props) {
@@ -129,30 +130,40 @@ class InfoDisplay extends Component {
         super(props);
     }
     /* 生成表格头数据 */
+    /* 生成表格头数据 */
     generateColumns() {
         const { tc } = styles;
-        const render = (v,o) => {
-            const { effectType, countType, giftEffectTimeHours,
-                giftValidUntilDayCount, rangeDate } = o;
+        const render = (v) => {
+            return (
+                <a href={href} name={v} onClick={this.onDelete}>删除</a>
+            );
+        };
+        const render1 = (v,o) => {
+            const { effectType, giftEffectTimeHours,
+                giftValidUntilDayCount, effectTime, validUntilDate } = o;
             let text = '';
-            if(effectType==='1') {
-                const options = (countType === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
-                const { label } = options.find(x=>x.value===giftEffectTimeHours);
+            if([1,3].includes(+effectType)) {
+                const options = (+effectType === 1) ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                const { label } = options.find(x=>+x.value===+giftEffectTimeHours);
                 text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
             } else {
-                const [start, end] = rangeDate;
-                text = start.format(DF) +' - '+ end.format(DF);
+                text = effectTime +' - '+ validUntilDate;
             }
             return (<span>{text}</span>);
+        };
+        const render3 = (v) => {
+            const { giftTypeName } = GiftCfg;
+            const { label } = giftTypeName.find(x=>+x.value === +v);
+            return (<span>{label}</span>);
         };
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
-            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc },
+            { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc },
             { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
             { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
-            { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render, className: tc },
+            { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render: render1, className: tc },
         ];
     }
     /* 生成表格数据 */
@@ -166,8 +177,9 @@ class InfoDisplay extends Component {
     }
     render() {
         const { infoItem, infoData = {} } = this.props;
+        const { quotaCardGiftConfList = [] } = infoData;
         const columns = this.generateColumns();
-        const dataSource = this.generateDataSource([]);
+        const dataSource = this.generateDataSource(quotaCardGiftConfList);
         return (
             <Row>
                 {

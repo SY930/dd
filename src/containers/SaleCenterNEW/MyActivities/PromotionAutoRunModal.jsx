@@ -211,7 +211,7 @@ class PromotionAutoRunModal extends Component {
                 title: SALE_LABEL.k5f211mg,
                 dataIndex: 'order',
                 className: styles.noPadding,
-                width: 110,
+                width: 80,
                 render: (order, record, index) => {
                     return (
                         <Select
