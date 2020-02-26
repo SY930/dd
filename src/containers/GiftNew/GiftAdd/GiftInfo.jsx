@@ -110,11 +110,13 @@ export default class GiftInfo extends Component {
     }
     render() {
         const { visible, giftTreeData } = this.state;
+        const { value } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
+        //礼品定额卡添加优惠券限制最多10种
         return (
             <div className={styles.cGiftInfo}>
-                <Button icon="plus" onClick={this.toggleModal}>添加礼品</Button>
+                {!value[9] && <Button icon="plus" onClick={this.toggleModal}>添加礼品</Button>}
                 <Table
                     bordered={true}
                     columns={columns}
