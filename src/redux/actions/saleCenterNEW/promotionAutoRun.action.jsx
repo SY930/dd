@@ -1,4 +1,5 @@
 import { axiosData } from '../../../helpers/util';
+import { getStore } from '@hualala/platform-base/lib';
 
 export const SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_START = 'sale center: query promotion auto run list START';
 export const SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS = 'sale center: query promotion auto run list SUCCESS';
@@ -90,7 +91,28 @@ export const queryPromotionAutoRunList = (opts) => {
                 ),
             ]
         ).then(values => {
-            dispatch(queryPromotionAutoRunListSuccess(values));
+            const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
+            const topEvents = [
+                {
+                    promotionName: '会员价',
+                    promotionType: 20,
+                    groupID,
+                    promotionID: '-10',
+                    promotionIDStr: '-10',
+                    order: 0,
+                },
+                {
+                    promotionName: '会员折扣',
+                    promotionType: 20,
+                    groupID,
+                    promotionID: '-20',
+                    promotionIDStr: '-20',
+                    order: 0,
+                }
+            ];
+            const [a1, a2] = values;
+            const newVals = [a1, [...topEvents, ...a2]];
+            dispatch(queryPromotionAutoRunListSuccess(newVals));
         }).catch((error) => {
             dispatch(queryPromotionAutoRunListFail(error));
         })
