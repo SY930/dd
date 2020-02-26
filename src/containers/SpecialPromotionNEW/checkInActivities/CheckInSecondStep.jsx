@@ -364,15 +364,14 @@ class CheckInSecondStep extends React.Component {
         if( giftGetRule == 5 ) {
             simpleData = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
             resultFormData.ifHaveGift1 = ['1'];
-            for(let i = 0; i < 7; i++) {
-                resultFormData[`ifHaveGift${i + 2}`] = ['1'];
-            }
+            // for(let i = 0; i < 7; i++) {
+            //     resultFormData[`ifHaveGift${i + 2}`] = ['1'];
+            // }
             showGift1 = true;
         }else{
             for(let i = 0; i < 7; i++) {
                 resultFormData[`ifHaveGift${i + 2}`] = ['1'];
             }
-            showGift1 = true;
         }   
         return {
             parsedRule, data, simpleData, giftGetRule, resultFormData, showGiftTrue, changeFormKeysArr, showGift1
@@ -654,9 +653,11 @@ class CheckInSecondStep extends React.Component {
         } 
         let giftGetRule = this.state.giftGetRule;
         let gifts = this.gatherGiftsInfo(giftGetRule);
+        let athNeedCount = giftGetRule == 4 ? 1 : gifts[gifts.length - 1].needCount;
         if (validateFlag) {
             this.props.setSpecialBasicInfo({
                 giftGetRule,
+                needCount: athNeedCount,
             })
             this.props.setSpecialGiftInfo(gifts);
             this.props.setPromotionDetail({
