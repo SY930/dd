@@ -409,6 +409,7 @@ class ReturnGiftDetailInfo extends React.Component {
                         <Radio key={1} value={1}>{SALE_LABEL.k67g8msz}</Radio >
                     </RadioGroup >
                 </FormItem>
+                <p className={styles.yellowFont}>当有会员信息时，礼品卡会直接存入会员账户不再打印券码</p>
             </div>
         )
     }
