@@ -85,6 +85,7 @@ class MessageTemplateEditPanel extends React.Component {
         const k6d9lmwf = intl.formatMessage(SALE_STRING.k6d9lmwf);
         const k6d9ln4r = intl.formatMessage(SALE_STRING.k6d9ln4r);
         const k6h90qcx = intl.formatMessage(SALE_STRING.k6h90qcx);
+        const k5do0ps6 = intl.formatMessage(SALE_STRING.k5do0ps6);
         const myStr = '\\['+k6d9lmwf+'\\]\|\\['+k6d9ln4r+'\/'+k6h90qcx+'\\]';
         var rex = new RegExp(myStr, 'g');
         const strippedMessage = message.replace(rex, '');
@@ -120,7 +121,7 @@ class MessageTemplateEditPanel extends React.Component {
                     groupName: this.props.user.accountInfo.groupName
                 })
                     .then(() => {
-                        messageService.success(SALE_STRING.k5do0ps6);
+                        messageService.success(k5do0ps6);
                         this.props.getMessageTemplateList();
                         this.props.cancel && this.props.cancel();
                         this.setState({
