@@ -16,7 +16,18 @@ const formItems = {
         type: 'text',
         label: '礼品数量',
         surfix: '个',
-        rules: ['required', 'numbers'],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!/^\d+$/.test(value)) {
+                    return callback('请输入数字');
+                }
+                if (+value>50) {
+                    return callback('限制50个');
+                }
+                return callback();
+            },
+        }],
     },
     effectType: {
         type: 'radio',
