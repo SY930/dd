@@ -303,14 +303,12 @@ class GiftAddModal extends React.Component {
                             // giftDenomination 礼品卡面值
                             // cardPrice 现金卡值
                             const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('cardPrice');
-                            const giftDenomination = getFieldValue('giftDenomination');
-                            if(giftValue === undefined){
+                            const cardPrice = getFieldValue('cardPrice') || 0;
+                            const giftDenomination = getFieldValue('giftDenomination') || 0;
+                            if(cardPrice === undefined){
                                 return cb();
                             }
-
-                            if (+v > (giftDenomination - giftValue)) {
-                                console.log('+value', +v, (giftDenomination - giftValue));
+                            if (+v > (giftDenomination - cardPrice)) {
                                 return cb('卡片工本费需≤礼品卡面值-现金卡值');
                             }
                             return cb();
@@ -478,11 +476,8 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
-                        const { getFieldValue } = this.baseForm;
-                        const cardPrice = getFieldValue('cardPrice');
-                        if (+value < +cardPrice) {
-                            return callback('礼品卡面值要大于等于现金卡值');
-                        }
+                        const { validateFields } = this.baseForm;
+                        validateFields(['cardPrice', 'giftCost'], { force: true });
                         return callback();
                     },
                 }],
@@ -495,11 +490,12 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
-                        const { getFieldValue } = this.baseForm;
-                        const giftDenomination = getFieldValue('giftDenomination');
+                        const { getFieldValue,validateFields } = this.baseForm;
+                        const giftDenomination = getFieldValue('giftDenomination') || 0;
                         if (+giftDenomination < +value) {
                             return callback('现金卡值需≤礼品卡面值');
                         }
+                        validateFields(['giftCost'], { force: true });
                         return callback();
                     },
                 }],
@@ -516,6 +512,16 @@ class GiftAddModal extends React.Component {
                 label: '礼品详情',
                 defaultValue: [],
                 render: d => d()(<GiftInfo />),
+                rules: [{
+                    validator: (rule, value, callback) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftDenomination = getFieldValue('giftDenomination');
+                        if (+giftDenomination === 0 && !value[0]) {
+                            return callback('礼品卡面值为0，礼品不能为空');
+                        }
+                        return callback();
+                    },
+                }],
             },
         };
         const formKeys = {
@@ -633,7 +639,6 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'giftDenomination',
-                        'giftCost',
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
