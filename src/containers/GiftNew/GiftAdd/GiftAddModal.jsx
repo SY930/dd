@@ -305,15 +305,20 @@ class GiftAddModal extends React.Component {
                     { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于或等于0的值，整数不超过9位，小数不超过2位' },
                     {
                         validator: (rule, v, cb) => {
+                            // value 卡片工本费
+                            // giftDenomination 礼品卡面值
+                            // cardPrice 现金卡值
                             const { getFieldValue } = this.baseForm;
-                            const giftValue = getFieldValue('cardPrice');
-                            if(giftValue === undefined){
-                                cb();
-                            }else{
-                                Number(v || 0) <= Number(giftValue || 0) ? cb() : cb(rule.message);
+                            const cardPrice = getFieldValue('cardPrice') || 0;
+                            const giftDenomination = getFieldValue('giftDenomination') || 0;
+                            if(cardPrice === undefined){
+                                return cb();
                             }
+                            if (+v > (giftDenomination - cardPrice)) {
+                                return cb('卡片工本费需≤礼品卡面值-现金卡值');
+                            }
+                            return cb();
                         },
-                        message: '工本费不能高于现金卡值',
                     }],
             },
             price: {
@@ -477,11 +482,8 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
-                        const { getFieldValue } = this.baseForm;
-                        const cardPrice = getFieldValue('cardPrice');
-                        if (+value < +cardPrice) {
-                            return callback('礼品卡面值要大于等于现金卡值');
-                        }
+                        const { validateFields } = this.baseForm;
+                        validateFields(['cardPrice', 'giftCost'], { force: true });
                         return callback();
                     },
                 }],
@@ -494,11 +496,12 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
-                        const { getFieldValue } = this.baseForm;
-                        const giftDenomination = getFieldValue('giftDenomination');
+                        const { getFieldValue,validateFields } = this.baseForm;
+                        const giftDenomination = getFieldValue('giftDenomination') || 0;
                         if (+giftDenomination < +value) {
-                            return callback('礼品卡面值要大于等于现金卡值');
+                            return callback('现金卡值需≤礼品卡面值');
                         }
+                        validateFields(['giftCost'], { force: true });
                         return callback();
                     },
                 }],
@@ -515,6 +518,16 @@ class GiftAddModal extends React.Component {
                 label: '礼品详情',
                 defaultValue: [],
                 render: d => d()(<GiftInfo />),
+                rules: [{
+                    validator: (rule, value, callback) => {
+                        const { getFieldValue } = this.baseForm;
+                        const giftDenomination = getFieldValue('giftDenomination');
+                        if (+giftDenomination === 0 && !value[0]) {
+                            return callback('礼品卡面值为0，礼品不能为空');
+                        }
+                        return callback();
+                    },
+                }],
             },
         };
         const formKeys = {
@@ -632,7 +645,6 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'giftDenomination',
-                        'giftCost',
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
