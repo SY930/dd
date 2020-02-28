@@ -55,7 +55,7 @@ class PromotionSelectModal extends Component {
             allPromotionList,
             allGiftList,
         } = this.props;
-        const allGiftsArray = allGiftList.toJS();
+        const allGiftsArray = allGiftList ? allGiftList.toJS() : [];
         const allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
             value: promotion.promotionIDStr,
             label: <span>{BASIC_PROMOTION_MAP[promotion.promotionType]} - {promotion.promotionName}</span>,
