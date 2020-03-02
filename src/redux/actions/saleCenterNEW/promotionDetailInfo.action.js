@@ -299,7 +299,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         })
         dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
         if (params.shopID && params.shopID > 0) {
-            return axiosData('/shopapi/queryShopFoodSubInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+            return axiosData('/shopapi/queryShopFoodInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
             .then(
                 records => {
                     dispatch(fetchFoodMenuSuccess(records));
