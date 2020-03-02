@@ -311,7 +311,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
                 console.log('err: ', e);
             });
         } else {
-            return axiosData('/shopapi/queryGroupFoodSubinfo.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+            return axiosData('/shopapi/queryGroupFood.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
                         records => {
                             dispatch(fetchFoodMenuSuccess(records));

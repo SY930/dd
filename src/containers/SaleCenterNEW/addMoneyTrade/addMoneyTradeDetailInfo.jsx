@@ -153,6 +153,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     brandID: price.brandID || '0',
                     price: price.price,
                     payPrice: price.payPrice,
+                    imgePath: price.imgePath,
                 }
             });
             const rule = {
