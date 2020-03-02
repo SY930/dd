@@ -160,6 +160,7 @@ class FullGiveDetailInfo extends React.Component {
                         brandID: dish.brandID || '0',
                         price: dish.price,
                         stageNo: 0,
+                        imgePath: dish.imgePath,
                     }
                 });
             } else if (ruleType == '1' || ruleType == '4') {
@@ -189,6 +190,7 @@ class FullGiveDetailInfo extends React.Component {
                         foodUnitName: dish.unit,
                         price: dish.price,
                         stageNo: 0,
+                        imgePath: dish.imgePath,
                     }
                 });
             } else {
@@ -218,6 +220,7 @@ class FullGiveDetailInfo extends React.Component {
                             brandID: dish.brandID || '0',
                             price: dish.price,
                             stageNo: keys,
+                            imgePath: dish.imgePath,
                         }
                     }));
                     return {
