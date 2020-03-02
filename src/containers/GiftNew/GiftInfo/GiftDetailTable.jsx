@@ -240,7 +240,7 @@ class GiftDetailTable extends Component {
             g.aggregationChannels = [];
             g.goldGift && g.aggregationChannels.push('goldGift');
             g.vivoChannel && g.aggregationChannels.push('vivoChannel');
-            
+
             g.transferType = g.transferType > 0 ? 1 : 0; // 该字段以前是0 1 2, 三种值 现在1, 2合并为1
             if (g.transferLimitType !== undefined && g.transferLimitType != -1) {
                 g.transferLimitType = String(g.transferLimitType);
@@ -398,7 +398,7 @@ class GiftDetailTable extends Component {
                                                 <div>
                                                     该礼品被以下活动使用，如需删除，请取消引用
                                                 </div>
-                                                <div 
+                                                <div
                                                     style={{
                                                         marginTop: 8,
                                                         background: '#fef4ed',
@@ -414,7 +414,7 @@ class GiftDetailTable extends Component {
                                                 <div style={{ marginTop: 8 }}>
                                                     该礼品被以下微信卡券使用，如需删除，请取消引用
                                                 </div>
-                                                <div 
+                                                <div
                                                     style={{
                                                         marginTop: 8,
                                                         background: '#fef4ed',
@@ -424,7 +424,7 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-                                    
+
                                 </div>
                             ),
                         });
@@ -596,7 +596,16 @@ class GiftDetailTable extends Component {
                                     >{ COMMON_LABEL.create }</Button>
                                 </Authority>
                             </span>
-
+                            <Button
+                                type="ghost"
+                                icon="plus"
+                                className={styles2.jumpToCreate}
+                                onClick={
+                                    () => {
+                                        this.props.togglePage('ticket')
+                                    }
+                                }
+                            >新增券包</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
