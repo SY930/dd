@@ -177,7 +177,33 @@ const monthList = (() => {
     }
     return month;
 })();
+
+const qFormKeys = ['name', 'q'];
+
+const qFormItems = {
+    name: {
+        type: 'text',
+        label: '券包名称',
+    },
+    brandID: {
+        type: 'combo',
+        label: '选择品牌',
+        options: [],
+        props: {
+            placeholder: '全部品牌',
+            showSearch: true,
+            optionFilterProp: 'children',
+            allowClear: true,
+        },
+    },
+    q: {
+        type: 'custom',
+        label: '',
+        render: null,
+    },
+}
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
+    qFormKeys, qFormItems,
 }

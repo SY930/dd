@@ -9,7 +9,7 @@ import { giftInfoNew as sale_giftInfoNew } from '../_reducers';
 import { editGiftInfoNew as sale_editGiftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import GiftEditPage from "../components/GiftEditPage";
-import TicketBag from './TicketBag';
+import Editor from './TicketBag/Editor';
 
 function mapStateToProps(state) {
     return {
@@ -37,7 +37,7 @@ export default class GiftInfo extends React.Component {
         const { page } = this.state;
         const {isCreatingOrEditing, groupID} = this.props;
         if(page==='ticket'){
-            return <TicketBag groupID={groupID} togglePage={this.togglePage} />
+            return <Editor groupID={groupID} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {
             return (
