@@ -135,6 +135,8 @@ class GiftAddModalStep extends React.PureComponent {
             sharedGifts: [],
             isFoodCatNameList: '1',
             scopeLst: [],
+            giftValueCurrencyType: '¥',
+            priceCurrencyType: '¥',
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -166,6 +168,7 @@ class GiftAddModalStep extends React.PureComponent {
         fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         getPromotionShopSchema(params);
         const { name, data, value } = thisGift;
+        const { giftValueCurrencyType = '¥', priceCurrencyType = '¥' } = data;
         const { values } = this.state;
         if (type === 'edit' && value == '111') {
             values.discountType = data.discountType
@@ -180,7 +183,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         this.setState({
-            values
+            values, giftValueCurrencyType, priceCurrencyType,
         });
         FetchGiftSort({});
         // 礼品名称 auto focus
@@ -230,7 +233,9 @@ class GiftAddModalStep extends React.PureComponent {
         return [];
     }
     onUnitChange = (params) => {
-        this.setState(params);
+        const { key, value } = params;
+        this.setState({ [key]: value });
+        this.props.changeGiftFormKeyValue(params);
     }
     handleFormChange(key, value) {
         const { gift: { name: describe, data }, type } = this.props;
@@ -390,7 +395,7 @@ class GiftAddModalStep extends React.PureComponent {
         })
     }
     handleFinish = () => {
-        const { values, groupTypes } = this.state;
+        const { values, groupTypes, giftValueCurrencyType, priceCurrencyType } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -588,7 +593,7 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+            axiosData(callServer, { ...params, groupName, giftValueCurrencyType, priceCurrencyType }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
@@ -1183,7 +1188,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, costUnit, priceUnit } = this.state;
+            { firstKeys, secondKeys, values, giftValueCurrencyType, priceCurrencyType } = this.state;
         const dates = Object.assign({}, data);
         const displayFirstKeys = firstKeys[describe];
         const displaySecondKeys = secondKeys[describe];
@@ -1211,7 +1216,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (value == '21') {
             giftValueLabel = '兑换金额';
         }
-        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: costUnit, name: 'costUnit' };
+        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: giftValueCurrencyType, name: 'giftValueCurrencyType' };
         const isUnit = ['10', '91'].includes(value);
         const formItems = {
             ...FORMITEMS,
@@ -1439,7 +1444,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                prefix: value === '91' ? null : <GiftPrice {...giftProps} value={priceUnit} name="priceUnit" />,
+                prefix: value === '91' ? null : <GiftPrice {...giftProps} value={priceCurrencyType} name="priceCurrencyType" />,
                 surfix: '元',
                 rules: value == '91' ?
                     [
