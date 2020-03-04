@@ -8,64 +8,55 @@
 import { message } from 'antd';
 import { axios } from '@hualala/platform-base';
 
+/** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
  */
-const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
+const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
 
 /**
- * 获取阿里小程序列表
+ * 获取列表
  */
-async function getAppList(data) {
-    const method = `${api}baseInfo/list`;
+async function getTicketList(data) {
+    const method = `${api}getCouponPackages.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg },
-        baseInfoList = [] } = response;
+    const { code, message: msg, couponPackageInfos = [],
+        totalSize, pageNo,
+    } = response;
     if (code === '000') {
-        return baseInfoList;
+        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        return { pageObj, list: couponPackageInfos };
     }
     message.error(msg);
-    return [];
+    return { list: [] };
 }
 /**
- * 获取阿里小程序版本列表
+ * 获取券包明细统计列表
  */
-async function getTemplateList(data) {
-    const method = 'appTemplate/getAppTemplateList';
+async function getTotalList(data) {
+    const method = `${api}getCouponPackageGiftDetail.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
+    const { code, message: msg, customerCouponPackages = [],
+        totalSize, pageNo,
+    } = response;
     if (code === '000') {
-        return response;
+        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        return { pageObj, list: customerCouponPackages };
     }
     message.error(msg);
-    return [];
+    return { list: [] };
 }
 /**
- * 跳转到阿里页面
+ *
  */
-async function getAuthUrl(data) {
-    const method = `${api}authInfo/authUrl`;
+async function deleteTicketBag(data) {
+    const method = `${api}delCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg },
-        authUrl = '' } = response;
-    if (code === '000') {
-        return authUrl;
-    }
-    message.error(msg);
-    return '';
-}
-/**
- * 保存阿里小程序
- */
-async function postAuthUrl(data) {
-    const method = `${api}authInfo/authorizeAndSave`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
+    const { code, message: msg } = response;
     if (code === '000') {
         return true;
     }
@@ -77,7 +68,7 @@ async function postAuthUrl(data) {
  * 保存已选的店铺
  */
 async function putTicketBag(data) {
-    const method = '/couponPackage/addCouponPackage.ajax';
+    const method = `${api}addCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
@@ -150,22 +141,18 @@ async function postPublish(data) {
 /**
  * 获取二维码
  */
-async function getAppQrCode(data) {
-    const method = `${api}qrcode/createQrcode`;
+async function getTicketBagInfo(data) {
+    const method = `${api}getCouponPackageInfo.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg },
-        qrcodeUrl = '' } = response;
+    const { code, message: msg, couponPackageInfo,
+        shopInfos, couponPackageGiftConfigs } = response;
     if (code === '000') {
-        return qrcodeUrl;
-    }
-    if (code === '211500006') {
-        message.error('小程序还不是体验版');
-        return '';
+        return {couponPackageInfo, shopInfos, couponPackageGiftConfigs};
     }
     message.error(msg);
     return '';
 }
 export {
-    putTicketBag,
+    putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
 }

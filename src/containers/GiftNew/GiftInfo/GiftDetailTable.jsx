@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
+import { Tabs, Col, Table, Button, Icon, Modal, message } from 'antd';
 import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
@@ -43,7 +43,9 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
+import TicketBag from './TicketBag';
 
+const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
     constructor(props) {
@@ -575,6 +577,8 @@ class GiftDetailTable extends Component {
         };
         const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
+        const { brands } = this.state;
+        const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                     <div className="layoutsTool" style={{height: '64px'}}>
@@ -615,57 +619,63 @@ class GiftDetailTable extends Component {
                         </div>
                     </div>
                 <PromotionCalendarBanner />
-                <div className={styles2.pageContentWrapper}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        <div className="layoutsSearch">
-                            <ul>
-                                <li className={styles.formWidth}>
-                                    <BaseForm
-                                        getForm={form => this.queryFrom = form}
-                                        formItems={formItems}
-                                        formKeys={formKeys}
-                                        formData={queryParams}
-                                        layout="inline"
-                                        onChange={(key, value) => this.handleFormChange(key, value)}
-                                    />
-                                </li>
-                                <li>
-                                    <Authority rightCode={GIFT_LIST_UPDATE}>
-                                        <Button type="primary" onClick={() => this.handleQuery()}>
-                                            <Icon type="search" />
-                                            { COMMON_LABEL.query }
-                                        </Button>
-                                    </Authority>
-                                </li>
-                            </ul>
+                <Tabs defaultActiveKey="1" className={styles.tabBox}>
+                    <TabPane tab="礼品查询" key="1">
+                    <div className={styles2.pageContentWrapper}>
+                        <div style={{ padding: '0'}} className="layoutsHeader">
+                            <div className="layoutsSearch">
+                                <ul>
+                                    <li className={styles.formWidth}>
+                                        <BaseForm
+                                            getForm={form => this.queryFrom = form}
+                                            formItems={formItems}
+                                            formKeys={formKeys}
+                                            formData={queryParams}
+                                            layout="inline"
+                                            onChange={(key, value) => this.handleFormChange(key, value)}
+                                        />
+                                    </li>
+                                    <li>
+                                        <Authority rightCode={GIFT_LIST_UPDATE}>
+                                            <Button type="primary" onClick={() => this.handleQuery()}>
+                                                <Icon type="search" />
+                                                { COMMON_LABEL.query }
+                                            </Button>
+                                        </Authority>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style={{ margin: '0'}} className="layoutsLine"></div>
                         </div>
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
+                            <Table
+                                ref={this.setTableRef}
+                                bordered={true}
+                                columns={this.getTableColumns().map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                                dataSource={this.state.dataSource}
+                                pagination={{
+                                    showSizeChanger: true,
+                                    pageSize,
+                                    current: pageNo,
+                                    total: this.state.total,
+                                    showQuickJumper: true,
+                                    onChange: this.handlePageChange,
+                                    onShowSizeChange: this.handlePageChange,
+                                    showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                                }}
+                                loading={this.props.loading}
+                                scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                            />
+                        </div>
                     </div>
-                    <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
-                        <Table
-                            ref={this.setTableRef}
-                            bordered={true}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                            dataSource={this.state.dataSource}
-                            pagination={{
-                                showSizeChanger: true,
-                                pageSize,
-                                current: pageNo,
-                                total: this.state.total,
-                                showQuickJumper: true,
-                                onChange: this.handlePageChange,
-                                onShowSizeChange: this.handlePageChange,
-                                showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                            }}
-                            loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
-                        />
-                    </div>
-                </div>
-
+                </TabPane>
+                    <TabPane tab="券包查询" key="2">
+                        <TicketBag groupID={groupID} />
+                    </TabPane>
+                </Tabs>
                 <div>
                     { visibleDetail && GiftDetail(data.giftType) }
                 </div>
