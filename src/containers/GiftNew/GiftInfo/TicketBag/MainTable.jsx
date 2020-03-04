@@ -12,6 +12,7 @@ class MainTable extends Component {
     state = {
         visible: !1,            // 是否显示弹层
         detail: {},
+        couponPackageID: '',
     };
     /* 根据父组件传来的数据判断是否需要更新分页组件 */
     componentWillReceiveProps(np) {
@@ -37,7 +38,7 @@ class MainTable extends Component {
         const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
         getTicketBagInfo(params).then(x => {
             if(x) {
-                this.setState({ detail: x });
+                this.setState({ detail: x, couponPackageID });
                 this.onToggleModal();
             }
         });
@@ -57,7 +58,7 @@ class MainTable extends Component {
     generateColumns() {
         const { tc } = styles;
         const render = (v, o) => {
-            const { couponPackageID, name } = o;
+            const { couponPackageID } = o;
             return (
                 <p id={couponPackageID}>
                     <a href={href} onClick={this.onEdit}>编辑</a>
@@ -95,7 +96,7 @@ class MainTable extends Component {
         }));
     }
     render() {
-        const { visible, detail } = this.state;
+        const { visible, detail, couponPackageID } = this.state;
         const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
@@ -113,7 +114,7 @@ class MainTable extends Component {
                     />
                     {visible &&
                         <DetailModal
-                            groupID={groupID}
+                            ids={{groupID, couponPackageID}}
                             detail={detail}
                             onClose={this.onToggleModal}
                         />
