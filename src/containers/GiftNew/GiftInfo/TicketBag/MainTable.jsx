@@ -3,13 +3,15 @@ import { Table, message, Modal, Popconfirm, Tooltip } from 'antd';
 import styles from './index.less';
 import { href } from './Common';
 import PagingFactory from 'components/PagingFactory';
-import { deleteTicketBag } from './AxiosFactory';
+import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
+import DetailModal from './Detail';
 
 /** 列表页表格数据 */
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        visible: '',            // 是否显示弹层
+        visible: !1,            // 是否显示弹层
+        detail: {},
     };
     /* 根据父组件传来的数据判断是否需要更新分页组件 */
     componentWillReceiveProps(np) {
@@ -28,6 +30,18 @@ class MainTable extends Component {
             }
         });
     }
+    /** 查看详情 */
+    onPreview = ({ target }) => {
+        const { id: couponPackageID } = target.closest('p');
+        const { groupID } = this.props;
+        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        getTicketBagInfo(params).then(x => {
+            if(x) {
+                this.setState({ detail: x });
+                this.onToggleModal();
+            }
+        });
+    }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
         const { onSavePaging, onQuery } = this.props;
@@ -36,8 +50,8 @@ class MainTable extends Component {
         onQuery(params);
     }
     /* 是否显示 */
-    onCloseModal = () => {
-        this.setState({ visible: '' });
+    onToggleModal = () => {
+        this.setState(ps => ({ visible: !ps.visible }));
     }
     /* 生成表格头数据 */
     generateColumns() {
@@ -54,7 +68,7 @@ class MainTable extends Component {
                     >
                         <a href={href}>删除</a>
                     </Popconfirm>
-                    <a href={href} onClick={this.onGetDetail}>详情</a>
+                    <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
 
@@ -81,8 +95,8 @@ class MainTable extends Component {
         }));
     }
     render() {
-        const { visible } = this.state;
-        const { loading, page } = this.props;
+        const { visible, detail } = this.state;
+        const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
@@ -97,6 +111,13 @@ class MainTable extends Component {
                         scroll={{ y: 'calc(100vh - 440px)' }}
                         pagination={pagination}
                     />
+                    {visible &&
+                        <DetailModal
+                            groupID={groupID}
+                            detail={detail}
+                            onClose={this.onToggleModal}
+                        />
+                    }
                 </div>
         )
     }

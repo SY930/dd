@@ -16,7 +16,7 @@ import { axios } from '@hualala/platform-base';
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
 
 /**
- * 获取阿里小程序列表
+ * 获取列表
  */
 async function getTicketList(data) {
     const method = `${api}getCouponPackages.ajax`;
@@ -28,6 +28,23 @@ async function getTicketList(data) {
     if (code === '000') {
         const pageObj = { pageNo: +pageNo, total: +totalSize };
         return { pageObj, list: couponPackageInfos };
+    }
+    message.error(msg);
+    return { list: [] };
+}
+/**
+ * 获取券包明细统计列表
+ */
+async function getTotalList(data) {
+    const method = `${api}getCouponPackageGiftDetail.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, customerCouponPackages = [],
+        totalSize, pageNo,
+    } = response;
+    if (code === '000') {
+        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        return { pageObj, list: customerCouponPackages };
     }
     message.error(msg);
     return { list: [] };
@@ -124,22 +141,18 @@ async function postPublish(data) {
 /**
  * 获取二维码
  */
-async function getAppQrCode(data) {
-    const method = `${api}qrcode/createQrcode`;
+async function getTicketBagInfo(data) {
+    const method = `${api}getCouponPackageInfo.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg },
-        qrcodeUrl = '' } = response;
+    const { code, message: msg, couponPackageInfo,
+        shopInfos, couponPackageGiftConfigs } = response;
     if (code === '000') {
-        return qrcodeUrl;
-    }
-    if (code === '211500006') {
-        message.error('小程序还不是体验版');
-        return '';
+        return {couponPackageInfo, shopInfos, couponPackageGiftConfigs};
     }
     message.error(msg);
     return '';
 }
 export {
-    putTicketBag, getTicketList, deleteTicketBag,
+    putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
 }
