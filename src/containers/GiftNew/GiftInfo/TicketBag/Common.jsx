@@ -125,8 +125,8 @@ const formItems = {
         defaultValue: [],
         render: null,
         props: {
+            placeholder: '默认全部店铺',
             size: 'small',
-            defaultCheckAll: !!1,
         },
     },
     couponPackageDesciption: {
