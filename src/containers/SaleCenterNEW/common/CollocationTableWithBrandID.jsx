@@ -169,7 +169,7 @@ class CollocationTableWithBrandID extends Component {
     }
     addGroup = () => {
         const { data } = this.state;
-        this.props.type == '5010' && data.length >= 50 ? null : data.push(getDefaultStageData());
+        this.props.type == '5010' && data.length >= 50 ? null : data.push(this.getDefaultStageData());
         this.setState({ data });
         this.props.onChange(data);
     }
