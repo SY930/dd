@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Button, Icon } from 'antd';
+import { Tabs, Button, Icon, Popover } from 'antd';
 import _ from 'lodash';
 import SendGiftPanel from '../components/SendGiftPanel'
 import GiftSendOrUsedCount from './GiftDetailSendorUsedTable';
@@ -12,6 +12,8 @@ import {
 } from '../_action';
 import ExportModal from "./ExportModal";
 import GenerateBatchGifts from "../components/GenerateBatchGifts";
+import styles from './GiftInfo.less'
+import { axiosData } from '../../../helpers/util';
 
 const TabPane = Tabs.TabPane;
 
@@ -29,19 +31,47 @@ class GiftDetailModalTabs extends React.Component {
         this.state = {
             activeKey: 'send',
             exportVisible: false,
+            popoverVisible: false,
         };
         this.handleExport = this.handleExport.bind(this);
     }
 
     handleExport() {
-        this.setState({
-            exportVisible: true,
-        });
+        const { selectedID } = this.props;
+        // const params = _.omit(queryInfo, 'pageNo', 'pageSize');
+        const {data: { giftItemID, giftName }, } = this.props;
+        const params = {giftItemID, giftName};
+        if (this.state.activeKey === 'used') {
+            params.giftStatus = '2'
+        }
+        axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', { ...params }, null, {
+            path: 'data',
+        }).then((records) => {
+            if(records.sameRequest){
+                this.setState({
+                    popContent: '已有导出任务 请勿重复操作，',
+                    popA: '查看导出结果', 
+                })
+            }else{
+                this.setState({
+                    popContent: '数据导出中 请',
+                    popA: '查看导出进度', 
+                }) 
+            }
+            this.setState({
+                popoverVisible: true,
+            });
+        }).catch(() => {
+        })
+    }
+    componentWillUnmount() {
+        window.removeEventListener('click', this.hidePopOver);
     }
 
     componentWillReceiveProps(nextProps) {
         const { sendorUsedKey } = nextProps;
         this.setState({ activeKey: sendorUsedKey });
+        window.addEventListener('click', this.hidePopOver);
     }
 
     onChange(activeKey) {
@@ -54,6 +84,34 @@ class GiftDetailModalTabs extends React.Component {
         FetchSendorUsedList({ params, isSend:  activeKey === 'send'});
         UpdateSendorUsedParams({ params });
     }
+    openOther = () => {
+        this.setState({
+        popoverVisible: false,
+        });
+        this.setState({
+            exportVisible: true,
+        });
+    };
+    handleVisibleChange = visible => {
+    this.setState({ popoverVisible: visible});
+    };
+    renderPopOver = () => {
+        const { popContent = '', popA ='' } = this.state;
+        return(
+            <div className={styles.popDiv}>
+                <span>{popContent}</span>
+                <a className={styles.greenLink} onClick={this.openOther}>{popA}</a>
+            </div>      
+        );
+    }
+    hidePopOver = (ev) => {
+        let _currentBox = document.getElementsByClassName('pop1')[0];
+        // if(!ev.target.hasChildNodes(_currentBox)){
+            this.setState({
+                popoverVisible: false,
+            })
+        // }
+    } 
     render() {
         const { data } = this.props;
         const tabs = data.giftType === '91' ?
@@ -70,17 +128,26 @@ class GiftDetailModalTabs extends React.Component {
                     onChange={activeKey => this.onChange(activeKey)}
                     tabBarExtraContent={
                         this.state.activeKey === 'send' || this.state.activeKey === 'used' ?
-                        <Button type="ghost"
-                                title={this.state.activeKey === 'send' ? '导出发出信息' : '导出使用信息'}
-                                disabled={
-                                    (this.state.activeKey === 'send' && this.props.sendCount <= 0) ||
-                                    (this.state.activeKey === 'used' && this.props.usedCount <= 0)
-                                }
-                                onClick={this.handleExport}
-                                style={{top: '8px'}}
+                        <Popover
+                            content={this.renderPopOver()}
+                            placement="topRight"
+                            title={false}
+                            trigger="click"
+                            visible={this.state.popoverVisible}
+                            onVisibleChange={this.handleVisibleChange}
                         >
-                            <Icon type="export" />导出
-                        </Button>
+                            <Button type="ghost"
+                                    title={this.state.activeKey === 'send' ? '导出发出信息' : '导出使用信息'}
+                                    disabled={
+                                        (this.state.activeKey === 'send' && this.props.sendCount <= 0) ||
+                                        (this.state.activeKey === 'used' && this.props.usedCount <= 0)
+                                    }
+                                    onClick={this.handleExport}
+                                    style={{top: '8px'}}
+                            >
+                                <Icon type="export" />导出
+                            </Button>
+                        </Popover>
                         :
                         null
                     }
