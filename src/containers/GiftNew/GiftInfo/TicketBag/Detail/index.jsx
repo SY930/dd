@@ -1,12 +1,14 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Tabs } from 'antd';
 import styles from './index.less';
 import InfoTable from './InfoTable';
 import TotalTable from './TotalTable';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
 import { getTotalList } from '../AxiosFactory';
+import PresentForm from './PresentForm';
 
+const TabPane = Tabs.TabPane;
 class Detail extends Component {
     /* 页面需要的各类状态属性 */
     state = {
@@ -26,7 +28,7 @@ class Detail extends Component {
         // 第一次查询params会是null，其他查询条件默认是可为空的。
         const obj = { ...queryParams, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: !!1 });
+        this.setState({ queryParams: obj, loading: !0 });
         getTotalList({ ...ids, ...params }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj, list, loading: !1 });
@@ -37,7 +39,7 @@ class Detail extends Component {
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, sellBeginTime,
             sellEndTime, couponPackageDesciption, couponPackageStock, maxSendLimit } = couponPackageInfo;
-        const { onClose } = this.props;
+        const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'http://res.hualala.com/basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         return (
             <Modal
@@ -76,15 +78,20 @@ class Detail extends Component {
                     </li>
                     <li>
                         <h3>券包明细统计</h3>
-                        <div>
-                            <QueryForm onQuery={this.onQueryList} />
-                            <MainTable
-                                list={list}
-                                loading={loading}
-                                pageObj={pageObj}
-                                onQuery={this.onQueryList}
-                            />
-                        </div>
+                        <Tabs defaultActiveKey="1" className={styles.tabBox}>
+                            <TabPane tab="发出数" key="1">
+                                <QueryForm onQuery={this.onQueryList} />
+                                <MainTable
+                                    list={list}
+                                    loading={loading}
+                                    pageObj={pageObj}
+                                    onQuery={this.onQueryList}
+                                />
+                            </TabPane>
+                            <TabPane tab="赠送" key="2">
+                                <PresentForm ids={ids} />
+                            </TabPane>
+                        </Tabs>
                     </li>
                 </ul>
             </Modal>

@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import moment from 'moment';
-import { BaseForm } from '@hualala/platform-components';
+import BaseForm from 'components/common/BaseForm';
 import { Button } from 'antd';
 import { qFormKeys, qFormItems, } from './Common';
 import styles from './index.less';
