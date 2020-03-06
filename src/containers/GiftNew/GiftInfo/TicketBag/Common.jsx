@@ -25,6 +25,13 @@ const statusOpts = [
     { label: '已售出', value: '12' },
     { label: '已作废', value: '13' },
 ];
+const isSendOpts = [
+    { label: '不发送', value: '0' },
+    { label: '仅发送短信', value: '1' },
+    { label: '仅推送微信', value: '2' },
+    { label: '微信不成功发送短信', value: '3' },
+    { label: '微信和短信都发送', value: '4' },
+];
 const wayOpts = [
     { value: '', label: '全部' },
     { value: '10', label: '消费返券' },
@@ -151,7 +158,7 @@ const formItems = {
         label: '券包内容',
         defaultValue: [],
         rules: [{
-            required: !!1,
+            required: !0,
             validator: (rule, value, callback) => {
                 if (!value[0]) {
                     return callback('券包内容不能为空');
@@ -173,7 +180,7 @@ const formItems = {
         format: 'HH:mm',
         rules: ['required'],
     },
-    giftSendCount: {
+    maxSendLimit: {
         type: 'text',
         label: '发送次数',
         rules: ['required', 'numbers'],
@@ -182,14 +189,7 @@ const formItems = {
         type: 'custom',
         label: '选择日期',
         render: null,
-        rules: [{
-            validator: (rule, value, callback) => {
-                if (!value[0]) {
-                    return callback('必须选择其中一天');
-                }
-                return callback();
-            },
-        }],
+        defaultValue: ['w1', 'm1'],
     },
     ...separItems,
 };
@@ -200,8 +200,8 @@ const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValu
 'couponPackagePrice', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
 const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
-const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'giftSendCount', 'couponPackageGiftConfigs'];
-const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'giftSendCount', 'couponPackageGiftConfigs'];
+const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
+const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 
 const formKeys = [
     {
@@ -210,7 +210,7 @@ const formKeys = [
     },
     {
         col: { className: 'baseform-b' },
-        keys: keys3,
+        keys: keys5,
     },
 ];
 const formItemLayout = {
@@ -283,9 +283,47 @@ const dFormItems = {
         label: '',
         render: null,
     },
+};
+const pFormKeys2 = ['cellNo', 'sendCount', 'smsGate', 'accountNo', 'smsTemplate', 'q'];
+const pFormKeys = ['cellNo', 'sendCount', 'smsGate', 'q'];
+const pFormItems = {
+    cellNo: {
+        type: 'text',
+        label: '手机号',
+        rules: ['required', 'phone'],
+        defaultValue: '',
+    },
+    sendCount: {
+        type: 'text',
+        label: '赠送数量',
+        rules: ['numbers'],
+    },
+    smsGate: {
+        type: 'combo',
+        label: '是否发送消息',
+        options: isSendOpts,
+        defaultValue: '0',
+    },
+    accountNo: {
+        type: 'custom',
+        label: '短信权益账户',
+        rules: ['required'],
+        render: null,
+    },
+    smsTemplate: {
+        type: 'custom',
+        label: '短信模板',
+        rules: ['required'],
+        render: null,
+    },
+    q: {
+        type: 'custom',
+        label: '',
+        render: null,
+    },
 }
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
-    qFormKeys, qFormItems, dFormKeys, dFormItems,
+    qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
 }

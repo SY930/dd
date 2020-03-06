@@ -1,34 +1,54 @@
 import React, { PureComponent as Component } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import moment from 'moment';
-import { BaseForm, ShopSelector } from '@hualala/platform-components';
+import BaseForm from 'components/common/BaseForm';
+import ShopSelector from 'components/common/ShopSelector';
 import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
 import { keys1, keys2, keys3, keys4, keys5, DF, TF } from './Common';
 import GiftInfo from '../../GiftAdd/GiftInfo';
 import ImageUpload from './ImageUpload';
 import EveryDay from './EveryDay';
-import { putTicketBag } from './AxiosFactory';
+import { putTicketBag, postTicketBag } from './AxiosFactory';
 
 export default class Editor extends Component {
     state = {
-        couponPackageType: '1',
-        couponSendWay: '1',
-        cycleType: '',
+        newFormKeys: formKeys,
     }
     /** form */
     onChange = (key, value) => {
-        if (['couponPackageType', 'couponSendWay', 'cycleType'].includes(key)){
-            this.setState({ [key]: value });
-        }
-        if (key==='cycleType') {
-            // 每次更新选择周期就初始化日期选择集合
-            const validCycle = [value + 1];
-            this.form.setFieldsValue({ validCycle });
+        if (key==='couponPackageType'){
+            const [a, b] = [...formKeys];
+            let newA = a;
+            if(value === '1'){
+                newA = {...a, keys: keys1 };
+            } else {
+                newA = {...a, keys: keys2};
+            }
+            this.setState({ newFormKeys: [newA, b] });
         }
         if (key==='couponSendWay') {
-            // 每次切换发放类型，就初始化周期类型历史值。
-            this.setState({ cycleType: '' });
+            const [a, b] = [...formKeys];
+            let newB = b;
+            if(value === '1'){
+                newB = {...b, keys: keys3};
+            } else {
+                newB = {...b, keys: keys4};
+            }
+            this.setState({ newFormKeys: [a, newB] });
+        }
+        if (key==='cycleType') {
+            const { getFieldsValue } = this.form;
+            const { couponSendWay } = getFieldsValue();
+            if (couponSendWay==='1') { return; }
+            const [a, b] = [...formKeys];
+            let newB = b;
+            if(value){
+                newB = {...b, keys: keys5};
+            }else{
+                newB = {...b, keys: keys4};
+            }
+            this.setState({ newFormKeys: [a, newB] });
         }
     }
     /** 得到form */
@@ -37,11 +57,13 @@ export default class Editor extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { cycleType, couponPackageType } = this.state;
+        let [couponPackageType, cycleType] = ['1', ''];
+        if(this.form) {
+            couponPackageType = this.form.getFieldValue('couponPackageType');
+            cycleType = this.form.getFieldValue('cycleType');
+        }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage,
             validCycle, couponPackagePrice, ...other } = formItems;
-        // 第一次加载组件进入给个初始化的值，默认第一天
-        const defaultValue = [cycleType + 1];
         const label = (couponPackageType === '1') ? '购买金额' : '记录实收金额';
         const render = d => d()(<GiftInfo />);
         const render1 = d => d()(<ShopSelector />);
@@ -53,32 +75,8 @@ export default class Editor extends Component {
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
-            validCycle: { ...validCycle, defaultValue, render: render3 },
+            validCycle: { ...validCycle, render: render3 },
         }
-    }
-    /** formKeys 重新设置 */
-    resetFormKeys() {
-        const { couponSendWay, couponPackageType, cycleType } = this.state;
-        // 写的有点low，但如果改需求的话，会很便捷。
-        const [a, b] = [...formKeys];
-        let [newA, newB] = [a, b];
-        if(couponPackageType==='1'){
-            newA = {...a, keys: keys1 };
-        }
-        if(couponPackageType==='2') {
-            newA = {...a, keys: keys2};
-        }
-        if(couponSendWay==='1'){
-            newB = {...b, keys: keys3};
-        }
-        if(couponSendWay==='2') {
-            if(cycleType){
-                newB = {...b, keys: keys5};
-            }else{
-                newB = {...b, keys: keys4};
-            }
-        }
-        return [newA, newB];
     }
     onCancel = () => {
         this.props.togglePage();
@@ -86,10 +84,19 @@ export default class Editor extends Component {
     onSave = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { groupID } = this.props;
-                const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime: time,
-                        cycleType, ...others,
+                const { groupID, detail } = this.props;
+                const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
+                        cycleType, validCycle, ...others,
                     } = v;
+                let cycleObj = {};
+                if(cycleType){
+                    const cycle = validCycle.filter(x => (x[0] === cycleType));
+                    cycleObj = { validCycle: cycle };
+                    if (!cycle[0]) {
+                        message.warning('必须选择一个日期');
+                        return;
+                    }
+                }
                 let dateObj = {};
                 if(sellTime) {
                     const [sd, ed] = sellTime;
@@ -97,10 +104,21 @@ export default class Editor extends Component {
                     const sellEndTime = moment(ed).format(DF);
                     dateObj = { sellBeginTime, sellEndTime };
                 }
-                const sendTime = moment(time).format(TF);
+                let timeObj = {};
+                if(sendTime) {
+                    timeObj = { sendTime: moment(sendTime).format(TF) };
+                }
                 const shopInfos = shops.map(x=>({shopID:x}));
-                const couponPackageInfo = { sellBeginTime, sellEndTime, sendTime, ...dateObj, ...others };
+                const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
+                if(detail){
+                    const { couponPackageID } = detail; // 更新需要的id
+                    const newParams = { ...params, couponPackageInfo: { ...couponPackageInfo, couponPackageID } };
+                    postTicketBag(newParams).then((flag) => {
+                        flag && this.onCancel();
+                    });
+                    return;
+                }
                 putTicketBag(params).then((flag) => {
                     flag && this.onCancel();
                 });
@@ -109,9 +127,10 @@ export default class Editor extends Component {
 
     }
     render() {
-        const { } = this.props;
+        const { newFormKeys } = this.state;
+        const { detail } = this.props;
+        console.log('detail', detail);
         const newFormItems = this.resetFormItems();
-        const newFormKeys = this.resetFormKeys();
         return (
             <section className={styles.formBox}>
                 <div className={styles.header}>
@@ -126,7 +145,7 @@ export default class Editor extends Component {
                     onChange={this.onChange}
                     formItems={newFormItems}
                     formKeys={newFormKeys}
-                    formData={{}}
+                    formData={detail || {}}
                     formItemLayout={formItemLayout}
                 />
             </section>

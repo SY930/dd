@@ -29,7 +29,7 @@ class MainTable extends Component {
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
             { width: 160, title: '券包名称', dataIndex: 'couponPackageName' },
-            { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
+            { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
             { title: '券包说明', dataIndex: 'couponPackageDesciption' },
             { width: 80, title: '创建人', dataIndex: 'shopCount', className: tc },
             { width: 160, title: '时间', dataIndex: 'range', className: tc },
@@ -39,7 +39,7 @@ class MainTable extends Component {
     generateDataSource() {
         const { list } = this.props;
         return list.map((x, i) => ({
-            key: x.id,
+            key: x.customerCouponPackID,
             idx: i + 1,
             range: x.sellBeginTime + '~' + x.sellEndTime,
             ...x,

@@ -15,6 +15,7 @@ function mapStateToProps(state) {
     return {
         isCreatingOrEditing: state.sale_editGiftInfoNew.get('isCreatingOrEditing'),
         groupID: state.user.getIn(['accountInfo', 'groupID']),
+        accountID: state.user.getIn(['accountInfo', 'accountID']),
     }
 }
 
@@ -30,14 +31,14 @@ export default class GiftInfo extends React.Component {
         page: '',
     }
     /** 切换页面 不传默认列表页 */
-    togglePage = (page = '') => {
-        this.setState({ page });
+    togglePage = (page = '', detail = null) => {
+        this.setState({ page, detail });
     }
     render() {
-        const { page } = this.state;
-        const {isCreatingOrEditing, groupID} = this.props;
+        const { page, detail } = this.state;
+        const {isCreatingOrEditing, groupID, accountID} = this.props;
         if(page==='ticket'){
-            return <Editor groupID={groupID} togglePage={this.togglePage} />
+            return <Editor groupID={groupID} accountID={accountID} detail={detail} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {
             return (

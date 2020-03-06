@@ -24,7 +24,7 @@ export default class TicketBag extends Component {
         // 第一次查询params会是null，其他查询条件默认是可为空的。
         const obj = { ...queryParams, ...params,  groupID };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: !!1 });
+        this.setState({ queryParams: obj, loading: !0 });
         getTicketList({ groupID, ...params }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj, list, loading: !1 });
@@ -32,7 +32,7 @@ export default class TicketBag extends Component {
     }
     render() {
         const { list, loading, pageObj } = this.state;
-        const { groupID } = this.props;
+        const { groupID, accountID, onGoEdit } = this.props;
         return (
             <div className={styles.listBox}>
                 <QueryForm
@@ -41,10 +41,12 @@ export default class TicketBag extends Component {
                 <div className="layoutsLine"></div>
                 <MainTable
                     groupID={groupID}
+                    accountID={accountID}
                     list={list}
                     loading={loading}
                     pageObj={pageObj}
                     onQuery={this.onQueryList}
+                    onGoEdit={onGoEdit}
                 />
             </div>
         )

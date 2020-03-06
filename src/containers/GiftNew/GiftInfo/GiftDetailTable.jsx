@@ -673,7 +673,7 @@ class GiftDetailTable extends Component {
                     </div>
                 </TabPane>
                     <TabPane tab="券包查询" key="2">
-                        <TicketBag groupID={groupID} />
+                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} />
                     </TabPane>
                 </Tabs>
                 <div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Table } from 'antd';
-import moment from 'moment';
 import styles from './Crm.less';
 import GiftModal from './GiftModal';
 import { getCardList } from './AxiosFactory';
@@ -43,7 +42,7 @@ export default class GiftInfo extends Component {
         };
         const render3 = (v) => {
             const { giftTypeName } = GiftCfg;
-            const { label } = giftTypeName.find(x=>+x.value === +v);
+            const { label } = giftTypeName.find(x=>+x.value === +v) || {};
             return (<span>{label}</span>);
         };
         // 表格头部的固定数据

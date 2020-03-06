@@ -1,7 +1,8 @@
 import React, { PureComponent as Component } from 'react';
 import { Table, message, Modal, Popconfirm, Tooltip } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
-import { href } from './Common';
+import { href, DF, TF } from './Common';
 import PagingFactory from 'components/PagingFactory';
 import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
 import DetailModal from './Detail';
@@ -42,6 +43,33 @@ class MainTable extends Component {
                 this.onToggleModal();
             }
         });
+    }
+    /** 编辑 */
+    onEdit = ({ target }) => {
+        const { id: couponPackageID } = target.closest('p');
+        const { groupID, onGoEdit } = this.props;
+        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        getTicketBagInfo(params).then(x => {
+            if(x) {
+                const data = this.resetFormData(x);
+                const obj = { ...data, couponPackageID };
+                onGoEdit('ticket', obj);
+            }
+        });
+    }
+    resetFormData = (detail) => {
+        const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
+        const { couponSendWay: way, couponPackageType: type, validCycle: cycle } = info;
+        const shopInfos = shops.map(x=>`${x.shopID}`);
+        const { sellBeginTime, sellEndTime, sendTime: time } = info;
+        let sellTime = [];
+        if(+sellBeginTime && +sellEndTime){
+            sellTime = [moment(sellBeginTime, DF), moment(sellEndTime, DF)];
+        }
+        const sendTime = +time ? moment(time, TF) : '';
+        const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
+        return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
+            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
@@ -97,7 +125,7 @@ class MainTable extends Component {
     }
     render() {
         const { visible, detail, couponPackageID } = this.state;
-        const { loading, page, groupID } = this.props;
+        const { loading, page, groupID, accountID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
@@ -114,7 +142,7 @@ class MainTable extends Component {
                     />
                     {visible &&
                         <DetailModal
-                            ids={{groupID, couponPackageID}}
+                            ids={{groupID, couponPackageID, accountID}}
                             detail={detail}
                             onClose={this.onToggleModal}
                         />

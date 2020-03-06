@@ -65,7 +65,7 @@ async function deleteTicketBag(data) {
 }
 
 /**
- * 保存已选的店铺
+ *
  */
 async function putTicketBag(data) {
     const method = `${api}addCouponPackage.ajax`;
@@ -80,13 +80,13 @@ async function putTicketBag(data) {
 }
 
 /**
- * 保存配置
+ *
  */
-async function postConfig(data) {
-    const method = `${api}minipTemplate/buildApp`;
+async function putSendTicket(data) {
+    const method = `${api}sendCouponPackageToCustomer.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
+    const { code, message: msg } = response;
     if (code === '000') {
         return true;
     }
@@ -95,13 +95,13 @@ async function postConfig(data) {
 }
 
 /**
- * 审核
+ * 更新
  */
-async function postAudit(data) {
-    const method = `${api}minipTemplate/auditApp`;
+async function postTicketBag(data) {
+    const method = `${api}updateCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
+    const { code, message: msg } = response;
     if (code === '000') {
         return true;
     }
@@ -110,43 +110,44 @@ async function postAudit(data) {
 }
 
 /**
- * 撤销审核
+ * 检测手机
  */
-async function postUndoAudit(data) {
-    const method = `${api}minipTemplate/auditCancel`;
-    const params = { service, type, data, method };
+async function getPhoneValid(data) {
+    const method = `/crm/customerService_checkCustomerByMobile.ajax`;
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
-    if (code === '000') {
-        return true;
+    const { code, message: msg, data: { customerID } } = response;
+    if (code === '000' && customerID !== '0') {
+        return customerID;
     }
     message.error(msg);
-    return false;
+    return '';
 }
 
 /**
- * 发布
+ * 暂时不用了
  */
-async function postPublish(data) {
-    const method = `${api}minipTemplate/online`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { result: { code, message: msg } } = response;
-    if (code === '000') {
-        return true;
-    }
-    message.error(msg);
-    return false;
-}
+// async function getAccount(data) {
+//     const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
+//     const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
+//     const response = await axios.post(url + method, params);
+//     const { code, message: msg, accountInfoList } = response;
+//     if (code === '000') {
+//         return accountInfoList;
+//     }
+//     message.error(msg);
+//     return [];
+// }
+
 /**
- * 获取二维码
+ *
  */
 async function getTicketBagInfo(data) {
     const method = `${api}getCouponPackageInfo.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, couponPackageInfo,
-        shopInfos, couponPackageGiftConfigs } = response;
+        shopInfos = [], couponPackageGiftConfigs } = response;
     if (code === '000') {
         return {couponPackageInfo, shopInfos, couponPackageGiftConfigs};
     }
@@ -155,4 +156,5 @@ async function getTicketBagInfo(data) {
 }
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
+    postTicketBag, getPhoneValid, putSendTicket,
 }
