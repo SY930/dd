@@ -52,7 +52,6 @@ import {
     fetchFoodMenuInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
-import GiftPrice from "../components/GiftPrice";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -135,8 +134,7 @@ class GiftAddModalStep extends React.PureComponent {
             sharedGifts: [],
             isFoodCatNameList: '1',
             scopeLst: [],
-            giftValueCurrencyType: '¥',
-            priceCurrencyType: '¥',
+            unit: '¥',
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -168,7 +166,6 @@ class GiftAddModalStep extends React.PureComponent {
         fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         getPromotionShopSchema(params);
         const { name, data, value } = thisGift;
-        const { giftValueCurrencyType = '¥', priceCurrencyType = '¥' } = data;
         const { values } = this.state;
         if (type === 'edit' && value == '111') {
             values.discountType = data.discountType
@@ -182,9 +179,6 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({secondKeys})
             }
         }
-        this.setState({
-            values, giftValueCurrencyType, priceCurrencyType,
-        });
         FetchGiftSort({});
         // 礼品名称 auto focus
         try {
@@ -231,11 +225,6 @@ class GiftAddModalStep extends React.PureComponent {
             return proSharedGifts;
         }
         return [];
-    }
-    onUnitChange = (params) => {
-        const { key, value } = params;
-        this.setState({ [key]: value });
-        this.props.changeGiftFormKeyValue(params);
     }
     handleFormChange(key, value) {
         const { gift: { name: describe, data }, type } = this.props;
@@ -355,6 +344,9 @@ class GiftAddModalStep extends React.PureComponent {
                 break;
         }
         this.setState({ values });
+        if(key==='giftValueCurrencyType') {
+            this.setState({ unit: value });
+        }
     }
 
     handleCancel = (cb) => {
@@ -395,7 +387,7 @@ class GiftAddModalStep extends React.PureComponent {
         })
     }
     handleFinish = () => {
-        const { values, groupTypes, giftValueCurrencyType, priceCurrencyType } = this.state;
+        const { values, groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -593,7 +585,7 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            axiosData(callServer, { ...params, groupName, giftValueCurrencyType, priceCurrencyType }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
@@ -1188,7 +1180,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, giftValueCurrencyType, priceCurrencyType } = this.state;
+            { firstKeys, secondKeys, values, unit } = this.state;
         const dates = Object.assign({}, data);
         const displayFirstKeys = firstKeys[describe];
         const displaySecondKeys = secondKeys[describe];
@@ -1216,7 +1208,6 @@ class GiftAddModalStep extends React.PureComponent {
         if (value == '21') {
             giftValueLabel = '兑换金额';
         }
-        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: giftValueCurrencyType, name: 'giftValueCurrencyType' };
         const isUnit = ['10', '91'].includes(value);
         const formItems = {
             ...FORMITEMS,
@@ -1246,13 +1237,27 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectCardTypes/>),
             },
+            giftValueCurrencyType: {
+                label: '货币单位',
+                type: 'combo',
+                disabled: type !== 'add',
+                defaultValue: '¥',
+                options: [
+                    { label: '¥', value: '¥' },
+                    { label: '€', value: '€' },
+                    { label: '£', value: '£' },
+                    { label: 'RM', value: 'RM' },
+                    { label: 'S$', value: 'S$' },
+                    { label: 'DHS', value: 'DHS' },
+                    { label: 'MOP$', value: 'MOP$' },
+                ],
+            },
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                prefix: isUnit ? <GiftPrice {...giftProps} /> : null,
-                surfix: '元',
+                prefix: isUnit ? unit : null,
                 rules: [
                     { required: true, message: `${isUnit ? '礼品价值' : '可抵扣金额'}不能为空` },
                     {
@@ -1436,8 +1441,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                prefix: value === '91' ? null : <GiftPrice {...giftProps} value={priceCurrencyType} name="priceCurrencyType" />,
-                surfix: '元',
+                prefix: value === '91' ? null : unit,
                 rules: value == '91' ?
                     [
                         { required: true, message: `礼品售价不能为空` },

@@ -165,7 +165,6 @@ class PhonePreview extends PureComponent {
             showGiftRule,
             giftDiscountRate,
             giftValueCurrencyType ='¥',
-            priceCurrencyType ='¥',
         } = this.props;
         return (
             <div className={styles.phonePreviewContentWrapper}>
@@ -544,7 +543,6 @@ function mapStateToProps(state) {
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
         giftValueCurrencyType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValueCurrencyType']),
-        priceCurrencyType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'priceCurrencyType']),
         giftShareType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftShareType']), // 共享类型
         shareIDs: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shareIDs']), // 可共享券
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),

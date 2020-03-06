@@ -26,7 +26,6 @@ import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
 import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
-import GiftPrice from "../components/GiftPrice";
 
 class GiftAddModal extends React.Component {
     constructor(props) {
@@ -40,8 +39,7 @@ class GiftAddModal extends React.Component {
             values: {},
             transferType: 0,
             isUpdate: true,
-            giftValueCurrencyType: '¥',
-            priceCurrencyType: '¥',
+            unit: '¥',
         };
         this.baseForm = null;
         this.refMap = null;
@@ -51,11 +49,9 @@ class GiftAddModal extends React.Component {
     }
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
-        const { giftValueCurrencyType = '¥', priceCurrencyType = '¥' } = data;
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
-            giftValueCurrencyType, priceCurrencyType,
         })
         // 礼品名称 auto focus
         try {
@@ -83,9 +79,12 @@ class GiftAddModal extends React.Component {
                 break;
             default: this.props.changeGiftFormKeyValue({key, value});
         }
+        if(key==='giftValueCurrencyType') {
+            this.setState({ unit: value });
+        }
     }
     handleSubmit() {
-        const { groupTypes, giftValueCurrencyType, priceCurrencyType } = this.state;
+        const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
@@ -134,7 +133,7 @@ class GiftAddModal extends React.Component {
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
-            axiosData(callServer, { ...params, groupName, giftValueCurrencyType, priceCurrencyType }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
                 this.props.cancelCreateOrEditGift()
@@ -178,16 +177,10 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
-    onUnitChange = (params) => {
-        const { key, value } = params;
-        this.setState({ [key]: value });
-        this.props.changeGiftFormKeyValue(params);
-    }
     render() {
-        const { giftValueCurrencyType, priceCurrencyType } = this.state;
+        const { unit } = this.state;
         const { gift: { name: describe, value, data }, visible, type } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品价值';
-        const giftProps = { disabled: type !== 'add', onChange: this.onUnitChange, value: giftValueCurrencyType, name: 'giftValueCurrencyType' };
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -231,13 +224,28 @@ class GiftAddModal extends React.Component {
                 defaultValue: [],
                 render: decorator => this.renderShopNames(decorator),
             },
+            giftValueCurrencyType: {
+                label: '货币单位',
+                type: 'combo',
+                disabled: type !== 'add',
+                defaultValue: '¥',
+                options: [
+                    { label: '¥', value: '¥' },
+                    { label: '€', value: '€' },
+                    { label: '£', value: '£' },
+                    { label: 'RM', value: 'RM' },
+                    { label: 'S$', value: 'S$' },
+                    { label: 'DHS', value: 'DHS' },
+                    { label: 'MOP$', value: 'MOP$' },
+                ],
+            },
             giftValue: {
                 label: valueLabel,
                 type: 'text',
                 placeholder: `请输入${valueLabel}`,
                 disabled: type !== 'add',
-                prefix: value == '42' ? null : <GiftPrice {...giftProps} />,
-                surfix: value == '42' ? '分' : '元',
+                prefix: value == '42' ? null : unit,
+                surfix: value == '42' ? '分' : '',
                 rules: value == '30'
                     ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }]
                     : [
@@ -295,8 +303,7 @@ class GiftAddModal extends React.Component {
                 label: '建议售价',
                 disabled: type !== 'add',
                 placeholder: '请输入建议售价金额',
-                surfix: '元',
-                prefix: <GiftPrice {...giftProps} value={priceCurrencyType} name="priceCurrencyType" />,
+                prefix: unit,
                 rules: [{ required: true, message: '建议售价不能为空' },
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' },
                 {
@@ -462,6 +469,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'giftRemark',
                         'shopNames',
@@ -480,6 +488,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
@@ -497,6 +506,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
@@ -513,6 +523,7 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'giftCost',
                         'price',
