@@ -25,7 +25,10 @@ export default class PresentForm extends Component {
                 const obj = { sourceWay: !1, sourceType: '10' };
                 const params = {...ids, customerID, ...v, ...obj };
                 putSendTicket(params).then((flag) => {
-                    flag && message.success('发送成功');
+                    if(flag) {
+                        message.success('发送成功');
+                        this.form.setFieldsValue({ cellNo: '' });
+                    }
                 });
             }
         });
