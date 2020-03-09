@@ -289,8 +289,8 @@ const dFormItems = {
         render: null,
     },
 };
-const pFormKeys2 = ['cellNo', 'sendCount', 'smsGate', 'accountNo', 'smsTemplate', 'q'];
-const pFormKeys = ['cellNo', 'sendCount', 'smsGate', 'q'];
+const pFormKeys2 = ['cellNo', 'sendCount', 'c', 'smsGate', 'accountNo', 'smsTemplate', 'q'];
+const pFormKeys = ['cellNo', 'sendCount', 'c', 'smsGate', 'q'];
 const pFormItems = {
     cellNo: {
         type: 'text',
@@ -324,6 +324,11 @@ const pFormItems = {
     q: {
         type: 'custom',
         label: '',
+        render: null,
+    },
+    c: {
+        type: 'custom',
+        label: '剩余库存',
         render: null,
     },
 }
