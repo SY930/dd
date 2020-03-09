@@ -123,13 +123,29 @@ const formItems = {
         type: 'text',
         label: '购买金额',
         surfix: '元',
-        rules: ['price'],
+        rules: ['required', 'price'],
         props: { placeholder: '请输入金额' },
+        rules: [{
+            required: !0,
+            validator: (rule, value, callback) => {
+                const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                if(!pattern.test(value)){
+                    return callback('最大支持8位整数，2位小数');
+                }
+                if (!+value>0) {
+                    return callback('金额要大于0');
+                }
+                return callback();
+            },
+        }],
     },
     couponPackageStock: {
         type: 'text',
         label: '券包库存',
         rules: ['numbers'],
+        props: {
+            placeholder: '不填表示不限制',
+        },
     },
     shopInfos: {
         type: 'custom',
