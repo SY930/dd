@@ -89,7 +89,7 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="2">
-                                <PresentForm ids={ids} />
+                                <PresentForm ids={ids} num={couponPackageStock} />
                             </TabPane>
                         </Tabs>
                     </li>

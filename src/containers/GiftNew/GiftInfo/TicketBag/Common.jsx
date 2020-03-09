@@ -89,6 +89,10 @@ const separItems = {
         type: 'custom',
         render: () => (<div className="separate"><h3>券包设置</h3></div>),
     },
+    c: {
+        type: 'custom',
+        render: null,
+    },
 }
 // 宣传图默认图
 const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
@@ -120,6 +124,7 @@ const formItems = {
         label: '购买金额',
         surfix: '元',
         rules: ['price'],
+        props: { placeholder: '请输入金额' },
     },
     couponPackageStock: {
         type: 'text',
@@ -199,9 +204,9 @@ const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'coupo
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
-const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
-const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
-const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
+const keys3 = ['b', 'c', 'couponSendWay', 'couponPackageGiftConfigs'];
+const keys4 = ['b', 'c', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
+const keys5 = ['b', 'c', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 
 const formKeys = [
     {
@@ -284,8 +289,8 @@ const dFormItems = {
         render: null,
     },
 };
-const pFormKeys2 = ['cellNo', 'sendCount', 'smsGate', 'accountNo', 'smsTemplate', 'q'];
-const pFormKeys = ['cellNo', 'sendCount', 'smsGate', 'q'];
+const pFormKeys2 = ['cellNo', 'sendCount', 'c', 'smsGate', 'accountNo', 'smsTemplate', 'q'];
+const pFormKeys = ['cellNo', 'sendCount', 'c', 'smsGate', 'q'];
 const pFormItems = {
     cellNo: {
         type: 'text',
@@ -319,6 +324,11 @@ const pFormItems = {
     q: {
         type: 'custom',
         label: '',
+        render: null,
+    },
+    c: {
+        type: 'custom',
+        label: '剩余库存',
         render: null,
     },
 }

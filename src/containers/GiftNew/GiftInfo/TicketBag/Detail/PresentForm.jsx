@@ -75,17 +75,32 @@ export default class PresentForm extends Component {
     /* 整理formItems对象 */
     resetFormItems = () => {
         const { smsTemplate: msg, accountNo: acc } = this.state;
-        console.log('accountNo', acc);
+        const { num = 0 } = this.props;
         const btnProp = { type: 'primary', onClick: this.onSend };
-        const { q, accountNo, smsTemplate, ...other } = pFormItems;
+        const { q, c, sendCount, accountNo, smsTemplate, ...other } = pFormItems;
         const render = () => (<div className={styles.sendBtn}><Button {...btnProp}>发送</Button></div>);
         const render1 = d => d()(<AccountNoSelector autoFetch={!0} />);
         const render2 = d => d()(<MsgSelector selectedMessage={msg} />);
+        const render3 = () => (<p>{num}</p>);
+        const rules = [{
+            required: !0,
+            validator: (rule, value, callback) => {
+                if(!(/^\d+$/.test(value))){
+                    return callback('请输入数字');
+                }
+                if (value < 1 || value > num) {
+                    return callback('最小1，最大不能超过剩余库存');
+                }
+                return callback();
+            },
+        }];
         return {
             ...other,
-            accountNo: {...accountNo, render: render1 },
-            smsTemplate: {...smsTemplate, render: render2, onChange: this.onMessageChange},
+            accountNo: { ...accountNo, render: render1 },
+            smsTemplate: { ...smsTemplate, render: render2, onChange: this.onMessageChange},
+            sendCount: { ...sendCount, rules },
             q: { ...q, render },
+            c: { ...c, render: render3 },
         };
     }
     render() {

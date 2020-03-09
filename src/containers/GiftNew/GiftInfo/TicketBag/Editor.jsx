@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip, Icon } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/common/ShopSelector';
@@ -63,12 +63,21 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage,
-            validCycle, couponPackagePrice, ...other } = formItems;
-        const label = (couponPackageType === '1') ? '购买金额' : '记录实收金额';
+            validCycle, couponPackagePrice, c, ...other } = formItems;
+        const tip = (<span>记录实收金额
+                <Tooltip title="记录实收金额：仅用于报表作为实收金额核算">
+                    <Icon style={{ margin: '0 -5px 0 5px' }} type="question-circle" />
+                </Tooltip>
+            </span>);
+        const tip2 = (<Tooltip title="将按周期发送添加的礼品">
+                <Icon type="question-circle" />
+            </Tooltip>);
+        const label = (couponPackageType === '1') ? '购买金额' : tip;
         const render = d => d()(<GiftInfo />);
         const render1 = d => d()(<ShopSelector />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} />);
+        const render4 = () => (tip2);
         return {
             ...other,
             couponPackagePrice: { ...couponPackagePrice, label },
@@ -76,6 +85,7 @@ export default class Editor extends Component {
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
+            c: { ...c, render: render4 },
         }
     }
     onCancel = () => {
