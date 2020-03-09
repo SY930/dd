@@ -107,6 +107,14 @@ class MainTable extends Component {
                     <span>{v}</span>
                 </Tooltip>);
         };
+        const render2 = (v, o) => {
+            const {sellBeginTime, sellEndTime } = o;
+            let text = sellBeginTime + ' ~ ' + sellEndTime;
+            if(sellBeginTime==='0'){
+                text = '长期有效';
+            }
+            return (<span>{text}</span>);
+        };
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
@@ -115,7 +123,7 @@ class MainTable extends Component {
             { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
             { title: '券包说明', dataIndex: 'couponPackageDesciption' },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
-            { width: 160, title: '时间', dataIndex: 'range', className: tc },
+            { width: 160, title: '时间', dataIndex: 'range', className: tc, render: render2 },
         ];
     }
     /* 生成表格数据 */
@@ -124,7 +132,6 @@ class MainTable extends Component {
         return list.map((x, i) => ({
             key: x.id,
             idx: i + 1,
-            range: x.sellBeginTime + ' ~ ' + x.sellEndTime,
             postBy: (x.createBy || '') + ' / ' + (x.modifyBy || ''),
             ...x,
         }));
