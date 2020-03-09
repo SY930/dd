@@ -22,8 +22,8 @@ const formItems = {
                 if (!/^\d+$/.test(value)) {
                     return callback('请输入数字');
                 }
-                if (+value>50) {
-                    return callback('限制50个');
+                if (+value<1 || +value>50) {
+                    return callback('大于0，限制50个');
                 }
                 return callback();
             },

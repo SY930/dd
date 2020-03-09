@@ -384,7 +384,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -426,7 +426,22 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-
+                                    {
+                                        !!quotaCardsReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下礼品定额卡券使用，如需删除，请取消引用
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             ),
                         });
