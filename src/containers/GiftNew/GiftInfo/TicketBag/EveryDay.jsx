@@ -12,11 +12,12 @@ class EveryDay extends Component {
         onChange(tags);
     }
     render() {
-        const { type, value } = this.props;
+        const { type, value, disabled } = this.props;
         const isWeek = (type === 'w');
         const list = isWeek ? weekList : monthList;
+        const css = disabled ? { pointerEvents: 'none' } : {};
         return (
-                <div className={styles.dayBox} >
+                <div className={styles.dayBox} style={css}>
                 {list.map(x => {
                     const checked = value.indexOf(x) > -1;
                     const text = x.substr(1,2);

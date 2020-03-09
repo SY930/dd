@@ -33,8 +33,21 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
+        const { use } = this.props;
         const { tc } = styles;
         // 表格头部的固定数据
+        if(use){
+            return [
+                { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+                { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
+                { width: 100, title: '获得方式', dataIndex: 'way' },
+                { width: 160, title: '获得时间', dataIndex: 'usingTime' },
+                { width: 160, title: '客户编号', dataIndex: 'customerID' },
+                { width: 100, title: '姓名', dataIndex: 'customerName' },
+                { width: 60, title: '性别', dataIndex: 'sex', className: tc },
+                { width: 160, title: '手机号', dataIndex: 'customerMobile' },
+            ];
+        }
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
             { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },

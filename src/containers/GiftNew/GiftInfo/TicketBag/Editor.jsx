@@ -52,16 +52,21 @@ export default class Editor extends Component {
     getForm = (form) => {
         this.form = form;
     }
+    disabledDate = current => {
+        const yesterday = moment().subtract('days', 2);
+        return current && current.valueOf() < yesterday;
+    }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { check } = this.props;
+        const { check, detail } = this.props;
+        const { sendCount = 0 } = detail || {};
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');
             cycleType = this.form.getFieldValue('cycleType');
         }
-        const { couponPackageGiftConfigs, shopInfos, couponPackageImage,
-            validCycle, couponPackagePrice, c, ...other } = formItems;
+        const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
+            validCycle, couponPackagePrice, c, sellTime, ...other } = formItems;
         const tip = (<span>记录实收金额
                 <Tooltip title="记录实收金额：仅用于报表作为实收金额核算">
                     <Icon style={{ margin: '0 -5px 0 5px' }} type="question-circle" />
@@ -70,14 +75,21 @@ export default class Editor extends Component {
         const tip2 = (<Tooltip title="将按周期发送添加的礼品">
                 <Icon type="question-circle" />
             </Tooltip>);
+        const disGift = check || (+sendCount > 0);
         const label = (couponPackageType === '1') ? '购买金额' : tip;
-        const render = d => d()(<GiftInfo  disabled={check} />);
+        const render = d => d()(<GiftInfo  disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
-        const render3 = d => d()(<EveryDay type={cycleType} />);
+        const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         const render4 = () => (tip2);
+        let disDate = {};
+        if(!!detail) {
+            disDate = { disabledDate: this.disabledDate };
+        }
         const newFormItems = {
             ...other,
+            couponPackageType: { ...cpt, disabled: !!detail },
+            sellTime: { ...sellTime , props: disDate},
             couponPackagePrice: { ...couponPackagePrice, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
             shopInfos: { ...shopInfos, render: render1 },
@@ -89,6 +101,14 @@ export default class Editor extends Component {
             let obj = {}
             for(let x in newFormItems) {
                 obj[x] = {...newFormItems[x], disabled: !0 };
+            }
+            return obj;
+        }
+        if(+sendCount > 0) {
+            let obj = {}
+            for(let x in newFormItems) {
+                const disabled = keys5.includes(x);
+                obj[x] = {...newFormItems[x], disabled };
             }
             return obj;
         }
