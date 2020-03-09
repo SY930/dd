@@ -18,6 +18,7 @@ class Detail extends Component {
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
     };
     componentDidMount() {
+        this.onQueryList();
     }
     /**
      * 加载列表

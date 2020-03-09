@@ -200,6 +200,10 @@ const formItems = {
         label: '发送时间',
         format: 'HH:mm',
         rules: ['required'],
+        props: {
+            disabledMinutes: h => range(1, 30).concat(range(31, 60)),
+            hideDisabledOptions: !0,
+        }
     },
     maxSendLimit: {
         type: 'text',
@@ -214,7 +218,11 @@ const formItems = {
     },
     ...separItems,
 };
-
+function range(start, end) {
+    return Array(end - start).fill(0).map((value, idx) => {
+        return idx + start;
+    });
+}
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
