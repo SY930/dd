@@ -39,7 +39,7 @@ class Detail extends Component {
         const { list, loading, pageObj } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, sellBeginTime,
-            sellEndTime, couponPackageDesciption, couponPackageStock, maxSendLimit } = couponPackageInfo;
+            sellEndTime, couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         return (
@@ -73,7 +73,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{couponPackageStock, maxSendLimit}]} />
+                            <TotalTable list={[{couponPackageStock, sendCount}]} />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>
