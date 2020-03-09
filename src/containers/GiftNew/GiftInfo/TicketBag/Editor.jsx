@@ -98,7 +98,7 @@ export default class Editor extends Component {
         return newFormItems;
     }
     onCancel = () => {
-        this.props.togglePage();
+        this.props.togglePage('back');
     }
     onSave = () => {
         this.form.validateFields((e, v) => {
