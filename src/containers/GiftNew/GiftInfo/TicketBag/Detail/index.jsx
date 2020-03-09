@@ -7,6 +7,7 @@ import MainTable from './MainTable';
 import QueryForm from './QueryForm';
 import { getTotalList } from '../AxiosFactory';
 import PresentForm from './PresentForm';
+import { imgURI } from '../Common';
 
 const TabPane = Tabs.TabPane;
 class Detail extends Component {
@@ -40,7 +41,7 @@ class Detail extends Component {
         const { couponPackageImage, couponPackageName, sellBeginTime,
             sellEndTime, couponPackageDesciption, couponPackageStock, maxSendLimit } = couponPackageInfo;
         const { onClose, ids } = this.props;
-        const imgSrc = couponPackageImage || 'http://res.hualala.com/basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
+        const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         return (
             <Modal
                 title="券包使用详情"
@@ -54,7 +55,7 @@ class Detail extends Component {
                     <li>
                         <h3>基本信息</h3>
                         <div className={styles.infoBox}>
-                            <img src={imgSrc} alt="宣传图" />
+                            <img src={imgURI + imgSrc} alt="宣传图" />
                             <div>
                                 <em>券包名称：</em>
                                 <p>{couponPackageName}</p>

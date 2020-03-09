@@ -1,7 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Table, message, Modal, Popconfirm, Tooltip } from 'antd';
 import styles from './index.less';
-import { href } from '../Common';
 import PagingFactory from 'components/PagingFactory';
 
 /** 列表页表格数据 */
