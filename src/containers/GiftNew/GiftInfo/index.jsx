@@ -31,18 +31,23 @@ export default class GiftInfo extends React.Component {
         page: '',
     }
     /** 切换页面 不传默认列表页 */
-    togglePage = (page = '', detail = null) => {
-        this.setState({ page, detail });
+    togglePage = (page = '', detail = null, check) => {
+        this.setState({ page, detail, check });
+        if(page==='back'){
+            this.setState({ back: page });
+        }else{
+            this.setState({ back: '' });
+        }
     }
     render() {
-        const { page, detail } = this.state;
+        const { page, detail, check, back } = this.state;
         const {isCreatingOrEditing, groupID, accountID} = this.props;
         if(page==='ticket'){
-            return <Editor groupID={groupID} accountID={accountID} detail={detail} togglePage={this.togglePage} />
+            return <Editor groupID={groupID} check={check} accountID={accountID} detail={detail} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {
             return (
-                <GiftDetailTable togglePage={this.togglePage} />
+                <GiftDetailTable back={back} togglePage={this.togglePage} />
             )
         } else {
             return (

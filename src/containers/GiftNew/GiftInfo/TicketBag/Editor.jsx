@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Button, message, Tooltip, Icon } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
-import ShopSelector from 'components/common/ShopSelector';
+import ShopSelector from 'components/ShopSelector';
 import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
 import { keys1, keys2, keys3, keys4, keys5, DF, TF } from './Common';
@@ -17,9 +17,10 @@ export default class Editor extends Component {
     }
     /** form */
     onChange = (key, value) => {
+        const { newFormKeys } = this.state;
+        const [a, b] = [...newFormKeys];
+        let [newA, newB] = [a, b];
         if (key==='couponPackageType'){
-            const [a, b] = [...formKeys];
-            let newA = a;
             if(value === '1'){
                 newA = {...a, keys: keys1 };
             } else {
@@ -28,8 +29,6 @@ export default class Editor extends Component {
             this.setState({ newFormKeys: [newA, b] });
         }
         if (key==='couponSendWay') {
-            const [a, b] = [...formKeys];
-            let newB = b;
             if(value === '1'){
                 newB = {...b, keys: keys3};
             } else {
@@ -41,8 +40,6 @@ export default class Editor extends Component {
             const { getFieldsValue } = this.form;
             const { couponSendWay } = getFieldsValue();
             if (couponSendWay==='1') { return; }
-            const [a, b] = [...formKeys];
-            let newB = b;
             if(value){
                 newB = {...b, keys: keys5};
             }else{
@@ -57,6 +54,7 @@ export default class Editor extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
+        const { check } = this.props;
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');
@@ -73,12 +71,12 @@ export default class Editor extends Component {
                 <Icon type="question-circle" />
             </Tooltip>);
         const label = (couponPackageType === '1') ? '购买金额' : tip;
-        const render = d => d()(<GiftInfo />);
-        const render1 = d => d()(<ShopSelector />);
+        const render = d => d()(<GiftInfo  disabled={check} />);
+        const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} />);
         const render4 = () => (tip2);
-        return {
+        const newFormItems = {
             ...other,
             couponPackagePrice: { ...couponPackagePrice, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
@@ -86,10 +84,18 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             c: { ...c, render: render4 },
+        };
+        if(check) {
+            let obj = {}
+            for(let x in newFormItems) {
+                obj[x] = {...newFormItems[x], disabled: !0 };
+            }
+            return obj;
         }
+        return newFormItems;
     }
     onCancel = () => {
-        this.props.togglePage();
+        this.props.togglePage('back');
     }
     onSave = () => {
         this.form.validateFields((e, v) => {
@@ -138,8 +144,7 @@ export default class Editor extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
-        const { detail } = this.props;
-        console.log('detail', detail);
+        const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
         return (
             <section className={styles.formBox}>
@@ -147,7 +152,7 @@ export default class Editor extends Component {
                     券包
                     <p className={styles.opBox}>
                         <Button onClick={this.onCancel}>取消</Button>
-                        <Button type="primary" onClick={this.onSave}>保存</Button>
+                        <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>
                 <BaseForm

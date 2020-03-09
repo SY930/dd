@@ -592,7 +592,7 @@ class GiftDetailTable extends Component {
         };
         const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
-        const { brands } = this.state;
+        const { back } = this.props;
         const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
@@ -600,11 +600,14 @@ class GiftDetailTable extends Component {
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
-                                <Authority rightCode={GIFT_LIST_CREATE}>
+                            </span>
+                            <p style={{ marginLeft: 'auto'}}>
+                            <Authority rightCode={GIFT_LIST_CREATE}>
                                     <Button
                                         type="ghost"
                                         icon="plus"
                                         className={styles2.jumpToCreate}
+                                        style={{ margin: 5 }}
                                         onClick={
                                             () => {
                                                 this.setState({
@@ -614,11 +617,11 @@ class GiftDetailTable extends Component {
                                         }
                                     >{ COMMON_LABEL.create }</Button>
                                 </Authority>
-                            </span>
                             <Button
                                 type="ghost"
                                 icon="plus"
                                 className={styles2.jumpToCreate}
+                                style={{ margin: 5,  width: 90 }}
                                 onClick={
                                     () => {
                                         this.props.togglePage('ticket')
@@ -628,13 +631,15 @@ class GiftDetailTable extends Component {
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
+                                    style={{ margin: '0 24px' }}
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
+                            </p>
                         </div>
                     </div>
                 <PromotionCalendarBanner />
-                <Tabs defaultActiveKey="1" className={styles.tabBox}>
+                <Tabs defaultActiveKey={back? '2' : '1'} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
                     <div className={styles2.pageContentWrapper}>
                         <div style={{ padding: '0'}} className="layoutsHeader">

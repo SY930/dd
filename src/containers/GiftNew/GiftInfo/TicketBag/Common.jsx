@@ -29,8 +29,8 @@ const isSendOpts = [
     { label: '不发送', value: '0' },
     { label: '仅发送短信', value: '1' },
     { label: '仅推送微信', value: '2' },
-    { label: '微信不成功发送短信', value: '3' },
-    { label: '微信和短信都发送', value: '4' },
+    { label: '同时发送短信和微信', value: '4' },
+    { label: '微信推送成功则发送短信', value: '3' },
 ];
 const wayOpts = [
     { value: '', label: '全部' },
@@ -123,13 +123,29 @@ const formItems = {
         type: 'text',
         label: '购买金额',
         surfix: '元',
-        rules: ['price'],
+        rules: ['required', 'price'],
         props: { placeholder: '请输入金额' },
+        rules: [{
+            required: !0,
+            validator: (rule, value, callback) => {
+                const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                if(!pattern.test(value)){
+                    return callback('最大支持8位整数，2位小数');
+                }
+                if (!+value>0) {
+                    return callback('金额要大于0');
+                }
+                return callback();
+            },
+        }],
     },
     couponPackageStock: {
         type: 'text',
         label: '券包库存',
         rules: ['numbers'],
+        props: {
+            placeholder: '不填表示不限制',
+        },
     },
     shopInfos: {
         type: 'custom',
@@ -184,6 +200,10 @@ const formItems = {
         label: '发送时间',
         format: 'HH:mm',
         rules: ['required'],
+        props: {
+            disabledMinutes: h => range(1, 30).concat(range(31, 60)),
+            hideDisabledOptions: !0,
+        }
     },
     maxSendLimit: {
         type: 'text',
@@ -198,7 +218,11 @@ const formItems = {
     },
     ...separItems,
 };
-
+function range(start, end) {
+    return Array(end - start).fill(0).map((value, idx) => {
+        return idx + start;
+    });
+}
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
