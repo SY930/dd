@@ -80,7 +80,7 @@ export default class Editor extends Component {
         const render = d => d()(<GiftInfo  disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
-        const render3 = d => d()(<EveryDay type={cycleType} />);
+        const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         const render4 = () => (tip2);
         let disDate = {};
         if(!!detail) {
@@ -101,6 +101,14 @@ export default class Editor extends Component {
             let obj = {}
             for(let x in newFormItems) {
                 obj[x] = {...newFormItems[x], disabled: !0 };
+            }
+            return obj;
+        }
+        if(+sendCount > 0) {
+            let obj = {}
+            for(let x in newFormItems) {
+                const disabled = keys5.includes(x);
+                obj[x] = {...newFormItems[x], disabled };
             }
             return obj;
         }
