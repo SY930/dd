@@ -10,8 +10,8 @@ const bagOpts = [
     { label: '活动投放', value: '2' },
 ];
 const sendOpts = [
-    { label: '一次性发放', value: '1' },
-    { label: '周期性发放', value: '2' },
+    { label: '一次性发放全部礼品', value: '1' },
+    { label: '周期发放礼品', value: '2' },
 ];
 const cycleOpts = [
     { label: '每日', value: '' },
@@ -87,7 +87,7 @@ const separItems = {
     },
     b: {
         type: 'custom',
-        render: () => (<div className="separate"><h3>券包设置</h3></div>),
+        render: () => (<div className="separate"><h3>礼品设置</h3></div>),
     },
     c: {
         type: 'custom',
@@ -210,6 +210,9 @@ const formItems = {
         type: 'text',
         label: '发送次数',
         rules: ['required', 'numbers'],
+        props: {
+            placeholder: '请输入需要发送总次数',
+        },
     },
     validCycle: {
         type: 'custom',
@@ -290,6 +293,7 @@ const qFormItems = {
 }
 
 const dFormKeys = ['getWay', 'couponPackageStatus', 'sendTime', 'customerMobile', 'q'];
+const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -308,6 +312,10 @@ const dFormItems = {
     customerMobile: {
         type: 'text',
         label: '手机号',
+    },
+    useTime: {
+        type: 'datepickerRange',
+        label: '使用时间',
     },
     q: {
         type: 'custom',
@@ -362,4 +370,5 @@ export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
+    dFormKeys2,
 }

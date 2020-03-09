@@ -59,7 +59,7 @@ export default class Editor extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { check, detail } = this.props;
-        const { sendCount = 0 } = detail;
+        const { sendCount = 0 } = detail || {};
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');

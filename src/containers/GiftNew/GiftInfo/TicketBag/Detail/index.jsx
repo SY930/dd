@@ -46,6 +46,7 @@ class Detail extends Component {
         const { ids } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
+        const { } = params;
         const obj = { ...queryParams2, ...params,  ...ids };
         // 把查询需要的参数缓存
         this.setState({ queryParams2: obj, loading2: !0 });
@@ -110,8 +111,9 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="使用数" key="2">
-                                <QueryForm onQuery={this.onQueryList2} />
+                                <QueryForm use={!0} onQuery={this.onQueryList2} />
                                 <MainTable
+                                    use={!0}
                                     list={list2}
                                     loading={loading2}
                                     pageObj={pageObj2}
