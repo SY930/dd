@@ -107,6 +107,7 @@ const formItems = {
     sellTime: {
         type: 'datepickerRange',
         label: '售卖时间',
+        props: {},
     },
     couponPackageName: {
         type: 'text',
@@ -223,6 +224,7 @@ function range(start, end) {
         return idx + start;
     });
 }
+
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',

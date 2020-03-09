@@ -16,6 +16,11 @@ class Detail extends Component {
         list: [],
         loading: !1,
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        pageObj: {},
+        list2: [],
+        loading2: !1,
+        queryParams2: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        pageObj2: {},
     };
     componentDidMount() {
         this.onQueryList();
@@ -36,8 +41,22 @@ class Detail extends Component {
             this.setState({ pageObj, list, loading: !1 });
         });
     }
+    onQueryList2 = (params) => {
+        const { queryParams2 } = this.state;
+        const { ids } = this.props;
+        // 查询请求需要的参数
+        // 第一次查询params会是null，其他查询条件默认是可为空的。
+        const obj = { ...queryParams2, ...params,  ...ids };
+        // 把查询需要的参数缓存
+        this.setState({ queryParams2: obj, loading2: !0 });
+        getTotalList({ ...ids, ...params, couponPackageStatus: '3' }).then((obj) => {
+            const { pageObj, list } = obj;
+            this.setState({ pageObj2: pageObj, list2: list, loading2: !1 });
+        });
+    }
     render() {
         const { list, loading, pageObj } = this.state;
+        const { list2, loading2, pageObj2 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, sellBeginTime,
             sellEndTime, couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
@@ -79,8 +98,8 @@ class Detail extends Component {
                         </div>
                     </li>
                     <li>
-                        <h3>券包明细统计</h3>
-                        <Tabs defaultActiveKey="1" className={styles.tabBox}>
+                        <h3>数据统计</h3>
+                        <Tabs defaultActiveKey="1" className="tabsStyles">
                             <TabPane tab="发出数" key="1">
                                 <QueryForm onQuery={this.onQueryList} />
                                 <MainTable
@@ -90,7 +109,16 @@ class Detail extends Component {
                                     onQuery={this.onQueryList}
                                 />
                             </TabPane>
-                            <TabPane tab="赠送" key="2">
+                            <TabPane tab="使用数" key="2">
+                                <QueryForm onQuery={this.onQueryList2} />
+                                <MainTable
+                                    list={list2}
+                                    loading={loading2}
+                                    pageObj={pageObj2}
+                                    onQuery={this.onQueryList2}
+                                />
+                            </TabPane>
+                            <TabPane tab="赠送" key="3">
                                 <PresentForm ids={ids} num={couponPackageStock} />
                             </TabPane>
                         </Tabs>

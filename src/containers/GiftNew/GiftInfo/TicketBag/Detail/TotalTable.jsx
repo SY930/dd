@@ -13,8 +13,8 @@ class TotalTable extends Component {
         const { tr } = styles;
         // 表格头部的固定数据
         return [
-            { width: 100, title: '券包库存', dataIndex: 'couponPackageStock', className: tr },
-            { width: 100, title: '发出总数', dataIndex: 'maxSendLimit', className: tr },
+            { width: 100, title: '券包总库存', dataIndex: 'couponPackageStock', className: tr },
+            { width: 100, title: '券包发出总数', dataIndex: 'maxSendLimit', className: tr },
         ];
     }
     render() {

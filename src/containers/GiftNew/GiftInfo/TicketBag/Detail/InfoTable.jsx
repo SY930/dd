@@ -13,8 +13,8 @@ class InfoTable extends Component {
         const { tr } = styles;
         // 表格头部的固定数据
         return [
-            { title: '内容名称', dataIndex: 'giftName' },
-            { width: 100, title: '领取数', dataIndex: 'giftSendCount', className: tr },
+            { title: '礼品名称', dataIndex: 'giftName' },
+            { width: 100, title: '发出数', dataIndex: 'giftSendCount', className: tr },
             { width: 100,  title: '使用数', dataIndex: 'useCount', className: tr },
         ];
     }
