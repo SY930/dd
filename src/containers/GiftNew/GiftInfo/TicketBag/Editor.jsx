@@ -139,7 +139,6 @@ export default class Editor extends Component {
     render() {
         const { newFormKeys } = this.state;
         const { detail } = this.props;
-        console.log('detail', detail);
         const newFormItems = this.resetFormItems();
         return (
             <section className={styles.formBox}>
