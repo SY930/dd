@@ -17,9 +17,10 @@ export default class Editor extends Component {
     }
     /** form */
     onChange = (key, value) => {
+        const { newFormKeys } = this.state;
+        const [a, b] = [...newFormKeys];
+        let [newA, newB] = [a, b];
         if (key==='couponPackageType'){
-            const [a, b] = [...formKeys];
-            let newA = a;
             if(value === '1'){
                 newA = {...a, keys: keys1 };
             } else {
@@ -28,8 +29,6 @@ export default class Editor extends Component {
             this.setState({ newFormKeys: [newA, b] });
         }
         if (key==='couponSendWay') {
-            const [a, b] = [...formKeys];
-            let newB = b;
             if(value === '1'){
                 newB = {...b, keys: keys3};
             } else {
@@ -41,8 +40,6 @@ export default class Editor extends Component {
             const { getFieldsValue } = this.form;
             const { couponSendWay } = getFieldsValue();
             if (couponSendWay==='1') { return; }
-            const [a, b] = [...formKeys];
-            let newB = b;
             if(value){
                 newB = {...b, keys: keys5};
             }else{
