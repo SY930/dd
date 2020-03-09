@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Button, message, Tooltip, Icon } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
-import ShopSelector from 'components/common/ShopSelector';
+import ShopSelector from 'components/ShopSelector';
 import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
 import { keys1, keys2, keys3, keys4, keys5, DF, TF } from './Common';

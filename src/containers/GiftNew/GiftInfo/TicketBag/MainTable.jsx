@@ -101,12 +101,17 @@ class MainTable extends Component {
                     <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
-
+        const render1 = (v, o) => {
+            return (
+                <Tooltip title={v}>
+                    <span>{v}</span>
+                </Tooltip>);
+        };
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
             { width: 160, title: '操作', dataIndex: 'op', className: tc, render },
-            { width: 160, title: '券包名称', dataIndex: 'couponPackageName' },
+            { width: 160, title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
             { title: '券包说明', dataIndex: 'couponPackageDesciption' },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
