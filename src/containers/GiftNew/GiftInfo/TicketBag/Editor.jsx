@@ -57,6 +57,7 @@ export default class Editor extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
+        const { check } = this.props;
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');
@@ -73,12 +74,12 @@ export default class Editor extends Component {
                 <Icon type="question-circle" />
             </Tooltip>);
         const label = (couponPackageType === '1') ? '购买金额' : tip;
-        const render = d => d()(<GiftInfo />);
-        const render1 = d => d()(<ShopSelector />);
+        const render = d => d()(<GiftInfo  disabled={check} />);
+        const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} />);
         const render4 = () => (tip2);
-        return {
+        const newFormItems = {
             ...other,
             couponPackagePrice: { ...couponPackagePrice, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
@@ -86,7 +87,15 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             c: { ...c, render: render4 },
+        };
+        if(check) {
+            let obj = {}
+            for(let x in newFormItems) {
+                obj[x] = {...newFormItems[x], disabled: !0 };
+            }
+            return obj;
         }
+        return newFormItems;
     }
     onCancel = () => {
         this.props.togglePage();
@@ -138,7 +147,7 @@ export default class Editor extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
-        const { detail } = this.props;
+        const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
         return (
             <section className={styles.formBox}>
@@ -146,7 +155,7 @@ export default class Editor extends Component {
                     券包
                     <p className={styles.opBox}>
                         <Button onClick={this.onCancel}>取消</Button>
-                        <Button type="primary" onClick={this.onSave}>保存</Button>
+                        <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>
                 <BaseForm

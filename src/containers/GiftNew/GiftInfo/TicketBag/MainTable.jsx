@@ -46,6 +46,7 @@ class MainTable extends Component {
     }
     /** 编辑 */
     onEdit = ({ target }) => {
+        const { name = '' } = target;
         const { id: couponPackageID } = target.closest('p');
         const { groupID, onGoEdit } = this.props;
         const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
@@ -53,7 +54,7 @@ class MainTable extends Component {
             if(x) {
                 const data = this.resetFormData(x);
                 const obj = { ...data, couponPackageID };
-                onGoEdit('ticket', obj);
+                onGoEdit('ticket', obj, name);
             }
         });
     }
@@ -90,7 +91,7 @@ class MainTable extends Component {
             return (
                 <p id={couponPackageID}>
                     <a href={href} onClick={this.onEdit}>编辑</a>
-                    <a href={href} onClick={this.onPreview}>查看</a>
+                    <a href={href} name="check" onClick={this.onEdit}>查看</a>
                     <Popconfirm
                         title="确定删除吗?"
                         onConfirm={() => { this.onDelete(couponPackageID) }}
