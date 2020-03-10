@@ -15,10 +15,15 @@ export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
     }
-    /** form */
+    keys = formKeys;
+    /**
+     * 这块的逻辑判断我也是醉了
+     * 新建和回显总是各种bug。
+     * 无奈只能 state 和 keys 混合判断
+     */
     onChange = (key, value) => {
-        const { newFormKeys } = this.state;
-        const [a, b] = [...newFormKeys];
+        const { keys } = this;
+        const [a, b] = [...keys];
         let [newA, newB] = [a, b];
         if (key==='couponPackageType'){
             if(value === '1'){
@@ -26,7 +31,8 @@ export default class Editor extends Component {
             } else {
                 newA = {...a, keys: keys2};
             }
-            this.setState({ newFormKeys: [newA, b] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -34,7 +40,8 @@ export default class Editor extends Component {
             } else {
                 newB = {...b, keys: keys4};
             }
-            this.setState({ newFormKeys: [a, newB] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
         if (key==='cycleType') {
             const { getFieldsValue } = this.form;
@@ -45,7 +52,8 @@ export default class Editor extends Component {
             }else{
                 newB = {...b, keys: keys4};
             }
-            this.setState({ newFormKeys: [a, newB] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
     }
     /** 得到form */
@@ -66,8 +74,8 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, couponPackagePrice, c, sellTime, ...other } = formItems;
-        const tip = (<span>记录实收金额
+            validCycle, couponPackagePrice2, c, sellTime, ...other } = formItems;
+        const label = (<span>记录实收金额
                 <Tooltip title="记录实收金额：仅用于报表作为实收金额核算">
                     <Icon style={{ margin: '0 -5px 0 5px' }} type="question-circle" />
                 </Tooltip>
@@ -76,7 +84,6 @@ export default class Editor extends Component {
                 <Icon type="question-circle" />
             </Tooltip>);
         const disGift = check || (+sendCount > 0);
-        const label = (couponPackageType === '1') ? '购买金额' : tip;
         const render = d => d()(<GiftInfo  disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
@@ -90,7 +97,7 @@ export default class Editor extends Component {
             ...other,
             couponPackageType: { ...cpt, disabled: !!detail },
             sellTime: { ...sellTime , props: disDate},
-            couponPackagePrice: { ...couponPackagePrice, label },
+            couponPackagePrice2: { ...couponPackagePrice2, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
@@ -122,7 +129,7 @@ export default class Editor extends Component {
             if (!e) {
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
-                        cycleType, validCycle, ...others,
+                        cycleType, validCycle, couponPackagePrice2, couponPackagePrice,...others,
                     } = v;
                 let cycleObj = {};
                 if(cycleType){
@@ -144,8 +151,9 @@ export default class Editor extends Component {
                 if(sendTime) {
                     timeObj = { sendTime: moment(sendTime).format(TF) };
                 }
-                const shopInfos = shops.map(x=>({shopID:x}));
-                const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj };
+                const price = couponPackagePrice || couponPackagePrice2;
+                const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
+                const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id

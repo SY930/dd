@@ -60,7 +60,7 @@ class MainTable extends Component {
     }
     resetFormData = (detail) => {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
-        const { couponSendWay: way, couponPackageType: type, validCycle: cycle } = info;
+        const { couponSendWay: way, couponPackageType: type, validCycle: cycle, couponPackagePrice: price } = info;
         const shopInfos = shops.map(x=>`${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
@@ -70,7 +70,7 @@ class MainTable extends Component {
         const sendTime = +time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
         return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
-            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs };
+            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs, couponPackagePrice2: price };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {

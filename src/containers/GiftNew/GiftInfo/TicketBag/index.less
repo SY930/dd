@@ -150,3 +150,38 @@
 .tableBox{
     padding: 20px 0;
 }
+.hll-shop-selector {
+    .smallBox {
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        position: relative;
+        background-color: #ffffff;
+        background-color: #fff;
+        border: 1px solid #dbd0d0;
+        padding: 0 30px 0 8px;
+        line-height: 26px;
+        cursor: pointer;
+        transition: all .15s cubic-bezier(.645,.045,.355,1);
+
+        & > :global(.anticon) {
+            position: absolute;
+            right: 8px;
+            font-size: 14px;
+            line-height: 26px;
+            color: #aeaeae;
+            &:hover {
+                color: #1ab495;
+            }
+        }
+
+        &:hover {
+            border-color: #1ab495;
+        }
+        &.empty {
+            color: #aeaeae;
+        }
+    }
+}
