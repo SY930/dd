@@ -309,7 +309,7 @@ class PhonePreview extends PureComponent {
                                     }
                                 </div>
                             </div>
-                        )                
+                        )
                     }
                     <div
                         style={{
@@ -337,7 +337,7 @@ class PhonePreview extends PureComponent {
             // <div style={{ padding: 20 }}>
             //     <div style={{ fontSize: 18, marginLeft: 20, marginBottom: 20, fontWeight: 'bold'}}>操作指导</div>
             //     <div style={{ lineHeight: 2, background: 'rgb(251,251,251)', padding: 12 }}>
-                
+
             //     </div>
             // </div>
             <div className={style.previewArea}>
@@ -502,10 +502,12 @@ class PhonePreview extends PureComponent {
             contentHeight,
             scrollPercent,
         } = this.props;
+        const width = (giftType === '90') ? { width:0 }: {};
         return (
             <div
                 style={{
-                    height: contentHeight
+                    height: contentHeight,
+                    ...width,
                 }}
                 className={styles.phonePreviewContainer}
             >
