@@ -1165,7 +1165,7 @@ class PromotionBasicInfo extends React.Component {
                 <div style={{ position: 'relative' }}>
                     {
                         promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ?
-                            <p style={{ position: 'absolute', top: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
+                            <p style={{ float: 'left', marginTop: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
                             : null
                     }
                     <FormItem
