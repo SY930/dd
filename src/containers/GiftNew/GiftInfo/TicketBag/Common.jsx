@@ -124,8 +124,6 @@ const formItems = {
         type: 'text',
         label: '购买金额',
         surfix: '元',
-        rules: ['required', 'price'],
-        props: { placeholder: '请输入金额' },
         rules: [{
             required: !0,
             validator: (rule, value, callback) => {
@@ -135,6 +133,24 @@ const formItems = {
                 }
                 if (!+value>0) {
                     return callback('金额要大于0');
+                }
+                return callback();
+            },
+        }],
+    },
+    couponPackagePrice2: {
+        type: 'text',
+        label: '记录实收金额',
+        surfix: '元',
+        props: {
+            placeholder: '请输入记录实收金额',
+        },
+        rules: [{
+            required: !0,
+            validator: (rule, value, callback) => {
+                const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                if(!pattern.test(value)){
+                    return callback('最大支持8位整数，2位小数');
                 }
                 return callback();
             },
@@ -231,7 +247,7 @@ function range(start, end) {
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
 const keys3 = ['b', 'c', 'couponSendWay', 'couponPackageGiftConfigs'];
 const keys4 = ['b', 'c', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
