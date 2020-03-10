@@ -503,10 +503,12 @@ class PhonePreview extends PureComponent {
             contentHeight,
             scrollPercent,
         } = this.props;
+        const width = (giftType === '90') ? { width:0 }: {};
         return (
             <div
                 style={{
-                    height: contentHeight
+                    height: contentHeight,
+                    ...width,
                 }}
                 className={styles.phonePreviewContainer}
             >
