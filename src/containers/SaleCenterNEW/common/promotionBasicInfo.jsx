@@ -1111,9 +1111,9 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label={SALE_LABEL.k5krn5l9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionShowName', {
                         rules: [{
+                            max:50,
                             whitespace: true,
                             message: k5m5ayg0,
-                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\s\.]{1,50}$/,
                         }],
                         initialValue: this.state.showName,
                     })(
