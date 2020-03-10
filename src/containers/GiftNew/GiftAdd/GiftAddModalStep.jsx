@@ -1257,7 +1257,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                prefix: isUnit ? unit : null,
+                prefix: unit,
                 rules: [
                     { required: true, message: `${isUnit ? '礼品价值' : '可抵扣金额'}不能为空` },
                     {
