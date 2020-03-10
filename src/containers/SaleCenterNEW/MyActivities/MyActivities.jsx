@@ -847,7 +847,7 @@ class MyActivities extends React.Component {
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                filterOption={(value, option) => typeof option.props.children == 'string' ? option.props.children.indexOf(value) > -1 : option.props.children.props.defaultMessage.indexOf(value) > -1}
                                 placeholder=""
                                 defaultValue="ALL"
                                 onChange={(value) => {
