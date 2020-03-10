@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Tabs, Col, Table, Button, Icon, Modal, message } from 'antd';
+import { Tabs, Col, Table, Button, Icon, Modal, message, Tooltip } from 'antd';
 import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
@@ -602,17 +602,17 @@ class GiftDetailTable extends Component {
                                         }
                                     >{ COMMON_LABEL.create }</Button>
                                 </Authority>
-                            <Button
-                                type="ghost"
-                                icon="plus"
-                                className={styles2.jumpToCreate}
-                                style={{ margin: 5,  width: 90 }}
-                                onClick={
-                                    () => {
-                                        this.props.togglePage('ticket')
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles.jumpToCreate}
+                                    style={{ margin: 5,  width: 90 }}
+                                    onClick={
+                                        () => {
+                                            this.props.togglePage('ticket')
+                                        }
                                     }
-                                }
-                            >新增券包</Button>
+                                >新增券包</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"

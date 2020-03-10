@@ -371,3 +371,27 @@
         }
     }
 }
+.jumpToCreate{
+    width: 75px;
+    left: 15px;
+    color: #1ab495;
+    border-color: #1ab495;
+    border-radius: 5px;
+    background-color: transparent;
+    position: relative;
+    &:hover{
+        background-color: #f2f2f2;
+        color: #1ab495;
+        border-color: #1ab495;
+
+    }
+    &::after{
+        content: '';
+        position: absolute;
+        top: -18px;
+        right: -11px;
+        background: url(http://res.hualala.com/basicdoc/b58ae139-73cf-4e60-bc79-1c216fbe1cd2.png);
+        width: 32px;
+        height: 23px;
+    }
+}

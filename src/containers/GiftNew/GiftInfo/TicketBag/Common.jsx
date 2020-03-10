@@ -30,7 +30,7 @@ const isSendOpts = [
     { label: '仅发送短信', value: '1' },
     { label: '仅推送微信', value: '2' },
     { label: '同时发送短信和微信', value: '4' },
-    { label: '微信推送成功则发送短信', value: '3' },
+    { label: '微信推送不成功则发送短信', value: '3' },
 ];
 const wayOpts = [
     { value: '', label: '全部' },

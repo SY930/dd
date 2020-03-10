@@ -15,10 +15,15 @@ export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
     }
-    /** form */
+    keys = formKeys;
+    /**
+     * 这块的逻辑判断我也是醉了
+     * 新建和回显总是各种bug。
+     * 无奈只能 state 和 keys 混合判断
+     */
     onChange = (key, value) => {
-        const { newFormKeys } = this.state;
-        const [a, b] = [...newFormKeys];
+        const { keys } = this;
+        const [a, b] = [...keys];
         let [newA, newB] = [a, b];
         if (key==='couponPackageType'){
             if(value === '1'){
@@ -26,7 +31,8 @@ export default class Editor extends Component {
             } else {
                 newA = {...a, keys: keys2};
             }
-            this.setState({ newFormKeys: [newA, b] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -34,7 +40,8 @@ export default class Editor extends Component {
             } else {
                 newB = {...b, keys: keys4};
             }
-            this.setState({ newFormKeys: [a, newB] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
         if (key==='cycleType') {
             const { getFieldsValue } = this.form;
@@ -45,7 +52,8 @@ export default class Editor extends Component {
             }else{
                 newB = {...b, keys: keys4};
             }
-            this.setState({ newFormKeys: [a, newB] });
+            this.keys = [newA, newB];
+            this.setState({ newFormKeys: [newA, newB] });
         }
     }
     /** 得到form */
@@ -144,7 +152,7 @@ export default class Editor extends Component {
                 if(sendTime) {
                     timeObj = { sendTime: moment(sendTime).format(TF) };
                 }
-                const shopInfos = shops.map(x=>({shopID:x}));
+                const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
