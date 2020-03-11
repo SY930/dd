@@ -330,8 +330,9 @@ class GiftAddModal extends React.Component {
                 </div>,
                 disabled: type !== 'add',
                 placeholder: '请输入记录实收金额金额',
-                surfix: '元',
-                rules: ['required', 'price'],
+                prefix: unit,
+                rules: [{ required: true, message: '记录实收金额不能为空' },
+                { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' }],
             },
             giftRemark: {
                 label: '活动详情',
