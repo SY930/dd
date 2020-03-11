@@ -351,7 +351,7 @@ class GiftAddModal extends React.Component {
                 disabled: type !== 'add',
                 placeholder: '请输入记录实收金额金额',
                 prefix: unit,
-                rules: [{ required: true, message: '建议售价不能为空' },
+                rules: [{ required: true, message: '记录实收金额不能为空' },
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' }],
             },
             giftRemark: {
