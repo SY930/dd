@@ -78,6 +78,7 @@ export default class ExportModal extends Component {
             shopName: '',
             pageSizes: 10,
             loading: false,
+            pageNo: 1,
         };
         this.columns = COLUMNS;
     }
@@ -234,8 +235,14 @@ export default class ExportModal extends Component {
                                 dataSource={this.state.dataSource}
                                 pagination={{
                                     pageSize: this.state.pageSizes,
+                                    current: this.state.pageNo,
                                     total: this.state.dataSource ? this.state.dataSource.length : 0,
                                     showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u2)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u1)} ${total} ${this.props.intl.formatMessage(STRING_GIFT.d2c68skgm94)}`,
+                                    onChange: (page, pageSize) => {
+                                        this.setState({
+                                            pageNo: page,
+                                        })
+                                    },
                                 }}
                             />
                             { (!!this.state.dataSource && !!this.state.dataSource.length) && (
