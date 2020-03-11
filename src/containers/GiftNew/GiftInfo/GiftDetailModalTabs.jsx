@@ -32,6 +32,7 @@ class GiftDetailModalTabs extends React.Component {
             activeKey: 'send',
             exportVisible: false,
             popoverVisible: false,
+            tooltipVisble: false,
         };
         this.handleExport = this.handleExport.bind(this);
     }
@@ -56,6 +57,17 @@ class GiftDetailModalTabs extends React.Component {
                 this.setState({
                     popContent: '数据导出中 请',
                     popA: '查看导出进度', 
+                }) 
+            }
+            if(records.highMoment == 1){
+                this.setState({
+                    popContent: <div><p style={{whiteSpace: 'nowrap'}}>营业高峰期(11:00-14:00,17:00</p><p style={{whiteSpace: 'nowrap'}}>-20:30)暂停使用数据导出功能</p></div>,
+                    popA: '',
+                    tooltipVisble: true,
+                }) 
+            }else{
+                this.setState({
+                    tooltipVisble: false,
                 }) 
             }
             this.setState({
@@ -98,7 +110,7 @@ class GiftDetailModalTabs extends React.Component {
     renderPopOver = () => {
         const { popContent = '', popA ='' } = this.state;
         return(
-            <div className={styles.popDiv}>
+            <div className={styles.popDiv} style={{width: this.state.tooltipVisble ? 160 : 'auto'}}>
                 <span>{popContent}</span>
                 <a className={styles.greenLink} onClick={this.openOther}>{popA}</a>
             </div>      
