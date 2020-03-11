@@ -53,7 +53,6 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -135,6 +134,7 @@ class GiftAddModalStep extends React.PureComponent {
             sharedGifts: [],
             isFoodCatNameList: '1',
             scopeLst: [],
+            unit: '¥',
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -179,9 +179,6 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({secondKeys})
             }
         }
-        this.setState({
-            values
-        });
         FetchGiftSort({});
         // 礼品名称 auto focus
         try {
@@ -229,7 +226,6 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return [];
     }
-
     handleFormChange(key, value) {
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
@@ -348,6 +344,9 @@ class GiftAddModalStep extends React.PureComponent {
                 break;
         }
         this.setState({ values });
+        if(key==='giftValueCurrencyType') {
+            this.setState({ unit: value });
+        }
     }
 
     handleCancel = (cb) => {
@@ -574,8 +573,8 @@ class GiftAddModalStep extends React.PureComponent {
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
-            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType; 
-            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue; 
+            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
+            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -1181,7 +1180,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, } = this.state;
+            { firstKeys, secondKeys, values, unit } = this.state;
         const dates = Object.assign({}, data);
         const displayFirstKeys = firstKeys[describe];
         const displaySecondKeys = secondKeys[describe];
@@ -1209,6 +1208,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (value == '21') {
             giftValueLabel = '兑换金额';
         }
+        const isUnit = ['10', '91'].includes(value);
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1237,14 +1237,29 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectCardTypes/>),
             },
+            giftValueCurrencyType: {
+                label: '货币单位',
+                type: 'combo',
+                disabled: type !== 'add',
+                defaultValue: '¥',
+                options: [
+                    { label: '¥', value: '¥' },
+                    { label: '€', value: '€' },
+                    { label: '£', value: '£' },
+                    { label: 'RM', value: 'RM' },
+                    { label: 'S$', value: 'S$' },
+                    { label: 'DHS', value: 'DHS' },
+                    { label: 'MOP$', value: 'MOP$' },
+                ],
+            },
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                surfix: '元',
+                prefix: unit,
                 rules: [
-                    { required: true, message: `${value === '10' ? '礼品价值' : '可抵扣金额'}不能为空` },
+                    { required: true, message: `${isUnit ? '礼品价值' : '可抵扣金额'}不能为空` },
                     {
                         validator: (rule, v, cb) => {
                             if (!/(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/.test(v)) {
@@ -1434,7 +1449,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
-                surfix: '元',
+                prefix: value === '91' ? null : unit,
                 rules: value == '91' ?
                     [
                         { required: true, message: `礼品售价不能为空` },
