@@ -50,6 +50,7 @@ class GiftEditPage extends Component {
     saving() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
+        this.props.toggleTabs('1');
     }
 
     render() {
@@ -83,7 +84,10 @@ class GiftEditPage extends Component {
                         style={{
                             marginRight: '10px'
                         }}
-                        onClick={this.props.cancelCreateOrEdit}
+                        onClick={()=>{
+                            this.props.cancelCreateOrEdit();
+                            this.props.toggleTabs('1');
+                        }}
                     >
                         {COMMON_LABEL.cancel}
                     </Button>
