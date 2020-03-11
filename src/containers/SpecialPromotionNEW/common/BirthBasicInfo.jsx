@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -27,6 +27,7 @@ import { STRING_SPE } from 'i18n/common/special';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 class PromotionBasicInfo extends React.Component {
@@ -40,6 +41,7 @@ class PromotionBasicInfo extends React.Component {
             name: '',
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
+            involvementGiftAdvanceDays: 0,
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -65,6 +67,7 @@ class PromotionBasicInfo extends React.Component {
             description: specialPromotion.eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
+            involvementGiftAdvanceDays: specialPromotion.involvementGiftAdvanceDays || 0,
         });
         const opts = {
             groupID: this.props.user.accountInfo.groupID,
@@ -107,6 +110,7 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        involvementGiftAdvanceDays: this.state.involvementGiftAdvanceDays,
                     })
                 }
             } else {
@@ -140,6 +144,11 @@ class PromotionBasicInfo extends React.Component {
             advanceDays: value.number,
             advanceDaysFlag,
         });
+    }
+    handleInvolvementGiftAdvanceDaysChange = (value) => {
+        this.setState({
+            involvementGiftAdvanceDays: value.target.value,
+        })
     }
     handleSendMsgChange(value) {
         this.setState({
@@ -231,6 +240,17 @@ class PromotionBasicInfo extends React.Component {
                                 modal="int"
                             />
 
+                        </FormItem>
+                        <FormItem
+                            label={`赠送天数以内生日会员（包括当天注册）是否参与`}
+                            className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                            labelCol={{ span: 10 }}
+                            wrapperCol={{ span: 14 }}
+                        >
+                            <RadioGroup onChange={this.handleInvolvementGiftAdvanceDaysChange} value={this.state.involvementGiftAdvanceDays}>
+                                <Radio key={'1'} value={0}>不参与</Radio>
+                                <Radio key={'2'} value={1}>参与</Radio>
+                            </RadioGroup>
                         </FormItem>
                     </div>
                 );
