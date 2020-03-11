@@ -41,6 +41,7 @@ class GiftAddModal extends React.Component {
             transferType: 0,
             isUpdate: true,
             disCashKeys: false,     // 定额卡模式下，是否要隐藏现金卡值和赠送卡值
+            unit: '¥',
         };
         this.baseForm = null;
         this.refMap = null;
@@ -49,7 +50,7 @@ class GiftAddModal extends React.Component {
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
     componentDidMount() {
-        const { getPromotionShopSchema} = this.props;
+        const { getPromotionShopSchema, gift: {data}} = this.props;
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
@@ -109,6 +110,9 @@ class GiftAddModal extends React.Component {
             let freePrice = sum / 100;  // 防止失精
             if(sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
+        }
+        if(key==='giftValueCurrencyType') {
+            this.setState({ unit: value });
         }
     }
     handleSubmit() {
@@ -209,10 +213,10 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
-
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
+        const { unit } = this.state;
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -256,12 +260,28 @@ class GiftAddModal extends React.Component {
                 defaultValue: [],
                 render: decorator => this.renderShopNames(decorator),
             },
+            giftValueCurrencyType: {
+                label: '货币单位',
+                type: 'combo',
+                disabled: type !== 'add',
+                defaultValue: '¥',
+                options: [
+                    { label: '¥', value: '¥' },
+                    { label: '€', value: '€' },
+                    { label: '£', value: '£' },
+                    { label: 'RM', value: 'RM' },
+                    { label: 'S$', value: 'S$' },
+                    { label: 'DHS', value: 'DHS' },
+                    { label: 'MOP$', value: 'MOP$' },
+                ],
+            },
             giftValue: {
                 label: valueLabel,
                 type: 'text',
                 placeholder: `请输入${valueLabel}`,
                 disabled: type !== 'add',
-                surfix: value == '42' ? '分' : '元',
+                prefix: value == '42' ? null : unit,
+                surfix: value == '42' ? '分' : '',
                 rules: value == '30'
                     ? [{ required: true, message: '礼品价值不能为空' }, { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' }]
                     : [
@@ -330,8 +350,9 @@ class GiftAddModal extends React.Component {
                 </div>,
                 disabled: type !== 'add',
                 placeholder: '请输入记录实收金额金额',
-                surfix: '元',
-                rules: ['required', 'price'],
+                prefix: unit,
+                rules: [{ required: true, message: '记录实收金额不能为空' },
+                { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' }],
             },
             giftRemark: {
                 label: '活动详情',
@@ -534,6 +555,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'giftRemark',
                         'shopNames',
@@ -552,6 +574,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
@@ -569,6 +592,7 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'pushMessageMpID',
+                        'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
@@ -588,6 +612,8 @@ class GiftAddModal extends React.Component {
                         'giftDenomination',
                         'cardPrice',
                         'freePrice',
+                        'giftValueCurrencyType',
+                        'giftValue',
                         'giftCost',
                         'price',
                         'quotaCardGiftConfList',
