@@ -9,9 +9,9 @@ import ReleaseModal from './Release';
 export default class TicketBag extends Component {
     state = {
         list: [],
-        loading: !1,
+        loading: false,
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
-        visible: !1,
+        visible: false,
     };
     componentDidMount() {
         this.onQueryList();
@@ -26,10 +26,10 @@ export default class TicketBag extends Component {
         // 第一次查询params会是null，其他查询条件默认是可为空的。
         const obj = { ...queryParams, ...params,  groupID };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: !0 });
+        this.setState({ queryParams: obj, loading: true });
         getTicketList({ groupID, ...params }).then((obj) => {
             const { pageObj, list } = obj;
-            this.setState({ pageObj, list, loading: !1 });
+            this.setState({ pageObj, list, loading: false });
         });
     }
     /* 是否显示 */

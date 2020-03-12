@@ -96,7 +96,7 @@ export default class Editor extends Component {
         if(check) {
             let obj = {}
             for(let x in newFormItems) {
-                obj[x] = {...newFormItems[x], disabled: !0 };
+                obj[x] = {...newFormItems[x], disabled: true };
             }
             return obj;
         }

@@ -125,19 +125,19 @@ async function getPhoneValid(data) {
 }
 
 /**
- * 暂时不用了
+ * 退款
  */
-// async function getAccount(data) {
-//     const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
-//     const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
-//     const response = await axios.post(url + method, params);
-//     const { code, message: msg, accountInfoList } = response;
-//     if (code === '000') {
-//         return accountInfoList;
-//     }
-//     message.error(msg);
-//     return [];
-// }
+async function postRefund(data) {
+    const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
 
 /**
  *
@@ -156,5 +156,5 @@ async function getTicketBagInfo(data) {
 }
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
-    postTicketBag, getPhoneValid, putSendTicket,
+    postTicketBag, getPhoneValid, putSendTicket, postRefund,
 }

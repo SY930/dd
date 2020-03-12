@@ -37,10 +37,10 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
-        const { use } = this.props;
+        const { type } = this.props;
         const { tc } = styles;
         // 表格头部的固定数据
-        if(use){
+        if(type === 2){
             return [
                 { width: 50, title: '序号', dataIndex: 'idx', className: tc },
                 { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
@@ -49,7 +49,21 @@ class MainTable extends Component {
                 { width: 160, title: '客户编号', dataIndex: 'customerID' },
                 { width: 100, title: '姓名', dataIndex: 'customerName' },
                 { width: 60, title: '性别', dataIndex: 'sex', className: tc },
-                { width: 160, title: '手机号', dataIndex: 'customerMobile' },
+                { width: 100, title: '手机号', dataIndex: 'customerMobile' },
+            ];
+        }
+        if(type === 3){
+            return [
+                { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+                { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
+                { width: 100, title: '状态', dataIndex: 'stauts' },
+                { width: 160, title: '订单编号', dataIndex: 'orderID' },
+                { width: 160, title: '发出时间', dataIndex: 'createStamp' },
+                { width: 160, title: '客户编号', dataIndex: 'customerID' },
+                { width: 100, title: '姓名', dataIndex: 'customerName' },
+                { width: 60, title: '性别', dataIndex: 'sex', className: tc },
+                { width: 100, title: '手机号', dataIndex: 'customerMobile' },
+                { title: '退款原因', dataIndex: 'reason' },
             ];
         }
         const render = (v, o) => {
@@ -78,12 +92,22 @@ class MainTable extends Component {
             ...x,
         }));
     }
+
     render() {
-        const { } = this.state;
-        const { loading, page } = this.props;
+        const { onChange, selectedRowKeys } = this.props;
+        const { loading, page, type } = this.props;
+        const scroll = { x: (type === 3) ? 1300 : 1000 };
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
-        const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
+        const pagination = {
+            ...page,
+            onChange: this.onPageChange,
+            onShowSizeChange: this.onPageChange,
+        };
+        let tableProps = {};
+        if(type === 3) {
+            tableProps = { rowSelection: { selectedRowKeys, onChange } };
+        }
         return (
                 <div className={styles.tableBox}>
                     <Table
@@ -92,8 +116,9 @@ class MainTable extends Component {
                         columns={columns}
                         dataSource={dataSource}
                         style={{ maxWidth: 700 }}
-                        scroll={{ x: 1000 }}
+                        scroll={scroll}
                         pagination={pagination}
+                        {...tableProps}
                     />
                 </div>
         )

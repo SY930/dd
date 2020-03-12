@@ -11,7 +11,7 @@ import DetailModal from './Detail';
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        visible: !1,            // 是否显示弹层
+        visible: false,            // 是否显示弹层
         detail: {},
         couponPackageID: '',
     };
@@ -49,7 +49,7 @@ class MainTable extends Component {
     onPreview = ({ target }) => {
         const { id: couponPackageID } = target.closest('p');
         const { groupID } = this.props;
-        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        const params = { couponPackageID, groupID, isNeedDetailInfo: true };
         getTicketBagInfo(params).then(x => {
             if(x) {
                 this.setState({ detail: x, couponPackageID });
@@ -62,7 +62,7 @@ class MainTable extends Component {
         const { name = '' } = target;
         const { id: couponPackageID } = target.closest('p');
         const { groupID, onGoEdit } = this.props;
-        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        const params = { couponPackageID, groupID, isNeedDetailInfo: true };
         getTicketBagInfo(params).then(x => {
             if(x) {
                 const data = this.resetFormData(x);

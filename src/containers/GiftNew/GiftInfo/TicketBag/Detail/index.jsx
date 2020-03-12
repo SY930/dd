@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Button, Tabs, Icon } from 'antd';
+import { Modal, Button, Tabs, Icon, message } from 'antd';
 import styles from './index.less';
 import InfoTable from './InfoTable';
 import TotalTable from './TotalTable';
@@ -8,27 +8,33 @@ import QueryForm from './QueryForm';
 import { getTotalList } from '../AxiosFactory';
 import PresentForm from './PresentForm';
 import { imgURI } from '../Common';
-import ExportModal from "../../ExportModal";
+import ExportModal from '../../ExportModal';
+import RefundModal from './RefundModal';
 
 const TabPane = Tabs.TabPane;
 class Detail extends Component {
     /* 页面需要的各类状态属性 */
     state = {
         list: [],
-        loading: !1,
+        loading: false,
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
         pageObj: {},
         list2: [],
-        loading2: !1,
+        loading2: false,
         queryParams2: {},        // 临时查询缓存，具体对象查看QueryForm对象
         pageObj2: {},
-        visible: !1,
+        list3: [],
+        loading4: false,
+        queryParams4: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        pageObj4: {},
+        visible: '',             // 弹层是否显示
+        selectedRowKeys: [],     // 退款ids
     };
     componentDidMount() {
         this.onQueryList();
     }
     /**
-     * 加载列表
+     * 发出数
      */
     onQueryList = (params) => {
         const { queryParams } = this.state;
@@ -37,33 +43,68 @@ class Detail extends Component {
         // 第一次查询params会是null，其他查询条件默认是可为空的。
         const obj = { ...queryParams, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: !0 });
+        this.setState({ queryParams: obj, loading: true });
         getTotalList({ ...ids, ...params }).then((obj) => {
             const { pageObj, list } = obj;
-            this.setState({ pageObj, list, loading: !1 });
+            this.setState({ pageObj, list, loading: false });
         });
     }
+    // 使用数
     onQueryList2 = (params) => {
         const { queryParams2 } = this.state;
         const { ids } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const { } = params;
         const obj = { ...queryParams2, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams2: obj, loading2: !0 });
+        this.setState({ queryParams2: obj, loading2: true });
         getTotalList({ ...ids, ...params, couponPackageStatus: '3' }).then((obj) => {
             const { pageObj, list } = obj;
-            this.setState({ pageObj2: pageObj, list2: list, loading2: !1 });
+            this.setState({ pageObj2: pageObj, list2: list, loading2: false });
         });
     }
-    /* 是否显示 */
-    onToggleModal = () => {
-        this.setState(ps => ({ visible: !ps.visible }));
+    // 退款查询
+    onQueryList3 = (params) => {
+        const { queryParams3 } = this.state;
+        const { ids } = this.props;
+        // 查询请求需要的参数
+        // 第一次查询params会是null，其他查询条件默认是可为空的。
+        const obj = { ...queryParams3, ...params,  ...ids };
+        // 把查询需要的参数缓存
+        this.setState({ queryParams3: obj, loading3: true });
+        getTotalList({ ...ids, ...params, couponPackageStatus: '4' }).then((obj) => {
+            const { pageObj, list } = obj;
+            this.setState({ pageObj3: pageObj, list3: list, loading3: false });
+        });
+    }
+    /* 显示模态框 */
+    onOpenModal = ({ target }) => {
+        const { selectedRowKeys } = this.state;
+        const { name: visible } = target.closest('button');
+        if(visible === 'refund') {
+            if(!selectedRowKeys[0]){
+                message.warning('请选择需要退款的券包！');
+                return;
+            }
+        }
+        this.setState({ visible });
+    }
+    /* 关闭窗口 */
+    onCloseModal = () => {
+        this.setState({ visible: '' });
+    }
+    /* 退款 */
+    onReund = () => {
+        const { selectedRowKeys } = this.state;
+        console.log('sle', selectedRowKeys);
+    }
+    onSelectChange = (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
     }
     render() {
-        const { list, loading, pageObj, visible } = this.state;
+        const { list, loading, pageObj, visible, selectedRowKeys } = this.state;
         const { list2, loading2, pageObj2 } = this.state;
+        const { list3, loading3, pageObj3 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, sellBeginTime, couponPackageID,
             sellEndTime, couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
@@ -110,8 +151,9 @@ class Detail extends Component {
                             <TabPane tab="发出数" key="1">
                                 <Button
                                     type="ghost"
+                                    name="export"
                                     className={styles.expBtn}
-                                    onClick={this.onToggleModal}
+                                    onClick={this.onOpenModal}
                                 ><Icon type="export" />导出</Button>
                                 <QueryForm onQuery={this.onQueryList} />
                                 <MainTable
@@ -122,9 +164,9 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="使用数" key="2">
-                                <QueryForm use={!0} onQuery={this.onQueryList2} />
+                                <QueryForm type={2} onQuery={this.onQueryList2} />
                                 <MainTable
-                                    use={!0}
+                                    type={2}
                                     list={list2}
                                     loading={loading2}
                                     pageObj={pageObj2}
@@ -134,16 +176,36 @@ class Detail extends Component {
                             <TabPane tab="赠送" key="3">
                                 <PresentForm ids={ids} num={couponPackageStock} />
                             </TabPane>
+                            <TabPane tab="退款" key="4">
+                                <Button className={styles.expBtn} name="refund" onClick={this.onOpenModal}>退款</Button>
+                                <QueryForm type={3} onQuery={this.onQueryList3} />
+                                <MainTable
+                                    type={3}
+                                    list={list3}
+                                    loading={loading3}
+                                    pageObj={pageObj3}
+                                    selectedRowKeys={selectedRowKeys}
+                                    onQuery={this.onQueryList3}
+                                    onChange={this.onSelectChange}
+                                />
+                            </TabPane>
                         </Tabs>
                     </li>
                 </ul>
-                {visible &&
+                {visible === 'export' &&
                     <ExportModal
                         giftItemID={couponPackageID}
                         giftName={couponPackageName}
                         activeKey="send"
                         newExport // 除了礼品定额卡之外的导出, 复用组件
-                        handleClose={this.onToggleModal}
+                        handleClose={this.onCloseModal}
+                    />
+                }
+                {visible === 'refund' &&
+                    <RefundModal
+                        list={selectedRowKeys}
+                        onPost={this.onReund}
+                        onClose={this.onCloseModal}
                     />
                 }
             </Modal>

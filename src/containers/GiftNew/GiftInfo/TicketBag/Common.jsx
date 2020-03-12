@@ -160,7 +160,7 @@ const formItems = {
         label: '购买金额',
         surfix: '元',
         rules: [{
-            required: !0,
+            required: true,
             validator: (rule, value, callback) => {
                 const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
                 if(!pattern.test(value)){
@@ -181,7 +181,7 @@ const formItems = {
             placeholder: '请输入记录实收金额',
         },
         rules: [{
-            required: !0,
+            required: true,
             validator: (rule, value, callback) => {
                 const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
                 if(!pattern.test(value)){
@@ -243,7 +243,7 @@ const formItems = {
         label: '券包内容',
         defaultValue: [],
         rules: [{
-            required: !0,
+            required: true,
             validator: (rule, value, callback) => {
                 if (!value[0]) {
                     return callback('券包内容不能为空');
@@ -266,7 +266,7 @@ const formItems = {
         rules: ['required'],
         props: {
             disabledMinutes: h => range(1, 30).concat(range(31, 60)),
-            hideDisabledOptions: !0,
+            hideDisabledOptions: true,
         }
     },
     maxSendLimit: {
@@ -295,7 +295,7 @@ function range(start, end) {
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'revoke', 'user', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice2', 'couponPackageStock', 'revoke', 'user', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
 // 一次性发放全部礼品 周期发放礼品
 const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
@@ -371,6 +371,7 @@ const qFormItems = {
 
 const dFormKeys = ['getWay', 'couponPackageStatus', 'sendTime', 'customerMobile', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
+const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'sendTime', 'orderID', 'customerMobile', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -393,6 +394,14 @@ const dFormItems = {
     useTime: {
         type: 'datepickerRange',
         label: '使用时间',
+    },
+    couponPackageID: {
+        type: 'text',
+        label: '券包ID',
+    },
+    orderID: {
+        type: 'text',
+        label: '订单编号',
     },
     q: {
         type: 'custom',
@@ -443,9 +452,16 @@ const pFormItems = {
         render: null,
     },
 }
+const refundItems = {
+    refundRemark: {
+        type: 'textarea',
+        label: '退款原因',
+        rules: ['description'],
+    },
+};
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2,
+    dFormKeys2, dFormKeys3, refundItems,
 }
