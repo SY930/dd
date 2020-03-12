@@ -1,0 +1,162 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.mainBox{
+    h3{
+        font-size: 14px;
+        font-weight: bold;
+        margin: 15px 0;
+        border-left: 3px solid @green;
+        text-indent: 10px;
+    }
+}
+.infoBox{
+    padding-left: 180px;
+    position: relative;
+    min-height: 110px;
+    &>img{
+        position: absolute;
+        left: 12px;
+        width: 160px;
+        height: 106px;
+        object-fit: contain;
+    }
+    &>div{
+        display: flex;
+        margin-bottom: 5px;
+    }
+    em{
+        font-style: normal;
+        width: 70px;
+        color: @gray;
+        .tr;
+    }
+    p{
+        flex: 1;
+    }
+}
+.formBox{
+    overflow: auto;
+    height: 100%;
+    padding-bottom: 200px;
+    scroll-behavior: smooth;
+    :global{
+        .ant-row{
+            width: 500px;
+        }
+        .ant-form-item {
+            .separate{
+                margin: 20px 0;
+                h3{
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 15px 20px;
+                    border-left: 3px solid @green;
+                    text-indent: 10px;
+                }
+            }
+            label[for=validcycle]{
+                visibility: hidden;
+            }
+        }
+        .ant-radio-button-wrapper:hover,
+        .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+        .ant-radio-button-wrapper-checked {
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+        .ant-radio-button-wrapper-checked:active {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+    }
+}
+
+.listBox{
+    background: @white;
+    padding: 23px 30px;
+    height: ~'calc(100vh - 256px)';
+    :global{
+        .layoutsLine{
+            margin: 0;
+        }
+    }
+}
+.queryform{
+    :global{
+        .ant-select{
+            width: 150px;
+        }
+    }
+}
+.tableBox{
+    padding: 5px 0;
+}
+.presentForm{
+    width: 500px;
+    :global{
+        .ant-select, .ant-input{
+            width: 200px;
+        }
+        .anticon-check{
+            vertical-align: 8px;
+            font-weight: bold;
+        }
+    }
+    .sendBtn{
+        .tc;
+        padding: 10px;
+    }
+}
+.dataBox{
+    position: relative;
+    .expBtn{
+        position: absolute;
+        right: 20px;
+        top: 10px;
+    }
+}

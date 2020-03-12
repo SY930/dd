@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Table } from 'antd';
-import moment from 'moment';
 import styles from './Crm.less';
 import GiftModal from './GiftModal';
 import { getCardList } from './AxiosFactory';
@@ -22,10 +21,11 @@ export default class GiftInfo extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
+        const { disabled } = this.props;
         const { tc } = styles;
         const render = (v) => {
             return (
-                <a href={href} name={v} onClick={this.onDelete}>删除</a>
+                <a href={href} name={v} disabled={disabled} onClick={this.onDelete}>删除</a>
             );
         };
         const render1 = (v,o) => {
@@ -43,7 +43,7 @@ export default class GiftInfo extends Component {
         };
         const render3 = (v) => {
             const { giftTypeName } = GiftCfg;
-            const { label } = giftTypeName.find(x=>+x.value === +v);
+            const { label } = giftTypeName.find(x=>+x.value === +v) || {};
             return (<span>{label}</span>);
         };
         // 表格头部的固定数据
@@ -110,13 +110,13 @@ export default class GiftInfo extends Component {
     }
     render() {
         const { visible, giftTreeData } = this.state;
-        const { value } = this.props;
+        const { value, disabled } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         //礼品定额卡添加优惠券限制最多10种
         return (
             <div className={styles.cGiftInfo}>
-                {!value[9] && <Button icon="plus" onClick={this.toggleModal}>添加礼品</Button>}
+                {!value[9] && <Button icon="plus" disabled={disabled} onClick={this.toggleModal}>添加礼品</Button>}
                 <Table
                     bordered={true}
                     columns={columns}
