@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Button, message, Tooltip, Icon } from 'antd';
+import { Button, message, Alert } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
@@ -74,21 +74,12 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, couponPackagePrice2, c, sellTime, ...other } = formItems;
-        const label = (<span>记录实收金额
-                <Tooltip title="记录实收金额：仅用于报表作为实收金额核算">
-                    <Icon style={{ margin: '0 -5px 0 5px' }} type="question-circle" />
-                </Tooltip>
-            </span>);
-        const tip2 = (<Tooltip title="将按周期发送添加的礼品">
-                <Icon type="question-circle" />
-            </Tooltip>);
+            validCycle, sellTime, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo  disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
-        const render4 = () => (tip2);
         let disDate = {};
         if(!!detail) {
             disDate = { disabledDate: this.disabledDate };
@@ -97,12 +88,10 @@ export default class Editor extends Component {
             ...other,
             couponPackageType: { ...cpt, disabled: !!detail },
             sellTime: { ...sellTime , props: disDate},
-            couponPackagePrice2: { ...couponPackagePrice2, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
-            c: { ...c, render: render4 },
         };
         if(check) {
             let obj = {}
@@ -195,6 +184,11 @@ export default class Editor extends Component {
                     formKeys={newFormKeys}
                     formData={detail || {}}
                     formItemLayout={formItemLayout}
+                />
+                <Alert
+                    message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"
+                    type="error"
+                    showIcon={true}
                 />
             </section>
         );

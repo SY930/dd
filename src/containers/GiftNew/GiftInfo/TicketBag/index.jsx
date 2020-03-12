@@ -4,12 +4,14 @@ import styles from './index.less';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
 import { getTicketList } from './AxiosFactory';
+import ReleaseModal from './Release';
 
 export default class TicketBag extends Component {
     state = {
         list: [],
         loading: !1,
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        visible: !1,
     };
     componentDidMount() {
         this.onQueryList();
@@ -30,8 +32,12 @@ export default class TicketBag extends Component {
             this.setState({ pageObj, list, loading: !1 });
         });
     }
+    /* 是否显示 */
+    onToggleModal = () => {
+        this.setState(ps => ({ visible: !ps.visible }));
+    }
     render() {
-        const { list, loading, pageObj } = this.state;
+        const { list, loading, pageObj, visible } = this.state;
         const { groupID, accountID, onGoEdit } = this.props;
         return (
             <div className={styles.listBox}>
@@ -39,6 +45,7 @@ export default class TicketBag extends Component {
                     onQuery={this.onQueryList}
                 />
                 <div className="layoutsLine"></div>
+                <Button onClick={this.onToggleModal}>投放</Button>
                 <MainTable
                     groupID={groupID}
                     accountID={accountID}
@@ -48,6 +55,11 @@ export default class TicketBag extends Component {
                     onQuery={this.onQueryList}
                     onGoEdit={onGoEdit}
                 />
+                {visible &&
+                    <ReleaseModal
+                        onClose={this.onToggleModal}
+                    />
+                }
             </div>
         )
     }

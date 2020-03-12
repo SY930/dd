@@ -47,7 +47,7 @@ export default class QueryForm extends Component {
         const formItems = this.resetFormItems();
         const newKeys = use ? dFormKeys2 : dFormKeys;
         return (
-            <div className={styles.queryform}>
+            <div className={styles.queryform2}>
                 <BaseForm
                     getForm={this.onGetForm}
                     formItems={formItems}

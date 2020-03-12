@@ -14,6 +14,10 @@ const sexMap = {
     1: '男',
     2: '未知',
 };
+const statusMap = {
+    0: '正常',
+    1: '已删除',
+};
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
@@ -48,15 +52,19 @@ class MainTable extends Component {
                 { width: 160, title: '手机号', dataIndex: 'customerMobile' },
             ];
         }
+        const render = (v, o) => {
+            return (<span>{statusMap[v]}</span>);
+        };
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
             { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
             { width: 100, title: '发出方式', dataIndex: 'way' },
+            { width: 80, title: '状态', dataIndex: 'status', render },
             { width: 160, title: '发出时间', dataIndex: 'createStamp' },
             { width: 160, title: '客户编号', dataIndex: 'customerID' },
             { width: 100, title: '姓名', dataIndex: 'customerName' },
             { width: 60, title: '性别', dataIndex: 'sex', className: tc },
-            { width: 160, title: '手机号', dataIndex: 'customerMobile' },
+            { width: 100, title: '手机号', dataIndex: 'customerMobile' },
         ];
     }
     /* 生成表格数据 */
@@ -84,7 +92,7 @@ class MainTable extends Component {
                         columns={columns}
                         dataSource={dataSource}
                         style={{ maxWidth: 700 }}
-                        scroll={{ x: 900 }}
+                        scroll={{ x: 1000 }}
                         pagination={pagination}
                     />
                 </div>
