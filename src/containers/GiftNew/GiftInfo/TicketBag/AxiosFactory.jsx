@@ -50,7 +50,7 @@ async function getTotalList(data) {
     return { list: [] };
 }
 /**
- *
+ * 列表中删除券包
  */
 async function deleteTicketBag(data) {
     const method = `${api}delCouponPackage.ajax`;
@@ -65,7 +65,7 @@ async function deleteTicketBag(data) {
 }
 
 /**
- *
+ *  增加券包
  */
 async function putTicketBag(data) {
     const method = `${api}addCouponPackage.ajax`;
@@ -80,7 +80,7 @@ async function putTicketBag(data) {
 }
 
 /**
- *
+ * 详情中，赠送 发送短信功能
  */
 async function putSendTicket(data) {
     const method = `${api}sendCouponPackageToCustomer.ajax`;
@@ -95,7 +95,7 @@ async function putSendTicket(data) {
 }
 
 /**
- * 更新
+ * 更新券包
  */
 async function postTicketBag(data) {
     const method = `${api}updateCouponPackage.ajax`;
@@ -110,7 +110,7 @@ async function postTicketBag(data) {
 }
 
 /**
- * 检测手机
+ * 详情中，赠送 检测手机
  */
 async function getPhoneValid(data) {
     const method = `/crm/customerService_checkCustomerByMobile.ajax`;
@@ -125,10 +125,10 @@ async function getPhoneValid(data) {
 }
 
 /**
- * 退款
+ * 详情中，退款， 未完成url
  */
 async function postRefund(data) {
-    const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
+    const method = `${api}updateCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
@@ -140,7 +140,7 @@ async function postRefund(data) {
 }
 
 /**
- *
+ * 列表进入查看详情
  */
 async function getTicketBagInfo(data) {
     const method = `${api}getCouponPackageInfo.ajax`;

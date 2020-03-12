@@ -2,6 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Alert } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { refundItems, formItemLayout } from '../Common';
+import { postRefund } from '../AxiosFactory';
 
 const formItemKeys = ['refundRemark'];
 class RefundModal extends Component {
@@ -12,10 +13,11 @@ class RefundModal extends Component {
     onOk = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { list, onClose, onPost } = this.props;
+                const { list, onClose } = this.props;
                 const params = { ...v, orderKey: list };
-                onPost(params);
-                onClose();
+                postRefund(params).then(flag => {
+                    flag && onClose();
+                });
             }
         });
     }

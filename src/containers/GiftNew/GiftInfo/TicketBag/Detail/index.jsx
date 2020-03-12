@@ -17,15 +17,15 @@ class Detail extends Component {
     state = {
         list: [],
         loading: false,
-        queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        queryParams: {},        // 发出数临时查询缓存，具体对象查看QueryForm对象
         pageObj: {},
         list2: [],
         loading2: false,
-        queryParams2: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        queryParams2: {},        // 使用数临时查询缓存，具体对象查看QueryForm对象
         pageObj2: {},
         list3: [],
         loading4: false,
-        queryParams4: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        queryParams4: {},        // 退款查询临时查询缓存，具体对象查看QueryForm对象
         pageObj4: {},
         visible: '',             // 弹层是否显示
         selectedRowKeys: [],     // 退款ids
@@ -93,11 +93,7 @@ class Detail extends Component {
     onCloseModal = () => {
         this.setState({ visible: '' });
     }
-    /* 退款 */
-    onReund = () => {
-        const { selectedRowKeys } = this.state;
-        console.log('sle', selectedRowKeys);
-    }
+    // 退款选中的订单
     onSelectChange = (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
     }
@@ -204,7 +200,6 @@ class Detail extends Component {
                 {visible === 'refund' &&
                     <RefundModal
                         list={selectedRowKeys}
-                        onPost={this.onReund}
                         onClose={this.onCloseModal}
                     />
                 }
