@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Table, message, Modal, Popconfirm, Tooltip } from 'antd';
+import { Table, message, Modal, Tooltip } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { href, DF, TF } from './Common';
@@ -22,15 +22,28 @@ class MainTable extends Component {
         }
     }
     /** 编辑 */
-    onDelete = (couponPackageID) => {
+    onDelete = (couponPackageID, name) => {
         const { groupID, onQuery } = this.props;
         const params = { couponPackageID, groupID };
-        deleteTicketBag(params).then((flag) => {
-            if (flag) {
-                message.success('删除成功');
-                onQuery();
-            }
-        });
+        Modal.confirm({
+            title: '您确定要删除吗？',
+            content: (
+                <div>
+                    {`您将删除券包
+                        【${name}】`}
+                    <br />
+                    <span>删除是不可恢复操作，被删除的券包可以在已删除的券包中查看~</span>
+                </div>
+            ),
+            onOk: () => {
+                deleteTicketBag(params).then((flag) => {
+                    if (flag) {
+                        message.success('删除成功');
+                        onQuery();
+                    }
+                });
+            },
+        })
     }
     /** 查看详情 */
     onPreview = ({ target }) => {
@@ -87,17 +100,12 @@ class MainTable extends Component {
     generateColumns() {
         const { tc } = styles;
         const render = (v, o) => {
-            const { couponPackageID } = o;
+            const { couponPackageID: id, couponPackageName: name } = o;
             return (
-                <p id={couponPackageID}>
+                <p id={id}>
                     <a href={href} onClick={this.onEdit}>编辑</a>
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
-                    <Popconfirm
-                        title="确定删除吗?"
-                        onConfirm={() => { this.onDelete(couponPackageID) }}
-                    >
-                        <a href={href}>删除</a>
-                    </Popconfirm>
+                    <a href={href} onClick={()=>{this.onDelete(id,name)}}>删除</a>
                     <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
