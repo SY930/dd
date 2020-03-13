@@ -202,6 +202,7 @@ class GiftDetailModalTabs extends React.Component {
                             activeKey={this.state.activeKey}
                             newExport // 除了礼品定额卡之外的导出, 复用组件
                             handleClose={() => this.setState({ exportVisible: false })}
+                            sendorUsedParams = {this.props.sendorUsedParams}
                         />
                 }
             </div>
@@ -212,6 +213,7 @@ class GiftDetailModalTabs extends React.Component {
 function mapStateToProps(state) {
     return {
         sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
+        sendorUsedParams: state.sale_giftInfoNew.get('sendorUsedParams'),
     }
 }
 
