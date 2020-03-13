@@ -29,29 +29,28 @@ function mapStateToProps(state) {
 export default class GiftInfo extends React.Component {
     state = {
         page: '',
+        tabkey: '1',
     }
     /** 切换页面 不传默认列表页 */
     togglePage = (page = '', detail = null, check) => {
         this.setState({ page, detail, check });
-        if(page==='back'){
-            this.setState({ back: page });
-        }else{
-            this.setState({ back: '' });
-        }
+    }
+    toggleTabs = (tabkey) => {
+        this.setState({ tabkey });
     }
     render() {
-        const { page, detail, check, back } = this.state;
+        const { page, detail, check, tabkey } = this.state;
         const {isCreatingOrEditing, groupID, accountID} = this.props;
         if(page==='ticket'){
-            return <Editor groupID={groupID} check={check} accountID={accountID} detail={detail} togglePage={this.togglePage} />
+            return <Editor groupID={groupID} check={check} accountID={accountID} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {
             return (
-                <GiftDetailTable back={back} togglePage={this.togglePage} />
+                <GiftDetailTable tabkey={tabkey} togglePage={this.togglePage} toggleTabs={this.toggleTabs} />
             )
         } else {
             return (
-                <GiftEditPage/>
+                <GiftEditPage toggleTabs={this.toggleTabs}/>
             )
         }
 

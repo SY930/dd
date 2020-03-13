@@ -115,14 +115,19 @@ export default class Editor extends Component {
             let obj = {}
             for(let x in newFormItems) {
                 const disabled = keys5.includes(x);
-                obj[x] = {...newFormItems[x], disabled };
+                if(disabled){
+                    obj[x] = {...newFormItems[x], disabled };
+                } else {
+                    obj[x] = {...newFormItems[x] };
+                }
             }
             return obj;
         }
         return newFormItems;
     }
     onCancel = () => {
-        this.props.togglePage('back');
+        this.props.togglePage();
+        this.props.toggleTabs('2');
     }
     onSave = () => {
         this.form.validateFields((e, v) => {

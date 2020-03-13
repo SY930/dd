@@ -592,7 +592,7 @@ class GiftDetailTable extends Component {
         };
         const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
-        const { back } = this.props;
+        const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
@@ -615,7 +615,7 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >{ COMMON_LABEL.create }</Button>
+                                    >新增礼品</Button>
                                 </Authority>
                                 <Button
                                     type="ghost"
@@ -639,7 +639,7 @@ class GiftDetailTable extends Component {
                         </div>
                     </div>
                 <PromotionCalendarBanner />
-                <Tabs defaultActiveKey={back? '2' : '1'} className={styles.tabBox}>
+                <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
                     <div className={styles2.pageContentWrapper}>
                         <div style={{ padding: '0'}} className="layoutsHeader">
