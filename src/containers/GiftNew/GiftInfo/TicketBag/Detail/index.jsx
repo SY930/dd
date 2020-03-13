@@ -69,6 +69,7 @@ class Detail extends Component {
             sellEndTime, couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
+        const oddStock = couponPackageStock - sendCount;
         return (
             <Modal
                 title="券包使用详情"
@@ -110,6 +111,7 @@ class Detail extends Component {
                             <TabPane tab="发出数" key="1">
                                 <Button
                                     type="ghost"
+                                    disabled={!list[0]}
                                     className={styles.expBtn}
                                     onClick={this.onToggleModal}
                                 ><Icon type="export" />导出</Button>
@@ -123,6 +125,12 @@ class Detail extends Component {
                             </TabPane>
                             <TabPane tab="使用数" key="2">
                                 <QueryForm use={!0} onQuery={this.onQueryList2} />
+                                <Button
+                                    type="ghost"
+                                    disabled={!list2[0]}
+                                    className={styles.expBtn}
+                                    onClick={this.onToggleModal}
+                                ><Icon type="export" />导出</Button>
                                 <MainTable
                                     use={!0}
                                     list={list2}
@@ -132,7 +140,7 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="3">
-                                <PresentForm ids={ids} num={couponPackageStock} />
+                                <PresentForm ids={ids} num={oddStock} />
                             </TabPane>
                         </Tabs>
                     </li>
