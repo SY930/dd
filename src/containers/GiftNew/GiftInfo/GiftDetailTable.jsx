@@ -385,7 +385,6 @@ class GiftDetailTable extends Component {
                         });
                     }
                 }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
-                }, ({code, msg, eventReference = [], wechatCardReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
