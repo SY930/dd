@@ -384,7 +384,8 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -430,7 +431,7 @@ class GiftDetailTable extends Component {
                                         !!quotaCardsReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下礼品定额卡券使用，如需删除，请取消引用
+                                                该礼品被以下礼品定额卡券使用，如需删除，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -439,6 +440,22 @@ class GiftDetailTable extends Component {
                                                         padding: 5
                                                     }}
                                                 >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        !!couponPackageReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
                                             </div>
                                         )
                                     }

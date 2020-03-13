@@ -1,13 +1,14 @@
-@import '~@hualala/platform-base/lib/styles/variables.less';
-@import '~@hualala/platform-base/lib/styles/mixins.less';
-
 .hll-shop-selector {
     .smallBox {
-        .x-text-ellipsis();
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
         position: relative;
         background-color: #ffffff;
-        border: 1px solid @border-color-base;
-        border-radius: @border-radius;
+        background-color: #fff;
+        border: 1px solid #dbd0d0;
         padding: 0 30px 0 8px;
         line-height: 26px;
         cursor: pointer;
@@ -18,17 +19,17 @@
             right: 8px;
             font-size: 14px;
             line-height: 26px;
-            color: @lightGrey;
+            color: #aeaeae;
             &:hover {
-                color: @btn2-def-color;
+                color: #1ab495;
             }
         }
 
         &:hover {
-            border-color: @btn2-def-color;
+            border-color: #1ab495;
         }
         &.empty {
-            color: @lightGrey;
+            color: #aeaeae;
         }
     }
 }
