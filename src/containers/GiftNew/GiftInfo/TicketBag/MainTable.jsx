@@ -146,7 +146,7 @@ class MainTable extends Component {
     }
     render() {
         const { visible, detail, couponPackageID } = this.state;
-        const { loading, page, groupID, accountID } = this.props;
+        const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
@@ -163,7 +163,7 @@ class MainTable extends Component {
                     />
                     {visible &&
                         <DetailModal
-                            ids={{groupID, couponPackageID, accountID}}
+                            ids={{groupID, couponPackageID}}
                             detail={detail}
                             onClose={this.onToggleModal}
                         />

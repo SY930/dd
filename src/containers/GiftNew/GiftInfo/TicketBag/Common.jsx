@@ -103,6 +103,7 @@ const separItems = {
         render: () => (<div className="separate"><h3>礼品设置</h3></div>),
     },
 }
+// 表单内 小问号的 tip
 const tipMargin = { margin: '0 -5px 0 5px' };
 const priceLabel = (<span>
         记录实收金额
@@ -129,9 +130,22 @@ const userLabel = (<span>
         style={tipMargin}
     />
 </span>);
+// 计算售卖时间禁止日期函数
+function range(start, end) {
+    return Array(end - start).fill(0).map((value, idx) => {
+        return idx + start;
+    });
+}
 // 宣传图默认图
 const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // http://wiki.hualala.com/pages/viewpage.action?pageId=46546447 java API
+// 第一次必须加载所有keys，不然会导致回显的时候出问题
+// 付费购买  活动投放
+const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'shopInfos', 'revoke', 'user', 'couponPackageDesciption', 'couponPackageImage'];
+const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
+
 const formItems = {
     couponPackageType: {
         type: 'radioButton',
@@ -172,6 +186,13 @@ const formItems = {
                 return callback();
             },
         }],
+    },
+    settleUnitID: {
+        type: 'combo',
+        label: '券包结算主体',
+        options: [],
+        defaultValue: '',
+        rules: ['required'],
     },
     couponPackagePrice2: {
         type: 'text',
@@ -285,17 +306,6 @@ const formItems = {
     },
     ...separItems,
 };
-function range(start, end) {
-    return Array(end - start).fill(0).map((value, idx) => {
-        return idx + start;
-    });
-}
-// 第一次必须加载所有keys，不然会导致回显的时候出问题
-// 付费购买  活动投放
-const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'couponPackageStock', 'shopInfos', 'revoke', 'user', 'couponPackageDesciption', 'couponPackageImage'];
-const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
 // 一次性发放全部礼品 周期发放礼品
 const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];

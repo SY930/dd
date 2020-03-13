@@ -38,7 +38,7 @@ export default class TicketBag extends Component {
     }
     render() {
         const { list, loading, pageObj, visible } = this.state;
-        const { groupID, accountID, onGoEdit } = this.props;
+        const { groupID, onGoEdit } = this.props;
         return (
             <div className={styles.listBox}>
                 <QueryForm
@@ -48,7 +48,6 @@ export default class TicketBag extends Component {
                 <Button onClick={this.onToggleModal}>投放</Button>
                 <MainTable
                     groupID={groupID}
-                    accountID={accountID}
                     list={list}
                     loading={loading}
                     pageObj={pageObj}

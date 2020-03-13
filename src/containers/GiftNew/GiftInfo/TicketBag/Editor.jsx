@@ -66,7 +66,7 @@ export default class Editor extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { check, detail } = this.props;
+        const { check, detail, settlesOpts } = this.props;
         const { sendCount = 0 } = detail || {};
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
@@ -74,7 +74,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo  disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -92,6 +92,7 @@ export default class Editor extends Component {
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
+            settleUnitID: { ...settleUnitID , options: settlesOpts},
         };
         if(check) {
             let obj = {}

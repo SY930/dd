@@ -50,6 +50,21 @@ async function getTotalList(data) {
     return { list: [] };
 }
 /**
+ * 券包增加页面，获取结算主体列表
+ */
+async function getSettleList(data) {
+    const method = '/crm/CrmSettleService_querySettleBaseInfoList.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { settleUnitInfoList = [] } = obj;
+        return settleUnitInfoList;
+    }
+    message.error(msg);
+    return [];
+}
+/**
  * 列表中删除券包
  */
 async function deleteTicketBag(data) {
@@ -156,5 +171,5 @@ async function getTicketBagInfo(data) {
 }
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
-    postTicketBag, getPhoneValid, putSendTicket, postRefund,
+    postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList,
 }
