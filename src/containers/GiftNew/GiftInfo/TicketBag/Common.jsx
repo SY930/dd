@@ -171,7 +171,6 @@ const formItems = {
         render: null,
         props: {
             placeholder: '默认全部店铺',
-            size: 'small',
         },
     },
     couponPackageDesciption: {
