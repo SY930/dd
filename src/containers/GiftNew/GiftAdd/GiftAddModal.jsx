@@ -214,9 +214,9 @@ class GiftAddModal extends React.Component {
         )
     }
     render() {
+        const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
+        const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
         const { unit } = this.state;
-        const { gift: { name: describe, value, data }, visible, type } = this.props;
-        const valueLabel = value == '42' ? '积分数额' : '礼品价值';
         const formItems = {
             giftType: {
                 label: '礼品类型',
@@ -612,6 +612,8 @@ class GiftAddModal extends React.Component {
                         'giftDenomination',
                         'cardPrice',
                         'freePrice',
+                        'giftValueCurrencyType',
+                        'giftValue',
                         'giftCost',
                         'price',
                         'quotaCardGiftConfList',

@@ -86,6 +86,10 @@ class ReturnGift extends React.Component {
 
     remove(index) {
         const _infos = this.state.infos;
+        const { disabled } = this.props;
+        if(disabled){
+            return;
+        }
         _infos.splice(index, 1);
         this.setState({
             infos: _infos,
@@ -96,6 +100,10 @@ class ReturnGift extends React.Component {
 
     add() {
         const _infos = this.state.infos;
+        const { disabled } = this.props;
+        if(disabled){
+            return;
+        }
         _infos.push(JSON.parse(JSON.stringify(DEFAULT_GIFT_ITEM)));
         this.setState({
             infos: _infos,
@@ -154,6 +162,10 @@ class ReturnGift extends React.Component {
         _giftInfo.sort((a, b) => a.index - b.index)
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
+            const { disabled } = this.props;
+            if(disabled){
+                return;
+            }
             const toggle = !disArr[index];
             disArr.map((v, i) => disArr[i] = false)
             disArr[index] = toggle;
@@ -173,7 +185,7 @@ class ReturnGift extends React.Component {
                     {
                         arr.length > 1 && (
                             <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.remove(index)}>
-                                <Icon className={selfStyle.removeButton} type="close-circle" />
+                                <Icon className={selfStyle.removeButton} type="close-circle" disabled={this.props.disabled} />
                             </Popconfirm>
                         )
                     }
@@ -198,18 +210,21 @@ class ReturnGift extends React.Component {
                                 this.setState({ disArr })
                             }}
                             disArr={this.state.disArr || []}
+                            disabled={this.props.disabled}
                         >
                             <Input
                                 placeholder=""
                                 value={(this.getGiftValue(index) || '').split(',')[1]}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
+                                disabled={this.props.disabled}
                             />
                             <Icon
                                 type="down"
                                 style={{ fontSize: 10, position: 'absolute', top: 10, left: 272 }}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
+                                disabled={this.props.disabled}
                             />
                         </ExpandTree>
                     </FormItem>
@@ -228,6 +243,7 @@ class ReturnGift extends React.Component {
                                     modal="int"
                                     value={{ number: info.giftNum.value }}
                                     onChange={(val) => { this.handleCouponNumberChange(val, index); }}
+                                    disabled={this.props.disabled}
                                 />
                             </FormItem>
                         </div>
@@ -247,6 +263,7 @@ class ReturnGift extends React.Component {
                                             maxNum={6}
                                             value={{ number: info.giftMaxUseNum.value }}
                                             onChange={(val) => { this.handlegiftMaxUseNumChange(val, index); }}
+                                            disabled={this.props.disabled}
                                         />
                                     </FormItem> : null
                             }
@@ -257,7 +274,7 @@ class ReturnGift extends React.Component {
                             <div>
                                 { !!couponEntity && (
                                     <div style={{ paddingLeft: 82, margin: '12px 0'}}>
-                                        <WeChatCouponCard entity={couponEntity}  />
+                                        <WeChatCouponCard entity={couponEntity} disabled={this.props.disabled} />
                                     </div>
                                 )}
                                 { !!couponEntity && (
@@ -266,6 +283,7 @@ class ReturnGift extends React.Component {
                                         description={SALE_LABEL.k6d8n4nk}
                                         type="warning"
                                         showIcon
+                                        disabled={this.props.disabled}
                                     />
                                 )}
                             </div>
@@ -280,6 +298,7 @@ class ReturnGift extends React.Component {
                                     <RadioGroup
                                         value={info.giftValidType > 1 ? '0' : `${info.giftValidType}`}
                                         onChange={val => this.handleValidateTypeChange(val, index)}
+                                        disabled={this.props.disabled}
                                     >
                                         {
                                             VALIDATE_TYPE.map((item, index) => {
@@ -311,7 +330,7 @@ class ReturnGift extends React.Component {
                     <FormItem
                         labelCol={{ span: 5 }}
                         wrapperCol={{ span: 18 }}
-                        label={' '}
+                        label={'有效天数'}
                         required={true}
                         validateStatus={info.giftValidDays.validateStatus}
                         help={info.giftValidDays.msg}
@@ -323,6 +342,7 @@ class ReturnGift extends React.Component {
                             maxNum={5}
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
+                            disabled={this.props.disabled}
                         />
                     </FormItem>
                     <FormItem
@@ -350,6 +370,7 @@ class ReturnGift extends React.Component {
                                         this.props.onChange && this.props.onChange(this.state.infos);
                                     })
                                 }}
+                                disabled={this.props.disabled}
                             >
                                 {
                                     [{ value: '0', label: SALE_LABEL.k6d9lj73 }, { value: '2', label: SALE_LABEL.k6d9ljff }].map((item, index) => {
@@ -367,6 +388,7 @@ class ReturnGift extends React.Component {
                                         `${this.state.infos[index].giftEffectiveTime.value}`
                                 }
                                 onChange={(val) => { this.handleGiftEffectiveTimeChange(val, index) }}
+                                disabled={this.props.disabled}
                             >
                                 { arr.map((item, index) => (<Option value={item.value} key={index}>{item.label}</Option>)) }
                             </Select>
@@ -394,7 +416,7 @@ class ReturnGift extends React.Component {
                 validateStatus={info.giftEffectiveTime.validateStatus}
                 help={info.giftEffectiveTime.msg}
             >
-                <RangePicker {...pickerProps} disabledDate={
+                <RangePicker {...pickerProps} disabled={this.props.disabled} disabledDate={
                     (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
                 } />
             </FormItem>
