@@ -615,7 +615,7 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >{ COMMON_LABEL.create }</Button>
+                                    >新增礼品</Button>
                                 </Authority>
                                 <Button
                                     type="ghost"
