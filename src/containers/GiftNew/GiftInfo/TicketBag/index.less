@@ -100,13 +100,24 @@
             color: @green2;
         }
         .baseform-b{
-            position: relative;
-            .ant-form-item:nth-child(2){
-                position: absolute;
-                left: 380px;
-                z-index: 2;
-                width: 20px;
+            .ant-form-item-label{
+                overflow: unset;
             }
+            label[for=couponSendWay]{
+                position: relative;
+                .anticon-question-circle{
+                    position: absolute;
+                    left: 305px;
+                    top: 9px;
+                    z-index: 4;
+                    width: 20px;
+                }
+            }
+        }
+        .ant-alert-error{
+            color: @red;
+            width: 600px;
+            margin-left: 125px;
         }
     }
 }

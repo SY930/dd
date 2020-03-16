@@ -22,7 +22,7 @@ export default class PresentForm extends Component {
                 const { customerID } = this.state;
                 const { ids } = this.props;
                 const { } = v;
-                const obj = { sourceWay: !1, sourceType: '10' };
+                const obj = { sourceWay: false, sourceType: '10' };
                 const params = {...ids, customerID, ...v, ...obj };
                 putSendTicket(params).then((flag) => {
                     if(flag) {
@@ -82,11 +82,11 @@ export default class PresentForm extends Component {
         const btnProp = { type: 'primary', onClick: this.onSend };
         const { q, c, sendCount, accountNo, smsTemplate, ...other } = pFormItems;
         const render = () => (<div className={styles.sendBtn}><Button {...btnProp}>发送</Button></div>);
-        const render1 = d => d()(<AccountNoSelector autoFetch={!0} />);
+        const render1 = d => d()(<AccountNoSelector autoFetch={true} />);
         const render2 = d => d()(<MsgSelector selectedMessage={msg} />);
         const render3 = () => (<p>{num}</p>);
         const rules = [{
-            required: !0,
+            required: true,
             validator: (rule, value, callback) => {
                 if(!(/^\d+$/.test(value))){
                     return callback('请输入数字');

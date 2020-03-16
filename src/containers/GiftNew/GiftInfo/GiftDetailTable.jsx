@@ -430,7 +430,7 @@ class GiftDetailTable extends Component {
                                         !!quotaCardsReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                该礼品被以下礼品定额卡券使用，如需删除，请取消引用
+                                                    该礼品被以下礼品定额卡券使用，如需删除，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -442,7 +442,7 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-                                    {
+                                     {
                                         !!couponPackageReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
