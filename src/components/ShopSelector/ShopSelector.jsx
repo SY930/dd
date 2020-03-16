@@ -35,7 +35,8 @@ class ShopSelector extends Component {
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
-        return loadShopSchema(params, cache)
+        const { brandList } = this.props;
+        return loadShopSchema(params, cache, brandList)
             .then(({ shops, ...filterOptions }) => {
                 this.setState({
                     loading: false,

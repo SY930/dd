@@ -115,14 +115,14 @@ class MainTable extends Component {
                     <span>{v}</span>
                 </Tooltip>);
         };
-        const render2 = (v, o) => {
-            const {sellBeginTime, sellEndTime } = o;
-            let text = sellBeginTime + ' ~ ' + sellEndTime;
-            if(sellBeginTime==='0'){
-                text = '长期有效';
-            }
-            return (<span>{text}</span>);
-        };
+        // const render2 = (v, o) => {
+        //     const {sellBeginTime, sellEndTime } = o;
+        //     let text = sellBeginTime + ' ~ ' + sellEndTime;
+        //     if(sellBeginTime==='0'){
+        //         text = '长期有效';
+        //     }
+        //     return (<span>{text}</span>);
+        // };
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
@@ -131,7 +131,7 @@ class MainTable extends Component {
             { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
             { title: '券包说明', dataIndex: 'couponPackageDesciption' },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
-            { width: 160, title: '时间', dataIndex: 'range', className: tc, render: render2 },
+            { width: 260, title: '创建时间/修改时间', dataIndex: 'postTime', className: tc },
         ];
     }
     /* 生成表格数据 */
@@ -141,6 +141,7 @@ class MainTable extends Component {
             key: x.id,
             idx: i + 1,
             postBy: (x.createBy || '') + ' / ' + (x.modifyBy || ''),
+            postTime: (x.createTime || '') + ' / ' + (x.modifyTime || ''),
             ...x,
         }));
     }
@@ -157,7 +158,7 @@ class MainTable extends Component {
                         loading={loading}
                         columns={columns}
                         dataSource={dataSource}
-                        style={{ maxWidth: 1200 }}
+                        style={{ maxWidth: 1300 }}
                         scroll={{ y: 'calc(100vh - 440px)' }}
                         pagination={pagination}
                     />

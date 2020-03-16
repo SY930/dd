@@ -384,7 +384,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -442,7 +442,21 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-
+                                     {   !!couponPackageReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             ),
                         });
@@ -616,7 +630,7 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >{ COMMON_LABEL.create }</Button>
+                                    >新增礼品</Button>
                                 </Authority>
                                 <Button
                                     type="ghost"
