@@ -667,6 +667,8 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'giftDenomination',
+                        'giftValueCurrencyType',
+                        'giftCost',
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
