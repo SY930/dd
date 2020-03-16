@@ -127,7 +127,7 @@ class LotteryThirdStep extends React.Component {
                 } else {
                     const typePropertyName = 'sendType'
                     const typeValue = gift.sendType;
-                    infos[index] = getDefaultGiftData(typeValue, typePropertyName); 
+                    infos[index] = getDefaultGiftData(typeValue, typePropertyName);
                 }
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.giftTotalCount && gift.giftName && gift.giftID){
@@ -153,9 +153,9 @@ class LotteryThirdStep extends React.Component {
                 if(gift.cardTypeID && gift.presentValue){
                     infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
                     //充值到会员卡的卡类型id
-                    infos[index].givePoints.value.card.value = gift.cardTypeID;  
+                    infos[index].givePoints.value.card.value = gift.cardTypeID;
                     //赠送积分
-                    infos[index].givePoints.value.givePointsValue.value = gift.presentValue;  
+                    infos[index].givePoints.value.givePointsValue.value = gift.presentValue;
                 } else {
                     infos[index].givePoints.value = {};
                 }
@@ -205,7 +205,7 @@ class LotteryThirdStep extends React.Component {
                                 }else{
                                     temparr[num].effectTime = item.effectTime;
                                     temparr[num].validUntilDate = item.validUntilDate;
-                                } 
+                                }
                                 temparr[num].giftTotalCount = item.giftTotalCount;
                                 temparr[num].giftName = item.giftName;
                                 temparr[num].giftID = item.giftID;
@@ -548,9 +548,9 @@ class LotteryThirdStep extends React.Component {
                     infos,
                     activeKey: activeKey === targetKey ? `${activeKey - 1}` : `${activeKey}`,
                 })
-                break;  
-            default: 
-                break;     
+                break;
+            default:
+                break;
         }
     }
 
@@ -635,7 +635,7 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
-    
+
     /**
      * 检验是否所有的显示出来的表单项是否都验证成功。每一次只检测info数组的当前index的数据因为，在切换和新建、提交的时候都要进行验证
      * 如果验证不成功的话，返回false，则进行的动作（切换和新建、提交）则会中断
@@ -667,7 +667,7 @@ class LotteryThirdStep extends React.Component {
                     tempResult = false;
                     message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
                 }
-            }   
+            }
         }
         // 校验校验每一等级必填
         for (let activeKey = 0; activeKey < infos.length; activeKey ++) {
@@ -770,7 +770,7 @@ class LotteryThirdStep extends React.Component {
             }
             tempObj.giftTotalCount = couponObj.giftCount.value;
             tempObj.giftName = couponObj.giftInfo.giftName;
-            tempObj.giftID = couponObj.giftInfo.giftItemID;  
+            tempObj.giftID = couponObj.giftInfo.giftItemID;
             tempObj.presentType = 1;
         }
         tempObj.giftOdds = data.giftOdds.value;
@@ -802,7 +802,7 @@ class LotteryThirdStep extends React.Component {
             setSpecialGiftInfo(tempArr);
             return true;
         }
-        
+
     }
 
     toggleFun = (index) => {
@@ -815,23 +815,24 @@ class LotteryThirdStep extends React.Component {
 
     render() {
         const { activeKey, infos, giftInfo, disArr, cardTypeArr } = this.state;
+        const { user } = this.props;
         let filteredGiftInfo = giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
         let panelArr = this.getPaneArr(infos);
         return (
             <div className={style.stepWrapper}>
-                <Button 
-                    className = { style.addLevelButton } 
-                    type = 'primary' 
+                <Button
+                    className = { style.addLevelButton }
+                    type = 'primary'
                     onClick={this.handleAddLevelPrize}
                     disabled={this.props.disabled || infos.length >= 10}
-                > 
+                >
                     <Icon type="plus" className={style.addIcon} />
-                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)} 
+                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)}
                 </Button>
-                <span 
+                <span
                     className = { style.graySpan }
-                > 
+                >
                     {this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}
                 </span>
                 <Tabs
@@ -844,18 +845,19 @@ class LotteryThirdStep extends React.Component {
                 >
                     { panelArr.map((pane,index) => {
                         return (
-                            <TabPane 
-                                tab={pane.title} 
-                                key={pane.key} 
-                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1} 
+                            <TabPane
+                                tab={pane.title}
+                                key={pane.key}
+                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1}
                                 ref='paneRef'
                             >
-                                <pane.content 
-                                    info={infos[index]} 
-                                    infosLength={infos.length} 
-                                    filteredGiftInfo={filteredGiftInfo} 
+                                <pane.content
+                                    groupID={user.accountInfo.groupID}
+                                    info={infos[index]}
+                                    infosLength={infos.length}
+                                    filteredGiftInfo={filteredGiftInfo}
                                     cardTypeArr={cardTypeArr}
-                                    index={index} 
+                                    index={index}
                                     toggleFun={this.toggleFun}
                                     disArr={disArr}
                                     redPacketArr={this.state.redPackets}
@@ -884,7 +886,7 @@ class LotteryThirdStep extends React.Component {
             </div>
         )
     }
-} 
+}
 
 const mapStateToProps = (state) => {
     return {

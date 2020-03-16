@@ -17,7 +17,7 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter';
-
+import TicketBag from './TicketBag';
 
 @injectIntl
 export default class PrizeContent extends React.Component {
@@ -27,6 +27,9 @@ export default class PrizeContent extends React.Component {
             key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
         },
         { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }]);
+        this.state = {
+            typeValue: '0',
+        }
     }
     getGiftValue = (index) => {
         const { info, filteredGiftInfo, handleGiftChange } = this.props;
@@ -157,6 +160,9 @@ export default class PrizeContent extends React.Component {
             </FormItem>
         );
     }
+    onTypeChange = ({ target }) => {
+        this.setState({ typeValue: target.value });
+    }
     render() {
         const {
                 info,
@@ -176,7 +182,9 @@ export default class PrizeContent extends React.Component {
                 redPacketArr,
                 handleCardChange,
                 disabled,
+                groupID,
         } = this.props;
+        const { typeValue } = this.state;
         return (
             <div style={{ position: 'relative' }}>
                 {
@@ -280,81 +288,88 @@ export default class PrizeContent extends React.Component {
                                 <span>{this.props.intl.formatMessage(STRING_SPE.dd5aa6c59a74233)}</span>
                                 {!(info.giveCoupon.value.isOn) ?
                                     null :
-                                    <div className={style.paleRed}>
-                                        {/* 优惠券名称 */}
-                                        <FormItem
-                                            wrapperCol={{ span: 12 }}
-                                            className={style.FormItemSecondStyle}
-                                            validateStatus={info.giveCoupon.value.giftInfo.validateStatus}
-                                            help={info.giveCoupon.value.giftInfo.msg}
-                                        >
-                                            <div className={style.labelSecondDiv}>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.dojyd1ldi5200)}</span>
-                                            </div>
-                                            <ExpandTree
-                                                idx={index}
-                                                value={this.getGiftValue(index)}
-                                                // 这里没有值默认选第一个的逻辑应该在确认数据之后写
-                                                data={_.sortBy(filteredGiftInfo, 'index')}
-                                                onChange={(value) => {
-                                                    handleGiftChange(value, index);
-                                                }}
-                                                onClick={(value,index) => {
-                                                    changeDisArr(value,index);
-                                                }}
-                                                disArr={disArr || []}
+                                    <div>
+                                        <RadioGroup onChange={this.onTypeChange} value={typeValue} >
+                                            <Radio value={'0'}>独立优惠券</Radio>
+                                            <Radio value={'1'}>券包</Radio>
+                                        </RadioGroup>
+                                        <TicketBag groupID={groupID} />
+                                        <div className={style.paleRed}>
+                                            {/* 优惠券名称 */}
+                                            <FormItem
+                                                wrapperCol={{ span: 12 }}
+                                                className={style.FormItemSecondStyle}
+                                                validateStatus={info.giveCoupon.value.giftInfo.validateStatus}
+                                                help={info.giveCoupon.value.giftInfo.msg}
                                             >
-                                                <Input
-                                                    value={(this.getGiftValue(index) || '').split(',')[1]}
-                                                    className="input_click"
-                                                    onClick={() => { toggleFun(index); }}
-                                                />
-                                                <Icon
-                                                    type="down"
-                                                    style={{ position: 'absolute', top: 10, left: 252 }}
-                                                    className="input_click"
-                                                    onClick={() => { toggleFun(index); }}
-                                                />
-                                            </ExpandTree>
-                                        </FormItem>
-                                        {/* 礼品个数 */}
-                                        <FormItem
-                                            wrapperCol={{ span: 12 }}
-                                            className={style.FormItemSecondStyle}
-                                            validateStatus={info.giveCoupon.value.giftCount.validateStatus}
-                                            help={info.giveCoupon.value.giftCount.msg}
-                                        >
-                                            <div className={style.labelSecondDiv}>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
-                                            </div>
-                                            <PriceInput
-                                                maxNum={9}
-                                                value={{ number: info.giveCoupon.value.giftCount.value }}
-                                                onChange={val => handleGiftCountChange(val, index)}
-                                                addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
-                                                modal="int"
-                                            />
-                                        </FormItem>
-                                        <FormItem
-                                            wrapperCol={{ span: 12 }}
-                                            className={style.FormItemSecondStyle}
-                                        >
-                                            <div className={style.labelSecondDiv}>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.d2c8gi45an648)}</span>
-                                            </div>
-                                            <RadioGroup
-                                                className={style.radioMargin}
-                                                value={info.giveCoupon.value.effectType == '2' ? '2' : '1'}
-                                                onChange={val => handleValidateTypeChange(val, index)}
+                                                <div className={style.labelSecondDiv}>
+                                                    <span>{this.props.intl.formatMessage(STRING_SPE.dojyd1ldi5200)}</span>
+                                                </div>
+                                                <ExpandTree
+                                                    idx={index}
+                                                    value={this.getGiftValue(index)}
+                                                    // 这里没有值默认选第一个的逻辑应该在确认数据之后写
+                                                    data={_.sortBy(filteredGiftInfo, 'index')}
+                                                    onChange={(value) => {
+                                                        handleGiftChange(value, index);
+                                                    }}
+                                                    onClick={(value,index) => {
+                                                        changeDisArr(value,index);
+                                                    }}
+                                                    disArr={disArr || []}
+                                                >
+                                                    <Input
+                                                        value={(this.getGiftValue(index) || '').split(',')[1]}
+                                                        className="input_click"
+                                                        onClick={() => { toggleFun(index); }}
+                                                    />
+                                                    <Icon
+                                                        type="down"
+                                                        style={{ position: 'absolute', top: 10, left: 252 }}
+                                                        className="input_click"
+                                                        onClick={() => { toggleFun(index); }}
+                                                    />
+                                                </ExpandTree>
+                                            </FormItem>
+                                            {/* 礼品个数 */}
+                                            <FormItem
+                                                wrapperCol={{ span: 12 }}
+                                                className={style.FormItemSecondStyle}
+                                                validateStatus={info.giveCoupon.value.giftCount.validateStatus}
+                                                help={info.giveCoupon.value.giftCount.msg}
                                             >
-                                                {
-                                                    this.VALIDATE_TYPE.map((item, index) => {
-                                                        return <Radio value={item.value} key={index}>{item.name}</Radio>
-                                                    })
-                                                }
-                                            </RadioGroup>
-                                        </FormItem>
-                                        {this.renderValidOptions(info, index)}
+                                                <div className={style.labelSecondDiv}>
+                                                    <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
+                                                </div>
+                                                <PriceInput
+                                                    maxNum={9}
+                                                    value={{ number: info.giveCoupon.value.giftCount.value }}
+                                                    onChange={val => handleGiftCountChange(val, index)}
+                                                    addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
+                                                    modal="int"
+                                                />
+                                            </FormItem>
+                                            <FormItem
+                                                wrapperCol={{ span: 12 }}
+                                                className={style.FormItemSecondStyle}
+                                            >
+                                                <div className={style.labelSecondDiv}>
+                                                    <span>{this.props.intl.formatMessage(STRING_SPE.d2c8gi45an648)}</span>
+                                                </div>
+                                                <RadioGroup
+                                                    className={style.radioMargin}
+                                                    value={info.giveCoupon.value.effectType == '2' ? '2' : '1'}
+                                                    onChange={val => handleValidateTypeChange(val, index)}
+                                                >
+                                                    {
+                                                        this.VALIDATE_TYPE.map((item, index) => {
+                                                            return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                                        })
+                                                    }
+                                                </RadioGroup>
+                                            </FormItem>
+                                            {this.renderValidOptions(info, index)}
+                                        </div>
                                     </div>
                                 }
                             </FormItem>
