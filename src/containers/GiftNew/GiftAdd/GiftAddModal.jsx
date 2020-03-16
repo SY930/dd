@@ -498,7 +498,10 @@ class GiftAddModal extends React.Component {
                     required: true,
                     validator: (rule, value, callback) => {
                         const { validateFields } = this.baseForm;
-                        validateFields(['cardPrice', 'giftCost'], { force: true });
+                        try{
+                            validateFields(['cardPrice', 'giftCost'], { force: true });
+                        }
+                        catch(e){}
                         return callback();
                     },
                 }],
@@ -613,7 +616,6 @@ class GiftAddModal extends React.Component {
                         'cardPrice',
                         'freePrice',
                         'giftValueCurrencyType',
-                        'giftValue',
                         'giftCost',
                         'price',
                         'quotaCardGiftConfList',
@@ -665,6 +667,8 @@ class GiftAddModal extends React.Component {
                         'giftName',
                         'selectBrands',
                         'giftDenomination',
+                        'giftValueCurrencyType',
+                        'giftCost',
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
