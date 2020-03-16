@@ -4,6 +4,7 @@ import styles from './index.less';
 import { getTotalList } from '../AxiosFactory';
 import { imgURI } from '../Common';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
+import Step2 from './Step2';
 
 const Step = Steps.Step;
 class Release extends Component {
@@ -54,6 +55,7 @@ class Release extends Component {
                         <Step title="选择券包" />
                         <Step title="券包投放" />
                     </Steps>
+                    <Step2 />
                 </section>
             </Modal>
         )

@@ -41,3 +41,33 @@
         }
     }
 }
+.step2Box{
+    .title{
+        font-size: 14px;
+        font-weight: bold;
+        margin: 15px 20px;
+        border-left: 3px solid @green;
+        text-indent: 10px;
+    }
+    .top{
+        margin: 15px 20px;
+        border: 1px solid @brd;
+        background: @graybg;
+        padding: 20px;
+        &>p{
+            margin: 5px 0 0 66px;
+            color: @gray;
+        }
+    }
+    .bottom{
+        .top;
+    }
+    .flex{
+        display: flex;
+        &>span{
+            line-height: 28px;
+            width: 70px;
+            text-align: right;
+        }
+    }
+}
