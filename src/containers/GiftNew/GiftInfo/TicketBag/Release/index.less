@@ -1,0 +1,73 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.mainBox{
+    :global{
+        .ant-steps{
+            width: 70%;
+            margin: auto;
+        }
+    }
+}
+.step2Box{
+    .title{
+        font-size: 14px;
+        font-weight: bold;
+        margin: 15px 20px;
+        border-left: 3px solid @green;
+        text-indent: 10px;
+    }
+    .top{
+        margin: 15px 20px;
+        border: 1px solid @brd;
+        background: @graybg;
+        padding: 20px;
+        &>p{
+            margin: 5px 0 0 66px;
+            color: @gray;
+        }
+    }
+    .bottom{
+        .top;
+    }
+    .flex{
+        display: flex;
+        &>span{
+            line-height: 28px;
+            width: 70px;
+            text-align: right;
+        }
+    }
+}
