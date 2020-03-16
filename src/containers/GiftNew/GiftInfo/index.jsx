@@ -36,7 +36,7 @@ export default class GiftInfo extends React.Component {
     componentDidMount(){
         const { groupID } = this.props;
         getSettleList({ groupID }).then(list => {
-            const settlesOpts = list.map(x => ({ value: x.settleUnitID, label: x.settleUnitName }));
+            const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
             this.setState({ settlesOpts });
         })
     }
