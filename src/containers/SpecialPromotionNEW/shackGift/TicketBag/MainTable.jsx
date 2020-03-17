@@ -1,8 +1,7 @@
 import React, { PureComponent as Component } from 'react';
 import { Table, message, Modal, Tooltip } from 'antd';
-import moment from 'moment';
 import styles from './index.less';
-import { href, DF, TF } from './Common';
+import { href, typeMap } from './Common';
 import PagingFactory from 'components/PagingFactory';
 
 /** 列表页表格数据 */
@@ -17,8 +16,11 @@ class MainTable extends Component {
         }
     }
     /** 编辑 */
-    onUse = (couponPackageID, name) => {
-
+    onUse = ({ target }) => {
+        const { id } = target;
+        const { list, onAdd } = this.props;
+        const item = list.find(x=>x.couponPackageID === id);
+        onAdd(item);
     }
 
     /* 分页改变执行 */
@@ -61,10 +63,9 @@ class MainTable extends Component {
     /* 生成表格数据 */
     generateDataSource() {
         const { list } = this.props;
-        const type = { 1: '付费购买', 2: '活动投放' };
         return list.map((x, i) => ({
             key: x.couponPackageID,
-            type: type[x.couponPackageType],
+            type: typeMap[x.couponPackageType],
             ...x,
         }));
     }
@@ -81,7 +82,7 @@ class MainTable extends Component {
                         loading={loading}
                         columns={columns}
                         dataSource={dataSource}
-                        style={{ maxWidth: 1300 }}
+                        style={{ maxWidth: 1000 }}
                         scroll={{ y: 'calc(100vh - 440px)' }}
                         pagination={pagination}
                     />

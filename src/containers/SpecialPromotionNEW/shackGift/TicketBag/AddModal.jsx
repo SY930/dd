@@ -27,14 +27,14 @@ class AddModal extends Component {
         const obj = { ...queryParams, ...params,  groupID };
         // 把查询需要的参数缓存
         this.setState({ queryParams: obj, loading: !0 });
-        getTicketList({ groupID, ...params }).then((obj) => {
+        getTicketList({ groupID, ...params, couponPackageType: '2' }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj, list, loading: !1 });
         });
     }
     render() {
         const { list, loading, pageObj } = this.state;
-        const { onClose, groupID } = this.props;
+        const { onClose, onAdd } = this.props;
         return (
             <Modal
                 title="券包使用详情"
@@ -51,6 +51,7 @@ class AddModal extends Component {
                     list={list}
                     loading={loading}
                     pageObj={pageObj}
+                    onAdd={onAdd}
                     onQuery={this.onQueryList}
                 />
             </Modal>

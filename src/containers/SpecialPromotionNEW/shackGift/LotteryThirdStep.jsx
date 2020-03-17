@@ -28,6 +28,7 @@ import {
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { getTicketBagInfo } from './TicketBag/AxiosFactory';
 
 const moment = require('moment');
 const { TabPane } = Tabs;
@@ -129,6 +130,16 @@ class LotteryThirdStep extends React.Component {
                     const typeValue = gift.sendType;
                     infos[index] = getDefaultGiftData(typeValue, typePropertyName);
                 }
+                if(gift.presentType === 4){
+                    const { user } = this.props;
+                    const params = {couponPackageID: gift.giftID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
+                    getTicketBagInfo(params).then(detail=>{
+                        const { couponPackageInfo: info } = detail;
+                        infos[index].giveCoupon.value.isOn = true;
+                        infos[index].giveCoupon.value.item = info;
+                        infos[index].giveCoupon.value.typeValue = '1';
+                    });
+                }
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.giftTotalCount && gift.giftName && gift.giftID){
                     //有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
@@ -215,6 +226,8 @@ class LotteryThirdStep extends React.Component {
                             } else if (item.presentType == 3){
                                 temparr[num].redPacketID = item.giftID;
                                 temparr[num].redPacketValue = item.presentValue;
+                            } else if (item.presentType == 4){
+                                temparr[num].couponPackageID = item.giftID;
                             }
                         }
                     });
@@ -456,7 +469,15 @@ class LotteryThirdStep extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
-
+    onBagChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveCoupon.value.item = val;
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
 
     handleDependTypeChange = (val, index) =>{
         const _infos = this.state.infos;
@@ -705,22 +726,24 @@ class LotteryThirdStep extends React.Component {
                             if(infos[activeKey].giveCoupon.value.isOn){
                                 //优惠券是勾选的确认优惠券里面的内容
                                 let tempobj = infos[activeKey].giveCoupon.value;
-                                if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
-                                    tempResult = false;
-                                    this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
-                                }
-                                if(tempobj.effectType == '1' || tempobj.effectType == '3'){
-                                    //按小时或者按天
-                                    if(!tempobj.giftValidDays.value){
+                                if(!tempobj.item){
+                                    if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                         tempResult = false;
-                                        this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
-                                        this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                        this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
                                     }
-                                }else{
-                                    //固定有效期
-                                    if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
-                                        tempResult = false;
-                                        this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                    if(tempobj.effectType == '1' || tempobj.effectType == '3'){
+                                        //按小时或者按天
+                                        if(!tempobj.giftValidDays.value){
+                                            tempResult = false;
+                                            this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
+                                            this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                        }
+                                    }else{
+                                        //固定有效期
+                                        if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
+                                            tempResult = false;
+                                            this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                        }
                                     }
                                 }
                             }
@@ -760,18 +783,25 @@ class LotteryThirdStep extends React.Component {
             tempObj.presentType = 3;
         }
         if(type == 'benefit'){
-            tempObj.effectType = couponObj.effectType;
-            tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
-            if(couponObj.effectType == '1' || couponObj.effectType == '3'){
-                tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
-            }else{
-                tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
-                tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
+            // 券包
+            if(couponObj.item){
+                const { couponPackageID } = couponObj.item;
+                tempObj.giftID = couponPackageID;
+                tempObj.presentType = 4;
+            } else {
+                tempObj.effectType = couponObj.effectType;
+                tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
+                if(couponObj.effectType == '1' || couponObj.effectType == '3'){
+                    tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
+                }else{
+                    tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
+                    tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
+                }
+                tempObj.giftTotalCount = couponObj.giftCount.value;
+                tempObj.giftName = couponObj.giftInfo.giftName;
+                tempObj.giftID = couponObj.giftInfo.giftItemID;
+                tempObj.presentType = 1;
             }
-            tempObj.giftTotalCount = couponObj.giftCount.value;
-            tempObj.giftName = couponObj.giftInfo.giftName;
-            tempObj.giftID = couponObj.giftInfo.giftItemID;
-            tempObj.presentType = 1;
         }
         tempObj.giftOdds = data.giftOdds.value;
         return tempObj;
@@ -878,6 +908,7 @@ class LotteryThirdStep extends React.Component {
                                     handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                                     handleRangePickerChange={this.handleRangePickerChange}
                                     disabled={this.props.disabled}
+                                    onBagChange={this.onBagChange}
                                 />
                             </TabPane>
                         )

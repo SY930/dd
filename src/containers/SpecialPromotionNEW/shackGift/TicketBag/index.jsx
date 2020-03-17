@@ -1,6 +1,7 @@
 import React, { PureComponent as Component } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Table, Tooltip } from 'antd';
 import styles from './index.less';
+import { href, typeMap } from './Common';
 import AddModal from './AddModal';
 
 export default class TicketBag extends Component {
@@ -9,37 +10,63 @@ export default class TicketBag extends Component {
         visible: false,
         list: [],
     };
+    componentWillReceiveProps(np) {
+        const { bag } = np;
+        if(bag) {
+            this.setState({ list: bag });
+        }
+    }
     /*  */
-    onQuery = () => {
-
+    onDelete = () => {
+        this.setState({ list: [] });
+        this.triggerChange(null);
     }
     /*  */
     onToggleModal = () => {
         this.setState(ps => ({ visible: !ps.visible }));
     }
-    onTypeChange = ({ target }) => {
-        this.setState({ value: target.value });
+    onSelectBag = (item) => {
+        this.setState({ list: [item] });
+        this.triggerChange(item);
+        this.onToggleModal();
+    }
+    triggerChange(item) {
+        this.props.onChange(item);
     }
     /* 生成表格头数据 */
     generateColumns() {
         const { tc } = styles;
+        const render = (v, o) => {
+            return (<a href={href} onClick={this.onDelete}>删除</a>);
+        };
+        const render1 = (v, o) => {
+            return (<Tooltip title={v}>
+                    <span>{v}</span>
+                </Tooltip>);
+        };
+        const render2 = (v, o) => {
+            const {sellBeginTime, sellEndTime } = o;
+            let text = sellBeginTime + ' ~ ' + sellEndTime;
+            if(sellBeginTime==='0'){
+                text = '长期有效';
+            }
+            return (<span>{text}</span>);
+        };
         // 表格头部的固定数据
         return [
-            { width: 50, title: '序号', dataIndex: 'idx', className: tc },
-            { width: 160, title: '操作', dataIndex: 'op', className: tc },
-            { width: 160, title: '券包名称', dataIndex: 'couponPackageName' },
-            { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
-            { title: '券包说明', dataIndex: 'couponPackageDesciption' },
-            { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
-            { width: 260, title: '创建时间/修改时间', dataIndex: 'postTime', className: tc },
+            { width: 80, title: '操作', dataIndex: 'op', className: tc, render },
+            { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
+            { width: 100, title: '券包类型', dataIndex: 'type' },
+            { width: 100, title: '库存', dataIndex: 'couponPackageStock', className: tc },
+            { width: 200, title: '有效期', dataIndex: 'postTime', className: tc, render: render2 },
         ];
     }
     /* 生成表格数据 */
     generateDataSource() {
         const { list } = this.state;
         return list.map((x, i) => ({
-            key: x.id,
-            idx: i + 1,
+            key: x.couponPackageID,
+            type: typeMap[x.couponPackageType],
             ...x,
         }));
     }
@@ -56,9 +83,14 @@ export default class TicketBag extends Component {
                     columns={columns}
                     dataSource={dataSource}
                     style={{ maxWidth: 1000 }}
+                    pagination={false}
                 />
                 {visible &&
-                    <AddModal groupID={groupID} onClose={this.onToggleModal} />
+                    <AddModal
+                        groupID={groupID}
+                        onAdd={this.onSelectBag}
+                        onClose={this.onToggleModal}
+                    />
                 }
             </div>
         );
