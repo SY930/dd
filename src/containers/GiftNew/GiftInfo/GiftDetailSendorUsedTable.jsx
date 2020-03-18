@@ -1,27 +1,99 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Table, Button, Icon, TreeSelect, Input } from 'antd';
+import { Row, Col, Table, Button, Icon, TreeSelect, Input, Tooltip, message } from 'antd';
 import _ from 'lodash';
 import { COMMON_LABEL } from 'i18n/common';
 import Moment from 'moment';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
+import GiftCfg from '../../../constants/Gift';
 import {
     FetchSendorUsedList,
     UpdateSendorUsedPage,
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
+import { mapValueToLabel, axiosData } from 'helpers/util';
+import { messageTemplateState } from 'containers/BasicSettings/reducers';
+import TransGiftModal from './TransGiftModal';
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftSendOrUsedCount extends React.Component {
     constructor(props) {
         super(props);
+        this.queryForm = null;
+        this.SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
+            {
+                title: '券编码',
+                className:'TableTxtCenter',
+                dataIndex: 'giftPWD',
+                key: 'giftPWD',
+                width: 200,
+                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+            },
+            ...BASE_COLUMNS.slice(1, 4),
+            {
+                title: '生效时间',
+                className:'TableTxtCenter',
+                dataIndex: 'EGiftEffectTime',
+                width: 160,
+                key: 'EGiftEffectTime',
+                render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+            },
+            {
+                title: '失效时间',
+                className:'TableTxtCenter',
+                dataIndex: 'validUntilDate',
+                width: 160,
+                key: 'validUntilDate',
+                render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+            },
+            {
+                title: COMMON_LABEL.status,
+                dataIndex: 'giftStatus',
+                className:'TableTxtCenter',
+                key: 'giftStatus',
+                render: (value, record) => {
+                    if(value == 102) {
+                        if(value){
+                            return <span><a onClick={this.handleTransCoupons.bind(this, record)}>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</a></span>
+                        }
+                    }else {
+                        return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+                    } 
+                },
+            },
+            {
+                title: '客户编号',
+                className:'TableTxtCenter',
+                dataIndex: 'customerID',
+                key: 'customerID',
+                width: 200,
+                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+            },
+            ...BASE_COLUMNS.slice(5),
+            {
+                title: '会员卡号',
+                width: 120,
+                className:'TableTxtCenter',
+                dataIndex: 'transCardNo',
+                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+                key: 'transCardNo',
+            },
+            {
+                title: '使用时间',
+                className:'TableTxtCenter',
+                dataIndex: 'usingTime',
+                width: 160,
+                key: 'usingTime',
+                render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
+            },
+        ]
         this.state = {
             loading: true,
             dataSource: [],
-            columns: SEND_COLUMNS,
+            columns: this.SEND_COLUMNS,
             formItems: FORMITEMS,
             formKeys: SEND_FORMKEYS,
             giftItemID: '',
@@ -34,8 +106,9 @@ class GiftSendOrUsedCount extends React.Component {
 
             },
             giftType: '80',
+            transGift: [],
+            visible: false,
         };
-        this.queryForm = null;
     }
     componentWillMount() {
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
@@ -53,7 +126,7 @@ class GiftSendOrUsedCount extends React.Component {
         if (_key === 'send') {
             const { speGift } = this.state;
             this.setState({
-                columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
+                columns: giftType === '91' ? WX_SEND_COLUMNS : this.SEND_COLUMNS,
                 formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 formItems: {
                     ...formItems,
@@ -115,7 +188,7 @@ class GiftSendOrUsedCount extends React.Component {
         if (_key === 'send') {
             const { speGift } = this.state;
             this.setState({
-                columns: giftType === '91' ? WX_SEND_COLUMNS : SEND_COLUMNS,
+                columns: giftType === '91' ? WX_SEND_COLUMNS : this.SEND_COLUMNS,
                 formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
                 giftType,
             });
@@ -155,6 +228,33 @@ class GiftSendOrUsedCount extends React.Component {
             }
         });
         this.setState({ treeData });
+    }
+    handleModalClose = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+    handleTransCoupons = (records) => {
+        let params = {
+            voucherID: records.itemID
+        }
+        axiosData(
+            '/coupon/couponService_queryCouponTransferRecord.ajax',
+            { ...params },
+            null,
+            {path: 'data.transferDetailList',},
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        )
+            .then((records) => {
+                this.setState({
+                    transGift: records,
+                    visible: true,
+                })
+            }, (err) => { 
+                message.error(err)
+            }).catch((err) => {
+                console.log(err);
+            });
     }
     proRecords = (quotaList) => {
         const { giftType } = this.state;
@@ -337,7 +437,10 @@ class GiftSendOrUsedCount extends React.Component {
                     <Col span={24}>
                         <Table
                             bordered={true}
-                            columns={this.state.columns}
+                            columns={this.state.columns.map(c => (c.render ? ({
+                                ...c,
+                                render: c.render.bind(this),
+                            }) : c))}
                             dataSource={dataSource}
                             loading={loading}
                             scroll={{ x: 1800 }}
@@ -355,6 +458,13 @@ class GiftSendOrUsedCount extends React.Component {
                             }}
                         />
                     </Col>
+                    {
+                        this.state.visible ?
+                        <TransGiftModal
+                            transList={this.state.transGift}
+                            onClose={this.handleModalClose}
+                        /> : false
+                    }
                 </Row>
             </div>
         )
