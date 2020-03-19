@@ -23,10 +23,10 @@ async function getTicketList(data) {
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, couponPackageInfos = [],
-        totalSize, pageNo,
+        totalSize, pageNo, pageSize,
     } = response;
     if (code === '000') {
-        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        const pageObj = { pageNo: +pageNo, total: +totalSize, pageSize };
         return { pageObj, list: couponPackageInfos };
     }
     message.error(msg);
@@ -169,7 +169,52 @@ async function getTicketBagInfo(data) {
     message.error(msg);
     return '';
 }
+
+/**
+ * 公众号列表
+ */
+async function getWechatMpInfo(data) {
+    const method = `/mpInfo/queryMpInfo`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, mpInfoResDataList = [] } = response;
+    if (code === '000') {
+        return mpInfoResDataList;
+    }
+    message.error(msg);
+    return [];
+}
+/**
+ * 图文列表
+ */
+async function getImgTextList(data) {
+    const method = `/material/getListByTitle`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, resources = [] } = response;
+    if (code === '000') {
+        return resources;
+    }
+    message.error(msg);
+    return [];
+}
+
+/**
+ * 券包打包
+ */
+async function getBagBatch(data) {
+    const method = `${api}addCouponPackagesBatch.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, batchID } = response;
+    if (code === '000') {
+        return batchID;
+    }
+    message.error(msg);
+    return [];
+}
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
-    postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList,
+    postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
+    getImgTextList, getBagBatch,
 }

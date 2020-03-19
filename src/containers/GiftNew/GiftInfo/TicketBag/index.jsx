@@ -57,6 +57,7 @@ export default class TicketBag extends Component {
                 {visible &&
                     <ReleaseModal
                         onClose={this.onToggleModal}
+                        groupID={groupID}
                     />
                 }
             </div>

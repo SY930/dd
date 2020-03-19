@@ -142,7 +142,7 @@ const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
 const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'shopInfos', 'revoke', 'user', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'shopInfos', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
 
@@ -229,13 +229,13 @@ const formItems = {
             placeholder: '默认全部店铺',
         },
     },
-    revoke: {
+    isAutoRefund: {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
         defaultValue: '1',
     },
-    user: {
+    isRefundSelf: {
         type: 'radio',
         label: userLabel,
         options: userOpts,
@@ -472,5 +472,5 @@ export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2, dFormKeys3, refundItems,
+    dFormKeys2, dFormKeys3, refundItems, couponImage,
 }
