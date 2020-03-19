@@ -28,14 +28,12 @@ const FORMITEMS = {
         options: GiftCfg.isHolidaysUsing,
     },
     usingDateType: {
-        label: '节假日是否可用',
+        label: '排除日期',
         type: 'checkbox',
-        defaultValue: ['2', '1'],
         options: GiftCfg.usingDateType,
-        rules: [{ type: 'array', required: true, message: '请设置节假日是否可用' }],
     },
     usingWeekType: {
-        label: '使用日期',
+        label: '可用日期',
         type: 'checkbox',
         defaultValue: ['1', '2', '3', '4', '5', '6', '7'],
         options: GiftCfg.usingWeekType,
@@ -459,8 +457,8 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'usingDateType',
                 'usingWeekType',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -486,8 +484,8 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'usingDateType',
                 'usingWeekType',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -511,8 +509,8 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'usingDateType',
                 'usingWeekType',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -581,8 +579,8 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'usingDateType',
                 'usingWeekType',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',
@@ -603,8 +601,8 @@ const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
-                'usingDateType',
                 'usingWeekType',
+                'usingDateType',
                 'couponPeriodSettings',
                 'supportOrderTypeLst',
                 'isOfflineCanUsing',

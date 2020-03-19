@@ -144,8 +144,8 @@ const GiftCfg = {
         { label: '夜宵', value: '5' },
     ],
     usingDateType: [
-        { label: '工作日可用', value: '2' },
-        { label: '法定节假日可用', value: '1' },
+        // { label: '工作日可用', value: '2' },
+        { label: '法定节假日', value: '1' },
     ],
     usingWeekType: [
         { label: '周一', value: '1' },
