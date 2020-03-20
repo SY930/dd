@@ -113,10 +113,6 @@
     flex-direction: column;
     align-items: center;
     padding: 10px 0 0;
-    &>img{
-        width: 95px;
-        height: 95px;
-    }
     &>em{
         color: @red;
         font-style: normal;
@@ -133,7 +129,13 @@
         text-align: right;
     }
     &>div{
+        flex: 1;
         margin: 0 10px;
+    }
+    :global{
+        .ant-select{
+            width: 340px;
+        }
     }
 }
 .previewBox{
@@ -155,8 +157,8 @@
     display: flex;
     border-radius: 3px;
     &>img{
-        width: 95px;
-        height: 95px;
+        width: 50px;
+        height: 50px;
     }
     &>dl{
         flex: 1;
@@ -166,7 +168,7 @@
         }
         dd{
             color: @gray;
-            margin-top: 10px;
+            margin-top: 3px;
         }
     }
 }

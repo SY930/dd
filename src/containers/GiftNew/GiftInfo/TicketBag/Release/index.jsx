@@ -64,10 +64,6 @@ class Release extends Component {
             this.setState({ pageObj, list, loading: false });
         });
     }
-    /* 是否显示 */
-    onToggleModal = () => {
-        this.setState(ps => ({ visible: !ps.visible }));
-    }
     onGoStep = () => {
         const { current, selectedRowKeys } = this.state;
         if(!selectedRowKeys[0]){
@@ -86,9 +82,9 @@ class Release extends Component {
             });
             return;
         }
-        this.setState({ current: 0 });
+        this.props.onClose();
     }
-    // 退款选中的订单
+    //
     onSelectChange = (selectedRowKeys) => {
         const { list } = this.state;
         let firstImg = couponImage;
@@ -101,8 +97,8 @@ class Release extends Component {
     render() {
         const { current, mpInfoList, imgList, firstImg, url, btnLoading } = this.state;
         const { list, loading, pageObj, selectedRowKeys } = this.state;
-        const { onClose } = this.props;
-        const btnTxt = { 0: '下一步', 1: '上一步' }[current];
+        const { onClose, groupID } = this.props;
+        const btnTxt = { 0: '下一步', 1: '关闭' }[current];
         return (
             <Modal
                 title=""
@@ -133,6 +129,7 @@ class Release extends Component {
                             imgList={imgList}
                             firstImg={firstImg}
                             url={url}
+                            groupID={groupID}
                         />
                     }
                 </section>

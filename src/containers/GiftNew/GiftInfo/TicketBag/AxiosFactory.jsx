@@ -213,8 +213,22 @@ async function getBagBatch(data) {
     message.error(msg);
     return [];
 }
+/**
+ * 生成二维码
+ */
+async function getQrCodeImg(data) {
+    const method = `/qrCodeManager/createWechatAttentinTempQrcode`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, url: path } = response;
+    if (code === '000') {
+        return path;
+    }
+    message.error(msg);
+    return '';
+}
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
-    getImgTextList, getBagBatch,
+    getImgTextList, getBagBatch, getQrCodeImg,
 }
