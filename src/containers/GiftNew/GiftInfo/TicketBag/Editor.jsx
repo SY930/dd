@@ -60,20 +60,30 @@ export default class Editor extends Component {
             const { getFieldsValue } = this.form;
             const { isAutoRefund } = getFieldsValue();
             if(isAutoRefund === '1') {
-                const isOver = value.some(x=>{
-                    if(x.effectType==='1'){
-                        console.log('x.giftValidUntilDayCount', x.giftValidUntilDayCount);
-                        return +x.giftValidUntilDayCount > 90;
-                    }
-                    if(x.effectType==='2'){
-                        const diff = moment(x.validUntilDate).diff(moment(x.effectTime), 'days');
-                        console.log('diff', diff);
-                        return diff > 90;
-                    }
-                });
-                this.setState({ isOver });
+                this.validIsOver(value);
             }
         }
+        if(key==='isAutoRefund') {
+            const { getFieldsValue } = this.form;
+            const { couponPackageGiftConfigs } = getFieldsValue();
+            if(value === '1') {
+                this.validIsOver(couponPackageGiftConfigs);
+                return;
+            }
+            this.setState({ isOver: false });
+        }
+    }
+    validIsOver(couponPackageGiftConfigs) {
+        const isOver = couponPackageGiftConfigs.some(x=>{
+            if(x.effectType==='1'){
+                return +x.giftValidUntilDayCount > 90;
+            }
+            if(x.effectType==='2'){
+                const diff = moment(x.validUntilDate).diff(moment(x.effectTime), 'days');
+                return diff > 90;
+            }
+        });
+        this.setState({ isOver });
     }
     /** 得到form */
     getForm = (form) => {
