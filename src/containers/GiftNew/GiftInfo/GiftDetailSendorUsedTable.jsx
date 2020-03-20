@@ -236,7 +236,8 @@ class GiftSendOrUsedCount extends React.Component {
     }
     handleTransCoupons = (records) => {
         let params = {
-            voucherID: records.itemID
+            voucherID: records.itemID,
+            giftItemID: records.giftItemID,
         }
         axiosData(
             '/coupon/couponService_queryCouponTransferRecord.ajax',
