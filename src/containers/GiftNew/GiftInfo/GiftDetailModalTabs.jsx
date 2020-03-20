@@ -77,13 +77,13 @@ class GiftDetailModalTabs extends React.Component {
         })
     }
     componentWillUnmount() {
-        window.removeEventListener('click', this.hidePopOver);
+        // window.removeEventListener('click', this.hidePopOver);
     }
 
     componentWillReceiveProps(nextProps) {
         const { sendorUsedKey } = nextProps;
         this.setState({ activeKey: sendorUsedKey });
-        window.addEventListener('click', this.hidePopOver);
+        // window.addEventListener('click', this.hidePopOver);
     }
 
     onChange(activeKey) {
@@ -117,7 +117,6 @@ class GiftDetailModalTabs extends React.Component {
         );
     }
     hidePopOver = (ev) => {
-        let _currentBox = document.getElementsByClassName('pop1')[0];
         // if(!ev.target.hasChildNodes(_currentBox)){
             this.setState({
                 popoverVisible: false,
