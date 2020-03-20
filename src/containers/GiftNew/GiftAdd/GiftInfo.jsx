@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table } from 'antd';
+import { Button, Table, Tooltip } from 'antd';
 import styles from './Crm.less';
 import GiftModal from './GiftModal';
 import { getCardList } from './AxiosFactory';
@@ -39,18 +39,21 @@ export default class GiftInfo extends Component {
             } else {
                 text = effectTime +' - '+ validUntilDate;
             }
-            return (<span>{text}</span>);
+            return (<Tooltip title={text}><span>{text}</span></Tooltip>);
         };
         const render3 = (v) => {
             const { giftTypeName } = GiftCfg;
             const { label } = giftTypeName.find(x=>+x.value === +v) || {};
-            return (<span>{label}</span>);
+            return (<Tooltip title={label}><span>{label}</span></Tooltip>);
+        };
+        const render4 = (v) => {
+            return (<Tooltip title={v}><span>{v}</span></Tooltip>);
         };
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
             { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
-            { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc },
+            { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc, render: render4, },
             { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
             { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
             { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render: render1, className: tc },

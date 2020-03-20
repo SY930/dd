@@ -1,5 +1,6 @@
 import React from 'react';
 import Tip from './Tip';
+import moment from 'moment';
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -47,52 +48,11 @@ const isSendOpts = [
 ];
 const wayOpts = [
     { value: '', label: '全部' },
-    { value: '10', label: '消费返券' },
-    { value: '20', label: '摇奖活动' },
-    { value: '30', label: '积分摇奖' },
-    { value: '40', label: '积分兑换' },
-    { value: '50', label: '订单摇奖' },
-    { value: '60', label: '免费领取' },
-    { value: '61', label: '消费红包' },
-    { value: '62', label: '营销红包' },
-    { value: '70', label: '商家赠送' },
-    { value: '71', label: '会员推荐奖励' },
-    { value: '80', label: '商家支付' },
-    { value: '90', label: '商家卖出' },
-    { value: '91', label: '会员摇奖' },
-    { value: '92', label: '免费领取' },
-    { value: '93', label: '积分兑换' },
-    { value: '94', label: '参与活动' },
-    { value: '95', label: '有奖竞猜' },
-    { value: '96', label: '套餐充值' },
-    { value: '97', label: '会员开卡送礼品' },
-    { value: '98', label: '会员生日赠送' },
-    { value: '99', label: '群发礼品' },
-    { value: '100', label: '批量导入' },
-    { value: '101', label: '购买权益包' },
-    { value: '102', label: '消费赠送' },
-    { value: '103', label: '商城售卖' },
-    { value: '104', label: '分享裂变' },
-    { value: '105', label: '膨胀大礼包' },
-    { value: '106', label: '桌边砍' },
-    { value: '107', label: '推荐有礼' },
-    { value: '112', label: '完善资料送礼' },
-    { value: '111', label: '升级送礼' },
-    { value: '113', label: '累计消费送礼' },
-    { value: '114', label: '线上餐厅送礼' },
-    { value: '115', label: '微信购买领取' },
-    { value: '116', label: '微信受赠领取' },
-    { value: '117', label: '唤醒送礼' },
-    { value: '118', label: '评价送礼' },
-    { value: '119', label: '赠送领取' },
-    { value: '120', label: '关注送礼' },
-    { value: '121', label: '集点卡' },
-    { value: '3010', label: '基础营销消费返券' },
-    { value: '3011', label: '批量生成' },
-    { value: '77', label: '支付后广告' },
-    { value: '122', label: '签到' },
-    { value: '123', label: '礼品定额卡发放' },
+    { value: '10', label: '购买' },
+    { value: '11', label: '商家赠送' },
+    { value: '12', label: '摇奖活动赠送' },
 ];
+
 const separItems = {
     a: {
         type: 'custom',
@@ -287,6 +247,7 @@ const formItems = {
         props: {
             disabledMinutes: h => range(1, 30).concat(range(31, 60)),
             hideDisabledOptions: true,
+            defaultOpenValue: moment('00:00', 'HH:mm'),
         }
     },
     maxSendLimit: {
@@ -378,9 +339,9 @@ const qFormItems = {
     },
 }
 
-const dFormKeys = ['getWay', 'couponPackageStatus', 'sendTime', 'customerMobile', 'q'];
+const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
-const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'sendTime', 'orderID', 'customerMobile', 'q'];
+const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'orderID', 'customerMobile', 'sendTime', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -395,6 +356,10 @@ const dFormItems = {
     sendTime: {
         type: 'datepickerRange',
         label: '发出时间',
+        props: {
+            format: 'YYYY-MM-DD HH:mm',
+            showTime: { format: 'HH:mm' },
+        }
     },
     customerMobile: {
         type: 'text',
@@ -403,6 +368,10 @@ const dFormItems = {
     useTime: {
         type: 'datepickerRange',
         label: '使用时间',
+        props: {
+            format: 'YYYY-MM-DD HH:mm',
+            showTime: { format: 'HH:mm' },
+        }
     },
     couponPackageID: {
         type: 'text',

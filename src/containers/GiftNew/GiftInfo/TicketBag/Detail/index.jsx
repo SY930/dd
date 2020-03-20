@@ -32,6 +32,8 @@ class Detail extends Component {
     };
     componentDidMount() {
         this.onQueryList();
+        this.onQueryList2();
+        this.onQueryList3();
     }
     /**
      * 发出数
@@ -107,6 +109,7 @@ class Detail extends Component {
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const oddStock = couponPackageStock - sendCount;
+        const resetStock = couponPackageStock === -1 ? '不限制' : couponPackageStock;
         return (
             <Modal
                 title="券包使用详情"
@@ -138,7 +141,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{couponPackageStock, sendCount}]} />
+                            <TotalTable list={[{couponPackageStock: resetStock, sendCount}]} />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>

@@ -172,7 +172,7 @@ export default class Editor extends Component {
                     return;
                 }
                 let dateObj = {};
-                if(sellTime) {
+                if(sellTime && sellTime[0]) {
                     const [sd, ed] = sellTime;
                     const sellBeginTime = moment(sd).format(DF);
                     const sellEndTime = moment(ed).format(DF);

@@ -135,9 +135,6 @@
 }
 .queryform2{
     :global{
-        .ant-form-item-control-wrapper{
-            width: 200px;
-        }
         .ant-row:last-child{
             float: right;
             margin-right: 20px!important;
@@ -147,6 +144,12 @@
         }
         .ant-form-item-label{
             width: 58px;
+        }
+        .ant-select, .ant-input{
+            width: 180px;
+        }
+        .ant-calendar-picker-input, .ant-calendar-picker{
+            width: 250px!important;
         }
     }
 }
@@ -175,5 +178,6 @@
         position: absolute;
         right: 20px;
         top: 10px;
+        z-index: 1;
     }
 }
