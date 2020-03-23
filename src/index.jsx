@@ -38,11 +38,18 @@ registerLocalPage([
             entryCodes.GIFT_PAGE,
         ],
     },
+    // debugger需要改回来的部分
+    // {
+    //     key: entryCodes.PROMOTION_WECHAT_COUPON_CREATE,
+    //     value: entryCodes.PROMOTION_WECHAT_COUPON_CREATE,
+    //     label: '微信支付代金券',
+    //     parent: [entryCodes.PROMOTION_WECHAT_COUPON_LIST],
+    // },
     {
-        key: entryCodes.PROMOTION_WECHAT_COUPON_CREATE,
-        value: entryCodes.PROMOTION_WECHAT_COUPON_CREATE,
-        label: '微信支付代金券',
-        parent: [entryCodes.PROMOTION_WECHAT_COUPON_LIST],
+        key: entryCodes.PROMOTION_ZHIFUBAO_COUPON_CREATE,
+        value: entryCodes.PROMOTION_ZHIFUBAO_COUPON_CREATE,
+        label: '支付宝代金券',
+        parent: [entryCodes.PROMOTION_ZHIFUBAO_COUPON_LIST],
     },
     {
         key: entryCodes.PROMOTION_DECORATION,

@@ -19,6 +19,7 @@ export { default as OnlinePromotionPage } from './NewCreatePromotions/OnlineProm
 export { default as ShareRules } from './ShareRules';
 export { default as PromotionCalendar } from './PromotionCalendar';
 export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
+export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
 export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCouponCreate';
 export { default as TrdPromotionInterface } from './TrdPromotionInterface';
 export { default as PromotionCalendarNew } from './PromotionCalendarNew';

@@ -1,0 +1,223 @@
+.spacer {
+    flex: 1;
+}
+.centeredFlex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flexHeader {
+    .centeredFlex();
+    height: 60px;
+    padding: 0 20px;
+    .title {
+        font-size: 22px;
+        color: #666666;
+    }
+}
+.blockLine {
+    width: 100%;
+    height: 15px;
+    background-color: #F3F3F3;
+}
+.tableActionRow {
+    display: flex;
+    > * {
+        flex: none;
+        margin-bottom: 20px;
+    }
+    flex-wrap: wrap;
+    border-bottom: 1px solid #F3F3F3;
+}
+.tableActionRowWithoutMargin {
+    .tableActionRow();
+    > * {
+        flex: none;
+        margin: 0;
+    }
+}
+.tableWrapper {
+    padding: 0 0 20px;
+    position: relative;
+    :global {
+        .ant-table-pagination {
+            position: fixed;
+            bottom: 8px;
+        }
+    }
+}
+.secondaryTitle {
+    font-size:16px;
+    font-weight:bold;
+    color:rgba(102,102,102,1);
+    margin-bottom: 10px;
+}
+.weChatCardWrapper {
+    width:240px;
+    height:144px;
+    background:rgba(247,91,91,1);
+    border-radius:5px;
+    position: relative;
+    padding: 10px;
+    .titleRow {
+        display: flex;
+        align-items: center;
+        height: 24px;
+        span {
+            max-width: 12em;
+            .ellipsisBlock();
+            color: #fff;
+        }
+    }
+    .valueRow {
+        margin-top: 10px;
+        font-size: 20px;
+        text-align: center;
+        color: #FEFFFE;
+        .centeredFlex();
+        span {
+            max-width: 8em;
+            .ellipsisBlock();
+        }
+    }
+    .descRow {
+        margin: 2px 0 5px 0;
+        text-align: center;
+        color: #fff;
+        font-size: 14px;
+        .centeredFlex();
+        span {
+            max-width: 8em;
+            .ellipsisBlock();
+        }
+    }
+    .timeRow {
+        text-align: center;
+
+        color: #FED8D8;
+        font-size: 12px;
+        .centeredFlex();
+    }
+}
+.ellipsisBlock {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.placeholderBox {
+    margin-top: 50px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color:rgba(153,153,153,1);
+}
+.customUploaderRow {
+    position: relative;
+    .positionedUploaderTip {
+        color: #999999;
+        position: absolute;
+        top: 0;
+        left: 105px;
+    }
+    :global {
+        .ant-btn:hover, .ant-btn:focus, .ant-btn:active {
+            color: #1ab495!important;
+            background-color: #fff!important;
+            border-color: #1ab495!important;
+        }
+        .ant-btn:focus {
+            box-shadow: 0 0 0 2px rgba(26, 179, 148, 0.2);
+        }
+        .anticon {
+            transition: none;
+        }
+    }
+}
+.couponDetailWrapper {
+    display: flex;
+}
+.details {
+    width: 350px;
+    margin-left: 30px;
+    .nameRow {
+        display: flex;
+        align-items: center;
+        .name {
+            font-size:26px;
+            font-weight:400;
+            color:rgba(51,51,51,1);
+            .ellipsisBlock();
+            max-width: 10em;
+        }
+        .status {
+            display: block;
+            margin-left: 10px;
+            border: 1px solid #3FAA1F;
+            border-radius: 3px;
+            color: #3FAA1F;
+            .centeredFlex();
+            padding: 2px 5px 1px 5px;
+        }
+    }
+    .detailContent {
+        color: #454545;
+        padding-left: 10px;
+    }
+}
+.colorBorderedHeader {
+    font-size:14px;
+    font-weight:bold;
+    color:rgba(51,51,51,1);
+    border-left: 3px solid #1AB395;
+    padding-left: 10px;
+    margin: 30px 0 20px 0;
+}
+.emptyBodyContainer {
+    overflow: hidden;
+    display: flex;
+    padding-top: 150px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: #fff;
+    .upgradeTip {
+        font-size:14px;
+        font-weight:bold;
+        color:rgba(69,69,69,1);
+        margin-top: 30px;
+    }
+}
+
+.zhifuSpan{
+    margin-left: 50px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+.zhifuSelect{
+    margin-top: 5px;
+}
+.noteDiv{
+    background: #fdf5d3;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+.priBtn{
+    position: absolute;
+    margin-left: 50%;
+    left: -75px;
+    width: 150px;
+    height: 40px;
+    font-size: 15px;
+    top: 500px;
+}
+.emptyImg{
+    margin: 0 auto;
+    width: 286px;
+    margin-top: 58px;
+}
+.emptyDiv{
+    width: 100%;
+    display: flex;
+}
