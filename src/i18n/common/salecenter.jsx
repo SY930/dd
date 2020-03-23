@@ -187,7 +187,7 @@ const SALE_STRING = {
 };
 let COMMON_LABEL = defineMessages({
     k5dbdped: {id: 'Sale.k5dbdped', defaultMessage: '线上营销信息'},
-    k5dbefat: {id: 'Sale.k5dbefat', defaultMessage: '基本营销信息'},
+    k5dbefat: {id: 'Sale.k5dbefat', defaultMessage: '基础营销信息'},
     k5dbiuws: {id: 'Sale.k5dbiuws', defaultMessage: '自动执行'},
     k5dk4m5r: {id: 'Sale.k5dk4m5r', defaultMessage: '活动时间'},
     k5dlbwqo: {id: 'Sale.k5dlbwqo', defaultMessage: '使用状态'},

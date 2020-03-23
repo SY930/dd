@@ -118,6 +118,7 @@ class BuyGiveDetailInfo extends React.Component {
                     foodUnitName: price.unit,
                     brandID: price.brandID || '0',
                     price: price.price,
+                    imagePath: price.imgePath,
                 }
             });
             this.props.setPromotionDetail({

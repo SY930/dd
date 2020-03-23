@@ -163,7 +163,8 @@ class PhonePreview extends PureComponent {
             supportOrderType = '2',
             contentHeight,
             showGiftRule,
-            giftDiscountRate
+            giftDiscountRate,
+            giftValueCurrencyType ='¥',
         } = this.props;
         return (
             <div className={styles.phonePreviewContentWrapper}>
@@ -174,7 +175,7 @@ class PhonePreview extends PureComponent {
                         (<div className={(getValueString(giftValue).length <= 4 ||
                         getValueString(giftValue).includes('.') && getValueString(giftValue).length === 5)
                             ? styles.giftValue : styles.longerGiftValue}>
-                            &yen;{getValueString(giftValue)}
+                            {giftValueCurrencyType}{getValueString(giftValue)}
                         </div>)
                     }
                     {
@@ -309,7 +310,7 @@ class PhonePreview extends PureComponent {
                                     }
                                 </div>
                             </div>
-                        )                
+                        )
                     }
                     <div
                         style={{
@@ -337,7 +338,7 @@ class PhonePreview extends PureComponent {
             // <div style={{ padding: 20 }}>
             //     <div style={{ fontSize: 18, marginLeft: 20, marginBottom: 20, fontWeight: 'bold'}}>操作指导</div>
             //     <div style={{ lineHeight: 2, background: 'rgb(251,251,251)', padding: 12 }}>
-                
+
             //     </div>
             // </div>
             <div className={style.previewArea}>
@@ -502,10 +503,12 @@ class PhonePreview extends PureComponent {
             contentHeight,
             scrollPercent,
         } = this.props;
+        const width = (giftType === '90') ? { width:0 }: {};
         return (
             <div
                 style={{
-                    height: contentHeight
+                    height: contentHeight,
+                    ...width,
                 }}
                 className={styles.phonePreviewContainer}
             >
@@ -541,6 +544,7 @@ function mapStateToProps(state) {
     return {
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
+        giftValueCurrencyType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValueCurrencyType']),
         giftShareType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftShareType']), // 共享类型
         shareIDs: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'shareIDs']), // 可共享券
         giftRemark: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftRemark']),

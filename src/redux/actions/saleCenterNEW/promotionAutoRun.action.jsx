@@ -114,6 +114,7 @@ export const queryPromotionAutoRunList = (opts) => {
             const newVals = [a1, [...topEvents, ...a2]];
             dispatch(queryPromotionAutoRunListSuccess(newVals));
         }).catch((error) => {
+            console.log(error);
             dispatch(queryPromotionAutoRunListFail(error));
         })
     };

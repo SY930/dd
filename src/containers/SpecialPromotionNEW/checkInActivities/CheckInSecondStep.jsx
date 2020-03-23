@@ -430,6 +430,7 @@ class CheckInSecondStep extends React.Component {
                 label: ``,
                 type: 'checkbox',
                 defaultValue: [],
+                disabled: this.props.disabled,
                 options: [
                     { label: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`, value: '1' },
                 ]
@@ -438,6 +439,7 @@ class CheckInSecondStep extends React.Component {
                 label: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
                 type: 'text',
                 surfix: '积分',
+                disabled: this.props.disabled,
                 defaultValue: '',
                 rules: [
                     {
@@ -455,6 +457,7 @@ class CheckInSecondStep extends React.Component {
                 type: 'combo',
                 defaultValue: this.state.cardTypeArr[0] ? this.state.cardTypeArr[0].value : '',
                 options: this.state.cardTypeArr,
+                disabled: this.props.disabled,
                 rules: [{
                         message: `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`,
                         pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/,
@@ -466,6 +469,7 @@ class CheckInSecondStep extends React.Component {
                 label: ``,
                 type: 'checkbox',
                 defaultValue: [],
+                disabled: this.props.disabled,
                 options: [
                     { label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa6c59a74233)}`, value: '1' },
                 ]
@@ -761,6 +765,10 @@ class CheckInSecondStep extends React.Component {
     }
     removeStage = (index) => {
         const { data } = this.state;
+        const { disabled } = this.props;
+        if(disabled){
+            return;
+        }
         if (data.length > 1) {
             data.splice(index, 1)
             this.setState({data});
@@ -775,6 +783,10 @@ class CheckInSecondStep extends React.Component {
     }
     addStage = () => {
         const { data } = this.state;
+        const { disabled } = this.props;
+        if(disabled){
+            return;
+        }
         data.push(...JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE)));
         this.setState({data})
     }
@@ -830,6 +842,7 @@ class CheckInSecondStep extends React.Component {
                             const giftGetRule = e.target.value;
                             this.setState({ giftGetRule });
                         }}
+                        disabled={this.props.disabled}
                     >
                         {showType
                             .map((type) => {
@@ -865,6 +878,7 @@ class CheckInSecondStep extends React.Component {
                         formData={formData}
                         formKeys={formKeys1}
                         onChange={(key, value) => this.handleFormChange(key, value)}
+                        disabled={this.props.disabled}
                     />
                 </Col>  
                 {this.state.simpleData.map(({stageAmount, gifts}, index, arr) => {
@@ -883,6 +897,7 @@ class CheckInSecondStep extends React.Component {
                                         onChange={(val) => this.handleSimpleStageChange(val, index)}
                                         filterOffLine={this.state.rule.gainCodeMode != '0'}
                                         ifExcludeWechat={true}
+                                        disabled={this.props.disabled}
                                     />
                                 </Col>
                             </div>
@@ -987,7 +1002,7 @@ class CheckInSecondStep extends React.Component {
                                                             }
                                                         },
                                                     ],
-                                                })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
+                                                })(<PriceInput disabled={this.props.disabled} style={{ width: 100 }} modal="float" maxNum={6} />)
                                             }
                                         </FormItem>
                                         &nbsp;天，赠送以下礼品：
@@ -1015,6 +1030,7 @@ class CheckInSecondStep extends React.Component {
                                             onChange={(val) => this.handleStageChange(val, index)}
                                             filterOffLine={this.state.rule.gainCodeMode != '0'}
                                             ifExcludeWechat={true}
+                                            disabled={this.props.disabled}
                                         /> : null
                                     }      
                                 </Col>
@@ -1031,15 +1047,25 @@ class CheckInSecondStep extends React.Component {
                                                     style={{ marginBottom: 10 }}
                                                     className={selfStyle.plusIcon}
                                                     type="plus-circle-o"
+                                                    style={{ cursor: this.props.disabled ? 'not-allowed' : 'pointer'}}
                                                 />
                                             )
                                         }
                                         {
+                                            this.props.disabled ? 
                                             (arr.length > 1) && (
-                                                <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
                                                     <Icon
                                                         className={selfStyle.deleteIcon}
                                                         type="minus-circle-o"
+                                                        style={{ cursor: this.props.disabled ? 'not-allowed' : 'pointer'}}
+                                                    />
+                                            ) :
+                                            (arr.length > 1) && (
+                                                <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)} disabled={this.props.disabled}>
+                                                    <Icon
+                                                        className={selfStyle.deleteIcon}
+                                                        type="minus-circle-o"
+                                                        disabled={this.props.disabled}
                                                     />
                                                 </Popconfirm>
                                             )
@@ -1073,6 +1099,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         specialPromotion: state.sale_specialPromotion_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
     }
 }
 function mapDispatchToProps(dispatch) {

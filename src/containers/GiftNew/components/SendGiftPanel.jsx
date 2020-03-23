@@ -414,9 +414,14 @@ class SendGiftPanel extends Component {
                                 rules: [
                                     { required: true, message: '请输入有效时间' },
                                 ]
-                            })(<RangePicker format="YYYY-MM-DD" disabledDate={
-                                (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                            } />)}
+                            })(
+                                <RangePicker 
+                                    format="YYYY-MM-DD" 
+                                    disabledDate={
+                                        (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                                    } 
+                                />
+                            )}
                             </FormItem>
                         )
                     }

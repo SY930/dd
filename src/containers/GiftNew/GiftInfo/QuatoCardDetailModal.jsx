@@ -186,8 +186,8 @@ class InfoDisplay extends Component {
                     infoItem.map((itm, idx) => {
                         const len = 24 / infoItem.length;
                         const col = itm.col ? itm.col : { span: len };
-                        const labelCol = itm.labelCol ? itm.labelCol : { span: 8 };
-                        const itemCol = itm.itemCol ? itm.itemCol : { span: 16 };
+                        const labelCol = itm.labelCol ? itm.labelCol : { span: 10 };
+                        const itemCol = itm.itemCol ? itm.itemCol : { span: 14 };
                         return (<Col {...col} key={idx}>
                             {
                                 _.keys(itm.keys).map((key, idx) => {
