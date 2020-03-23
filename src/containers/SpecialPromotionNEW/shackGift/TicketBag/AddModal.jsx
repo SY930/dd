@@ -1,17 +1,17 @@
 import React, { PureComponent as Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Modal, Button, Icon } from 'antd';
 import styles from './index.less';
+import { getTicketList } from './AxiosFactory';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
-import { getTicketList } from './AxiosFactory';
-import ReleaseModal from './Release';
 
-export default class TicketBag extends Component {
+class AddModal extends Component {
+    /* 页面需要的各类状态属性 */
     state = {
         list: [],
-        loading: false,
+        loading: !1,
         queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
-        visible: false,
+        pageObj: {},
     };
     componentDidMount() {
         this.onQueryList();
@@ -26,42 +26,36 @@ export default class TicketBag extends Component {
         // 第一次查询params会是null，其他查询条件默认是可为空的。
         const obj = { ...queryParams, ...params,  groupID };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: true });
-        getTicketList({ groupID, ...params }).then((obj) => {
+        this.setState({ queryParams: obj, loading: !0 });
+        getTicketList({ groupID, ...params, couponPackageType: '2' }).then((obj) => {
             const { pageObj, list } = obj;
-            this.setState({ pageObj, list, loading: false });
+            this.setState({ pageObj, list, loading: !1 });
         });
     }
-    /* 是否显示 */
-    onToggleModal = () => {
-        this.setState(ps => ({ visible: !ps.visible }));
-    }
     render() {
-        const { list, loading, pageObj, visible } = this.state;
-        const { groupID, onGoEdit } = this.props;
+        const { list, loading, pageObj } = this.state;
+        const { onClose, onAdd } = this.props;
         return (
-            <div className={styles.listBox}>
-                <Button className={styles.throw} onClick={this.onToggleModal}>投放</Button>
+            <Modal
+                title="券包使用详情"
+                visible={true}
+                width="800"
+                maskClosable={false}
+                onCancel={onClose}
+                footer={[<Button key="back" onClick={onClose}>关闭</Button>]}
+            >
                 <QueryForm
                     onQuery={this.onQueryList}
                 />
-                <div className="layoutsLine"></div>
                 <MainTable
-                    groupID={groupID}
                     list={list}
                     loading={loading}
                     pageObj={pageObj}
+                    onAdd={onAdd}
                     onQuery={this.onQueryList}
-                    onGoEdit={onGoEdit}
                 />
-                {visible &&
-                    <ReleaseModal
-                        onClose={this.onToggleModal}
-                        groupID={groupID}
-                    />
-                }
-            </div>
+            </Modal>
         )
     }
 }
-
+export default AddModal

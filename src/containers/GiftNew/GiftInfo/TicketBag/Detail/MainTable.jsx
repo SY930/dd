@@ -15,8 +15,12 @@ const sexMap = {
     2: '未知',
 };
 const statusMap = {
-    0: '正常',
-    1: '已删除',
+    1: '待发送',
+    2: '已发出',
+    3: '已使用',
+    4: '已作废',
+    5: '已退款',
+    6: '退款中',
 };
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
@@ -39,13 +43,17 @@ class MainTable extends Component {
     generateColumns() {
         const { type } = this.props;
         const { tc } = styles;
+        const render = (v, o) => {
+            return (<span>{statusMap[v]}</span>);
+        };
         // 表格头部的固定数据
         if(type === 2){
             return [
                 { width: 50, title: '序号', dataIndex: 'idx', className: tc },
-                { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
+                { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
                 { width: 100, title: '获得方式', dataIndex: 'way' },
-                { width: 160, title: '获得时间', dataIndex: 'usingTime' },
+                { width: 160, title: '获得时间', dataIndex: 'createStamp' },
+                { width: 160, title: '使用时间', dataIndex: 'usingTime' },
                 { width: 160, title: '客户编号', dataIndex: 'customerID' },
                 { width: 100, title: '姓名', dataIndex: 'customerName' },
                 { width: 60, title: '性别', dataIndex: 'sex', className: tc },
@@ -55,8 +63,8 @@ class MainTable extends Component {
         if(type === 3){
             return [
                 { width: 50, title: '序号', dataIndex: 'idx', className: tc },
-                { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
-                { width: 100, title: '状态', dataIndex: 'stauts' },
+                { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
+                { width: 100, title: '状态', dataIndex: 'stauts', render },
                 { width: 160, title: '订单编号', dataIndex: 'orderID' },
                 { width: 160, title: '发出时间', dataIndex: 'createStamp' },
                 { width: 160, title: '客户编号', dataIndex: 'customerID' },
@@ -66,12 +74,9 @@ class MainTable extends Component {
                 { title: '退款原因', dataIndex: 'reason' },
             ];
         }
-        const render = (v, o) => {
-            return (<span>{statusMap[v]}</span>);
-        };
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
-            { width: 160, title: '券包ID', dataIndex: 'customerCouponPackID' },
+            { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
             { width: 100, title: '发出方式', dataIndex: 'way' },
             { width: 80, title: '状态', dataIndex: 'status', render },
             { width: 160, title: '发出时间', dataIndex: 'createStamp' },

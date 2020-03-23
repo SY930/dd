@@ -2,9 +2,10 @@ import React, { PureComponent as Component } from 'react';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import { Button } from 'antd';
-import { dFormKeys, dFormItems, DF, dFormKeys2, dFormKeys3 } from '../Common';
+import { dFormKeys, dFormItems, dFormKeys2, dFormKeys3 } from '../Common';
 import styles from './index.less';
 
+const DF = 'YYYY-MM-DD HH:mm';
 export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
