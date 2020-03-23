@@ -28,8 +28,12 @@ export const PROMOTION_CALENDAR_GROUP = 'promotion_calendar'; // 营销日历局
 export const PROMOTION_CALENDAR_SHOP = 'promotion_calendar_shop'; // 营销日历局部页面 门店视角
 export const PROMOTION_CALENDAR_NEW = 'promotion.group.calendar'; // 营销日历功能页（集团视角）
 
-export const PROMOTION_WECHAT_COUPON_LIST = '10000761000'; // 微信支付代金券 列表页
-export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页
+//debugger需要改回来的部分
+// export const PROMOTION_WECHAT_COUPON_LIST = '10000761000'; // 微信支付代金券 列表页
+// export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页
+export const PROMOTION_ZHIFUBAO_COUPON_LIST = '10000761000';
+export const CRM_ALIPAY_AUTH = 'crm.Alipay_card_authority.edit';//支付宝卡包管理页面（会员）
+
 export const PROMOTION_DECORATION = 'promotion_decoration'; // 营销活动装修页
 
 export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角
