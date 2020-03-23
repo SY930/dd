@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import { dFormKeys, dFormItems, dFormKeys2, dFormKeys3 } from '../Common';
 import styles from './index.less';
 
-const DF = 'YYYY-MM-DD HH:mm';
+const DF = 'YYYYMMDDHHmmss';
 export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
