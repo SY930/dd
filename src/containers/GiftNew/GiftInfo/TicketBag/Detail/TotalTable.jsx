@@ -28,7 +28,7 @@ class TotalTable extends Component {
                         columns={columns}
                         dataSource={list}
                         style={{ maxWidth: 200 }}
-                        pagination={!1}
+                        pagination={false}
                     />
                 </div>
         )

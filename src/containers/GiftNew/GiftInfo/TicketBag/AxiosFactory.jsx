@@ -23,10 +23,10 @@ async function getTicketList(data) {
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, couponPackageInfos = [],
-        totalSize, pageNo,
+        totalSize, pageNo, pageSize,
     } = response;
     if (code === '000') {
-        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        const pageObj = { pageNo: +pageNo, total: +totalSize, pageSize };
         return { pageObj, list: couponPackageInfos };
     }
     message.error(msg);
@@ -50,7 +50,22 @@ async function getTotalList(data) {
     return { list: [] };
 }
 /**
- *
+ * 券包增加页面，获取结算主体列表
+ */
+async function getSettleList(data) {
+    const method = '/crm/CrmSettleService_querySettleBaseInfoList.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { settleUnitInfoList = [] } = obj;
+        return settleUnitInfoList;
+    }
+    message.error(msg);
+    return [];
+}
+/**
+ * 列表中删除券包
  */
 async function deleteTicketBag(data) {
     const method = `${api}delCouponPackage.ajax`;
@@ -65,7 +80,7 @@ async function deleteTicketBag(data) {
 }
 
 /**
- *
+ *  增加券包
  */
 async function putTicketBag(data) {
     const method = `${api}addCouponPackage.ajax`;
@@ -80,7 +95,7 @@ async function putTicketBag(data) {
 }
 
 /**
- *
+ * 详情中，赠送 发送短信功能
  */
 async function putSendTicket(data) {
     const method = `${api}sendCouponPackageToCustomer.ajax`;
@@ -95,7 +110,7 @@ async function putSendTicket(data) {
 }
 
 /**
- * 更新
+ * 更新券包
  */
 async function postTicketBag(data) {
     const method = `${api}updateCouponPackage.ajax`;
@@ -110,37 +125,42 @@ async function postTicketBag(data) {
 }
 
 /**
- * 检测手机
+ * 详情中，赠送 检测手机
  */
 async function getPhoneValid(data) {
     const method = `/crm/customerService_checkCustomerByMobile.ajax`;
     const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: { customerID } } = response;
-    if (code === '000' && customerID !== '0') {
-        return customerID;
+    if (code === '000') {
+        if (customerID !== '0') {
+            return customerID;
+        } else {
+            message.error('未找到此账户');
+        }
+        return '';
     }
     message.error(msg);
     return '';
 }
 
 /**
- * 暂时不用了
+ * 详情中，退款， 未完成url
  */
-// async function getAccount(data) {
-//     const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
-//     const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
-//     const response = await axios.post(url + method, params);
-//     const { code, message: msg, accountInfoList } = response;
-//     if (code === '000') {
-//         return accountInfoList;
-//     }
-//     message.error(msg);
-//     return [];
-// }
+async function postRefund(data) {
+    const method = `${api}updateCouponPackage.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
 
 /**
- *
+ * 列表进入查看详情
  */
 async function getTicketBagInfo(data) {
     const method = `${api}getCouponPackageInfo.ajax`;
@@ -154,7 +174,66 @@ async function getTicketBagInfo(data) {
     message.error(msg);
     return '';
 }
+
+/**
+ * 公众号列表
+ */
+async function getWechatMpInfo(data) {
+    const method = `/mpInfo/queryMpInfo`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, mpInfoResDataList = [] } = response;
+    if (code === '000') {
+        return mpInfoResDataList;
+    }
+    message.error(msg);
+    return [];
+}
+/**
+ * 图文列表
+ */
+async function getImgTextList(data) {
+    const method = `/material/getListByTitle`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, resources = [] } = response;
+    if (code === '000') {
+        return resources;
+    }
+    message.error(msg);
+    return [];
+}
+
+/**
+ * 券包打包
+ */
+async function getBagBatch(data) {
+    const method = `${api}addCouponPackagesBatch.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, batchID } = response;
+    if (code === '000') {
+        return batchID;
+    }
+    message.error(msg);
+    return [];
+}
+/**
+ * 生成二维码
+ */
+async function getQrCodeImg(data) {
+    const method = `/qrCodeManager/createWechatAttentinTempQrcode`;
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, url: path } = response;
+    if (code === '000') {
+        return path;
+    }
+    message.error(msg);
+    return '';
+}
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
-    postTicketBag, getPhoneValid, putSendTicket,
+    postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
+    getImgTextList, getBagBatch, getQrCodeImg,
 }

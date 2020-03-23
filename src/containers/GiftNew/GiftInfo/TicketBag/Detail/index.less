@@ -133,6 +133,26 @@
         }
     }
 }
+.queryform2{
+    :global{
+        .ant-row:last-child{
+            float: right;
+            margin-right: 20px!important;
+            &>div{
+                width: auto;
+            }
+        }
+        .ant-form-item-label{
+            width: 58px;
+        }
+        .ant-select, .ant-input{
+            width: 180px;
+        }
+        .ant-calendar-picker-input, .ant-calendar-picker{
+            width: 250px!important;
+        }
+    }
+}
 .tableBox{
     padding: 5px 0;
 }
@@ -158,5 +178,6 @@
         position: absolute;
         right: 20px;
         top: 10px;
+        z-index: 1;
     }
 }

@@ -11,7 +11,7 @@ import DetailModal from './Detail';
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        visible: !1,            // 是否显示弹层
+        visible: false,            // 是否显示弹层
         detail: {},
         couponPackageID: '',
     };
@@ -49,7 +49,7 @@ class MainTable extends Component {
     onPreview = ({ target }) => {
         const { id: couponPackageID } = target.closest('p');
         const { groupID } = this.props;
-        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        const params = { couponPackageID, groupID, isNeedDetailInfo: true };
         getTicketBagInfo(params).then(x => {
             if(x) {
                 this.setState({ detail: x, couponPackageID });
@@ -62,7 +62,7 @@ class MainTable extends Component {
         const { name = '' } = target;
         const { id: couponPackageID } = target.closest('p');
         const { groupID, onGoEdit } = this.props;
-        const params = { couponPackageID, groupID, isNeedDetailInfo: !0 };
+        const params = { couponPackageID, groupID, isNeedDetailInfo: true };
         getTicketBagInfo(params).then(x => {
             if(x) {
                 const data = this.resetFormData(x);
@@ -73,7 +73,8 @@ class MainTable extends Component {
     }
     resetFormData = (detail) => {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
-        const { couponSendWay: way, couponPackageType: type, validCycle: cycle, couponPackagePrice: price } = info;
+        const { couponSendWay: way, couponPackageType: type, validCycle: cycle,
+            couponPackagePrice: price, couponPackageStock: stock } = info;
         const shopInfos = shops.map(x=>`${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
@@ -82,8 +83,10 @@ class MainTable extends Component {
         }
         const sendTime = +time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
+        const couponPackageStock = (stock === -1) ? '' : stock;    // 库存为-1和0 都显示空
         return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
-            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs, couponPackagePrice2: price };
+            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs,
+            couponPackagePrice2: price, couponPackageStock };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
@@ -115,14 +118,6 @@ class MainTable extends Component {
                     <span>{v}</span>
                 </Tooltip>);
         };
-        // const render2 = (v, o) => {
-        //     const {sellBeginTime, sellEndTime } = o;
-        //     let text = sellBeginTime + ' ~ ' + sellEndTime;
-        //     if(sellBeginTime==='0'){
-        //         text = '长期有效';
-        //     }
-        //     return (<span>{text}</span>);
-        // };
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc },
@@ -147,7 +142,7 @@ class MainTable extends Component {
     }
     render() {
         const { visible, detail, couponPackageID } = this.state;
-        const { loading, page, groupID, accountID } = this.props;
+        const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
@@ -164,7 +159,7 @@ class MainTable extends Component {
                     />
                     {visible &&
                         <DetailModal
-                            ids={{groupID, couponPackageID, accountID}}
+                            ids={{groupID, couponPackageID}}
                             detail={detail}
                             onClose={this.onToggleModal}
                         />

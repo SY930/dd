@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Button, message, Tooltip, Icon } from 'antd';
+import { Button, message, Alert } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
@@ -14,6 +14,7 @@ import { putTicketBag, postTicketBag } from './AxiosFactory';
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
+        isOver: false,
     }
     keys = formKeys;
     /**
@@ -55,6 +56,34 @@ export default class Editor extends Component {
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
         }
+        if(key==='couponPackageGiftConfigs') {
+            const { getFieldsValue } = this.form;
+            const { isAutoRefund } = getFieldsValue();
+            if(isAutoRefund === '1') {
+                this.validIsOver(value);
+            }
+        }
+        if(key==='isAutoRefund') {
+            const { getFieldsValue } = this.form;
+            const { couponPackageGiftConfigs } = getFieldsValue();
+            if(value === '1') {
+                this.validIsOver(couponPackageGiftConfigs);
+                return;
+            }
+            this.setState({ isOver: false });
+        }
+    }
+    validIsOver(couponPackageGiftConfigs) {
+        const isOver = couponPackageGiftConfigs.some(x=>{
+            if(x.effectType==='1'){
+                return +x.giftValidUntilDayCount > 90;
+            }
+            if(x.effectType==='2'){
+                const diff = moment(x.validUntilDate).diff(moment(x.effectTime), 'days');
+                return diff > 90;
+            }
+        });
+        this.setState({ isOver });
     }
     /** 得到form */
     getForm = (form) => {
@@ -66,7 +95,7 @@ export default class Editor extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { check, detail } = this.props;
+        const { check, detail, settlesOpts } = this.props;
         const { sendCount = 0 } = detail || {};
         let [couponPackageType, cycleType] = ['1', ''];
         if(this.form) {
@@ -74,40 +103,32 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, couponPackagePrice2, c, sellTime, ...other } = formItems;
-        const label = (<span>记录实收金额
-                <Tooltip title="记录实收金额：仅用于报表作为实收金额核算">
-                    <Icon style={{ margin: '0 -5px 0 5px' }} type="question-circle" />
-                </Tooltip>
-            </span>);
-        const tip2 = (<Tooltip title="将按周期发送添加的礼品">
-                <Icon type="question-circle" />
-            </Tooltip>);
+            validCycle, sellTime, settleUnitID, isAutoRefund, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
-        const render = d => d()(<GiftInfo  disabled={disGift} />);
+        const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
-        const render4 = () => (tip2);
         let disDate = {};
-        if(!!detail) {
+        const isEdit = !!detail;    // 编辑状态下
+        if(isEdit) {
             disDate = { disabledDate: this.disabledDate };
         }
         const newFormItems = {
             ...other,
-            couponPackageType: { ...cpt, disabled: !!detail },
+            couponPackageType: { ...cpt, disabled: isEdit },
             sellTime: { ...sellTime , props: disDate},
-            couponPackagePrice2: { ...couponPackagePrice2, label },
             couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
-            c: { ...c, render: render4 },
+            settleUnitID: { ...settleUnitID , options: settlesOpts},
+            isAutoRefund: { ...isAutoRefund, disabled: isEdit },
         };
         if(check) {
             let obj = {}
             for(let x in newFormItems) {
-                obj[x] = {...newFormItems[x], disabled: !0 };
+                obj[x] = {...newFormItems[x], disabled: true };
             }
             return obj;
         }
@@ -132,6 +153,7 @@ export default class Editor extends Component {
     onSave = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
+                const { isOver } = this.state;
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,...others,
@@ -145,8 +167,12 @@ export default class Editor extends Component {
                         return;
                     }
                 }
+                if(isOver){
+                    message.warning('请删除有效期超过90天的礼品');
+                    return;
+                }
                 let dateObj = {};
-                if(sellTime) {
+                if(sellTime && sellTime[0]) {
                     const [sd, ed] = sellTime;
                     const sellBeginTime = moment(sd).format(DF);
                     const sellEndTime = moment(ed).format(DF);
@@ -176,7 +202,7 @@ export default class Editor extends Component {
 
     }
     render() {
-        const { newFormKeys } = this.state;
+        const { newFormKeys, isOver } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
         return (
@@ -196,6 +222,13 @@ export default class Editor extends Component {
                     formData={detail || {}}
                     formItemLayout={formItemLayout}
                 />
+                {isOver &&
+                    <Alert
+                        message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"
+                        type="error"
+                        showIcon={true}
+                    />
+                }
             </section>
         );
     }

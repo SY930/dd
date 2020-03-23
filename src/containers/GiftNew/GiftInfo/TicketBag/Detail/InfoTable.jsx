@@ -37,7 +37,7 @@ class InfoTable extends Component {
                         columns={columns}
                         dataSource={dataSource}
                         style={{ maxWidth: 500 }}
-                        pagination={!1}
+                        pagination={false}
                     />
                 </div>
         )

@@ -1,0 +1,174 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+.tableBox{
+    margin-top: 15px;
+    width: 700px;
+    :global{
+        .ant-alert{
+            color: #F39F3D;
+        }
+    }
+}
+.mainBox{
+    :global{
+        .ant-steps{
+            width: 70%;
+            margin: auto;
+        }
+    }
+}
+.step2Box{
+    .title{
+        font-size: 14px;
+        font-weight: bold;
+        margin: 15px 20px;
+        border-left: 3px solid @green;
+        text-indent: 10px;
+    }
+    .top{
+        margin: 15px 20px;
+        border: 1px solid @brd;
+        background: @graybg;
+        padding: 20px;
+        &>p{
+            margin: 5px 0 0 66px;
+            color: @gray;
+        }
+        :global{
+            .ant-input{
+                margin: 0 10px;
+            }
+        }
+    }
+    .bottom{
+
+    }
+    .flex{
+        display: flex;
+        &>span{
+            line-height: 28px;
+            width: 70px;
+            text-align: right;
+        }
+    }
+}
+.accountBox{
+    display: flex;
+    padding: 0 40px;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+    }
+    &>div{
+        flex: 1;
+        margin: 0 10px;
+    }
+    :global{
+        .ant-select{
+            width: 340px;
+        }
+    }
+}
+.tips{
+    background: @graybg;
+    padding: 5px 8px;
+    margin: 5px 0 0;
+    color: @gray;
+}
+.qrPriview{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 0;
+    &>em{
+        color: @red;
+        font-style: normal;
+        margin: 5px 0;
+    }
+}
+.imgListBox{
+    display: flex;
+    padding: 0 40px;
+    margin-top: 5px;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+    }
+    &>div{
+        flex: 1;
+        margin: 0 10px;
+    }
+    :global{
+        .ant-select{
+            width: 340px;
+        }
+    }
+}
+.previewBox{
+    display: flex;
+    padding: 0 40px;
+    margin-top: 5px;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+    }
+
+}
+.view{
+    margin: 0 10px;
+    border: 1px solid @brd;
+    padding: 5px 10px;
+    width: 300px;
+    display: flex;
+    border-radius: 3px;
+    &>img{
+        width: 50px;
+        height: 50px;
+    }
+    &>dl{
+        flex: 1;
+        padding-right: 5px;
+        dt{
+            font-size: 14px;
+        }
+        dd{
+            color: @gray;
+            margin-top: 3px;
+        }
+    }
+}

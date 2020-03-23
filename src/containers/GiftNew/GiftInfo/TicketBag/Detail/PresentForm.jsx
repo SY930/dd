@@ -22,7 +22,7 @@ export default class PresentForm extends Component {
                 const { customerID } = this.state;
                 const { ids } = this.props;
                 const { } = v;
-                const obj = { sourceWay: !1, sourceType: '10' };
+                const obj = { sourceWay: false, sourceType: '10' };
                 const params = {...ids, customerID, ...v, ...obj };
                 putSendTicket(params).then((flag) => {
                     if(flag) {
@@ -79,19 +79,23 @@ export default class PresentForm extends Component {
     resetFormItems = () => {
         const { smsTemplate: msg, accountNo: acc } = this.state;
         const { num = 0 } = this.props;
+        const noLimit = num < 0 ? '不限制' : num;
         const btnProp = { type: 'primary', onClick: this.onSend };
         const { q, c, sendCount, accountNo, smsTemplate, ...other } = pFormItems;
         const render = () => (<div className={styles.sendBtn}><Button {...btnProp}>发送</Button></div>);
-        const render1 = d => d()(<AccountNoSelector autoFetch={!0} />);
+        const render1 = d => d()(<AccountNoSelector autoFetch={true} />);
         const render2 = d => d()(<MsgSelector selectedMessage={msg} />);
-        const render3 = () => (<p>{num}</p>);
+        const render3 = () => (<p>{noLimit}</p>);
         const rules = [{
-            required: !0,
+            required: true,
             validator: (rule, value, callback) => {
                 if(!(/^\d+$/.test(value))){
                     return callback('请输入数字');
                 }
-                if (value < 1 || value > num) {
+                if (value < 1) {
+                    return callback('最小1，最大不能超过剩余库存');
+                }
+                if(num > 0 && value > num){
                     return callback('最小1，最大不能超过剩余库存');
                 }
                 return callback();

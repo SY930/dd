@@ -10,6 +10,7 @@ import { editGiftInfoNew as sale_editGiftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import GiftEditPage from "../components/GiftEditPage";
 import Editor from './TicketBag/Editor';
+import { getSettleList } from './TicketBag/AxiosFactory';
 
 function mapStateToProps(state) {
     return {
@@ -30,6 +31,14 @@ export default class GiftInfo extends React.Component {
     state = {
         page: '',
         tabkey: '1',
+        settlesOpts: [],
+    }
+    componentDidMount(){
+        const { groupID } = this.props;
+        getSettleList({ groupID }).then(list => {
+            const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
+            this.setState({ settlesOpts });
+        })
     }
     /** 切换页面 不传默认列表页 */
     togglePage = (page = '', detail = null, check) => {
@@ -39,10 +48,10 @@ export default class GiftInfo extends React.Component {
         this.setState({ tabkey });
     }
     render() {
-        const { page, detail, check, tabkey } = this.state;
-        const {isCreatingOrEditing, groupID, accountID} = this.props;
+        const { page, detail, check, tabkey, settlesOpts } = this.state;
+        const {isCreatingOrEditing, groupID} = this.props;
         if(page==='ticket'){
-            return <Editor groupID={groupID} check={check} accountID={accountID} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} />
+            return <Editor groupID={groupID} check={check} settlesOpts={settlesOpts} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {
             return (

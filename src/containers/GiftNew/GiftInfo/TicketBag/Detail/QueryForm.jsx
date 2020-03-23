@@ -2,9 +2,10 @@ import React, { PureComponent as Component } from 'react';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import { Button } from 'antd';
-import { dFormKeys, dFormItems, DF, dFormKeys2 } from '../Common';
+import { dFormKeys, dFormItems, dFormKeys2, dFormKeys3 } from '../Common';
 import styles from './index.less';
 
+const DF = 'YYYY-MM-DD HH:mm';
 export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
@@ -32,6 +33,7 @@ export default class QueryForm extends Component {
     onGetForm = (form) => {
         this.form = form;
     }
+
     /* 整理formItems对象 */
     resetFormItems = () => {
         const btnProp = { type: 'primary', icon: 'search', onClick: this.onQuery };
@@ -43,11 +45,17 @@ export default class QueryForm extends Component {
         };
     }
     render() {
-        const { use } = this.props;
+        const { type } = this.props;
         const formItems = this.resetFormItems();
-        const newKeys = use ? dFormKeys2 : dFormKeys;
+        let newKeys = dFormKeys;
+        if(type === 2) {
+            newKeys = dFormKeys2;
+        }
+        if(type === 3) {
+            newKeys = dFormKeys3;
+        }
         return (
-            <div className={styles.queryform}>
+            <div className={styles.queryform2}>
                 <BaseForm
                     getForm={this.onGetForm}
                     formItems={formItems}
