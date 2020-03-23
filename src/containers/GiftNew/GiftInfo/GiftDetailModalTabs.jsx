@@ -45,6 +45,8 @@ class GiftDetailModalTabs extends React.Component {
         if (this.state.activeKey === 'used') {
             params.giftStatus = '2'
         }
+        const { sendorUsedParams } = this.props;
+        Object.assign(params, sendorUsedParams ? sendorUsedParams.toJS() : {});
         axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', { ...params }, null, {
             path: 'data',
         }).then((records) => {
