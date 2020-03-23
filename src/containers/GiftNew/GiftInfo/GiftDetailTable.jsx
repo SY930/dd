@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
+import { Tabs, Col, Table, Button, Icon, Modal, message, Tooltip } from 'antd';
 import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
@@ -43,7 +43,9 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
+import TicketBag from './TicketBag';
 
+const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
     constructor(props) {
@@ -382,7 +384,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -437,6 +439,22 @@ class GiftDetailTable extends Component {
                                                         padding: 5
                                                     }}
                                                 >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        !!couponPackageReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
                                             </div>
                                         )
                                     }
@@ -590,17 +608,22 @@ class GiftDetailTable extends Component {
         };
         const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
+        const { tabkey } = this.props;
+        const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                     <div className="layoutsTool" style={{height: '64px'}}>
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
-                                <Authority rightCode={GIFT_LIST_CREATE}>
+                            </span>
+                            <p style={{ marginLeft: 'auto'}}>
+                            <Authority rightCode={GIFT_LIST_CREATE}>
                                     <Button
                                         type="ghost"
                                         icon="plus"
                                         className={styles2.jumpToCreate}
+                                        style={{ margin: 5 }}
                                         onClick={
                                             () => {
                                                 this.setState({
@@ -608,70 +631,87 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >{ COMMON_LABEL.create }</Button>
+                                    >新增礼品</Button>
                                 </Authority>
-                            </span>
-
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles.jumpToCreate}
+                                    style={{ margin: 5,  width: 90 }}
+                                    onClick={
+                                        () => {
+                                            this.props.togglePage('ticket')
+                                        }
+                                    }
+                                >新增券包</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
+                                    style={{ margin: '0 24px' }}
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
+                            </p>
                         </div>
                     </div>
                 <PromotionCalendarBanner />
-                <div className={styles2.pageContentWrapper}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        <div className="layoutsSearch">
-                            <ul>
-                                <li className={styles.formWidth}>
-                                    <BaseForm
-                                        getForm={form => this.queryFrom = form}
-                                        formItems={formItems}
-                                        formKeys={formKeys}
-                                        formData={queryParams}
-                                        layout="inline"
-                                        onChange={(key, value) => this.handleFormChange(key, value)}
-                                    />
-                                </li>
-                                <li>
-                                    <Authority rightCode={GIFT_LIST_UPDATE}>
-                                        <Button type="primary" onClick={() => this.handleQuery()}>
-                                            <Icon type="search" />
-                                            { COMMON_LABEL.query }
-                                        </Button>
-                                    </Authority>
-                                </li>
-                            </ul>
+                <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
+                    <TabPane tab="礼品查询" key="1">
+                    <div className={styles2.pageContentWrapper}>
+                        <div style={{ padding: '0'}} className="layoutsHeader">
+                            <div className="layoutsSearch">
+                                <ul>
+                                    <li className={styles.formWidth}>
+                                        <BaseForm
+                                            getForm={form => this.queryFrom = form}
+                                            formItems={formItems}
+                                            formKeys={formKeys}
+                                            formData={queryParams}
+                                            layout="inline"
+                                            onChange={(key, value) => this.handleFormChange(key, value)}
+                                        />
+                                    </li>
+                                    <li>
+                                        <Authority rightCode={GIFT_LIST_UPDATE}>
+                                            <Button type="primary" onClick={() => this.handleQuery()}>
+                                                <Icon type="search" />
+                                                { COMMON_LABEL.query }
+                                            </Button>
+                                        </Authority>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style={{ margin: '0'}} className="layoutsLine"></div>
                         </div>
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
+                            <Table
+                                ref={this.setTableRef}
+                                bordered={true}
+                                columns={this.getTableColumns().map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                                dataSource={this.state.dataSource}
+                                pagination={{
+                                    showSizeChanger: true,
+                                    pageSize,
+                                    current: pageNo,
+                                    total: this.state.total,
+                                    showQuickJumper: true,
+                                    onChange: this.handlePageChange,
+                                    onShowSizeChange: this.handlePageChange,
+                                    showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                                }}
+                                loading={this.props.loading}
+                                scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                            />
+                        </div>
                     </div>
-                    <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
-                        <Table
-                            ref={this.setTableRef}
-                            bordered={true}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                            dataSource={this.state.dataSource}
-                            pagination={{
-                                showSizeChanger: true,
-                                pageSize,
-                                current: pageNo,
-                                total: this.state.total,
-                                showQuickJumper: true,
-                                onChange: this.handlePageChange,
-                                onShowSizeChange: this.handlePageChange,
-                                showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                            }}
-                            loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
-                        />
-                    </div>
-                </div>
-
+                </TabPane>
+                    <TabPane tab="券包查询" key="2">
+                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} />
+                    </TabPane>
+                </Tabs>
                 <div>
                     { visibleDetail && GiftDetail(data.giftType) }
                 </div>

@@ -1,0 +1,153 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.h3 {
+    padding-left: 5px;
+    margin-bottom: 10px;
+    line-height: 17px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.header{
+    display: flex;
+    line-height: 50px;
+    border-bottom: 15px solid @brd;
+    font-size: 20px;
+    padding: 0 20px 0;
+    .opBox{
+        margin-left: auto;
+        &>button{
+            margin-left: 10px;
+        };
+    }
+}
+.formBox{
+    overflow: auto;
+    height: 100%;
+    padding-bottom: 200px;
+    scroll-behavior: smooth;
+    :global{
+        .ant-row{
+            width: 500px;
+        }
+        .ant-form-item {
+            .separate{
+                margin: 20px 0;
+                h3{
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 15px 20px;
+                    border-left: 3px solid @green;
+                    text-indent: 10px;
+                }
+            }
+            label[for=validCycle]{
+                visibility: hidden;
+            }
+        }
+        .ant-radio-button-wrapper:hover,
+        .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+        .ant-radio-button-wrapper-checked {
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+        .ant-radio-button-wrapper-checked:active {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+        .baseform-b{
+            position: relative;
+            .ant-form-item:nth-child(2){
+                position: absolute;
+                left: 380px;
+                z-index: 2;
+                width: 20px;
+            }
+        }
+    }
+}
+.dayBox{
+    width: 420px;
+    :global{
+        .ant-tag{
+            line-height: 30px;
+            height: 30px;
+            width: 50px;
+            border: 1px solid @brd;
+            text-align: center;
+            padding: 0;
+            margin-bottom: 7px;
+        }
+        .ant-tag-checkable-checked {
+            background-color: @green2;
+        }
+        .ant-tag-checkable:hover {
+            background-color: @green;
+        }
+    }
+}
+.listBox{
+    background: @white;
+    padding: 23px 30px;
+    height: ~'calc(100vh - 256px)';
+    :global{
+        .layoutsLine{
+            margin: 0;
+        }
+    }
+}
+.queryform{
+    :global{
+        .ant-select{
+            width: 150px;
+        }
+    }
+}
+.tableBox{
+    padding: 20px 0;
+}
+
