@@ -702,7 +702,7 @@ class GiftDetailTable extends Component {
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                                 }}
                                 loading={this.props.loading}
-                                scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                                scroll={{ x: 1600, y: this.state.contentHeight - 150 }}
                             />
                         </div>
                     </div>

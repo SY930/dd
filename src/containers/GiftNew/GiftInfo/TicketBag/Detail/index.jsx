@@ -104,8 +104,8 @@ class Detail extends Component {
         const { list2, loading2, pageObj2 } = this.state;
         const { list3, loading3, pageObj3 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
-        const { couponPackageImage, couponPackageName, sellBeginTime, couponPackageID,
-            sellEndTime, couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
+        const { couponPackageImage, couponPackageName, createTime, couponPackageID,
+            couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const oddStock = couponPackageStock - sendCount;
@@ -130,7 +130,7 @@ class Detail extends Component {
                             </div>
                             <div>
                                 <em>创建时间：</em>
-                                <p>{sellBeginTime + ' ~ ' + sellEndTime}</p>
+                                <p>{createTime}</p>
                             </div>
                             <div>
                                 <em>券包说明：</em>

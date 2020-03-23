@@ -132,8 +132,13 @@ async function getPhoneValid(data) {
     const params = { service: 'HTTP_SERVICE_URL_CRM', type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: { customerID } } = response;
-    if (code === '000' && customerID !== '0') {
-        return customerID;
+    if (code === '000') {
+        if (customerID !== '0') {
+            return customerID;
+        } else {
+            message.error('未找到此账户');
+        }
+        return '';
     }
     message.error(msg);
     return '';
