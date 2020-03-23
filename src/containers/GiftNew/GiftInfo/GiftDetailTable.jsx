@@ -68,7 +68,6 @@ class GiftDetailTable extends Component {
             },
             total: 2,
             tableHeight: '100%',
-            contentHeight: '100%',
             usedTotalSize: 0,
         };
         this.tableRef = null;
@@ -117,8 +116,6 @@ class GiftDetailTable extends Component {
             this.setState({ brands });
         });
         this.props.queryWechatMpInfo();
-        this.onWindowResize();
-        window.addEventListener('resize', this.onWindowResize);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -134,10 +131,6 @@ class GiftDetailTable extends Component {
         if (this.state.dataSource !== data) {
             this.proGiftData(data);
         }
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize);
     }
 
     getTableColumns = () => {
@@ -181,24 +174,6 @@ class GiftDetailTable extends Component {
             return columns;
         }
         return this.columns;
-    }
-
-    onWindowResize = () => {
-        const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
-        if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
-            const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
-            if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
-                const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
-                const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
-                this.setState({
-                    contentHeight: parentHeight - headerHeight - 200,
-                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
-                })
-            }
-        }
     }
 
     handleCreateModalCancel() {
@@ -683,7 +658,7 @@ class GiftDetailTable extends Component {
                             </div>
                             <div style={{ margin: '0'}} className="layoutsLine"></div>
                         </div>
-                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
+                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
                             <Table
                                 ref={this.setTableRef}
                                 bordered={true}
@@ -703,7 +678,7 @@ class GiftDetailTable extends Component {
                                     showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                                 }}
                                 loading={this.props.loading}
-                                scroll={{ x: 1600, y: this.state.contentHeight - 150 }}
+                                scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
                             />
                         </div>
                     </div>

@@ -13,11 +13,11 @@ const bagOpts = [
 ];
 const revokeOpts = [
     { label: '自动退款', value: '1' },
-    { label: '不支持自动退款', value: '2' },
+    { label: '不支持自动退款', value: '0' },
 ];
 const userOpts = [
     { label: '支持', value: '1' },
-    { label: '不支持', value: '2' },
+    { label: '不支持', value: '0' },
 ];
 const sendOpts = [
     { label: '一次性发放全部礼品', value: '1' },
@@ -175,10 +175,18 @@ const formItems = {
     couponPackageStock: {
         type: 'text',
         label: '券包库存',
-        rules: ['numbers'],
         props: {
             placeholder: '不填表示不限制',
         },
+        rules: [{
+            validator: (rule, value, callback) => {
+                const pattern = /^([1-9]\d*)$/;
+                if(value && !pattern.test(value)){
+                    return callback('请输入数字，并大于0');
+                }
+                return callback();
+            },
+        }],
     },
     shopInfos: {
         type: 'custom',

@@ -141,9 +141,13 @@ class GiftAddModal extends React.Component {
             if (value == '90') {
                 // http://wiki.hualala.com/pages/viewpage.action?pageId=46105225
                 // 变量都被换了
-                const { cardPrice } = params;
+                const { cardPrice, quotaCardGiftConfList } = params;
                 params.giftCost = `${Number(params.giftCost || 0)}`;
                 params.giftValue = cardPrice || '0';
+                if(cardPrice === '0' && !quotaCardGiftConfList[0]){
+                    message.warning('礼品卡面值为0，且礼品详情中没有礼品时，不能保存');
+                    return;
+                }
             }else{
                 params.giftValue = params.giftValue || '0';
             }
@@ -497,6 +501,9 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
+                        if (!value) {
+                            return callback('礼品卡面值不能为空');
+                        }
                         const { validateFields } = this.baseForm;
                         try{
                             validateFields(['cardPrice', 'giftCost'], { force: true });
@@ -514,6 +521,9 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
+                        if (!value) {
+                            return callback('现金卡值不能为空');
+                        }
                         const { getFieldValue,validateFields } = this.baseForm;
                         const giftDenomination = getFieldValue('giftDenomination') || 0;
                         if (+giftDenomination < +value) {
@@ -622,7 +632,6 @@ class GiftAddModal extends React.Component {
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
-                        'isSynch',
                     ]
                 }
             ],
@@ -674,7 +683,6 @@ class GiftAddModal extends React.Component {
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
-                        'isSynch',
                     ]
                 }
             ];
