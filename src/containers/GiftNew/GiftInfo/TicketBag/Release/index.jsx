@@ -66,25 +66,25 @@ class Release extends Component {
             this.setState({ pageObj, list, loading: false, tempList });
         });
     }
-    onGoStep = () => {
-        const { current, selectedRowKeys } = this.state;
+    onGoStep2 = () => {
+        const { selectedRowKeys } = this.state;
         if(!selectedRowKeys[0]){
             message.warning('必选一项券包');
             return;
         }
-        if(current === 0) {
-            const { groupID } = this.props;
-            const couponPackageIDs = selectedRowKeys.join();
-            const params = { groupID, couponPackageIDs };
-            this.setState({ btnLoading: true });
-            getBagBatch(params).then(x => {
-                const domain = urlMap[env];
-                const url = `https://${domain}${urlPath}?groupID=${groupID}&couponPackagesBatchID=${x}`;
-                this.setState({ url, current: 1, btnLoading: false });
-            });
-            return;
-        }
-        this.props.onClose();
+        const { groupID } = this.props;
+        const couponPackageIDs = selectedRowKeys.join();
+        const params = { groupID, couponPackageIDs };
+        this.setState({ btnLoading: true });
+        getBagBatch(params).then(x => {
+            const domain = urlMap[env];
+            const url = `https://${domain}${urlPath}?groupID=${groupID}&couponPackagesBatchID=${x}`;
+            this.setState({ url, current: 1, btnLoading: false });
+        });
+    }
+    onGoStep1 = () => {
+        this.onQueryList({ pageSize: 10 });
+        this.setState({ current: 0 });
     }
     //
     onSelectChange = (selectedRowKeys) => {
@@ -100,7 +100,12 @@ class Release extends Component {
         const { current, mpInfoList, imgList, firstImg, url, btnLoading } = this.state;
         const { list, loading, pageObj, selectedRowKeys } = this.state;
         const { onClose, groupID } = this.props;
-        const btnTxt = { 0: '下一步', 1: '确定' }[current];
+        const step1 = ([<Button key="0" loading={btnLoading} onClick={this.onGoStep2}>下一步</Button>]);
+        const step2 = ([
+            <Button key="1" onClick={this.onGoStep1}>上一步</Button>,
+            <Button key="2" onClick={onClose}>确定</Button>
+        ]);
+        const footer = { 0: step1, 1: step2 }[current];
         return (
             <Modal
                 title=""
@@ -108,7 +113,7 @@ class Release extends Component {
                 width="800"
                 maskClosable={false}
                 onCancel={onClose}
-                footer={[<Button key="0" loading={btnLoading} onClick={this.onGoStep}>{btnTxt}</Button>]}
+                footer={footer}
             >
                 <section className={styles.mainBox}>
                     <Steps className={style.ProgressBar} current={current}>
