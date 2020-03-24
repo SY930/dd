@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import BaseForm from 'components/common/BaseForm';
 import { Button } from 'antd';
 import { qFormKeys, qFormItems, } from './Common';
-import styles from './index.less';
+import styles from './bag.less';
 
 export default class QueryForm extends Component {
     state = {};

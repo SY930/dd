@@ -12,13 +12,13 @@ export default class QueryForm extends Component {
     onQuery = () => {
         const { getWay, customerMobile, sendTime, useTime, couponPackageStatus } = this.form.getFieldsValue();
         let dateObj = {};
-        if(sendTime) {
+        if(sendTime && sendTime[0]) {
             const [sd, ed] = sendTime;
             const sendTimeBegin = moment(sd).format(DF);
             const sendTimeEnd = moment(ed).format(DF);
             dateObj = { sendTimeBegin, sendTimeEnd };
         }
-        if(useTime) {
+        if(useTime && useTime[0]) {
             const [sd, ed] = useTime;
             const usingTimeBegin = moment(sd).format(DF);
             const usingTimeEnd = moment(ed).format(DF);
@@ -36,9 +36,15 @@ export default class QueryForm extends Component {
 
     /* 整理formItems对象 */
     resetFormItems = () => {
+        const { onRefund } = this.props;
         const btnProp = { type: 'primary', icon: 'search', onClick: this.onQuery };
         const { q, ...other } = dFormItems;
-        const render = () => (<div><Button {...btnProp}>查询</Button></div>);
+        const render = () => (<div>
+            <Button {...btnProp}>查询</Button>
+            {onRefund &&
+                <Button className={styles.refundBtn} name="refund" onClick={onRefund}>商家退款</Button>
+            }
+            </div>);
         return {
             ...other,
             q: { ...q, render },

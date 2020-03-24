@@ -32,6 +32,7 @@ class Release extends Component {
         batchID: '',
         url: '',
         btnLoading: false,
+        tempList: [],       // 临时券包列表，结合所有查询过的数据，用来筛选firstImg
     };
     componentDidMount() {
         this.onQueryStep2Data();
@@ -52,7 +53,7 @@ class Release extends Component {
      * 加载列表
      */
     onQueryList = (params) => {
-        const { queryParams } = this.state;
+        const { queryParams, tempList: temp } = this.state;
         const { groupID } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
@@ -61,7 +62,8 @@ class Release extends Component {
         this.setState({ queryParams: data, loading: true });
         getTicketList({ groupID, ...params }).then((obj) => {
             const { pageObj, list } = obj;
-            this.setState({ pageObj, list, loading: false });
+            const tempList = [...temp, ...list];
+            this.setState({ pageObj, list, loading: false, tempList });
         });
     }
     onGoStep = () => {
@@ -86,10 +88,10 @@ class Release extends Component {
     }
     //
     onSelectChange = (selectedRowKeys) => {
-        const { list } = this.state;
+        const { tempList } = this.state;
         let firstImg = couponImage;
         if(selectedRowKeys[0]){
-            const obj = list.find(x=>x.couponPackageID === selectedRowKeys[0]);
+            const obj = tempList.find(x=>x.couponPackageID === selectedRowKeys[0]);
             firstImg = obj.couponPackageImage || couponImage;
         }
         this.setState({ selectedRowKeys, firstImg });
@@ -98,7 +100,7 @@ class Release extends Component {
         const { current, mpInfoList, imgList, firstImg, url, btnLoading } = this.state;
         const { list, loading, pageObj, selectedRowKeys } = this.state;
         const { onClose, groupID } = this.props;
-        const btnTxt = { 0: '下一步', 1: '关闭' }[current];
+        const btnTxt = { 0: '下一步', 1: '确定' }[current];
         return (
             <Modal
                 title=""

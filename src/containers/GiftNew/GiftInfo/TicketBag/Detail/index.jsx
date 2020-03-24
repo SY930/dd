@@ -184,8 +184,7 @@ class Detail extends Component {
                                 <PresentForm ids={ids} num={oddStock} />
                             </TabPane>
                             <TabPane tab="退款" key="4">
-                                <Button className={styles.expBtn} name="refund" onClick={this.onOpenModal}>退款</Button>
-                                <QueryForm type={3} onQuery={this.onQueryList3} />
+                                <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
                                 <MainTable
                                     type={3}
                                     list={list3}
