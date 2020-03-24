@@ -41,9 +41,9 @@ export default class QueryForm extends Component {
         const { q, ...other } = dFormItems;
         const render = () => (<div>
             <Button {...btnProp}>查询</Button>
-            {onRefund &&
+            {/* {onRefund &&
                 <Button className={styles.refundBtn} name="refund" onClick={onRefund}>商家退款</Button>
-            }
+            } */}
             </div>);
         return {
             ...other,

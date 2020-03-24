@@ -104,7 +104,7 @@ export default class Step2 extends Component {
                                 <Select allowClear={true} value={mpID} onChange={this.onAccountChange}>
                                 {mpInfoList.map(x => <Option value={x.mpID}>{x.mpName}</Option>)}
                                 </Select>
-                                <p className={styles.tips}>如果异业合作、无需关注公众号或无需用户使用微信扫码场景不用选择</p>
+                                <p className={styles.tips}>如异业合作、无需关注公众号或无需用户使用微信扫码场景不用选择</p>
                             </div>
                         </div>
                         {mpID &&
