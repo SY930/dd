@@ -102,7 +102,6 @@ class MainTable extends Component {
     /* 生成表格头数据 */
     generateColumns() {
         const { pageObj: { pageSize, pageNo} } = this.props;
-        console.log('this.props', this.props);
         const { tc } = styles;
         const render = (v, o) => {
             const { couponPackageID: id, couponPackageName: name } = o;
