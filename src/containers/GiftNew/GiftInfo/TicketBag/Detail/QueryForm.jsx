@@ -36,9 +36,15 @@ export default class QueryForm extends Component {
 
     /* 整理formItems对象 */
     resetFormItems = () => {
+        const { onRefund } = this.props;
         const btnProp = { type: 'primary', icon: 'search', onClick: this.onQuery };
         const { q, ...other } = dFormItems;
-        const render = () => (<div><Button {...btnProp}>查询</Button></div>);
+        const render = () => (<div>
+            <Button {...btnProp}>查询</Button>
+            {onRefund &&
+                <Button className={styles.refundBtn} name="refund" onClick={onRefund}>商家退款</Button>
+            }
+            </div>);
         return {
             ...other,
             q: { ...q, render },
