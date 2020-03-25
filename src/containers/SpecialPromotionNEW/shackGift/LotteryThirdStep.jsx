@@ -130,9 +130,9 @@ class LotteryThirdStep extends React.Component {
                     const typeValue = gift.sendType;
                     infos[index] = getDefaultGiftData(typeValue, typePropertyName);
                 }
-                if(gift.presentType === 4){
+                if(gift.couponPackageID){
                     const { user } = this.props;
-                    const params = {couponPackageID: gift.giftID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
+                    const params = {couponPackageID: gift.couponPackageID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
                     getTicketBagInfo(params).then(detail=>{
                         const { couponPackageInfo: info } = detail;
                         infos[index].giveCoupon.value.isOn = true;
