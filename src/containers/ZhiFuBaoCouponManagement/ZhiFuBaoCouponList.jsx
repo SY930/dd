@@ -145,6 +145,7 @@ class ZhiFuBaoCouponList extends Component {
             {...param},
             {},
             { path: 'data.InsideVoucherTemplateForResult' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then(res => {
             this.setState({
                 isQuerying: false,
