@@ -65,13 +65,13 @@ class MainTable extends Component {
                 { width: 50, title: '序号', dataIndex: 'idx', className: tc },
                 { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
                 { width: 100, title: '状态', dataIndex: 'stauts', render },
-                { width: 160, title: '订单编号', dataIndex: 'orderID' },
+                { width: 160, title: '订单编号', dataIndex: 'linkOrderNo' },
                 { width: 160, title: '发出时间', dataIndex: 'createStamp' },
                 { width: 160, title: '客户编号', dataIndex: 'customerID' },
                 { width: 100, title: '姓名', dataIndex: 'customerName' },
                 { width: 60, title: '性别', dataIndex: 'sex', className: tc },
                 { width: 100, title: '手机号', dataIndex: 'customerMobile' },
-                { title: '退款原因', dataIndex: 'reason' },
+                { title: '退款原因', dataIndex: 'refundReason' },
             ];
         }
         return [
