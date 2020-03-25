@@ -149,13 +149,13 @@ class Detail extends Component {
                         <h3>数据统计</h3>
                         <Tabs defaultActiveKey="1" className="tabsStyles">
                             <TabPane tab="发出数" key="1">
-                                <Button
+                                {/* <Button
                                     type="ghost"
                                     name="export"
                                     disabled={!list[0]}
                                     className={styles.expBtn}
                                     onClick={this.onOpenModal}
-                                ><Icon type="export" />导出</Button>
+                                ><Icon type="export" />导出</Button> */}
                                 <QueryForm onQuery={this.onQueryList} />
                                 <MainTable
                                     list={list}
@@ -166,12 +166,12 @@ class Detail extends Component {
                             </TabPane>
                             <TabPane tab="使用数" key="2">
                                 <QueryForm type={2} onQuery={this.onQueryList2} />
-                                <Button
+                                {/* <Button
                                     type="ghost"
                                     disabled={!list2[0]}
                                     className={styles.expBtn}
                                     onClick={this.onToggleModal}
-                                ><Icon type="export" />导出</Button>
+                                ><Icon type="export" />导出</Button> */}
                                 <MainTable
                                     type={2}
                                     list={list2}

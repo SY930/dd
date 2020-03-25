@@ -51,12 +51,16 @@ class MainTable extends Component {
             }
             return (<span>{text}</span>);
         };
+        const render3 = (v, o) => {
+            const val = (v === -1) ? '不限制' : v;
+            return (<span>{val}</span>);
+        };
         // 表格头部的固定数据
         return [
             { width: 80, title: '操作', dataIndex: 'op', className: tc, render },
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 120, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'couponPackageStock', className: tc },
+            { width: 100, title: '库存', dataIndex: 'couponPackageStock', className: tc, render: render3 },
             { width: 260, title: '有效期', dataIndex: 'postTime', className: tc, render: render2 },
         ];
     }

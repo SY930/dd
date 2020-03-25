@@ -41,9 +41,9 @@ export default class TicketBag extends Component {
         const { groupID, onGoEdit } = this.props;
         return (
             <div className={styles.listBox}>
-                <Button className={styles.throw} onClick={this.onToggleModal}>投放</Button>
                 <QueryForm
                     onQuery={this.onQueryList}
+                    onThrow={this.onToggleModal}
                 />
                 <div className="layoutsLine"></div>
                 <MainTable

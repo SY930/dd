@@ -145,23 +145,24 @@
     background: @white;
     padding: 23px 30px;
     height: ~'calc(100vh - 256px)';
-    position: relative;
     :global{
         .layoutsLine{
             margin: 0;
         }
     }
-    .throw{
-        position: absolute;
-        left: 1250px;
-        top: 23px;
-    }
 }
 .queryform{
+    position: relative;
+    max-width: 1300px;
     :global{
         .ant-select{
             width: 150px;
         }
+    }
+    .throw{
+        position: absolute;
+        right: 20px;
+        top: 0;
     }
 }
 .tableBox{
