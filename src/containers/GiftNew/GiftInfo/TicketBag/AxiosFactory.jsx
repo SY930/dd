@@ -40,10 +40,10 @@ async function getTotalList(data) {
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, customerCouponPackages = [],
-        totalSize, pageNo,
+        totalSize, pageNo, pageSize,
     } = response;
     if (code === '000') {
-        const pageObj = { pageNo: +pageNo, total: +totalSize };
+        const pageObj = { pageNo: +pageNo, total: +totalSize, pageSize };
         return { pageObj, list: customerCouponPackages };
     }
     message.error(msg);
