@@ -129,10 +129,20 @@ class ZhiFuBaoCouponList extends Component {
     }
     query = (id) => {
         const groupID = this.props.user.accountInfo.groupID
+        let param;
+        if(!id){
+            param ={
+                appid: this.state.zhiAccount
+            } 
+        }else{
+            param ={
+                appid: id
+            } 
+        }
         this.setState({ isQuerying: true })
         axiosData(
             `/promotion/insidevoucher/getInsideVouchersByappID.ajax`,
-            {appid: id},
+            {...param},
             {},
             { path: 'data.InsideVoucherTemplateForResult' },
         ).then(res => {
@@ -152,8 +162,10 @@ class ZhiFuBaoCouponList extends Component {
             {appid: zhiAccount},
             {},
             { path: 'data.InsideVoucherTemplateForResult' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(res => {
             message.success('刷新成功');
+            this.query();
         }).catch(e => {
             this.setState({ isQuerying: false })
         })
