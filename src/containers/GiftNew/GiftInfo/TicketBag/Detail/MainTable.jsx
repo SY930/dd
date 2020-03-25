@@ -41,15 +41,20 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
-        const { type } = this.props;
+        const { type, pageObj } = this.props;
         const { tc } = styles;
         const render = (v, o) => {
             return (<span>{statusMap[v]}</span>);
         };
+        const render2 = (v, o) => {
+            const { pageSize, pageNo } = pageObj;
+            const idx = v + (pageSize * (pageNo - 1));
+            return (<span>{idx}</span>);
+        };
         // 表格头部的固定数据
         if(type === 2){
             return [
-                { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+                { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
                 { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
                 { width: 100, title: '获得方式', dataIndex: 'way' },
                 { width: 160, title: '获得时间', dataIndex: 'createStamp' },
@@ -62,7 +67,7 @@ class MainTable extends Component {
         }
         if(type === 3){
             return [
-                { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+                { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
                 { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
                 { width: 100, title: '状态', dataIndex: 'stauts', render },
                 { width: 160, title: '订单编号', dataIndex: 'linkOrderNo' },
@@ -75,7 +80,7 @@ class MainTable extends Component {
             ];
         }
         return [
-            { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+            { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
             { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
             { width: 100, title: '发出方式', dataIndex: 'way' },
             { width: 80, title: '状态', dataIndex: 'status', render },

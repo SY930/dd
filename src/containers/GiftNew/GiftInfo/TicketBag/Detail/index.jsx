@@ -43,10 +43,10 @@ class Detail extends Component {
         const { ids } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const obj = { ...queryParams, ...params,  ...ids };
+        const newParams = { ...queryParams, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams: obj, loading: true });
-        getTotalList({ ...ids, ...params }).then((obj) => {
+        this.setState({ queryParams: newParams, loading: true });
+        getTotalList({ ...ids, ...newParams }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj, list, loading: false });
         });
@@ -57,10 +57,10 @@ class Detail extends Component {
         const { ids } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const obj = { ...queryParams2, ...params,  ...ids };
+        const newParams = { ...queryParams2, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams2: obj, loading2: true });
-        getTotalList({ ...ids, ...params, couponPackageStatus: '3' }).then((obj) => {
+        this.setState({ queryParams2: newParams, loading2: true });
+        getTotalList({ ...ids, ...newParams, couponPackageStatus: '3' }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj2: pageObj, list2: list, loading2: false });
         });
@@ -71,10 +71,10 @@ class Detail extends Component {
         const { ids } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const obj = { ...queryParams3, ...params,  ...ids };
+        const newParams = { ...queryParams3, ...params,  ...ids };
         // 把查询需要的参数缓存
-        this.setState({ queryParams3: obj, loading3: true });
-        getTotalList({ ...ids, ...params, getWay: '10' }).then((obj) => {
+        this.setState({ queryParams3: newParams, loading3: true });
+        getTotalList({ ...ids, ...newParams, getWay: '10' }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj3: pageObj, list3: list, loading3: false });
         });
