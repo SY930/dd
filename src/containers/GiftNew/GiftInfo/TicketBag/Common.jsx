@@ -350,7 +350,7 @@ const qFormItems = {
 
 const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
-const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'orderID', 'customerMobile', 'sendTime', 'q'];
+const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'linkOrderNo', 'customerMobile', 'sendTime', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -386,7 +386,7 @@ const dFormItems = {
         type: 'text',
         label: '券包ID',
     },
-    orderID: {
+    linkOrderNo: {
         type: 'text',
         label: '订单编号',
     },
