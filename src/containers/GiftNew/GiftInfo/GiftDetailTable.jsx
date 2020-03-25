@@ -119,13 +119,6 @@ class GiftDetailTable extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076005") {
-            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("1000076005")) {
-                this.handleQuery(this.state.queryParams.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
-            }
-        }
-        this.queryFrom && this.queryFrom.resetFields();
         const { dataSource } = nextProps;
         const data = dataSource.toJS();
         if (this.state.dataSource !== data) {
