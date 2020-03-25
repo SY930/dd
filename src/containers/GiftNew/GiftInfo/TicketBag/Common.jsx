@@ -30,10 +30,12 @@ const cycleOpts = [
 ];
 const statusOpts = [
     { label: '全部', value: '' },
-    { label: '可使用', value: '1' },
-    { label: '已使用', value: '2' },
-    { label: '已售出', value: '12' },
-    { label: '已作废', value: '13' },
+    { label: '待发送', value: '1' },
+    { label: '已发出', value: '2' },
+    { label: '已使用', value: '3' },
+    { label: '已作废', value: '4' },
+    { label: '已退款', value: '5' },
+    { label: '退款中', value: '6' },
 ];
 const qStatusOpts = [
     { label: '正常', value: '' },
@@ -76,8 +78,7 @@ const wayLabel = (<span>
 const revokeLabel = (<span>
     系统过期自动退
     <Tip
-        title={<p>付费购买的券包中所有券均未使用时，<br />
-            支持按包含券有效期最长的一张券的过期时间自动退款。<br />
+        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。<br />
             退款时效为购买之日起90天。</p>}
         style={tipMargin}
     />
@@ -201,7 +202,7 @@ const formItems = {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: '1',
+        defaultValue: '0',
     },
     isRefundSelf: {
         type: 'radio',
@@ -349,7 +350,7 @@ const qFormItems = {
 
 const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
-const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'orderID', 'customerMobile', 'sendTime', 'q'];
+const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'linkOrderNo', 'customerMobile', 'sendTime', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -385,7 +386,7 @@ const dFormItems = {
         type: 'text',
         label: '券包ID',
     },
-    orderID: {
+    linkOrderNo: {
         type: 'text',
         label: '订单编号',
     },

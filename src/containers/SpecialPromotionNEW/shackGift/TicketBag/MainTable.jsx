@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Table, message, Modal, Tooltip } from 'antd';
-import styles from './index.less';
+import styles from './bag.less';
 import { href, typeMap } from './Common';
 import PagingFactory from 'components/PagingFactory';
 

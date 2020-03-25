@@ -74,7 +74,7 @@ class Detail extends Component {
         const obj = { ...queryParams3, ...params,  ...ids };
         // 把查询需要的参数缓存
         this.setState({ queryParams3: obj, loading3: true });
-        getTotalList({ ...ids, ...params, couponPackageStatus: '4' }).then((obj) => {
+        getTotalList({ ...ids, ...params, getWay: '10' }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj3: pageObj, list3: list, loading3: false });
         });
@@ -183,9 +183,8 @@ class Detail extends Component {
                             <TabPane tab="赠送" key="3">
                                 <PresentForm ids={ids} num={oddStock} />
                             </TabPane>
-                            <TabPane tab="退款" key="4">
-                                <Button className={styles.expBtn} name="refund" onClick={this.onOpenModal}>退款</Button>
-                                <QueryForm type={3} onQuery={this.onQueryList3} />
+                            {/* <TabPane tab="退款" key="4">
+                                <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
                                 <MainTable
                                     type={3}
                                     list={list3}
@@ -195,7 +194,7 @@ class Detail extends Component {
                                     onQuery={this.onQueryList3}
                                     onChange={this.onSelectChange}
                                 />
-                            </TabPane>
+                            </TabPane> */}
                         </Tabs>
                     </li>
                 </ul>

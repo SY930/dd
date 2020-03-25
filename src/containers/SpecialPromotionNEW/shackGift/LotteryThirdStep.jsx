@@ -130,9 +130,9 @@ class LotteryThirdStep extends React.Component {
                     const typeValue = gift.sendType;
                     infos[index] = getDefaultGiftData(typeValue, typePropertyName);
                 }
-                if(gift.presentType === 4){
+                if(gift.couponPackageID){
                     const { user } = this.props;
-                    const params = {couponPackageID: gift.giftID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
+                    const params = {couponPackageID: gift.couponPackageID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
                     getTicketBagInfo(params).then(detail=>{
                         const { couponPackageInfo: info } = detail;
                         infos[index].giveCoupon.value.isOn = true;
@@ -201,7 +201,15 @@ class LotteryThirdStep extends React.Component {
         }else{
             prizeArr.map((item, index) => {
                 if(index == 0){
-                    temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
+                    const obj = item;
+                    if (item.presentType == 3){
+                        obj.redPacketID = item.giftID;
+                        obj.redPacketValue = item.presentValue;
+                    }
+                    if (item.presentType == 4){
+                        obj.couponPackageID = item.giftID;
+                    }
+                    temparr.push(obj);
                 }else{
                     let flag = true;
                     temparr.map((every,num) => {
@@ -232,7 +240,15 @@ class LotteryThirdStep extends React.Component {
                         }
                     });
                     if(flag){
-                        temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
+                        const obj = item;
+                        if (item.presentType == 3){
+                            obj.redPacketID = item.giftID;
+                            obj.redPacketValue = item.presentValue;
+                        }
+                        if (item.presentType == 4){
+                            obj.couponPackageID = item.giftID;
+                        }
+                        temparr.push(obj);
                     }
                 }
             })

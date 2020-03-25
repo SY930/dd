@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Button, Icon } from 'antd';
-import styles from './index.less';
+import styles from './bag.less';
 import { getTicketList } from './AxiosFactory';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';

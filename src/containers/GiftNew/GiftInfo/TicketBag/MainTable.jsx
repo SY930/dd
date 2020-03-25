@@ -101,6 +101,7 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
+        const { pageObj } = this.props;
         const { tc } = styles;
         const render = (v, o) => {
             const { couponPackageID: id, couponPackageName: name } = o;
@@ -118,9 +119,15 @@ class MainTable extends Component {
                     <span>{v}</span>
                 </Tooltip>);
         };
+        const render2 = (v, o) => {
+            const { pageSize, pageNo } = pageObj;
+            const idx = v + (pageSize * (pageNo - 1));
+            return (<span>{idx}</span>);
+        };
+
         // 表格头部的固定数据
         return [
-            { width: 50, title: '序号', dataIndex: 'idx', className: tc },
+            { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
             { width: 160, title: '操作', dataIndex: 'op', className: tc, render },
             { width: 160, title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },

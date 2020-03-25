@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Button, Table, Tooltip } from 'antd';
-import styles from './index.less';
+import styles from './bag.less';
 import { href, typeMap } from './Common';
 import AddModal from './AddModal';
 
