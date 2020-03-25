@@ -158,7 +158,13 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
         className:'TableTxtCenter',
         key: 'giftStatus',
         render: (value) => {
-            return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+            // if(value == 102) {
+                if(value){
+                    return <span><a>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</a></span>
+                }
+            // }else {
+            //     return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
+            // } 
         },
     },
     {
@@ -363,4 +369,4 @@ const USED_COLUMNS = [
         key: 'transCardNo',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS };
