@@ -29,7 +29,7 @@ export default class QueryForm extends Component {
         };
     }
     render() {
-        const {  } = this.props;
+        const { onThrow } = this.props;
         const formItems = this.resetFormItems();
         return (
             <div className={styles.queryform}>
@@ -39,6 +39,7 @@ export default class QueryForm extends Component {
                     formKeys={qFormKeys}
                     layout="inline"
                 />
+                <Button className={styles.throw} onClick={onThrow}>投放</Button>
             </div>
         );
     }
