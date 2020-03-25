@@ -9,10 +9,14 @@ import { giftInfoNew as sale_giftInfoNew } from '../_reducers';
 import { editGiftInfoNew as sale_editGiftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import GiftEditPage from "../components/GiftEditPage";
+import Editor from './TicketBag/Editor';
+import { getSettleList } from './TicketBag/AxiosFactory';
 
 function mapStateToProps(state) {
     return {
-        isCreatingOrEditing: state.sale_editGiftInfoNew.get('isCreatingOrEditing')
+        isCreatingOrEditing: state.sale_editGiftInfoNew.get('isCreatingOrEditing'),
+        groupID: state.user.getIn(['accountInfo', 'groupID']),
+        accountID: state.user.getIn(['accountInfo', 'accountID']),
     }
 }
 
@@ -24,18 +28,38 @@ function mapStateToProps(state) {
 })
 @connect(mapStateToProps)
 export default class GiftInfo extends React.Component {
-    constructor(props) {
-        super(props);
+    state = {
+        page: '',
+        tabkey: '1',
+        settlesOpts: [],
+    }
+    componentDidMount(){
+        const { groupID } = this.props;
+        getSettleList({ groupID }).then(list => {
+            const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
+            this.setState({ settlesOpts });
+        })
+    }
+    /** 切换页面 不传默认列表页 */
+    togglePage = (page = '', detail = null, check) => {
+        this.setState({ page, detail, check });
+    }
+    toggleTabs = (tabkey) => {
+        this.setState({ tabkey });
     }
     render() {
-        const {isCreatingOrEditing} = this.props;
+        const { page, detail, check, tabkey, settlesOpts } = this.state;
+        const {isCreatingOrEditing, groupID} = this.props;
+        if(page==='ticket'){
+            return <Editor groupID={groupID} check={check} settlesOpts={settlesOpts} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} />
+        }
         if (!isCreatingOrEditing) {
             return (
-                <GiftDetailTable />
+                <GiftDetailTable tabkey={tabkey} togglePage={this.togglePage} toggleTabs={this.toggleTabs} />
             )
         } else {
             return (
-                <GiftEditPage/>
+                <GiftEditPage toggleTabs={this.toggleTabs}/>
             )
         }
 

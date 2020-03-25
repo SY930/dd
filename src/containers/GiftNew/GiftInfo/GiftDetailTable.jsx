@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Row, Col, Table, Button, Icon, Modal, message } from 'antd';
+import { Tabs, Col, Table, Button, Icon, Modal, message, Tooltip } from 'antd';
 import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
@@ -43,7 +43,9 @@ import {
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
+import TicketBag from './TicketBag';
 
+const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
     constructor(props) {
@@ -66,7 +68,6 @@ class GiftDetailTable extends Component {
             },
             total: 2,
             tableHeight: '100%',
-            contentHeight: '100%',
             usedTotalSize: 0,
         };
         this.tableRef = null;
@@ -115,27 +116,14 @@ class GiftDetailTable extends Component {
             this.setState({ brands });
         });
         this.props.queryWechatMpInfo();
-        this.onWindowResize();
-        window.addEventListener('resize', this.onWindowResize);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076005") {
-            const tabArr = nextProps.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes("1000076005")) {
-                this.handleQuery(this.state.queryParams.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
-            }
-        }
-        this.queryFrom && this.queryFrom.resetFields();
         const { dataSource } = nextProps;
         const data = dataSource.toJS();
         if (this.state.dataSource !== data) {
             this.proGiftData(data);
         }
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize);
     }
 
     getTableColumns = () => {
@@ -179,24 +167,6 @@ class GiftDetailTable extends Component {
             return columns;
         }
         return this.columns;
-    }
-
-    onWindowResize = () => {
-        const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
-        if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
-            const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
-            if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
-                const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
-                const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
-                this.setState({
-                    contentHeight: parentHeight - headerHeight - 200,
-                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
-                })
-            }
-        }
     }
 
     handleCreateModalCancel() {
@@ -321,6 +291,9 @@ class GiftDetailTable extends Component {
     handleEdit(rec, operationType) {
         let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
         const selectShops = [];
+        if(!gift){
+            return;
+        }
         gift = _.cloneDeep(gift);
         gift.data = { ...rec }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
         gift.data.shopNames = gift.data.shopNames === '不限' ? [] : gift.data.shopNames.split(',');
@@ -382,7 +355,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = []}) => {
+                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可删除',
@@ -437,6 +410,22 @@ class GiftDetailTable extends Component {
                                                         padding: 5
                                                     }}
                                                 >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        !!couponPackageReference.length && (
+                                            <div>
+                                                <div style={{ marginTop: 8 }}>
+                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 8,
+                                                        background: '#fef4ed',
+                                                        padding: 5
+                                                    }}
+                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
                                             </div>
                                         )
                                     }
@@ -590,17 +579,22 @@ class GiftDetailTable extends Component {
         };
         const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
+        const { tabkey } = this.props;
+        const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                     <div className="layoutsTool" style={{height: '64px'}}>
                         <div className={headerClasses}>
                             <span className={styles2.customHeader}>
                                 礼品信息
-                                <Authority rightCode={GIFT_LIST_CREATE}>
+                            </span>
+                            <p style={{ marginLeft: 'auto'}}>
+                            <Authority rightCode={GIFT_LIST_CREATE}>
                                     <Button
                                         type="ghost"
                                         icon="plus"
                                         className={styles2.jumpToCreate}
+                                        style={{ margin: 5 }}
                                         onClick={
                                             () => {
                                                 this.setState({
@@ -608,70 +602,87 @@ class GiftDetailTable extends Component {
                                                 })
                                             }
                                         }
-                                    >{ COMMON_LABEL.create }</Button>
+                                    >新增礼品</Button>
                                 </Authority>
-                            </span>
-
+                                <Button
+                                    type="ghost"
+                                    icon="plus"
+                                    className={styles.jumpToCreate}
+                                    style={{ margin: 5,  width: 90 }}
+                                    onClick={
+                                        () => {
+                                            this.props.togglePage('ticket')
+                                        }
+                                    }
+                                >新增券包</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
+                                    style={{ margin: '0 24px' }}
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
+                            </p>
                         </div>
                     </div>
                 <PromotionCalendarBanner />
-                <div className={styles2.pageContentWrapper}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        <div className="layoutsSearch">
-                            <ul>
-                                <li className={styles.formWidth}>
-                                    <BaseForm
-                                        getForm={form => this.queryFrom = form}
-                                        formItems={formItems}
-                                        formKeys={formKeys}
-                                        formData={queryParams}
-                                        layout="inline"
-                                        onChange={(key, value) => this.handleFormChange(key, value)}
-                                    />
-                                </li>
-                                <li>
-                                    <Authority rightCode={GIFT_LIST_UPDATE}>
-                                        <Button type="primary" onClick={() => this.handleQuery()}>
-                                            <Icon type="search" />
-                                            { COMMON_LABEL.query }
-                                        </Button>
-                                    </Authority>
-                                </li>
-                            </ul>
+                <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
+                    <TabPane tab="礼品查询" key="1">
+                    <div className={styles2.pageContentWrapper}>
+                        <div style={{ padding: '0'}} className="layoutsHeader">
+                            <div className="layoutsSearch">
+                                <ul>
+                                    <li className={styles.formWidth}>
+                                        <BaseForm
+                                            getForm={form => this.queryFrom = form}
+                                            formItems={formItems}
+                                            formKeys={formKeys}
+                                            formData={queryParams}
+                                            layout="inline"
+                                            onChange={(key, value) => this.handleFormChange(key, value)}
+                                        />
+                                    </li>
+                                    <li>
+                                        <Authority rightCode={GIFT_LIST_UPDATE}>
+                                            <Button type="primary" onClick={() => this.handleQuery()}>
+                                                <Icon type="search" />
+                                                { COMMON_LABEL.query }
+                                            </Button>
+                                        </Authority>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style={{ margin: '0'}} className="layoutsLine"></div>
                         </div>
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
+                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
+                            <Table
+                                ref={this.setTableRef}
+                                bordered={true}
+                                columns={this.getTableColumns().map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                                dataSource={this.state.dataSource}
+                                pagination={{
+                                    showSizeChanger: true,
+                                    pageSize,
+                                    current: pageNo,
+                                    total: this.state.total,
+                                    showQuickJumper: true,
+                                    onChange: this.handlePageChange,
+                                    onShowSizeChange: this.handlePageChange,
+                                    showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                                }}
+                                loading={this.props.loading}
+                                scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
+                            />
+                        </div>
                     </div>
-                    <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')} style={{ height: this.state.contentHeight }}>
-                        <Table
-                            ref={this.setTableRef}
-                            bordered={true}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                            dataSource={this.state.dataSource}
-                            pagination={{
-                                showSizeChanger: true,
-                                pageSize,
-                                current: pageNo,
-                                total: this.state.total,
-                                showQuickJumper: true,
-                                onChange: this.handlePageChange,
-                                onShowSizeChange: this.handlePageChange,
-                                showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                            }}
-                            loading={this.props.loading}
-                            scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
-                        />
-                    </div>
-                </div>
-
+                </TabPane>
+                    <TabPane tab="券包查询" key="2">
+                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} />
+                    </TabPane>
+                </Tabs>
                 <div>
                     { visibleDetail && GiftDetail(data.giftType) }
                 </div>

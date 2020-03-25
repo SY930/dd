@@ -28,6 +28,7 @@ import {
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { getTicketBagInfo } from './TicketBag/AxiosFactory';
 
 const moment = require('moment');
 const { TabPane } = Tabs;
@@ -127,7 +128,17 @@ class LotteryThirdStep extends React.Component {
                 } else {
                     const typePropertyName = 'sendType'
                     const typeValue = gift.sendType;
-                    infos[index] = getDefaultGiftData(typeValue, typePropertyName); 
+                    infos[index] = getDefaultGiftData(typeValue, typePropertyName);
+                }
+                if(gift.couponPackageID){
+                    const { user } = this.props;
+                    const params = {couponPackageID: gift.couponPackageID, groupID: user.accountInfo.groupID, isNeedDetailInfo: true };
+                    getTicketBagInfo(params).then(detail=>{
+                        const { couponPackageInfo: info } = detail;
+                        infos[index].giveCoupon.value.isOn = true;
+                        infos[index].giveCoupon.value.item = info;
+                        infos[index].giveCoupon.value.typeValue = '1';
+                    });
                 }
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
                 if(gift.giftTotalCount && gift.giftName && gift.giftID){
@@ -153,9 +164,9 @@ class LotteryThirdStep extends React.Component {
                 if(gift.cardTypeID && gift.presentValue){
                     infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
                     //充值到会员卡的卡类型id
-                    infos[index].givePoints.value.card.value = gift.cardTypeID;  
+                    infos[index].givePoints.value.card.value = gift.cardTypeID;
                     //赠送积分
-                    infos[index].givePoints.value.givePointsValue.value = gift.presentValue;  
+                    infos[index].givePoints.value.givePointsValue.value = gift.presentValue;
                 } else {
                     infos[index].givePoints.value = {};
                 }
@@ -190,7 +201,15 @@ class LotteryThirdStep extends React.Component {
         }else{
             prizeArr.map((item, index) => {
                 if(index == 0){
-                    temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
+                    const obj = item;
+                    if (item.presentType == 3){
+                        obj.redPacketID = item.giftID;
+                        obj.redPacketValue = item.presentValue;
+                    }
+                    if (item.presentType == 4){
+                        obj.couponPackageID = item.giftID;
+                    }
+                    temparr.push(obj);
                 }else{
                     let flag = true;
                     temparr.map((every,num) => {
@@ -205,7 +224,7 @@ class LotteryThirdStep extends React.Component {
                                 }else{
                                     temparr[num].effectTime = item.effectTime;
                                     temparr[num].validUntilDate = item.validUntilDate;
-                                } 
+                                }
                                 temparr[num].giftTotalCount = item.giftTotalCount;
                                 temparr[num].giftName = item.giftName;
                                 temparr[num].giftID = item.giftID;
@@ -215,11 +234,21 @@ class LotteryThirdStep extends React.Component {
                             } else if (item.presentType == 3){
                                 temparr[num].redPacketID = item.giftID;
                                 temparr[num].redPacketValue = item.presentValue;
+                            } else if (item.presentType == 4){
+                                temparr[num].couponPackageID = item.giftID;
                             }
                         }
                     });
                     if(flag){
-                        temparr.push(item.presentType === 3 ? ({...item, redPacketID: item.giftID, redPacketValue: item.presentValue }) : item);
+                        const obj = item;
+                        if (item.presentType == 3){
+                            obj.redPacketID = item.giftID;
+                            obj.redPacketValue = item.presentValue;
+                        }
+                        if (item.presentType == 4){
+                            obj.couponPackageID = item.giftID;
+                        }
+                        temparr.push(obj);
                     }
                 }
             })
@@ -456,7 +485,15 @@ class LotteryThirdStep extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
-
+    onBagChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giveCoupon.value.item = val;
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
 
     handleDependTypeChange = (val, index) =>{
         const _infos = this.state.infos;
@@ -548,9 +585,9 @@ class LotteryThirdStep extends React.Component {
                     infos,
                     activeKey: activeKey === targetKey ? `${activeKey - 1}` : `${activeKey}`,
                 })
-                break;  
-            default: 
-                break;     
+                break;
+            default:
+                break;
         }
     }
 
@@ -635,7 +672,7 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
-    
+
     /**
      * 检验是否所有的显示出来的表单项是否都验证成功。每一次只检测info数组的当前index的数据因为，在切换和新建、提交的时候都要进行验证
      * 如果验证不成功的话，返回false，则进行的动作（切换和新建、提交）则会中断
@@ -667,7 +704,7 @@ class LotteryThirdStep extends React.Component {
                     tempResult = false;
                     message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
                 }
-            }   
+            }
         }
         // 校验校验每一等级必填
         for (let activeKey = 0; activeKey < infos.length; activeKey ++) {
@@ -705,22 +742,24 @@ class LotteryThirdStep extends React.Component {
                             if(infos[activeKey].giveCoupon.value.isOn){
                                 //优惠券是勾选的确认优惠券里面的内容
                                 let tempobj = infos[activeKey].giveCoupon.value;
-                                if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
-                                    tempResult = false;
-                                    this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
-                                }
-                                if(tempobj.effectType == '1' || tempobj.effectType == '3'){
-                                    //按小时或者按天
-                                    if(!tempobj.giftValidDays.value){
+                                if(!tempobj.item){
+                                    if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                         tempResult = false;
-                                        this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
-                                        this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                        this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
                                     }
-                                }else{
-                                    //固定有效期
-                                    if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
-                                        tempResult = false;
-                                        this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                    if(tempobj.effectType == '1' || tempobj.effectType == '3'){
+                                        //按小时或者按天
+                                        if(!tempobj.giftValidDays.value){
+                                            tempResult = false;
+                                            this.handleGiftValidDaysChange({number: tempobj.giftValidDays.value},activeKey);
+                                            this.handleGiftEffectiveTimeChange(tempobj.giftEffectiveTime.value,activeKey);
+                                        }
+                                    }else{
+                                        //固定有效期
+                                        if(tempobj.giftEffectiveTime.value.constructor != Array){ // Array.isArray(val) val instanceof Array
+                                            tempResult = false;
+                                            this.handleRangePickerChange(tempobj.giftEffectiveTime.value,'ss',activeKey);
+                                        }
                                     }
                                 }
                             }
@@ -760,18 +799,25 @@ class LotteryThirdStep extends React.Component {
             tempObj.presentType = 3;
         }
         if(type == 'benefit'){
-            tempObj.effectType = couponObj.effectType;
-            tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
-            if(couponObj.effectType == '1' || couponObj.effectType == '3'){
-                tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
-            }else{
-                tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
-                tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
+            // 券包
+            if(couponObj.item){
+                const { couponPackageID } = couponObj.item;
+                tempObj.giftID = couponPackageID;
+                tempObj.presentType = 4;
+            } else {
+                tempObj.effectType = couponObj.effectType;
+                tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
+                if(couponObj.effectType == '1' || couponObj.effectType == '3'){
+                    tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
+                }else{
+                    tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
+                    tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
+                }
+                tempObj.giftTotalCount = couponObj.giftCount.value;
+                tempObj.giftName = couponObj.giftInfo.giftName;
+                tempObj.giftID = couponObj.giftInfo.giftItemID;
+                tempObj.presentType = 1;
             }
-            tempObj.giftTotalCount = couponObj.giftCount.value;
-            tempObj.giftName = couponObj.giftInfo.giftName;
-            tempObj.giftID = couponObj.giftInfo.giftItemID;  
-            tempObj.presentType = 1;
         }
         tempObj.giftOdds = data.giftOdds.value;
         return tempObj;
@@ -802,7 +848,7 @@ class LotteryThirdStep extends React.Component {
             setSpecialGiftInfo(tempArr);
             return true;
         }
-        
+
     }
 
     toggleFun = (index) => {
@@ -815,23 +861,24 @@ class LotteryThirdStep extends React.Component {
 
     render() {
         const { activeKey, infos, giftInfo, disArr, cardTypeArr } = this.state;
+        const { user } = this.props;
         let filteredGiftInfo = giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
         let panelArr = this.getPaneArr(infos);
         return (
             <div className={style.stepWrapper}>
-                <Button 
-                    className = { style.addLevelButton } 
-                    type = 'primary' 
+                <Button
+                    className = { style.addLevelButton }
+                    type = 'primary'
                     onClick={this.handleAddLevelPrize}
                     disabled={this.props.disabled || infos.length >= 10}
-                > 
+                >
                     <Icon type="plus" className={style.addIcon} />
-                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)} 
+                    {this.props.intl.formatMessage(STRING_SPE.d2b1b803260135143)}
                 </Button>
-                <span 
+                <span
                     className = { style.graySpan }
-                > 
+                >
                     {this.props.intl.formatMessage(STRING_SPE.d31f1376h88323)}
                 </span>
                 <Tabs
@@ -844,18 +891,19 @@ class LotteryThirdStep extends React.Component {
                 >
                     { panelArr.map((pane,index) => {
                         return (
-                            <TabPane 
-                                tab={pane.title} 
-                                key={pane.key} 
-                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1} 
+                            <TabPane
+                                tab={pane.title}
+                                key={pane.key}
+                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1}
                                 ref='paneRef'
                             >
-                                <pane.content 
-                                    info={infos[index]} 
-                                    infosLength={infos.length} 
-                                    filteredGiftInfo={filteredGiftInfo} 
+                                <pane.content
+                                    groupID={user.accountInfo.groupID}
+                                    info={infos[index]}
+                                    infosLength={infos.length}
+                                    filteredGiftInfo={filteredGiftInfo}
                                     cardTypeArr={cardTypeArr}
-                                    index={index} 
+                                    index={index}
                                     toggleFun={this.toggleFun}
                                     disArr={disArr}
                                     redPacketArr={this.state.redPackets}
@@ -876,6 +924,7 @@ class LotteryThirdStep extends React.Component {
                                     handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
                                     handleRangePickerChange={this.handleRangePickerChange}
                                     disabled={this.props.disabled}
+                                    onBagChange={this.onBagChange}
                                 />
                             </TabPane>
                         )
@@ -884,7 +933,7 @@ class LotteryThirdStep extends React.Component {
             </div>
         )
     }
-} 
+}
 
 const mapStateToProps = (state) => {
     return {
