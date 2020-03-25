@@ -145,6 +145,7 @@ class ZhiFuBaoCouponList extends Component {
             {...param},
             {},
             { path: 'data.InsideVoucherTemplateForResult' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then(res => {
             this.setState({
                 isQuerying: false,
@@ -157,9 +158,10 @@ class ZhiFuBaoCouponList extends Component {
 
     refresh = () => {
         const { zhiAccount } = this.state;
+        const groupName = this.props.user.accountInfo.groupName
         axiosData(
             `/promotion/insidevoucher/synInsideVoucher.ajax`,
-            {appid: zhiAccount},
+            {appid: zhiAccount, groupName,},
             {},
             { path: 'data.InsideVoucherTemplateForResult' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
