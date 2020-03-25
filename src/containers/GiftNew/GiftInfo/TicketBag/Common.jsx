@@ -202,7 +202,7 @@ const formItems = {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: '1',
+        defaultValue: '0',
     },
     isRefundSelf: {
         type: 'radio',

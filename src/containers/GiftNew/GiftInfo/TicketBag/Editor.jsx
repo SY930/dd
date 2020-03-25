@@ -123,7 +123,7 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
-            isAutoRefund: { ...isAutoRefund, disabled: isEdit },
+            isAutoRefund: { ...isAutoRefund, disabled: true },
         };
         if(check) {
             let obj = {}
