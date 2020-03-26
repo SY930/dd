@@ -247,6 +247,23 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if (way == 76) {
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderPointsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         if (way == 75) {
             return (
                 <div>
@@ -268,7 +285,7 @@ class SpecialPromotionDetail extends React.Component {
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                 <Col span={24}>
-                    {this.renderGiftInfoTable(records)}
+                    {this.renderGiftInfoTable(records, way)}
                 </Col>
                 {this.renderSearch()}
                 <Col span={24}>
@@ -427,6 +444,12 @@ class SpecialPromotionDetail extends React.Component {
                 const end = Moment(gift.validUntilDate, 'YYYYMMDDHHmmss').unix();
                 days = Math.floor((end - start) / (3600 * 24)) + 1;
             }
+            //【签到】签到活动的活动跟踪页面展示问题,对于签到活动中赠送积分表项的特殊处理
+            // if(way == 76){
+            //     if(gift.presentType == 2){
+            //         days = '';
+            //     }
+            // }
             return {
                 key: `${index}`,
                 idx: `${index}`,
