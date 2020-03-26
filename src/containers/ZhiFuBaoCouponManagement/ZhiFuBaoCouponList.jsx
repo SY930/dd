@@ -144,7 +144,7 @@ class ZhiFuBaoCouponList extends Component {
             `/promotion/insidevoucher/getInsideVouchersByappID.ajax`,
             {...param},
             {},
-            { path: 'data.InsideVoucherTemplateForResult' },
+            { path: 'data.voucherTemplates' },
             'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then(res => {
             this.setState({
@@ -163,7 +163,7 @@ class ZhiFuBaoCouponList extends Component {
             `/promotion/insidevoucher/synInsideVoucher.ajax`,
             {appid: zhiAccount, groupName,},
             {},
-            { path: 'data.InsideVoucherTemplateForResult' },
+            { path: 'data.voucherTemplates' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(res => {
             message.success('刷新成功');
@@ -260,53 +260,53 @@ class ZhiFuBaoCouponList extends Component {
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 50,
-                fixed: 'left',
                 key: 'key',
             },
-
             {
                 title: '券模板ID',
                 key: 'trdTemplateID',
+                dataIndex: 'trdTemplateID',
                 width: 150,
-                fixed: 'left',
                 className: 'TableTxtCenter',
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
             {
                 title: '券类型',
                 dataIndex: 'trdTypeDes',
                 key: 'trdTypeDes',
+                className: 'TableTxtCenter',
                 width: 100,
-                fixed: 'left',
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
             {
                 title: '券名称',
                 dataIndex: 'giftName',
                 key: 'giftName',
-                width: 500,
+                width: 120,
+                className: 'TableTxtCenter',
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
             {
                 title: '状态',
                 dataIndex: 'trdStatusDes',
                 key: 'trdStatusDes',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
+                width: 100,
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
             {
                 title: '券面值',
                 className: 'TableTxtCenter',
-                dataIndex: 'beginTime',
-                key: 'beginTime',
+                dataIndex: 'price',
+                key: 'price',
                 width: 140,
             },
             {
@@ -319,17 +319,17 @@ class ZhiFuBaoCouponList extends Component {
                 //     return `${moment.unix(+time).format('YYYY/MM/DD HH:mm')}`;
                 // },
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
             {
                 title: '总库存',
-                dataIndex: 'couponStockStatus',
-                key: 'couponStockStatus',
-                fixed: 'right',
+                dataIndex: 'giftTotalCount',
+                key: 'giftTotalCount',
+                className: 'TableTxtCenter',
                 width: 140,
                 render: (text) => {
-                    return <Tooltip title={text}><span>{text}</span></Tooltip>
+                    return <Tooltip title={text || ''}><span>{text || ''}</span></Tooltip>
                 },
             },
         ];
@@ -349,18 +349,19 @@ class ZhiFuBaoCouponList extends Component {
                     :
                     <div className={style.tableWrapper} style={{ height: tableHeight }}>
                         <Table
-                            scroll={{ x: 1600, y: tableHeight - 93 }}
+                            scroll={{ y: tableHeight - 93 }}
                             bordered={true}
                             columns={columns}
                             dataSource={couponList}
                             loading={isQuerying}
-                            pagination={{
-                                showQuickJumper: true,
-                                defaultPageSize: 20,
-                                showSizeChanger: true,
-                                // total: couponList.length,
-                                showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
-                            }}
+                            pagination={false}
+                            // pagination={{
+                            //     showQuickJumper: true,
+                            //     defaultPageSize: 20,
+                            //     showSizeChanger: true,
+                            //     // total: couponList.length,
+                            //     showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                            // }}
                         />
                     </div>
                 }

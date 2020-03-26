@@ -110,7 +110,6 @@ class AddGifts extends React.Component {
         } catch (err) {
             giftInfo = [];
         }
-        debugger;
         return {
             giftTreeData: this.proGiftTreeData(giftInfo),
             giftInfo,
