@@ -54,6 +54,7 @@ class NewPromotionCard extends Component {
             <div className={styles.container} onClick={() => {
                 onCardClick(this.props.promotionEntity)
             }}>
+                <em className={styles.validDate}>申请开通</em>
                 <div className={styles.cardTitle}>
                     {title}
                 </div>
