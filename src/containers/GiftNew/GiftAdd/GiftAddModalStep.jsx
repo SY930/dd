@@ -1209,6 +1209,7 @@ class GiftAddModalStep extends React.PureComponent {
             giftValueLabel = '兑换金额';
         }
         const isUnit = ['10', '91'].includes(value);
+        const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1303,7 +1304,7 @@ class GiftAddModalStep extends React.PureComponent {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
-                    { max: 50, message: '不能超过50个字符' },
+                    giftNameValid,
                     /*{
                         message: '汉字、字母、数字、小数点，50个字符以内',
                         pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
