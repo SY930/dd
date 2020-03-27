@@ -310,7 +310,7 @@ class GiftAddModal extends React.Component {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
-                    giftNameValid,
+                    { max: this.props.type == 'add' ? 25 : 50, message: `不能超过${this.props.type == 'add' ? `25`: `50`}个字符` },
                 ],
                 disabled: type !== 'add',
             },
