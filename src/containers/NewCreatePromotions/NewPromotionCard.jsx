@@ -4,9 +4,26 @@ import bg0 from './assets/bg0.png';
 import bg1 from './assets/bg1.png';
 import bg2 from './assets/bg2.png';
 import bg3 from './assets/bg3.png';
+import { jumpPage } from '@hualala/platform-base';
 
+//可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
+const pulgins = ['65', '68', '67', '72', '4010', '66', '76', '75', '77'];
 class NewPromotionCard extends Component {
-
+    onClick= () => {
+        const {
+            promotionEntity,
+            onCardClick,
+        } = this.props;
+        // onCardClick(promotionEntity);
+        console.log('promotionEntity', promotionEntity);
+        // jumpPage({ menuID: 'plugins.info' });
+    }
+    renderPulgin(key) {
+        const date = '有效期至 2020/3/22';
+        if(pulgins.includes(key)) {
+            return <em className={styles.validDate}>申请开通</em>
+        }
+    }
     render() {
         const {
             promotionEntity : {
@@ -51,10 +68,8 @@ class NewPromotionCard extends Component {
             )
         }
         return (
-            <div className={styles.container} onClick={() => {
-                onCardClick(this.props.promotionEntity)
-            }}>
-                <em className={styles.validDate}>申请开通</em>
+            <div className={styles.container} onClick={this.onClick}>
+                {this.renderPulgin(key)}
                 <div className={styles.cardTitle}>
                     {title}
                 </div>
