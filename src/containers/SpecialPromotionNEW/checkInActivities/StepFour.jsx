@@ -62,7 +62,8 @@ class StepFour extends React.Component {
                 launchSceneList = appIDList.map(appID => ({
                     appID,
                     sceneType: 1,
-                    scenePositionList: sceneList,
+                    // scenePositionList: sceneList,之前因为商城被隐藏的部分表项，之后会继续恢复展示
+                    scenePositionList: ["2"],
                 }))
             }
         });
@@ -120,24 +121,25 @@ class StepFour extends React.Component {
                         </Select>
                     )}
                 </FormItem>
-                <FormItem
-                    label="选择场景"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    {getFieldDecorator('sceneList', {
-                        // rules: [
-                        //     { required: true, message: '请选择活动展现场景' },
-                        // ],
-                        onChange: (v) => console.log(v), 
-                        initialValue: sceneList,
-                    })(<Checkbox.Group options={SCENES} />)}
-                </FormItem>
+
+                
+
             </Form>
         );
     }
 }
+//之前因为商城被隐藏的部分表项，之后会继续恢复展示
+// <FormItem
+//                     label="选择场景"
+//                     className={styles.FormItemStyle}
+//                     labelCol={{ span: 4 }}
+//                     wrapperCol={{ span: 17 }}
+//                 >
+//                     {getFieldDecorator('sceneList', {
+//                         onChange: (v) => console.log(v), 
+//                         initialValue: sceneList,
+//                     })(<Checkbox.Group options={SCENES} />)}
+//                 </FormItem>
 const mapDispatchToProps = (dispatch) => {
     return {
         setSpecialBasicInfo: (opts) => {
