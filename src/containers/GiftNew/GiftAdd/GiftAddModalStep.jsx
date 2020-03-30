@@ -1209,6 +1209,7 @@ class GiftAddModalStep extends React.PureComponent {
             giftValueLabel = '兑换金额';
         }
         const isUnit = ['10', '91'].includes(value);
+        const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
         const formItems = {
             ...FORMITEMS,
             giftType: {

@@ -57,10 +57,10 @@ class Release extends Component {
         const { groupID } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const data = { ...queryParams, ...params };
+        const data = { ...queryParams, ...params, couponPackageType: '1', };
         // 把查询需要的参数缓存
         this.setState({ queryParams: data, loading: true });
-        getTicketList({ groupID, ...params }).then((obj) => {
+        getTicketList({ groupID, ...data }).then((obj) => {
             const { pageObj, list } = obj;
             const tempList = [...temp, ...list];
             this.setState({ pageObj, list, loading: false, tempList });

@@ -221,6 +221,7 @@ class GiftAddModal extends React.Component {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
         const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
         const { unit } = this.state;
+        const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
         const formItems = {
             giftType: {
                 label: '礼品类型',
