@@ -447,6 +447,50 @@ const FIRST_KEYS = {
             ],
         },
     ],
+    '配送券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'giftName',
+                'selectBrands',
+                'pushMessageMpID',
+                'giftValueCurrencyType',
+                'giftValue2',
+                'price',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'foodsboxs',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: [
+                'isNeedCustomerInfo',
+            ]
+        },
+    ],
 };
 const SECOND_KEYS = (() => ({
     '代金券': [
@@ -610,6 +654,33 @@ const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
+                'showGiftRule',
+                'giftImagePath',
+                'aggregationChannels',
+                'TrdTemplate',
+                'isSynch',
+            ],
+        },
+    ],
+    '配送券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLst',
+                'isOfflineCanUsing',
+                'isOnlineExchangeable',
+                'giftShareType',
+                'moneyLimitTypeAndValue',
+                'customerUseCountLimit',
+                'shopNames',
+                'amountType',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
