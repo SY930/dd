@@ -489,6 +489,9 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '110' || value == '111') {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
+            if (value == '114') {
+                params.giftValue = params.giftValue2;
+            }
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
             // 对旧字段的兼容透传
@@ -1428,6 +1431,11 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: (decorator, form) => this.renderMoneyLimitTypeAndValue(decorator, form),
             },
+            moneyLimitTypeAndValue2: {
+                label: '账单金额限制',
+                type: 'custom',
+                render: (decorator, form) => this.renderMoneyLimitTypeAndValue(decorator, form),
+            },
             promotionID: {
                 label: '对应基础营销活动',
                 type: 'custom',
@@ -1438,7 +1446,7 @@ class GiftAddModalStep extends React.PureComponent {
             },
             // 线上礼品卡(91) 和其他的券类 price字段有微弱不同
             price: {
-                label: value == '91' ? '礼品售价' : <div>
+                label: value == '91' ? '礼品售价' : <span>
                 <span>记录实收金额</span>
                 <Tooltip title={
                     <p>
@@ -1446,7 +1454,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </p>
                 }>
                     <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
-                </Tooltip></div>,
+                </Tooltip></span>,
                 type: 'text',
                 placeholder: '请输入金额',
                 disabled: type !== 'add',
@@ -1492,6 +1500,26 @@ class GiftAddModalStep extends React.PureComponent {
                             message: '整数不超过8位，小数不超过2位',
                         }
                     ],
+            },
+            giftValue2: {
+                label: <span>
+                <span>配送费立减</span>
+                <Tooltip title={
+                    <p>
+                        用于抵扣配送费，支持超收。eg. 配送费5元，用户有一张8元配送券也可使用，抵扣5元，3元免找
+                    </p>
+                }>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip></span>,
+                type: 'text',
+                placeholder: '请输入金额',
+                prefix: unit,
+                rules: [{
+                    required: true, message: '配送费立减不能为空',
+                }, {
+                    pattern: /^(([1-9]\d{0,8})|0)(\.\d{0,2})?$/,
+                    message: '请输入大于0的9位整数,2位小数',
+                }],
             },
             validityDays: {
                 label: '有效期',
@@ -1707,10 +1735,12 @@ class GiftAddModalStep extends React.PureComponent {
                 { label: 'vivo快应用', value: 'vivoChannel' },
             ]
         }
+        if (this.props.gift.value == '114') {
+            formData.giftValue2 = formData.giftValue;
+        }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList
-
         return (
             <div>
                 <div

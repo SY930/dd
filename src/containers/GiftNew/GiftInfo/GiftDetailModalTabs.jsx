@@ -18,11 +18,11 @@ import { axiosData } from '../../../helpers/util';
 const TabPane = Tabs.TabPane;
 
 const sendableGiftTypes = [
-    '10', '20', '21', '30', '110', '111', '40', '42', '80'
+    '10', '20', '21', '30', '110', '111', '40', '42', '80', '114',
 ];
 
 const batchableGiftTypes = [
-    '10', '20', '21', '30', '110', '111',
+    '10', '20', '21', '30', '110', '111', '114',
 ];
 
 class GiftDetailModalTabs extends React.Component {
@@ -53,24 +53,24 @@ class GiftDetailModalTabs extends React.Component {
             if(records.sameRequest){
                 this.setState({
                     popContent: '已有导出任务 请勿重复操作，',
-                    popA: '查看导出结果', 
+                    popA: '查看导出结果',
                 })
             }else{
                 this.setState({
                     popContent: '数据导出中 请',
-                    popA: '查看导出进度', 
-                }) 
+                    popA: '查看导出进度',
+                })
             }
             if(records.highMoment == 1){
                 this.setState({
                     popContent: <div><p style={{whiteSpace: 'nowrap'}}>营业高峰期(11:00-14:00,17:00</p><p style={{whiteSpace: 'nowrap'}}>-20:30)暂停使用数据导出功能</p></div>,
                     popA: '',
                     tooltipVisble: true,
-                }) 
+                })
             }else{
                 this.setState({
                     tooltipVisble: false,
-                }) 
+                })
             }
             this.setState({
                 popoverVisible: true,
@@ -115,7 +115,7 @@ class GiftDetailModalTabs extends React.Component {
             <div className={styles.popDiv} style={{width: this.state.tooltipVisble ? 160 : 'auto'}}>
                 <span>{popContent}</span>
                 <a className={styles.greenLink} onClick={this.openOther}>{popA}</a>
-            </div>      
+            </div>
         );
     }
     hidePopOver = (ev) => {
@@ -124,7 +124,7 @@ class GiftDetailModalTabs extends React.Component {
                 popoverVisible: false,
             })
         // }
-    } 
+    }
     render() {
         const { data } = this.props;
         const tabs = data.giftType === '91' ?
