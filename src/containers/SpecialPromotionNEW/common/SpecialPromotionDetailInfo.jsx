@@ -12,6 +12,7 @@ import {
     Switch,
     Popconfirm,
     Tooltip,
+    Checkbox,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -39,7 +40,7 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-
+import { axiosData } from '../../../helpers/util';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -185,17 +186,21 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
+            cardTypeArr: [],
+            givePoints: '',
+            givePointsValue: '',
+            card: '',
+            giveCoupon: '',
         }
     }
     componentDidMount() {
-        const { type, isLast = true, } = this.props;
+        const { type, isLast = true, user } = this.props;
         this.props.getSubmitFn({
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
         this.props.fetchGiftListInfo();
         if (type == 67) {
-            const user = this.props.user;
             const opts = {
                 _groupID: user.accountInfo.groupID,
                 _role: user.accountInfo.roleType,
@@ -209,6 +214,13 @@ class SpecialDetailInfo extends Component {
         if (type == 68) {
             this.props.queryAllSaveMoneySet()
         }
+        if (type == 52) {
+            let opts = {
+                groupID: user.accountInfo.groupID,
+            }
+            this.fetchCardType({opts});
+        }
+
     }
     getMultipleLevelConfig = () => {
         const { type } = this.props;
@@ -2166,6 +2178,103 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    fetchCardType = (opts) => {
+        axiosData(
+            '/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax',
+            { ...opts, isNeedWechatCardTypeInfo: true },
+            null,
+            {path: 'data.cardTypeBaseInfoList',}
+        ).then((records) => {
+            this.setState({
+                cardTypeArr: records || []
+            })
+        });
+    }
+    onCheckPoint = ({ target }) => {
+        const { checked } = target;
+        this.setState({ givePoints: checked });
+    }
+    onCheckCoupon = ({ target }) => {
+        const { checked } = target;
+        this.setState({ giveCoupon: checked });
+    }
+    onCardChange = (value) => {
+        this.setState({ card: value });
+    }
+    onGivePointsValueChange = (value) => {
+        this.setState({ givePointsValue: value });
+    }
+    renderNewCardGive() {
+        const { cardTypeArr, givePoints, givePointsValue, card, giveCoupon } = this.state;
+        return (<div>
+            <FormItem
+                style={{ padding: 0 }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={givePoints}
+                    onChange={this.onCheckPoint}
+                >赠送积分</Checkbox>
+            </FormItem>
+            <div className={selfStyle.pointBox}>
+                <FormItem
+                    wrapperCol={{ span: 12 }}
+                    className={''}
+                    validateStatus={''}
+                    help={''}
+                >
+                    <div>
+                        <span>赠送积分</span>
+                    </div>
+                    <PriceInput
+                        addonAfter={'元'}
+                        modal="float"
+                        maxNum={6}
+                        value={givePointsValue}
+                        onChange={this.onGivePointsValueChange}
+                    />
+                </FormItem>
+                <FormItem
+                    wrapperCol={{ span: 12 }}
+                    className={''}
+                    validateStatus={''}
+                    help={''}
+                >
+                    <div className={''}>
+                        <span>充值到会员卡</span>
+                    </div>
+                    <Select
+                        showSearch={true}
+                        value={card}
+                        onChange={this.onCardChange}
+                    >
+                        {
+                            cardTypeArr.map((value) => {
+                                return (
+                                    <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
+                                )
+                            })
+                        }
+                    </Select>
+                </FormItem>
+            </div>
+            <FormItem
+                style={{ padding: 0 }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={giveCoupon}
+                    onChange={this.onCheckCoupon}
+                >赠送优惠券</Checkbox>
+            </FormItem>
+        </div>);
+    }
     render() {
         const { type } = this.props;
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
@@ -2178,6 +2287,7 @@ class SpecialDetailInfo extends Component {
             return this.renderAccumulateGiftsDetail();
         }
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        console.log('type', type);
         return (
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
@@ -2202,6 +2312,10 @@ class SpecialDetailInfo extends Component {
                             </RadioGroup>
                         </FormItem>
                     )
+                }
+                {
+                    type === '52' &&
+                    this.renderNewCardGive()
                 }
                 <Row>
                     <Col span={17} offset={4}>
