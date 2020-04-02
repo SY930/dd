@@ -64,6 +64,26 @@ const separItems = {
         type: 'custom',
         render: () => (<div className="separate"><h3>礼品设置</h3></div>),
     },
+    c: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">设置需付费购买激活后，用户需要付费购买才能获得券包，通过活动或者储值套餐请选择「活动投放」</p>),
+    },
+    d: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">不填表示长期有效</p>),
+    },
+    e: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">不填表示不限制</p>),
+    },
+    f: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">未选择门店时默认所有店铺通用</p>),
+    },
 }
 // 表单内 小问号的 tip
 const tipMargin = { margin: '0 -5px 0 5px' };
@@ -102,10 +122,10 @@ const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // http://wiki.hualala.com/pages/viewpage.action?pageId=46546447 java API
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
-const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'shopInfos', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
-const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
+const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'e', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
+const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice2', 'couponPackageStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
 const formItems = {
     couponPackageType: {
@@ -202,7 +222,7 @@ const formItems = {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: '0',
+        defaultValue: '1',
     },
     isRefundSelf: {
         type: 'radio',
@@ -292,8 +312,8 @@ const formKeys = [
     },
 ];
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 16 },
+    labelCol: { span: 7 },
+    wrapperCol: { span: 17 },
 };
 const weekMap = ['', '一', '二', '三', '四', '五', '六', '日'];
 const weekList = (() => {
