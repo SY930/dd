@@ -123,7 +123,7 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
-            isAutoRefund: { ...isAutoRefund, disabled: true },
+            isAutoRefund: { ...isAutoRefund, disabled: isEdit },
         };
         if(check) {
             let obj = {}
@@ -208,6 +208,10 @@ export default class Editor extends Component {
         const { newFormKeys, isOver } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
+        let clazz = styles.formWrap2;
+        if(newFormKeys[0].keys.includes('d')){
+            clazz = styles.formWrap;
+        }
         return (
             <section className={styles.formBox}>
                 <div className={styles.header}>
@@ -217,14 +221,16 @@ export default class Editor extends Component {
                         <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>
-                <BaseForm
-                    getForm={this.getForm}
-                    onChange={this.onChange}
-                    formItems={newFormItems}
-                    formKeys={newFormKeys}
-                    formData={detail || {}}
-                    formItemLayout={formItemLayout}
-                />
+                <div className={clazz}>
+                    <BaseForm
+                        getForm={this.getForm}
+                        onChange={this.onChange}
+                        formItems={newFormItems}
+                        formKeys={newFormKeys}
+                        formData={detail || {}}
+                        formItemLayout={formItemLayout}
+                    />
+                </div>
                 {isOver &&
                     <Alert
                         message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"
