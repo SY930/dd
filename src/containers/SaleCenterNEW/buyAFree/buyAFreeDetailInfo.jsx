@@ -307,7 +307,6 @@ class BuyAFreeDetailInfo extends React.Component {
                                 validateStatus={rule.stageAmountFlag ? 'success' : 'error'}
                                 help={rule.stageAmountFlag ? null : SALE_LABEL.k5keycn5}
                             >
-
                                 <PriceInput
                                     addonBefore={
                                         idx == 0 ? (

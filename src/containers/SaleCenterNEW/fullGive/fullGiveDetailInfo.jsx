@@ -16,6 +16,7 @@ import _ from 'lodash';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AddGrade from '../../../containers/SaleCenterNEW/common/AddGrade'; // 可增删的输入框 组件
+import NewAddGrade from '../../../containers/SaleCenterNEW/common/NewAddGrade';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const FormItem = Form.Item;
@@ -42,6 +43,7 @@ class FullGiveDetailInfo extends React.Component {
             data,
             priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
                 this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
+            flag: true,
         };
     }
 
@@ -297,6 +299,13 @@ class FullGiveDetailInfo extends React.Component {
                         onChange={(val) => {
                             let { ruleType } = this.state;
                             ruleType = val;
+                            this.setState({
+                                flag: false,
+                            }, () => {
+                                this.setState({
+                                    flag: true,
+                                })
+                            })
                             if (val == '0' || val == '1' || val == '2') {
                                 this.props.setPromotionDetail({
                                     // i清空已选,
@@ -322,17 +331,31 @@ class FullGiveDetailInfo extends React.Component {
                     : null}
                 <Row>
                     <Col span={19} offset={2}>
-                        <AddGrade
-                            getFieldDecorator={getFieldDecorator}
-                            getFieldValue={getFieldValue}
-                            form={this.props.form}
-                            ruleType={this.state.ruleType}
-                            value={this.state.data}
-                            onChange={(value) => {
-                                this.setState({ data: value });
-                            }
-                            }
-                        />
+                        {
+                            this.state.ruleType == 3 || this.state.ruleType == 2 ?
+                            <NewAddGrade
+                                getFieldDecorator={getFieldDecorator}
+                                getFieldValue={getFieldValue}
+                                form={this.props.form}
+                                ruleType={this.state.ruleType}
+                                value={this.state.data}
+                                onChange={(value) => {
+                                    this.setState({ data: value });
+                                }
+                                }
+                            /> :
+                            <AddGrade
+                                getFieldDecorator={getFieldDecorator}
+                                getFieldValue={getFieldValue}
+                                form={this.props.form}
+                                ruleType={this.state.ruleType}
+                                value={this.state.data}
+                                onChange={(value) => {
+                                    this.setState({ data: value });
+                                }
+                                }
+                            />
+                        }
                     </Col>
                 </Row>
 
@@ -359,7 +382,13 @@ class FullGiveDetailInfo extends React.Component {
     render() {
         const payLimit = this.state.ruleType != 0;
         return (
-            <div >
+            <div style={{position: "initial", width: '100%', height: '100%', overflow: 'auto'}}>
+                <div style={{position: "absolute", left: -226, background: 'white', top: 160, width: 221,}}>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按通向执行</p>
+                </div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.renderAdvancedSettingButton()}
