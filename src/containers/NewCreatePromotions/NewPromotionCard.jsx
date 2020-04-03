@@ -16,20 +16,20 @@ class NewPromotionCard extends Component {
             onCardClick,
         } = this.props;
         const { key } = promotionEntity;
-        // onCardClick(promotionEntity);
-        if(pulgins.includes(key)) {
-            Modal.info({
-                title: '',
-                content: (
-                  <div>
-                    <p>联系商务开通</p>
-                  </div>
-                ),
-                onOk() {},
-              });
-        }else{
-            onCardClick(promotionEntity);
-        }
+        onCardClick(promotionEntity);
+        // if(pulgins.includes(key)) {
+        //     Modal.info({
+        //         title: '',
+        //         content: (
+        //           <div>
+        //             <p>联系商务开通</p>
+        //           </div>
+        //         ),
+        //         onOk() {},
+        //       });
+        // }else{
+        //     onCardClick(promotionEntity);
+        // }
         console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
