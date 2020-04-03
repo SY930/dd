@@ -18,11 +18,11 @@ import { axiosData } from '../../../helpers/util';
 const TabPane = Tabs.TabPane;
 
 const sendableGiftTypes = [
-    '10', '20', '21', '30', '110', '111', '40', '42', '80', '114',
+    '10', '20', '21', '30', '110', '111', '40', '42', '80', '22',
 ];
 
 const batchableGiftTypes = [
-    '10', '20', '21', '30', '110', '111', '114',
+    '10', '20', '21', '30', '110', '111', '22',
 ];
 
 class GiftDetailModalTabs extends React.Component {

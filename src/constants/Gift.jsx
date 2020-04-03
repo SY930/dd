@@ -114,7 +114,7 @@ const GiftCfg = {
         {
             name: '配送券',
             describe: '',
-            value: '114',
+            value: '22',
             color: '#65D8E6',
             category: 'primary',
             tags: ['线上餐厅'],
@@ -134,7 +134,7 @@ const GiftCfg = {
         { label: '买赠券', value: '110' },
         { label: '折扣券', value: '111' },
         { label: '现金红包', value: '113' },
-        { label: '配送券', value: '114' },
+        { label: '配送券', value: '22' },
     ],
     transferType: [
         { label: '不可转赠', value: 0 },
