@@ -37,6 +37,7 @@ import {
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
 import NewPromotionCard from '../NewCreatePromotions/NewPromotionCard'
+import { axiosData } from '../../helpers/util';
 
 function mapStateToProps(state) {
     return {
@@ -78,12 +79,23 @@ class NewActivity extends React.Component {
             modal1Visible: false,
             index: 0,
             contentHeight: document.documentElement.clientHeight || document.body.clientHeight,
+            whiteList: [],
         };
         this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        axiosData(
+            'specialPromotion/queryOpenedEventTypes.ajax',
+            {},
+            { needThrow: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(data => {
+            const { eventTypeInfoList = [] } = data;
+            this.setState({ whiteList: eventTypeInfoList });
+        })
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
@@ -131,7 +143,7 @@ class NewActivity extends React.Component {
                     }}>
                     <div style={{ paddingBottom: 30 }} className={selfStyle.flexContainer}>
                         {this.renderActivityButtons()}
-                    </div>   
+                    </div>
                     {this.state.modal1Visible ? this.renderModal() : null}
                 </Col>
             </Row>
@@ -141,6 +153,7 @@ class NewActivity extends React.Component {
 
 
     renderActivityButtons = () => {
+        const {whiteList} = this.state;
         return (
             WECHAT_MALL_ACTIVITIES.map((activity, index) => {
                 return (
@@ -153,6 +166,7 @@ class NewActivity extends React.Component {
                                 this.onButtonClicked(index, activity);
                             }}
                             index={index}
+                            whiteList={whiteList}
                         />
                     </Authority>
                 );

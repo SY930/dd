@@ -8,7 +8,7 @@ import { jumpPage } from '@hualala/platform-base';
 import { Modal } from 'antd';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
-const pulgins = ['65', '68', '67', '72', '4010', '66', '76', '75', '77'];
+const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
 class NewPromotionCard extends Component {
     onClick= () => {
         const {
@@ -16,26 +16,32 @@ class NewPromotionCard extends Component {
             onCardClick,
         } = this.props;
         const { key } = promotionEntity;
-        onCardClick(promotionEntity);
-        // if(pulgins.includes(key)) {
-        //     Modal.info({
-        //         title: '',
-        //         content: (
-        //           <div>
-        //             <p>联系商务开通</p>
-        //           </div>
-        //         ),
-        //         onOk() {},
-        //       });
-        // }else{
-        //     onCardClick(promotionEntity);
-        // }
+        const isUse = this.filterItem(key);
+        if(pulgins.includes(key) && !isUse) {
+            Modal.info({
+                title: '',
+                content: (
+                  <div>
+                    <p>联系商务开通</p>
+                  </div>
+                ),
+                onOk() {},
+              });
+        }else{
+            onCardClick(promotionEntity);
+        }
         console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
+    filterItem(key){
+        const {whiteList = []} = this.props;
+        const isUse = whiteList.some(x=> x.eventWay == key);
+        return isUse;
+    }
     renderPulgin(key) {
         const date = '有效期至 2020/3/22';
-        if(pulgins.includes(key)) {
+        const isUse = this.filterItem(key);
+        if(pulgins.includes(key) && !isUse) {
             return <em className={styles.validDate}>申请试用</em>
         }
     }

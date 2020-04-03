@@ -44,6 +44,7 @@ import selfStyle from './style.less'
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+import { axiosData } from '../../helpers/util';
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -58,10 +59,22 @@ class PromotionCreateModal extends Component {
             specialModalVisible: false,
             specialIndex: 0,
             currentCategoryIndex: 0,
+            whiteList: [],
         };
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
-
+    componentDidMount() {
+        axiosData(
+            'specialPromotion/queryOpenedEventTypes.ajax',
+            {},
+            { needThrow: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(data => {
+            const { eventTypeInfoList = [] } = data;
+            this.setState({ whiteList: eventTypeInfoList });
+        })
+    }
     setBasicModalVisible(basicModalVisible) {
         this.setState({ basicModalVisible });
         if (!basicModalVisible) {
@@ -232,6 +245,7 @@ class PromotionCreateModal extends Component {
     }
 
     renderModalContent() {
+        const {whiteList} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -301,6 +315,7 @@ class PromotionCreateModal extends Component {
                                                 promotionEntity={item}
                                                 onCardClick={this.handleNewPromotionCardClick}
                                                 index={index}
+                                                whiteList={whiteList}
                                             />
                                         ))
                                     }
