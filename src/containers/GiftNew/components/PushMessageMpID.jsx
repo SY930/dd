@@ -8,22 +8,27 @@ import {queryWechatMpInfo} from "../../GiftNew/_action";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        queryWechatMpInfo: () => {
-            dispatch(queryWechatMpInfo())
+        queryWechatMpInfo: (params) => {
+            dispatch(queryWechatMpInfo(params))
         }
     }
 };
 
 const mapStateToProps = (state) => {
     return {
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS(),
+        shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     }
 };
 
 class PushMessageMpID extends Component {
     componentDidMount() {
-        this.props.queryWechatMpInfo();
+        const { shopList, queryWechatMpInfo } = this.props;
+        const shopIDs = shopList.toJS().map(x=>x.shopID);;
+        const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
+        queryWechatMpInfo(params);
     }
+
     getAllAvailableMpInfo = () => {
         return [
             {
@@ -39,6 +44,7 @@ class PushMessageMpID extends Component {
         ];
     }
     render() {
+        console.log('this.props',this.props );
         return (
             <Select
                 notFoundContent={'未搜索到结果'}

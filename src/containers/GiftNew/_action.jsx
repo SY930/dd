@@ -499,13 +499,14 @@ export const queryWechatMpInfo = (opts) => {
         dispatch({
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
         });
-        return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
-            .then((mpList) => {
+        return axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', {...opts},
+            null, { path: 'data.mpInfoResDataList'}, 'HTTP_SERVICE_URL_CRM')
+            .then((data) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
-                    payload: mpList || [],
+                    payload: data || [],
                 });
-                return Promise.resolve(mpList)
+                return Promise.resolve(data)
             }, err => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
