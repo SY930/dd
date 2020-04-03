@@ -344,8 +344,12 @@ class GiftAddModalStep extends React.PureComponent {
                 break;
         }
         this.setState({ values });
+
         if(key==='giftValueCurrencyType') {
             this.setState({ unit: value });
+        }
+        if(key==='delivery') {
+            this.setState({ delivery: value });
         }
     }
 
@@ -387,7 +391,7 @@ class GiftAddModalStep extends React.PureComponent {
         })
     }
     handleFinish = () => {
-        const { values, groupTypes } = this.state;
+        const { values, groupTypes, delivery } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -489,9 +493,12 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '110' || value == '111') {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
-            if (value == '114') {
-                params.giftValue = params.giftValue2;
+            if (value == '22') {
+                params.giftValue = delivery;
+                params.supportOrderTypeLst = '31,20,21,11,10';
+                params.isOfflineCanUsing = '1';
             }
+
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
             // 对旧字段的兼容透传
@@ -1501,7 +1508,7 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     ],
             },
-            giftValue2: {
+            delivery: {
                 label: <span>
                 <span>配送费立减</span>
                 <Tooltip title={
@@ -1735,8 +1742,8 @@ class GiftAddModalStep extends React.PureComponent {
                 { label: 'vivo快应用', value: 'vivoChannel' },
             ]
         }
-        if (this.props.gift.value == '114') {
-            formData.giftValue2 = formData.giftValue;
+        if (this.props.gift.value == '22') {
+            formData.delivery = formData.giftValue;
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);

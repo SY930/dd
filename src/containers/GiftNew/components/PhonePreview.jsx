@@ -20,7 +20,7 @@ const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
 const PRIMARY_GIFTS = [
-    '10', '20', '21', '30', '111', '110', '114',
+    '10', '20', '21', '30', '111', '110', '22',
 ];
 
 const CRM_GIFTS = [

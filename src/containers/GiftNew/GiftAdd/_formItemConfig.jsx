@@ -459,7 +459,7 @@ const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessageMpID',
                 'giftValueCurrencyType',
-                'giftValue2',
+                'delivery',
                 'price',
             ],
         },
@@ -468,9 +468,7 @@ const FIRST_KEYS = {
                 span: 24,
                 push: 2,
             },
-            keys: [
-                'foodsboxs',
-            ]
+            keys: []
         },
         {
             col: {
@@ -486,9 +484,7 @@ const FIRST_KEYS = {
                 span: 24,
                 push: 3,
             },
-            keys: [
-                'isNeedCustomerInfo',
-            ]
+            keys: []
         },
     ],
 };
@@ -673,8 +669,6 @@ const SECOND_KEYS = (() => ({
                 'usingWeekType',
                 'usingDateType',
                 'couponPeriodSettings',
-                'supportOrderTypeLst',
-                'isOfflineCanUsing',
                 'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
