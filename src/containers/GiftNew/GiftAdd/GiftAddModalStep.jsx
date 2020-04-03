@@ -1522,10 +1522,17 @@ class GiftAddModalStep extends React.PureComponent {
                 placeholder: '请输入金额',
                 prefix: unit,
                 rules: [{
-                    required: true, message: '配送费立减不能为空',
-                }, {
-                    pattern: /^(([1-9]\d{0,8})|0)(\.\d{0,2})?$/,
-                    message: '请输入大于0的9位整数,2位小数',
+                    required: true,
+                    validator: (rule, value, callback) => {
+                        const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                        if(!pattern.test(value)){
+                            return callback('最大支持8位整数，2位小数');
+                        }
+                        if (!+value>0) {
+                            return callback('金额要大于0');
+                        }
+                        return callback();
+                    },
                 }],
             },
             validityDays: {
