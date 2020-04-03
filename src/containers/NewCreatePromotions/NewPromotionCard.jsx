@@ -34,13 +34,14 @@ class NewPromotionCard extends Component {
         // jumpPage({ menuID: 'plugins.info' });
     }
     filterItem(key){
-        const {whiteList} = this.props;
+        const {whiteList = []} = this.props;
         const isUse = whiteList.some(x=> x.eventWay == key);
         return isUse;
     }
     renderPulgin(key) {
         const date = '有效期至 2020/3/22';
-        if(pulgins.includes(key)) {
+        const isUse = this.filterItem(key);
+        if(pulgins.includes(key) && !isUse) {
             return <em className={styles.validDate}>申请试用</em>
         }
     }
