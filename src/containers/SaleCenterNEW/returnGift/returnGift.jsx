@@ -57,10 +57,10 @@ const VALIDATE_TYPE = Object.freeze([{
 { key: 1, value: '1', name: SALE_LABEL.k6d8n2sw }]);
 
 const availableGiftTypes = [// 顺序matters
-    '112', '10', '20', '21', '111', '110', '30', '40', '42', '80',
+    '112', '10', '20', '21', '111', '110', '30', '40', '42', '80', '22',
 ];
 const noWechatGiftTypes = [// 顺序matters
-    '10', '20', '21', '111', '110', '30', '40', '42', '80',
+    '10', '20', '21', '111', '110', '30', '40', '42', '80', '22',
 ];
 
 const offlineCanUseGiftTypes = [
