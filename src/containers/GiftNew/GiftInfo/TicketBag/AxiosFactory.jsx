@@ -145,15 +145,15 @@ async function getPhoneValid(data) {
 }
 
 /**
- * 详情中，退款， 未完成url
+ * 详情中，退款
  */
 async function postRefund(data) {
-    const method = `${api}updateCouponPackage.ajax`;
+    const method = `${api}refundCouponPackages.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { code, message: msg } = response;
+    const { code, message: msg, couponPackageRefundResList = [] } = response;
     if (code === '000') {
-        return true;
+        return couponPackageRefundResList;
     }
     message.error(msg);
     return false;
