@@ -38,8 +38,8 @@ const statusOpts = [
     { label: '退款中', value: '6' },
 ];
 const qStatusOpts = [
-    { label: '正常', value: '' },
-    { label: '已删除', value: '1' },
+    { label: '正常', value: '1' },
+    { label: '已删除', value: '2' },
 ];
 const isSendOpts = [
     { label: '不发送', value: '0' },
@@ -331,7 +331,7 @@ const monthList = (() => {
     return month;
 })();
 
-const qFormKeys = ['name', 'couponPackageType', 'q'];
+const qFormKeys = ['name', 'couponPackageType', 'couponPackageStatus', 'q'];
 
 const qFormItems = {
     name: {
@@ -348,7 +348,7 @@ const qFormItems = {
         type: 'combo',
         label: '状态',
         options: qStatusOpts,
-        defaultValue: '',
+        defaultValue: '1',
     },
     brandID: {
         type: 'combo',
