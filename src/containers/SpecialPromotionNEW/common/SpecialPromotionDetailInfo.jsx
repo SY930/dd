@@ -2208,7 +2208,7 @@ class SpecialDetailInfo extends Component {
         const { cardTypeArr, givePoints, givePointsValue, card, giveCoupon } = this.state;
         return (<div>
             <FormItem
-                style={{ padding: 0 }}
+                style={{ padding: '0px 40px' }}
                 wrapperCol={{ span: 24 }}
                 className={''}
                 validateStatus={''}
@@ -2221,12 +2221,12 @@ class SpecialDetailInfo extends Component {
             </FormItem>
             <div className={selfStyle.pointBox}>
                 <FormItem
-                    wrapperCol={{ span: 12 }}
+                    wrapperCol={{ span: 20 }}
                     className={''}
                     validateStatus={''}
                     help={''}
                 >
-                    <div>
+                    <div className={selfStyle.title}>
                         <span>赠送积分</span>
                     </div>
                     <PriceInput
@@ -2238,12 +2238,12 @@ class SpecialDetailInfo extends Component {
                     />
                 </FormItem>
                 <FormItem
-                    wrapperCol={{ span: 12 }}
+                    wrapperCol={{ span: 20 }}
                     className={''}
                     validateStatus={''}
                     help={''}
                 >
-                    <div className={''}>
+                    <div className={selfStyle.title}>
                         <span>充值到会员卡</span>
                     </div>
                     <Select
@@ -2262,7 +2262,7 @@ class SpecialDetailInfo extends Component {
                 </FormItem>
             </div>
             <FormItem
-                style={{ padding: 0 }}
+                style={{ padding: '0px 40px' }}
                 wrapperCol={{ span: 24 }}
                 className={''}
                 validateStatus={''}
