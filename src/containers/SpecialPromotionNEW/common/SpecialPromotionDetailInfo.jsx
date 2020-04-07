@@ -2158,6 +2158,7 @@ class SpecialDetailInfo extends Component {
                                         isNew={this.props.isNew}
                                         value={gifts}
                                         onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, index)}
+                                        zhifubaoCoupons={type == 75 ? true : false}
                                     />
                                 </Col>
                             </Row>
