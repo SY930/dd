@@ -37,8 +37,9 @@ export default class TicketBag extends Component {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     render() {
-        const { list, loading, pageObj, visible } = this.state;
+        const { list, loading, pageObj, visible, queryParams } = this.state;
         const { groupID, onGoEdit } = this.props;
+        const { couponPackageStatus } = queryParams;
         return (
             <div className={styles.listBox}>
                 <QueryForm
@@ -53,6 +54,7 @@ export default class TicketBag extends Component {
                     pageObj={pageObj}
                     onQuery={this.onQueryList}
                     onGoEdit={onGoEdit}
+                    status={couponPackageStatus}
                 />
                 {visible &&
                     <ReleaseModal
