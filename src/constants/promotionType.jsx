@@ -37,6 +37,7 @@ export const GIFT_MAP = {
     '91': SALE_LABEL.k67g7ups,
     '110': SALE_LABEL.k636qvpm,
     '111': SALE_LABEL.k636qvha,
+    '22': '配送券',
 }
 
 /**
@@ -274,7 +275,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '2070',
         right: 22,
         bottom: 13,
-    },    
+    },
 ];
 
 /**
