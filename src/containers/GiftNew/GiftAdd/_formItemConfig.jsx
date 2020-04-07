@@ -676,6 +676,7 @@ const SECOND_KEYS = (() => ({
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
+                'isSynch',
             ],
         },
     ],
