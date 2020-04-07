@@ -95,6 +95,11 @@ class Detail extends Component {
     onCloseModal = () => {
         this.setState({ visible: '' });
     }
+    /* 关闭窗口 */
+    onCloseRefund = () => {
+        this.onCloseModal();
+        this.onQueryList3();
+    }
     // 退款选中的订单
     onSelectChange = (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
@@ -183,7 +188,7 @@ class Detail extends Component {
                             <TabPane tab="赠送" key="3">
                                 <PresentForm ids={ids} num={oddStock} />
                             </TabPane>
-                            {/* <TabPane tab="退款" key="4">
+                            <TabPane tab="退款" key="4">
                                 <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
                                 <MainTable
                                     type={3}
@@ -194,7 +199,7 @@ class Detail extends Component {
                                     onQuery={this.onQueryList3}
                                     onChange={this.onSelectChange}
                                 />
-                            </TabPane> */}
+                            </TabPane>
                         </Tabs>
                     </li>
                 </ul>
@@ -209,8 +214,9 @@ class Detail extends Component {
                 }
                 {visible === 'refund' &&
                     <RefundModal
+                        ids={ids}
                         list={selectedRowKeys}
-                        onClose={this.onCloseModal}
+                        onClose={this.onCloseRefund}
                     />
                 }
             </Modal>

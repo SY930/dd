@@ -440,7 +440,7 @@ const pFormItems = {
     },
 }
 const refundItems = {
-    refundRemark: {
+    refundReason: {
         type: 'textarea',
         label: '退款原因',
         rules: ['description'],
