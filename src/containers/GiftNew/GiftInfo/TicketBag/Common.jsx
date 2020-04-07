@@ -38,8 +38,8 @@ const statusOpts = [
     { label: '退款中', value: '6' },
 ];
 const qStatusOpts = [
-    { label: '正常', value: '' },
-    { label: '已删除', value: '1' },
+    { label: '正常', value: '1' },
+    { label: '已删除', value: '2' },
 ];
 const isSendOpts = [
     { label: '不发送', value: '0' },
@@ -67,7 +67,7 @@ const separItems = {
     c: {
         type: 'custom',
         label: <span></span>,
-        render: () => (<p className="formTips">设置需付费购买激活后，用户需要付费购买才能获得券包，通过活动或者储值套餐请选择「活动投放」</p>),
+        render: () => (<p className="formTips">设置「付费购买」后，用户需付费购买才能获得券包；如通过活动或储值套餐发放请选择「活动投放」</p>),
     },
     d: {
         type: 'custom',
@@ -331,7 +331,7 @@ const monthList = (() => {
     return month;
 })();
 
-const qFormKeys = ['name', 'couponPackageType', 'q'];
+const qFormKeys = ['name', 'couponPackageType', 'couponPackageStatus', 'q'];
 
 const qFormItems = {
     name: {
@@ -348,7 +348,7 @@ const qFormItems = {
         type: 'combo',
         label: '状态',
         options: qStatusOpts,
-        defaultValue: '',
+        defaultValue: '1',
     },
     brandID: {
         type: 'combo',

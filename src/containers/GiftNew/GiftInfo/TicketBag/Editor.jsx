@@ -34,6 +34,13 @@ export default class Editor extends Component {
             }
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
+            const { getFieldsValue } = this.form;
+            const { couponPackageGiftConfigs } = getFieldsValue();
+            if(value === '1') {
+                this.validIsOver(couponPackageGiftConfigs);
+                return;
+            }
+            this.setState({ isOver: false });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -61,7 +68,9 @@ export default class Editor extends Component {
             const { isAutoRefund } = getFieldsValue();
             if(isAutoRefund === '1') {
                 this.validIsOver(value);
+                return;
             }
+            this.setState({ isOver: false });
         }
         if(key==='isAutoRefund') {
             const { getFieldsValue } = this.form;

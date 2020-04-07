@@ -9,8 +9,8 @@ export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
     onQuery = () => {
-        const { name, couponPackageType } = this.form.getFieldsValue();
-        const params = { name, couponPackageType, pageSize: 30, pageNo: 1 };
+        const { name, couponPackageType, couponPackageStatus } = this.form.getFieldsValue();
+        const params = { name, couponPackageType, couponPackageStatus, pageSize: 30, pageNo: 1 };
         // 如果是点查询按钮要恢复分页初始值
         this.props.onQuery(params);
     }
