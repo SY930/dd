@@ -176,10 +176,11 @@ class NewActivity extends React.Component {
 
     renderModal = () => {
         const promotionType = WECHAT_MALL_ACTIVITIES[this.state.index].title;
+        const title = <span>创建{promotionType}</span>;
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{
