@@ -225,6 +225,7 @@ class BasePage extends Component {
     }
 
     render() {
+        const { promotions, whiteList } = this.props;
         return (
             <div style={{
                 backgroundColor: '#F3F3F3',
@@ -244,12 +245,13 @@ class BasePage extends Component {
                         padding: '10px 30px 30px 30px',
                     }}
                 >
-                    {this.props.promotions.map((item, index) => (
+                    {promotions.map((item, index) => (
                         <NewPromotionCard
                             key={item.key}
                             promotionEntity={item}
                             onCardClick={this.handleNewPromotionCardClick}
                             index={index}
+                            whiteList={whiteList}
                         />
                     ))}
                 </div>

@@ -26,39 +26,26 @@ class NewCustomerPage extends Component {
 
     componentDidMount() {
         axiosData(
-            '/promotionWhiteList/queryAllData.ajax',
-            { requestType: '10', },
+            'specialPromotion/queryOpenedEventTypes.ajax',
+            {},
             { needThrow: true },
-            { path: 'allData' },
+            { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW',
-        ).then(dataStr => {
-            const dataArr = JSON.parse(dataStr);
-            const { whiteList } = this.state;
-            dataArr.forEach(item => {
-                if (item.isWhiteList) {
-                    whiteList.push(`${item.specialType}`)
-                }
-            })
-            this.setState({ whiteList });
+        ).then(data => {
+            const { eventTypeInfoList = [] } = data;
+            this.setState({ whiteList: eventTypeInfoList });
         })
     }
 
-    promotionFilter = (promotionType) => {
-        const index = limitedTypes.indexOf(promotionType);
-        if (index === -1) return true;
-        return this.state.whiteList.includes(promotionType);
-    }
-
     render() {
+        const {whiteList} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         return (
             <BasePage
                 categoryTitle={k6316hto}
-                promotions={
-                    NEW_CUSTOMER_PROMOTION_TYPES
-                    .filter(item => this.promotionFilter(item.key))
-                }
+                promotions={NEW_CUSTOMER_PROMOTION_TYPES}
+                whiteList={whiteList}
             />
         )
     }
