@@ -1028,7 +1028,7 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
-        const { eventWay, itemID, eventName } = record; 
+        const { eventWay, itemID, eventName } = record;
         this.props.selectPromotionForDecoration({
             type: `${eventWay}`,
             id: itemID,

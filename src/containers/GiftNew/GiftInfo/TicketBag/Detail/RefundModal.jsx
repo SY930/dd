@@ -1,10 +1,10 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Alert } from 'antd';
+import { Modal, Alert, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { refundItems, formItemLayout } from '../Common';
 import { postRefund } from '../AxiosFactory';
 
-const formItemKeys = ['refundRemark'];
+const formItemKeys = ['refundReason'];
 class RefundModal extends Component {
     /* 页面需要的各类状态属性 */
     state = {};
@@ -13,10 +13,27 @@ class RefundModal extends Component {
     onOk = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { list, onClose } = this.props;
-                const params = { ...v, orderKey: list };
-                postRefund(params).then(flag => {
-                    flag && onClose();
+                const { list, onClose, ids } = this.props;
+                if(list[10]){
+                    message.warning('单次提交不能超过10个');
+                    return;
+                }
+                const params = { ...v, ...ids, sourceType: 60,
+                    sourceWay: false, customerCouponPackageIDs: list };
+                postRefund(params).then(list => {
+                    if(list){
+                        if(list[0]){
+                            const content = list.map(x=>{
+                                return <p>
+                                    <b>券包id</b>：{x.customerCouponPackageID}<br/>
+                                    <b>错误码</b>：{x.errorCode}<br/>
+                                    <b>失败原因</b>：{x.msg}<br/>
+                                </p>
+                            })
+                            Modal.error({ title: '退款出错',content });
+                        }
+                        onClose();
+                    }
                 });
             }
         });

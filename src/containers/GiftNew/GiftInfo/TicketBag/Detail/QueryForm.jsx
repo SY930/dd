@@ -10,7 +10,7 @@ export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
     onQuery = () => {
-        const { getWay, customerMobile, sendTime, useTime, couponPackageStatus } = this.form.getFieldsValue();
+        const { sendTime, useTime, ...others } = this.form.getFieldsValue();
         let dateObj = {};
         if(sendTime) {
             const [sd, ed] = sendTime || [];
@@ -24,8 +24,7 @@ export default class QueryForm extends Component {
             const usingTimeEnd = ed ? moment(ed).format(DF) : '';
             dateObj = { usingTimeBegin, usingTimeEnd };
         }
-        const params = { getWay, customerMobile, couponPackageStatus,
-            pageSize: 10, pageNo: 1, ...dateObj };
+        const params = { pageSize: 10, pageNo: 1, ...dateObj, ...others };
         // 如果是点查询按钮要恢复分页初始值
         this.props.onQuery(params);
     }
@@ -41,9 +40,9 @@ export default class QueryForm extends Component {
         const { q, ...other } = dFormItems;
         const render = () => (<div>
             <Button {...btnProp}>查询</Button>
-            {/* {onRefund &&
+            {onRefund &&
                 <Button className={styles.refundBtn} name="refund" onClick={onRefund}>商家退款</Button>
-            } */}
+            }
             </div>);
         return {
             ...other,

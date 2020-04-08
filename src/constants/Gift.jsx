@@ -241,6 +241,7 @@ const GiftCfg = {
         { value: '77', label: '支付后广告', include: true },
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
+        { value: '124', label: '券包', include: true },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },

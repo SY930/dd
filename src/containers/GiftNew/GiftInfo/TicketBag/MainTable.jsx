@@ -101,15 +101,16 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
-        const { pageObj } = this.props;
+        const { pageObj, status } = this.props;
+        const isNor = status !== '2';
         const { tc } = styles;
         const render = (v, o) => {
             const { couponPackageID: id, couponPackageName: name } = o;
             return (
                 <p id={id}>
-                    <a href={href} onClick={this.onEdit}>编辑</a>
+                    {isNor && <a href={href} onClick={this.onEdit}>编辑</a>}
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
-                    <a href={href} onClick={()=>{this.onDelete(id,name)}}>删除</a>
+                    {isNor && <a href={href} onClick={()=>{this.onDelete(id,name)}}>删除</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
