@@ -3,39 +3,43 @@ import {
     Select,
 } from 'antd';
 import { connect } from 'react-redux';
-import {queryWechatMpInfo} from "../../GiftNew/_action";
-
+import { fetchData, axiosData } from 'helpers/util';
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        queryWechatMpInfo: (params) => {
-            dispatch(queryWechatMpInfo(params))
-        }
     }
 };
 
 const mapStateToProps = (state) => {
     return {
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS(),
         shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     }
 };
 
 class PushMessageMpID extends Component {
-    componentDidMount() {
-        const { shopList, queryWechatMpInfo } = this.props;
-        const shopIDs = shopList.toJS().map(x=>x.shopID);;
-        const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
-        queryWechatMpInfo(params);
+    state = {
+        allWeChatAccountList: [],
     }
-
+    componentDidMount() {
+        this.queryWechatMpInfo();
+    }
+    queryWechatMpInfo = () => {
+        const { shopList} = this.props;
+        const shopIDs = shopList.toJS().map(x=>x.shopID);
+        const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
+        axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', {...params},
+            null, { path: 'data.mpInfoResDataList'}, 'HTTP_SERVICE_URL_CRM')
+            .then((data) => {
+                this.setState({ allWeChatAccountList: data });
+            })
+    }
     getAllAvailableMpInfo = () => {
         return [
             {
                 value: '{}',
                 label: '全部',
             },
-            ...this.props.allWeChatAccountList.map(item => (
+            ...this.state.allWeChatAccountList.map(item => (
                 {
                     value: JSON.stringify({mpID: item.mpID, appID: item.appID}),
                     label: item.mpName,
@@ -44,7 +48,6 @@ class PushMessageMpID extends Component {
         ];
     }
     render() {
-        console.log('this.props',this.props );
         return (
             <Select
                 notFoundContent={'未搜索到结果'}
