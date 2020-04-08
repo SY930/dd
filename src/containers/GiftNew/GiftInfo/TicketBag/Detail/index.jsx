@@ -31,9 +31,10 @@ class Detail extends Component {
         selectedRowKeys: [],     // 退款ids
     };
     componentDidMount() {
-        this.onQueryList();
-        this.onQueryList2();
-        this.onQueryList3();
+        const params = {pageSize: 10};
+        this.onQueryList(params);
+        this.onQueryList2(params);
+        this.onQueryList3(params);
     }
     /**
      * 发出数
