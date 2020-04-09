@@ -290,6 +290,7 @@ class PromotionCreateModal extends Component {
         return (
             <div className={[selfStyle.flexWrapper, selfStyle.contentWrapper].join(' ')}>
                 <div className={selfStyle.menuArea}>
+                    {/* debugger */}
                     {
                         allMenu.map((title, index) => (
                             <div

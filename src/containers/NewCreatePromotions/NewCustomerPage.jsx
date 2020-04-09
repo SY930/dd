@@ -42,11 +42,14 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         return (
-            <BasePage
-                categoryTitle={k6316hto}
-                promotions={NEW_CUSTOMER_PROMOTION_TYPES}
-                whiteList={whiteList}
-            />
+            // <BasePage
+            //     categoryTitle={k6316hto}
+            //     promotions={NEW_CUSTOMER_PROMOTION_TYPES}
+            //     whiteList={whiteList}
+            // />
+            <div>
+                debugger;
+            </div>
         )
     }
 }
