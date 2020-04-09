@@ -92,11 +92,14 @@ export default class PresentForm extends Component {
                 if(!(/^\d+$/.test(value))){
                     return callback('请输入数字');
                 }
-                if (value < 1) {
+                if (+value < 1) {
                     return callback('最小1，最大不能超过剩余库存');
                 }
-                if(num > 0 && value > num){
+                if(+num > 0 && +value > +num){
                     return callback('最小1，最大不能超过剩余库存');
+                }
+                if(+value > 50){
+                    return callback('最大不能超过50');
                 }
                 return callback();
             },
