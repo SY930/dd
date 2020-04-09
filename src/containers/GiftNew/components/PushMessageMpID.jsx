@@ -28,9 +28,10 @@ class PushMessageMpID extends Component {
         const shopIDs = shopList.toJS().map(x=>x.shopID);
         const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
         axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', {...params},
-            null, { path: 'data.mpInfoResDataList'}, 'HTTP_SERVICE_URL_CRM')
+            null, { path: 'data'}, 'HTTP_SERVICE_URL_CRM')
             .then((data) => {
-                this.setState({ allWeChatAccountList: data });
+                const { mpInfoResDataList = [] } = data;
+                this.setState({ allWeChatAccountList: mpInfoResDataList });
             })
     }
     getAllAvailableMpInfo = () => {
