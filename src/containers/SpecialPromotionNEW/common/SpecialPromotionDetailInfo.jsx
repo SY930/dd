@@ -186,11 +186,9 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
-            cardTypeArr: [],
-            givePoints: '',
-            givePointsValue: '',
-            card: '',
-            giveCoupon: '',
+            givePoints: false,
+            presentValue: '',
+            giveCoupon: true,
         }
     }
     componentDidMount() {
@@ -214,13 +212,6 @@ class SpecialDetailInfo extends Component {
         if (type == 68) {
             this.props.queryAllSaveMoneySet()
         }
-        if (type == 52) {
-            let opts = {
-                groupID: user.accountInfo.groupID,
-            }
-            this.fetchCardType({opts});
-        }
-
     }
     getMultipleLevelConfig = () => {
         const { type } = this.props;
@@ -421,6 +412,7 @@ class SpecialDetailInfo extends Component {
     handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
+        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
         this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
@@ -503,99 +495,29 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        // checkgiftCount = (giftCount, index, giftInfoArray) => {
-        //     const _value = parseFloat(giftCount.value);
-        //     if (!(_value > 0 && _value < 51)) {
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftCount,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftCount,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
-
-        // // 有效天数
-        // checkGiftValidDays = (giftValidDays, index) => {
-        //     const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
-        //     if (_value > 0 || (_value[0] && _value[1])) {
-        //         return giftValidDays;
-        //     }
-        //     return {
-        //         msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
-        //         validateStatus: 'error',
-        //         value: '',
-        //     }
-        // }
-
-        // // 校验中奖比率
-        // checkGiftOdds = (giftOdds) => {
-        //     if (type == '20') {
-        //         const _value = parseFloat(giftOdds.value);
-        //         if (_value >= 0 && _value <= 100) {
-        //             return giftOdds;
-        //         }
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     return giftOdds;
-        // }
-
-        // // 校验礼品信息
-        // checkGiftInfo = (giftInfo, index, giftInfoArray) => {
-        //     if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
-        //         return {
-        //             giftItemID: null,
-        //             giftName: null,
-        //             validateStatus: 'error',
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftInfo,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftInfo,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
+        if(type === '52') {
+            const { presentValue, givePoints, giveCoupon } = this.state;
+            if(!givePoints && !giveCoupon){
+                message.warning('赠送积分和优惠券必选一项');
+                return;
+            }
+            if(givePoints){
+                if(!priceReg.test(presentValue)){
+                    message.warning('赠送积分最多支持两位小数正数，小于1000000');
+                    return;
+                }
+            }
+            if(givePoints && !giveCoupon){
+                if(priceReg.test(presentValue)){
+                    message.warning('最多支持输入两位小数正数，小于1000000');
+                    return;
+                }
+                const giftName = presentValue + '积分';
+                const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+        }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -658,7 +580,15 @@ class SpecialDetailInfo extends Component {
                 message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
-            const giftInfo = this.getGiftInfo(data);
+            let giftInfo = this.getGiftInfo(data);
+            if(type === '52') {
+                const { presentValue, givePoints } = this.state;
+                if(givePoints){
+                    const giftName = presentValue + '积分';
+                    const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                    giftInfo = [...giftInfo, params];
+                }
+            }
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
                 this.props.type == '67' ? {
@@ -2178,18 +2108,6 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
-    fetchCardType = (opts) => {
-        axiosData(
-            '/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax',
-            { ...opts, isNeedWechatCardTypeInfo: true },
-            null,
-            {path: 'data.cardTypeBaseInfoList',}
-        ).then((records) => {
-            this.setState({
-                cardTypeArr: records || []
-            })
-        });
-    }
     onCheckPoint = ({ target }) => {
         const { checked } = target;
         this.setState({ givePoints: checked });
@@ -2198,14 +2116,12 @@ class SpecialDetailInfo extends Component {
         const { checked } = target;
         this.setState({ giveCoupon: checked });
     }
-    onCardChange = (value) => {
-        this.setState({ card: value });
-    }
     onGivePointsValueChange = (value) => {
-        this.setState({ givePointsValue: value });
+        const { number } = value;
+        this.setState({ presentValue: number });
     }
     renderNewCardGive() {
-        const { cardTypeArr, givePoints, givePointsValue, card, giveCoupon } = this.state;
+        const { givePoints, presentValue, giveCoupon } = this.state;
         return (<div>
             <FormItem
                 style={{ padding: '0px 40px' }}
@@ -2219,7 +2135,8 @@ class SpecialDetailInfo extends Component {
                     onChange={this.onCheckPoint}
                 >赠送积分</Checkbox>
             </FormItem>
-            <div className={selfStyle.pointBox}>
+            {givePoints &&
+                <div className={selfStyle.pointBox}>
                 <FormItem
                     wrapperCol={{ span: 20 }}
                     className={''}
@@ -2230,37 +2147,14 @@ class SpecialDetailInfo extends Component {
                         <span>赠送积分</span>
                     </div>
                     <PriceInput
-                        addonAfter={'元'}
+                        addonAfter={'积分'}
                         modal="float"
                         maxNum={6}
-                        value={givePointsValue}
+                        value={presentValue}
                         onChange={this.onGivePointsValueChange}
                     />
                 </FormItem>
-                <FormItem
-                    wrapperCol={{ span: 20 }}
-                    className={''}
-                    validateStatus={''}
-                    help={''}
-                >
-                    <div className={selfStyle.title}>
-                        <span>充值到会员卡</span>
-                    </div>
-                    <Select
-                        showSearch={true}
-                        value={card}
-                        onChange={this.onCardChange}
-                    >
-                        {
-                            cardTypeArr.map((value) => {
-                                return (
-                                    <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
-                                )
-                            })
-                        }
-                    </Select>
-                </FormItem>
-            </div>
+            </div>}
             <FormItem
                 style={{ padding: '0px 40px' }}
                 wrapperCol={{ span: 24 }}
@@ -2276,6 +2170,7 @@ class SpecialDetailInfo extends Component {
         </div>);
     }
     render() {
+        const { giveCoupon } = this.state;
         const { type } = this.props;
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
@@ -2287,7 +2182,6 @@ class SpecialDetailInfo extends Component {
             return this.renderAccumulateGiftsDetail();
         }
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
-        console.log('type', type);
         return (
             <div >
                 {type == '67' && this.renderInstantDiscountForm()}
@@ -2317,6 +2211,7 @@ class SpecialDetailInfo extends Component {
                     type === '52' &&
                     this.renderNewCardGive()
                 }
+                { giveCoupon &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
@@ -2332,7 +2227,7 @@ class SpecialDetailInfo extends Component {
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
-                </Row>
+                </Row>}
                 {
                    type == '65' && <p className={styles.coloredBorderedLabel}>{this.props.intl.formatMessage(STRING_SPE.dk469ad5m987288)}</p>
                 }
