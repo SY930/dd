@@ -9,7 +9,7 @@ import wx from './assets/wx.png';
 import pos from './assets/pos.png';
 import xin from './assets/xin.png';
 import { jumpPage } from '@hualala/platform-base';
-import { Modal } from 'antd';
+import { Modal, Tooltip } from 'antd';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
 const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
@@ -118,9 +118,11 @@ class NewPromotionCard extends Component {
                         }</div>)})}
                     </div>
                     </div>
-                    <div className={styles.desDiv}>
-                        {text}
-                    </div>
+                    <Tooltip title={text}>
+                        <div className={styles.desDiv}>
+                            {text}
+                        </div>
+                    </Tooltip>
                     
                     <div className={styles.speCardLogo} style={{
                         right: right * 0.62,
