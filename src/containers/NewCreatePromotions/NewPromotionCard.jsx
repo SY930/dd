@@ -4,6 +4,10 @@ import bg0 from './assets/bg0.png';
 import bg1 from './assets/bg1.png';
 import bg2 from './assets/bg2.png';
 import bg3 from './assets/bg3.png';
+import xcx from './assets/xcx.png';
+import wx from './assets/wx.png';
+import pos from './assets/pos.png';
+import xin from './assets/xin.png';
 import { jumpPage } from '@hualala/platform-base';
 import { Modal } from 'antd';
 
@@ -46,7 +50,7 @@ class NewPromotionCard extends Component {
         }
     }
     render() {
-        const {
+        let {
             promotionEntity : {
                 tags = [],
                 title,
@@ -83,6 +87,46 @@ class NewPromotionCard extends Component {
                         bottom: bottom * 0.62,
                     }}>
                         <img src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                    </div>
+                </div>
+            )
+        }
+        if(size === 'special') {
+            return (
+                <div className={styles.speContainer} onClick={this.onClick}>
+                    <p className={styles.expandableP}>
+                        {isNew ? <span><img src={xin} /></span> : null}
+                    </p>
+                    {this.renderPulgin(key)}
+                    <div className={styles.title}>
+                        {title}
+                        <div className={styles.speTag}>
+                        {tags.map((tag, i) => {
+                            return (<div className={styles.speTagSpan} key={i}>{
+                                tag.props ? 
+                                    tag.props.defaultMessage.includes('小程序') ?
+                                    <img className={styles.speTagImg} src={xcx} /> : 
+                                    tag.props.defaultMessage.includes('微信') ?
+                                    <img className={styles.speTagImg} src={wx} /> : 
+                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                    <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                                : tag.includes('pos') ?
+                                    <img className={styles.speTagImg} src={pos} /> : 
+                                    tag.includes('微信') ? 
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                        }</div>)})}
+                    </div>
+                    </div>
+                    <div className={styles.desDiv}>
+                        {text}
+                    </div>
+                    
+                    <div className={styles.speCardLogo} style={{
+                        right: right * 0.62,
+                        bottom: bottom * 0.62,
+                    }}>
+                        <img src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
                     </div>
                 </div>
             )

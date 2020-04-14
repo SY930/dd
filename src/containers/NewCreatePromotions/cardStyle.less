@@ -46,6 +46,56 @@
         transform-origin: right bottom;
     }
 }
+.speContainer{
+    width: 281px;
+    height: 100px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    flex: 0 auto;
+    padding: 20px;
+    margin: 0 30px 30px 0;
+    z-index: 1;
+    &:hover{
+        box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        transition: 0.2s;
+    }
+    flex: 0 auto;
+    padding: 20px;
+    margin: 0 15px 15px 0;
+    z-index: 1;
+    .title {
+        line-height: 1;
+        color: #666666;
+        font-size: 16px;
+        display: inline-block;
+        position: absolute;
+        left: 97px;
+        color: #333333FF;
+        top: 22px;
+    }
+    .cardLogo {
+        transform: scale(0.62);
+        transform-origin: right bottom;
+    }
+    .desDiv {
+        font-size: 12px;
+        font-weight: 500;
+        color: #787878;
+        line-height: 16px;
+        white-space: inherit;
+        text-overflow: ellipsis;
+        display: inline-block;
+        width: 172px;
+        height: 30px;
+        position: relative;
+        left: 77px;
+        top: 24px;
+        overflow: hidden;
+    }
+}
 .cardTitle {
     font-size: 18px;
     color: #434343;
@@ -59,6 +109,11 @@
 }
 .cardLogo {
     position: absolute;
+}
+.speCardLogo{
+    position: absolute;
+    left: 15px;
+    top: 15px;
 }
 .cardNewTag {
     width:43px;
@@ -108,4 +163,21 @@
     font-style: normal;
     box-shadow: 2px 2px 5px #888179;
     z-index: 1;
+}
+.speTag {
+    display: inline-block;
+    position: relative;
+    top: -2px;
+}
+.speTagSpan{
+    display: inline-block;
+    position: relative;
+}
+.speTagImg{
+    margin-left: 3px;
+}
+.expandableP {
+    position: absolute;
+    top: 0px;
+    right: 18px;
 }
