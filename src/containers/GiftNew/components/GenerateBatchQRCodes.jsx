@@ -30,7 +30,7 @@ const QR_CODE_EFFECT_DAYS = new Array(30)
         value: `${index + 1}`,
         label: `${index + 1}天`
     }));
-
+const { Button: RadioButton, Group: RadioGroup } = Radio;
 class GenerateBatchQRCodes extends Component {
 
     constructor(props) {
@@ -51,6 +51,7 @@ class GenerateBatchQRCodes extends Component {
             qrEffectDays: '30', // 二维码默认有效期30天
             selectedBatchEntity: null,
             description: '',
+            exportType: '0'
         };
     }
 
@@ -156,6 +157,11 @@ class GenerateBatchQRCodes extends Component {
             qrEffectDays: value
         })
     }
+    handleExportTypeChange = (value) => {
+        this.setState({
+            exportType: value.target.value,
+        })
+    }
 
     mapStateToRequestParams = () => {
         const {
@@ -166,6 +172,7 @@ class GenerateBatchQRCodes extends Component {
             batchItemID,
             description: remark,
             qrEffectDays,
+            exportType
         } = this.state;
         return {
             giftItemID: this.props.giftItemID,
@@ -176,6 +183,7 @@ class GenerateBatchQRCodes extends Component {
             mpID,
             remark,
             qrEffectDays,
+            exportType
         };
     }
 
@@ -214,6 +222,7 @@ class GenerateBatchQRCodes extends Component {
                     selectedBatchEntity: null,
                     description: '',
                     qrEffectDays: '30',
+                    exportType: '0'
                 }, () => {
                     this.handleQuery();
                     this.props.form.resetFields();
@@ -570,7 +579,10 @@ class GenerateBatchQRCodes extends Component {
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
                 >
-                    debugger
+                    <RadioGroup value={this.state.exportType} onChange={this.handleExportTypeChange}>
+                        <Radio key={'0'} value={'0'}>二维码</Radio>
+                        <Radio key={'1'} value={'1'}>链接</Radio>
+                    </RadioGroup>
                 </FormItem>
                 <FormItem
                     label={ COMMON_LABEL.remark }
