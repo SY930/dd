@@ -39,7 +39,7 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-
+import PhotoFrame from './PhotoFrame';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -129,7 +129,7 @@ const MULTIPLE_LEVEL_GIFTS_CONFIG = [
         levelAffix: COMMON_SPE.k6hk1aqp,
     },
 ]
-
+const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -162,6 +162,8 @@ class SpecialDetailInfo extends Component {
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
+            shareSubtitle: props.specialPromotion.getIn(['$eventInfo', 'shareSubtitle']),
+            restaurantShareImagePath: props.specialPromotion.getIn(['$eventInfo', 'restaurantShareImagePath']),
             /** 小程序分享相关结束 */
             /** 桌边砍相关 */
             moneyLimitType: props.specialPromotion.getIn(['$eventInfo', 'moneyLimitType']) || 0,
@@ -208,6 +210,11 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 68) {
             this.props.queryAllSaveMoneySet()
+        }
+        if (type == 21) {
+            if(this.props.isNew){
+                this.setState({shareTitle: '送您一份心意，共享美食优惠！'});
+            }
         }
     }
     getMultipleLevelConfig = () => {
@@ -476,6 +483,7 @@ class SpecialDetailInfo extends Component {
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
+
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo(
@@ -646,7 +654,12 @@ class SpecialDetailInfo extends Component {
                 message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
-            const giftInfo = this.getGiftInfo(data);
+            let giftInfo = this.getGiftInfo(data);
+            if(type == '21') {
+                const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+                const shareInfo = { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath };
+                this.props.setSpecialBasicInfo(shareInfo);
+            }
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
                 this.props.type == '67' ? {
@@ -816,6 +829,11 @@ class SpecialDetailInfo extends Component {
     handleShareTitleChange = ({ target: { value }}) => {
         this.setState({
             shareTitle: value,
+        })
+    }
+    handleShareSubTitleChange = ({ target: { value }}) => {
+        this.setState({
+            shareSubtitle: value,
         })
     }
     handleMoneyLimitTypeChange = (value) => {
@@ -1070,6 +1088,62 @@ class SpecialDetailInfo extends Component {
                     style={{ position: 'relative' }}
                 >
                     {this.renderImgUrl()}
+                </FormItem>
+            </div>
+        )
+    }
+    onRestImg = ({ key, value }) => {
+        this.setState({ [key]: value });
+    }
+    renderShareInfo2 = () => {
+        const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+        return (
+            <div>
+                <p className={selfStyle.shareTip}>分享设置</p>
+                <FormItem
+                    label="分享标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareTitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareTitle,
+                        onChange: this.handleShareTitleChange,
+                    })(
+                        <Input placeholder="送您一份心意，共享美食优惠！" />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享副标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareSubtitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareSubtitle,
+                        onChange: this.handleShareSubTitleChange,
+                    })(
+                        <Input placeholder="选填，请输入副标题" />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享图片"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: 'relative' }}
+                >
+                    <PhotoFrame
+                        restaurantShareImagePath={restaurantShareImagePath}
+                        shareImagePath={shareImagePath}
+                        onChange={this.onRestImg}
+                    />
                 </FormItem>
             </div>
         )
@@ -2242,6 +2316,9 @@ class SpecialDetailInfo extends Component {
                 }
                 {
                     shareInfoEnabledTypes.includes(`${type}`) && this.renderShareInfo()
+                }
+                {
+                    type === '21' && this.renderShareInfo2()
                 }
             </div>
         )
