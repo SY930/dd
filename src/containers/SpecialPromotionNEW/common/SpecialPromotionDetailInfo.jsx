@@ -140,6 +140,7 @@ class SpecialDetailInfo extends Component {
         const {
             data,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
+            pointObj,
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
@@ -152,6 +153,7 @@ class SpecialDetailInfo extends Component {
         const $saveMoneySetIds = props.specialPromotion.getIn(['$eventInfo', 'saveMoneySetIds']);
         const saveMoneySetIds = Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
         ? $saveMoneySetIds.toJS() : [];
+        const {givePoints, presentValue, giveCoupon } = pointObj;
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -186,9 +188,9 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
-            givePoints: false,
-            presentValue: '',
-            giveCoupon: true,
+            givePoints,
+            presentValue,
+            giveCoupon,
         }
     }
     componentDidMount() {
@@ -262,7 +264,15 @@ class SpecialDetailInfo extends Component {
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
         const data = this.initiateDefaultGifts();
+        let pointObj = { presentValue: '', givePoints: false, giveCoupon: false };
         giftInfo.forEach((gift, index) => {
+            if(this.props.type == '52' && gift.presentType === 2){
+                pointObj = { ...pointObj, presentValue: gift.presentValue, givePoints: true };
+                return;
+            }
+            if(this.props.type == '52' && gift.presentType === 1){
+                pointObj = { ...pointObj, giveCoupon: true };
+            }
             if (data[index] !== undefined) {
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
@@ -333,9 +343,13 @@ class SpecialDetailInfo extends Component {
                     }))
             }
         }
+        if(this.props.isNew){
+            pointObj = { presentValue: '', givePoints: false, giveCoupon: true };
+        }
         return {
             data,
             wakeupSendGiftsDataArray,
+            pointObj,
         };
     }
 
@@ -508,8 +522,8 @@ class SpecialDetailInfo extends Component {
                 }
             }
             if(givePoints && !giveCoupon){
-                if(priceReg.test(presentValue)){
-                    message.warning('最多支持输入两位小数正数，小于1000000');
+                if(!priceReg.test(presentValue)){
+                    message.warning('赠送积分最多支持输入两位小数正数，小于1000000');
                     return;
                 }
                 const giftName = presentValue + '积分';
@@ -2116,9 +2130,9 @@ class SpecialDetailInfo extends Component {
         const { checked } = target;
         this.setState({ giveCoupon: checked });
     }
-    onGivePointsValueChange = (value) => {
-        const { number } = value;
-        this.setState({ presentValue: number });
+    onGivePointsValueChange = ({ target }) => {
+        const { value } = target;
+        this.setState({ presentValue: value });
     }
     renderNewCardGive() {
         const { givePoints, presentValue, giveCoupon } = this.state;
@@ -2146,10 +2160,8 @@ class SpecialDetailInfo extends Component {
                     <div className={selfStyle.title}>
                         <span>赠送积分</span>
                     </div>
-                    <PriceInput
+                    <Input
                         addonAfter={'积分'}
-                        modal="float"
-                        maxNum={6}
                         value={presentValue}
                         onChange={this.onGivePointsValueChange}
                     />
