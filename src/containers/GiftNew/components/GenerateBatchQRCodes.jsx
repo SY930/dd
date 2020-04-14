@@ -565,6 +565,14 @@ class GenerateBatchQRCodes extends Component {
                     </Select>
                 </FormItem>
                 <FormItem
+                    label="类型"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                >
+                    debugger
+                </FormItem>
+                <FormItem
                     label={ COMMON_LABEL.remark }
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
