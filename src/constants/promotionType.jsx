@@ -54,6 +54,8 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '65',
         right: 13,
         bottom: 3,
+        isHot: true,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k635s5id,
@@ -64,6 +66,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '66',
         right: 16,
         bottom: 2,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k639vh8y,
@@ -73,17 +76,18 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '67',
         right: 13,
         bottom: 1,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k639vhha,
         isSpecial: true,
-        isNew: true,
         tags: [SALE_LABEL.k639vgjy],
         text: SALE_LABEL.k67b3yhp,
         example: '',
         key: '68',
         right: 11,
         bottom: 0,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k636p0yo,
@@ -139,6 +143,8 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '76',
         right: 14,
         bottom: 12,
+        isHot: true,
+        isNew: true,
     },
     {
         title: '支付后广告',
@@ -149,6 +155,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '77',
         right: 16,
         bottom: 6,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k636p31p,
@@ -204,9 +211,10 @@ export const REPEAT_PROMOTION_TYPES = [
         tags: ['新微信', '小程序'],
         example: '',
         key: '75',
-        isNew: true,
         right: 16,
         bottom: 6,
+        isHot: true,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k67b2pz0,
@@ -292,6 +300,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         key: '51',
         right: 11,
         bottom: 7,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b2rd0,
@@ -350,6 +359,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '2020',
         right: 2,
         bottom: -14,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b2sac,
@@ -539,6 +549,7 @@ export const ONLINE_PROMOTION_TYPES = [
         key: '2060',
         right: 14,
         bottom: 5,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b3xkd,

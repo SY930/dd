@@ -34,12 +34,13 @@ class PushMessageMpID extends Component {
             })
     }
     getAllAvailableMpInfo = () => {
+        const tempInCaseEmpty = this.props.allWeChatAccountList ? this.props.allWeChatAccountList : [];
         return [
             {
                 value: '{}',
                 label: '全部',
             },
-            ...this.state.allWeChatAccountList.map(item => (
+            ...tempInCaseEmpty.map(item => (
                 {
                     value: JSON.stringify({mpID: item.mpID, appID: item.appID}),
                     label: item.mpName,
