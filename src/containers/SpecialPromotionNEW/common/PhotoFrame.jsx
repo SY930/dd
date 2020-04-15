@@ -23,7 +23,7 @@ export default class PhotoFrame extends Component {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     render() {
-        const { restaurantShareImagePath, shareImagePath } = this.props;
+        const { restaurantShareImagePath, shareImagePath, type } = this.props;
         const { visible } = this.state;
 
         return (
@@ -56,7 +56,7 @@ export default class PhotoFrame extends Component {
                         </div>
                     </li>
                 </ul>
-                {visible && <QrModal url={''} onClose={this.toggleModal} />}
+                {visible && <QrModal type={type} onClose={this.toggleModal} />}
             </div>
         );
     }

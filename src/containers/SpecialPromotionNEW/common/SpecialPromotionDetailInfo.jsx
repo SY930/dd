@@ -110,11 +110,6 @@ const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     [typePropertyName]: typeValue,
 })
 
-const shareInfoEnabledTypes = [
-    '65',
-    '66',
-]
-
 const MULTIPLE_LEVEL_GIFTS_CONFIG = [
     {
         type: '63',
@@ -214,6 +209,26 @@ class SpecialDetailInfo extends Component {
         if (type == 21) {
             if(this.props.isNew){
                 this.setState({shareTitle: '送您一份心意，共享美食优惠！'});
+            }
+        }
+        if (type == 68) {
+            if(this.props.isNew){
+                const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
+                const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
+                this.setState({shareTitle, shareSubtitle });
+            }
+        }
+        if (type == 66) {
+            if(this.props.isNew){
+                const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
+                const shareSubtitle = '海吃海喝就靠你啦！';
+                this.setState({shareTitle, shareSubtitle });
+            }
+        }
+        if (type == 65) {
+            if(this.props.isNew){
+                const shareTitle = '呼朋唤友，一起赢壕礼。';
+                this.setState({shareTitle });
             }
         }
     }
@@ -655,7 +670,7 @@ class SpecialDetailInfo extends Component {
                 return false;
             }
             let giftInfo = this.getGiftInfo(data);
-            if(type == '21') {
+            if(['21','68', '66', '65'].includes(type)) {
                 const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath };
                 this.props.setSpecialBasicInfo(shareInfo);
@@ -1096,6 +1111,7 @@ class SpecialDetailInfo extends Component {
         this.setState({ [key]: value });
     }
     renderShareInfo2 = () => {
+        const { type } = this.props;
         const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
         return (
             <div>
@@ -1143,6 +1159,7 @@ class SpecialDetailInfo extends Component {
                         restaurantShareImagePath={restaurantShareImagePath}
                         shareImagePath={shareImagePath}
                         onChange={this.onRestImg}
+                        type={type}
                     />
                 </FormItem>
             </div>
@@ -2046,6 +2063,7 @@ class SpecialDetailInfo extends Component {
                     </Tooltip>
                 </p>
                 {this.renderRecommendGifts(0)}
+                {this.renderShareInfo2()}
             </div>
         )
     }
@@ -2315,10 +2333,7 @@ class SpecialDetailInfo extends Component {
                     )
                 }
                 {
-                    shareInfoEnabledTypes.includes(`${type}`) && this.renderShareInfo()
-                }
-                {
-                    type === '21' && this.renderShareInfo2()
+                    ['21', '66', '65'].includes(type) && this.renderShareInfo2()
                 }
             </div>
         )
