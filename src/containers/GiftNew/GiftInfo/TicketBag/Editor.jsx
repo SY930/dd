@@ -166,7 +166,7 @@ export default class Editor extends Component {
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
-                        couponPackageStock: stock, ...others,
+                        remainStock: stock, ...others,
                     } = v;
                 let cycleObj = {};
                 if(cycleType){
@@ -194,9 +194,9 @@ export default class Editor extends Component {
                 }
                 const price = couponPackagePrice || couponPackagePrice2;
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
-                const couponPackageStock = stock || '-1';           // 如果清空库存，给后端传-1
+                const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
-                    couponPackageStock, couponPackagePrice: price };
+                    remainStock, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id
