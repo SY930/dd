@@ -285,6 +285,9 @@ class FullGiveDetailInfo extends React.Component {
                     secondTrans.push(item); 
                 }
             })
+            secondTrans.map((item) => {
+                item.rule = JSON.stringify(item.rule);
+            })
             this.props.setPromotionDetail({
                 rule, priceLst: newPrice || priceLst, foodRuleList: secondTrans,
             });
