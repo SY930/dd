@@ -47,6 +47,7 @@ class BuyGiveDetailInfo extends React.Component {
             stageType: 2,
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
+            ifMultiGrade: true,
         };
 
         this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
@@ -77,7 +78,13 @@ class BuyGiveDetailInfo extends React.Component {
             stageType: _rule.stageType ? _rule.stageType: 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             giveFoodCount: _rule.stage ? _rule.stage[0].giveFoodCount : '',
-        });
+        }, () => {
+            if(this.state.stageType == 2 || this.state.stageType == 1) {
+                this.renderMultiGrade();
+            } else {
+                this.renderSingleGrade();
+            }
+        });     
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
@@ -147,6 +154,11 @@ class BuyGiveDetailInfo extends React.Component {
         this.setState({ stageAmount, stageAmountFlag });
     }
     handleStageTypeChange(value) {
+        if(Number(value) == 2 || Number(value) == 1) {
+            this.renderMultiGrade();
+        } else {
+            this.renderSingleGrade();
+        }
         this.setState({ stageType: Number(value) });
     }
 
@@ -160,6 +172,16 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCount = value.number;
         }
         this.setState({ giveFoodCount, giveFoodCountFlag });
+    }
+    renderMultiGrade = () => {
+        this.setState({
+            ifMultiGrade: true,
+        })
+    }
+    renderSingleGrade = () => {
+        this.setState({
+            ifMultiGrade: false,
+        })
     }
 
     renderBuyDishNumInput = () => {
@@ -186,7 +208,6 @@ class BuyGiveDetailInfo extends React.Component {
                 label: k5hlxzv2,
             },
         ]
-        debugger;
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -276,15 +297,32 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
+    renderMultiGradeSelect = () => {
+        return (
+            <div>
+                rgrtjhyyj
+            </div>
+        )
+    }
+
 
     render() {
+        const { ifMultiGrade } = this.state;
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {this.renderBuyDishNumInput()}
-                    {this.renderDishsSelectionBox()}
-                    {this.renderGiveDishNumInput()}
+                    {ifMultiGrade ? 
+                        this.renderMultiGradeSelect()
+                    :
+                        this.renderDishsSelectionBox()
+                    }
+                    {ifMultiGrade ? 
+                        null
+                    :
+                        this.renderGiveDishNumInput()
+                    }
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
