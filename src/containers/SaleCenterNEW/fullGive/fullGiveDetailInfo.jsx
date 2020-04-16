@@ -41,8 +41,9 @@ class FullGiveDetailInfo extends React.Component {
             ruleType,
             priceLst: [],
             data,
-            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
+            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS() : Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
                 this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
+            foodRuleList: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS() : [],
             flag: true,
         };
     }
@@ -108,7 +109,6 @@ class FullGiveDetailInfo extends React.Component {
             } else {
                 ruleType = '3'
             }
-            debugger;
             _rule.stage && _rule.stage.map((stage, index) => {
                 data[index] = {
                     stageAmount: '',
@@ -380,6 +380,7 @@ class FullGiveDetailInfo extends React.Component {
                                     this.setState({ data: value });
                                 }
                                 }
+                                foodRuleList = {this.state.foodRuleList}
                             /> :
                             <AddGrade
                                 getFieldDecorator={getFieldDecorator}

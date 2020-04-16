@@ -37,6 +37,8 @@ class ConnectedPriceListSelector extends Component {
         } else {
             priceLst = this.props.priceLst.toJS();
         }
+        const { foodRuleList = [], index } = this.props;
+        priceLst = foodRuleList.length ? foodRuleList[index] ? foodRuleList[index].priceList : [] : priceLst;
         const { isShopMode } = this.props;
         const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
         return (

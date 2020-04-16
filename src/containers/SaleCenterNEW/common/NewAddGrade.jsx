@@ -148,6 +148,8 @@ class NewAddGrade extends React.Component {
                     onChange={(value) => {
                         this.onDishesChange(value, k);
                     }}
+                    index={k}
+                    foodRuleList={this.props.foodRuleList}
                 />
             </FormItem>
 
