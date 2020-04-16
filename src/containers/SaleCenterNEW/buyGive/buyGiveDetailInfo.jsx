@@ -186,6 +186,7 @@ class BuyGiveDetailInfo extends React.Component {
                 label: k5hlxzv2,
             },
         ]
+        debugger;
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -236,7 +237,7 @@ class BuyGiveDetailInfo extends React.Component {
                     onChange={this.onGiveFoodCountChange}
                     modal="int"
                 />
-    <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
+                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
             </FormItem>
         )
     }
