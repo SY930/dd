@@ -551,11 +551,10 @@
  
      }
  }
- /*AddGrade*/
- .addGrade{
-     position: relative;
+ .addGradeAth{
+    position: relative;
      width: 527px;
-    margin-bottom: 60px;
+    margin-bottom: 80px;
     background:rgba(247,247,247,1);
     border-radius:3px;
     border:1px solid rgba(231,231,231,1);
@@ -629,7 +628,219 @@
         border-radius: 3px;
         border: 1px solid rgba(231,231,231,1);
         position: absolute;
-        top: 184px;
+        top: 190px;
+        left: -1px;
+ 
+     }
+     .CategoryDelete{
+        text-align: right;
+        padding: 10px 5px;
+        color: #1AB494FF;
+        float: right;
+     }
+     .CategoryList{
+         position: relative;
+        .whiteBox{
+            position: absolute;
+            background: white;
+            width: 469.25px;
+            height: 67px;
+            top: 7px;
+        }
+     }
+     
+ 
+     .CategoryList >div:nth-child(1)>div:nth-child(1){
+         .ant-input-group-addon{
+             font-weight: normal!important;
+         }
+     }
+     .CategoryList >div:nth-child(1){
+         .ant-input-group > span:nth-child(1){
+             font-weight: normal!important;
+         }
+     }
+     .CategoryList >div:nth-child(1) >div:nth-child(1) >span:nth-child(1){
+         font-weight: normal!important;
+     }
+     .CategoryList{
+         margin-bottom: 15px;
+         .ant-input-group span:first-child{
+             padding: 0px!important;
+         }
+ 
+         .ant-input-wrapper input:first-child{
+             background: #FFFFFF!important;
+             padding:0px 7px!important;
+         }
+ 
+         .UnitInputAll span{
+             background: #e7e7e7;
+         }
+ 
+         .project-edit-group .project-title{
+             font-size: 12px!important;
+             font-weight: normal!important;
+             text-align: left!important;
+             padding-bottom: 5px;
+             color: @grey;
+         }
+         .project-left{
+             float: none;
+             display: block;
+         }
+         .pro-left{
+             float: none;
+             display: block;
+             font-size: 12px!important;
+             font-weight: normal!important;
+             text-align: left!important;
+             padding-bottom: 5px;
+         }
+         .project-edit-group .project-right{
+             margin-left: 0px!important;
+         }
+         .pro-all .pro-right{
+             margin-left: 0px!important;
+             background: #FFFFFF;
+             margin-bottom: 5px;
+         }
+         .pro-all .pro-r-ico{
+             font-size: 20px;
+         }
+         .project-div-son{
+             background: #FFFFFF!important;
+         }
+         .project-ico{
+             top:35px!important;
+             right: -20px!important;
+         }
+         .project-edit-group .dynamic-add-button{
+             font-size: 16px;
+         }
+         .ant-input{
+             border-radius: 0px!important;
+             height: 32px;
+         }
+     }
+     .inputUnit{
+         width: 8%;
+         background-color: @component-background;
+     }
+     .selectIn{
+         width: 32%;
+         vertical-align: middle;
+         margin-left: 5%;
+     }
+ 
+     :global{
+ 
+         .ant-input-group{
+             .ant-input-group-addon {
+                 &:first-of-type {
+                     text-align: center;
+                     background: @bg-color;
+                     color: @text-color;
+                     border-radius: @border-radius-no;
+                     border: none;
+                     width: 30%;
+                 }
+             }
+         }
+ 
+         .ant-input-number {
+             width: 62%;
+             vertical-align: middle;
+         }
+         .ant-calendar-picker{
+             width: 100%!important;
+         }
+     }
+     .inputIn{
+ 
+         width: 25%;
+ 
+     } 
+ }
+ /*AddGrade*/
+ .addGrade{
+     position: relative;
+     width: 527px;
+    margin-bottom: 20px;
+    background:rgba(247,247,247,1);
+    border-radius:3px;
+    border:1px solid rgba(231,231,231,1);
+     .spanText{
+         color:@text-color;
+         line-height: 30px;
+         span{
+             color:red;
+             display: inline-block;
+             margin-right: 5px;
+         }
+     }
+     .CategoryTitle{
+        width: 56px;
+        height: 24px;
+        background: #1bb496;
+        border-radius: 3px 100px 100px 0px;
+        display: inline-block;
+        color: #FFFFFFFF;
+        line-height: 24px;
+        text-indent: 10px;
+    
+     }
+     .CategoryTop{
+         background: rgba(247,247,247,1);
+     }
+     .CategoryBody{
+         background: rgba(247,247,247,1);
+         padding: 20px 28px 5px 28px;
+         padding-top: 0px;
+         .ant-input-group-addon{
+             text-align:center!important;
+             background: @bg-color;
+             border-radius: 0px;
+         }
+         .selectLabels{
+             text-align: left;
+             width: 44px;
+         }
+         .Category-Link{
+             .linkSelector-left{
+                 text-align: center;
+                 background:rgba(247,247,247,1);
+                 padding: 0px;
+             }
+         }
+         .Category-sel{
+             .linkSelector-left{
+                 width: 0px!important;
+                 padding: 0px;
+             }
+             .ant-btn{
+                 border-radius: 0px!important;
+                 line-height:1.9!important;
+             }
+ 
+         }
+     }
+     .CategoryAdd:hover{
+         color: #1AB494FF;
+     }
+     .CategoryAdd{
+        text-align: center;
+        padding: 10px 5px;
+        color: #1AB494FF;
+        display: inline-block;
+        cursor: pointer;
+        width: 527px;
+        height: 40px;
+        background: rgba(255,255,255,1);
+        border-radius: 3px;
+        border: 1px solid rgba(231,231,231,1);
+        position: absolute;
+        top: 169px;
         left: -1px;
  
      }
@@ -770,6 +981,7 @@
          }
  .FormItemForMore{
      text-align: right;
+     margin-top: 30px;
  }
  .gTip{
      cursor:pointer;

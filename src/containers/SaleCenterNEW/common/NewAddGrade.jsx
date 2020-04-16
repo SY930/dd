@@ -65,6 +65,7 @@ class NewAddGrade extends React.Component {
                 foodCountFlag: nextProps.foodCountFlag,
             })
         }
+        console.log('nextProps.ruleType  '+ nextProps.ruleType );
         if (this.props.ruleType != nextProps.ruleType) { // 活动方式改变
             //初始化数据
             this.initALot();
@@ -76,13 +77,15 @@ class NewAddGrade extends React.Component {
                     keys: [0],
                 });
             } else {
-                this.uuid = Object.keys(nextProps.value).length - 1;
+                this.uuid = this.state.data.length-1;
                 const { form } = this.props;
                 form.setFieldsValue({
                     keys: Object.keys(nextProps.value),
                 });
+                this.initALot();
             }
         }
+        const a = nextProps.value;
         if (this.props.value != nextProps.value) {
             this.setState({
                 data: nextProps.value,
@@ -195,7 +198,7 @@ class NewAddGrade extends React.Component {
     onStageAmountChange(value, index) {
         const { data } = this.state;
         data[index].stageAmount = value.number;
-        if (!value.number || value.number <= 0) {
+        if (!value.number || value.number <= 0 || index != 0 && data[index].stageAmount <= data[index-1].stageAmount) {
             data[index].StageAmountFlag = false;
         } else {
             data[index].StageAmountFlag = true;
@@ -232,15 +235,18 @@ class NewAddGrade extends React.Component {
         const isFullGive = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1030';
         getFieldDecorator('keys', { initialValue: Object.keys(this.state.data) });
         // const keys = isFullGive ? [0] : getFieldValue('keys');
-        let keys = getFieldValue('keys');
-        console.log("the current length is" + Object.keys(data).length);
+        let keys = Object.keys(data);
+        this.uuid = Object.keys(data).length - 1;
+        console.log("the current keys length is " + Object.keys(data).length);
+        console.log("the current keys is " + keys.toString());
+        console.log("the current uuid is " + this.uuid);
         // if(Object.keys(data).length == 1){
         //     keys=['0'];
         // }
         const formItems = keys.map((k, index) => {
             const temp = this.props.ruleType;
             return (
-                <div className={styles.addGrade} key={index}>
+                <div className={index == keys.length-1 ? styles.addGradeAth : styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
             <span className={styles.CategoryTitle}>{SALE_LABEL.k5m3oms8}{this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null}</span>
                         {// 显示的可操作文字
@@ -253,7 +259,7 @@ class NewAddGrade extends React.Component {
                             <span className={styles.CategoryDelete} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                         ) : (// 满 非第一个档次
                             <span>
-        <span className={styles.CategoryAdd} onClick={this.add}>点击添加档位</span>
+                                <span className={styles.CategoryAdd} onClick={this.add}>点击添加档位</span>
                                 <span className={styles.CategoryDelete} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
                             </span>
                         )
@@ -270,7 +276,7 @@ class NewAddGrade extends React.Component {
                                         <FormItem
                                             className={styles.FormItemStyle}
                                             validateStatus={this.state.data[k] ? this.state.data[k].StageAmountFlag ? 'success' : 'error' : 'success'}
-                                            help={this.state.data[k] ? this.state.data[k].StageAmountFlag ? null : SALE_LABEL.k5f4b1b9 : null}
+                                            help={this.state.data[k] ? this.state.data[k].StageAmountFlag ? null : `需大于0并且后面的档位需大于之前档位` : null}
                                         >
                                             <span className={styles.speSpan}>
                                                 {

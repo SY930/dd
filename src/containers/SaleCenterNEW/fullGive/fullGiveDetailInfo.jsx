@@ -108,6 +108,7 @@ class FullGiveDetailInfo extends React.Component {
             } else {
                 ruleType = '3'
             }
+            debugger;
             _rule.stage && _rule.stage.map((stage, index) => {
                 data[index] = {
                     stageAmount: '',
@@ -140,6 +141,8 @@ class FullGiveDetailInfo extends React.Component {
 
             let stage = [{}];
             let priceLst = [];
+            let foodRuleList =  [];
+            let tempArr = []
             // save state to redux
             if (ruleType == '0') {
                 if (data[0].foodCount == '' || data[0].foodCount == null) {
@@ -197,6 +200,7 @@ class FullGiveDetailInfo extends React.Component {
                 });
             } else {
                 // 满
+                //多档位的增加新字段
                 Object.keys(data).map((keys) => {
                     if (data[keys].foodCount == '' || data[keys].foodCount == null) {
                         data[keys].foodCountFlag = false;
@@ -213,16 +217,25 @@ class FullGiveDetailInfo extends React.Component {
                 });
                 this.setState({ data });
                 stage = Object.keys(data).map((keys, index) => {
-                    priceLst.push(data[keys].dishes.map((dish, index) => {
+                    priceLst = [];
+                    foodRuleList.push(data[keys].dishes.map((dish, index) => {
                         return {
-                            foodUnitID: dish.itemID || index,
-                            foodUnitCode: dish.foodKey,
-                            foodName: dish.foodName,
-                            foodUnitName: dish.unit,
-                            brandID: dish.brandID || '0',
-                            price: dish.price,
-                            stageNo: keys,
-                            imagePath: dish.imgePath,
+                            rule: {
+                                stageAmount: data[keys].stageAmount,
+                                giveFoodCount: data[keys].foodCount,
+                                stageNum: index,
+                            },
+                            priceList: [{
+                                foodUnitID: dish.itemID || index,
+                                foodUnitCode: dish.foodKey,
+                                foodName: dish.foodName,
+                                foodUnitName: dish.unit,
+                                brandID: dish.brandID || '0',
+                                price: dish.price,
+                                stageNo: keys,
+                                imagePath: dish.imgePath,
+                            }],
+                            scopeList: [],
                         }
                     }));
                     return {
@@ -251,8 +264,29 @@ class FullGiveDetailInfo extends React.Component {
                     newPrice = newPrice.concat(priceLst[index]);
                 })
             }
+            for (let i = 0; i < foodRuleList.length; i++) {
+                tempArr.push(...foodRuleList[i])
+            }
+            let secondTrans = [];
+            tempArr.forEach((item) => {
+                let tempKeys = item.rule.stageAmount;
+                let flag = false;
+                secondTrans.length && secondTrans.map((ath) => {
+                    if(ath.rule.stageAmount == tempKeys) {
+                        flag = true;
+                        if(!ath.priceList.filter((a) => {
+                            return a.foodUnitID == item.priceList[0].foodUnitID;
+                        }).length){
+                            ath.priceList = ath.priceList.concat(item.priceList);
+                        }
+                    }
+                })
+                if(!flag){
+                    secondTrans.push(item); 
+                }
+            })
             this.props.setPromotionDetail({
-                rule, priceLst: newPrice || priceLst,
+                rule, priceLst: newPrice || priceLst, foodRuleList: secondTrans,
             });
         });
         return nextFlag;
