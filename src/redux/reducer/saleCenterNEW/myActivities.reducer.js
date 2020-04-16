@@ -184,6 +184,9 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
 
         case SALE_CENTER_FETCH_PROMOTION_DETAIL_OK_NEW:
             if ($$state.getIn(['$promotionDetailInfo', 'status']) === 'pending') {
+                if(action.payload.promotionInfo.foodRuleList){
+                    action.payload.promotionInfo.priceLst = action.payload.promotionInfo.foodRuleList;
+                }
                 return $$state.setIn(['$promotionDetailInfo', 'status'], 'success')
                     .setIn(['$promotionDetailInfo', 'data'], Immutable.fromJS(action.payload));
             }

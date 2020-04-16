@@ -45,6 +45,7 @@ class ConnectedPriceListSelector extends Component {
                 priceLst={priceLst}
                 dishFilter={this.dishFilter}
                 onChange={this.handlePriceLstChange}
+                background={this.props.background}
             />
         )
     }
