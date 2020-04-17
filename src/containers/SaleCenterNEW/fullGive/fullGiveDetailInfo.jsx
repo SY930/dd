@@ -218,15 +218,16 @@ class FullGiveDetailInfo extends React.Component {
                 this.setState({ data });
                 stage = Object.keys(data).map((keys, index) => {
                     priceLst = [];
-                    foodRuleList.push(data[keys].dishes.map((dish, index) => {
+                    let tempIndex = index;
+                    foodRuleList.push(data[keys].dishes.map((dish, Athindex) => {
                         return {
                             rule: {
                                 stageAmount: data[keys].stageAmount,
                                 giveFoodCount: data[keys].foodCount,
-                                stageNum: index,
+                                stageNum: tempIndex,
                             },
                             priceList: [{
-                                foodUnitID: dish.itemID || index,
+                                foodUnitID: dish.itemID || Athindex,
                                 foodUnitCode: dish.foodKey,
                                 foodName: dish.foodName,
                                 foodUnitName: dish.unit,
@@ -241,7 +242,7 @@ class FullGiveDetailInfo extends React.Component {
                     return {
                         stageAmount: data[keys].stageAmount,
                         giveFoodCount: data[keys].foodCount,
-                        stageNum: index,
+                        stageNum: tempIndex,
                     }
                 })
             }
