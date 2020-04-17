@@ -271,7 +271,7 @@ class NewCustomerPage extends Component {
             // },
             {
                 title: k6316hto,
-                list: NEW_CUSTOMER_PROMOTION_TYPES.filter(item => item.key != 67 && item.key != 68),
+                list: NEW_CUSTOMER_PROMOTION_TYPES,
             },
             {
                 title: k6316hd0,
