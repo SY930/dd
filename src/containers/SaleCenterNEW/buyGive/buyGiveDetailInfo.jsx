@@ -9,7 +9,7 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber } from 'antd';
+import { Row, Col, Form, Select, Radio, Input, InputNumber, Tooltip } from 'antd';
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
@@ -52,7 +52,6 @@ class BuyGiveDetailInfo extends React.Component {
 
         this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
         this.renderGiveDishNumInput = this.renderGiveDishNumInput.bind(this);
-        this.renderDishsSelectionBox = this.renderDishsSelectionBox.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
@@ -239,37 +238,42 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderGiveDishNumInput = () => {
+    renderGiveDishNumInput = (wapper) => {
         const { intl } = this.props;
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                wrapperCol={{ span: 17, offset: 4 }}
+                wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 5 : 4 }}
                 required={true}
                 validateStatus={this.state.giveFoodCountFlag ? 'success' : 'error'}
             >
-
-                <PriceInput
-                    addonBefore={SALE_LABEL.k5hly03e}
-                    addonAfter={k5ez4qy4}
-                    value={{ number: this.state.giveFoodCount }}
-                    defaultValue={{ number: this.state.giveFoodCount }}
-                    onChange={this.onGiveFoodCountChange}
-                    modal="int"
-                />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
+                <Tooltip title={wapper ? SALE_LABEL.k5hly0k2 : ''}>
+                    <PriceInput
+                        addonBefore={SALE_LABEL.k5hly03e}
+                        addonAfter={k5ez4qy4}
+                        value={{ number: this.state.giveFoodCount }}
+                        defaultValue={{ number: this.state.giveFoodCount }}
+                        onChange={this.onGiveFoodCountChange}
+                        modal="int"
+                    />
+                </Tooltip>
+                {
+                    wapper ? null :
+                    <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
+                }
+                {/* debugger这里写加档位的icon */}
             </FormItem>
         )
     }
 
-    renderDishsSelectionBox() {
+    renderDishsSelectionBox(wapper) {
         return (
             <FormItem
                 label={SALE_LABEL.k5hly0bq}
                 className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
+                labelCol={{ span: wapper ? 3 : 4,  offset: wapper ? 1 : 0}}
+                wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 1 : 0}}
                 required={true}
                 validateStatus={this.state.dishsSelectStatus}
                 help={this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
@@ -286,7 +290,6 @@ class BuyGiveDetailInfo extends React.Component {
     }
     renderAdvancedSettingButton() {
         return (
-
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
@@ -299,8 +302,9 @@ class BuyGiveDetailInfo extends React.Component {
 
     renderMultiGradeSelect = () => {
         return (
-            <div>
-                rgrtjhyyj
+            <div className={styles.MultiGradeBorder}>
+                {this.renderDishsSelectionBox(17)}
+                {this.renderGiveDishNumInput(17)}
             </div>
         )
     }
