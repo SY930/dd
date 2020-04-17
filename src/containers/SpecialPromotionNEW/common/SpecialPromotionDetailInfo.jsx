@@ -40,11 +40,8 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-<<<<<<< HEAD
 import { axiosData } from '../../../helpers/util';
-=======
 import PhotoFrame from './PhotoFrame';
->>>>>>> gfz-422-免费领取支持分享
 
 const moment = require('moment');
 const FormItem = Form.Item;
