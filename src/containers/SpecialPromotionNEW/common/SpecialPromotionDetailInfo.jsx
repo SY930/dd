@@ -40,7 +40,11 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+<<<<<<< HEAD
 import { axiosData } from '../../../helpers/util';
+=======
+import PhotoFrame from './PhotoFrame';
+>>>>>>> gfz-422-免费领取支持分享
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -111,11 +115,6 @@ const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     [typePropertyName]: typeValue,
 })
 
-const shareInfoEnabledTypes = [
-    '65',
-    '66',
-]
-
 const MULTIPLE_LEVEL_GIFTS_CONFIG = [
     {
         type: '63',
@@ -130,7 +129,7 @@ const MULTIPLE_LEVEL_GIFTS_CONFIG = [
         levelAffix: COMMON_SPE.k6hk1aqp,
     },
 ]
-
+const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -165,6 +164,8 @@ class SpecialDetailInfo extends Component {
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
+            shareSubtitle: props.specialPromotion.getIn(['$eventInfo', 'shareSubtitle']),
+            restaurantShareImagePath: props.specialPromotion.getIn(['$eventInfo', 'restaurantShareImagePath']),
             /** 小程序分享相关结束 */
             /** 桌边砍相关 */
             moneyLimitType: props.specialPromotion.getIn(['$eventInfo', 'moneyLimitType']) || 0,
@@ -213,6 +214,31 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 68) {
             this.props.queryAllSaveMoneySet()
+        }
+        if (type == 21) {
+            if(this.props.isNew){
+                this.setState({shareTitle: '送您一份心意，共享美食优惠！'});
+            }
+        }
+        if (type == 68) {
+            if(this.props.isNew){
+                const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
+                const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
+                this.setState({shareTitle, shareSubtitle });
+            }
+        }
+        if (type == 66) {
+            if(this.props.isNew){
+                const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
+                const shareSubtitle = '海吃海喝就靠你啦！';
+                this.setState({shareTitle, shareSubtitle });
+            }
+        }
+        if (type == 65) {
+            if(this.props.isNew){
+                const shareTitle = '呼朋唤友，一起赢壕礼。';
+                this.setState({shareTitle });
+            }
         }
     }
     getMultipleLevelConfig = () => {
@@ -494,6 +520,7 @@ class SpecialDetailInfo extends Component {
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
+
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo(
@@ -602,6 +629,11 @@ class SpecialDetailInfo extends Component {
                     const params = { presentValue, presentType:2, giftName, giftCount: 1 };
                     giftInfo = [...giftInfo, params];
                 }
+            }
+            if(['21','68', '66', '65'].includes(type)) {
+                const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+                const shareInfo = { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath };
+                this.props.setSpecialBasicInfo(shareInfo);
             }
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
@@ -772,6 +804,11 @@ class SpecialDetailInfo extends Component {
     handleShareTitleChange = ({ target: { value }}) => {
         this.setState({
             shareTitle: value,
+        })
+    }
+    handleShareSubTitleChange = ({ target: { value }}) => {
+        this.setState({
+            shareSubtitle: value,
         })
     }
     handleMoneyLimitTypeChange = (value) => {
@@ -1026,6 +1063,64 @@ class SpecialDetailInfo extends Component {
                     style={{ position: 'relative' }}
                 >
                     {this.renderImgUrl()}
+                </FormItem>
+            </div>
+        )
+    }
+    onRestImg = ({ key, value }) => {
+        this.setState({ [key]: value });
+    }
+    renderShareInfo2 = () => {
+        const { type } = this.props;
+        const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+        return (
+            <div>
+                <p className={selfStyle.shareTip}>分享设置</p>
+                <FormItem
+                    label="分享标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareTitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareTitle,
+                        onChange: this.handleShareTitleChange,
+                    })(
+                        <Input placeholder="送您一份心意，共享美食优惠！" />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享副标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareSubtitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareSubtitle,
+                        onChange: this.handleShareSubTitleChange,
+                    })(
+                        <Input placeholder="选填，请输入副标题" />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享图片"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: 'relative' }}
+                >
+                    <PhotoFrame
+                        restaurantShareImagePath={restaurantShareImagePath}
+                        shareImagePath={shareImagePath}
+                        onChange={this.onRestImg}
+                        type={type}
+                    />
                 </FormItem>
             </div>
         )
@@ -1928,6 +2023,7 @@ class SpecialDetailInfo extends Component {
                     </Tooltip>
                 </p>
                 {this.renderRecommendGifts(0)}
+                {this.renderShareInfo2()}
             </div>
         )
     }
@@ -2262,7 +2358,7 @@ class SpecialDetailInfo extends Component {
                     )
                 }
                 {
-                    shareInfoEnabledTypes.includes(`${type}`) && this.renderShareInfo()
+                    ['21', '66', '65'].includes(type) && this.renderShareInfo2()
                 }
             </div>
         )
