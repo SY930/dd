@@ -238,9 +238,10 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderGiveDishNumInput = (wapper) => {
+    renderGiveDishNumInput = (wapper, index) => {
         const { intl } = this.props;
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
+        const { ifMultiGrade } = this.props;
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -263,6 +264,9 @@ class BuyGiveDetailInfo extends React.Component {
                     <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
                 }
                 {/* debugger这里写加档位的icon */}
+                {
+
+                }
             </FormItem>
         )
     }
