@@ -12,6 +12,7 @@ import {
     Switch,
     Popconfirm,
     Tooltip,
+    Checkbox,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -39,7 +40,7 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-
+import { axiosData } from '../../../helpers/util';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -139,6 +140,7 @@ class SpecialDetailInfo extends Component {
         const {
             data,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
+            pointObj,
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
@@ -151,6 +153,7 @@ class SpecialDetailInfo extends Component {
         const $saveMoneySetIds = props.specialPromotion.getIn(['$eventInfo', 'saveMoneySetIds']);
         const saveMoneySetIds = Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
         ? $saveMoneySetIds.toJS() : [];
+        const {givePoints, presentValue, giveCoupon } = pointObj;
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -185,17 +188,19 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
+            givePoints,
+            presentValue,
+            giveCoupon,
         }
     }
     componentDidMount() {
-        const { type, isLast = true, } = this.props;
+        const { type, isLast = true, user } = this.props;
         this.props.getSubmitFn({
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
         this.props.fetchGiftListInfo();
         if (type == 67) {
-            const user = this.props.user;
             const opts = {
                 _groupID: user.accountInfo.groupID,
                 _role: user.accountInfo.roleType,
@@ -259,7 +264,15 @@ class SpecialDetailInfo extends Component {
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
         const data = this.initiateDefaultGifts();
+        let pointObj = { presentValue: '', givePoints: false, giveCoupon: false };
         giftInfo.forEach((gift, index) => {
+            if(this.props.type == '52' && gift.presentType === 2){
+                pointObj = { ...pointObj, presentValue: gift.presentValue, givePoints: true };
+                return;
+            }
+            if(this.props.type == '52' && gift.presentType === 1){
+                pointObj = { ...pointObj, giveCoupon: true };
+            }
             if (data[index] !== undefined) {
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
@@ -330,9 +343,13 @@ class SpecialDetailInfo extends Component {
                     }))
             }
         }
+        if(this.props.isNew){
+            pointObj = { presentValue: '', givePoints: false, giveCoupon: true };
+        }
         return {
             data,
             wakeupSendGiftsDataArray,
+            pointObj,
         };
     }
 
@@ -409,6 +426,7 @@ class SpecialDetailInfo extends Component {
     handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
+        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
         this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
@@ -491,99 +509,29 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        // checkgiftCount = (giftCount, index, giftInfoArray) => {
-        //     const _value = parseFloat(giftCount.value);
-        //     if (!(_value > 0 && _value < 51)) {
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftCount,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftCount,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
-
-        // // 有效天数
-        // checkGiftValidDays = (giftValidDays, index) => {
-        //     const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
-        //     if (_value > 0 || (_value[0] && _value[1])) {
-        //         return giftValidDays;
-        //     }
-        //     return {
-        //         msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
-        //         validateStatus: 'error',
-        //         value: '',
-        //     }
-        // }
-
-        // // 校验中奖比率
-        // checkGiftOdds = (giftOdds) => {
-        //     if (type == '20') {
-        //         const _value = parseFloat(giftOdds.value);
-        //         if (_value >= 0 && _value <= 100) {
-        //             return giftOdds;
-        //         }
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     return giftOdds;
-        // }
-
-        // // 校验礼品信息
-        // checkGiftInfo = (giftInfo, index, giftInfoArray) => {
-        //     if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
-        //         return {
-        //             giftItemID: null,
-        //             giftName: null,
-        //             validateStatus: 'error',
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftInfo,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftInfo,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
+        if(type === '52') {
+            const { presentValue, givePoints, giveCoupon } = this.state;
+            if(!givePoints && !giveCoupon){
+                message.warning('赠送积分和优惠券必选一项');
+                return;
+            }
+            if(givePoints){
+                if(!priceReg.test(presentValue)){
+                    message.warning('赠送积分最多支持两位小数正数，小于1000000');
+                    return;
+                }
+            }
+            if(givePoints && !giveCoupon){
+                if(!priceReg.test(presentValue)){
+                    message.warning('赠送积分最多支持输入两位小数正数，小于1000000');
+                    return;
+                }
+                const giftName = presentValue + '积分';
+                const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+        }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -646,7 +594,15 @@ class SpecialDetailInfo extends Component {
                 message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
-            const giftInfo = this.getGiftInfo(data);
+            let giftInfo = this.getGiftInfo(data);
+            if(type === '52') {
+                const { presentValue, givePoints } = this.state;
+                if(givePoints){
+                    const giftName = presentValue + '积分';
+                    const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                    giftInfo = [...giftInfo, params];
+                }
+            }
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
                 this.props.type == '67' ? {
@@ -2168,7 +2124,67 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    onCheckPoint = ({ target }) => {
+        const { checked } = target;
+        this.setState({ givePoints: checked });
+    }
+    onCheckCoupon = ({ target }) => {
+        const { checked } = target;
+        this.setState({ giveCoupon: checked });
+    }
+    onGivePointsValueChange = ({ target }) => {
+        const { value } = target;
+        this.setState({ presentValue: value });
+    }
+    renderNewCardGive() {
+        const { givePoints, presentValue, giveCoupon } = this.state;
+        return (<div>
+            <FormItem
+                style={{ padding: '0px 40px' }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={givePoints}
+                    onChange={this.onCheckPoint}
+                >赠送积分</Checkbox>
+            </FormItem>
+            {givePoints &&
+                <div className={selfStyle.pointBox}>
+                <FormItem
+                    wrapperCol={{ span: 20 }}
+                    className={''}
+                    validateStatus={''}
+                    help={''}
+                >
+                    <div className={selfStyle.title}>
+                        <span>赠送积分</span>
+                    </div>
+                    <Input
+                        addonAfter={'积分'}
+                        value={presentValue}
+                        onChange={this.onGivePointsValueChange}
+                    />
+                </FormItem>
+            </div>}
+            <FormItem
+                style={{ padding: '0px 40px' }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={giveCoupon}
+                    onChange={this.onCheckCoupon}
+                >赠送优惠券</Checkbox>
+            </FormItem>
+        </div>);
+    }
     render() {
+        const { giveCoupon } = this.state;
         const { type } = this.props;
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
@@ -2205,6 +2221,11 @@ class SpecialDetailInfo extends Component {
                         </FormItem>
                     )
                 }
+                {
+                    type === '52' &&
+                    this.renderNewCardGive()
+                }
+                { giveCoupon &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
@@ -2220,7 +2241,7 @@ class SpecialDetailInfo extends Component {
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
-                </Row>
+                </Row>}
                 {
                    type == '65' && <p className={styles.coloredBorderedLabel}>{this.props.intl.formatMessage(STRING_SPE.dk469ad5m987288)}</p>
                 }
