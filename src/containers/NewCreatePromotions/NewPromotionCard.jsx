@@ -18,22 +18,28 @@ class NewPromotionCard extends Component {
         const {
             promotionEntity,
             onCardClick,
+            onClickOpen,
         } = this.props;
         const { key } = promotionEntity;
         const isUse = this.filterItem(key);
-        if(pulgins.includes(key) && !isUse) {
-            Modal.info({
-                title: '',
-                content: (
-                  <div>
-                    <p>联系商务开通</p>
-                  </div>
-                ),
-                onOk() {},
-              });
-        }else{
-            onCardClick(promotionEntity);
-        }
+        onClickOpen(key)
+        // if(pulgins.includes(key) && !isUse) {
+        //     Modal.info({
+        //         title: '限时开放中，您可免费试用60天',
+        //         content: (
+        //           <div>
+        //             <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
+        //           </div>
+        //         ),
+        // okText="免费试用"
+        //   cancelText="稍后开通"
+        //         onOk() {
+        //             onClickOpen(key)
+        //         },
+        //       });
+        // }else{
+        //     onCardClick(promotionEntity);
+        // }
         console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
@@ -49,6 +55,7 @@ class NewPromotionCard extends Component {
             return <em className={styles.validDate}>申请试用</em>
         }
     }
+
     render() {
         let {
             promotionEntity : {
@@ -97,8 +104,8 @@ class NewPromotionCard extends Component {
                 <div className={styles.speContainer} onClick={this.onClick}>
                     <p className={styles.expandableP}>
                         {isNew ? <span><img src={xin} /></span> : null}
+                        {this.renderPulgin(key)}
                     </p>
-                    {this.renderPulgin(key)}
                     <div className={styles.title}>
                         {title}
                         <div className={styles.speTag}>
@@ -110,16 +117,16 @@ class NewPromotionCard extends Component {
                                 wechatFlag --;
                             }
                             return (<div className={styles.speTagSpan} key={i}>{
-                                tag.props ? 
+                                tag.props ?
                                     tag.props.defaultMessage.includes('小程序') ?
-                                    <img className={styles.speTagImg} src={xcx} /> : 
+                                    <img className={styles.speTagImg} src={xcx} /> :
                                     tag.props.defaultMessage.includes('微信') ?
-                                    <img className={styles.speTagImg} src={wx} /> : 
-                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
                                     <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                                 : tag.includes('pos') ?
-                                    <img className={styles.speTagImg} src={pos} /> : 
-                                    tag.includes('微信') ? 
+                                    <img className={styles.speTagImg} src={pos} /> :
+                                    tag.includes('微信') ?
                                         <img className={styles.speTagImg} src={wx} /> :
                                         tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
                         }</div>)})}
@@ -130,7 +137,7 @@ class NewPromotionCard extends Component {
                             {text}
                         </div>
                     </Tooltip>
-                    
+
                     <div className={styles.speCardLogo} style={{
                         right: right * 0.62,
                         bottom: bottom * 0.62,

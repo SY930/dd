@@ -85,7 +85,20 @@ class NewCustomerPage extends Component {
             this.setState({ whiteList: eventTypeInfoList });
         })
     }
-
+    onClickOpen(eventWay){
+        axiosData(
+            'specialPromotion/freeTrialOpen.ajax',
+            { eventWay },
+            { needThrow: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(data => {
+            console.log('data', data);
+            if(data.code === '000'){
+                message.success('开通成功，欢迎使用！')
+            }
+        })
+    }
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
@@ -339,6 +352,7 @@ class NewCustomerPage extends Component {
                                                 index={index}
                                                 whiteList={whiteList}
                                                 text={item.text}
+                                                onClickOpen={this.onClickOpen}
                                             />
                                         ))
                                     }
