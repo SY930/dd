@@ -332,7 +332,7 @@ class GenerateBatchQRCodes extends Component {
                 key: 'key4',
             },
             {
-                title: '二维码剩余有效期',
+                title: '二维码/链接有效期',
                 className: 'TableTxtCenter',
                 width: 110,
                 dataIndex: 'qrEffectDays',
