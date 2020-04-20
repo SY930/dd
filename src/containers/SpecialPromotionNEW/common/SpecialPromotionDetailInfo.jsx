@@ -182,6 +182,8 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
+            shareTitlePL: '',
+            shareSubtitlePL: '',
         }
     }
     componentDidMount() {
@@ -208,27 +210,36 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 21) {
             if(this.props.isNew){
-                this.setState({shareTitle: '送您一份心意，共享美食优惠！'});
+                const shareTitle = '送您一份心意，共享美食优惠！';
+                const shareTitlePL = shareTitle;
+                const shareSubtitlePL = '选填，请输入副标题';
+                this.setState({shareTitle, shareTitlePL, shareSubtitlePL });
             }
         }
         if (type == 68) {
             if(this.props.isNew){
                 const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
                 const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
-                this.setState({shareTitle, shareSubtitle });
+                const shareTitlePL = shareTitle;
+                const shareSubtitlePL = shareSubtitle;
+                this.setState({shareTitle, shareSubtitle, shareTitlePL, shareSubtitlePL });
             }
         }
         if (type == 66) {
             if(this.props.isNew){
                 const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
                 const shareSubtitle = '海吃海喝就靠你啦！';
-                this.setState({shareTitle, shareSubtitle });
+                const shareTitlePL = shareTitle;
+                const shareSubtitlePL = shareSubtitle;
+                this.setState({shareTitle, shareSubtitle, shareTitlePL, shareSubtitlePL });
             }
         }
         if (type == 65) {
             if(this.props.isNew){
                 const shareTitle = '呼朋唤友，一起赢壕礼。';
-                this.setState({shareTitle });
+                const shareTitlePL = shareTitle;
+                const shareSubtitlePL = '选填，请输入副标题';
+                this.setState({shareTitle, shareTitlePL, shareSubtitlePL });
             }
         }
     }
@@ -1112,7 +1123,8 @@ class SpecialDetailInfo extends Component {
     }
     renderShareInfo2 = () => {
         const { type } = this.props;
-        const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+        const { shareTitle, shareSubtitle, restaurantShareImagePath,
+            shareImagePath, shareTitlePL, shareSubtitlePL } = this.state;
         return (
             <div>
                 <p className={selfStyle.shareTip}>分享设置</p>
@@ -1129,7 +1141,7 @@ class SpecialDetailInfo extends Component {
                         initialValue: shareTitle,
                         onChange: this.handleShareTitleChange,
                     })(
-                        <Input placeholder="送您一份心意，共享美食优惠！" />
+                        <Input placeholder={shareTitlePL} />
                     )}
                 </FormItem>
                 <FormItem
@@ -1145,7 +1157,7 @@ class SpecialDetailInfo extends Component {
                         initialValue: shareSubtitle,
                         onChange: this.handleShareSubTitleChange,
                     })(
-                        <Input placeholder="选填，请输入副标题" />
+                        <Input placeholder={shareSubtitlePL} />
                     )}
                 </FormItem>
                 <FormItem
