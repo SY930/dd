@@ -200,9 +200,15 @@ class NewAddGrade extends React.Component {
     onStageAmountChange(value, index) {
         const { data } = this.state;
         data[index].stageAmount = value.number;
-        if (!value.number || value.number <= 0 || index != 0 && data[index].stageAmount <= data[index-1].stageAmount || index == 0 && data[index].stageAmount >= data[index+1].stageAmount) {
+        if (!value.number || value.number <= 0 || index == 1 && +data[index].stageAmount <= +data[index-1].stageAmount && +data[index].stageAmount  <= +data[index+1].stageAmount|| index == 2 && +data[index].stageAmount <= +data[index-1].stageAmount || index == 0 && +data[index].stageAmount >= +data[index+1].stageAmount) {
             data[index].StageAmountFlag = false;
         } else {
+            // if(data[2]){
+            //     data[2].StageAmountFlag = true;
+            // }
+            // if(data[1]){
+            //     data[1].StageAmountFlag = true;
+            // }
             data[index].StageAmountFlag = true;
         }
         this.setState({ data });
@@ -272,7 +278,7 @@ class NewAddGrade extends React.Component {
                     </div>
                     <div className={styles.CategoryBody}>
                         <Row>
-                            <Col span={15} style={{position: 'relative', left: -10}}>
+                            <Col span={15} style={{position: 'relative', left: -10, marginBottom: 13}}>
                                 {
                                     this.props.ruleType != '0' ?
                                         <FormItem
