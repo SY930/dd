@@ -109,21 +109,41 @@ class FullGiveDetailInfo extends React.Component {
             } else {
                 ruleType = '3'
             }
-            _rule.stage && _rule.stage.map((stage, index) => {
-                data[index] = {
-                    stageAmount: '',
-                    giftType: '0',
-                    dishes: [],
-                    giftName: null,
-                    foodCount: '',
-                    foodCountFlag: true,
-                    dishesFlag: true,
-                    StageAmountFlag: true,
-                };
-                data[index].foodCount = stage.giveFoodCount || '';
-                data[index].giftName = stage.giftName || '';
-                data[index].stageAmount = stage.stageAmount || '';
-            })
+            let foodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()
+            if(foodRuleList && foodRuleList.length) {
+                foodRuleList.map((stage, index) => {
+                    let tempRule = JSON.parse(stage.rule);
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = tempRule.giveFoodCount || '';
+                    data[index].giftName = tempRule.giftName || '';
+                    data[index].stageAmount = tempRule.stageAmount || '';
+                })
+            }else {
+                _rule.stage && _rule.stage.map((stage, index) => {
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = stage.giveFoodCount || '';
+                    data[index].giftName = stage.giftName || '';
+                    data[index].stageAmount = stage.stageAmount || '';
+                })
+            }
         }
         return {
             data,
