@@ -9,7 +9,7 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber, Tooltip } from 'antd';
+import { Row, Col, Form, Select, Radio, Input, InputNumber, Tooltip, Icon } from 'antd';
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
@@ -48,15 +48,23 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
             ifMultiGrade: true,
+            foodRuleList: [
+                {
+                    rule: {
+                        stageAmount: '',
+                        giveFoodCount: '',
+                        stageType: '2',
+                        stageNum: 0,
+                    },
+                    priceList: [],
+                    scopeList: [],
+                }
+            ],
+            index: 'not-important',
         };
 
-        this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
-        this.renderGiveDishNumInput = this.renderGiveDishNumInput.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onStageAmountChange = this.onStageAmountChange.bind(this);
-        this.handleStageTypeChange = this.handleStageTypeChange.bind(this);
-        this.onGiveFoodCountChange = this.onGiveFoodCountChange.bind(this);
     }
 
     componentDidMount() {
@@ -79,7 +87,7 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCount: _rule.stage ? _rule.stage[0].giveFoodCount : '',
         }, () => {
             if(this.state.stageType == 2 || this.state.stageType == 1) {
-                this.renderMultiGrade();
+                this.renderMultiGrade(false);
             } else {
                 this.renderSingleGrade();
             }
@@ -141,41 +149,100 @@ class BuyGiveDetailInfo extends React.Component {
             { display: !this.state.display }
         )
     };
-    onStageAmountChange(value) {
-        let { stageAmount, stageAmountFlag } = this.state;
-        if (value.number == null || value.number == '') {
-            stageAmountFlag = false;
-            stageAmount = value.number;
-        } else {
-            stageAmountFlag = true;
-            stageAmount = value.number;
+    onStageAmountChange = (value, index) => {
+        let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
+        if(index === 0 || index){
+            //当是满的逻辑
+            // 在这会加上每个档位对于这个stageAmount的flag的判断加上新的判断flag整理数据的时候加上
+            foodRuleList[index].stageAmountFlag = true;
+            if(index == 0){
+                if(foodRuleList[index+1].rule.stageAmount <= value.number){
+                    foodRuleList[index].stageAmountFlag = false;
+                }else {
+                    foodRuleList[index+1].stageAmountFlag = true;
+                }
+            }else if(index == foodRuleList.length-1) {
+                if(foodRuleList[index-1].rule.stageAmount >= value.number){
+                    foodRuleList[index].stageAmountFlag = false;
+                } else {
+                    foodRuleList[index-1].stageAmountFlag = true;
+                }
+            }else {
+                if(foodRuleList[index-1].rule.stageAmount >= value.number || foodRuleList[index+1].rule.stageAmount <= value.number){
+                    foodRuleList[index].stageAmountFlag = false;
+                }else {
+                    foodRuleList[index+1].stageAmountFlag = true;
+                    foodRuleList[index-1].stageAmountFlag = true;
+                }
+            }
+            foodRuleList[index].rule.stageAmount = value.number;
+            this.setState({
+                foodRuleList,
+            })
+        }else {
+            //当不是满的逻辑
+            if (value.number == null || value.number == '') {
+                stageAmountFlag = false;
+                stageAmount = value.number;
+            } else {
+                stageAmountFlag = true;
+                stageAmount = value.number;
+            }
+            this.setState({ stageAmount, stageAmountFlag });
         }
-        this.setState({ stageAmount, stageAmountFlag });
+        
     }
-    handleStageTypeChange(value) {
+    handleStageTypeChange = (value, index) => {
+        //这边不传index 的意思是无论如何 index都为0，因为变动了类型的时候，以为着多档 单档切换了，所以无论什么时候index都是0
         if(Number(value) == 2 || Number(value) == 1) {
-            this.renderMultiGrade();
+            this.renderMultiGrade(true, value);
         } else {
             this.renderSingleGrade();
         }
         this.setState({ stageType: Number(value) });
     }
 
-    onGiveFoodCountChange(value) {
-        let { giveFoodCount, giveFoodCountFlag } = this.state;
-        if (value.number == null || value.number == '') {
-            giveFoodCountFlag = false;
-            giveFoodCount = value.number;
-        } else {
-            giveFoodCountFlag = true;
-            giveFoodCount = value.number;
+    onGiveFoodCountChange(value, index) {
+        let { giveFoodCount, giveFoodCountFlag, foodRuleList } = this.state;
+        if(index === 0 || index){
+            //当是满的逻辑
+            foodRuleList[index].rule.giveFoodCount = value.number;
+            this.setState({
+                foodRuleList,
+            })
+        }else {
+            if (value.number == null || value.number == '') {
+                giveFoodCountFlag = false;
+                giveFoodCount = value.number;
+            } else {
+                giveFoodCountFlag = true;
+                giveFoodCount = value.number;
+            }
+            this.setState({ giveFoodCount, giveFoodCountFlag });
         }
-        this.setState({ giveFoodCount, giveFoodCountFlag });
+        
     }
-    renderMultiGrade = () => {
+    renderMultiGrade = (ifNotMount, type) => {
+        //更改所有相关数据为数组
         this.setState({
             ifMultiGrade: true,
         })
+        if(ifNotMount) {
+            this.setState({
+                foodRuleList: [
+                    {
+                        rule: {
+                            stageAmount: '',
+                            giveFoodCount: '',
+                            stageType: type,
+                            stageNum: 0,
+                        },
+                        priceList: [],
+                        scopeList: [],
+                    }
+                ]
+            })
+        }
     }
     renderSingleGrade = () => {
         this.setState({
@@ -183,8 +250,39 @@ class BuyGiveDetailInfo extends React.Component {
         })
     }
 
-    renderBuyDishNumInput = () => {
+    addGrade = () => {
+        let { foodRuleList } = this.state;
+        foodRuleList.push({
+            rule: {
+                stageAmount: '',
+                giveFoodCount: '',
+                stageType: foodRuleList[0].rule.stageType,
+                stageNum: 0,
+            },
+            priceList: [],
+            scopeList: [],
+        })
+        this.setState({
+            foodRuleList,
+        })
+    }
+
+    deleteGrade = (e, index) => {
+        let { foodRuleList } = this.state;
+        foodRuleList.splice(index, 1);
+        this.setState({
+            foodRuleList,
+        })
+    }
+
+    renderBuyDishNumInput = (item, index) => {
+        //指定菜品
         const { intl } = this.props;
+        const { ifMultiGrade, foodRuleList } = this.state;
+        let singleAdd, bothIcon, singleDelete;  
+        singleAdd = index == 0 && foodRuleList.length == 1;
+        bothIcon = index != 0 && index == foodRuleList.length - 1;
+        singleDelete = index < 4 && index != foodRuleList.length - 1 || index == 4 && index == foodRuleList.length - 1;
         const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
         const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
         const k5hlxzmq = intl.formatMessage(SALE_STRING.k5hlxzmq);
@@ -212,14 +310,17 @@ class BuyGiveDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
                 required={true}
-                validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
+                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].stageAmountFlag ? 'error' : 'success' :this.state.stageAmountFlag ? 'success' : 'error'}
+                // debugger;在这里要加提示信息
             >
-
-                <PriceInput
+                <PriceInput key={2}
                     addonBefore={<Select size="default"
-                                         onChange={this.handleStageTypeChange}
-                                         value={`${this.state.stageType}`}
-                                         getPopupContainer={(node) => node.parentNode}
+                                        onChange={
+                                            (value) => {
+                                                this.handleStageTypeChange(value);
+                                            }}
+                                        value={ifMultiGrade ? `${item.rule.stageType}`:`${this.state.stageType}`}
+                                        getPopupContainer={(node) => node.parentNode}
                     >
                         {
                             RULE_TYPE.map((item) => {
@@ -228,34 +329,51 @@ class BuyGiveDetailInfo extends React.Component {
                         }
                     </Select>}
                     addonAfter={'份'}
-                    value={{ number: this.state.stageAmount }}
-                    defaultValue={{ number: this.state.stageAmount }}
-                    onChange={this.onStageAmountChange}
+                    value={{ number: ifMultiGrade ? item.rule.stageAmount : this.state.stageAmount }}
+                    defaultValue={{ number: ifMultiGrade ? item.rule.stageAmount : this.state.stageAmount  }}
+                    onChange={(value) => {
+                        this.onStageAmountChange(value, index);
+                    }}
                     modal="int"
-                />
+                /> 
                 <span className={[styles.gTip, styles.gTipInLine].join(' ')}>&nbsp;</span>
+                {
+                    ifMultiGrade ? 
+                        singleAdd ? 
+                            <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade}  type="plus-circle-o" /></span> :
+                                singleDelete ? <span className={styles.operateIcon}><Icon className={styles.minIconGrade} onClick={(value) => {this.deleteGrade(value, index)}} type="minus-circle-o" /></span> :
+                                <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade} type="plus-circle-o" /> <Icon className={styles.minIconGrade} type="minus-circle-o" onClick={(value) => {this.deleteGrade(value, index)}} /></span> : null
+                }
+                {
+                    ifMultiGrade ? 
+                        <span className={styles.GradeStyle}>{`档位${index ? index+1 : 1}`}</span> 
+                        : null
+                }
             </FormItem>
         )
     }
 
-    renderGiveDishNumInput = (wapper, index) => {
+    renderGiveDishNumInput = (wapper, item, index) => {
+        //菜品赠送数量
         const { intl } = this.props;
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
-        const { ifMultiGrade } = this.props;
+        const { ifMultiGrade } = this.state;
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 5 : 4 }}
                 required={true}
-                validateStatus={this.state.giveFoodCountFlag ? 'success' : 'error'}
+                validateStatus={ifMultiGrade ? item.rule.giveFoodCount == null || item.rule.giveFoodCount == '' ? 'error' : 'success' : this.state.giveFoodCountFlag ? 'success' : 'error'}
             >
                 <Tooltip title={wapper ? SALE_LABEL.k5hly0k2 : ''}>
                     <PriceInput
                         addonBefore={SALE_LABEL.k5hly03e}
                         addonAfter={k5ez4qy4}
-                        value={{ number: this.state.giveFoodCount }}
-                        defaultValue={{ number: this.state.giveFoodCount }}
-                        onChange={this.onGiveFoodCountChange}
+                        value={{ number: ifMultiGrade ? `${item.rule.giveFoodCount}`:this.state.giveFoodCount }}
+                        defaultValue={{ number: ifMultiGrade ? `${item.rule.giveFoodCount}`:this.state.giveFoodCount }}
+                        onChange={(value) => {
+                            this.onGiveFoodCountChange(value, index);
+                        }}
                         modal="int"
                     />
                 </Tooltip>
@@ -263,15 +381,12 @@ class BuyGiveDetailInfo extends React.Component {
                     wapper ? null :
                     <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
                 }
-                {/* debugger这里写加档位的icon */}
-                {
-
-                }
             </FormItem>
         )
     }
 
-    renderDishsSelectionBox(wapper) {
+    renderDishsSelectionBox(wapper, item, index) {
+        //赠送菜品
         return (
             <FormItem
                 label={SALE_LABEL.k5hly0bq}
@@ -282,15 +397,21 @@ class BuyGiveDetailInfo extends React.Component {
                 validateStatus={this.state.dishsSelectStatus}
                 help={this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
             >
-                <ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} onChange={this.onDishesChange} />
+                <ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} isShopMode={this.props.isShopFoodSelectorMode} onChange={(value) => {this.onDishesChange(value, index)}} />
             </FormItem>
         )
     }
-    onDishesChange = (value) => {
-        this.setState({
-            dishes: [...value],
-            dishsSelectStatus: value.length > 0 ? 'success' : 'error',
-        });
+    onDishesChange = (value, index) => {
+        let { ifMultiGrade, foodRuleList } = this.state;
+        if (ifMultiGrade) {
+            //当时满时走的逻辑
+            foodRuleList[index].priceList = [...value];
+        } else {
+            this.setState({
+                dishes: [...value],
+                dishsSelectStatus: value.length > 0 ? 'success' : 'error',
+            });
+        }
     }
     renderAdvancedSettingButton() {
         return (
@@ -304,25 +425,35 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderMultiGradeSelect = () => {
+    renderMultiGradeSelect = (item, index) => {
         return (
-            <div className={styles.MultiGradeBorder}>
-                {this.renderDishsSelectionBox(17)}
-                {this.renderGiveDishNumInput(17)}
+            <div>
+                {this.renderBuyDishNumInput(item,index)}
+                <div className={styles.MultiGradeBorder}>
+                    {this.renderDishsSelectionBox(17, item, index)}
+                    {this.renderGiveDishNumInput(17, item, index)}
+                </div>
             </div>
         )
     }
 
 
     render() {
-        const { ifMultiGrade } = this.state;
+        const { ifMultiGrade, foodRuleList } = this.state;
+        console.log('foodRuleList the length is ' + foodRuleList.length);
+        console.log('ifMultiGrade now is ' + ifMultiGrade);
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
-                    {this.renderBuyDishNumInput()}
+                    {
+                        ifMultiGrade ? null : 
+                            this.renderBuyDishNumInput()
+                    }
                     {ifMultiGrade ? 
-                        this.renderMultiGradeSelect()
+                        foodRuleList.map((item, index) => {
+                            return this.renderMultiGradeSelect(item, index)
+                        })
                     :
                         this.renderDishsSelectionBox()
                     }
