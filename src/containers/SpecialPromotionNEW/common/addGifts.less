@@ -101,3 +101,55 @@
         cursor: pointer;
     }
 }
+.pointBox{
+    background: #fdf4ed;
+    border-radius: 3px;
+    margin: 0 82px 0 106px;
+    :global{
+        .ant-form-item-control{
+            display: flex;
+        }
+    }
+    .title{
+        width: 130px;
+        text-align: right;
+        padding: 0 10px;
+    }
+}
+.photoFrame{
+    position: relative;
+    &>ul{
+        display: flex;
+        &>li{
+            width: 200px;
+            color: #999;
+            &>div:first-child{
+                margin-left: 38px;
+            }
+            &>div:last-child{
+                text-align: center;
+            }
+        }
+    }
+    h5{
+        font-size: 14px;
+    }
+    &>p{
+        color: #999;
+    }
+    &>a{
+        position: absolute;
+        left: -60px;
+        top: 35px;
+    }
+    :global{
+        .ant-upload-list-picture-card{
+            display: block;
+        }
+    }
+}
+.shareTip{
+    border-left: 3px solid #1ab495;
+    padding: 0 3px;
+    margin: 10px 45px;
+}

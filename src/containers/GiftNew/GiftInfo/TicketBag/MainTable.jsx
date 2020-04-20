@@ -1,19 +1,24 @@
 import React, { PureComponent as Component } from 'react';
-import { Table, message, Modal, Tooltip } from 'antd';
+import { Table, message, Modal, Tooltip, Icon } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 import { href, DF, TF } from './Common';
 import PagingFactory from 'components/PagingFactory';
 import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
 import DetailModal from './Detail';
+import StockModal from './StockModal';
+
+const TYPEMAP = { 1: '付费购买', 2: '活动投放' };
 
 /** 列表页表格数据 */
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
         visible: false,            // 是否显示弹层
+        visible1: false,            // 是否显示弹层
         detail: {},
         couponPackageID: '',
+        stock: '',
     };
     /* 根据父组件传来的数据判断是否需要更新分页组件 */
     componentWillReceiveProps(np) {
@@ -71,10 +76,17 @@ class MainTable extends Component {
             }
         });
     }
+    /** 编辑 */
+    onEditStock = ({ target }) => {
+        const { id } = target.closest('p');
+        const [couponPackageID, stock] = id.split(',');
+        this.setState({ couponPackageID, stock });
+        this.onToggleModal1();
+    }
     resetFormData = (detail) => {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
         const { couponSendWay: way, couponPackageType: type, validCycle: cycle,
-            couponPackagePrice: price, couponPackageStock: stock } = info;
+            couponPackagePrice: price, remainStock: stock } = info;
         const shopInfos = shops.map(x=>`${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
@@ -83,10 +95,10 @@ class MainTable extends Component {
         }
         const sendTime = +time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
-        const couponPackageStock = (stock === -1) ? '' : stock;    // 库存为-1和0 都显示空
+        const remainStock = (stock === -1) ? '' : stock;    // 库存为-1和0 都显示空
         return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
             couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs,
-            couponPackagePrice2: price, couponPackageStock };
+            couponPackagePrice2: price, remainStock };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
@@ -99,11 +111,17 @@ class MainTable extends Component {
     onToggleModal = () => {
         this.setState(ps => ({ visible: !ps.visible }));
     }
+    onToggleModal1 = (reload) => {
+        this.setState(ps => ({ visible1: !ps.visible1 }));
+        if(reload){
+            this.props.onQuery();
+        }
+    }
     /* 生成表格头数据 */
     generateColumns() {
         const { pageObj, status } = this.props;
         const isNor = status !== '2';
-        const { tc } = styles;
+        const { tc, tr, stockBtn } = styles;
         const render = (v, o) => {
             const { couponPackageID: id, couponPackageName: name } = o;
             return (
@@ -125,14 +143,23 @@ class MainTable extends Component {
             const idx = v + (pageSize * (pageNo - 1));
             return (<span>{idx}</span>);
         };
-
+        const render3 = (v, o) => {
+            const { couponPackageID: id, remainStock = '' } = o;
+            const stock = (remainStock === -1) ? '不限制' : remainStock;
+            return (
+                <p id={id +','+ remainStock} className={tr}>
+                    <span>{stock}</span>
+                    <a className={stockBtn} href={href} onClick={this.onEditStock}><Icon type="edit" /></a>
+                </p>);
+        };
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
             { width: 160, title: '操作', dataIndex: 'op', className: tc, render },
-            { width: 160, title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
-            { width: 160, title: '券包ID', dataIndex: 'couponPackageID' },
-            { title: '券包说明', dataIndex: 'couponPackageDesciption' },
+            { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
+            { width: 180, title: '券包ID', dataIndex: 'couponPackageID' },
+            { width: 100, title: '券包类型', dataIndex: 'type' },
+            { width: 100, title: '库存', dataIndex: 'remainStock', render: render3 },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
             { width: 260, title: '创建时间/修改时间', dataIndex: 'postTime', className: tc },
         ];
@@ -143,13 +170,14 @@ class MainTable extends Component {
         return list.map((x, i) => ({
             key: x.id,
             idx: i + 1,
+            type: TYPEMAP[x.couponPackageType],
             postBy: (x.createBy || '') + ' / ' + (x.modifyBy || ''),
             postTime: (x.createTime || '') + ' / ' + (x.modifyTime || ''),
             ...x,
         }));
     }
     render() {
-        const { visible, detail, couponPackageID } = this.state;
+        const { visible, detail, couponPackageID, visible1, stock } = this.state;
         const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
@@ -170,6 +198,13 @@ class MainTable extends Component {
                             ids={{groupID, couponPackageID}}
                             detail={detail}
                             onClose={this.onToggleModal}
+                        />
+                    }
+                    {visible1 &&
+                        <StockModal
+                            stock={stock}
+                            ids={{groupID, couponPackageID}}
+                            onClose={this.onToggleModal1}
                         />
                     }
                 </div>

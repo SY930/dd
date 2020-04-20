@@ -111,11 +111,11 @@ class Detail extends Component {
         const { list3, loading3, pageObj3 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
-            couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
+            couponPackageDesciption, remainStock, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
-        const oddStock = couponPackageStock - sendCount;
-        const resetStock = couponPackageStock === -1 ? '不限制' : couponPackageStock;
+        const oddStock = remainStock - sendCount;
+        const resetStock = remainStock === -1 ? '不限制' : remainStock;
         return (
             <Modal
                 title="券包使用详情"
@@ -147,7 +147,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{couponPackageStock: resetStock, sendCount}]} />
+                            <TotalTable list={[{remainStock: resetStock, sendCount}]} />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>
