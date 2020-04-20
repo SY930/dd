@@ -92,6 +92,7 @@ class NewPromotionCard extends Component {
             )
         }
         if(size === 'special') {
+            let wechatFlag = 1;
             return (
                 <div className={styles.speContainer} onClick={this.onClick}>
                     <p className={styles.expandableP}>
@@ -102,6 +103,12 @@ class NewPromotionCard extends Component {
                         {title}
                         <div className={styles.speTag}>
                         {tags.map((tag, i) => {
+                            if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                                return null;
+                            }
+                            if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                                wechatFlag --;
+                            }
                             return (<div className={styles.speTagSpan} key={i}>{
                                 tag.props ? 
                                     tag.props.defaultMessage.includes('小程序') ?
