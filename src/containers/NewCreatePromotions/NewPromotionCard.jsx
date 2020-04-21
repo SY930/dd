@@ -10,6 +10,7 @@ import pos from './assets/pos.png';
 import xin from './assets/xin.png';
 import { jumpPage } from '@hualala/platform-base';
 import { Modal, Tooltip } from 'antd';
+import moment from 'moment';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
 const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
@@ -53,7 +54,8 @@ class NewPromotionCard extends Component {
         if(pulgins.includes(key)) {
             const item = whiteList.find(x=> x.eventWay == key);
             const {expireDate} = item || {};
-            const text = isUse ? '有效期至' + expireDate : '申请试用';
+            const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
+            const text = isUse ? '有效期至' + date : '申请试用';
             return <em className={styles.validDate}>{text}</em>
         }
     }
