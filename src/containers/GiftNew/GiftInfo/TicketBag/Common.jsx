@@ -481,13 +481,13 @@ const stockItems = {
         label: '',
         surfix: '份',
         props: {
-            placeholder: '库存不能少于0',
+            placeholder: '最大支持7位整数',
         },
         rules: [{
             validator: (rule, value, callback) => {
-                const pattern = /^([1-9]\d{0,6})$/;
+                const pattern = /^([0-9]\d{0,6})$/;
                 if(!pattern.test(value)){
-                    return callback('大于0，最大支持7位整数');
+                    return callback('最大支持7位整数');
                 }
                 return callback();
             },
