@@ -2226,7 +2226,24 @@ class SpecialDetailInfo extends Component {
                     type === '52' &&
                     this.renderNewCardGive()
                 }
-                { giveCoupon &&
+                { type === '52' && giveCoupon &&
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
+                { type !== '52' &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
