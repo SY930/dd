@@ -2,10 +2,10 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Button } from 'antd';
 
 const srcMap = {
-    21: 'http://res.hualala.com/basicdoc/27c58c1c-ad37-4303-8d2a-dbce0600804a.jpg',
-    68: 'http://res.hualala.com/basicdoc/13c0bda6-ca70-4137-9f4c-1651eb25fb22.jpg',
-    66: 'http://res.hualala.com/basicdoc/49e6b232-c70d-45a8-af4a-6cb5eba3a1a9.jpg',
-    65: 'http://res.hualala.com/basicdoc/1f139f69-745b-422d-a68f-eca5be17d4c8.jpg',
+    21: 'http://res.hualala.com/basicdoc/3ca4fbc0-144a-4f2a-98d4-3278d986cd63.jpg',
+    68: 'http://res.hualala.com/basicdoc/bb1facb4-8861-4fb1-a165-d35e419bd160.jpg',
+    66: 'http://res.hualala.com/basicdoc/ede5bda3-7fe4-43f0-8570-4411665c79fe.jpg',
+    65: 'http://res.hualala.com/basicdoc/03bab0f1-91d8-4988-aeb3-469791512712.jpg',
 }
 class QrModal extends Component {
     // 下载二维码图片
@@ -14,6 +14,7 @@ class QrModal extends Component {
     }
     render() {
         const { onClose, type } = this.props;
+        console.log('type', type);
         return (
             <Modal
                 title="示例"
