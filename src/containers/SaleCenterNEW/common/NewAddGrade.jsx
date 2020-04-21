@@ -198,20 +198,29 @@ class NewAddGrade extends React.Component {
 
     onStageAmountChange(value, index) {
         const { data } = this.state;
-        data[index].stageAmount = +value.number;
+        data[index].stageAmount = value.number;
         if(index == 0){
             if(+data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
                 data[index].StageAmountFlag = false;
             }else {
-                data[index+1].StageAmountFlag = true;
-                data[index].StageAmountFlag = true;
+                if(data[index+1].StageAmountFlag < data[index+2].StageAmountFlag){
+                    data[index+1].StageAmountFlag = true;
+                    data[index].StageAmountFlag = true;
+                }else {
+                    data[index].StageAmountFlag = true;
+                }
             }
         }else if(index == Object.keys(data).length-1) {
             if(+data[index-1].stageAmount >= +value.number || !+value.number || +value.number <= 0 ){
                 data[index].StageAmountFlag = false;
             } else {
-                data[index-1].StageAmountFlag = true;
-                data[index].StageAmountFlag = true;
+                if(data[index-1].StageAmountFlag > data[index-2].StageAmountFlag){
+                    data[index-1].StageAmountFlag = true;
+                    data[index].StageAmountFlag = true;
+                }else {
+                    data[index].StageAmountFlag = true;
+                }
+                
             }
         }else {
             if(+data[index-1].stageAmount >= +value.number || +data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
