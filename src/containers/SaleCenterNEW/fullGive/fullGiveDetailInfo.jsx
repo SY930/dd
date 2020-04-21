@@ -158,7 +158,16 @@ class FullGiveDetailInfo extends React.Component {
             if (err1) {
                 nextFlag = false;
             }
-
+            let flag = false;
+            let length = Object.keys(data).length;
+            for(let i = 0 ; i < length; i++ ){
+                if(!data[i].StageAmountFlag){
+                    flag = true;
+                }
+            }
+            if(flag) {
+                nextFlag = false;
+            }
             let stage = [{}];
             let priceLst = [];
             let foodRuleList =  [];
