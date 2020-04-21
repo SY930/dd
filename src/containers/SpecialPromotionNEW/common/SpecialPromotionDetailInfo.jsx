@@ -189,6 +189,8 @@ class SpecialDetailInfo extends Component {
             givePoints,
             presentValue,
             giveCoupon,
+            shareTitlePL: '',
+            shareSubtitlePL: '',
         }
     }
     componentDidMount() {
@@ -213,29 +215,42 @@ class SpecialDetailInfo extends Component {
             this.props.queryAllSaveMoneySet()
         }
         if (type == 21) {
+            const shareTitle = '送您一份心意，共享美食优惠！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
             if(this.props.isNew){
-                this.setState({shareTitle: '送您一份心意，共享美食优惠！'});
+                this.setState({shareTitle});
             }
+            this.setState({ shareTitlePL, shareSubtitlePL });
         }
         if (type == 68) {
+            const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
+            const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
             if(this.props.isNew){
-                const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
-                const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
                 this.setState({shareTitle, shareSubtitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
         if (type == 66) {
+            const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
+            const shareSubtitle = '海吃海喝就靠你啦！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
             if(this.props.isNew){
-                const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
-                const shareSubtitle = '海吃海喝就靠你啦！';
                 this.setState({shareTitle, shareSubtitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
         if (type == 65) {
+            const shareTitle = '呼朋唤友，一起赢壕礼。';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
             if(this.props.isNew){
-                const shareTitle = '呼朋唤友，一起赢壕礼。';
                 this.setState({shareTitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
     }
     getMultipleLevelConfig = () => {
@@ -541,13 +556,13 @@ class SpecialDetailInfo extends Component {
             }
             if(givePoints){
                 if(!priceReg.test(presentValue)){
-                    message.warning('赠送积分最多支持两位小数正数，小于1000000');
+                    message.warning('请输入1~1000000数字，支持两位小数');
                     return;
                 }
             }
             if(givePoints && !giveCoupon){
                 if(!priceReg.test(presentValue)){
-                    message.warning('赠送积分最多支持输入两位小数正数，小于1000000');
+                    message.warning('请输入1~1000000数字，支持两位小数');
                     return;
                 }
                 const giftName = presentValue + '积分';
@@ -1069,7 +1084,8 @@ class SpecialDetailInfo extends Component {
     }
     renderShareInfo2 = () => {
         const { type } = this.props;
-        const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+        const { shareTitle, shareSubtitle, restaurantShareImagePath,
+            shareImagePath, shareTitlePL, shareSubtitlePL } = this.state;
         return (
             <div>
                 <p className={selfStyle.shareTip}>分享设置</p>
@@ -1086,7 +1102,7 @@ class SpecialDetailInfo extends Component {
                         initialValue: shareTitle,
                         onChange: this.handleShareTitleChange,
                     })(
-                        <Input placeholder="送您一份心意，共享美食优惠！" />
+                        <Input placeholder={shareTitlePL} />
                     )}
                 </FormItem>
                 <FormItem
@@ -1102,7 +1118,7 @@ class SpecialDetailInfo extends Component {
                         initialValue: shareSubtitle,
                         onChange: this.handleShareSubTitleChange,
                     })(
-                        <Input placeholder="选填，请输入副标题" />
+                        <Input placeholder={shareSubtitlePL} />
                     )}
                 </FormItem>
                 <FormItem
@@ -2230,7 +2246,10 @@ class SpecialDetailInfo extends Component {
         this.setState({ presentValue: value });
     }
     renderNewCardGive() {
+        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
         const { givePoints, presentValue, giveCoupon } = this.state;
+        const preErr = !priceReg.test(presentValue) ? 'error': 'success';
+        const preErrText = !priceReg.test(presentValue) ? '请输入1~1000000数字，支持两位小数': '';
         return (<div>
             <FormItem
                 style={{ padding: '0px 40px' }}
@@ -2246,15 +2265,15 @@ class SpecialDetailInfo extends Component {
             </FormItem>
             {givePoints &&
                 <div className={selfStyle.pointBox}>
+                <div className={selfStyle.title}>
+                    <span>赠送积分</span>
+                </div>
                 <FormItem
-                    wrapperCol={{ span: 20 }}
+                    wrapperCol={{ span: 24 }}
                     className={''}
-                    validateStatus={''}
-                    help={''}
+                    validateStatus={preErr}
+                    help={preErrText}
                 >
-                    <div className={selfStyle.title}>
-                        <span>赠送积分</span>
-                    </div>
                     <Input
                         addonAfter={'积分'}
                         value={presentValue}
