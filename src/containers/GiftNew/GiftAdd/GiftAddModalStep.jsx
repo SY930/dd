@@ -1720,14 +1720,15 @@ class GiftAddModalStep extends React.PureComponent {
         if (type === 'edit') {
             formData = dates;
         }
-        if (this.props.gift.value == '20') {
+        const giftVal = this.props.gift.value;
+        if (giftVal == '20') {
             formItems.moneyLimitTypeAndValue.label = '账单金额';
-        } else if(this.props.gift.value == '21' || this.props.gift.value == '111'){
+        } else if(giftVal == '21' || giftVal == '111'|| giftVal == '22'){
             formItems.moneyLimitTypeAndValue.label = '账单金额限制';
         } else {
             formItems.moneyLimitTypeAndValue.label = '金额限制';
         }
-        if (this.props.gift.value == '10' && (type === 'add' || values.amountType == 1)) {
+        if (giftVal == '10' && (type === 'add' || values.amountType == 1)) {
             const {
                 dishes = [],
                 excludeDishes = [],
