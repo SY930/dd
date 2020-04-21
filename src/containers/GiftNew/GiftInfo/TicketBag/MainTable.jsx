@@ -144,7 +144,7 @@ class MainTable extends Component {
             return (<span>{idx}</span>);
         };
         const render3 = (v, o) => {
-            const { couponPackageID: id, remainStock = '' } = o;
+            const { couponPackageID: id, remainStock = 0 } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
             return (
                 <p id={id +','+ remainStock} className={tr}>

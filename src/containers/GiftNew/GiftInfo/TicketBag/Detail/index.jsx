@@ -111,10 +111,9 @@ class Detail extends Component {
         const { list3, loading3, pageObj3 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
-            couponPackageDesciption, remainStock, sendCount = 0 } = couponPackageInfo;
+            couponPackageDesciption, remainStock = 0, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
-        const oddStock = remainStock - sendCount;
         const resetStock = remainStock === -1 ? '不限制' : remainStock;
         return (
             <Modal
@@ -187,7 +186,7 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="3">
-                                <PresentForm ids={ids} num={oddStock} />
+                                <PresentForm ids={ids} num={remainStock} />
                             </TabPane>
                             <TabPane tab="退款" key="4">
                                 <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
