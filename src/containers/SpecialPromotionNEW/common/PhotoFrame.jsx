@@ -5,6 +5,7 @@ import QrModal from './QrModal';
 
 const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 const fileSize = 3 * 1024 * 1024;
+const DOMAIN = 'http://res.hualala.com/';
 export default class PhotoFrame extends Component {
     state = {
         visible: false,
@@ -12,18 +13,22 @@ export default class PhotoFrame extends Component {
 
     /** 表单内图片上传 */
     onUpload = (restaurantShareImagePath) => {
-        this.props.onChange({ key: 'restaurantShareImagePath', value: restaurantShareImagePath });
+        const value = DOMAIN + restaurantShareImagePath;
+        this.props.onChange({ key: 'restaurantShareImagePath', value });
     }
     /** 表单内图片上传 */
     onUpload2 = (shareImagePath) => {
-        this.props.onChange({ key: 'shareImagePath', value: shareImagePath });
+        const value = DOMAIN + shareImagePath;
+        this.props.onChange({ key: 'shareImagePath', value });
     }
     /* 关闭模态框 */
     toggleModal = () => {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     render() {
-        const { restaurantShareImagePath, shareImagePath, type } = this.props;
+        const { restaurantShareImagePath = '', shareImagePath = '', type } = this.props;
+        const restPath = restaurantShareImagePath.substr(22);
+        const shrPath = shareImagePath.substr(22);
         const { visible } = this.state;
 
         return (
@@ -33,7 +38,7 @@ export default class PhotoFrame extends Component {
                 <ul>
                     <li>
                         <ImageUpload
-                            value={restaurantShareImagePath}
+                            value={restPath}
                             limitType={limitType}
                             limitSize={fileSize}
                             onChange={this.onUpload}
@@ -45,7 +50,7 @@ export default class PhotoFrame extends Component {
                     </li>
                     <li>
                         <ImageUpload
-                            value={shareImagePath}
+                            value={shrPath}
                             limitType={limitType}
                             limitSize={fileSize}
                             onChange={this.onUpload2}
