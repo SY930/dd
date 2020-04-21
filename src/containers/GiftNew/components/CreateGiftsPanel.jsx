@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import GiftCfg from '../../../constants/Gift';
-import xcx from 'assets/xcx.png';
-import wx from 'assets/wx.png';
-import pos from 'assets/pos.png';
+import xcx from '../assets/xcx.png';
+import wx from '../assets/wx.png';
+import pos from '../assets/pos.png';
 import {
     message,
 } from 'antd';
@@ -121,30 +121,30 @@ function ClickableGiftLogo(props) {
             </div>
             <div className={styles.tagContainer}>
                 {
-                    // (props.data.tags || []).map((tag, i) => {
-                    //     if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
-                    //         return null;
-                    //     }
-                    //     if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                    //         wechatFlag --;
-                    //     }
-                    //     return (<div className={styles.speTagSpan} key={i}>{
-                    //         tag.props ? 
-                    //             tag.props.defaultMessage.includes('小程序') ?
-                    //             <img className={styles.speTagImg} src={xcx} /> : 
-                    //             tag.props.defaultMessage.includes('微信') ?
-                    //             <img className={styles.speTagImg} src={wx} /> : 
-                    //             tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
-                    //             <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                    //         : tag.includes('pos') ?
-                    //             <img className={styles.speTagImg} src={pos} /> : 
-                    //             tag.includes('微信') ? 
-                    //                 <img className={styles.speTagImg} src={wx} /> :
-                    //                 tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
-                    // }</div>)})
-                    (props.data.tags || []).map(tag => (
-                        <div key={tag}>{tag}</div>
-                    ))
+                    (props.data.tags || []).map((tag, i) => {
+                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                            return null;
+                        }
+                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag --;
+                        }
+                        return (<div className={styles.speTagSpan} key={i}>{
+                            tag.props ? 
+                                tag.props.defaultMessage.includes('小程序') ?
+                                <img className={styles.speTagImg} src={xcx} /> : 
+                                tag.props.defaultMessage.includes('微信') ?
+                                <img className={styles.speTagImg} src={wx} /> : 
+                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                            : tag.includes('pos') ?
+                                <img className={styles.speTagImg} src={pos} /> : 
+                                tag.includes('微信') ? 
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                    }</div>)})
+                    // (props.data.tags || []).map(tag => (
+                    //     <div key={tag}>{tag}</div>
+                    // ))
                 }
             </div>
             {
@@ -154,6 +154,7 @@ function ClickableGiftLogo(props) {
     );
 }
 function ClickableGiftCard(props) {
+    let wechatFlag = 1;
     return (
         <div onClick={props.onClick} className={styles.cardLogoContainer}>
             <div className={styles.header}>
@@ -161,15 +162,34 @@ function ClickableGiftCard(props) {
             </div>
             <div className={styles.tagContainer}>
                 {
-                    (props.data.tags || []).map(tag => (
-                        <div key={tag}>{tag}</div>
-                    ))
+                    (props.data.tags || []).map((tag, i) => {
+                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                            return null;
+                        }
+                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag --;
+                        }
+                        return (<div className={styles.speTagSpan} key={i}>{
+                            tag.props ? 
+                                tag.props.defaultMessage.includes('小程序') ?
+                                <img className={styles.speTagImg} src={xcx} /> : 
+                                tag.props.defaultMessage.includes('微信') ?
+                                <img className={styles.speTagImg} src={wx} /> : 
+                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                            : tag.includes('pos') ?
+                                <img className={styles.speTagImg} src={pos} /> : 
+                                tag.includes('微信') ? 
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                    }</div>)})
                 }
             </div>
         </div>
     );
 }
 function ClickableRedPacket(props) {
+    let wechatFlag = 1;
     return (
         <div onClick={props.onClick} className={styles.redPacketLogoContainer}>
             <div className={styles.header}>
@@ -177,9 +197,27 @@ function ClickableRedPacket(props) {
             </div>
             <div className={styles.tagContainer}>
                 {
-                    (props.data.tags || []).map(tag => (
-                        <div key={tag}>{tag}</div>
-                    ))
+                    (props.data.tags || []).map((tag, i) => {
+                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                            return null;
+                        }
+                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag --;
+                        }
+                        return (<div className={styles.speTagSpan} key={i}>{
+                            tag.props ? 
+                                tag.props.defaultMessage.includes('小程序') ?
+                                <img className={styles.speTagImg} src={xcx} /> : 
+                                tag.props.defaultMessage.includes('微信') ?
+                                <img className={styles.speTagImg} src={wx} /> : 
+                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                            : tag.includes('pos') ?
+                                <img className={styles.speTagImg} src={pos} /> : 
+                                tag.includes('微信') ? 
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                    }</div>)})
                 }
             </div>
             {
