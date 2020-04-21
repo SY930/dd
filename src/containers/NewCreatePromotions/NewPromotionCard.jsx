@@ -96,7 +96,7 @@ class NewPromotionCard extends Component {
             return (
                 <div className={styles.speContainer} onClick={this.onClick}>
                     <p className={styles.expandableP}>
-                        {isNew ? <span><img src={xin} /></span> : null}
+                        {isNew ? <span><img className={styles.xinImg} src={xin} /></span> : null}
                     </p>
                     {this.renderPulgin(key)}
                     <div className={styles.title}>
@@ -135,7 +135,7 @@ class NewPromotionCard extends Component {
                         right: right * 0.62,
                         bottom: bottom * 0.62,
                     }}>
-                        <img src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
+                        <img className={styles.speCardImg} src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
                     </div>
                 </div>
             )

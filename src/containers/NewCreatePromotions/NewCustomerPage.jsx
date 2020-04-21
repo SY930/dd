@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import BasePage from "./BasePage";
 import registerPage from '../../../index';
-import {NEW_CUSTOMER} from "../../constants/entryCodes";
+import {NEW_SALE_BOX} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -57,7 +57,7 @@ import {
 } from "../../constants/projectHuatianConf";
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
 
-@registerPage([NEW_CUSTOMER], {
+@registerPage([NEW_SALE_BOX], {
 })
 // debugger
 @connect(mapStateToProps, mapDispatchToProps)
@@ -288,10 +288,6 @@ class NewCustomerPage extends Component {
             {
                 title: k6316iio,
                 list: SALE_PROMOTION_TYPES,
-            },
-            {
-                title: k6316i20,
-                list: ONLINE_PROMOTION_TYPES,
             },
         ]
         const allMenu = [
