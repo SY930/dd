@@ -209,38 +209,42 @@ class SpecialDetailInfo extends Component {
             this.props.queryAllSaveMoneySet()
         }
         if (type == 21) {
+            const shareTitle = '送您一份心意，共享美食优惠！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
             if(this.props.isNew){
-                const shareTitle = '送您一份心意，共享美食优惠！';
-                const shareTitlePL = shareTitle;
-                const shareSubtitlePL = '选填，请输入副标题';
-                this.setState({shareTitle, shareTitlePL, shareSubtitlePL });
+                this.setState({shareTitle});
             }
+            this.setState({ shareTitlePL, shareSubtitlePL });
         }
         if (type == 68) {
+            const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
+            const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
             if(this.props.isNew){
-                const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
-                const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
-                const shareTitlePL = shareTitle;
-                const shareSubtitlePL = shareSubtitle;
-                this.setState({shareTitle, shareSubtitle, shareTitlePL, shareSubtitlePL });
+                this.setState({shareTitle, shareSubtitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
         if (type == 66) {
+            const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
+            const shareSubtitle = '海吃海喝就靠你啦！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
             if(this.props.isNew){
-                const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
-                const shareSubtitle = '海吃海喝就靠你啦！';
-                const shareTitlePL = shareTitle;
-                const shareSubtitlePL = shareSubtitle;
-                this.setState({shareTitle, shareSubtitle, shareTitlePL, shareSubtitlePL });
+                this.setState({shareTitle, shareSubtitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
         if (type == 65) {
+            const shareTitle = '呼朋唤友，一起赢壕礼。';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
             if(this.props.isNew){
-                const shareTitle = '呼朋唤友，一起赢壕礼。';
-                const shareTitlePL = shareTitle;
-                const shareSubtitlePL = '选填，请输入副标题';
-                this.setState({shareTitle, shareTitlePL, shareSubtitlePL });
+                this.setState({shareTitle });
             }
+            this.setState({shareTitlePL, shareSubtitlePL });
         }
     }
     getMultipleLevelConfig = () => {
