@@ -20,26 +20,25 @@ class NewPromotionCard extends Component {
             onCardClick,
             onClickOpen,
         } = this.props;
-        const { key } = promotionEntity;
+        const { key, title } = promotionEntity;
         const isUse = this.filterItem(key);
-        onClickOpen(key)
-        // if(pulgins.includes(key) && !isUse) {
-        //     Modal.info({
-        //         title: '限时开放中，您可免费试用60天',
-        //         content: (
-        //           <div>
-        //             <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
-        //           </div>
-        //         ),
-        // okText="免费试用"
-        //   cancelText="稍后开通"
-        //         onOk() {
-        //             onClickOpen(key)
-        //         },
-        //       });
-        // }else{
-        //     onCardClick(promotionEntity);
-        // }
+        if(pulgins.includes(key) && !isUse) {
+            Modal.confirm({
+                title: <p>「{title}」限时开放中，您可免费试用60天</p>,
+                content: (
+                  <div>
+                    <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
+                  </div>
+                ),
+                okText:"免费试用",
+                cancelText:"稍后开通",
+                onOk() {
+                    onClickOpen(key)
+                },
+              });
+        }else{
+            onCardClick(promotionEntity);
+        }
         console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
@@ -49,10 +48,13 @@ class NewPromotionCard extends Component {
         return isUse;
     }
     renderPulgin(key) {
-        const date = '有效期至 2020/3/22';
+        const {whiteList = []} = this.props;
         const isUse = this.filterItem(key);
-        if(pulgins.includes(key) && !isUse) {
-            return <em className={styles.validDate}>申请试用</em>
+        if(pulgins.includes(key)) {
+            const item = whiteList.find(x=> x.eventWay == key);
+            const {expireDate} = item || {};
+            const text = isUse ? '有效期至' + expireDate : '申请试用';
+            return <em className={styles.validDate}>{text}</em>
         }
     }
 
