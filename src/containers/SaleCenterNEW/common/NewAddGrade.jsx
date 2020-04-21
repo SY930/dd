@@ -65,7 +65,6 @@ class NewAddGrade extends React.Component {
                 foodCountFlag: nextProps.foodCountFlag,
             })
         }
-        console.log('nextProps.ruleType  '+ nextProps.ruleType );
         if (this.props.ruleType != nextProps.ruleType) { // 活动方式改变
             //初始化数据
             this.initALot();
@@ -199,17 +198,29 @@ class NewAddGrade extends React.Component {
 
     onStageAmountChange(value, index) {
         const { data } = this.state;
-        data[index].stageAmount = value.number;
-        if (!value.number || value.number <= 0 || index == 1 && +data[index].stageAmount <= +data[index-1].stageAmount && +data[index].stageAmount  <= +data[index+1].stageAmount|| index == 2 && +data[index].stageAmount <= +data[index-1].stageAmount || index == 0 && +data[index].stageAmount >= +data[index+1].stageAmount) {
-            data[index].StageAmountFlag = false;
-        } else {
-            // if(data[2]){
-            //     data[2].StageAmountFlag = true;
-            // }
-            // if(data[1]){
-            //     data[1].StageAmountFlag = true;
-            // }
-            data[index].StageAmountFlag = true;
+        data[index].stageAmount = +value.number;
+        if(index == 0){
+            if(+data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
+                data[index].StageAmountFlag = false;
+            }else {
+                data[index+1].StageAmountFlag = true;
+                data[index].StageAmountFlag = true;
+            }
+        }else if(index == Object.keys(data).length-1) {
+            if(+data[index-1].stageAmount >= +value.number || !+value.number || +value.number <= 0 ){
+                data[index].StageAmountFlag = false;
+            } else {
+                data[index-1].StageAmountFlag = true;
+                data[index].StageAmountFlag = true;
+            }
+        }else {
+            if(+data[index-1].stageAmount >= +value.number || +data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
+                data[index].StageAmountFlag = false;
+            }else {
+                data[index+1].StageAmountFlag = true;
+                data[index-1].StageAmountFlag = true;
+                data[index].StageAmountFlag = true;
+            }
         }
         this.setState({ data });
         this.props.onChange && this.props.onChange(data);
@@ -245,9 +256,6 @@ class NewAddGrade extends React.Component {
         // const keys = isFullGive ? [0] : getFieldValue('keys');
         let keys = Object.keys(data);
         this.uuid = Object.keys(data).length - 1;
-        console.log("the current keys length is " + Object.keys(data).length);
-        console.log("the current keys is " + keys.toString());
-        console.log("the current uuid is " + this.uuid);
         // if(Object.keys(data).length == 1){
         //     keys=['0'];
         // }
