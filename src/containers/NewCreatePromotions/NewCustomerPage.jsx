@@ -56,10 +56,11 @@ import {
     SPECIAL_PROMOTION_CREATE_DISABLED_TIP,
 } from "../../constants/projectHuatianConf";
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
+import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base'
 
 @registerPage([NEW_SALE_BOX], {
 })
-// debugger
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
 class NewCustomerPage extends Component {
@@ -74,6 +75,9 @@ class NewCustomerPage extends Component {
     }
 
     componentDidMount() {
+        this.getWhite();
+    }
+    getWhite(){
         axiosData(
             'specialPromotion/queryOpenedEventTypes.ajax',
             {},
@@ -85,7 +89,21 @@ class NewCustomerPage extends Component {
             this.setState({ whiteList: eventTypeInfoList });
         })
     }
-
+    onClickOpen = async (eventWay) => {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
+        const method = '/specialPromotion/freeTrialOpen.ajax';
+        const params = { service, type, data: { eventWay, groupID }, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg } = response;
+        if (code === '000') {
+            message.success('开通成功，欢迎使用！')
+            this.getWhite();
+            return;
+        }
+        message.error(msg);
+    }
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
@@ -335,6 +353,7 @@ class NewCustomerPage extends Component {
                                                 index={index}
                                                 whiteList={whiteList}
                                                 text={item.text}
+                                                onClickOpen={this.onClickOpen}
                                             />
                                         ))
                                     }

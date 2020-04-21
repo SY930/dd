@@ -10,6 +10,7 @@ import pos from './assets/pos.png';
 import xin from './assets/xin.png';
 import { jumpPage } from '@hualala/platform-base';
 import { Modal, Tooltip } from 'antd';
+import moment from 'moment';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
 const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
@@ -18,18 +19,23 @@ class NewPromotionCard extends Component {
         const {
             promotionEntity,
             onCardClick,
+            onClickOpen,
         } = this.props;
-        const { key } = promotionEntity;
+        const { key, title } = promotionEntity;
         const isUse = this.filterItem(key);
         if(pulgins.includes(key) && !isUse) {
-            Modal.info({
-                title: '',
+            Modal.confirm({
+                title: <p>「{title}」限时开放中，您可免费试用60天</p>,
                 content: (
                   <div>
-                    <p>联系商务开通</p>
+                    <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
                   </div>
                 ),
-                onOk() {},
+                okText:"免费试用",
+                cancelText:"稍后开通",
+                onOk() {
+                    onClickOpen(key)
+                },
               });
         }else{
             onCardClick(promotionEntity);
@@ -43,12 +49,17 @@ class NewPromotionCard extends Component {
         return isUse;
     }
     renderPulgin(key) {
-        const date = '有效期至 2020/3/22';
+        const {whiteList = []} = this.props;
         const isUse = this.filterItem(key);
-        if(pulgins.includes(key) && !isUse) {
-            return <em className={styles.validDate}>申请试用</em>
+        if(pulgins.includes(key)) {
+            const item = whiteList.find(x=> x.eventWay == key);
+            const {expireDate} = item || {};
+            const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
+            const text = isUse ? '试用中': '申请试用';
+            return <em className={styles.validDate}>{text}</em>
         }
     }
+
     render() {
         let {
             promotionEntity : {
@@ -97,8 +108,8 @@ class NewPromotionCard extends Component {
                 <div className={styles.speContainer} onClick={this.onClick}>
                     <p className={styles.expandableP}>
                         {isNew ? <span><img className={styles.xinImg} src={xin} /></span> : null}
+                        {this.renderPulgin(key)}
                     </p>
-                    {this.renderPulgin(key)}
                     <div className={styles.title}>
                         {title}
                         <div className={styles.speTag}>
@@ -110,16 +121,16 @@ class NewPromotionCard extends Component {
                                 wechatFlag --;
                             }
                             return (<div className={styles.speTagSpan} key={i}>{
-                                tag.props ? 
+                                tag.props ?
                                     tag.props.defaultMessage.includes('小程序') ?
-                                    <img className={styles.speTagImg} src={xcx} /> : 
+                                    <img className={styles.speTagImg} src={xcx} /> :
                                     tag.props.defaultMessage.includes('微信') ?
-                                    <img className={styles.speTagImg} src={wx} /> : 
-                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
                                     <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                                 : tag.includes('pos') ?
-                                    <img className={styles.speTagImg} src={pos} /> : 
-                                    tag.includes('微信') ? 
+                                    <img className={styles.speTagImg} src={pos} /> :
+                                    tag.includes('微信') ?
                                         <img className={styles.speTagImg} src={wx} /> :
                                         tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
                         }</div>)})}
@@ -130,7 +141,7 @@ class NewPromotionCard extends Component {
                             {text}
                         </div>
                     </Tooltip>
-                    
+
                     <div className={styles.speCardLogo} style={{
                         right: right * 0.62,
                         bottom: bottom * 0.62,

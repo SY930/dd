@@ -121,27 +121,30 @@ function ClickableGiftLogo(props) {
             </div>
             <div className={styles.tagContainer}>
                 {
-                    (props.data.tags || []).map((tag, i) => {
-                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
-                            return null;
-                        }
-                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                            wechatFlag --;
-                        }
-                        return (<div className={styles.speTagSpan} key={i}>{
-                            tag.props ? 
-                                tag.props.defaultMessage.includes('小程序') ?
-                                <img className={styles.speTagImg} src={xcx} /> : 
-                                tag.props.defaultMessage.includes('微信') ?
-                                <img className={styles.speTagImg} src={wx} /> : 
-                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
-                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                            : tag.includes('pos') ?
-                                <img className={styles.speTagImg} src={pos} /> : 
-                                tag.includes('微信') ? 
-                                    <img className={styles.speTagImg} src={wx} /> :
-                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
-                    }</div>)})
+                    // (props.data.tags || []).map((tag, i) => {
+                    //     if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                    //         return null;
+                    //     }
+                    //     if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                    //         wechatFlag --;
+                    //     }
+                    //     return (<div className={styles.speTagSpan} key={i}>{
+                    //         tag.props ? 
+                    //             tag.props.defaultMessage.includes('小程序') ?
+                    //             <img className={styles.speTagImg} src={xcx} /> : 
+                    //             tag.props.defaultMessage.includes('微信') ?
+                    //             <img className={styles.speTagImg} src={wx} /> : 
+                    //             tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                    //             <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                    //         : tag.includes('pos') ?
+                    //             <img className={styles.speTagImg} src={pos} /> : 
+                    //             tag.includes('微信') ? 
+                    //                 <img className={styles.speTagImg} src={wx} /> :
+                    //                 tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                    // }</div>)})
+                    (props.data.tags || []).map(tag => (
+                        <div key={tag}>{tag}</div>
+                    ))
                 }
             </div>
             {
