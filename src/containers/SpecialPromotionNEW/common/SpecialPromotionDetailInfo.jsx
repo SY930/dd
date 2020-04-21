@@ -517,13 +517,13 @@ class SpecialDetailInfo extends Component {
             }
             if(givePoints){
                 if(!priceReg.test(presentValue)){
-                    message.warning('赠送积分最多支持两位小数正数，小于1000000');
+                    message.warning('请输入1~1000000数字，支持两位小数');
                     return;
                 }
             }
             if(givePoints && !giveCoupon){
                 if(!priceReg.test(presentValue)){
-                    message.warning('赠送积分最多支持输入两位小数正数，小于1000000');
+                    message.warning('请输入1~1000000数字，支持两位小数');
                     return;
                 }
                 const giftName = presentValue + '积分';
@@ -2135,7 +2135,10 @@ class SpecialDetailInfo extends Component {
         this.setState({ presentValue: value });
     }
     renderNewCardGive() {
+        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
         const { givePoints, presentValue, giveCoupon } = this.state;
+        const preErr = !priceReg.test(presentValue) ? 'error': 'success';
+        const preErrText = !priceReg.test(presentValue) ? '请输入1~1000000数字，支持两位小数': '';
         return (<div>
             <FormItem
                 style={{ padding: '0px 40px' }}
@@ -2151,15 +2154,15 @@ class SpecialDetailInfo extends Component {
             </FormItem>
             {givePoints &&
                 <div className={selfStyle.pointBox}>
+                <div className={selfStyle.title}>
+                    <span>赠送积分</span>
+                </div>
                 <FormItem
-                    wrapperCol={{ span: 20 }}
+                    wrapperCol={{ span: 24 }}
                     className={''}
-                    validateStatus={''}
-                    help={''}
+                    validateStatus={preErr}
+                    help={preErrText}
                 >
-                    <div className={selfStyle.title}>
-                        <span>赠送积分</span>
-                    </div>
                     <Input
                         addonAfter={'积分'}
                         value={presentValue}
