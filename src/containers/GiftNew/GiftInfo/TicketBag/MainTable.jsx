@@ -95,7 +95,10 @@ class MainTable extends Component {
         }
         const sendTime = +time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
-        const remainStock = (stock === -1) ? '' : stock;    // 库存为-1和0 都显示空
+        let remainStock = stock || '0';    // 库存为-1和0 都显示空
+        if(stock===-1){
+            remainStock = '';
+        }
         return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
             couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs,
             couponPackagePrice2: price, remainStock };

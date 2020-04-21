@@ -112,7 +112,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, isAutoRefund, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -120,8 +120,10 @@ export default class Editor extends Component {
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
+        let stockRule = {};
         if(isEdit) {
             disDate = { disabledDate: this.disabledDate };
+            stockRule = {rules: ['numbers']};
         }
         const newFormItems = {
             ...other,
@@ -133,6 +135,7 @@ export default class Editor extends Component {
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
+            remainStock: { ...remainStock, ...stockRule },
         };
         if(check) {
             let obj = {}
