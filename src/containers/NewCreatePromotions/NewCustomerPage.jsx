@@ -310,7 +310,7 @@ class NewCustomerPage extends Component {
         ]
         const allMenu = [
             '全部活动',
-            <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -19, top: 4}} src={newPic}/>最新活动</span>,
+            <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -19, top: 4, width: 16}} src={newPic}/>最新活动</span>,
             // <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -17, top: 4}} src={hot}/>热门活动</span>,
             ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
         ];
