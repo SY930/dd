@@ -27,10 +27,10 @@ export default class PhotoFrame extends Component {
     }
     render() {
         const { restaurantShareImagePath = '', shareImagePath = '', type } = this.props;
-        const restPath = restaurantShareImagePath.substr(22);
-        const shrPath = shareImagePath.substr(22);
+        const restPath = restaurantShareImagePath.substr(23);
+        const shrPath = shareImagePath.substr(23);
         const { visible } = this.state;
-
+        console.log('restPath', restPath);
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M</p>
