@@ -87,6 +87,8 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '65',
         right: 13,
         bottom: 3,
+        isHot: true,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k635s5id,
@@ -97,26 +99,29 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '66',
         right: 16,
         bottom: 2,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k639vh8y,
         isSpecial: true,
         text: SALE_LABEL.k67b3y9d,
+        tags: ['微信'],
         example: '',
         key: '67',
         right: 13,
         bottom: 1,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k639vhha,
         isSpecial: true,
-        isNew: true,
-        tags: [SALE_LABEL.k639vgjy],
+        tags: [SALE_LABEL.k639vgjy, '小程序'],
         text: SALE_LABEL.k67b3yhp,
         example: '',
         key: '68',
         right: 11,
         bottom: 0,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k636p0yo,
@@ -131,6 +136,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k639vhpm,
         isSpecial: true,
+        tags: ['微信'],
         text: SALE_LABEL.k67b4rje,
         example: '',
         key: '31',
@@ -149,6 +155,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2p1n,
+        tags: [SALE_LABEL.k639vgsa],
         isSpecial: true,
         text: SALE_LABEL.k67b4s02,
         example: '',
@@ -165,13 +172,15 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: '签到',
-        tags: [SALE_LABEL.k639vgjy],
+        tags: [SALE_LABEL.k639vgjy, '小程序'],
         isSpecial: true,
         text: '签到获取礼品，提升用户日活量',
         example: '',
         key: '76',
         right: 14,
         bottom: 12,
+        isHot: true,
+        isNew: true,
     },
     {
         title: '支付后广告',
@@ -182,6 +191,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '77',
         right: 16,
         bottom: 6,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k636p31p,
@@ -206,7 +216,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k67b2pic,
         isSpecial: true,
-        tags: [SALE_LABEL.k5krn6z9],
+        tags: [SALE_LABEL.k5krn6z9, '小程序'],
         text: SALE_LABEL.k67b4sp2,
         example: '',
         key: '22',
@@ -216,7 +226,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k67b2pqo,
         isSpecial: false,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
+        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
         text: SALE_LABEL.k67b4sxe,
         example: SALE_LABEL.k67cpoj7,
         key: '2030',
@@ -237,9 +247,10 @@ export const REPEAT_PROMOTION_TYPES = [
         tags: ['新微信', '小程序'],
         example: '',
         key: '75',
-        isNew: true,
         right: 16,
         bottom: 6,
+        isHot: true,
+        isNew: true,
     },
     {
         title: SALE_LABEL.k67b2pz0,
@@ -281,7 +292,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2qfo,
-        tags: [SALE_LABEL.k5krn6z9],
+        tags: [SALE_LABEL.k5krn6z9, '小程序'],
         isSpecial: true,
         text: SALE_LABEL.k67b4u32,
         example: '',
@@ -325,6 +336,7 @@ export const LOYALTY_PROMOTION_TYPES = [
         key: '51',
         right: 11,
         bottom: 7,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b2rd0,
@@ -383,6 +395,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '2020',
         right: 2,
         bottom: -14,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b2sac,
@@ -572,6 +585,7 @@ export const ONLINE_PROMOTION_TYPES = [
         key: '2060',
         right: 14,
         bottom: 5,
+        isHot: true,
     },
     {
         title: SALE_LABEL.k67b3xkd,
