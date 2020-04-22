@@ -464,7 +464,7 @@ class SpecialDetailInfo extends Component {
     handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
-        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
+        const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
@@ -2246,10 +2246,11 @@ class SpecialDetailInfo extends Component {
         this.setState({ presentValue: value });
     }
     renderNewCardGive() {
-        const priceReg = /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/;
+        const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         const { givePoints, presentValue, giveCoupon } = this.state;
         const preErr = !priceReg.test(presentValue) ? 'error': 'success';
         const preErrText = !priceReg.test(presentValue) ? '请输入1~1000000数字，支持两位小数': '';
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
         return (<div>
             <FormItem
                 style={{ padding: '0px 40px' }}
@@ -2265,6 +2266,7 @@ class SpecialDetailInfo extends Component {
             </FormItem>
             {givePoints &&
                 <div className={selfStyle.pointBox}>
+                <p className={userCount > 0? styles.opacitySet: ''}></p>
                 <div className={selfStyle.title}>
                     <span>赠送积分</span>
                 </div>
