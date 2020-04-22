@@ -48,7 +48,7 @@ class NewPromotionCard extends Component {
         const isUse = whiteList.some(x=> x.eventWay == key);
         return isUse;
     }
-    renderPulgin(key) {
+    renderPulgin(key,ath) {
         const {whiteList = []} = this.props;
         const isUse = this.filterItem(key);
         if(pulgins.includes(key)) {
@@ -56,7 +56,7 @@ class NewPromotionCard extends Component {
             const {expireDate} = item || {};
             const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
             const text = isUse ? '试用中': '申请试用';
-            return <em className={styles.validDate}>{text}</em>
+            return <em className={ath ? styles.validDateAth :styles.validDate}>{text}</em>
         }
     }
 
@@ -86,7 +86,7 @@ class NewPromotionCard extends Component {
         if (size === 'small') {
             return (
                 <div className={styles.smallContainer} onClick={this.onClick}>
-                    {this.renderPulgin(key)}
+                    {this.renderPulgin(key,'ath')}
                     <div className={styles.title}>
                         {title}
                     </div>
