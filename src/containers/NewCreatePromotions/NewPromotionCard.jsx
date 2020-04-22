@@ -25,10 +25,10 @@ class NewPromotionCard extends Component {
         const isUse = this.filterItem(key);
         if(pulgins.includes(key) && !isUse) {
             Modal.confirm({
-                title: <p>「{title}」限时开放中，您可免费试用60天</p>,
+                title: <p>「{title}」限时开放中，您可免费试用6个月</p>,
                 content: (
                   <div>
-                    <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
+                    <p>自开通日起有效期6个月，试用结束后，可联系商务开通</p>
                   </div>
                 ),
                 okText:"免费试用",
