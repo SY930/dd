@@ -185,17 +185,22 @@ class FullGiveDetailInfo extends React.Component {
                 this.setState({ data });
                 stage[0].giveFoodCount = data[0].foodCount;
                 stage[0].stageNum = 0;
+                let tempArr1 = [];
                 priceLst = data[0].dishes.map((dish, index) => {
-                    return {
-                        foodUnitID: dish.itemID || index,
-                        foodUnitCode: dish.foodKey,
-                        foodName: dish.foodName,
-                        foodUnitName: dish.unit,
-                        brandID: dish.brandID || '0',
-                        price: dish.price,
-                        stageNo: 0,
-                        imagePath: dish.imgePath,
+                    if(tempArr1.indexOf(dish.itemID) == -1){
+                        tempArr1.push(dish.itemID);
+                        return {
+                            foodUnitID: dish.itemID || index,
+                            foodUnitCode: dish.foodKey,
+                            foodName: dish.foodName,
+                            foodUnitName: dish.unit,
+                            brandID: dish.brandID || '0',
+                            price: dish.price,
+                            stageNo: 0,
+                            imagePath: dish.imgePath,
+                        }
                     }
+                    
                 });
             } else if (ruleType == '1' || ruleType == '4') {
                 // 每满
@@ -215,21 +220,26 @@ class FullGiveDetailInfo extends React.Component {
                 stage[0].stageAmount = data[0].stageAmount;
                 stage[0].giveFoodCount = data[0].foodCount;
                 stage[0].stageNum = 0;
+                let tempArr1 = [];
                 priceLst = data[0].dishes.map((dish, index) => {
-                    return {
-                        foodUnitID: dish.itemID || index,
-                        foodUnitCode: dish.foodKey,
-                        foodName: dish.foodName,
-                        brandID: dish.brandID || '0',
-                        foodUnitName: dish.unit,
-                        price: dish.price,
-                        stageNo: 0,
-                        imagePath: dish.imgePath,
+                    if(tempArr1.indexOf(dish.itemID) == -1){
+                        tempArr1.push(dish.itemID);
+                        return {
+                            foodUnitID: dish.itemID || index,
+                            foodUnitCode: dish.foodKey,
+                            foodName: dish.foodName,
+                            brandID: dish.brandID || '0',
+                            foodUnitName: dish.unit,
+                            price: dish.price,
+                            stageNo: 0,
+                            imagePath: dish.imgePath,
+                        }
                     }
                 });
             } else {
                 // 满
                 //多档位的增加新字段
+                const {ruleType} = this.state;
                 Object.keys(data).map((keys) => {
                     if (data[keys].foodCount == '' || data[keys].foodCount == null) {
                         data[keys].foodCountFlag = false;
@@ -289,6 +299,7 @@ class FullGiveDetailInfo extends React.Component {
                         ...stage[0],
                     }));
             let newPrice = [];
+            priceLst = priceLst.filter((item) =>{if(item){ return item}})
             if (priceLst[0] && typeof priceLst[0] === 'object') {
                 priceLst.forEach((price, index) => {
                     newPrice = newPrice.concat(priceLst[index]);
@@ -382,6 +393,23 @@ class FullGiveDetailInfo extends React.Component {
                                     foodCategory: [],
                                     excludeDishes: [],
                                 });
+                            }
+                            if(val == 2 || val == 3) {
+                                this.setState({
+                                    data: {
+                                        0: {
+                                            stageAmount: '',
+                                            giftType: '0',
+                                            dishes: [],
+                                            giftName: null,
+                                            foodCount: '',
+                                            foodCountFlag: true,
+                                            dishesFlag: true,
+                                            StageAmountFlag: true,
+                                        },
+                                    },
+                                    foodRuleList: []
+                                })
                             }
                             this.setState({ ruleType });
                         }
