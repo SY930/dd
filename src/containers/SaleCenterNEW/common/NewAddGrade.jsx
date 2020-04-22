@@ -199,37 +199,51 @@ class NewAddGrade extends React.Component {
     onStageAmountChange(value, index) {
         const { data } = this.state;
         data[index].stageAmount = value.number;
-        if(index == 0){
-            if(+data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
-                data[index].StageAmountFlag = false;
-            }else {
-                if(data[index+1].StageAmountFlag < data[index+2].StageAmountFlag){
-                    data[index+1].StageAmountFlag = true;
-                    data[index].StageAmountFlag = true;
+        console.log('the index is '+ index +' last the current Value is' + data[index].stageAmount)
+        if(index == Object.keys(data).length-1) {
+            if(index == 0){
+                if(!+value.number || +value.number <= 0 ){
+                    data[index].StageAmountFlag = false;
                 }else {
                     data[index].StageAmountFlag = true;
                 }
-            }
-        }else if(index == Object.keys(data).length-1) {
-            if(+data[index-1].stageAmount >= +value.number || !+value.number || +value.number <= 0 ){
-                data[index].StageAmountFlag = false;
-            } else {
-                if(data[index-1].StageAmountFlag > data[index-2].StageAmountFlag){
+            }else if(index > 1){
+                //在这种情况下index为2
+                for(let i = index; i > 0; i-- ) {
+                    if(+data[i-1].stageAmount >= +data[i].stageAmount) {
+                        data[i].StageAmountFlag = false;
+                        data[i-1].StageAmountFlag = false;
+                    } else {
+                        data[i].StageAmountFlag = true;
+                        data[i-1].StageAmountFlag = true;
+                    }
+                }
+            }else {
+                //在这种情况下index为1
+                if(+data[index-1].stageAmount >= +value.number){
+                    data[index].StageAmountFlag = false;
+                    data[index-1].StageAmountFlag = false;
+                }else {
                     data[index-1].StageAmountFlag = true;
                     data[index].StageAmountFlag = true;
-                }else {
-                    data[index].StageAmountFlag = true;
                 }
-                
+            }
+            if(!+value.number || +value.number <= 0 ){
+                data[index].StageAmountFlag = false;
             }
         }else {
-            if(+data[index-1].stageAmount >= +value.number || +data[index+1].stageAmount <= +value.number || !+value.number || +value.number <= 0 ){
-                data[index].StageAmountFlag = false;
-            }else {
-                data[index+1].StageAmountFlag = true;
-                data[index-1].StageAmountFlag = true;
-                data[index].StageAmountFlag = true;
-            }
+                for(let i = Object.keys(data).length-1; i > 0; i-- ) {
+                    if(+data[i-1].stageAmount >= +data[i].stageAmount) {
+                        data[i].StageAmountFlag = false;
+                        data[i-1].StageAmountFlag = false;
+                    } else {
+                        data[i].StageAmountFlag = true;
+                        data[i-1].StageAmountFlag = true;
+                    }
+                }
+                if(!+value.number || +value.number <= 0 ){
+                    data[index].StageAmountFlag = false;
+                }
         }
         this.setState({ data });
         this.props.onChange && this.props.onChange(data);
