@@ -397,6 +397,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         title: SALE_LABEL.k67b3v90,
         color: '#c49b79',
         text:   <div>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 14, fontWeight: 500, margin: '10px 0'}}>活动说明：</p>
                     <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
                     <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
                     <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
