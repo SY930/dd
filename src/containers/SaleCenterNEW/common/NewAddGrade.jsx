@@ -147,6 +147,7 @@ class NewAddGrade extends React.Component {
                     onChange={(value) => {
                         this.onDishesChange(value, k);
                     }}
+                    data={this.state.data}
                     index={k}
                     foodRuleList={this.props.foodRuleList}
                 />
@@ -199,7 +200,6 @@ class NewAddGrade extends React.Component {
     onStageAmountChange(value, index) {
         const { data } = this.state;
         data[index].stageAmount = value.number;
-        console.log('the index is '+ index +' last the current Value is' + data[index].stageAmount)
         if(index == Object.keys(data).length-1) {
             if(index == 0){
                 if(!+value.number || +value.number <= 0 ){
