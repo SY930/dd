@@ -413,6 +413,7 @@ class BuyGiveDetailInfo extends React.Component {
 
     renderDishsSelectionBox(wapper, item, index) {
         //赠送菜品
+        const { ifMultiGrade } = this.state;
         return (
             <FormItem
                 label={SALE_LABEL.k5hly0bq}
@@ -420,8 +421,8 @@ class BuyGiveDetailInfo extends React.Component {
                 labelCol={{ span: wapper ? 3 : 4,  offset: wapper ? 1 : 0}}
                 wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 1 : 0}}
                 required={true}
-                validateStatus={this.state.dishsSelectStatus}
-                help={this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
+                validateStatus={ifMultiGrade ? item.priceList.length ? 'success' : 'error' : this.state.dishsSelectStatus ? 'success' : 'error'}
+                help={ifMultiGrade ? item.priceList.length ? null : SALE_LABEL.k5hkj1ef  :this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
             >
                 <ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} isShopMode={this.props.isShopFoodSelectorMode} onChange={(value) => {this.onDishesChange(value, index)}} />
             </FormItem>
