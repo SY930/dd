@@ -2,10 +2,10 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Button } from 'antd';
 
 const srcMap = {
-    21: 'http://res.hualala.com/basicdoc/3ca4fbc0-144a-4f2a-98d4-3278d986cd63.jpg',
-    68: 'http://res.hualala.com/basicdoc/c33018a4-b10d-49b0-9152-720d713edbde.jpg',
-    66: 'http://res.hualala.com/basicdoc/ede5bda3-7fe4-43f0-8570-4411665c79fe.jpg',
-    65: 'http://res.hualala.com/basicdoc/03bab0f1-91d8-4988-aeb3-469791512712.jpg',
+    21: 'http://res.hualala.com/basicdoc/39d60e84-ea60-413c-a986-e680a76c0000.png',
+    68: 'http://res.hualala.com/basicdoc/6417e092-1fcd-46eb-becb-8dc8ba55efef.png',
+    66: 'http://res.hualala.com/basicdoc/8ff25052-78a4-4be3-a043-347302ca9238.png',
+    65: 'http://res.hualala.com/basicdoc/87bfc2c7-c7b4-45b0-b78e-f2b29615d1db.png',
 }
 // 65分享壕礼  66 膨胀大礼包  68推荐有礼 21 免费领取
 class QrModal extends Component {
@@ -24,7 +24,7 @@ class QrModal extends Component {
                 onCancel={onClose}
                 footer={[<Button key="d" onClick={onClose}>我知道了</Button>]}
             >
-                <img src={srcMap[type]} />
+                <img width="95%" src={srcMap[type]} />
             </Modal>
         )
     }
