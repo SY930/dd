@@ -209,7 +209,6 @@ const GiftCfg = {
         { value: '80', label: '商家支付', include: true },
         { value: '90', label: '商家卖出', include: true },
         { value: '91', label: '会员摇奖' },
-        { value: '92', label: '免费领取' },
         { value: '93', label: '积分兑换' },
         { value: '94', label: '参与活动' },
         { value: '95', label: '有奖竞猜' },

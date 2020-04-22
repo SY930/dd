@@ -112,7 +112,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, isAutoRefund, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -120,8 +120,10 @@ export default class Editor extends Component {
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
+        let stockRule = {};
         if(isEdit) {
             disDate = { disabledDate: this.disabledDate };
+            stockRule = {rules: ['numbers']};
         }
         const newFormItems = {
             ...other,
@@ -133,6 +135,7 @@ export default class Editor extends Component {
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
+            remainStock: { ...remainStock, ...stockRule },
         };
         if(check) {
             let obj = {}
@@ -166,7 +169,7 @@ export default class Editor extends Component {
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
-                        couponPackageStock: stock, ...others,
+                        remainStock: stock, ...others,
                     } = v;
                 let cycleObj = {};
                 if(cycleType){
@@ -194,9 +197,9 @@ export default class Editor extends Component {
                 }
                 const price = couponPackagePrice || couponPackagePrice2;
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
-                const couponPackageStock = stock || '-1';           // 如果清空库存，给后端传-1
+                const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
-                    couponPackageStock, couponPackagePrice: price };
+                    remainStock, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id

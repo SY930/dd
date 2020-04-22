@@ -208,6 +208,7 @@ export default class ExportModal extends Component {
             });
     }
     render() {
+        const { sameItemID } = this.props;
         return (
             <div>
                 <Modal
@@ -247,6 +248,15 @@ export default class ExportModal extends Component {
                                         })
                                     },
                                 }}
+                                rowClassName={(record, index)=>{
+                                    const { itemID } = record;
+                                    let clz = '';
+                                    if(`${sameItemID}` === itemID){
+                                        clz = styles.trclz;
+                                    }
+                                    return clz;
+                                }}
+
                             />
                             { (!!this.state.dataSource && !!this.state.dataSource.length) && (
                                 <Button
