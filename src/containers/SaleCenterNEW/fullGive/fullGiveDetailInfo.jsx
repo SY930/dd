@@ -109,21 +109,41 @@ class FullGiveDetailInfo extends React.Component {
             } else {
                 ruleType = '3'
             }
-            _rule.stage && _rule.stage.map((stage, index) => {
-                data[index] = {
-                    stageAmount: '',
-                    giftType: '0',
-                    dishes: [],
-                    giftName: null,
-                    foodCount: '',
-                    foodCountFlag: true,
-                    dishesFlag: true,
-                    StageAmountFlag: true,
-                };
-                data[index].foodCount = stage.giveFoodCount || '';
-                data[index].giftName = stage.giftName || '';
-                data[index].stageAmount = stage.stageAmount || '';
-            })
+            let foodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()
+            if(foodRuleList && foodRuleList.length) {
+                foodRuleList.map((stage, index) => {
+                    let tempRule = JSON.parse(stage.rule);
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = tempRule.giveFoodCount || '';
+                    data[index].giftName = tempRule.giftName || '';
+                    data[index].stageAmount = tempRule.stageAmount || '';
+                })
+            }else {
+                _rule.stage && _rule.stage.map((stage, index) => {
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = stage.giveFoodCount || '';
+                    data[index].giftName = stage.giftName || '';
+                    data[index].stageAmount = stage.stageAmount || '';
+                })
+            }
         }
         return {
             data,
@@ -138,7 +158,16 @@ class FullGiveDetailInfo extends React.Component {
             if (err1) {
                 nextFlag = false;
             }
-
+            let flag = false;
+            let length = Object.keys(data).length;
+            for(let i = 0 ; i < length; i++ ){
+                if(!data[i].StageAmountFlag){
+                    flag = true;
+                }
+            }
+            if(flag) {
+                nextFlag = false;
+            }
             let stage = [{}];
             let priceLst = [];
             let foodRuleList =  [];
@@ -423,10 +452,11 @@ class FullGiveDetailInfo extends React.Component {
         return (
             <div style={{position: "initial", width: '100%', height: '100%', overflow: 'auto'}}>
                 <div style={{position: "absolute", left: -226, background: 'white', top: 160, width: 221,}}>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 14, fontWeight: 500, margin: '10px 0'}}>活动说明：</p>
                     <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
-                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
                     <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
-                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按通向执行</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按共享执行</p>
                 </div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}

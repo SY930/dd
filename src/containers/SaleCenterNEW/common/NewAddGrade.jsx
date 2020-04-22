@@ -65,7 +65,6 @@ class NewAddGrade extends React.Component {
                 foodCountFlag: nextProps.foodCountFlag,
             })
         }
-        console.log('nextProps.ruleType  '+ nextProps.ruleType );
         if (this.props.ruleType != nextProps.ruleType) { // 活动方式改变
             //初始化数据
             this.initALot();
@@ -200,10 +199,51 @@ class NewAddGrade extends React.Component {
     onStageAmountChange(value, index) {
         const { data } = this.state;
         data[index].stageAmount = value.number;
-        if (!value.number || value.number <= 0 || index != 0 && data[index].stageAmount <= data[index-1].stageAmount || index == 0 && data[index].stageAmount >= data[index+1].stageAmount) {
-            data[index].StageAmountFlag = false;
-        } else {
-            data[index].StageAmountFlag = true;
+        console.log('the index is '+ index +' last the current Value is' + data[index].stageAmount)
+        if(index == Object.keys(data).length-1) {
+            if(index == 0){
+                if(!+value.number || +value.number <= 0 ){
+                    data[index].StageAmountFlag = false;
+                }else {
+                    data[index].StageAmountFlag = true;
+                }
+            }else if(index > 1){
+                //在这种情况下index为2
+                for(let i = index; i > 0; i-- ) {
+                    if(+data[i-1].stageAmount >= +data[i].stageAmount) {
+                        data[i].StageAmountFlag = false;
+                        data[i-1].StageAmountFlag = false;
+                    } else {
+                        data[i].StageAmountFlag = true;
+                        data[i-1].StageAmountFlag = true;
+                    }
+                }
+            }else {
+                //在这种情况下index为1
+                if(+data[index-1].stageAmount >= +value.number){
+                    data[index].StageAmountFlag = false;
+                    data[index-1].StageAmountFlag = false;
+                }else {
+                    data[index-1].StageAmountFlag = true;
+                    data[index].StageAmountFlag = true;
+                }
+            }
+            if(!+value.number || +value.number <= 0 ){
+                data[index].StageAmountFlag = false;
+            }
+        }else {
+                for(let i = Object.keys(data).length-1; i > 0; i-- ) {
+                    if(+data[i-1].stageAmount >= +data[i].stageAmount) {
+                        data[i].StageAmountFlag = false;
+                        data[i-1].StageAmountFlag = false;
+                    } else {
+                        data[i].StageAmountFlag = true;
+                        data[i-1].StageAmountFlag = true;
+                    }
+                }
+                if(!+value.number || +value.number <= 0 ){
+                    data[index].StageAmountFlag = false;
+                }
         }
         this.setState({ data });
         this.props.onChange && this.props.onChange(data);
@@ -239,9 +279,6 @@ class NewAddGrade extends React.Component {
         // const keys = isFullGive ? [0] : getFieldValue('keys');
         let keys = Object.keys(data);
         this.uuid = Object.keys(data).length - 1;
-        console.log("the current keys length is " + Object.keys(data).length);
-        console.log("the current keys is " + keys.toString());
-        console.log("the current uuid is " + this.uuid);
         // if(Object.keys(data).length == 1){
         //     keys=['0'];
         // }
@@ -272,7 +309,7 @@ class NewAddGrade extends React.Component {
                     </div>
                     <div className={styles.CategoryBody}>
                         <Row>
-                            <Col span={15} style={{position: 'relative', left: -10}}>
+                            <Col span={15} style={{position: 'relative', left: -10, marginBottom: 13}}>
                                 {
                                     this.props.ruleType != '0' ?
                                         <FormItem
