@@ -365,6 +365,7 @@ class CategoryAndFoodSelector extends Component {
                     required={showRequiredMark}
                 >
                     <FoodSelector
+                        background={this.props.background}
                         mode="category"
                         placeholder=""
                         allDishes={dishes}
@@ -393,6 +394,7 @@ class CategoryAndFoodSelector extends Component {
                     showExludeDishes && (
                         <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <FoodSelector
+                                background={this.props.background}
                                 mode="dish"
                                 placeholder=""
                                 allDishes={filteredDishes}

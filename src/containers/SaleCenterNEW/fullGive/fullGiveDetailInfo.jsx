@@ -16,6 +16,7 @@ import _ from 'lodash';
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import AddGrade from '../../../containers/SaleCenterNEW/common/AddGrade'; // 可增删的输入框 组件
+import NewAddGrade from '../../../containers/SaleCenterNEW/common/NewAddGrade';
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
 
 const FormItem = Form.Item;
@@ -40,8 +41,10 @@ class FullGiveDetailInfo extends React.Component {
             ruleType,
             priceLst: [],
             data,
-            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
+            priceLst: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS() : Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ?
                 this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [],
+            foodRuleList: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS() : [],
+            flag: true,
         };
     }
 
@@ -106,21 +109,41 @@ class FullGiveDetailInfo extends React.Component {
             } else {
                 ruleType = '3'
             }
-            _rule.stage && _rule.stage.map((stage, index) => {
-                data[index] = {
-                    stageAmount: '',
-                    giftType: '0',
-                    dishes: [],
-                    giftName: null,
-                    foodCount: '',
-                    foodCountFlag: true,
-                    dishesFlag: true,
-                    StageAmountFlag: true,
-                };
-                data[index].foodCount = stage.giveFoodCount || '';
-                data[index].giftName = stage.giftName || '';
-                data[index].stageAmount = stage.stageAmount || '';
-            })
+            let foodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()
+            if(foodRuleList && foodRuleList.length) {
+                foodRuleList.map((stage, index) => {
+                    let tempRule = JSON.parse(stage.rule);
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = tempRule.giveFoodCount || '';
+                    data[index].giftName = tempRule.giftName || '';
+                    data[index].stageAmount = tempRule.stageAmount || '';
+                })
+            }else {
+                _rule.stage && _rule.stage.map((stage, index) => {
+                    data[index] = {
+                        stageAmount: '',
+                        giftType: '0',
+                        dishes: [],
+                        giftName: null,
+                        foodCount: '',
+                        foodCountFlag: true,
+                        dishesFlag: true,
+                        StageAmountFlag: true,
+                    };
+                    data[index].foodCount = stage.giveFoodCount || '';
+                    data[index].giftName = stage.giftName || '';
+                    data[index].stageAmount = stage.stageAmount || '';
+                })
+            }
         }
         return {
             data,
@@ -135,9 +158,20 @@ class FullGiveDetailInfo extends React.Component {
             if (err1) {
                 nextFlag = false;
             }
-
+            let flag = false;
+            let length = Object.keys(data).length;
+            for(let i = 0 ; i < length; i++ ){
+                if(!data[i].StageAmountFlag){
+                    flag = true;
+                }
+            }
+            if(flag) {
+                nextFlag = false;
+            }
             let stage = [{}];
             let priceLst = [];
+            let foodRuleList =  [];
+            let tempArr = []
             // save state to redux
             if (ruleType == '0') {
                 if (data[0].foodCount == '' || data[0].foodCount == null) {
@@ -195,6 +229,7 @@ class FullGiveDetailInfo extends React.Component {
                 });
             } else {
                 // 满
+                //多档位的增加新字段
                 Object.keys(data).map((keys) => {
                     if (data[keys].foodCount == '' || data[keys].foodCount == null) {
                         data[keys].foodCountFlag = false;
@@ -211,22 +246,32 @@ class FullGiveDetailInfo extends React.Component {
                 });
                 this.setState({ data });
                 stage = Object.keys(data).map((keys, index) => {
-                    priceLst.push(data[keys].dishes.map((dish, index) => {
+                    priceLst = [];
+                    let tempIndex = index;
+                    foodRuleList.push(data[keys].dishes.map((dish, Athindex) => {
                         return {
-                            foodUnitID: dish.itemID || index,
-                            foodUnitCode: dish.foodKey,
-                            foodName: dish.foodName,
-                            foodUnitName: dish.unit,
-                            brandID: dish.brandID || '0',
-                            price: dish.price,
-                            stageNo: keys,
-                            imagePath: dish.imgePath,
+                            rule: {
+                                stageAmount: data[keys].stageAmount,
+                                giveFoodCount: data[keys].foodCount,
+                                stageNum: tempIndex,
+                            },
+                            priceList: [{
+                                foodUnitID: dish.itemID || Athindex,
+                                foodUnitCode: dish.foodKey,
+                                foodName: dish.foodName,
+                                foodUnitName: dish.unit,
+                                brandID: dish.brandID || '0',
+                                price: dish.price,
+                                stageNo: keys,
+                                imagePath: dish.imgePath,
+                            }],
+                            scopeList: [],
                         }
                     }));
                     return {
                         stageAmount: data[keys].stageAmount,
                         giveFoodCount: data[keys].foodCount,
-                        stageNum: index,
+                        stageNum: tempIndex,
                     }
                 })
             }
@@ -249,8 +294,32 @@ class FullGiveDetailInfo extends React.Component {
                     newPrice = newPrice.concat(priceLst[index]);
                 })
             }
+            for (let i = 0; i < foodRuleList.length; i++) {
+                tempArr.push(...foodRuleList[i])
+            }
+            let secondTrans = [];
+            tempArr.forEach((item) => {
+                let tempKeys = item.rule.stageAmount;
+                let flag = false;
+                secondTrans.length && secondTrans.map((ath) => {
+                    if(ath.rule.stageAmount == tempKeys) {
+                        flag = true;
+                        if(!ath.priceList.filter((a) => {
+                            return a.foodUnitID == item.priceList[0].foodUnitID;
+                        }).length){
+                            ath.priceList = ath.priceList.concat(item.priceList);
+                        }
+                    }
+                })
+                if(!flag){
+                    secondTrans.push(item); 
+                }
+            })
+            secondTrans.map((item) => {
+                item.rule = JSON.stringify(item.rule);
+            })
             this.props.setPromotionDetail({
-                rule, priceLst: newPrice || priceLst,
+                rule, priceLst: newPrice || priceLst, foodRuleList: secondTrans,
             });
         });
         return nextFlag;
@@ -297,6 +366,13 @@ class FullGiveDetailInfo extends React.Component {
                         onChange={(val) => {
                             let { ruleType } = this.state;
                             ruleType = val;
+                            this.setState({
+                                flag: false,
+                            }, () => {
+                                this.setState({
+                                    flag: true,
+                                })
+                            })
                             if (val == '0' || val == '1' || val == '2') {
                                 this.props.setPromotionDetail({
                                     // i清空已选,
@@ -322,17 +398,32 @@ class FullGiveDetailInfo extends React.Component {
                     : null}
                 <Row>
                     <Col span={19} offset={2}>
-                        <AddGrade
-                            getFieldDecorator={getFieldDecorator}
-                            getFieldValue={getFieldValue}
-                            form={this.props.form}
-                            ruleType={this.state.ruleType}
-                            value={this.state.data}
-                            onChange={(value) => {
-                                this.setState({ data: value });
-                            }
-                            }
-                        />
+                        {
+                            this.state.ruleType == 3 || this.state.ruleType == 2 ?
+                            <NewAddGrade
+                                getFieldDecorator={getFieldDecorator}
+                                getFieldValue={getFieldValue}
+                                form={this.props.form}
+                                ruleType={this.state.ruleType}
+                                value={this.state.data}
+                                onChange={(value) => {
+                                    this.setState({ data: value });
+                                }
+                                }
+                                foodRuleList = {this.state.foodRuleList}
+                            /> :
+                            <AddGrade
+                                getFieldDecorator={getFieldDecorator}
+                                getFieldValue={getFieldValue}
+                                form={this.props.form}
+                                ruleType={this.state.ruleType}
+                                value={this.state.data}
+                                onChange={(value) => {
+                                    this.setState({ data: value });
+                                }
+                                }
+                            />
+                        }
                     </Col>
                 </Row>
 
@@ -359,7 +450,14 @@ class FullGiveDetailInfo extends React.Component {
     render() {
         const payLimit = this.state.ruleType != 0;
         return (
-            <div >
+            <div style={{position: "initial", width: '100%', height: '100%', overflow: 'auto'}}>
+                <div style={{position: "absolute", left: -226, background: 'white', top: 160, width: 221,}}>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 14, fontWeight: 500, margin: '10px 0'}}>活动说明：</p>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
+                    <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
+                    <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按共享执行</p>
+                </div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
                     {this.renderAdvancedSettingButton()}
