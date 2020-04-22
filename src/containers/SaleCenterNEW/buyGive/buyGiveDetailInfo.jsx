@@ -336,7 +336,7 @@ class BuyGiveDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
                 required={true}
-                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].rule.stageAmountFlag ? 'error' : 'success' :this.state.stageAmountFlag ? 'success' : 'error'}
+                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].rule.stageAmountFlag ? 'success' : 'error' :this.state.stageAmountFlag ? 'success' : 'error'}
                 help={ifMultiGrade ? foodRuleList[index]? foodRuleList[index].rule.StageAmountFlag ? null : `需大于0并且后面的档位需大于之前档位` : null : this.state.stageAmount ? null : `需大于0`}
             >
                 <PriceInput key={2}
@@ -395,7 +395,7 @@ class BuyGiveDetailInfo extends React.Component {
                     <PriceInput
                         addonBefore={SALE_LABEL.k5hly03e}
                         addonAfter={k5ez4qy4}
-                        value={{ number: ifMultiGrade ? `${item.rule.giveFoodCount}`:this.state.giveFoodCount }}
+                        value={{ number: ifMultiGrade ? `${item.rule.giveFoodCount ? item.rule.giveFoodCount : ''}`:this.state.giveFoodCount }}
                         defaultValue={{ number: ifMultiGrade ? `${item.rule.giveFoodCount}`:this.state.giveFoodCount }}
                         onChange={(value) => {
                             this.onGiveFoodCountChange(value, index);
