@@ -155,27 +155,53 @@ class BuyGiveDetailInfo extends React.Component {
             //当是满的逻辑
             // 在这会加上每个档位对于这个stageAmount的flag的判断加上新的判断flag整理数据的时候加上
             foodRuleList[index].stageAmountFlag = true;
-            if(index == 0){
-                if(foodRuleList[index+1].rule.stageAmount <= value.number){
-                    foodRuleList[index].stageAmountFlag = false;
+            foodRuleList[index].rule.stageAmount = value.number;
+            if(index == foodRuleList.length-1) {
+                if(index == 0){
+                    if(!+value.number || +value.number <= 0 ){
+                        foodRuleList[index].rule.StageAmountFlag = false;
+                    }else {
+                        foodRuleList[index].rule.StageAmountFlag = true;
+                    }
+                }else if(index > 1){
+                    //在这种情况下index为2
+                    for(let i = index; i > 0; i-- ) {
+                        if(+foodRuleList[i-1].rule.stageAmount >= +foodRuleList[i].rule.stageAmount) {
+                            foodRuleList[i].rule.StageAmountFlag = false;
+                            foodRuleList[i-1].rule.StageAmountFlag = false;
+                        } else {
+                            foodRuleList[i].rule.StageAmountFlag = true;
+                            foodRuleList[i-1].rule.StageAmountFlag = true;
+                        }
+                    }
                 }else {
-                    foodRuleList[index+1].stageAmountFlag = true;
+                    //在这种情况下index为1
+                    if(+foodRuleList[index-1].rule.stageAmount >= +value.number){
+                        foodRuleList[index].rule.StageAmountFlag = false;
+                        foodRuleList[index-1].rule.StageAmountFlag = false;
+                    }else {
+                        foodRuleList[index-1].rule.StageAmountFlag = true;
+                        foodRuleList[index].rule.StageAmountFlag = true;
+                    }
                 }
-            }else if(index == foodRuleList.length-1) {
-                if(foodRuleList[index-1].rule.stageAmount >= value.number){
-                    foodRuleList[index].stageAmountFlag = false;
-                } else {
-                    foodRuleList[index-1].stageAmountFlag = true;
+                if(!+value.number || +value.number <= 0 ){
+                    foodRuleList[index].rule.StageAmountFlag = false;
                 }
             }else {
-                if(foodRuleList[index-1].rule.stageAmount >= value.number || foodRuleList[index+1].rule.stageAmount <= value.number){
-                    foodRuleList[index].stageAmountFlag = false;
-                }else {
-                    foodRuleList[index+1].stageAmountFlag = true;
-                    foodRuleList[index-1].stageAmountFlag = true;
-                }
+                    for(let i = foodRuleList.length-1; i > 0; i-- ) {
+                        if(+foodRuleList[i-1].rule.stageAmount >= +foodRuleList[i].rule.stageAmount) {
+                            foodRuleList[i].rule.StageAmountFlag = false;
+                            foodRuleList[i-1].rule.StageAmountFlag = false;
+                        } else {
+                            foodRuleList[i].rule.StageAmountFlag = true;
+                            foodRuleList[i-1].rule.StageAmountFlag = true;
+                        }
+                    }
+                    if(!+value.number || +value.number <= 0 ){
+                        foodRuleList[index].rule.StageAmountFlag = false;
+                    }
             }
-            foodRuleList[index].rule.stageAmount = value.number;
+            
             this.setState({
                 foodRuleList,
             })
@@ -310,8 +336,8 @@ class BuyGiveDetailInfo extends React.Component {
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
                 required={true}
-                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].stageAmountFlag ? 'error' : 'success' :this.state.stageAmountFlag ? 'success' : 'error'}
-                // debugger;在这里要加提示信息
+                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].rule.stageAmountFlag ? 'error' : 'success' :this.state.stageAmountFlag ? 'success' : 'error'}
+                help={ifMultiGrade ? foodRuleList[index]? foodRuleList[index].rule.StageAmountFlag ? null : `需大于0并且后面的档位需大于之前档位` : null : this.state.stageAmount ? null : `需大于0`}
             >
                 <PriceInput key={2}
                     addonBefore={<Select size="default"
@@ -427,7 +453,7 @@ class BuyGiveDetailInfo extends React.Component {
 
     renderMultiGradeSelect = (item, index) => {
         return (
-            <div>
+            <div className={styles.dangStyle}>
                 {this.renderBuyDishNumInput(item,index)}
                 <div className={styles.MultiGradeBorder}>
                     {this.renderDishsSelectionBox(17, item, index)}
