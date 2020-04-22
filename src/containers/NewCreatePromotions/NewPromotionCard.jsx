@@ -25,10 +25,10 @@ class NewPromotionCard extends Component {
         const isUse = this.filterItem(key);
         if(pulgins.includes(key) && !isUse) {
             Modal.confirm({
-                title: <p>「{title}」限时开放中，您可免费试用60天</p>,
+                title: <p>「{title}」限时开放中，您可免费试用6个月</p>,
                 content: (
                   <div>
-                    <p>自开通日起有效期60天，试用结束后，可联系商务开通</p>
+                    <p>自开通日起有效期6个月，试用结束后，可联系商务开通</p>
                   </div>
                 ),
                 okText:"免费试用",
@@ -48,7 +48,7 @@ class NewPromotionCard extends Component {
         const isUse = whiteList.some(x=> x.eventWay == key);
         return isUse;
     }
-    renderPulgin(key) {
+    renderPulgin(key,ath) {
         const {whiteList = []} = this.props;
         const isUse = this.filterItem(key);
         if(pulgins.includes(key)) {
@@ -56,7 +56,7 @@ class NewPromotionCard extends Component {
             const {expireDate} = item || {};
             const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
             const text = isUse ? '试用中': '申请试用';
-            return <em className={styles.validDate}>{text}</em>
+            return <em className={ath ? styles.validDateAth :styles.validDate}>{text}</em>
         }
     }
 
@@ -86,7 +86,7 @@ class NewPromotionCard extends Component {
         if (size === 'small') {
             return (
                 <div className={styles.smallContainer} onClick={this.onClick}>
-                    {this.renderPulgin(key)}
+                    {this.renderPulgin(key,'ath')}
                     <div className={styles.title}>
                         {title}
                     </div>
