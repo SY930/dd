@@ -64,7 +64,6 @@ class BuyGiveDetailInfo extends React.Component {
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -124,20 +123,25 @@ class BuyGiveDetailInfo extends React.Component {
                     },
                 ],
             }
-            const priceLst = dishes.map((price) => {
-                return {
-                    foodUnitID: price.itemID,
-                    foodUnitCode: price.foodKey,
-                    foodName: price.foodName,
-                    foodUnitName: price.unit,
-                    brandID: price.brandID || '0',
-                    price: price.price,
-                    imagePath: price.imgePath,
-                }
-            });
-            this.props.setPromotionDetail({
-                rule, priceLst,
-            });
+            if(stageType == 1 || stageType == 2){
+                //满的逻辑
+                const { foodRuleList } = this.state;
+            }else {
+                const priceLst = dishes.map((price) => {
+                    return {
+                        foodUnitID: price.itemID,
+                        foodUnitCode: price.foodKey,
+                        foodName: price.foodName,
+                        foodUnitName: price.unit,
+                        brandID: price.brandID || '0',
+                        price: price.price,
+                        imagePath: price.imgePath,
+                    }
+                });
+                this.props.setPromotionDetail({
+                    rule, priceLst,
+                });
+            }
             return true
         }
         return false
