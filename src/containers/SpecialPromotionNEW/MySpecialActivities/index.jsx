@@ -898,7 +898,7 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ y: 'calc(100vh - 390px)' }}
+                    scroll={{ x: 1630, y: 'calc(100vh - 390px)' }}
                     pagination={{
                         pageSize: this.state.pageSizes,
                         current: this.state.pageNo,
