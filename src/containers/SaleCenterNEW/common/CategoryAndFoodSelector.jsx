@@ -28,6 +28,7 @@ const getFoodInfoFromScopeList = (scopeList) => {
         }
     }
     let categoryOrDish = null;
+    //debugger 这边传入pricelst为空的情况下还是会展示原先的数据
     const dishes = [];
     const categories = [];
     const excludeDishes = [];
