@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
     return {
         priceLst: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'priceLst']),
         promotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),
+        foodRuleListProps: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail', 'foodRuleList']),
     }
 }
 
@@ -37,8 +38,9 @@ class ConnectedPriceListSelector extends Component {
         } else {
             priceLst = this.props.priceLst.toJS();
         }
-        const { foodRuleList = [], index } = this.props;
-        priceLst = foodRuleList.length ? foodRuleList[index] ? foodRuleList[index].priceList : [] : priceLst;
+        const {data = [], foodRuleList = [], index, foodRuleListProps } = this.props;
+        let ifHasPriceList = foodRuleListProps.toJS().length == 0;
+        priceLst = foodRuleList.length ? foodRuleList[index] ? foodRuleList[index].priceList : [] : ifHasPriceList ? priceLst : [];
         const { isShopMode } = this.props;
         const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
         return (
