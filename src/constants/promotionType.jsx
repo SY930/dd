@@ -493,7 +493,7 @@ export const SALE_PROMOTION_TYPES = [
         title: SALE_LABEL.k67b3vpo,
         text: SALE_LABEL.k67cp3fm,
         example: SALE_LABEL.k67g7rpg,
-        tags: ['pos'],
+        tags: ['pos', '微信'],
         key: '1060',
         right: 0,
         bottom: 1,
