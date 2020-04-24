@@ -31,6 +31,7 @@ import {
     SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP,
     SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
     SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
+    SALE_CENTER_CARDGROUPID,
 } from '../../actions/saleCenterNEW/specialPromotion.action';
 
 const $initialState = Immutable.fromJS({
@@ -153,6 +154,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$eventInfo', 'getExcludeEventList'], action.payload.excludeEventModelList)
         case SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT:
             return $$state.setIn(['customerCount'], action.payload.customerCount)
+        case SALE_CENTER_CARDGROUPID:
+            return $$state.setIn(['$eventInfo', 'groupMemberID'], Immutable.fromJS(action.payload))
         default:
             return $$state;
     }
