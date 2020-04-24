@@ -48,18 +48,20 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
             ifMultiGrade: true,
-            foodRuleList: [
-                {
-                    rule: {
-                        stageAmount: '',
-                        giveFoodCount: '',
-                        stageType: '2',
-                        stageNum: 0,
-                    },
-                    priceList: [],
-                    scopeList: [],
-                }
-            ],
+            foodRuleList: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? 
+                            this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) : 
+                            [
+                                {
+                                    rule: {
+                                        stageAmount: '',
+                                        giveFoodCount: '',
+                                        stageType: '2',
+                                        stageNum: 0,
+                                    },
+                                    priceList: [],
+                                    scopeList: [],
+                                }
+                            ],
             index: 'not-important',
         };
 
@@ -98,21 +100,43 @@ class BuyGiveDetailInfo extends React.Component {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
     }
+    initData = (data) => {
+        data.map((item) => {
+            item.rule = JSON.parse(item.rule);
+            return item;
+        })
+        return data;
+    }
 
     handleSubmit = () => {
-        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus } = this.state;
-        if (stageAmount == null || stageAmount == '') {
-            stageAmountFlag = false;
+        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodRuleList } = this.state;
+        let flag = 'success';
+        if(stageType == 1 || stageType == 2){
+            foodRuleList.forEach((item) => {
+                if(!item.priceList.length) {
+                    flag = 'error';
+                }
+                if(!item.rule.StageAmountFlag){
+                    flag = 'error';
+                }
+                if(!item.rule.giveFoodCount){
+                    flag = 'error';
+                }
+            })
+        }else {
+            if (stageAmount == null || stageAmount == '') {
+                stageAmountFlag = false;
+            }
+            if (giveFoodCount == null || giveFoodCount == '') {
+                giveFoodCountFlag = false;
+            }
+            if (dishes.length == 0) {
+                dishsSelectStatus = 'error'
+            }
+            this.setState({ giveFoodCountFlag, stageAmountFlag, dishsSelectStatus });
+            flag = stageAmountFlag && giveFoodCountFlag && dishsSelectStatus
         }
-        if (giveFoodCount == null || giveFoodCount == '') {
-            giveFoodCountFlag = false;
-        }
-        if (dishes.length == 0) {
-            dishsSelectStatus = 'error'
-        }
-        this.setState({ giveFoodCountFlag, stageAmountFlag, dishsSelectStatus });
-
-        if (stageAmountFlag && giveFoodCountFlag && dishsSelectStatus == 'success') {
+        if (flag == 'success') {
             const rule = {
                 stageType,
                 targetScope,
@@ -126,18 +150,30 @@ class BuyGiveDetailInfo extends React.Component {
             if(stageType == 1 || stageType == 2){
                 //满的逻辑
                 const { foodRuleList } = this.state;
+                foodRuleList.map((item) => {
+                    item.rule = JSON.stringify(item.rule);
+                    return item;
+                });
+                this.props.setPromotionDetail({
+                    rule, priceLst: [], foodRuleList,
+                });
             }else {
-                const priceLst = dishes.map((price) => {
-                    return {
-                        foodUnitID: price.itemID,
-                        foodUnitCode: price.foodKey,
-                        foodName: price.foodName,
-                        foodUnitName: price.unit,
-                        brandID: price.brandID || '0',
-                        price: price.price,
-                        imagePath: price.imgePath,
+                let tempArr1 = [];
+                let priceLst = dishes.map((price) => {
+                    if(tempArr1.indexOf(dish.itemID) == -1){
+                        tempArr1.push(dish.itemID);
+                        return {
+                            foodUnitID: price.itemID,
+                            foodUnitCode: price.foodKey,
+                            foodName: price.foodName,
+                            foodUnitName: price.unit,
+                            brandID: price.brandID || '0',
+                            price: price.price,
+                            imagePath: price.imgePath,
+                        }
                     }
                 });
+                priceLst = priceLst.filter((item) =>{if(item){ return item}})
                 this.props.setPromotionDetail({
                     rule, priceLst,
                 });
@@ -205,7 +241,6 @@ class BuyGiveDetailInfo extends React.Component {
                         foodRuleList[index].rule.StageAmountFlag = false;
                     }
             }
-            
             this.setState({
                 foodRuleList,
             })
@@ -237,6 +272,7 @@ class BuyGiveDetailInfo extends React.Component {
         if(index === 0 || index){
             //当是满的逻辑
             foodRuleList[index].rule.giveFoodCount = value.number;
+            debugger;
             this.setState({
                 foodRuleList,
             })
@@ -258,6 +294,7 @@ class BuyGiveDetailInfo extends React.Component {
             ifMultiGrade: true,
         })
         if(ifNotMount) {
+            debugger;
             this.setState({
                 foodRuleList: [
                     {
@@ -282,16 +319,18 @@ class BuyGiveDetailInfo extends React.Component {
 
     addGrade = () => {
         let { foodRuleList } = this.state;
+        let index = foodRuleList.length;
         foodRuleList.push({
             rule: {
                 stageAmount: '',
                 giveFoodCount: '',
                 stageType: foodRuleList[0].rule.stageType,
-                stageNum: 0,
+                stageNum: index,
             },
             priceList: [],
             scopeList: [],
         })
+        debugger;
         this.setState({
             foodRuleList,
         })
@@ -300,6 +339,7 @@ class BuyGiveDetailInfo extends React.Component {
     deleteGrade = (e, index) => {
         let { foodRuleList } = this.state;
         foodRuleList.splice(index, 1);
+        debugger;
         this.setState({
             foodRuleList,
         })
@@ -428,7 +468,7 @@ class BuyGiveDetailInfo extends React.Component {
                 validateStatus={ifMultiGrade ? item.priceList.length ? 'success' : 'error' : this.state.dishsSelectStatus ? 'success' : 'error'}
                 help={ifMultiGrade ? item.priceList.length ? null : SALE_LABEL.k5hkj1ef  :this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
             >
-                <ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} isShopMode={this.props.isShopFoodSelectorMode} onChange={(value) => {this.onDishesChange(value, index)}} />
+                <ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} isShopMode={this.props.isShopFoodSelectorMode} onChange={(value) => {this.onDishesChange(value, index)}} index={index} />
             </FormItem>
         )
     }
@@ -436,7 +476,11 @@ class BuyGiveDetailInfo extends React.Component {
         let { ifMultiGrade, foodRuleList } = this.state;
         if (ifMultiGrade) {
             //当时满时走的逻辑
+            debugger;
             foodRuleList[index].priceList = [...value];
+            this.setState({
+                foodRuleList,
+            })
         } else {
             this.setState({
                 dishes: [...value],

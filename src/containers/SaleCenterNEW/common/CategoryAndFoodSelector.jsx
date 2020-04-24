@@ -36,6 +36,7 @@ const getFoodInfoFromScopeList = (scopeList) => {
         if (categoryOrDish === null) {
             categoryOrDish = scope.scopeType == 2 ? 1 : 0
         }
+        debugger;
         if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
             dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         } else if (categoryOrDish === 0 && scope.scopeType != 2) {
@@ -56,6 +57,7 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
             dishes: [],
         }
     }
+    debugger;
     return {
         dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`
         : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
@@ -71,6 +73,7 @@ class CategoryAndFoodSelector extends Component {
             const {
                 dishes,
             } = getDishesInfoFromPriceOrScopeList(props.priceLst) // 只取初始值
+            debugger;
             this.state = {
                 categoryOrDish: 1,
                 dishes,
@@ -173,6 +176,7 @@ class CategoryAndFoodSelector extends Component {
         })
     }
     handleDishChange = (value) => {
+        debugger;
         this.setState({
             dishes: value,
             excludeDishes: [],
@@ -276,6 +280,7 @@ class CategoryAndFoodSelector extends Component {
             dishes = dishFilter(dishes)
         }
         const dishLabel2 = dishLabel || k5gfsvlz;
+        debugger;
         if (this.props.dishOnly) {
             return (
                 <FoodSelector
