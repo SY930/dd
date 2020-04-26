@@ -42,6 +42,7 @@ import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { axiosData } from '../../../helpers/util';
 import PhotoFrame from './PhotoFrame';
+import TicketBag from '../shackGift/TicketBag';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -191,6 +192,8 @@ class SpecialDetailInfo extends Component {
             giveCoupon,
             shareTitlePL: '',
             shareSubtitlePL: '',
+            sendTypeValue: '0',
+            bag: '',
         }
     }
     componentDidMount() {
@@ -2297,9 +2300,61 @@ class SpecialDetailInfo extends Component {
             </FormItem>
         </div>);
     }
+    onTypeChange = ({ target }) => {
+        this.setState({ sendTypeValue: target.value });
+    }
+    onBagChange = (item) => {
+        if(item) {
+            this.setState({ bag: [item]});
+            return;
+        }
+        this.setState({ bag: null});
+    }
+    // type 30
+    renderPointDuihuan(){
+        const { bag, sendTypeValue } = this.state;
+        const { user, type } = this.props;
+        const {groupID} = user.accountInfo;
+        return(
+            <div>
+                <Row>
+                    <Col span={20} offset={2} style={{margin: '10px'}}>
+                        <span style={{margin: '0px 8px'}}>赠送优惠券</span>
+                        <RadioGroup onChange={this.onTypeChange} value={sendTypeValue} >
+                            <Radio value={'0'}>独立优惠券</Radio>
+                            <Radio value={'1'}>券包</Radio>
+                        </RadioGroup>
+                    </Col>
+                </Row>
+                {sendTypeValue === '1' ?
+                <Row>
+                    <Col span={20} offset={3}>
+                        <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} />
+                    </Col>
+                </Row>:
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
+            </div>
+        )
+    }
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
+        console.log('tt', type);
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
         }
@@ -2356,7 +2411,10 @@ class SpecialDetailInfo extends Component {
                         />
                     </Col>
                 </Row>}
-                { type !== '52' &&
+                {type==='30' &&
+                    this.renderPointDuihuan()
+                }
+                { !['52', '30'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
