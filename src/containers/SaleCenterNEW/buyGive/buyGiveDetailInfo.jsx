@@ -48,7 +48,7 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
             ifMultiGrade: true,
-            foodRuleList: Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList'])) ? 
+            foodRuleList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS().length ? 
                             this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) : 
                             [
                                 {
@@ -272,7 +272,6 @@ class BuyGiveDetailInfo extends React.Component {
         if(index === 0 || index){
             //当是满的逻辑
             foodRuleList[index].rule.giveFoodCount = value.number;
-            debugger;
             this.setState({
                 foodRuleList,
             })
@@ -294,7 +293,6 @@ class BuyGiveDetailInfo extends React.Component {
             ifMultiGrade: true,
         })
         if(ifNotMount) {
-            debugger;
             this.setState({
                 foodRuleList: [
                     {
@@ -330,7 +328,6 @@ class BuyGiveDetailInfo extends React.Component {
             priceList: [],
             scopeList: [],
         })
-        debugger;
         this.setState({
             foodRuleList,
         })
@@ -339,7 +336,6 @@ class BuyGiveDetailInfo extends React.Component {
     deleteGrade = (e, index) => {
         let { foodRuleList } = this.state;
         foodRuleList.splice(index, 1);
-        debugger;
         this.setState({
             foodRuleList,
         })
@@ -375,6 +371,9 @@ class BuyGiveDetailInfo extends React.Component {
                 label: k5hlxzv2,
             },
         ]
+        if(typeof item.rule == 'string') {
+            item.rule = JSON.parse(item.rule);
+        }
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -476,7 +475,6 @@ class BuyGiveDetailInfo extends React.Component {
         let { ifMultiGrade, foodRuleList } = this.state;
         if (ifMultiGrade) {
             //当时满时走的逻辑
-            debugger;
             foodRuleList[index].priceList = [...value];
             this.setState({
                 foodRuleList,
@@ -515,8 +513,6 @@ class BuyGiveDetailInfo extends React.Component {
 
     render() {
         const { ifMultiGrade, foodRuleList } = this.state;
-        console.log('foodRuleList the length is ' + foodRuleList.length);
-        console.log('ifMultiGrade now is ' + ifMultiGrade);
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
