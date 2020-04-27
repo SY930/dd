@@ -15,24 +15,12 @@ function presetFilterOptions(records, filter) {
  * @param {any} params 请求参数
  * @param {any} cache 缓存数据
  */
-export async function loadShopSchema(params = {}, cache, brandList = []) {
+export async function loadShopSchema(params = {}, cache) {
     let data = cache;
     if (!data) {
         const res = await axios.post('/api/shopapi/schema', params);
         if (res.code !== '000') throw new Error(res.message);
         data = res.data;
-    }
-    if(brandList[0]){
-        // 品牌过滤
-        const { brands = [], shops = [] } = data;
-        const leftBrands = brands.filter(x=>brandList.includes(x.brandID));
-        let shopsList = [];
-        leftBrands.forEach(x=>{
-            const { shopIDs } = x;
-            shopsList = [...shopsList, ...new Set(shopIDs)];
-        });
-        const leftShops = shops.filter(x=>shopsList.includes(x.shopID));
-        data = { ...data, brands: leftBrands, shops: leftShops };
     }
     const filterOptions = FILTERS.reduce((ret, filter) => {
         const records = data[filter.name];

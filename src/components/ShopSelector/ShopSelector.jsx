@@ -14,8 +14,9 @@ import './assets/ShopSelector.less';
 class ShopSelector extends Component {
     state = {
         showModal: false,
-        options: null,
+        options: [],
         filters: null,
+        alloptions: [],
     }
 
     componentDidMount() {
@@ -31,16 +32,19 @@ class ShopSelector extends Component {
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
+        if (!isEqual(this.props.brandList, nextProps.brandList)) {
+            this.loadShops2(nextProps.brandList);
+        }
     }
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
-        const { brandList } = this.props;
-        return loadShopSchema(params, cache, brandList)
+        return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
                 this.setState({
                     loading: false,
                     options: shops,
+                    alloptions: shops,
                     filters: FILTERS.map(filter => ({
                         ...filter,
                         options: filterOptions[filter.name],
@@ -49,7 +53,14 @@ class ShopSelector extends Component {
                 return shops;
             });
     }
-
+    loadShops2(brandList =[]) {
+        const { options, alloptions } = this.state;
+        if(brandList[0]){
+            const leftShops = options.filter(x=>brandList.includes(x.brandID));
+            this.setState({ options: leftShops });
+        }
+        this.setState({ options: alloptions });
+    }
     handleAdd = () => {
         this.setState({ showModal: true });
     }
@@ -72,7 +83,6 @@ class ShopSelector extends Component {
     render() {
         const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
         const { showModal } = this.state;
-
         const options = this.props.options || this.state.options || [];
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {

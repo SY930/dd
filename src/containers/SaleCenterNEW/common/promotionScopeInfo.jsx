@@ -29,7 +29,7 @@ const RadioGroup = Radio.Group;
 
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
-import ShopSelector from '../../../components/common/ShopSelector';
+import ShopSelector from '../../../components/ShopSelector';
 import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -455,6 +455,7 @@ class PromotionScopeInfo extends React.Component {
 
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const { brands } = this.state;
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlggak}
@@ -467,6 +468,7 @@ class PromotionScopeInfo extends React.Component {
             >
                 <ShopSelector
                     value={this.state.selections}
+                    brandList={brands}
                     schemaData={this.getFilteredShopSchema()}
                     onChange={
                         this.editBoxForShopsChange
@@ -608,7 +610,7 @@ class PromotionScopeInfo extends React.Component {
     }
 
     render() {
-        const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])        
+        const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
         return (
             <div style={{position: "absolute", width: '100%'}}>
                 {
