@@ -69,9 +69,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         const data = { groupID: this.props.user.accountInfo.groupID }
-        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
-        data.shopIDs = shopsIDs.join(',')
+        data.shopIDs = shopsIDs.join(',');
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
             groupID: this.props.user.accountInfo.groupID,

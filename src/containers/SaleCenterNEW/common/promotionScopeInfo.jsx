@@ -26,7 +26,7 @@ const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
-
+import { axios } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
@@ -74,7 +74,8 @@ class PromotionScopeInfo extends React.Component {
             shopStatus: 'success',
             usageMode: 1,
             filterShops: [],
-            allShopsSet: false
+            allShopsSet: false,
+            brandList: [],
         };
 
         // bind this.
@@ -140,7 +141,7 @@ class PromotionScopeInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-
+        this.loadShopSchema();
         const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
         if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
             this.setState({filterShops: promotionBasicInfo.get('$filterShops').toJS().shopList})
@@ -175,9 +176,6 @@ class PromotionScopeInfo extends React.Component {
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
                 initialized: true,
-                $brands: Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
-                    this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
-                    this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 usageMode: _stateFromRedux.usageMode || 1,
             });
         }
@@ -209,13 +207,18 @@ class PromotionScopeInfo extends React.Component {
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
-                $brands: Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
-                    nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
-                    nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 initialized: true,
                 usageMode: _data.usageMode || 1,
             });
         }
+    }
+
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const {brands} = data;
+        this.setState({
+            brandList: brands,
+        })
     }
 
     // save brand data to store
@@ -276,7 +279,7 @@ class PromotionScopeInfo extends React.Component {
         const k5dod8s9 = intl.formatMessage(SALE_STRING.k5dod8s9);
         const k5m5ay7o = intl.formatMessage(SALE_STRING.k5m5ay7o);
 
-        const _brands = this.state.$brands;
+        const _brands = this.state.brandList;
         let options;
         if (this.state.initialized) {
             if (typeof _brands === 'object' && _brands.length > 0) {

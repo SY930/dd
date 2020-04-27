@@ -610,7 +610,7 @@ export const queryAllSaveMoneySet = () => {
                 dispatch({
                     type: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
                     payload: Array.isArray(data) ? data.filter(item => item.saveMoneySetType != 2) : [],
-                })   
+                })
             })
             .catch(err => {
                 // oops
