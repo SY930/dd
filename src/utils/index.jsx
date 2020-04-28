@@ -133,7 +133,8 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${curr.brandID}__${curr.foodCategoryName}`,
                 onlineFoodCategoryID: `${curr.brandID}__${curr.foodOnlineCategoryName}`,
-                value: `${curr.brandID}__${curr.foodName}${curr.unit}`
+                value: `${curr.brandID}__${curr.foodName}${curr.unit}`,
+                targetUnitName: `${curr.unit}`,
             })
         } else if (`${curr.brandID}` === '0') { // 把这种通用的菜品扩展给每个品牌
             acc.push(...brands.map(brand => ({
@@ -146,7 +147,8 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${brand.brandID}__${curr.foodCategoryName}`,
                 onlineFoodCategoryID: `${brand.brandID}__${curr.foodOnlineCategoryName}`,
-                value: `${brand.brandID}__${curr.foodName}${curr.unit}`
+                value: `${brand.brandID}__${curr.foodName}${curr.unit}`,
+                targetUnitName: `${curr.unit}`,
             })))
         }
         return acc;

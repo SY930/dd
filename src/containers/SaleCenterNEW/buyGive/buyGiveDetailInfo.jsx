@@ -50,18 +50,7 @@ class BuyGiveDetailInfo extends React.Component {
             ifMultiGrade: true,
             foodRuleList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS().length ? 
                             this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) : 
-                            [
-                                {
-                                    rule: {
-                                        stageAmount: '',
-                                        giveFoodCount: '',
-                                        stageType: '2',
-                                        stageNum: 0,
-                                    },
-                                    priceList: [],
-                                    scopeList: [],
-                                }
-                            ],
+                            this.isNewOrOldData(),
             index: 'not-important',
         };
 
@@ -99,6 +88,28 @@ class BuyGiveDetailInfo extends React.Component {
         nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish'])) {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
+    }
+    isNewOrOldData = () => {
+        let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        if (_rule === null || _rule === undefined) {
+            return [];
+        }
+        _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        _rule = Object.assign({}, _rule);
+        const tempArr = [
+            {
+                rule: {
+                    stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
+                    giveFoodCount: _rule.stage ? _rule.stage[0].giveFoodCount : '',
+                    stageType: _rule.stageType ? _rule.stageType: 2,
+                    stageNum: 0,
+                    StageAmountFlag: _rule.stage[0].stageAmount ? true : false,
+                },
+                priceList:  this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS(),
+                scopeList: [],
+            }
+        ];
+        return tempArr;
     }
     initData = (data) => {
         data.map((item) => {
@@ -152,6 +163,11 @@ class BuyGiveDetailInfo extends React.Component {
                 const { foodRuleList } = this.state;
                 foodRuleList.map((item) => {
                     item.rule = JSON.stringify(item.rule);
+                    item.priceList.map((every) => {
+                        every.targetUnitName = every.unit;
+                        every.foodUnitName = every.unit;
+                        return every;
+                    })
                     return item;
                 });
                 this.props.setPromotionDetail({
