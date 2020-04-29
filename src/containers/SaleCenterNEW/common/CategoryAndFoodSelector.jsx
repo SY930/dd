@@ -91,17 +91,17 @@ class CategoryAndFoodSelector extends Component {
             }
         }
     }
-    componentWillReceiveProps(nextProps)  {
-        const { priceLst = [] } = nextProps; 
-        if(!priceLst.length){
-            const {
-                dishes,
-            } = getDishesInfoFromPriceOrScopeList(priceLst);
-            this.setState({
-                dishes,
-            })
-        }
-    }
+    // componentWillReceiveProps(nextProps)  {
+    //     const { priceLst = [] } = nextProps; 
+    //     if(!priceLst.length){
+    //         const {
+    //             dishes,
+    //         } = getDishesInfoFromPriceOrScopeList(priceLst);
+    //         this.setState({
+    //             dishes,
+    //         })
+    //     }
+    // }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapSelectedValueToObjectsThenEmit()
