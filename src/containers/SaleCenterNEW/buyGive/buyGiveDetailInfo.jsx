@@ -198,8 +198,6 @@ class BuyGiveDetailInfo extends React.Component {
         }
         return false
     };
-
-
     onChangeClick = () => {
         this.setState(
             { display: !this.state.display }
