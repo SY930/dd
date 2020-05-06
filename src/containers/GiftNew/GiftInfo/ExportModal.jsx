@@ -7,6 +7,7 @@ import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT, COMMON_GIFT } from 'i18n/common/gift';
+import moment from 'moment';
 
 function mapValueToLabel(cfg, val) {
     return _.result(_.find(cfg, { value: val }), 'label') || '--';
@@ -109,9 +110,41 @@ export default class ExportModal extends Component {
             if (this.props.activeKey === 'used') {
                 params.giftStatus = '2'
             }
+            if(this.props.isExist){
+                this.getExportRecords(this.props._key);
+                return;
+            }
             const { sendorUsedParams } = this.props;
             Object.assign(params, sendorUsedParams ? sendorUsedParams.toJS() : {});
             axiosData('/crmimport/crmExportService_doExportGiftUsedInfo.ajax', params, null, { path: 'data' })
+                .then(_records => {
+                    this.getExportRecords(this.props._key);
+                })
+        } else if (this.props.isTicketBag) {
+            if(this.props.isExist){
+                this.getExportRecords(this.props._key);
+                return;
+            }
+            const { sendorUsedParams, activeKey } = this.props;
+            const { sendTimeBegin, sendTimeEnd, getWay, couponPackageStatus: giftStatus,
+                customerMobile, usingTimeBegin, usingTimeEnd, couponPackageID } = sendorUsedParams;
+            let params = { getWay, giftStatus, couponPackageID, mobileNum: customerMobile };
+            const DF2 = 'YYYY-MM-DD HH:mm:ss';
+            const DF = 'YYYYMMDDHHmmss';
+            if (activeKey === 'send') {
+                const [sd, ed] = [sendTimeBegin, sendTimeEnd];
+                const startDate = sd ? moment(sd, DF).format(DF2) : '';
+                const endDate = ed ? moment(ed, DF).format(DF2) : '';
+                const dateObj = { startDate, endDate };
+                params = { ...params, ...dateObj };
+            }else{
+                const [sd, ed] = [usingTimeBegin, usingTimeEnd];
+                const useStartTime = sd ? moment(sd, DF).format(DF2) : '';
+                const useEndTime = ed ? moment(ed, DF).format(DF2) : '';
+                const dateObj = { useStartTime, useEndTime };
+                params = { ...params, ...dateObj, giftStatus: '3' };
+            }
+            axiosData('/crm/couponPackage/export.ajax', params, null, { path: 'data' })
                 .then(_records => {
                     this.getExportRecords(this.props._key);
                 })
