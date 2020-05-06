@@ -517,7 +517,8 @@ class PhonePreview extends PureComponent {
                     PREVIEW_ENABLED_GIFTS.includes(giftType) && (
                         <div style={{
                             position: 'relative',
-                            transform: contentHeight < 740 ? `translateY(${-(740 - contentHeight) * scrollPercent}px)` : null
+                            transform: contentHeight < 740 ? `translateY(${-(740 - contentHeight) * scrollPercent}px)` : null,
+                            left: -18,
                         }}>
                             <img
                                 src={phone}
