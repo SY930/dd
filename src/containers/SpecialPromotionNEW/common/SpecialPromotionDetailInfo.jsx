@@ -42,6 +42,7 @@ import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { axiosData } from '../../../helpers/util';
 import PhotoFrame from './PhotoFrame';
+import { getStore } from '@hualala/platform-base/lib';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -959,8 +960,60 @@ class SpecialDetailInfo extends Component {
         })
     }
     handleWakeupIntervalGiftsChange = (val, index) => {
+        console.log('选中礼品名称---',val,index,this.props)
         let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
+        /*
+        * 选择支付宝代金券的时候，需单独处理
+        * http://jira.hualala.com/browse/WTCRM-1157
+        */
+       const {parentId,giftItemID} =  val[0] ? val[0].giftInfo : {}
+
+        if(parentId === '114') {
+            const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
+            axiosData(
+                '/promotion/insidevoucher/queryInsideVoucherPeriod.ajax',
+                { groupID, giftItemID },
+                null,
+                { path: 'data' },
+            ).then( res => {
+                console.log('res---',res)
+                if(res.code === '000') {
+                    const {effectTime,validUntilDate} = res.data
+                    wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = 1
+                    wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = true
+                    wakeupSendGiftsDataArray[index].gifts[0].effectType = '2'
+                    wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = true
+                    wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  [effectTime,validUntilDate]
+                    wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = true
+                    this.setState({
+                        wakeupSendGiftsDataArray,
+                    })
+                } else {
+                    message.warn(res.message)
+                }
+            }).catch(err => {
+                console.log('err---',err,)
+                // TODO: 接口通了之后调试
+                // wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = 1
+                // wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = true
+                // wakeupSendGiftsDataArray[index].gifts[0].effectType = '2'
+                // wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = true
+                // wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  [moment('20200201'),moment('20200203')]
+                // wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = true
+
+                // this.setState({
+                //     wakeupSendGiftsDataArray,
+                // })
+            })
+        } else {
+            wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = ''
+            wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = false
+            wakeupSendGiftsDataArray[index].gifts[0].effectType = '1'
+            wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = false
+            wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  []
+            wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = false
+        }
         this.setState({
             wakeupSendGiftsDataArray,
         })
@@ -2047,6 +2100,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         } = this.state;
         const { isNew } = this.props;
+        console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
         return (
             <div>
                 <FormItem
