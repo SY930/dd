@@ -14,9 +14,10 @@ import './assets/ShopSelector.less';
 class ShopSelector extends Component {
     state = {
         showModal: false,
-        options: [],
+        options: null,
         filters: null,
         alloptions: [],
+        allfilters: null,
     }
 
     componentDidMount() {
@@ -25,6 +26,7 @@ class ShopSelector extends Component {
             this.props.defaultCheckAll && this.props.onChange(
                 _shops.map(shop => shop.value)
             );
+            this.loadShops2(this.props.brandList);
         });
     }
 
@@ -49,17 +51,26 @@ class ShopSelector extends Component {
                         ...filter,
                         options: filterOptions[filter.name],
                     })),
+                    allfilters: FILTERS.map(filter => ({
+                        ...filter,
+                        options: filterOptions[filter.name],
+                    })),
                 });
                 return shops;
             });
     }
     loadShops2(brandList =[]) {
-        const { options, alloptions } = this.state;
+        const { alloptions, allfilters } = this.state;
+        const newFilter = JSON.parse(JSON.stringify(allfilters));
         if(brandList[0]){
-            const leftShops = options.filter(x=>brandList.includes(x.brandID));
-            this.setState({ options: leftShops });
+            const brands = allfilters[1];
+            const leftBrands = brands.options.filter(x=>brandList.includes(x.brandID));
+            newFilter[1].options = leftBrands;
+            const leftShops = alloptions.filter(x=>brandList.includes(x.brandID));
+            this.setState({ options: leftShops, filters: newFilter });
+            return;
         }
-        this.setState({ options: alloptions });
+        this.setState({ options: alloptions, filters: allfilters });
     }
     handleAdd = () => {
         this.setState({ showModal: true });
@@ -83,6 +94,7 @@ class ShopSelector extends Component {
     render() {
         const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
         const { showModal } = this.state;
+
         const options = this.props.options || this.state.options || [];
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {
