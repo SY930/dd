@@ -18,6 +18,7 @@ import {
     Tooltip,
     Icon,
     message as messageAlert,
+    Checkbox
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -25,7 +26,7 @@ import SendMsgInfo from '../common/SendMsgInfo';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { activeRulesList } from './constant'
 
 
 const FormItem = Form.Item;
@@ -39,7 +40,7 @@ class StepTwo extends React.Component {
         const autoRegister = props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']);
         this.state = {
             autoRegister: autoRegister === undefined ? 1 : autoRegister,
-            recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) || undefined,
+            recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) ||  ['1'],
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
             mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
@@ -199,7 +200,7 @@ class StepTwo extends React.Component {
                         />
                     </Tooltip>
                 </FormItem>
-                <FormItem
+                {/* <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -223,6 +224,28 @@ class StepTwo extends React.Component {
                                 <Select.Option value="2">{this.props.intl.formatMessage(STRING_SPE.d1qe7tmfob8230)}</Select.Option>
                                 <Select.Option value="3">{this.props.intl.formatMessage(STRING_SPE.d1kgf7b4bke9179)}</Select.Option>
                             </Select>
+                        )
+                    }
+                </FormItem> */}
+                <FormItem
+                    label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    required
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        this.props.form.getFieldDecorator('recommendRule', {
+                            rules: [
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.du3brskjh5191)}` }
+                            ],
+                            initialValue: recommendRule !== undefined ? [`${recommendRule}`] :  ["1"],
+                            onChange: this.handleRecommendRuleChange,
+                        })(
+                            <Checkbox.Group
+                                options={activeRulesList}
+                                disabled={userCount > 0}
+                            />
                         )
                     }
                 </FormItem>
