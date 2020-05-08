@@ -12,7 +12,7 @@ const GiftCfg = {
             value: '10',
             color: '#84aac6',
             category: 'primary',
-            tags: ['pos', '新微信', '微信']
+            tags: ['pos', '新微信', '小程序']
         },
         {
             name: '菜品优惠券',
@@ -20,7 +20,7 @@ const GiftCfg = {
             value: '20',
             color: '#c49b79',
             category: 'primary',
-            tags: ['pos', '新微信', '微信']
+            tags: ['pos', '新微信', '小程序']
         },
         {
             name: '菜品兑换券',
@@ -29,7 +29,7 @@ const GiftCfg = {
             value: '21',
             color: '#c49b79',
             category: 'primary',
-            tags: ['pos', '新微信', '微信']
+            tags: ['pos', '新微信', '小程序']
         },
         {
             name: '会员充值券',
@@ -37,7 +37,7 @@ const GiftCfg = {
             value: '40',
             color: '#9dc568',
             category: 'secondary',
-            tags: ['pos', '新微信'],
+            tags: ['pos', '新微信', '小程序'],
             icon: memberIcon1,
         },
         {
@@ -46,7 +46,7 @@ const GiftCfg = {
             value: '42',
             color: '#84aac6',
             category: 'secondary',
-            tags: ['pos', '新微信'],
+            tags: ['pos', '新微信', '小程序'],
             icon: memberIcon2,
         },
         {
@@ -55,7 +55,7 @@ const GiftCfg = {
             value: '80',
             category: 'secondary',
             color: '#84aac6',
-            tags: ['新微信'],
+            tags: ['pos', '新微信', '小程序'],
             icon: memberIcon3,
         },
         {
@@ -64,7 +64,7 @@ const GiftCfg = {
             value: '30',
             color: '#e5be6c',
             category: 'secondary',
-            tags: ['pos', '新微信'],
+            tags: ['pos', '新微信', '小程序'],
             icon: realityGiftIcon,
         },
         {
@@ -74,7 +74,7 @@ const GiftCfg = {
             color: '#c49b79',
             category: 'secondary',
             view: 'card', // 卡片视图
-            tags: ['pos', '新微信']
+            tags: ['pos', '新微信', '小程序']
         },
         {
             name: '线上礼品卡',
@@ -83,14 +83,14 @@ const GiftCfg = {
             color: '#84aac6',
             category: 'secondary',
             view: 'card', // 卡片视图
-            tags: ['微信小程序']
+            tags: ['小程序']
         },
         {
             name: '折扣券',
             describe: '指定菜品满x元，折扣率为y',
             value: '111',
             category: 'primary',
-            tags: ['pos', '新微信', '微信'],
+            tags: ['pos', '新微信', '小程序'],
             color: '#84aac6'
         },
         {
@@ -98,7 +98,7 @@ const GiftCfg = {
             describe: '购买x份A菜品，赠送y份B菜品',
             value: '110',
             category: 'primary',
-            tags: ['新微信', '微信'],
+            tags: ['pos', '新微信', '小程序'],
             color: '#c49b79'
         },
         {
@@ -107,7 +107,7 @@ const GiftCfg = {
             value: '113',
             color: '#e5be6c',
             category: 'secondary',
-            tags: ['新微信'],
+            tags: ['微信'],
             view: 'redpacket', // 红包视图
             icon: redPacketIcon,
         },
@@ -218,7 +218,6 @@ const GiftCfg = {
         { value: '80', label: '商家支付', include: true },
         { value: '90', label: '商家卖出', include: true },
         { value: '91', label: '会员摇奖' },
-        { value: '92', label: '免费领取' },
         { value: '93', label: '积分兑换' },
         { value: '94', label: '参与活动' },
         { value: '95', label: '有奖竞猜' },
@@ -250,6 +249,7 @@ const GiftCfg = {
         { value: '77', label: '支付后广告', include: true },
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
+        { value: '124', label: '券包', include: true },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },

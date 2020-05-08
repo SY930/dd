@@ -92,6 +92,9 @@ export default class PrizeContent extends React.Component {
                         validateStatus={info.giveCoupon.value.giftValidDays.validateStatus}
                         help={info.giveCoupon.value.giftValidDays.msg}
                     >
+                        <div className={style.labelSecondDiv}>
+                            <span>有效天数</span>
+                        </div>
                         <PriceInput
                             addonAfter={this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}
                             maxNum={5}

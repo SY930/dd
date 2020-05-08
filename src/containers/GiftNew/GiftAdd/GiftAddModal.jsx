@@ -219,7 +219,7 @@ class GiftAddModal extends React.Component {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
-        const valueLabel = value == '42' ? '积分数额' : '礼品卡面值';
+        const valueLabel = value == '42' ? '积分数额' : value == '30' ? '礼品价值' : '礼品卡面值';
         const { unit } = this.state;
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
         const formItems = {
@@ -310,7 +310,7 @@ class GiftAddModal extends React.Component {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
-                    { max: this.props.type == 'add' ? 25 : 50, message: `不能超过${this.props.type == 'add' ? `25`: `50`}个字符` },
+                    { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35`: `50`}个字符` },
                 ],
                 disabled: type !== 'add',
             },

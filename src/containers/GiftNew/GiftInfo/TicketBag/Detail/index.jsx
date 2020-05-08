@@ -31,9 +31,10 @@ class Detail extends Component {
         selectedRowKeys: [],     // 退款ids
     };
     componentDidMount() {
-        this.onQueryList();
-        this.onQueryList2();
-        this.onQueryList3();
+        const params = {pageSize: 10};
+        this.onQueryList(params);
+        this.onQueryList2(params);
+        this.onQueryList3(params);
     }
     /**
      * 发出数
@@ -95,6 +96,11 @@ class Detail extends Component {
     onCloseModal = () => {
         this.setState({ visible: '' });
     }
+    /* 关闭窗口 */
+    onCloseRefund = () => {
+        this.onCloseModal();
+        this.onQueryList3();
+    }
     // 退款选中的订单
     onSelectChange = (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
@@ -105,11 +111,10 @@ class Detail extends Component {
         const { list3, loading3, pageObj3 } = this.state;
         const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
-            couponPackageDesciption, couponPackageStock, sendCount = 0 } = couponPackageInfo;
+            couponPackageDesciption, remainStock = 0, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
-        const oddStock = couponPackageStock - sendCount;
-        const resetStock = couponPackageStock === -1 ? '不限制' : couponPackageStock;
+        const resetStock = remainStock === -1 ? '不限制' : remainStock;
         return (
             <Modal
                 title="券包使用详情"
@@ -141,7 +146,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{couponPackageStock: resetStock, sendCount}]} />
+                            <TotalTable list={[{remainStock: resetStock, sendCount}]} />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>
@@ -181,9 +186,9 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="3">
-                                <PresentForm ids={ids} num={oddStock} />
+                                <PresentForm ids={ids} num={remainStock} />
                             </TabPane>
-                            {/* <TabPane tab="退款" key="4">
+                            <TabPane tab="退款" key="4">
                                 <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
                                 <MainTable
                                     type={3}
@@ -194,7 +199,7 @@ class Detail extends Component {
                                     onQuery={this.onQueryList3}
                                     onChange={this.onSelectChange}
                                 />
-                            </TabPane> */}
+                            </TabPane>
                         </Tabs>
                     </li>
                 </ul>
@@ -209,8 +214,9 @@ class Detail extends Component {
                 }
                 {visible === 'refund' &&
                     <RefundModal
+                        ids={ids}
                         list={selectedRowKeys}
-                        onClose={this.onCloseModal}
+                        onClose={this.onCloseRefund}
                     />
                 }
             </Modal>

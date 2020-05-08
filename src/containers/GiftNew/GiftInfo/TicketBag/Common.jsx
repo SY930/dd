@@ -38,8 +38,8 @@ const statusOpts = [
     { label: '退款中', value: '6' },
 ];
 const qStatusOpts = [
-    { label: '正常', value: '' },
-    { label: '已删除', value: '1' },
+    { label: '正常', value: '1' },
+    { label: '已删除', value: '2' },
 ];
 const isSendOpts = [
     { label: '不发送', value: '0' },
@@ -54,7 +54,10 @@ const wayOpts = [
     { value: '11', label: '商家赠送' },
     { value: '12', label: '摇奖活动赠送' },
 ];
-
+const stockOpts = [
+    { value: '1', label: '不限制' },
+    { value: '2', label: '剩余库存' },
+];
 const separItems = {
     a: {
         type: 'custom',
@@ -63,6 +66,26 @@ const separItems = {
     b: {
         type: 'custom',
         render: () => (<div className="separate"><h3>礼品设置</h3></div>),
+    },
+    c: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">设置「付费购买」后，用户需付费购买才能获得券包；如通过活动或储值套餐发放请选择「活动投放」</p>),
+    },
+    d: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">不填表示长期有效</p>),
+    },
+    e: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">不填表示不限制</p>),
+    },
+    f: {
+        type: 'custom',
+        label: <span></span>,
+        render: () => (<p className="formTips">未选择门店时默认所有店铺通用</p>),
     },
 }
 // 表单内 小问号的 tip
@@ -102,10 +125,10 @@ const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // http://wiki.hualala.com/pages/viewpage.action?pageId=46546447 java API
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
-const keys1 = ['a', 'couponPackageType', 'sellTime', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'shopInfos', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
-const keys2 = ['a', 'couponPackageType', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice2', 'couponPackageStock', 'couponPackageDesciption', 'couponPackageImage'];
+const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice', 'settleUnitID', 'remainStock', 'e', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
+const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
 const formItems = {
     couponPackageType: {
@@ -173,7 +196,7 @@ const formItems = {
             },
         }],
     },
-    couponPackageStock: {
+    remainStock: {
         type: 'text',
         label: '券包库存',
         props: {
@@ -202,7 +225,7 @@ const formItems = {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: '0',
+        defaultValue: '1',
     },
     isRefundSelf: {
         type: 'radio',
@@ -292,8 +315,8 @@ const formKeys = [
     },
 ];
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 16 },
+    labelCol: { span: 7 },
+    wrapperCol: { span: 17 },
 };
 const weekMap = ['', '一', '二', '三', '四', '五', '六', '日'];
 const weekList = (() => {
@@ -311,7 +334,7 @@ const monthList = (() => {
     return month;
 })();
 
-const qFormKeys = ['name', 'couponPackageType', 'q'];
+const qFormKeys = ['name', 'couponPackageType', 'couponPackageStatus', 'q'];
 
 const qFormItems = {
     name: {
@@ -328,7 +351,7 @@ const qFormItems = {
         type: 'combo',
         label: '状态',
         options: qStatusOpts,
-        defaultValue: '',
+        defaultValue: '1',
     },
     brandID: {
         type: 'combo',
@@ -350,7 +373,7 @@ const qFormItems = {
 
 const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
-const dFormKeys3 = ['couponPackageID', 'couponPackageStatus', 'linkOrderNo', 'customerMobile', 'sendTime', 'q'];
+const dFormKeys3 = ['customerCouponPackageID', 'couponPackageStatus', 'linkOrderNo', 'customerMobile', 'sendTime', 'q'];
 const dFormItems = {
     getWay: {
         type: 'combo',
@@ -382,9 +405,9 @@ const dFormItems = {
             showTime: { format: 'HH:mm' },
         }
     },
-    couponPackageID: {
+    customerCouponPackageID: {
         type: 'text',
-        label: '券包ID',
+        label: '券包编码',
     },
     linkOrderNo: {
         type: 'text',
@@ -440,15 +463,40 @@ const pFormItems = {
     },
 }
 const refundItems = {
-    refundRemark: {
+    refundReason: {
         type: 'textarea',
         label: '退款原因',
         rules: ['description'],
+    },
+};
+const stockItems = {
+    type: {
+        type: 'radio',
+        label: <span></span>,
+        options: stockOpts,
+        defaultValue: '2',
+    },
+    remainStock: {
+        type: 'text',
+        label: '',
+        surfix: '份',
+        props: {
+            placeholder: '最大支持7位整数',
+        },
+        rules: [{
+            validator: (rule, value, callback) => {
+                const pattern = /^([0-9]\d{0,6})$/;
+                if(!pattern.test(value)){
+                    return callback('最大支持7位整数');
+                }
+                return callback();
+            },
+        }],
     },
 };
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2, dFormKeys3, refundItems, couponImage,
+    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems,
 }

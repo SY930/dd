@@ -33,6 +33,7 @@ class GiftDetailModalTabs extends React.Component {
             exportVisible: false,
             popoverVisible: false,
             tooltipVisble: false,
+            sameItemID: '',
         };
         this.handleExport = this.handleExport.bind(this);
     }
@@ -54,6 +55,10 @@ class GiftDetailModalTabs extends React.Component {
                 this.setState({
                     popContent: '已有导出任务 请勿重复操作，',
                     popA: '查看导出结果',
+<<<<<<< HEAD
+=======
+                    sameItemID: records.sameItemID,
+>>>>>>> master
                 })
             }else{
                 this.setState({
@@ -127,6 +132,7 @@ class GiftDetailModalTabs extends React.Component {
     }
     render() {
         const { data } = this.props;
+        const { sameItemID } = this.state;
         const tabs = data.giftType === '91' ?
             [{ tab: '发出数', key: 'send' },
             ]
@@ -202,8 +208,9 @@ class GiftDetailModalTabs extends React.Component {
                             giftName={data.giftName}
                             activeKey={this.state.activeKey}
                             newExport // 除了礼品定额卡之外的导出, 复用组件
-                            handleClose={() => this.setState({ exportVisible: false })}
+                            handleClose={() => this.setState({ exportVisible: false, sameItemID: '' })}
                             sendorUsedParams = {this.props.sendorUsedParams}
+                            sameItemID={sameItemID}
                         />
                 }
             </div>

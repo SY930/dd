@@ -34,6 +34,13 @@ export default class Editor extends Component {
             }
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
+            const { getFieldsValue } = this.form;
+            const { couponPackageGiftConfigs } = getFieldsValue();
+            if(value === '1') {
+                this.validIsOver(couponPackageGiftConfigs);
+                return;
+            }
+            this.setState({ isOver: false });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -61,7 +68,9 @@ export default class Editor extends Component {
             const { isAutoRefund } = getFieldsValue();
             if(isAutoRefund === '1') {
                 this.validIsOver(value);
+                return;
             }
+            this.setState({ isOver: false });
         }
         if(key==='isAutoRefund') {
             const { getFieldsValue } = this.form;
@@ -103,7 +112,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, isAutoRefund, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -111,8 +120,10 @@ export default class Editor extends Component {
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
+        let stockRule = {};
         if(isEdit) {
             disDate = { disabledDate: this.disabledDate };
+            stockRule = {rules: ['numbers']};
         }
         const newFormItems = {
             ...other,
@@ -123,7 +134,8 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
-            isAutoRefund: { ...isAutoRefund, disabled: true },
+            isAutoRefund: { ...isAutoRefund, disabled: isEdit },
+            remainStock: { ...remainStock, ...stockRule },
         };
         if(check) {
             let obj = {}
@@ -157,7 +169,7 @@ export default class Editor extends Component {
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
-                        couponPackageStock: stock, ...others,
+                        remainStock: stock, ...others,
                     } = v;
                 let cycleObj = {};
                 if(cycleType){
@@ -185,9 +197,9 @@ export default class Editor extends Component {
                 }
                 const price = couponPackagePrice || couponPackagePrice2;
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
-                const couponPackageStock = stock || '-1';           // 如果清空库存，给后端传-1
+                const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
-                    couponPackageStock, couponPackagePrice: price };
+                    remainStock, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id
@@ -208,6 +220,10 @@ export default class Editor extends Component {
         const { newFormKeys, isOver } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
+        let clazz = styles.formWrap2;
+        if(newFormKeys[0].keys.includes('d')){
+            clazz = styles.formWrap;
+        }
         return (
             <section className={styles.formBox}>
                 <div className={styles.header}>
@@ -217,14 +233,16 @@ export default class Editor extends Component {
                         <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>
-                <BaseForm
-                    getForm={this.getForm}
-                    onChange={this.onChange}
-                    formItems={newFormItems}
-                    formKeys={newFormKeys}
-                    formData={detail || {}}
-                    formItemLayout={formItemLayout}
-                />
+                <div className={clazz}>
+                    <BaseForm
+                        getForm={this.getForm}
+                        onChange={this.onChange}
+                        formItems={newFormItems}
+                        formKeys={newFormKeys}
+                        formData={detail || {}}
+                        formItemLayout={formItemLayout}
+                    />
+                </div>
                 {isOver &&
                     <Alert
                         message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"

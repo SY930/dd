@@ -100,8 +100,13 @@ class AddGifts extends React.Component {
     initGiftInfo = (props = this.props) => {
         let giftInfo;
         try {
-            giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
+            if(props.zhifubaoCoupons){
+                giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
+                .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111')|| (giftTypes.giftType == '114'));
+            }else{
+                giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
                 .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
+            }
         } catch (err) {
             giftInfo = [];
         }

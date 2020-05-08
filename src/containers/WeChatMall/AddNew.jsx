@@ -37,6 +37,9 @@ import {
 import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from "../../constants/entryCodes";
 import {BASIC_PROMOTION_CREATE} from "../../constants/authorityCodes";
 import NewPromotionCard from '../NewCreatePromotions/NewPromotionCard'
+import { axiosData } from '../../helpers/util';
+import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base'
 
 function mapStateToProps(state) {
     return {
@@ -78,12 +81,45 @@ class NewActivity extends React.Component {
             modal1Visible: false,
             index: 0,
             contentHeight: document.documentElement.clientHeight || document.body.clientHeight,
+            whiteList: [],
         };
         this.onWindowResize = throttle(this.onWindowResize.bind(this), 100);
     }
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        this.getWhite();
+    }
+    getWhite(){
+        axiosData(
+            'specialPromotion/queryOpenedEventTypes.ajax',
+            {},
+            { needThrow: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(data => {
+            const { eventTypeInfoList = [] } = data;
+            this.setState({ whiteList: eventTypeInfoList });
+        })
+    }
+    getAccountInfo() {
+        const state = getStore().getState();
+        return state.user.get('accountInfo').toJS();
+    }
+    onClickOpen = async (eventWay) => {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
+        const method = '/specialPromotion/freeTrialOpen.ajax';
+        const params = { service, type, data: { eventWay, groupID }, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg } = response;
+        if (code === '000') {
+            message.success('开通成功，欢迎使用！')
+            this.getWhite();
+            return;
+        }
+        message.error(msg);
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
@@ -131,7 +167,7 @@ class NewActivity extends React.Component {
                     }}>
                     <div style={{ paddingBottom: 30 }} className={selfStyle.flexContainer}>
                         {this.renderActivityButtons()}
-                    </div>   
+                    </div>
                     {this.state.modal1Visible ? this.renderModal() : null}
                 </Col>
             </Row>
@@ -141,6 +177,7 @@ class NewActivity extends React.Component {
 
 
     renderActivityButtons = () => {
+        const {whiteList} = this.state;
         return (
             WECHAT_MALL_ACTIVITIES.map((activity, index) => {
                 return (
@@ -153,6 +190,8 @@ class NewActivity extends React.Component {
                                 this.onButtonClicked(index, activity);
                             }}
                             index={index}
+                            whiteList={whiteList}
+                            onClickOpen={this.onClickOpen}
                         />
                     </Authority>
                 );
@@ -162,10 +201,11 @@ class NewActivity extends React.Component {
 
     renderModal = () => {
         const promotionType = WECHAT_MALL_ACTIVITIES[this.state.index].title;
+        const title = <span>创建{promotionType}</span>;
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={`创建${promotionType}`}
+                title={title}
                 maskClosable={false}
                 footer={false}
                 style={{

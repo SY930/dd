@@ -3,34 +3,45 @@ import {
     Select,
 } from 'antd';
 import { connect } from 'react-redux';
-import {queryWechatMpInfo} from "../../GiftNew/_action";
-
+import { fetchData, axiosData } from 'helpers/util';
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        queryWechatMpInfo: () => {
-            dispatch(queryWechatMpInfo())
-        }
     }
 };
 
 const mapStateToProps = (state) => {
     return {
-        allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
+        shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     }
 };
 
 class PushMessageMpID extends Component {
+    state = {
+        allWeChatAccountList: [],
+    }
     componentDidMount() {
-        this.props.queryWechatMpInfo();
+        this.queryWechatMpInfo();
+    }
+    queryWechatMpInfo = () => {
+        const { shopList} = this.props;
+        const shopIDs = shopList.toJS().map(x=>x.shopID);
+        const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
+        axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', {...params},
+            null, { path: 'data'}, 'HTTP_SERVICE_URL_CRM')
+            .then((data) => {
+                const { mpInfoResDataList = [] } = data;
+                this.setState({ allWeChatAccountList: mpInfoResDataList });
+            })
     }
     getAllAvailableMpInfo = () => {
+        const { allWeChatAccountList } = this.state;
         return [
             {
                 value: '{}',
                 label: '全部',
             },
-            ...this.props.allWeChatAccountList.map(item => (
+            ...allWeChatAccountList.map(item => (
                 {
                     value: JSON.stringify({mpID: item.mpID, appID: item.appID}),
                     label: item.mpName,

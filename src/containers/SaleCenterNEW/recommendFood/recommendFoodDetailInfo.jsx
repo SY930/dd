@@ -335,7 +335,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                             this.props.form.getFieldDecorator(`priceList${index}`, {
                                                 initialValue: item.priceList.filter(item => item.stageNo == -1),
                                                 onChange: (val) =>  this.autoDishesChange(val, index)
-                                            })(<ConnectedPriceListSelector isShopMode={this.props.isShopFoodSelectorMode} />)
+                                            })(<ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} index={0} isShopMode={this.props.isShopFoodSelectorMode} />)
                                         }
                                     </FormItem>
                                 </div>

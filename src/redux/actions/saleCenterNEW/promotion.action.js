@@ -135,7 +135,6 @@ export const fetchPromotionDetail = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_DETAIL,
         })
-
         axiosData(
             '/promotion/docPromotionService_queryDetail.ajax',
             opts.data,

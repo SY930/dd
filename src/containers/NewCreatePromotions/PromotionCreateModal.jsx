@@ -44,6 +44,9 @@ import selfStyle from './style.less'
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+import { axiosData } from '../../helpers/util';
+import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base'
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -58,10 +61,40 @@ class PromotionCreateModal extends Component {
             specialModalVisible: false,
             specialIndex: 0,
             currentCategoryIndex: 0,
+            whiteList: [],
         };
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
-
+    componentDidMount() {
+        this.getWhite();
+    }
+    getWhite(){
+        axiosData(
+            'specialPromotion/queryOpenedEventTypes.ajax',
+            {},
+            { needThrow: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(data => {
+            const { eventTypeInfoList = [] } = data;
+            this.setState({ whiteList: eventTypeInfoList });
+        })
+    }
+    onClickOpen = async (eventWay) => {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
+        const method = '/specialPromotion/freeTrialOpen.ajax';
+        const params = { service, type, data: { eventWay, groupID }, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg } = response;
+        if (code === '000') {
+            message.success('开通成功，欢迎使用！')
+            this.getWhite();
+            return;
+        }
+        message.error(msg);
+    }
     setBasicModalVisible(basicModalVisible) {
         this.setState({ basicModalVisible });
         if (!basicModalVisible) {
@@ -232,6 +265,7 @@ class PromotionCreateModal extends Component {
     }
 
     renderModalContent() {
+        const {whiteList} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -244,7 +278,7 @@ class PromotionCreateModal extends Component {
         const ALL_PROMOTION_CATEGORIES = [
             {
                 title: k6316hto,
-                list: NEW_CUSTOMER_PROMOTION_TYPES.filter(item => item.key != 67 && item.key != 68),
+                list: NEW_CUSTOMER_PROMOTION_TYPES,
             },
             {
                 title: k6316hd0,
@@ -301,6 +335,8 @@ class PromotionCreateModal extends Component {
                                                 promotionEntity={item}
                                                 onCardClick={this.handleNewPromotionCardClick}
                                                 index={index}
+                                                whiteList={whiteList}
+                                                onClickOpen={this.onClickOpen}
                                             />
                                         ))
                                     }

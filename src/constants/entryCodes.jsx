@@ -30,6 +30,9 @@ export const PROMOTION_CALENDAR_NEW = 'promotion.group.calendar'; // 营销日�
 
 export const PROMOTION_WECHAT_COUPON_LIST = '10000761000'; // 微信支付代金券 列表页
 export const PROMOTION_WECHAT_COUPON_CREATE = 'promotion_wechat_coupon_create'; // 微信支付代金券 新建页
+export const PROMOTION_ZHIFUBAO_COUPON_LIST = '100007610002';
+export const CRM_ALIPAY_AUTH = 'crm.Alipay_card_authority.edit';//支付宝卡包管理页面（会员）
+
 export const PROMOTION_DECORATION = 'promotion_decoration'; // 营销活动装修页
 
 export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角
@@ -38,3 +41,4 @@ export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001'; // 线上营销�
 export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管理 店铺视角
 
 export const TRD_PROMOTION_INTERFACE = '100009992';
+export const NEW_SALE_BOX = '10000730001';
