@@ -959,16 +959,16 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray: wakeupSendGiftsDataArray.slice(),
         })
     }
-    handleWakeupIntervalGiftsChange = (val, index) => {
-        console.log('选中礼品名称---',val,index,this.props)
+    handleWakeupIntervalGiftsChange = (val, index,currentIndex) => {
+        console.log('选中礼品名称---',val,index,currentIndex)
         let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
         /*
         * 选择支付宝代金券的时候，需单独处理
         * http://jira.hualala.com/browse/WTCRM-1157
         */
-       const {parentId,giftItemID} =  val[0] ? val[0].giftInfo : {}
-
+     Array.isArray(val) && val.forEach((item,i) => {
+        const { parentId, giftItemID } =   item.giftInfo
         if(parentId === '114') {
             const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
             axiosData(
@@ -976,44 +976,36 @@ class SpecialDetailInfo extends Component {
                 { groupID, giftItemID },
                 null,
                 { path: 'data' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
             ).then( res => {
-                console.log('res---',res)
-                if(res.code === '000') {
-                    const {effectTime,validUntilDate} = res.data
-                    wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = 1
-                    wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = true
-                    wakeupSendGiftsDataArray[index].gifts[0].effectType = '2'
-                    wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = true
-                    wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  [effectTime,validUntilDate]
-                    wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = true
-                    this.setState({
-                        wakeupSendGiftsDataArray,
-                    })
-                } else {
-                    message.warn(res.message)
-                }
+                const {effectTime,validUntilDate} = res
+                const v =  wakeupSendGiftsDataArray[index].gifts[i]
+                v.giftCount.value = 1
+                v.giftCount.disabled = true
+                v.effectType = '2'
+                v.effectTypeIsDisabled = true
+                v.giftEffectiveTime.value =  [moment(effectTime,'YYYYMMDDHHmmss'),moment(validUntilDate,'YYYYMMDDHHmmss')]
+                v.giftEffectiveTime.disabled = true
+                v.giftValidDays.value = ''
+                this.setState({
+                    wakeupSendGiftsDataArray,
+                })
             }).catch(err => {
-                console.log('err---',err,)
-                // TODO: 接口通了之后调试
-                // wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = 1
-                // wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = true
-                // wakeupSendGiftsDataArray[index].gifts[0].effectType = '2'
-                // wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = true
-                // wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  [moment('20200201'),moment('20200203')]
-                // wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = true
 
-                // this.setState({
-                //     wakeupSendGiftsDataArray,
-                // })
             })
-        } else {
-            wakeupSendGiftsDataArray[index].gifts[0].giftCount.value = ''
-            wakeupSendGiftsDataArray[index].gifts[0].giftCount.disabled = false
-            wakeupSendGiftsDataArray[index].gifts[0].effectType = '1'
-            wakeupSendGiftsDataArray[index].gifts[0].effectTypeIsDisabled = false
-            wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.value =  []
-            wakeupSendGiftsDataArray[index].gifts[0].giftEffectiveTime.disabled = false
         }
+       })
+       if(typeof currentIndex !== undefined) {
+            const v =  wakeupSendGiftsDataArray[index].gifts[currentIndex]
+            v.giftCount.value = ''
+            v.giftCount.disabled = false
+            v.effectType = '1'
+            v.effectTypeIsDisabled = false
+            v.giftEffectiveTime.value =  []
+            v.giftEffectiveTime.disabled = false
+       }
+
+
         this.setState({
             wakeupSendGiftsDataArray,
         })
@@ -2148,7 +2140,7 @@ class SpecialDetailInfo extends Component {
                                     type={this.props.type}
                                     isNew={this.props.isNew}
                                     value={wakeupSendGiftsDataArray[0].gifts}
-                                    onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, 0)}
+                                    onChange={(giftArr,currentIndex) => this.handleWakeupIntervalGiftsChange(giftArr, 0,currentIndex)}
                                     zhifubaoCoupons={true}
                                 />
                             </Col>

@@ -629,7 +629,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos);
+                this.props.onChange && this.props.onChange(this.state.infos,index);
             });
         } else {
             const _infos = this.state.infos;
@@ -640,7 +640,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos);
+                this.props.onChange && this.props.onChange(this.state.infos,index);
             });
         }
     }
