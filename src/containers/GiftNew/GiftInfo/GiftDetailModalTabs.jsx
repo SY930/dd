@@ -55,10 +55,7 @@ class GiftDetailModalTabs extends React.Component {
                 this.setState({
                     popContent: '已有导出任务 请勿重复操作，',
                     popA: '查看导出结果',
-<<<<<<< HEAD
-=======
                     sameItemID: records.sameItemID,
->>>>>>> master
                 })
             }else{
                 this.setState({
