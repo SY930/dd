@@ -43,6 +43,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { axiosData } from '../../../helpers/util';
 import PhotoFrame from './PhotoFrame';
 import TicketBag from '../shackGift/TicketBag';
+import { axios } from '@hualala/platform-base';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -255,6 +256,9 @@ class SpecialDetailInfo extends Component {
             }
             this.setState({shareTitlePL, shareSubtitlePL });
         }
+        if (type == 30) {
+            this.getBag();
+        }
     }
     getMultipleLevelConfig = () => {
         const { type } = this.props;
@@ -301,7 +305,33 @@ class SpecialDetailInfo extends Component {
             default: return [getDefaultGiftData()]
         }
     }
-
+    componentWillReceiveProps(np){
+        if(!this.props.isNew){
+            const b = np.specialPromotion.get('$giftInfo').toJS();
+            const { presentType, giftID } = b[0];
+            if(this.props.type == '30' && presentType===4){
+                const {couponPackageInfos } = this.state;
+                const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
+                this.setState({
+                    sendTypeValue: '1',
+                    bag,
+                })
+            }
+        }
+    }
+    async getBag(){
+        const { user } = this.props;
+        const {groupID} = user.accountInfo;
+        const data = {groupID, couponPackageType: "2"};
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
+        const method = `${api}getCouponPackages.ajax`;
+        const params = { service, type, data, method };
+        const response = await axios.post(url + method, params);
+        const { code, couponPackageInfos = []} = response;
+        if (code === '000') {
+            this.setState({ couponPackageInfos })
+        }
+    }
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
         const data = this.initiateDefaultGifts();
@@ -326,6 +356,9 @@ class SpecialDetailInfo extends Component {
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
+            if(this.props.type == '30' && gift.presentType === 4){
+                data[index].giftInfo.giftName = '';
+            }
             data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -573,6 +606,17 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialGiftInfo([params]);
                 return true;
             }
+        }
+        const { sendTypeValue } = this.state;
+        if(type === '30' && sendTypeValue === '1') {
+            const { bag } = this.state;
+            if(bag[0]){
+                const { couponPackageID } = bag[0];
+                const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+            message.error('请选择一项券包');
         }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
