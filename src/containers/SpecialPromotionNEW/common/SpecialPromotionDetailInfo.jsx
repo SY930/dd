@@ -960,7 +960,7 @@ class SpecialDetailInfo extends Component {
         })
     }
     handleWakeupIntervalGiftsChange = (val, index,currentIndex) => {
-        console.log('选中礼品名称---',val,index,currentIndex)
+        // console.log('选中礼品名称---',val,index,currentIndex)
         let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
         /*
@@ -2092,7 +2092,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         } = this.state;
         const { isNew } = this.props;
-        console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
+        // console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
         return (
             <div>
                 <FormItem
