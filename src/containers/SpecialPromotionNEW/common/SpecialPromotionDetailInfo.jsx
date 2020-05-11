@@ -2357,10 +2357,11 @@ class SpecialDetailInfo extends Component {
     // type 30
     renderPointDuihuan(){
         const { bag, sendTypeValue } = this.state;
-        const { user, type } = this.props;
+        const { user, type, disabled } = this.props;
         const {groupID} = user.accountInfo;
+        const css = disabled?styles.disabledModal:'';
         return(
-            <div>
+            <div style={{position: 'relative'}}>
                 <Row>
                     <Col span={20} offset={2} style={{margin: '10px'}}>
                         <span style={{margin: '0px 8px'}}>赠送优惠券</span>
@@ -2392,13 +2393,13 @@ class SpecialDetailInfo extends Component {
                         />
                     </Col>
                 </Row>}
+                <div className={css}></div>
             </div>
         )
     }
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
-        console.log('tt', type);
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
         }
@@ -2512,6 +2513,7 @@ function mapStateToProps(state) {
         groupCardTypeList: state.sale_mySpecialActivities_NEW
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
     }
 }
 
