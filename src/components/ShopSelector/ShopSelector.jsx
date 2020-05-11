@@ -63,9 +63,9 @@ class ShopSelector extends Component {
         const { alloptions, allfilters } = this.state;
         const newFilter = JSON.parse(JSON.stringify(allfilters));
         if(brandList[0]){
-            const brands = allfilters[1];
+            const brands = allfilters[0];
             const leftBrands = brands.options.filter(x=>brandList.includes(x.brandID));
-            newFilter[1].options = leftBrands;
+            newFilter[0].options = leftBrands;
             const leftShops = alloptions.filter(x=>brandList.includes(x.brandID));
             this.setState({ options: leftShops, filters: newFilter });
             return;

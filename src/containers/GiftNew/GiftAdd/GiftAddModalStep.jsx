@@ -950,7 +950,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { data } } = this.props;
         const { selectBrands = [] } = data;
         const brandList = selectBrands.map(x=>x.targetID);
-        console.log('', );
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col>
