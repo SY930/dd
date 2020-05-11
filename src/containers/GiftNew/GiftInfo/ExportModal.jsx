@@ -185,6 +185,9 @@ export default class ExportModal extends Component {
         if (this.props.specialPromotion) {
             data.exportQuotaType = '8';
         }
+        if (this.props.isTicketBag) {
+            data.exportQuotaType = this.props.activeKey === 'used' ? '13' : '12';
+        }
         axiosData('/crm/quotaCardExport/getRecords.ajax', data, null, { path: 'data' })
             .then(data => {
                 const _Records = data.records ? data.records.map(item => ({ ...item, key: item.itemID })) : [];
@@ -233,6 +236,9 @@ export default class ExportModal extends Component {
         }
         if (this.props.specialPromotion) {
             data.exportQuotaType = '8';
+        }
+        if (this.props.isTicketBag) {
+            data.exportQuotaType = this.props.activeKey === 'used' ? '13' : '12';
         }
         axiosData('/crm/quotaCardExport/delete.ajax', data, null, { path: 'data' })
             .then(() => {
