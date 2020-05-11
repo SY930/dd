@@ -1,5 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Button, Tabs, Icon, message, Popover } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 import InfoTable from './InfoTable';
 import TotalTable from './TotalTable';
