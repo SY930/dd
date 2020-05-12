@@ -472,7 +472,7 @@ class PromotionScopeInfo extends React.Component {
                 <ShopSelector
                     value={this.state.selections}
                     brandList={brands}
-                    schemaData={this.getFilteredShopSchema()}
+                    // schemaData={this.getFilteredShopSchema()}
                     onChange={
                         this.editBoxForShopsChange
                     }
