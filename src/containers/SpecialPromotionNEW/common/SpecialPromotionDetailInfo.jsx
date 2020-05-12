@@ -1001,7 +1001,7 @@ class SpecialDetailInfo extends Component {
             v.giftCount.disabled = false
             v.effectType = '1'
             v.effectTypeIsDisabled = false
-            v.giftEffectiveTime.value =  []
+            v.giftEffectiveTime.value =  '0'
             v.giftEffectiveTime.disabled = false
        }
 
