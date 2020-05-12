@@ -144,7 +144,8 @@ class GiftDetailModal extends Component {
         const totalData = [{
             sendCount: this.props.sendTotalSize || 0,
             usedCount: this.props.usedTotalSize || 0,
-        }]
+        }];
+        console.log('giftType', giftType);
         return (
             <Modal
                 key="礼品使用详情"
@@ -165,7 +166,7 @@ class GiftDetailModal extends Component {
                                 <Col span={4}>
                                     <div
                                         className="gift-image"
-                                        style={{ backgroundImage: `url("/asserts/img/${![21, 22].includes(giftType) ? giftType : 20}.jpg")` }}
+                                        style={{ backgroundImage: `url("/asserts/img/${!['21', '22'].includes(giftType) ? giftType : 20}.jpg")` }}
                                     >
                                         {giftLogo(giftType)}
                                         <p className={styles.ellipsisBlock}>{data.giftName}</p>
