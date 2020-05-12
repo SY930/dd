@@ -308,7 +308,7 @@ class SpecialDetailInfo extends Component {
     componentWillReceiveProps(np){
         if(!this.props.isNew){
             const b = np.specialPromotion.get('$giftInfo').toJS();
-            const { presentType, giftID } = b[0];
+            const { presentType = '', giftID } = b[0] || [{}];
             if(this.props.type == '30' && presentType===4){
                 const {couponPackageInfos } = this.state;
                 const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
