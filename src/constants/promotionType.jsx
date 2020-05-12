@@ -293,7 +293,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2qfo,
-        tags: [SALE_LABEL.k5krn6z9, '小程序'],
+        tags: [SALE_LABEL.k5krn6z9],
         isSpecial: true,
         text: SALE_LABEL.k67b4u32,
         example: '',
