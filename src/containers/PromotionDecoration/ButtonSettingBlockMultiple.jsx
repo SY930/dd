@@ -21,17 +21,17 @@ export default class buttonSettingBlockMultiple extends Component {
         const k6346a0r = intl.formatMessage(SALE_STRING.k6346a0r);
         const DEFAULT_COLOR_THEME = [
             {
-                label: k63469k3,
+                label: '黄色',
                 btnBgColor: 'linear-gradient(#FFDF88,#FFBB50)',
                 btnColor: '#6F2800',
             },
             {
-                label: k63469sf,
+                label: '金色',
                 btnBgColor: 'linear-gradient(#E2C8A2,#A47E48)',
                 btnColor: '#FFFFFF',
             },
             {
-                label: k6346a0r,
+                label: '红色',
                 btnBgColor: 'linear-gradient(#F27267,#D24C41)',
                 btnColor: '#FFFFFF',
             },
@@ -47,7 +47,10 @@ export default class buttonSettingBlockMultiple extends Component {
                                 label={item.label}
                                 buttonBgColor={item.btnBgColor}
                                 buttonColor={item.btnColor}
-                                onChange={(v) => onChange(v)}
+                                onChange={(v) => onChange({
+                                    btnBgColor: v.buttonBgColor,
+                                    btnColor: v.buttonColor
+                                })}
                             />
                         ))
                     }
@@ -55,34 +58,40 @@ export default class buttonSettingBlockMultiple extends Component {
                 <div className={style.subTitle}>
                     {SALE_LABEL.k6346bes}
                 </div>
-                <div className={style.inlineRow}>
-                        <span>{SALE_LABEL.k6346bn4}</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={color1}
-                                onChange={({ color }) => handleLinearGradientChange(color, color2)}
-                                placement="topLeft"
-                            />
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={color2}
-                                onChange={({ color }) => handleLinearGradientChange(color1, color)}
-                                placement="topLeft"
-                            />
+
+                <div style={{display: 'flex',border: '1px solid #e5e5e5',borderRadius: '5px',padding: '8px 20px',width: '300px' }}>
+                    <div className={style.inlineRow}>
+                            <span>{SALE_LABEL.k6346bn4}</span>
+                            <br/>
+                            <div style={{display: 'inline-block',marginTop: '4px'}} className={style.borderWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={color1}
+                                    onChange={({ color }) => handleLinearGradientChange(color, color2)}
+                                    placement="topLeft"
+                                />
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={color2}
+                                    onChange={({ color }) => handleLinearGradientChange(color1, color)}
+                                    placement="topLeft"
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div style={{ marginTop: 10 }} className={style.inlineRow}>
-                        <span>{SALE_LABEL.k6346bvg}</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={btnColor}
-                                onChange={({ color }) => onChange({key: ['btnColor'], value: color})}
-                                placement="topLeft"
-                            />
+                        <div style={{ marginLeft: 20 }} className={style.inlineRow}>
+                            <span>{SALE_LABEL.k6346bvg}</span>
+                            <br/>
+                            <div style={{display: 'inline-block',marginTop: '4px'}} className={style.borderWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={btnColor}
+                                    onChange={({ color }) => onChange({btnColor: color})}
+                                    placement="topLeft"
+                                />
+                            </div>
                         </div>
-                    </div>
+                </div>
+
             </div>
         )
     }

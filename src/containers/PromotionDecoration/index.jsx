@@ -139,7 +139,7 @@ export default class PromotionDecoration extends Component {
 
     renderContent() {
         const { type, decorationInfo, updateDecorationItem } = this.props;
-        console.log('type---',type)
+
         switch (type) {
             case '20':
                 return <LotteryDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
