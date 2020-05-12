@@ -226,8 +226,10 @@ class PhonePreview extends PureComponent {
                             {giftType !== '30' && (
                                 <div className={styles.ruleSection}>
                                     <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                                    <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
-                                    <p>{this.shareTypeString()}</p>
+                                    {giftType !== '22' &&
+                                        <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
+                                     }
+                                     <p>{this.shareTypeString()}</p>
                                     {(giftType == '20' || giftType == '21') && <p>{this.foodScopesString()}</p>}
                                     {(giftType == '10' || giftType == '111') && <p>{this.foodsboxString()}</p>}
                                 </div>
