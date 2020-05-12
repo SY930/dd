@@ -31,7 +31,9 @@ class IsSync extends Component {
     render() {
         return (
             <div style={{
-                visibility: this.props.operationType === 'add' ? 'hidden' : 'visible'
+                visibility: this.props.operationType === 'add' ? 'hidden' : 'visible',
+                position: 'relative',
+                left: -93,
             }} >
                 <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 24 }} >
                     <span className={styles.gTip}>更多礼品限制请使用</span>
