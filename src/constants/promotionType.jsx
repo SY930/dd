@@ -82,7 +82,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k636p3a1,
         isSpecial: true,
-        tags: [SALE_LABEL.k639vgbm],
+        tags: [SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
         text: SALE_LABEL.k67b3xsp,
         example: '',
         key: '65',
