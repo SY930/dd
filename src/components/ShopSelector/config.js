@@ -10,7 +10,7 @@ export const FILTERS = [
 }, {
     name: 'shopCategories',
     key: 'shopCategoryID',
-    label: '门店组',
+    label: '店铺分组',
     valueKey: 'shopCategoryID',
     labelKey: 'shopCategoryName',
     callserver: 'getShopBrand',
