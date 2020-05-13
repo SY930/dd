@@ -425,7 +425,11 @@ const pFormItems = {
     cellNo: {
         type: 'text',
         label: '手机号',
-        rules: ['required', 'phone'],
+        rules: [{
+            required: true,
+            message: '请输入正确的手机号码',
+            pattern: /^[1]([3-9])[0-9]{9}$/,
+        }],
         defaultValue: '',
     },
     sendCount: {
