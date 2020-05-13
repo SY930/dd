@@ -44,6 +44,7 @@ import { axiosData } from '../../../helpers/util';
 import PhotoFrame from './PhotoFrame';
 import TicketBag from '../shackGift/TicketBag';
 import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base/lib';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -1005,9 +1006,53 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray: wakeupSendGiftsDataArray.slice(),
         })
     }
-    handleWakeupIntervalGiftsChange = (val, index) => {
+    handleWakeupIntervalGiftsChange = (val, index,currentIndex) => {
+        // console.log('选中礼品名称---',val,index,currentIndex)
         let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
+        /*
+        * 选择支付宝代金券的时候，需单独处理
+        * http://jira.hualala.com/browse/WTCRM-1157
+        */
+     Array.isArray(val) && val.forEach((item,i) => {
+        const { parentId, giftItemID } =   item.giftInfo
+        if(parentId === '114') {
+            const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
+            axiosData(
+                '/promotion/insidevoucher/queryInsideVoucherPeriod.ajax',
+                { groupID, giftItemID },
+                null,
+                { path: 'data' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
+            ).then( res => {
+                const {effectTime,validUntilDate} = res
+                const v =  wakeupSendGiftsDataArray[index].gifts[i]
+                v.giftCount.value = 1
+                v.giftCount.disabled = true
+                v.effectType = '2'
+                v.effectTypeIsDisabled = true
+                v.giftEffectiveTime.value =  [moment(effectTime,'YYYYMMDDHHmmss'),moment(validUntilDate,'YYYYMMDDHHmmss')]
+                v.giftEffectiveTime.disabled = true
+                v.giftValidDays.value = ''
+                this.setState({
+                    wakeupSendGiftsDataArray,
+                })
+            }).catch(err => {
+
+            })
+        }
+       })
+       if(typeof currentIndex !== undefined) {
+            const v =  wakeupSendGiftsDataArray[index].gifts[currentIndex]
+            v.giftCount.value = ''
+            v.giftCount.disabled = false
+            v.effectType = '1'
+            v.effectTypeIsDisabled = false
+            v.giftEffectiveTime.value =  '0'
+            v.giftEffectiveTime.disabled = false
+       }
+
+
         this.setState({
             wakeupSendGiftsDataArray,
         })
@@ -2094,6 +2139,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         } = this.state;
         const { isNew } = this.props;
+        // console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
         return (
             <div>
                 <FormItem
@@ -2141,7 +2187,7 @@ class SpecialDetailInfo extends Component {
                                     type={this.props.type}
                                     isNew={this.props.isNew}
                                     value={wakeupSendGiftsDataArray[0].gifts}
-                                    onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, 0)}
+                                    onChange={(giftArr,currentIndex) => this.handleWakeupIntervalGiftsChange(giftArr, 0,currentIndex)}
                                     zhifubaoCoupons={true}
                                 />
                             </Col>

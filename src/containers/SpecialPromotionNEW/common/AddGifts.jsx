@@ -314,6 +314,7 @@ class AddGifts extends React.Component {
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
                                 modal="int"
+                                disabled={info.giftCount.disabled}
                             />
 
                         </FormItem>
@@ -326,6 +327,7 @@ class AddGifts extends React.Component {
                                 className={styles.radioMargin}
                                 value={info.effectType == '2' ? '2' : '1'}
                                 onChange={val => this.handleValidateTypeChange(val, index)}
+                                disabled={info.effectTypeIsDisabled}
                             >
                                 {
                                     this.VALIDATE_TYPE.map((item, index) => {
@@ -543,6 +545,7 @@ class AddGifts extends React.Component {
             onChange: (date, dateString) => {
                 this.handleRangePickerChange(date, dateString, index);
             },
+            disabled: info.giftEffectiveTime.disabled
         };
         if (typeof info.giftEffectiveTime.value === 'object') {
             pickerProps.value = info.giftEffectiveTime.value;
@@ -622,10 +625,11 @@ class AddGifts extends React.Component {
             _infos[index].giftInfo.giftItemID = newValue[0];
             _infos[index].giftInfo.validateStatus = 'success';
             _infos[index].giftInfo.msg = null;
+            _infos[index].giftInfo.parentId = newValue[2]
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos);
+                this.props.onChange && this.props.onChange(this.state.infos,index);
             });
         } else {
             const _infos = this.state.infos;
@@ -636,7 +640,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos);
+                this.props.onChange && this.props.onChange(this.state.infos,index);
             });
         }
     }
