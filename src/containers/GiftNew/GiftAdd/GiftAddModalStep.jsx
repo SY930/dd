@@ -496,7 +496,7 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '22') {
                 params.giftValue = delivery;
                 params.supportOrderTypeLst = '31,20,21,11,10';
-                params.isOfflineCanUsing = '1';
+                params.isOfflineCanUsing = '0';
             }
 
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
