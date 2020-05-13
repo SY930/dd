@@ -105,6 +105,11 @@ class StepTwo extends React.Component {
         }
 
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if(specialPromotion.groupMemberID){
+            this.setState({
+                groupMembersID: specialPromotion.groupMemberID
+            })
+        }
         if (Object.keys(specialPromotion).length > 30) {
             let addUpOpts = {};
             if (this.props.type == '62') {

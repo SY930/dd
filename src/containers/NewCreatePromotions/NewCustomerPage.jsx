@@ -21,6 +21,7 @@ import {
     LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
+    CRM_PROMOTION_TYPES,
 } from '../../constants/promotionType';
 import NewPromotionCard from "./NewPromotionCard";
 const limitedTypes = [
@@ -32,7 +33,8 @@ const UNRELEASED_PROMOTION_TYPES = [
 import {
     saleCenterCheckExist,
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
-    saleCenterSetSpecialBasicInfoAC
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterSetSpecialBasicInfoCardGroupID,
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     fetchFoodCategoryInfoAC,
@@ -76,6 +78,35 @@ class NewCustomerPage extends Component {
 
     componentDidMount() {
         this.getWhite();
+        this.fromCrmJump();
+    }
+    componentWillReceiveProps(){
+        this.fromCrmJump();
+    }
+    getQueryVariable(variable) {
+        const query = window.location.search.substring(1);
+        const vars = query.split('&');
+        for (let i = 0; i < vars.length; i++) {
+            const pair = vars[i].split('=');
+            if (pair[0] === variable) { return pair[1]; }
+        }
+        return false;
+    }
+    fromCrmJump(){
+        const saleID = this.getQueryVariable('type');
+        if(!saleID){
+            return;
+        }
+        const gmID = this.getQueryVariable('gmID');
+        const item = CRM_PROMOTION_TYPES[saleID];
+        this.handleNewPromotionCardClick(item);
+        this.props.setSpecialPromotionCardGroupID(gmID);
+        this.clearUrl();
+    }
+    clearUrl(){
+        var { href } = window.location;
+        var [valiable] = href.split('?'); 
+        window.history.pushState(null, null, valiable);
     }
     getWhite(){
         axiosData(
@@ -413,6 +444,9 @@ function mapDispatchToProps(dispatch) {
         },
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
+        },
+        setSpecialPromotionCardGroupID: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoCardGroupID(opts));
         },
     }
 }

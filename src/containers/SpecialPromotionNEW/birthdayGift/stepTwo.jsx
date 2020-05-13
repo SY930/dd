@@ -80,6 +80,11 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if(specialPromotion.groupMemberID){
+            this.setState({
+                groupMembersID: specialPromotion.groupMemberID
+            })
+        }
         const user = this.props.user;
         this.props.queryGroupMembersList({
             _groupID: user.accountInfo.groupID,
@@ -129,7 +134,7 @@ class StepTwo extends React.Component {
                     acc.push(...(curr.shopIDList || []).map(id => `${id}`)); // 把shopID转成string, 因为基本档返回的是string
                     return acc;
                 }, []);
-                this.setState({ 
+                this.setState({
                 occupiedShops,
                 excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
                 })

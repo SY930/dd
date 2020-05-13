@@ -73,6 +73,48 @@ export const GIFT_MAP = {
     '111': '折扣券',
     '22': '配送券',
 }
+export const CRM_PROMOTION_TYPES = {
+    53: {
+        title: SALE_LABEL.k67b2pz0,
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: SALE_LABEL.k67b4t5q,
+        example: '',
+        key: '53',
+        right: 3,
+        bottom: 0,
+    },
+    51: {
+        title: SALE_LABEL.k67b2r4o,
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: SALE_LABEL.k67b4us2,
+        example: '',
+        tags: [SALE_LABEL.k639vgsa],
+        key: '51',
+        right: 11,
+        bottom: 7,
+        isHot: true,
+    },
+    62: {
+        title: SALE_LABEL.k67b2rlc,
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: SALE_LABEL.k67b4v8q,
+        example: '',
+        tags: [SALE_LABEL.k639vgsa],
+        key: '62',
+        right: 13,
+        bottom: 11,
+    },
+    63: {
+        title: SALE_LABEL.k67b2rd0,
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: SALE_LABEL.k67b4v0e,
+        example: '',
+        tags: [SALE_LABEL.k639vgsa],
+        key: '63',
+        right: 19,
+        bottom: 0,
+    },
+}
 
 /**
  * 会员拉新
