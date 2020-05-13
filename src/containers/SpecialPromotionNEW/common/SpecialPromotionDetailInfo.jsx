@@ -42,6 +42,8 @@ import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { axiosData } from '../../../helpers/util';
 import PhotoFrame from './PhotoFrame';
+import TicketBag from '../shackGift/TicketBag';
+import { axios } from '@hualala/platform-base';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -191,6 +193,8 @@ class SpecialDetailInfo extends Component {
             giveCoupon,
             shareTitlePL: '',
             shareSubtitlePL: '',
+            sendTypeValue: '0',
+            bag: '',
         }
     }
     componentDidMount() {
@@ -252,6 +256,9 @@ class SpecialDetailInfo extends Component {
             }
             this.setState({shareTitlePL, shareSubtitlePL });
         }
+        if (type == 30) {
+            this.getBag();
+        }
     }
     getMultipleLevelConfig = () => {
         const { type } = this.props;
@@ -298,7 +305,33 @@ class SpecialDetailInfo extends Component {
             default: return [getDefaultGiftData()]
         }
     }
-
+    componentWillReceiveProps(np){
+        if(!this.props.isNew){
+            const b = np.specialPromotion.get('$giftInfo').toJS();
+            const { presentType = '', giftID } = b[0] || [{}];
+            if(this.props.type == '30' && presentType===4){
+                const {couponPackageInfos } = this.state;
+                const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
+                this.setState({
+                    sendTypeValue: '1',
+                    bag,
+                })
+            }
+        }
+    }
+    async getBag(){
+        const { user } = this.props;
+        const {groupID} = user.accountInfo;
+        const data = {groupID, couponPackageType: "2"};
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
+        const method = `${api}getCouponPackages.ajax`;
+        const params = { service, type, data, method };
+        const response = await axios.post(url + method, params);
+        const { code, couponPackageInfos = []} = response;
+        if (code === '000') {
+            this.setState({ couponPackageInfos })
+        }
+    }
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
         const data = this.initiateDefaultGifts();
@@ -323,6 +356,9 @@ class SpecialDetailInfo extends Component {
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
+            if(this.props.type == '30' && gift.presentType === 4){
+                data[index].giftInfo.giftName = '';
+            }
             data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -570,6 +606,17 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialGiftInfo([params]);
                 return true;
             }
+        }
+        const { sendTypeValue } = this.state;
+        if(type === '30' && sendTypeValue === '1') {
+            const { bag } = this.state;
+            if(bag[0]){
+                const { couponPackageID } = bag[0];
+                const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+            message.error('请选择一项券包');
         }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
@@ -2297,6 +2344,59 @@ class SpecialDetailInfo extends Component {
             </FormItem>
         </div>);
     }
+    onTypeChange = ({ target }) => {
+        this.setState({ sendTypeValue: target.value });
+    }
+    onBagChange = (item) => {
+        if(item) {
+            this.setState({ bag: [item]});
+            return;
+        }
+        this.setState({ bag: null});
+    }
+    // type 30
+    renderPointDuihuan(){
+        const { bag, sendTypeValue } = this.state;
+        const { user, type, disabled } = this.props;
+        const {groupID} = user.accountInfo;
+        const css = disabled?styles.disabledModal:'';
+        return(
+            <div style={{position: 'relative'}}>
+                <Row>
+                    <Col span={20} offset={2} style={{margin: '10px'}}>
+                        <span style={{margin: '0px 8px'}}>赠送优惠券</span>
+                        <RadioGroup onChange={this.onTypeChange} value={sendTypeValue} >
+                            <Radio value={'0'}>独立优惠券</Radio>
+                            <Radio value={'1'}>券包</Radio>
+                        </RadioGroup>
+                    </Col>
+                </Row>
+                {sendTypeValue === '1' ?
+                <Row>
+                    <Col span={20} offset={3}>
+                        <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} />
+                    </Col>
+                </Row>:
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
+                <div className={css}></div>
+            </div>
+        )
+    }
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
@@ -2356,7 +2456,10 @@ class SpecialDetailInfo extends Component {
                         />
                     </Col>
                 </Row>}
-                { type !== '52' &&
+                {type==='30' &&
+                    this.renderPointDuihuan()
+                }
+                { !['52', '30'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
@@ -2410,6 +2513,7 @@ function mapStateToProps(state) {
         groupCardTypeList: state.sale_mySpecialActivities_NEW
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
     }
 }
 

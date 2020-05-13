@@ -53,7 +53,7 @@ export default class TicketBag extends Component {
             return (<span>{text}</span>);
         };
         const render3 = (v, o) => {
-            const val = (v === -1) ? '不限制' : v;
+            const val = (v === -1) ? '不限制' : (v || 0);
             return (<span>{val}</span>);
         };
         // 表格头部的固定数据
