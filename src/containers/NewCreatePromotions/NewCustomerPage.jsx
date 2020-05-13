@@ -80,6 +80,9 @@ class NewCustomerPage extends Component {
         this.getWhite();
         this.fromCrmJump();
     }
+    componentWillReceiveProps(){
+        this.fromCrmJump();
+    }
     getQueryVariable(variable) {
         const query = window.location.search.substring(1);
         const vars = query.split('&');
@@ -98,6 +101,12 @@ class NewCustomerPage extends Component {
         const item = CRM_PROMOTION_TYPES[saleID];
         this.handleNewPromotionCardClick(item);
         this.props.setSpecialPromotionCardGroupID(gmID);
+        this.clearUrl();
+    }
+    clearUrl(){
+        var { href } = window.location;
+        var [valiable] = href.split('?'); 
+        window.history.pushState(null, null, valiable);
     }
     getWhite(){
         axiosData(
