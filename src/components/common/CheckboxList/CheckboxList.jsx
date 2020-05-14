@@ -36,10 +36,17 @@ class CheckboxList extends Component {
 
     handleCheckAll = (isChecked) => {
         const { options } = this.state;
+        const ckOpts = [];
+        options.forEach(opt => {
+            const {disabled, value} = opt;
+            if(!disabled){
+                ckOpts.push(value);
+            }
+        });
         const checkedItems = this.props.value.filter(
             value => !options.find(opt => opt.value === value)
         ).concat(
-            isChecked ? options.map(opt => opt.value) : []
+            isChecked ? ckOpts : []
         );
         this.props.onChange && this.props.onChange(checkedItems);
     }

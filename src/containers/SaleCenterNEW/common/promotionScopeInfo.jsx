@@ -26,7 +26,7 @@ const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
-import { axios } from '@hualala/platform-base';
+import { axios, getStore } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
@@ -103,11 +103,16 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         });
-        if (promotionType == '5010' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        const {selections} = this.state;
+        if (promotionType == '5010' && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             this.setState({ shopStatus: false })
         } else {
             this.setState({ shopStatus: true })
+        }
+        const isRequire = this.countIsRequire();
+        if (isRequire && !selections[0]) {
+            flag = false;
         }
         if (flag) {
             const states = {
@@ -456,33 +461,64 @@ class PromotionScopeInfo extends React.Component {
             </Form.Item>
         );
     }
-
+    getUserShopList() {
+        const { user } = getStore().getState();
+        return user.getIn(['accountInfo', 'dataPermissions', 'shopList']).toJS();
+    }
+    countIsRequire(){
+        const { size } = this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']);
+        const { length } = this.getUserShopList();
+        console.log('33', size, length);
+        return (size !== length);
+    }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const { brands } = this.state;
+        const { brands, shopStatus, allShopSet, selections } = this.state;
+        const isRequire = this.countIsRequire();
+        if(promotionType == '5010'){
+            return (
+                <Form.Item
+                    label={SALE_LABEL.k5dlggak}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={promotionType == '5010'}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
+                >
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        // schemaData={this.getFilteredShopSchema()}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                    />
+                    {allShopSet ?
+                        <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
+                        : null}
+                </Form.Item>
+            );
+        }
+        const valid = (isRequire && !selections[0]);
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlggak}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={promotionType == '5010'}
-                validateStatus={promotionType != '5010' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
-                help={promotionType != '5010' ? null : this.state.shopStatus ? null : SALE_LABEL.k5hkj1ef}
+                required={isRequire}
+                validateStatus={valid ? 'error' : 'success'}
+                help={valid ? SALE_LABEL.k5hkj1ef: null}
             >
                 <ShopSelector
-                    value={this.state.selections}
+                    value={selections}
                     brandList={brands}
-                    // schemaData={this.getFilteredShopSchema()}
-                    onChange={
-                        this.editBoxForShopsChange
-                    }
+                    onChange={ this.editBoxForShopsChange }
                 />
-                {
-                    this.state.allShopSet ?
-                <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
-                        : null
-                }
+                {allShopSet ?
+                    <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
+                    : null}
             </Form.Item>
         );
     }
