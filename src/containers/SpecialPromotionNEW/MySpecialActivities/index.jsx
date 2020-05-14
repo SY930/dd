@@ -1091,11 +1091,13 @@ class MySpecialActivities extends React.Component {
     checkDetailInfo() {
         const _record = arguments[1];
         const user = this.props.user;
+        const { eventWay } = _record;
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
             },
+            eventWay,
             fail: this.failFn,
         });
         this.setState({

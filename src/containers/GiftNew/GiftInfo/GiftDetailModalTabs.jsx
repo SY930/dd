@@ -18,11 +18,11 @@ import { axiosData } from '../../../helpers/util';
 const TabPane = Tabs.TabPane;
 
 const sendableGiftTypes = [
-    '10', '20', '21', '30', '110', '111', '40', '42', '80'
+    '10', '20', '21', '30', '110', '111', '40', '42', '80', '22',
 ];
 
 const batchableGiftTypes = [
-    '10', '20', '21', '30', '110', '111',
+    '10', '20', '21', '30', '110', '111', '22',
 ];
 
 class GiftDetailModalTabs extends React.Component {
@@ -34,6 +34,7 @@ class GiftDetailModalTabs extends React.Component {
             popoverVisible: false,
             tooltipVisble: false,
             sameItemID: '',
+            isExist: false,
         };
         this.handleExport = this.handleExport.bind(this);
     }
@@ -106,6 +107,7 @@ class GiftDetailModalTabs extends React.Component {
         });
         this.setState({
             exportVisible: true,
+            isExist: true,
         });
     };
     handleVisibleChange = visible => {
@@ -129,7 +131,7 @@ class GiftDetailModalTabs extends React.Component {
     }
     render() {
         const { data } = this.props;
-        const { sameItemID } = this.state;
+        const { sameItemID, isExist } = this.state;
         const tabs = data.giftType === '91' ?
             [{ tab: '发出数', key: 'send' },
             ]
@@ -205,9 +207,10 @@ class GiftDetailModalTabs extends React.Component {
                             giftName={data.giftName}
                             activeKey={this.state.activeKey}
                             newExport // 除了礼品定额卡之外的导出, 复用组件
-                            handleClose={() => this.setState({ exportVisible: false, sameItemID: '' })}
+                            handleClose={() => this.setState({ exportVisible: false, sameItemID: '', isExist: false })}
                             sendorUsedParams = {this.props.sendorUsedParams}
                             sameItemID={sameItemID}
+                            isExist={isExist}
                         />
                 }
             </div>

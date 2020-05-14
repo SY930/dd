@@ -61,6 +61,7 @@ class GiftType extends React.Component {
                 case '91':
                 case '110':
                 case '111':
+                case '22':
                     return <GiftAddModalStep type="add" {...this.state} onCancel={() => { this.handleCancel() }} />;
                 case '30':
                 case '40':

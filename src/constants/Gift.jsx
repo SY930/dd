@@ -111,6 +111,14 @@ const GiftCfg = {
             view: 'redpacket', // 红包视图
             icon: redPacketIcon,
         },
+        {
+            name: '配送券',
+            describe: '',
+            value: '22',
+            color: '#65D8E6',
+            category: 'primary',
+            tags: ['微信'],
+        },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -126,6 +134,7 @@ const GiftCfg = {
         { label: '买赠券', value: '110' },
         { label: '折扣券', value: '111' },
         { label: '现金红包', value: '113' },
+        { label: '配送券', value: '22' },
     ],
     transferType: [
         { label: '不可转赠', value: 0 },

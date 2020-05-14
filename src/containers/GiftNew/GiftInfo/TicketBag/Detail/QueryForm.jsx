@@ -19,7 +19,7 @@ export default class QueryForm extends Component {
             dateObj = { sendTimeBegin, sendTimeEnd };
         }
         if(useTime) {
-            const [sd, ed] = useTime || [];;
+            const [sd, ed] = useTime || [];
             const usingTimeBegin = sd ? moment(sd).format(DF) : '';
             const usingTimeEnd = ed ? moment(ed).format(DF) : '';
             dateObj = { usingTimeBegin, usingTimeEnd };

@@ -130,43 +130,52 @@ export const fetchSpecialPromotionList = (opts) => {
 
 export const fetchSpecialPromotionDetailData = (opts) => {
     return dispatch => {
-        fetch('/api/specialPromotion/queryEventDetail_NEW', {
-            method: 'POST',
-            body: JSON.stringify(opts.data),
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json; charset=UTF-8',
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => {
-                opts.end && opts.end();
-                if (response.status >= 200 && response.status < 300) {
-                    if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                        return response.json();
-                    }
-                    return response.text();
-                }
-                return Promise.reject(new Error(response.statusText));
-            })
-            .catch((error) => {
-                opts.end && opts.end();
-                throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
-            })
-            .then((response) => {
-                const { redirect, success, code, msg } = parseResponseJson(response, '000');
-                if (!success && redirect) {
-                    Modal.error({
-                        title: '啊哦！好像有问题呦~~',
-                        content: `${msg}`,
-                    });
-                    redirect && window.setTimeout(() => doRedirect(), 1500);
-                } else if (response.code === '000') {
-                    return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, payload: response });
-                }
-            }, (err) => {
+        // fetch('/api/specialPromotion/queryEventDetail_NEW', {
+        //     method: 'POST',
+        //     body: JSON.stringify(opts.data),
+        //     credentials: 'include',
+        //     headers: {
+        //         'Accept': 'application/json; charset=UTF-8',
+        //         'Content-Type': 'application/json; charset=UTF-8',
+        //     },
+        // })
+        //     .then((response) => {
+        //         opts.end && opts.end();
+        //         if (response.status >= 200 && response.status < 300) {
+        //             if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+        //                 return response.json();
+        //             }
+        //             return response.text();
+        //         }
+        //         return Promise.reject(new Error(response.statusText));
+        //     })
+        //     .catch((error) => {
+        //         opts.end && opts.end();
+        //         throw new Error(`fetchPromotionDetailAC cause problem with msg ${error}`);
+        //     })
+        //     .then((response) => {
+        //         const { redirect, success, code, msg } = parseResponseJson(response, '000');
+        //         if (!success && redirect) {
+        //             Modal.error({
+        //                 title: '啊哦！好像有问题呦~~',
+        //                 content: `${msg}`,
+        //             });
+        //             redirect && window.setTimeout(() => doRedirect(), 1500);
+        //         } else if (response.code === '000') {
+        //             return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, payload: response });
+        //         }
+        //     }, (err) => {
 
-            })
+        //     })
+         let url = '/specialPromotion/queryEventDetail.ajax';
+         if(opts.eventWay == 30){
+            url = '/specialPromotion/queryEventTrackInfo.ajax'
+         }
+        axiosData(url, opts.data, {needThrow: true}, { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW')
+                .then((res) => {
+                    return dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_SUCCESS_ONLY, payload: res });
+                })
     }
 }
 
@@ -299,29 +308,38 @@ export const fetchSpecialPromotionDetailAC = opts => {
     return dispatch => {
         dispatch({ type: SALE_CENTER_FETCH_SPECIAL_PROMOTION_DETAIL_START, payload: opts });
         const queryEventDetail = param => {
-            return fetch('/api/specialPromotion/queryEventDetail_NEW', {
-                method: 'POST',
-                body: JSON.stringify(param.data),
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json; charset=UTF-8',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-            })
-                .then((response) => {
-                    if (response.status >= 200 && response.status < 300) {
-                        if (response.headers.get('content-type').indexOf('application/json') >= 0) {
-                            return response.json();
-                        }
-                        return response.text();
-                    }
-                    return Promise.reject(new Error(response.statusText));
-                })
-                .then((response) => {
-                    return {
-                        eventInfo: response,
-                    }
-                })
+            // return fetch('/api/specialPromotion/queryEventDetail_NEW', {
+            //     method: 'POST',
+            //     body: JSON.stringify(param.data),
+            //     credentials: 'include',
+            //     headers: {
+            //         'Accept': 'application/json; charset=UTF-8',
+            //         'Content-Type': 'application/json; charset=UTF-8',
+            //     },
+            // })
+            //     .then((response) => {
+            //         if (response.status >= 200 && response.status < 300) {
+            //             if (response.headers.get('content-type').indexOf('application/json') >= 0) {
+            //                 return response.json();
+            //             }
+            //             return response.text();
+            //         }
+            //         return Promise.reject(new Error(response.statusText));
+            //     })
+            //     .then((response) => {
+            //         return {
+            //             eventInfo: response,
+            //         }
+            //     })
+            let url = '/specialPromotion/queryEventDetail.ajax';
+            if(opts.eventWay == 30){
+                url = '/specialPromotion/queryEventTrackInfo.ajax'
+            }
+            return axiosData(url, param.data, {needThrow: true}, { path: '' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW')
+                    .then((res) => {
+                        return { eventInfo: res }
+                    })
         }
         const queryEventCustomer = param => {
             return fetch('/api/specialPromotion/queryEventCustomer_NEW', {

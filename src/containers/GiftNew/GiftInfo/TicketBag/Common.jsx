@@ -101,8 +101,7 @@ const wayLabel = (<span>
 const revokeLabel = (<span>
     系统过期自动退
     <Tip
-        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。<br />
-            退款时效为购买之日起90天。</p>}
+        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。</p>}
         style={tipMargin}
     />
 </span>);
@@ -425,7 +424,11 @@ const pFormItems = {
     cellNo: {
         type: 'text',
         label: '手机号',
-        rules: ['required', 'phone'],
+        rules: [{
+            required: true,
+            message: '请输入正确的手机号码',
+            pattern: /^[1]([3-9])[0-9]{9}$/,
+        }],
         defaultValue: '',
     },
     sendCount: {

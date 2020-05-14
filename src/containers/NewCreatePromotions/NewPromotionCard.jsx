@@ -105,7 +105,7 @@ class NewPromotionCard extends Component {
         if(size === 'special') {
             let wechatFlag = 1;
             return (
-                <div className={styles.speContainer} onClick={this.onClick}>
+                <div className={styles.speContainer} onClick={this.onClick} style={{border: '1px solid #C4C4C480',}}>
                     <p className={styles.expandableP}>
                         {isNew ? <span><img className={styles.xinImg} src={xin} /></span> : null}
                         {this.renderPulgin(key)}
