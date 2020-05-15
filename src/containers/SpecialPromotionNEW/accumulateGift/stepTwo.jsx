@@ -18,7 +18,7 @@ import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput'; // 编辑
 import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
-import ShopSelector from '../../../components/common/ShopSelector';
+import ShopSelector from '../../../components/ShopSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 
 const FormItem = Form.Item;
@@ -185,7 +185,7 @@ class StepTwo extends React.Component {
             foodScopeList: scopeList,
         })
     }
-    
+
     renderComboInput() {
         const { radioType, consumeTotalAmount, consumeTotalTimes, consumeType } = this.state;
         const { form: { getFieldDecorator } } = this.props;
@@ -294,7 +294,7 @@ class StepTwo extends React.Component {
                                 maxNum={3}
                             />
                         )
-                    } 
+                    }
                 </FormItem>
                 <FormItem
                     label={'获得方式'}
@@ -328,11 +328,11 @@ class StepTwo extends React.Component {
                 >
                     <ShopSelector
                         value={convertShopIdList}
-                        onChange={v => { 
+                        onChange={v => {
                             this.setState({ shopIDList: v })}}
-                        schemaData={this.props.shopSchema.toJS()}
+                        // schemaData={this.props.shopSchema.toJS()}
                     />
-                </FormItem> 
+                </FormItem>
             </Form>
         );
     }

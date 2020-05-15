@@ -26,7 +26,7 @@ import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySp
 import {
     getPromotionShopSchema,
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import ShopSelector from '../../../components/common/ShopSelector';
+import ShopSelector from '../../../components/ShopSelector';
 import BirthdayCardLevelSelector from './BirthdayCardLevelSelector';
 import ExcludeCardTable from '../common/ExcludeCardTable';
 import { injectIntl } from 'i18n/common/injectDecorator'
@@ -495,7 +495,6 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    schemaData={this.filterAvailableShops()}
                 />
             </Form.Item>
         );

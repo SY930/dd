@@ -30,7 +30,7 @@ import {
     fetchPromotionScopeInfo,
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -353,7 +353,7 @@ class StepTwo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.filterAvailableShops()}
+                        // schemaData={this.filterAvailableShops()}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>

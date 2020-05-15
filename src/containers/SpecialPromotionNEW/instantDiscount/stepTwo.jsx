@@ -18,7 +18,7 @@ import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCent
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import Immutable from 'immutable';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
@@ -48,7 +48,7 @@ class StepTwo extends React.Component {
                 value: '1',
                 disabled: true,
             },
-            
+
             {
                 label: `${this.props.intl.formatMessage(STRING_SPE.d5672419c827282)}`,
                 value: '2',
@@ -63,7 +63,7 @@ class StepTwo extends React.Component {
                 label: `${this.props.intl.formatMessage(STRING_SPE.d5672419c8284177)}`,
                 value: '4',
                 disabled: true,
-            }, 
+            },
         ];
     }
 
@@ -130,7 +130,7 @@ class StepTwo extends React.Component {
                                 options={this.supportOrderTypesOptions}
                             />
                         )
-                    }    
+                    }
                 </Form.Item>
                 <Form.Item
                     label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
@@ -141,11 +141,11 @@ class StepTwo extends React.Component {
                     <ShopSelector
                         value={this.state.shopIDList}
                         onChange={this.handleShopChange}
-                        schemaData={this.props.shopSchema.toJS()}
+                        // schemaData={this.props.shopSchema.toJS()}
                     />
                 </Form.Item>
             </div>
-            
+
         );
     }
 }

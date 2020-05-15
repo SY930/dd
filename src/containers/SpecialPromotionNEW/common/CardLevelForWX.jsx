@@ -30,7 +30,7 @@ import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
@@ -288,7 +288,7 @@ class CardLevelForWX extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.getDynamicShopSchema()}
+                        // schemaData={this.getDynamicShopSchema()}
                     />
                     {
                         queryCanUseShopStatus === 'error' && (

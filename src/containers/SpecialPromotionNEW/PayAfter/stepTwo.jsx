@@ -20,7 +20,7 @@ import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/pro
 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import styles1 from './payAfter.less';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import Immutable from 'immutable';
 import { axiosData } from '../../../helpers/util';
 
@@ -34,7 +34,7 @@ const supportOrderTypesOptions = [
         value: '1',
         disabled: true,
     },
-    
+
     {
         label: '自提',
         value: '2',
@@ -49,7 +49,7 @@ const supportOrderTypesOptions = [
         label: '预定',
         value: '4',
         disabled: true,
-    }, 
+    },
 ];
 
 const CheckboxGroup = Checkbox.Group;
@@ -198,7 +198,7 @@ class StepTwo extends React.Component {
             </Form.Item>
         );
     }
-    
+
 
     render() {
         const originTreeData = this.props.shopSchema.toJS();
@@ -219,12 +219,12 @@ class StepTwo extends React.Component {
                     <ShopSelector
                         value={this.state.shopIDList}
                         onChange={this.handleShopChange}
-                        schemaData={originTreeData}
+                        // schemaData={originTreeData}
                     />
                 </Form.Item>
                 {tipVisible ? <span className={styles1.orangeFont}>不填代表全部店铺适用</span> : null}
             </div>
-            
+
         );
     }
 }

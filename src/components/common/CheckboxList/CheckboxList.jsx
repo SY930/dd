@@ -36,6 +36,7 @@ class CheckboxList extends Component {
 
     handleCheckAll = (isChecked) => {
         const { options } = this.state;
+        const { value, onChange } = this.props;
         const ckOpts = [];
         options.forEach(opt => {
             const {disabled, value} = opt;
@@ -43,12 +44,12 @@ class CheckboxList extends Component {
                 ckOpts.push(value);
             }
         });
-        const checkedItems = this.props.value.filter(
+        const checkedItems = value.filter(
             value => !options.find(opt => opt.value === value)
         ).concat(
             isChecked ? ckOpts : []
         );
-        this.props.onChange && this.props.onChange(checkedItems);
+        onChange && onChange(checkedItems);
     }
 
     handleSearch = (evt) => {
@@ -130,9 +131,12 @@ class CheckboxList extends Component {
         const _showSearch = collapsed ? false : showSearch;
         const _showCheckAll = collapsed || (display === 'table' && tableColumns.length)
             ? false : showCheckAll;
-        const isAllChecked = options.length > 0 &&
-            !options.find(opt => value.indexOf(opt.value) === -1);
 
+        const tempCkd = options.filter(x=>value.includes(x.value));
+        const leftList = options.length;
+        const leftCkdList = tempCkd.length;
+        const indeterminate = leftCkdList < leftList && leftCkdList > 0;
+        const isAll = leftCkdList == leftList;
         const wrapperClz = classnames(style.wrapper, {
             [style.collapsed]: collapsed,
             [style.stripped]: display === 'stripped',
@@ -148,7 +152,8 @@ class CheckboxList extends Component {
                 <div className={headerClz}>
                     {_showCheckAll &&
                         <Checkbox
-                            checked={isAllChecked}
+                            indeterminate={indeterminate}
+                            checked={isAll}
                             onChange={evt => this.handleCheckAll(evt.target.checked)}
                         >全选</Checkbox>
                     }

@@ -475,6 +475,7 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections } = this.state;
         const isRequire = this.countIsRequire();
+        console.log('selections', selections);
         if(promotionType == '5010'){
             return (
                 <Form.Item
