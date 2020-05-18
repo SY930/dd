@@ -76,6 +76,7 @@ class PromotionScopeInfo extends React.Component {
             filterShops: [],
             allShopsSet: false,
             brandList: [],
+            isRequire: false,
         };
 
         // bind this.
@@ -110,7 +111,7 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
-        const isRequire = this.countIsRequire();
+        const {isRequire} = this.state;
         if (isRequire && !selections[0]) {
             flag = false;
         }
@@ -220,10 +221,11 @@ class PromotionScopeInfo extends React.Component {
 
     async loadShopSchema() {
         const { data } = await axios.post('/api/shopapi/schema',{});
-        const {brands} = data;
+        const {brands, shops } = data;
         this.setState({
             brandList: brands,
-        })
+        });
+        this.countIsRequire(shops);
     }
 
     // save brand data to store
@@ -461,21 +463,24 @@ class PromotionScopeInfo extends React.Component {
             </Form.Item>
         );
     }
-    getUserShopList() {
-        const { user } = getStore().getState();
-        return user.getIn(['accountInfo', 'dataPermissions', 'shopList']).toJS();
-    }
-    countIsRequire(){
-        const { size } = this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']);
-        const { length } = this.getUserShopList();
-        console.log('33', size, length);
-        return (size !== length);
+    countIsRequire(shopList){
+        const { promotionScopeInfo, isNew } = this.props;
+        const { size } = promotionScopeInfo.getIn(['refs', 'data', 'shops']);
+        const oldShops = promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        console.log('oldShops', oldShops, isNew);
+        const { length } = shopList;
+        if(length<size){
+            this.setState({ isRequire: true });
+        }
+        if(!isNew && !oldShops[0]){
+            this.setState({ isRequire: true });
+        }
     }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const { brands, shopStatus, allShopSet, selections } = this.state;
-        const isRequire = this.countIsRequire();
-        console.log('selections', selections);
+        const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
+        // this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo
+        console.log('selections', this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo);
         if(promotionType == '5010'){
             return (
                 <Form.Item
