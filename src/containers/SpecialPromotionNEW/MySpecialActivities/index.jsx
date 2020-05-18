@@ -313,30 +313,6 @@ class MySpecialActivities extends React.Component {
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
         })
-        this.onWindowResize();
-        window.addEventListener('resize', this.onWindowResize);
-    }
-
-    onWindowResize = () => {
-        const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
-        if (parentDoms !== null) { // 如果父级节点不是空将执行下列代码
-            const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
-            const contentrDoms = parentDoms.querySelectorAll('.layoutsContent'); // 从父节点中获取 类名是 layoutsContent 的doms节点 存到变量 contentrDoms 中
-            if (undefined !== contentrDoms && contentrDoms.length > 0) { // 如果 contentrDoms 节点存在 并且length>0 时执行下列代码
-                const layoutsContent = contentrDoms[0]; // 把获取到的 contentrDoms 节点存到 变量 layoutsContent 中
-                const headerDoms = parentDoms.querySelectorAll('.layoutsHeader');
-                const headerHeight = headerDoms[0].getBoundingClientRect().height;
-                layoutsContent.style.height = `${parentHeight - headerHeight - 200}px`; // layoutsContent 的高度，等于父节点的高度-头部-横线-padding值
-                this.setState({
-                    contentHeight: parentHeight - headerHeight - 200,
-                    tableHeight: layoutsContent.getBoundingClientRect().height - 68,
-                })
-            }
-        }
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.onWindowResize);
     }
 
     // TODO: the following code may be not the best implementation of filter
@@ -408,7 +384,7 @@ class MySpecialActivities extends React.Component {
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
                 <PromotionCalendarBanner />
-                <div className={styles.pageContentWrapper}>
+                <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                     <div style={{ padding: '0'}} className="layoutsHeader">
                         {this.renderFilterBar()}
                         <div style={{ margin: '0'}} className="layoutsLine"></div>
@@ -915,14 +891,14 @@ class MySpecialActivities extends React.Component {
         ];
 
         return (
-            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
+            <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
+                    scroll={{ x: 1630, y: 'calc(100vh - 390px)' }}
                     pagination={{
                         pageSize: this.state.pageSizes,
                         current: this.state.pageNo,
@@ -1115,11 +1091,13 @@ class MySpecialActivities extends React.Component {
     checkDetailInfo() {
         const _record = arguments[1];
         const user = this.props.user;
+        const { eventWay } = _record;
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
             },
+            eventWay,
             fail: this.failFn,
         });
         this.setState({

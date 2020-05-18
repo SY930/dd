@@ -14,7 +14,6 @@ import { putTicketBag, postTicketBag } from './AxiosFactory';
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
-        isOver: false,
     }
     keys = formKeys;
     /**
@@ -34,13 +33,6 @@ export default class Editor extends Component {
             }
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
-            const { getFieldsValue } = this.form;
-            const { couponPackageGiftConfigs } = getFieldsValue();
-            if(value === '1') {
-                this.validIsOver(couponPackageGiftConfigs);
-                return;
-            }
-            this.setState({ isOver: false });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -63,36 +55,6 @@ export default class Editor extends Component {
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
         }
-        if(key==='couponPackageGiftConfigs') {
-            const { getFieldsValue } = this.form;
-            const { isAutoRefund } = getFieldsValue();
-            if(isAutoRefund === '1') {
-                this.validIsOver(value);
-                return;
-            }
-            this.setState({ isOver: false });
-        }
-        if(key==='isAutoRefund') {
-            const { getFieldsValue } = this.form;
-            const { couponPackageGiftConfigs } = getFieldsValue();
-            if(value === '1') {
-                this.validIsOver(couponPackageGiftConfigs);
-                return;
-            }
-            this.setState({ isOver: false });
-        }
-    }
-    validIsOver(couponPackageGiftConfigs) {
-        const isOver = couponPackageGiftConfigs.some(x=>{
-            if(x.effectType==='1'){
-                return +x.giftValidUntilDayCount > 90;
-            }
-            if(x.effectType==='2'){
-                const diff = moment(x.validUntilDate).diff(moment(x.effectTime), 'days');
-                return diff > 90;
-            }
-        });
-        this.setState({ isOver });
     }
     /** 得到form */
     getForm = (form) => {
@@ -112,7 +74,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, isAutoRefund, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -120,8 +82,10 @@ export default class Editor extends Component {
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
+        let stockRule = {};
         if(isEdit) {
             disDate = { disabledDate: this.disabledDate };
+            stockRule = {rules: ['numbers']};
         }
         const newFormItems = {
             ...other,
@@ -133,6 +97,7 @@ export default class Editor extends Component {
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
+            remainStock: { ...remainStock, ...stockRule },
         };
         if(check) {
             let obj = {}
@@ -162,11 +127,10 @@ export default class Editor extends Component {
     onSave = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { isOver } = this.state;
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
-                        couponPackageStock: stock, ...others,
+                        remainStock: stock, ...others,
                     } = v;
                 let cycleObj = {};
                 if(cycleType){
@@ -176,10 +140,6 @@ export default class Editor extends Component {
                         message.warning('必须选择一个日期');
                         return;
                     }
-                }
-                if(isOver){
-                    message.warning('请删除有效期超过90天的礼品');
-                    return;
                 }
                 let dateObj = {};
                 if(sellTime && sellTime[0]) {
@@ -194,9 +154,9 @@ export default class Editor extends Component {
                 }
                 const price = couponPackagePrice || couponPackagePrice2;
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
-                const couponPackageStock = stock || '-1';           // 如果清空库存，给后端传-1
+                const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
-                    couponPackageStock, couponPackagePrice: price };
+                    remainStock, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id
@@ -214,7 +174,7 @@ export default class Editor extends Component {
 
     }
     render() {
-        const { newFormKeys, isOver } = this.state;
+        const { newFormKeys } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
         let clazz = styles.formWrap2;
@@ -240,13 +200,6 @@ export default class Editor extends Component {
                         formItemLayout={formItemLayout}
                     />
                 </div>
-                {isOver &&
-                    <Alert
-                        message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"
-                        type="error"
-                        showIcon={true}
-                    />
-                }
             </section>
         );
     }

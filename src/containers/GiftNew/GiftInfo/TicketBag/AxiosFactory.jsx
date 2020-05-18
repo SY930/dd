@@ -232,8 +232,23 @@ async function getQrCodeImg(data) {
     message.error(msg);
     return '';
 }
+
+/**
+ * 更新库存
+ */
+async function postStock(data) {
+    const method = `${api}updateCouponPackageRemainStock.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
 export {
     putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
-    getImgTextList, getBagBatch, getQrCodeImg,
+    getImgTextList, getBagBatch, getQrCodeImg, postStock,
 }

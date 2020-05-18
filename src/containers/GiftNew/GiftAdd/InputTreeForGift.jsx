@@ -14,7 +14,7 @@ import {
 import GiftCfg from '../../../constants/Gift';
 import _ from 'lodash';
 
-const shareableGiftType = [ 10, 20, 21, 110, 111];
+const shareableGiftType = [ 10, 20, 21, 110, 111, 22];
 
 const TreeNode = Tree.TreeNode;
 class InputTreeForGift extends React.Component {

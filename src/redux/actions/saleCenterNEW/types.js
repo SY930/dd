@@ -155,6 +155,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([{
     value: '100',
 },
 {
+    label: '配送券',
+    value: '22',
+},
+{
     label: '支付宝代金券',
     value: '114',
 }

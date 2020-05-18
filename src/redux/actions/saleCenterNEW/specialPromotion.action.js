@@ -53,9 +53,17 @@ export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST = 'sale center: get exclude even
 export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS = 'sale center: sale_center_query_online_restaurant_shops_status';
 export const SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT = 'sale center: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT';
 
+export const SALE_CENTER_CARDGROUPID = 'sale center: set special promotion event info new222';
+
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO,
+        payload: opts,
+    };
+};
+export const saleCenterSetSpecialBasicInfoCardGroupID = (opts) => {
+    return {
+        type: SALE_CENTER_CARDGROUPID,
         payload: opts,
     };
 };

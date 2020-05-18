@@ -26,6 +26,12 @@ export default class MoneyLimitTypeAndValue extends Component {
                 { label: '满', value: '2' },
             ]
         }
+        if (this.props.type == 22) {
+            return [
+                { label: '不限', value: '0' },
+                { label: '满', value: '2' },
+            ]
+        }
         return SELECT_OPTIONS
     }
     render() {

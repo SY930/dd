@@ -20,7 +20,7 @@ const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
 const PRIMARY_GIFTS = [
-    '10', '20', '21', '30', '111', '110'
+    '10', '20', '21', '30', '111', '110', '22',
 ];
 
 const CRM_GIFTS = [
@@ -226,8 +226,10 @@ class PhonePreview extends PureComponent {
                             {giftType !== '30' && (
                                 <div className={styles.ruleSection}>
                                     <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                                    <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
-                                    <p>{this.shareTypeString()}</p>
+                                    {giftType !== '22' &&
+                                        <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
+                                     }
+                                     <p>{this.shareTypeString()}</p>
                                     {(giftType == '20' || giftType == '21') && <p>{this.foodScopesString()}</p>}
                                     {(giftType == '10' || giftType == '111') && <p>{this.foodsboxString()}</p>}
                                 </div>
@@ -517,7 +519,8 @@ class PhonePreview extends PureComponent {
                     PREVIEW_ENABLED_GIFTS.includes(giftType) && (
                         <div style={{
                             position: 'relative',
-                            transform: contentHeight < 740 ? `translateY(${-(740 - contentHeight) * scrollPercent}px)` : null
+                            transform: contentHeight < 740 ? `translateY(${-(740 - contentHeight) * scrollPercent}px)` : null,
+                            left: -18,
                         }}>
                             <img
                                 src={phone}

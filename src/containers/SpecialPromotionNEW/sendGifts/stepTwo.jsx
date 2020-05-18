@@ -112,6 +112,11 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if(specialPromotion.groupMemberID){
+            this.setState({
+                groupMembersID: specialPromotion.groupMemberID
+            })
+        }
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,

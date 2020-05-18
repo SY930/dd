@@ -12,6 +12,7 @@ import {
     Switch,
     Popconfirm,
     Tooltip,
+    Checkbox,
 } from 'antd';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -39,7 +40,11 @@ import { COMMON_LABEL } from 'i18n/common';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-
+import { axiosData } from '../../../helpers/util';
+import PhotoFrame from './PhotoFrame';
+import TicketBag from '../shackGift/TicketBag';
+import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base/lib';
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -110,11 +115,6 @@ const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     [typePropertyName]: typeValue,
 })
 
-const shareInfoEnabledTypes = [
-    '65',
-    '66',
-]
-
 const MULTIPLE_LEVEL_GIFTS_CONFIG = [
     {
         type: '63',
@@ -129,7 +129,7 @@ const MULTIPLE_LEVEL_GIFTS_CONFIG = [
         levelAffix: COMMON_SPE.k6hk1aqp,
     },
 ]
-
+const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -139,6 +139,7 @@ class SpecialDetailInfo extends Component {
         const {
             data,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
+            pointObj,
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn(['$eventInfo', 'mpIDList', '0']);
@@ -151,6 +152,7 @@ class SpecialDetailInfo extends Component {
         const $saveMoneySetIds = props.specialPromotion.getIn(['$eventInfo', 'saveMoneySetIds']);
         const saveMoneySetIds = Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
         ? $saveMoneySetIds.toJS() : [];
+        const {givePoints, presentValue, giveCoupon } = pointObj;
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -162,6 +164,8 @@ class SpecialDetailInfo extends Component {
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn(['$eventInfo', 'shareImagePath']),
             shareTitle: props.specialPromotion.getIn(['$eventInfo', 'shareTitle']),
+            shareSubtitle: props.specialPromotion.getIn(['$eventInfo', 'shareSubtitle']),
+            restaurantShareImagePath: props.specialPromotion.getIn(['$eventInfo', 'restaurantShareImagePath']),
             /** 小程序分享相关结束 */
             /** 桌边砍相关 */
             moneyLimitType: props.specialPromotion.getIn(['$eventInfo', 'moneyLimitType']) || 0,
@@ -185,17 +189,23 @@ class SpecialDetailInfo extends Component {
             helpMessageArray: ['', ''],
             saveMoneySetIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? '1' : '0', // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
+            givePoints,
+            presentValue,
+            giveCoupon,
+            shareTitlePL: '',
+            shareSubtitlePL: '',
+            sendTypeValue: '0',
+            bag: '',
         }
     }
     componentDidMount() {
-        const { type, isLast = true, } = this.props;
+        const { type, isLast = true, user } = this.props;
         this.props.getSubmitFn({
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
         this.props.fetchGiftListInfo();
         if (type == 67) {
-            const user = this.props.user;
             const opts = {
                 _groupID: user.accountInfo.groupID,
                 _role: user.accountInfo.roleType,
@@ -208,6 +218,47 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 68) {
             this.props.queryAllSaveMoneySet()
+        }
+        if (type == 21) {
+            const shareTitle = '送您一份心意，共享美食优惠！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
+            if(this.props.isNew){
+                this.setState({shareTitle});
+            }
+            this.setState({ shareTitlePL, shareSubtitlePL });
+        }
+        if (type == 68) {
+            const shareTitle = '推荐拿好礼，优惠吃大餐，快来看看吧~ ';
+            const shareSubtitle = '嘿！这家店有券拿诶，推荐给你，快点来领~';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
+            if(this.props.isNew){
+                this.setState({shareTitle, shareSubtitle });
+            }
+            this.setState({shareTitlePL, shareSubtitlePL });
+        }
+        if (type == 66) {
+            const shareTitle = '亲爱的朋友，帮我助力赢大礼。';
+            const shareSubtitle = '海吃海喝就靠你啦！';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = shareSubtitle;
+            if(this.props.isNew){
+                this.setState({shareTitle, shareSubtitle });
+            }
+            this.setState({shareTitlePL, shareSubtitlePL });
+        }
+        if (type == 65) {
+            const shareTitle = '呼朋唤友，一起赢壕礼。';
+            const shareTitlePL = shareTitle;
+            const shareSubtitlePL = '选填，请输入副标题';
+            if(this.props.isNew){
+                this.setState({shareTitle });
+            }
+            this.setState({shareTitlePL, shareSubtitlePL });
+        }
+        if (type == 30) {
+            this.getBag();
         }
     }
     getMultipleLevelConfig = () => {
@@ -255,11 +306,45 @@ class SpecialDetailInfo extends Component {
             default: return [getDefaultGiftData()]
         }
     }
-
+    componentWillReceiveProps(np){
+        if(!this.props.isNew){
+            const b = np.specialPromotion.get('$giftInfo').toJS();
+            const { presentType = '', giftID } = b[0] || [{}];
+            if(this.props.type == '30' && presentType===4){
+                const {couponPackageInfos } = this.state;
+                const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
+                this.setState({
+                    sendTypeValue: '1',
+                    bag,
+                })
+            }
+        }
+    }
+    async getBag(){
+        const { user } = this.props;
+        const {groupID} = user.accountInfo;
+        const data = {groupID, couponPackageType: "2"};
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
+        const method = `${api}getCouponPackages.ajax`;
+        const params = { service, type, data, method };
+        const response = await axios.post(url + method, params);
+        const { code, couponPackageInfos = []} = response;
+        if (code === '000') {
+            this.setState({ couponPackageInfos })
+        }
+    }
     initState = () => {
         const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
         const data = this.initiateDefaultGifts();
+        let pointObj = { presentValue: '', givePoints: false, giveCoupon: false };
         giftInfo.forEach((gift, index) => {
+            if(this.props.type == '52' && gift.presentType === 2){
+                pointObj = { ...pointObj, presentValue: gift.presentValue, givePoints: true };
+                return;
+            }
+            if(this.props.type == '52' && gift.presentType === 1){
+                pointObj = { ...pointObj, giveCoupon: true };
+            }
             if (data[index] !== undefined) {
                 data[index].sendType = gift.sendType || 0;
                 data[index].recommendType = gift.recommendType || 0;
@@ -272,6 +357,9 @@ class SpecialDetailInfo extends Component {
                 : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
+            if(this.props.type == '30' && gift.presentType === 4){
+                data[index].giftInfo.giftName = '';
+            }
             data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
@@ -330,9 +418,13 @@ class SpecialDetailInfo extends Component {
                     }))
             }
         }
+        if(this.props.isNew){
+            pointObj = { presentValue: '', givePoints: false, giveCoupon: true };
+        }
         return {
             data,
             wakeupSendGiftsDataArray,
+            pointObj,
         };
     }
 
@@ -409,6 +501,7 @@ class SpecialDetailInfo extends Component {
     handleSubmit = (isPrev) => {
         if (isPrev) return true;
         let flag = true;
+        const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         this.props.form.validateFieldsAndScroll({ force: true }, (error, basicValues) => {
             if (error) {
                 flag = false;
@@ -476,6 +569,7 @@ class SpecialDetailInfo extends Component {
             ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
+
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo(
@@ -491,99 +585,40 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        // checkgiftCount = (giftCount, index, giftInfoArray) => {
-        //     const _value = parseFloat(giftCount.value);
-        //     if (!(_value > 0 && _value < 51)) {
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftCount,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftCount,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
-
-        // // 有效天数
-        // checkGiftValidDays = (giftValidDays, index) => {
-        //     const _value = giftValidDays.value instanceof Array ? giftValidDays.value : parseFloat(giftValidDays.value);
-        //     if (_value > 0 || (_value[0] && _value[1])) {
-        //         return giftValidDays;
-        //     }
-        //     return {
-        //         msg: `${this.props.intl.formatMessage(STRING_SPE.d21644a8a593a3277)}`,
-        //         validateStatus: 'error',
-        //         value: '',
-        //     }
-        // }
-
-        // // 校验中奖比率
-        // checkGiftOdds = (giftOdds) => {
-        //     if (type == '20') {
-        //         const _value = parseFloat(giftOdds.value);
-        //         if (_value >= 0 && _value <= 100) {
-        //             return giftOdds;
-        //         }
-        //         return {
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d1e0750k7u4276)}`,
-        //             validateStatus: 'error',
-        //             value: '',
-        //         }
-        //     }
-        //     return giftOdds;
-        // }
-
-        // // 校验礼品信息
-        // checkGiftInfo = (giftInfo, index, giftInfoArray) => {
-        //     if (giftInfo.giftItemID === null || giftInfo.giftName === null) {
-        //         return {
-        //             giftItemID: null,
-        //             giftName: null,
-        //             validateStatus: 'error',
-        //             msg: `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`,
-        //         }
-        //     }
-        //     if (type == 66) { // 膨胀大礼包，每个档位礼品不能重复
-        //         let hasDuplica;
-        //         for (let i = 0; i < index; i++) {
-        //             if (giftInfoArray[i]) {
-        //                 hasDuplica = hasDuplica || giftInfoArray[i].giftInfo.giftItemID === giftInfoArray[index].giftInfo.giftItemID &&
-        //                 giftInfoArray[i].giftCount.value === giftInfoArray[index].giftCount.value;
-        //             }
-        //         }
-        //         if (hasDuplica) {
-        //             return {
-        //                 ...giftInfo,
-        //                 validateStatus: 'error',
-        //                 msg: `${this.props.intl.formatMessage(STRING_SPE.d454apk46l2239)}`,
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         ...giftInfo,
-        //         validateStatus: 'success',
-        //         msg: '',
-        //     };
-        // }
+        if(type === '52') {
+            const { presentValue, givePoints, giveCoupon } = this.state;
+            if(!givePoints && !giveCoupon){
+                message.warning('赠送积分和优惠券必选一项');
+                return;
+            }
+            if(givePoints){
+                if(!priceReg.test(presentValue)){
+                    message.warning('请输入1~1000000数字，支持两位小数');
+                    return;
+                }
+            }
+            if(givePoints && !giveCoupon){
+                if(!priceReg.test(presentValue)){
+                    message.warning('请输入1~1000000数字，支持两位小数');
+                    return;
+                }
+                const giftName = presentValue + '积分';
+                const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+        }
+        const { sendTypeValue } = this.state;
+        if(type === '30' && sendTypeValue === '1') {
+            const { bag } = this.state;
+            if(bag[0]){
+                const { couponPackageID } = bag[0];
+                const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
+                this.props.setSpecialGiftInfo([params]);
+                return true;
+            }
+            message.error('请选择一项券包');
+        }
         if (this.props.type == '68') {
             const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
             const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
@@ -646,7 +681,20 @@ class SpecialDetailInfo extends Component {
                 message.warning( `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`);
                 return false;
             }
-            const giftInfo = this.getGiftInfo(data);
+            let giftInfo = this.getGiftInfo(data);
+            if(type === '52') {
+                const { presentValue, givePoints } = this.state;
+                if(givePoints){
+                    const giftName = presentValue + '积分';
+                    const params = { presentValue, presentType:2, giftName, giftCount: 1 };
+                    giftInfo = [...giftInfo, params];
+                }
+            }
+            if(['21','68', '66', '65'].includes(type)) {
+                const { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath } = this.state;
+                const shareInfo = { shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath };
+                this.props.setSpecialBasicInfo(shareInfo);
+            }
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
                 this.props.type == '67' ? {
@@ -818,6 +866,11 @@ class SpecialDetailInfo extends Component {
             shareTitle: value,
         })
     }
+    handleShareSubTitleChange = ({ target: { value }}) => {
+        this.setState({
+            shareSubtitle: value,
+        })
+    }
     handleMoneyLimitTypeChange = (value) => {
         this.setState({
             moneyLimitType: +value,
@@ -953,9 +1006,53 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray: wakeupSendGiftsDataArray.slice(),
         })
     }
-    handleWakeupIntervalGiftsChange = (val, index) => {
+    handleWakeupIntervalGiftsChange = (val, index,currentIndex) => {
+        // console.log('选中礼品名称---',val,index,currentIndex)
         let { wakeupSendGiftsDataArray } = this.state;
         wakeupSendGiftsDataArray[index].gifts = val;
+        /*
+        * 选择支付宝代金券的时候，需单独处理
+        * http://jira.hualala.com/browse/WTCRM-1157
+        */
+     Array.isArray(val) && val.forEach((item,i) => {
+        const { parentId, giftItemID } =   item.giftInfo
+        if(parentId === '114') {
+            const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
+            axiosData(
+                '/promotion/insidevoucher/queryInsideVoucherPeriod.ajax',
+                { groupID, giftItemID },
+                null,
+                { path: 'data' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
+            ).then( res => {
+                const {effectTime,validUntilDate} = res
+                const v =  wakeupSendGiftsDataArray[index].gifts[i]
+                v.giftCount.value = 1
+                v.giftCount.disabled = true
+                v.effectType = '2'
+                v.effectTypeIsDisabled = true
+                v.giftEffectiveTime.value =  [moment(effectTime,'YYYYMMDDHHmmss'),moment(validUntilDate,'YYYYMMDDHHmmss')]
+                v.giftEffectiveTime.disabled = true
+                v.giftValidDays.value = ''
+                this.setState({
+                    wakeupSendGiftsDataArray,
+                })
+            }).catch(err => {
+
+            })
+        }
+       })
+       if(typeof currentIndex !== undefined) {
+            const v =  wakeupSendGiftsDataArray[index].gifts[currentIndex]
+            v.giftCount.value = ''
+            v.giftCount.disabled = false
+            v.effectType = '1'
+            v.effectTypeIsDisabled = false
+            v.giftEffectiveTime.value =  '0'
+            v.giftEffectiveTime.disabled = false
+       }
+
+
         this.setState({
             wakeupSendGiftsDataArray,
         })
@@ -1070,6 +1167,65 @@ class SpecialDetailInfo extends Component {
                     style={{ position: 'relative' }}
                 >
                     {this.renderImgUrl()}
+                </FormItem>
+            </div>
+        )
+    }
+    onRestImg = ({ key, value }) => {
+        this.setState({ [key]: value });
+    }
+    renderShareInfo2 = () => {
+        const { type } = this.props;
+        const { shareTitle, shareSubtitle, restaurantShareImagePath,
+            shareImagePath, shareTitlePL, shareSubtitlePL } = this.state;
+        return (
+            <div>
+                <p className={selfStyle.shareTip}>分享设置</p>
+                <FormItem
+                    label="分享标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareTitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareTitle,
+                        onChange: this.handleShareTitleChange,
+                    })(
+                        <Input placeholder={shareTitlePL} />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享副标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator('shareSubtitle', {
+                        rules: [
+                            { max: 35, message: "最多35个字符" },
+                        ],
+                        initialValue: shareSubtitle,
+                        onChange: this.handleShareSubTitleChange,
+                    })(
+                        <Input placeholder={shareSubtitlePL} />
+                    )}
+                </FormItem>
+                <FormItem
+                    label="分享图片"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: 'relative' }}
+                >
+                    <PhotoFrame
+                        restaurantShareImagePath={restaurantShareImagePath}
+                        shareImagePath={shareImagePath}
+                        onChange={this.onRestImg}
+                        type={type}
+                    />
                 </FormItem>
             </div>
         )
@@ -1972,6 +2128,7 @@ class SpecialDetailInfo extends Component {
                     </Tooltip>
                 </p>
                 {this.renderRecommendGifts(0)}
+                {this.renderShareInfo2()}
             </div>
         )
     }
@@ -1982,6 +2139,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         } = this.state;
         const { isNew } = this.props;
+        // console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
         return (
             <div>
                 <FormItem
@@ -2029,7 +2187,7 @@ class SpecialDetailInfo extends Component {
                                     type={this.props.type}
                                     isNew={this.props.isNew}
                                     value={wakeupSendGiftsDataArray[0].gifts}
-                                    onChange={(giftArr) => this.handleWakeupIntervalGiftsChange(giftArr, 0)}
+                                    onChange={(giftArr,currentIndex) => this.handleWakeupIntervalGiftsChange(giftArr, 0,currentIndex)}
                                     zhifubaoCoupons={true}
                                 />
                             </Col>
@@ -2168,7 +2326,125 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+    onCheckPoint = ({ target }) => {
+        const { checked } = target;
+        this.setState({ givePoints: checked });
+    }
+    onCheckCoupon = ({ target }) => {
+        const { checked } = target;
+        this.setState({ giveCoupon: checked });
+    }
+    onGivePointsValueChange = ({ target }) => {
+        const { value } = target;
+        this.setState({ presentValue: value });
+    }
+    renderNewCardGive() {
+        const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        const { givePoints, presentValue, giveCoupon } = this.state;
+        const preErr = !priceReg.test(presentValue) ? 'error': 'success';
+        const preErrText = !priceReg.test(presentValue) ? '请输入1~1000000数字，支持两位小数': '';
+        const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);
+        return (<div>
+            <FormItem
+                style={{ padding: '0px 40px' }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={givePoints}
+                    onChange={this.onCheckPoint}
+                >赠送积分</Checkbox>
+            </FormItem>
+            {givePoints &&
+                <div className={selfStyle.pointBox}>
+                <p className={userCount > 0? styles.opacitySet: ''}></p>
+                <div className={selfStyle.title}>
+                    <span>赠送积分</span>
+                </div>
+                <FormItem
+                    wrapperCol={{ span: 24 }}
+                    className={''}
+                    validateStatus={preErr}
+                    help={preErrText}
+                >
+                    <Input
+                        addonAfter={'积分'}
+                        value={presentValue}
+                        onChange={this.onGivePointsValueChange}
+                    />
+                </FormItem>
+            </div>}
+            <FormItem
+                style={{ padding: '0px 40px' }}
+                wrapperCol={{ span: 24 }}
+                className={''}
+                validateStatus={''}
+                help={''}
+            >
+                <Checkbox
+                    checked={giveCoupon}
+                    onChange={this.onCheckCoupon}
+                >赠送优惠券</Checkbox>
+            </FormItem>
+        </div>);
+    }
+    onTypeChange = ({ target }) => {
+        this.setState({ sendTypeValue: target.value });
+    }
+    onBagChange = (item) => {
+        if(item) {
+            this.setState({ bag: [item]});
+            return;
+        }
+        this.setState({ bag: null});
+    }
+    // type 30
+    renderPointDuihuan(){
+        const { bag, sendTypeValue } = this.state;
+        const { user, type, disabled } = this.props;
+        const {groupID} = user.accountInfo;
+        const css = disabled?styles.disabledModal:'';
+        return(
+            <div style={{position: 'relative'}}>
+                <Row>
+                    <Col span={20} offset={2} style={{margin: '10px'}}>
+                        <span style={{margin: '0px 8px'}}>赠送优惠券</span>
+                        <RadioGroup onChange={this.onTypeChange} value={sendTypeValue} >
+                            <Radio value={'0'}>独立优惠券</Radio>
+                            <Radio value={'1'}>券包</Radio>
+                        </RadioGroup>
+                    </Col>
+                </Row>
+                {sendTypeValue === '1' ?
+                <Row>
+                    <Col span={20} offset={3}>
+                        <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} />
+                    </Col>
+                </Row>:
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
+                <div className={css}></div>
+            </div>
+        )
+    }
     render() {
+        const { giveCoupon } = this.state;
         const { type } = this.props;
         if (type == '68') { // 推荐有礼的render与其它活动相差较大
             return this.renderRecommendGiftsDetail();
@@ -2205,6 +2481,11 @@ class SpecialDetailInfo extends Component {
                         </FormItem>
                     )
                 }
+                {
+                    type === '52' &&
+                    this.renderNewCardGive()
+                }
+                { type === '52' && giveCoupon &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
@@ -2220,7 +2501,27 @@ class SpecialDetailInfo extends Component {
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
-                </Row>
+                </Row>}
+                {type==='30' &&
+                    this.renderPointDuihuan()
+                }
+                { !['52', '30'].includes(type) &&
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
                 {
                    type == '65' && <p className={styles.coloredBorderedLabel}>{this.props.intl.formatMessage(STRING_SPE.dk469ad5m987288)}</p>
                 }
@@ -2241,7 +2542,7 @@ class SpecialDetailInfo extends Component {
                     )
                 }
                 {
-                    shareInfoEnabledTypes.includes(`${type}`) && this.renderShareInfo()
+                    ['21', '66', '65'].includes(type) && this.renderShareInfo2()
                 }
             </div>
         )
@@ -2258,6 +2559,7 @@ function mapStateToProps(state) {
         groupCardTypeList: state.sale_mySpecialActivities_NEW
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
     }
 }
 

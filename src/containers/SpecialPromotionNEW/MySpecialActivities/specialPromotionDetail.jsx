@@ -450,12 +450,17 @@ class SpecialPromotionDetail extends React.Component {
             //         days = '';
             //     }
             // }
+            // 积分兑换 如果是 -1 改为不限制
+            let giftTotalCount = gift.giftTotalCount;
+            if(way==30 && gift.giftTotalCount===-1){
+                giftTotalCount = '不限制'
+            }
             return {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
                 EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
-                    gift.giftCount : gift.giftTotalCount,
+                    gift.giftCount : giftTotalCount,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
@@ -558,7 +563,7 @@ class SpecialPromotionDetail extends React.Component {
                         exportablePromotionTypes.includes(`${way}`) && (
                             <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button></Col>
                         )
-                    }  
+                    }
                 </Col>
             </div>
         )
@@ -626,12 +631,14 @@ class SpecialPromotionDetail extends React.Component {
                 data: opts,
             }
         );
+        const { eventWay } = this.state.eventInfo.data;
         this.props.fetchDetailData(
             {
                 data: {
                     groupID: user.accountInfo.groupID,
                     itemID: this.state.eventInfo.data.itemID,
                 },
+                eventWay,
             }
         );
     }

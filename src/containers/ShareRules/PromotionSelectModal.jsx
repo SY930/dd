@@ -18,7 +18,7 @@ const TreeNode = Tree.TreeNode;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
 const AVAILABLE_GIFTS = [
-    '10', '20', '21', '110', '111',
+    '10', '20', '21', '110', '111', '22',
 ];
 @injectIntl()
 class PromotionSelectModal extends Component {
@@ -58,7 +58,7 @@ class PromotionSelectModal extends Component {
         const allGiftsArray = allGiftList ? allGiftList.toJS() : [];
         const allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
             value: promotion.promotionIDStr,
-            label: <span>{BASIC_PROMOTION_MAP[promotion.promotionType]} - {promotion.promotionName}</span>,
+            label:  `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
             type: `${promotion.promotionType}`,
             activityType: '10',
             activitySource: '1'
@@ -70,21 +70,21 @@ class PromotionSelectModal extends Component {
             ...allPromotionArray,
             ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
                 value: item.giftItemID,
-                label: <span>{GIFT_MAP[item.giftType]} - {item.giftName}</span>,
+                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
                 type: `${item.giftType}`,
                 activityType: '30',
                 activitySource: '2'
             })),
             {
                 value: '-10',
-                label: k5m4q0r2,
+                label: '会员价',
                 activityType: '20',
                 type: '-10',
                 activitySource: '3'
             },
             {
                 value: '-20',
-                label: k5m4q0ze,
+                label: '会员折扣',
                 activityType: '20',
                 type: '-20',
                 activitySource: '3'
@@ -187,6 +187,7 @@ class PromotionSelectModal extends Component {
                                 <TreeNode key={'21'} title={k5m5avwb} />
                                 <TreeNode key={'111'} title={k636qvha} />
                                 <TreeNode key={'110'} title={k636qvpm} />
+                                <TreeNode key={'22'} title={'配送券'} />
                             </TreeNode>
                             <TreeNode key={'userRight'} title={k5m5aw4n}>
                                 <TreeNode key={'-10'} title={k5m4q0r2} />

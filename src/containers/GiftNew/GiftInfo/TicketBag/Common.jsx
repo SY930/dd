@@ -54,7 +54,10 @@ const wayOpts = [
     { value: '11', label: '商家赠送' },
     { value: '12', label: '摇奖活动赠送' },
 ];
-
+const stockOpts = [
+    { value: '1', label: '不限制' },
+    { value: '2', label: '剩余库存' },
+];
 const separItems = {
     a: {
         type: 'custom',
@@ -98,8 +101,7 @@ const wayLabel = (<span>
 const revokeLabel = (<span>
     系统过期自动退
     <Tip
-        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。<br />
-            退款时效为购买之日起90天。</p>}
+        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。</p>}
         style={tipMargin}
     />
 </span>);
@@ -123,9 +125,9 @@ const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
 const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'couponPackageStock', 'e', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice', 'settleUnitID', 'remainStock', 'e', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice2', 'couponPackageStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
 const formItems = {
     couponPackageType: {
@@ -193,7 +195,7 @@ const formItems = {
             },
         }],
     },
-    couponPackageStock: {
+    remainStock: {
         type: 'text',
         label: '券包库存',
         props: {
@@ -422,7 +424,11 @@ const pFormItems = {
     cellNo: {
         type: 'text',
         label: '手机号',
-        rules: ['required', 'phone'],
+        rules: [{
+            required: true,
+            message: '请输入正确的手机号码',
+            pattern: /^[1]([3-9])[0-9]{9}$/,
+        }],
         defaultValue: '',
     },
     sendCount: {
@@ -466,9 +472,34 @@ const refundItems = {
         rules: ['description'],
     },
 };
+const stockItems = {
+    type: {
+        type: 'radio',
+        label: <span></span>,
+        options: stockOpts,
+        defaultValue: '2',
+    },
+    remainStock: {
+        type: 'text',
+        label: '',
+        surfix: '份',
+        props: {
+            placeholder: '最大支持7位整数',
+        },
+        rules: [{
+            validator: (rule, value, callback) => {
+                const pattern = /^([0-9]\d{0,6})$/;
+                if(!pattern.test(value)){
+                    return callback('最大支持7位整数');
+                }
+                return callback();
+            },
+        }],
+    },
+};
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2, dFormKeys3, refundItems, couponImage,
+    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems,
 }

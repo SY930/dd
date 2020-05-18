@@ -120,6 +120,7 @@ class GiftDetailModal extends Component {
                 case '21':
                 case '30':
                 case '40':
+                case '22':
                     return <span><em>{data.giftValue}</em>元</span>;
                 case '80':
                     return (<span><em>{(data.discountRate * 10).toFixed(1)}</em>折<em>{data.pointRate}</em>倍</span>);
@@ -143,7 +144,8 @@ class GiftDetailModal extends Component {
         const totalData = [{
             sendCount: this.props.sendTotalSize || 0,
             usedCount: this.props.usedTotalSize || 0,
-        }]
+        }];
+        console.log('giftType', giftType);
         return (
             <Modal
                 key="礼品使用详情"
@@ -164,7 +166,7 @@ class GiftDetailModal extends Component {
                                 <Col span={4}>
                                     <div
                                         className="gift-image"
-                                        style={{ backgroundImage: `url("/asserts/img/${giftType != 21 ? giftType : 20}.jpg")` }}
+                                        style={{ backgroundImage: `url("/asserts/img/${!['21', '22'].includes(giftType) ? giftType : 20}.jpg")` }}
                                     >
                                         {giftLogo(giftType)}
                                         <p className={styles.ellipsisBlock}>{data.giftName}</p>
