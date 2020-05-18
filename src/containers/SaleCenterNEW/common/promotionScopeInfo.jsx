@@ -472,8 +472,14 @@ class PromotionScopeInfo extends React.Component {
         if(length<size){
             this.setState({ isRequire: true });
         }
-        if(!isNew && !oldShops[0]){
-            this.setState({ isRequire: true });
+        if(isNew){
+            if(length<size){
+                this.setState({ isRequire: true });
+            }
+        } else {
+            if(!oldShops[0]){
+
+            }
         }
     }
     renderShopsOptions() {
