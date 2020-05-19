@@ -467,26 +467,25 @@ class PromotionScopeInfo extends React.Component {
         const { promotionScopeInfo, isNew } = this.props;
         const { size } = promotionScopeInfo.getIn(['refs', 'data', 'shops']);
         const oldShops = promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
-        console.log('oldShops', oldShops, isNew);
         const { length } = shopList;
-        if(length<size){
-            this.setState({ isRequire: true });
-        }
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
         if(isNew){
             if(length<size){
                 this.setState({ isRequire: true });
             }
         } else {
-            if(!oldShops[0]){
-
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
             }
         }
     }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
-        // this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo
-        console.log('selections', this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo);
         if(promotionType == '5010'){
             return (
                 <Form.Item
