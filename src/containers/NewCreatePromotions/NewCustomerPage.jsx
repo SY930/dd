@@ -60,6 +60,7 @@ import {
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
+import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 
 @registerPage([NEW_SALE_BOX], {
 })
@@ -74,6 +75,7 @@ class NewCustomerPage extends Component {
         specialModalVisible: false,
         specialIndex: 0,
         currentCategoryIndex: 0,
+        v3visible: false,       // 第三版活动组件是否显示
     }
 
     componentDidMount() {
@@ -298,9 +300,12 @@ class NewCustomerPage extends Component {
         );
     }
 
-
+    //** 第三版 重构 抽抽乐活动 点击事件 */
+    onV3Click = () => {
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    }
     render() {
-        const {whiteList} = this.state;
+        const {whiteList, v3visible} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -385,6 +390,7 @@ class NewCustomerPage extends Component {
                                                 whiteList={whiteList}
                                                 text={item.text}
                                                 onClickOpen={this.onClickOpen}
+                                                onV3Click={this.onV3Click}
                                             />
                                         ))
                                     }
@@ -395,6 +401,7 @@ class NewCustomerPage extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
+                {v3visible && (<Chou2Le />)}
             </div>
         )
     }

@@ -276,6 +276,16 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
     },
+    {
+        title: '下单抽抽乐',
+        isSpecial: false,
+        tags: ['微信'],
+        text: SALE_LABEL.k67b4sxe,
+        example: SALE_LABEL.k67cpoj7,
+        key: '666',
+        right: 12,
+        bottom: 4,
+    },
 ];
 
 /**
