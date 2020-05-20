@@ -44,6 +44,11 @@ import PhotoFrame from "./PhotoFrame";
 import { activeRulesList } from "../recommendGifts/constant";
 import recommentGiftStyle from "../recommendGifts/recommentGift.less";
 // import  StepThree  from '../recommendGifts/stepThree'
+import {
+    checkChoose,
+    queryRedPackets,
+    handleCashChange
+} from './SpecialPromotionDetailInfoHelp'
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -296,9 +301,10 @@ class SpecialDetailInfo extends Component {
                     giveCoupon3: true,
                 },
                 ruleType999: {
-                    giveCoupon3: true,
+                    giveCoupon0: true,
                 }
-            }
+            },
+            redPackets: [] , // 现金红包下拉列表
         };
     }
     componentDidMount() {
@@ -340,6 +346,8 @@ class SpecialDetailInfo extends Component {
                 this.setState({ shareTitle, shareSubtitle });
             }
             this.setState({ shareTitlePL, shareSubtitlePL });
+            // 获取红包列表
+            queryRedPackets.call(this)
         }
         if (type == 66) {
             const shareTitle = "亲爱的朋友，帮我助力赢大礼。";
@@ -385,6 +393,7 @@ class SpecialDetailInfo extends Component {
                 recommendRule = recommendRule.toJS()
                 const initEventRecommendSettings = []
                 if(Array.isArray(recommendRule)) {
+
                     recommendRule.forEach(v => {
                         initEventRecommendSettings.push(
                             {
@@ -394,6 +403,13 @@ class SpecialDetailInfo extends Component {
                             }
                         )
                     })
+                    initEventRecommendSettings.push(
+                        {
+                            rule: '999' ,
+                            gifts: [],
+                            eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
+                        }
+                    )
 
                 }
                 console.log('componentDidUpdate---22',recommendRule,initEventRecommendSettings)
@@ -609,10 +625,18 @@ class SpecialDetailInfo extends Component {
                         {
                             rule: v ,
                             gifts: [],
-                            eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
+                            eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2) ]
                         }
                     )
                 })
+
+                initEventRecommendSettings.push(
+                    {
+                        rule: '999',
+                        gifts: [],
+                        eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2) ]
+                    }
+                )
 
             }
         }
@@ -1334,7 +1358,10 @@ class SpecialDetailInfo extends Component {
         });
     };
     handleRecommendSettingsChange = (index, propertyName,ruleType) => (val) => {
-        const eventRecommendSettingsCurrent = this.state.eventRecommendSettings.find(item => item.rule === ruleType);
+        const {eventRecommendSettings} = this.state
+        const eventRecommendSettingsCurrent =  eventRecommendSettings.find(item => item.rule == ruleType);
+        console.log('this.state.eventRecommendSettings',this.state.eventRecommendSettings)
+        console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
         if(eventRecommendSettingsCurrent) {
             const { helpMessageArray } = this.state;
             let value;
@@ -1350,7 +1377,7 @@ class SpecialDetailInfo extends Component {
             console.log('eventRecommendSettings', currentData ,index,helpMessageArray)
 
             this.setState({
-                eventRecommendSettings: currentData,
+                eventRecommendSettings,
                 helpMessageArray,
             });
         }
@@ -2838,9 +2865,14 @@ class SpecialDetailInfo extends Component {
         // [`giveIntegral${roleType}`]: false,
         // [`giveCoupon${roleType}`]: true,
         // [`giveCash${roleType}`]: false
-        const {checkBoxStatus} = this.state
 
+        const {checkBoxStatus} = this.state
         checkBoxStatus[`ruleType${ruleType}`][`${key}${roleType}`] = e.target.checked
+        if(!checkChoose.call(this,key,ruleType,roleType)) {
+            checkBoxStatus[`ruleType${ruleType}`][`${key}${roleType}`] = !e.target.checked
+            message.warn('至少选择一个礼品')
+            return
+        }
         this.setState({
             checkBoxStatus: {
                 ...checkBoxStatus,
@@ -2858,6 +2890,7 @@ class SpecialDetailInfo extends Component {
             if(!key || !ruleType ) return null
             const {checkBoxStatus} = this.state
             const checked = checkBoxStatus[`ruleType${ruleType}`][`${key}${roleType}`]
+
             return (
                 <div className={recommentGiftStyle.formItemStyle}>
                     <div style={{ paddingTop: "12px" }}>
@@ -2873,36 +2906,26 @@ class SpecialDetailInfo extends Component {
                 </div>
             );
     };
-    renderGivePoint = (recommendType,ruleType) => {
-        // [
-        //     {
-        //       "recommendType": 1,
-        //       "rechargeRate": "1",
-        //       "rewardRange": 0
-        //     },
-        //     {
-        //       "recommendType": 2,
-        //       "rewardRange": 0
-        //     }
-        //   ]
+    renderGivePoint = (roleType,ruleType) => {
+
         const { eventRecommendSettings } = this.state;
         const {
             form: { getFieldDecorator },
         } = this.props;
-
+        // console.log('renderGivePoint',roleType,ruleType)
         return (
             <FormItem
                 wrapperCol={{ span: 24 }}
                 className={styles.FormItemSecondStyle}
                 style={{ width: "230px", marginLeft: "16px" }}
             >
-                {getFieldDecorator(`presentValue${recommendType}`,
+                {getFieldDecorator(`presentValue${roleType}`,
                 {
-                    onChange:  this.handleRecommendSettingsChange(recommendType, 'presentValue',ruleType)
+                    onChange:  this.handleRecommendSettingsChange(roleType, 'presentValue',ruleType)
                     ,
                     initialValue: {
-                        number: eventRecommendSettings[recommendType] ?
-                        eventRecommendSettings[recommendType]['presentValue'] : '',
+                        number: eventRecommendSettings[roleType] ?
+                        eventRecommendSettings[roleType]['presentValue'] : '',
                     },
                     rules: [
                         {
@@ -2931,8 +2954,6 @@ class SpecialDetailInfo extends Component {
                         addonAfter={"分"}
                         modal="float"
                         maxNum={7}
-                        value={1}
-                        onChange={(val) => {}}
                         placeholder="请输入数值"
                     />
                 )
@@ -2941,24 +2962,51 @@ class SpecialDetailInfo extends Component {
         );
     };
 
-    renderCash = () => {
+
+    renderCash = (ruleType,roleType) => {
+
+        const { redPackets , cashGiftVal  } = this.state
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
+        const key = `cashGift${ruleType}${roleType}`
+        console.log('renderCash',cashGiftVal)
         return (
             <div style={{ display: "flex" }}>
                 <FormItem
                     className={styles.FormItemSecondStyle}
                     style={{ marginLeft: "16px", width: "230px" }}
                 >
-                    <Select
+                     <div style={{display: "flex", alignItems: 'center'}}>
+                        <Select
                         showSearch={true}
                         notFoundContent={"没有搜索到结果"}
                         optionFilterProp="children"
-                        placeholder={"请选择一个已创建的红包礼品"}
-                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择一个已创建的红包礼品"
+                        value={cashGiftVal}
+                        onChange={
+                            handleCashChange(key).bind(this)
+                        }
                     >
-                        <Select.Option key={"1"} value={"1"}>
-                            测试1
-                        </Select.Option>
-                    </Select>
+                        {redPackets.map(v => {
+                            return (
+                                <Select.Option key={v.giftItemID} value={v.giftItemID}>
+                                    {v.giftName}
+                                </Select.Option>
+                            )
+                        })}
+                        </Select>
+                        <div style={{marginLeft: '5px'}}>
+                            <Tooltip  title="一个活动使用现金红包只能设置一个红包账户">
+                                <Icon
+                                    type={'question-circle'}
+                                    style={{ color: '#787878' }}
+                                    className={styles.cardLevelTreeIcon}
+                                />
+                            </Tooltip>
+                        </div>
+                    </div>
+
                 </FormItem>
                 <FormItem
                     className={styles.FormItemSecondStyle}
@@ -2985,40 +3033,54 @@ class SpecialDetailInfo extends Component {
         );
     };
 
-    renderCashSaveMoney = (activeRuleTabValue) => {
+    renderCashSaveMoney = (ruleType,roleType) => {
         // 储值后获得和消费后获得的现金红包基本一致
         const {
             form: { getFieldDecorator },
         } = this.props;
+        const {redPackets,cashGiftVal} = this.state
         // 现金红包的储值比例和消费比例
         let cashRadioTitle = '储值比例'
-        if(activeRuleTabValue == 3) {
+        if(ruleType == 3) {
             cashRadioTitle = '消费比例'
         }
+        const cashGiftKey = `cashGift${ruleType}${roleType}`
         return (
             <div>
                 <FormItem
                     className={styles.FormItemSecondStyle}
                     style={{ marginLeft: "16px", width: "196px" }}
                 >
-                    {getFieldDecorator(`cashGift${activeRuleTabValue}`, {
-                        rules: [],
-                        initialValue: "",
-                    })(
-                        <Select
+                      <div style={{display: "flex", alignItems: 'center'}}>
+                            <Select
                             showSearch={true}
                             notFoundContent={"没有搜索到结果"}
                             optionFilterProp="children"
                             placeholder="请选择一个已创建的红包礼品"
+                            value={cashGiftVal}
+                            onChange={
+                                handleCashChange(cashGiftKey).bind(this)
+                            }
                         >
-                            <Select.Option key={"1"} value={"1"}>
-                                测试1
-                            </Select.Option>
-                            <Select.Option key={"2"} value={"2"}>
-                                测试2
-                            </Select.Option>
-                        </Select>
-                    )}
+                            {redPackets.map(v => {
+                                return (
+                                    <Select.Option key={v.giftItemID} value={v.giftItemID}>
+                                        {v.giftName}
+                                    </Select.Option>
+                                )
+                            })}
+                            </Select>
+                            <div style={{marginLeft: '5px'}}>
+                                <Tooltip  title="一个活动使用现金红包只能设置一个红包账户">
+                                    <Icon
+                                        type={'question-circle'}
+                                        style={{ color: '#787878' }}
+                                        className={styles.cardLevelTreeIcon}
+                                    />
+                                </Tooltip>
+                            </div>
+                        </div>
+
                 </FormItem>
 
                 <Row gutter={6}>
@@ -3031,7 +3093,7 @@ class SpecialDetailInfo extends Component {
                             wrapperCol={{ span: 16 }}
                         >
                             {getFieldDecorator(
-                                `saveMoneyRadio${activeRuleTabValue}`,
+                                `saveMoneyRadio33333`,
                                 {
                                     onChange: () => {},
                                     initialValue: { number: "" },
@@ -3081,7 +3143,7 @@ class SpecialDetailInfo extends Component {
                             wrapperCol={{ span: 16 }}
                         >
                             {getFieldDecorator(
-                                `saveMoneyLimit${activeRuleTabValue}`,
+                                `saveMoneyLimit${ruleType}`,
                                 {
                                     onChange: () => {},
                                     initialValue: { number: "" },
@@ -3208,9 +3270,9 @@ class SpecialDetailInfo extends Component {
                                         label: "现金红包",
                                         children:
                                         directActiveRuleTabValue == 1
-                                                ? this.renderCash()
+                                                ? this.renderCash(directActiveRuleTabValue, '1')
                                                 : this.renderCashSaveMoney(
-                                                    directActiveRuleTabValue
+                                                    directActiveRuleTabValue, '1'
                                                   ),
                                         ruleType: directActiveRuleTabValue,
                                         roleType: '1',
@@ -3268,7 +3330,7 @@ class SpecialDetailInfo extends Component {
                                             {indirectActiveRuleTabValue == 1 ? (
                                                 <div>
                                                     {this.renderCheckbox({
-                                                        children: this.renderGivePoint('2'),
+                                                        children: this.renderGivePoint('2',indirectActiveRuleTabValue),
                                                         key: "giveIntegral", // 赠送积分
                                                         label: "赠送积分",
                                                         ruleType: indirectActiveRuleTabValue,
@@ -3292,9 +3354,10 @@ class SpecialDetailInfo extends Component {
                                                 key: "giveCash",
                                                 label: "现金红包",
                                                 children:  indirectActiveRuleTabValue == 1
-                                                ? this.renderCash()
+                                                ? this.renderCash(indirectActiveRuleTabValue,'2')
                                                 : this.renderCashSaveMoney(
-                                                    indirectActiveRuleTabValue
+                                                    indirectActiveRuleTabValue,
+                                                    '2'
                                                   ),
                                                   ruleType: indirectActiveRuleTabValue,
                                                   roleType: '2',
@@ -3321,7 +3384,7 @@ class SpecialDetailInfo extends Component {
                 </p>
                 <div style={{ marginLeft: "44px" }}>
                     {this.renderCheckbox({
-                        children: this.renderGivePoint('0'),
+                        children: this.renderGivePoint('0','999'),
                         key: "giveIntegral", // 赠送积分
                         label: "赠送积分",
                         roleType: '0',
