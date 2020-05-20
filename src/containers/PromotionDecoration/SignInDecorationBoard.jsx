@@ -45,7 +45,7 @@ export default class SignInDecorationBoard extends Component {
                     <div style={styles.actRule}>
                         活动规则
                     </div>
-                    <div style={styles.point}><div style={styles.pointText}>已获得积分 </div> <div style={styles.pointNum}>999</div></div>
+                    {/* <div style={styles.point}><div style={styles.pointText}>已获得积分 </div> <div style={styles.pointNum}>999</div></div> */}
                     <img style={styles.award} src="http://res.hualala.com/basicdoc/5327725a-f5e6-46d9-87d7-0e5942cc52d0.png"/>
                     <div style={{...styles.btn,background: btnBgColor,color: btnColor}}>立即签到</div>
                     <img style={styles.calendar} src="http://res.hualala.com/basicdoc/4c2b7def-a7d6-4121-b5b5-0aa44217087e.png"/>
