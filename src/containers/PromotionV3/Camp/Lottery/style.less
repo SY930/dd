@@ -1,0 +1,31 @@
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@gray: #999;
+.mainBox{
+    :global{
+
+    }
+}
+.addBox{
+    display: flex;
+    &>p{
+        margin: 0 10px;
+        color: @gray;
+    }
+}
+.pointBox{
+    display: flex;
+    &>em{
+        font-style: normal;
+        padding: 0 8px;
+    }
+    :global{
+        .ant-input-wrapper{
+            width: 100px;
+        }
+        .ant-select{
+            width: 160px;
+        }
+    }
+}

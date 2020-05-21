@@ -1,0 +1,25 @@
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+.mainBox{
+    &>li{
+        display: flex;
+    }
+}
+.sep{
+    padding: 0 10px;
+}
+.op{
+    &>a{
+        font-size: 20px;
+        color: @red;
+        &:first-child{
+            margin: 0 10px;
+        }
+    }
+    .plus{
+        color: @green;
+    }
+}
+

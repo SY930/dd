@@ -1,44 +1,73 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Alert, message } from 'antd';
+import { Icon, Checkbox, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { formKeys, formItems } from './Common';
-import { postStock } from './AxiosFactory';
+import { formKeys1, formItems1, formItemLayout,
+    KEY1, KEY2, KEY3, KEY4, KEY5 } from './Common';
+import EveryDay from '../Camp/EveryDay';
 import css from './style.less';
 
 class Step1 extends Component {
     /* 页面需要的各类状态属性 */
     state = {
+        newFormKeys: formKeys1,
     };
 
-    /* 表单提交 */
-    onOk = () => {
-        this.form.validateFields((e, v) => {
-            if (!e) {
-                const { onClose } = this.props;
-                const { } = v;
-            }
-        });
-    }
     onChange = (key, value) => {
-
+        const { form } = this.props;
+        let newFormKeys = [...KEY1, ...KEY2];
+        // 日期高级
+        if(key === 'd') {
+            if(value){
+                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+            }
+            this.setState({ newFormKeys });
+        }
+        // 周期
+        if(key === 'g') {
+            let d = '';
+            if(form) {
+                d = form.getFieldValue('d');   // 高级
+                console.log('d', d);
+            }
+            if(d){
+                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+            }
+            if(value){
+                newFormKeys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
+            }
+            this.setState({ newFormKeys });
+        }
     }
-    /** 得到form */
-    onGetForm = (form) => {
-        this.form = form;
-    }
 
+    /** formItems 重新设置 */
+    resetFormItems() {
+        const { form } = this.props;
+        let g = '';
+        if(form) {
+            const { getFieldValue } = form;
+            g = getFieldValue('g');
+        }
+
+        const render3 = d => d()(<EveryDay type={g} />);
+        const { i, ...other } = formItems1;
+        return {
+            ...other,
+            i: { ...i, render: render3 },
+        };
+    }
     render() {
-        const { } = this.state;
-        const { formData } = this.props;
+        const { newFormKeys } = this.state;
+        const { formData, getForm } = this.props;
+        const newFormItems = this.resetFormItems();
         return (
-            <div>
+            <div className={css.step1}>
                 <BaseForm
-                    getForm={this.onGetForm}
-                    formItems={formItems}
-                    formKeys={formKeys}
+                    getForm={getForm}
+                    formItems={newFormItems}
+                    formKeys={newFormKeys}
                     onChange={this.onChange}
                     formData={formData || {}}
-                    layout="inline"
+                    formItemLayout={formItemLayout}
                 />
             </div>
         )
