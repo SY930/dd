@@ -172,7 +172,7 @@ class BuyGiveDetailInfo extends React.Component {
             if(stageType == 1 || stageType == 2){
                 //满的逻辑
                 const { foodRuleList } = this.state;
-                foodRuleList.map((item) => {
+                const list = foodRuleList.map((item) => {
                     item.rule = JSON.stringify(item.rule);
                     item.priceList.map((every) => {
                         every.targetUnitName = every.unit;
@@ -182,7 +182,7 @@ class BuyGiveDetailInfo extends React.Component {
                     return item;
                 });
                 this.props.setPromotionDetail({
-                    rule, priceLst: [], foodRuleList,
+                    rule, priceLst: [], foodRuleList: list,
                 });
             }else {
                 let tempArr1 = [];
@@ -200,9 +200,14 @@ class BuyGiveDetailInfo extends React.Component {
                         }
                     }
                 });
-                priceLst = priceLst.filter((item) =>{if(item){ return item}})
+                priceLst = priceLst.filter((item) =>{if(item){ return item}});
+                const rule1 = JSON.stringify({stageAmount,giveFoodCount,stageType,stageNum:0,StageAmountFlag:true});
+                const foodRuleList = [{
+                    priceList: priceLst,
+                    rule: rule1,
+                }]
                 this.props.setPromotionDetail({
-                    rule, priceLst,
+                    rule, priceLst, foodRuleList,
                 });
             }
             return true
@@ -481,7 +486,7 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderDishsSelectionBox(wapper, item, index) {
+    renderDishsSelectionBox(wapper, item, index = 0) {
         //赠送菜品
         const { ifMultiGrade } = this.state;
         return (
