@@ -6,8 +6,7 @@
  * 此axios为封装后的，所以无法使用try，或catch捕获。
  */
 import { message } from 'antd';
-import { axios } from '@hualala/platform-base';
-
+import { axios, getStore } from '@hualala/platform-base';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
  * axios 默认请求参数

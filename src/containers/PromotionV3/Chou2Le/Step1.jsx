@@ -16,7 +16,7 @@ class Step1 extends Component {
         const { form } = this.props;
         let newFormKeys = [...KEY1, ...KEY2];
         // 日期高级
-        if(key === 'd') {
+        if(key === 'advMore') {
             if(value){
                 newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             }
@@ -24,12 +24,11 @@ class Step1 extends Component {
         }
         // 周期
         if(key === 'g') {
-            let d = '';
+            let advMore = '';
             if(form) {
-                d = form.getFieldValue('d');   // 高级
-                console.log('d', d);
+                advMore = form.getFieldValue('advMore');   // 高级时间
             }
-            if(d){
+            if(advMore){
                 newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             }
             if(value){
@@ -49,10 +48,10 @@ class Step1 extends Component {
         }
 
         const render3 = d => d()(<EveryDay type={g} />);
-        const { i, ...other } = formItems1;
+        const { validCycle, ...other } = formItems1;
         return {
             ...other,
-            i: { ...i, render: render3 },
+            validCycle: { ...validCycle, render: render3 },
         };
     }
     render() {

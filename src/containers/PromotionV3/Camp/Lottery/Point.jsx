@@ -1,29 +1,68 @@
 import React, { PureComponent as Component } from 'react';
-import { Checkbox, Input, Select } from 'antd'
+import BaseForm from 'components/common/BaseForm';
 import css from './style.less';
-import {  } from './Common';
 
-const { Option } = Select;
+const formKeys = ['isPoint', 'point', 'vipCard'];
+const formItems = {
+    isPoint: {
+        type: 'checkbox',
+        label: '',
+        options: [{ label:'赠送积分', value: 1 }],
+    },
+    point: {
+        type: 'text',
+        label: '',
+        surfix: '积分',
+    },
+    vipCard: {
+        type: 'combo',
+        label: '充值到会员卡',
+        options: [],
+    },
+};
+
 class Point extends Component {
-    onChange = ({ target }) => {
-        const { checked } = target;
+    state = {
+        newFormKeys: formKeys,
+        options: [],
     }
-    onSltChange = (value) => {
-        const { checked } = target;
+    /** 表单内容变化时的监听 */
+    onFormChange = (key, value) => {
+        if(key==='isPoint') {
+            let newFormKeys = ['isPoint'];
+            if(value[0]){
+                newFormKeys = formKeys;
+            }
+            this.setState({ newFormKeys });
+        }
+        this.props.onChange({ [key]: value });
+    }
+    /** 得到form */
+    getForm = (node) => {
+        this.form = node;
+    }
+    resetFormItems() {
+        const { options } = this.state;
+        const { vipCard, ...others } = formItems;
+        return {
+            ...others,
+            vipCard: { ...vipCard, options },
+        }
     }
     render() {
-        const { type, value, disabled } = this.props;
+        const { newFormKeys } = this.state;
+        const { formData } = this.props;
+        const newFormItems = this.resetFormItems();
         return (
             <div className={css.pointBox}>
-                <Checkbox onChange={this.onChange}>赠送积分</Checkbox>
-                <Input addonAfter="%" defaultValue="" />
-                <em>充值到会员卡</em>
-                <Select defaultValue="lucy" onChange={this.onSltChange}>
-                    <Option value="jack">Jack</Option>
-                    <Option value="lucy">Lucy</Option>
-                    <Option value="disabled">Disabled</Option>
-                    <Option value="Yiminghe">yiminghe</Option>
-                </Select>
+                <BaseForm
+                    getForm={this.getForm}
+                    formItems={newFormItems}
+                    formKeys={newFormKeys}
+                    onChange={this.onFormChange}
+                    formData={formData || {}}
+                    layout="inline"
+                />
             </div>
         )
     }

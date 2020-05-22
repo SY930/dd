@@ -4,7 +4,12 @@
 @gray: #999;
 .mainBox{
     :global{
-
+        .ant-tabs-tab-active{
+            color: @green2!important;
+        }
+        .ant-tabs-tab:hover{
+            color: @green!important;
+        }
     }
 }
 .addBox{
@@ -28,4 +33,33 @@
             width: 160px;
         }
     }
+}
+.ticketBox {
+    :global{
+        .ant-radio-button-wrapper:hover,
+        .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+        .ant-radio-button-wrapper-checked {
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+        .ant-radio-button-wrapper-checked:active {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+    }
+}
+.giftBox{
+    margin: 10px 0;
 }

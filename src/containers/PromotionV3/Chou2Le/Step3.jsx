@@ -11,15 +11,15 @@ class Step3 extends Component {
     };
 
     onChange = (key, value) => {
-
+        // console.log('ddd', key, value);
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const render = d => d()(<Lottery />);
-        const { c, ...other } = formItems3;
+        const render = d => d()(<Lottery decorator={d} />);
+        const { lottery, ...other } = formItems3;
         return {
             ...other,
-            c: { ...c, render },
+            lottery: { ...lottery, render },
         };
     }
 

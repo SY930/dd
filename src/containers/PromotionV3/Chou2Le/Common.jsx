@@ -10,37 +10,39 @@ const href = 'javascript:;';
 const DF = 'YYYYMMDD';
 const TF = 'HHmm';
 const sendOpts = [
-    { label: '不发送', value: '1' },
+    { label: '不发送', value: '0' },
     { label: '推送微信消息', value: '2' },
 ];
 const bizOpts = [
-    { label: '预订', value: '1' },
-    { label: '闪吃', value: '2' },
-    { label: '外送', value: '3' },
-    { label: '堂食', value: '4' },
-    { label: '自提', value: '5' },
+    { label: '预订', value: '10' },
+    { label: '闪吃', value: '11' },
+    { label: '外送', value: '20' },
+    { label: '堂食', value: '31' },
+    { label: '自提', value: '21' },
 ];
+
 const cycleOpts = [
     { label: '每日', value: '' },
     { label: '每周', value: 'w' },
     { label: '每月', value: 'm' },
 ];
 const countOpts = [
-    { label: '按账单金额', value: '1' },
-    { label: '按实付金额', value: '2' },
+    { label: '按账单金额', value: '12' },
+    { label: '按实付金额', value: '13' },
 ];
 const formItems1 = {
-    a: {
+    eventType: {
         type: 'custom',
         label: '活动类型',
         render: () => (<p>下单抽抽乐</p>),
+        defaultValue: '78',
     },
-    b: {
+    eventName: {
         type: 'text',
         label: '活动名称',
         rules: ['required', 'stringLength'],
     },
-    c: {
+    eventRange: {
         type: 'custom',
         label: '活动起止日期',
         rules: ['required'],
@@ -48,18 +50,18 @@ const formItems1 = {
         defaultValue: [],
         render: d => d()(<DateRange />),
     },
-    d: {
+    advMore: {
         type: 'custom',
         render: d => d()(<Advance />),
         wrapperCol: { span: 22 },
     },
-    e: {
+    smsGate: {
         type: 'combo',
         label: '是否发送消息',
         options: sendOpts,
         defaultValue: '1',
     },
-    f: {
+    eventRemark: {
         type: 'textarea',
         label: '活动规则',
         rules: ['required', 'description'],
@@ -70,31 +72,34 @@ const formItems1 = {
         options: cycleOpts,
         defaultValue: '',
     },
-    h: {
+    timeList: {
         type: 'custom',
         label: '活动时段',
         render: d => d()(<TimeRange />),
         defaultValue: [],
     },
-    i: {
+    validCycle: {
         type: 'custom',
         label: '每逢',
         render: () => (<p></p>),
         defaultValue: ['w1', 'm1'],
     },
-    j: {
+    excludedDate: {
         type: 'custom',
         label: '活动排除日期',
         render: d => d()(<DateTag />),
         defaultValue: [],
     },
 };
-
-const KEY1 = ['a', 'b', 'c', 'd'];
-const KEY2 = ['e', 'f'];
-const KEY3 = ['h', 'g'];
-const KEY4 = ['i'];
-const KEY5 = ['j'];
+// eventRange
+// "eventEndDate": "20220610",
+// "eventStartDate": "20200522",
+// excludedDate "20200522"
+const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
+const KEY2 = ['smsGate', 'eventRemark'];
+const KEY3 = ['timeList', 'g'];
+const KEY4 = ['validCycle'];
+const KEY5 = ['excludedDate'];
 const formKeys1 = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
 const formItemLayout = {
     labelCol: { span: 5 },
@@ -102,43 +107,45 @@ const formItemLayout = {
 };
 
 const formItems2 = {
-    a: {
+    brandList: {
         type: 'combo',
         label: '品牌',
         options: sendOpts,
     },
-    b: {
+    orderTypeList: {
         type: 'checkbox',
         label: '适用业务',
         options: bizOpts,
     },
-    c: {
+    shops: {
         type: 'custom',
         label: '适用店铺',
         render: () => (<p/>),
     },
 };
-const formKeys2 = ['a', 'b', 'c'];
-
+const formKeys2 = ['brandList', 'orderTypeList', 'shops'];
 
 const formItems3 = {
-    a: {
-        type: 'combo',
+    consumeTotalAmount: {
+        type: 'text',
         label: '活动参与限制',
-        options: sendOpts,
+        surfix: '元，可以参与',
+        prefix: '消费满',
+        wrapperCol: { span: 10 },
     },
-    b: {
+    consumeType: {
         type: 'radio',
         label: '金额计算方式',
         options: countOpts,
-        defaultValue: '1',
+        defaultValue: '12',
     },
-    c: {
+    lottery: {
         type: 'custom',
         render: () => (<p/>),
+        defaultValue: [],
     },
 };
-const formKeys3 = ['a', 'b', 'c'];
+const formKeys3 = ['consumeTotalAmount', 'consumeType', 'lottery'];
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
     KEY1, KEY2, KEY3, KEY4, KEY5,

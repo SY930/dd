@@ -114,7 +114,7 @@ class Chou2Le extends Component {
                                 <Step title="活动内容" />
                             </Steps>
                         </div>
-                        {current === 3 &&
+                        {current === 1 &&
                             <Step1
                                 form={form}
                                 getForm={this.onSetForm}
@@ -128,7 +128,7 @@ class Chou2Le extends Component {
                                 formData={formData2}
                             />
                         }
-                        {current === 1 &&
+                        {current === 3 &&
                             <Step3
                                 form={form}
                                 getForm={this.onSetForm}
