@@ -76,8 +76,15 @@ export default class NewPromotion extends React.Component {
             },
             jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
             gifts: specialPromotion.$giftInfo,
-            eventRecommendSettings: specialPromotion.$eventRecommendSettings,
+            recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
+
+        if(this.props.promotionType === '68') {
+            // 新增活动规则字段
+            const recommendRule = opts.event.recommendRule
+            opts.event.recommendRulelst = recommendRule.join(',')
+            opts.event.recommendRule  =  ''
+        }
         if (this.props.isNew === false) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,

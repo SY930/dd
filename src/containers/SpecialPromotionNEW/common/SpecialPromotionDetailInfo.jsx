@@ -47,7 +47,11 @@ import recommentGiftStyle from "../recommendGifts/recommentGift.less";
 import {
     checkChoose,
     queryRedPackets,
-    handleCashChange
+    handleCashChange,
+    handleSubmitRecommendGifts,
+    renderCashFn,
+    renderRecommendGiftsFn,
+    renderGivePointFn
 } from './SpecialPromotionDetailInfoHelp'
 
 const moment = require("moment");
@@ -526,13 +530,13 @@ class SpecialDetailInfo extends Component {
         if (this.props.type == "68") {
             // 小数组，为了代码方便重复遍历的
             if (data.every((gift) => gift.recommendType != 1)) {
-                data.push(getDefaultGiftData(1, "recommendType"));
+                data.push(getDefaultGiftData('1#1', "recommendType"));
             }
             if (data.every((gift) => gift.recommendType != 2)) {
-                data.push(getDefaultGiftData(2, "recommendType"));
+                data.push(getDefaultGiftData('2#1', "recommendType"));
             }
             if (data.every((gift) => gift.recommendType != 0)) {
-                data.push(getDefaultGiftData(0, "recommendType"));
+                data.push(getDefaultGiftData('0#999', "recommendType"));
             }
         }
         let wakeupSendGiftsDataArray = [];
@@ -726,9 +730,21 @@ class SpecialDetailInfo extends Component {
         };
     };
     handlePrev = () => {
+
         return this.handleSubmit(true);
     };
+
     handleSubmit = (isPrev) => {
+        const {type} = this.props
+        if(type === '68') {
+        return    handleSubmitRecommendGifts.call(this,isPrev)
+        } else {
+          return  this.handleSubmitOld(isPrev)
+        }
+    }
+
+    handleSubmitOld = (isPrev) => {
+        console.log('222222')
         if (isPrev) return true;
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
@@ -1221,6 +1237,7 @@ class SpecialDetailInfo extends Component {
         };
     };
     gradeChange = (gifts, typeValue) => {
+        console.log(`优惠券${typeValue}---`,gifts)
         // 赠送优惠券
         const typePropertyName =
             this.props.type == "68" ? "recommendType" : "sendType";
@@ -1358,6 +1375,7 @@ class SpecialDetailInfo extends Component {
         });
     };
     handleRecommendSettingsChange = (index, propertyName,ruleType) => (val) => {
+        // index  值为角色值，对应roleType,ruleType 对应rule，存数据先查找对应的rule，然后往对应的角色对象赋值
         const {eventRecommendSettings} = this.state
         const eventRecommendSettingsCurrent =  eventRecommendSettings.find(item => item.rule == ruleType);
         console.log('this.state.eventRecommendSettings',this.state.eventRecommendSettings)
@@ -2335,40 +2353,16 @@ class SpecialDetailInfo extends Component {
         );
     };
 
-    renderRecommendGifts = (recommendType) => {
-        // 推荐有礼独有
-        let filteredGifts = this.state.data.filter(
-            (gift) => gift.recommendType === recommendType
-        );
-        if (!filteredGifts.length) {
-            filteredGifts = [
-                getDefaultGiftData(recommendType, "recommendType"),
-            ];
-        }
-        return (
-            <Row>
-                <Col span={17} offset={4}>
-                    <AddGifts
-                        maxCount={10}
-                        typeValue={recommendType}
-                        typePropertyName={"recommendType"}
-                        type={this.props.type}
-                        isNew={this.props.isNew}
-                        value={filteredGifts}
-                        onChange={(gifts) =>
-                            this.gradeChange(gifts, recommendType)
-                        }
-                    />
-                </Col>
-            </Row>
-        );
+    renderRecommendGifts = (roleType,ruleType) => {
+      return  renderRecommendGiftsFn.call(this,roleType,ruleType)
     };
-    renderPointControl = (recommendType, index) => {
+    renderPointControl = (recommendType, index,roleType) => {
         const {
             form: { getFieldDecorator },
         } = this.props;
         const { eventRecommendSettings } = this.state;
         // eventRecommendSettings[index].pointRate
+        console.log('eventRecommendSettings',eventRecommendSettings)
         return (
             <Row gutter={6}>
                 <Col span={11} >
@@ -2383,7 +2377,8 @@ class SpecialDetailInfo extends Component {
                         {getFieldDecorator(`point${recommendType}`, {
                             onChange: this.handleRecommendSettingsChange(
                                 index,
-                                "pointRate"
+                                "pointRate",
+                                recommendType
                             ),
                             initialValue: {
                                 number: '',
@@ -2470,7 +2465,7 @@ class SpecialDetailInfo extends Component {
                 {this.renderCheckbox({
                     key: `giveIntegral`,
                     label: "赠送积分",
-                    children: this.renderPointControl(recommendType, index),
+                    children: this.renderPointControl(recommendType, index,roleType),
                     ruleType: recommendType,
                     roleType
                 })}
@@ -2906,131 +2901,14 @@ class SpecialDetailInfo extends Component {
                 </div>
             );
     };
+
     renderGivePoint = (roleType,ruleType) => {
 
-        const { eventRecommendSettings } = this.state;
-        const {
-            form: { getFieldDecorator },
-        } = this.props;
-        // console.log('renderGivePoint',roleType,ruleType)
-        return (
-            <FormItem
-                wrapperCol={{ span: 24 }}
-                className={styles.FormItemSecondStyle}
-                style={{ width: "230px", marginLeft: "16px" }}
-            >
-                {getFieldDecorator(`presentValue${roleType}`,
-                {
-                    onChange:  this.handleRecommendSettingsChange(roleType, 'presentValue',ruleType)
-                    ,
-                    initialValue: {
-                        number: eventRecommendSettings[roleType] ?
-                        eventRecommendSettings[roleType]['presentValue'] : '',
-                    },
-                    rules: [
-                        {
-                            validator: (rule, v, cb) => {
-                                if (
-                                    v.number === "" ||
-                                    v.number === undefined
-                                ) {
-                                    return cb();
-                                }
-                                if (!v || (v.number < 0.01)) {
-                                    return cb(
-                                         '积分应不小于0.01'
-                                    );
-                                } else if (v.number > 1000000) {
-                                    return cb(
-                                         '积分应不大于1000000'
-                                    );
-                                }
-                                cb();
-                            },
-                        },
-                    ],
-                })(
-                    <PriceInput
-                        addonAfter={"分"}
-                        modal="float"
-                        maxNum={7}
-                        placeholder="请输入数值"
-                    />
-                )
-                }
-            </FormItem>
-        );
+      return renderGivePointFn.call(this,roleType,ruleType)
     };
 
-
     renderCash = (ruleType,roleType) => {
-
-        const { redPackets , cashGiftVal  } = this.state
-        const {
-            form: { getFieldDecorator },
-        } = this.props;
-        const key = `cashGift${ruleType}${roleType}`
-        console.log('renderCash',cashGiftVal)
-        return (
-            <div style={{ display: "flex" }}>
-                <FormItem
-                    className={styles.FormItemSecondStyle}
-                    style={{ marginLeft: "16px", width: "230px" }}
-                >
-                     <div style={{display: "flex", alignItems: 'center'}}>
-                        <Select
-                        showSearch={true}
-                        notFoundContent={"没有搜索到结果"}
-                        optionFilterProp="children"
-                        placeholder="请选择一个已创建的红包礼品"
-                        value={cashGiftVal}
-                        onChange={
-                            handleCashChange(key).bind(this)
-                        }
-                    >
-                        {redPackets.map(v => {
-                            return (
-                                <Select.Option key={v.giftItemID} value={v.giftItemID}>
-                                    {v.giftName}
-                                </Select.Option>
-                            )
-                        })}
-                        </Select>
-                        <div style={{marginLeft: '5px'}}>
-                            <Tooltip  title="一个活动使用现金红包只能设置一个红包账户">
-                                <Icon
-                                    type={'question-circle'}
-                                    style={{ color: '#787878' }}
-                                    className={styles.cardLevelTreeIcon}
-                                />
-                            </Tooltip>
-                        </div>
-                    </div>
-
-                </FormItem>
-                <FormItem
-                    className={styles.FormItemSecondStyle}
-                    style={{
-                        marginLeft: "16px",
-                        width: "211px",
-                        display: "flex",
-                    }}
-                    label="红包金额"
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 18 }}
-                >
-                    <PriceInput
-                        addonAfter={"元"}
-                        modal="float"
-                        maxNum={6}
-                        value={1}
-                        onChange={(val) => {}}
-                        placeholder="请输入数值"
-                        style={{ marginLeft: "11px" }}
-                    />
-                </FormItem>
-            </div>
-        );
+      return  renderCashFn.call(this,ruleType,roleType)
     };
 
     renderCashSaveMoney = (ruleType,roleType) => {
@@ -3197,7 +3075,7 @@ class SpecialDetailInfo extends Component {
 
         let renderRecommentReward;
 
-        console.log("activeRulesListArr", activeRulesListArr);
+        console.log("checkBoxStatus---", checkBoxStatus);
 
         return (
             <div className={recommentGiftStyle.recommentGiftStep3Wrap}>
@@ -3259,9 +3137,7 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                     ) : null}
                                     {checkBoxStatus[`ruleType${directActiveRuleTabValue}`][`giveCoupon1`]
-                                    && renderRecommentReward(directActiveRuleTabValue,'1', {
-                                        marginLeft: "22px",
-                                    })}
+                                    && this.renderRecommendGifts(1, directActiveRuleTabValue)}
                                     {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1',{
                                         marginLeft: "22px",
                                     })}
@@ -3344,9 +3220,7 @@ class SpecialDetailInfo extends Component {
                                                     })}
                                                 </div>
                                             ) : null}
-                                            {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`][`giveCoupon2`] && renderRecommentReward(indirectActiveRuleTabValue,'2', {
-                                                marginLeft: "22px",
-                                            })}
+                                            {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`][`giveCoupon2`] && this.renderRecommendGifts(2, indirectActiveRuleTabValue)}
                                              { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue,'2', {
                                                 marginLeft: "22px",
                                             })}
@@ -3396,10 +3270,8 @@ class SpecialDetailInfo extends Component {
                         ruleType: '999',
                         roleType: '0',
                     })}
-                    { checkBoxStatus[`ruleType999`] && checkBoxStatus[`ruleType999`][`giveCoupon3`]
-                    && this.renderRecommendGifts(0, {
-                        marginLeft: "22px",
-                    })}
+                    { checkBoxStatus[`ruleType999`] && checkBoxStatus[`ruleType999`][`giveCoupon0`]
+                    && this.renderRecommendGifts(0,'999')}
                 </div>
                 {this.renderShareInfo2()}
             </div>
