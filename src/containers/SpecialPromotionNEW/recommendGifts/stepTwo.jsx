@@ -239,7 +239,7 @@ class StepTwo extends React.Component {
                             rules: [
                                 { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.du3brskjh5191)}` }
                             ],
-                            initialValue: recommendRule !== undefined ? [`${recommendRule}`] :  ["1"],
+                            initialValue: typeof recommendRule === 'number'   ? String(recommendRule).split('')   :  ["1"],
                             onChange: this.handleRecommendRuleChange,
                         })(
                             <Checkbox.Group

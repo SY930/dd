@@ -58,7 +58,8 @@ const $initialState = Immutable.fromJS({
     },
     $jumpUrlInfos: [],
     $giftInfo: [],
-    $eventRecommendSettings: [], // 字段更改，对应接口recommendEventRuleInfos
+    $eventRecommendSettings: [],
+    $eventRuleInfos: [],
     addStatus: {
         status: null,
         availableShopQueryStatus: "success", // 线上餐厅送礼专用, 表示限制店铺的查询情况
@@ -80,20 +81,29 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             }
             if (action.payload.data && action.payload.gifts) {
                 // 旧reducer 靠gifts 字段判断是否是直接从server请求来的数据
+                let giftInfo = action.payload.gifts;
+                if (action.payload.data.eventWay === 68) {
+                    const eventRuleInfos = action.payload.eventRuleInfos;
+                    const rule1Data = eventRuleInfos.find((v) => v.rule === 1);
+                    if (rule1Data && Array.isArray(rule1Data.gifts)) {
+                        giftInfo = [...giftInfo, ...rule1Data.gifts];
+                    }
+                }
                 return $$state
                     .mergeIn(
                         ["$eventInfo"],
                         Immutable.fromJS({ ...action.payload.data })
                     )
-                    .mergeIn(
-                        ["$giftInfo"],
-                        Immutable.fromJS(action.payload.gifts)
-                    )
+                    .mergeIn(["$giftInfo"], Immutable.fromJS(giftInfo))
                     .mergeIn(
                         ["$eventRecommendSettings"],
                         Immutable.fromJS(
                             action.payload.eventRecommendSettings || []
                         )
+                    )
+                    .mergeIn(
+                        ["$eventRuleInfos"],
+                        Immutable.fromJS(action.payload.eventRuleInfos || [])
                     );
             }
             if (action.payload.data && action.payload.jumpUrlInfos) {

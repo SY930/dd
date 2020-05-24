@@ -38,7 +38,6 @@ const checkChoose =  function (key,ruleType,roleType) {
     const giftList1Key = ['giveCash','giveCoupon','giveIntegral']
     const giftList2Key = ['giveCoupon','giveIntegral']
     const giftList3Key = ['giveCard','giveIntegral','giveCash']
-    console.log('checkChoosethis---',this)
     let giftList = giftList1Key
     if(
         (ruleTypeNum === 1 && roleTypeNum === 1) ||
@@ -107,7 +106,7 @@ const renderGivePointFn = function(roleType,ruleType) {
         form: { getFieldDecorator },
     } = this.props;
 
-    // console.log('renderGivePoint',roleType,ruleType)
+    const presentValuePoint = this._getVal({ruleType,roleType,key: 'presentValuePoint'})
     return (
         <FormItem
             wrapperCol={{ span: 24 }}
@@ -116,11 +115,10 @@ const renderGivePointFn = function(roleType,ruleType) {
         >
             {getFieldDecorator(`presentValuePoint#${roleType}#presentType#2#recommendRule#${ruleType}`,
             {
-                onChange:  this.handleRecommendSettingsChange(roleType, 'presentValue',ruleType)
+                onChange:  this.handleRecommendSettingsChange(roleType, 'presentValuePoint',ruleType)
                 ,
                 initialValue: {
-                    number: eventRecommendSettings[roleType] ?
-                    eventRecommendSettings[roleType]['presentValue'] : '',
+                    number:  presentValuePoint,
                 },
                 rules: [
                     {
@@ -175,7 +173,8 @@ const renderCashFn = function (ruleType,roleType) {
     } = this.props;
     const { checkBoxStatus } = this.state
     const cashGiftKey = `cashGift${ruleType}${roleType}`
-    console.log('renderCash',cashGiftVal)
+    const presentValueCash = this._getVal({ruleType,roleType,key: 'presentValueCash'})
+
     return (
         <div style={{ display: "flex" }}>
             <FormItem
@@ -226,9 +225,13 @@ const renderCashFn = function (ruleType,roleType) {
                 {getFieldDecorator(`presentValueCash#${roleType}#presentType#3#recommendRule#${ruleType}`,
                     {
                         initialValue: {
-                            number: eventRecommendSettings[roleType] ?
-                            eventRecommendSettings[roleType]['presentValue'] : '',
+                            number: presentValueCash,
                         },
+                        onChange: this.handleRecommendSettingsChange(
+                            roleType,
+                            "presentValueCash",
+                            ruleType
+                        ),
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
@@ -288,10 +291,10 @@ const renderRecommendGiftsFn = function (roleType,ruleType) {
 
     if (!filteredGifts.length) {
         filteredGifts = [
-            getDefaultGiftData(recommendType, "recommendType"),
+            this.getDefaultGiftData(recommendType, "recommendType"),
         ];
     }
-    console.log('filteredGifts',filteredGifts)
+    // console.log('filteredGifts',filteredGifts)
     return (
         <Row>
             <Col span={17} offset={4}>
@@ -312,23 +315,16 @@ const renderRecommendGiftsFn = function (roleType,ruleType) {
 }
 
 const _getPresentValue = function (basicValues) {
-    const gifts = []
+
     const beRecommendList = []
-    const { cashGiftVal } = this.state
     Object.keys(basicValues).forEach(v => {
         if(v.includes('presentValue')) {
             const valArr = v.split('#')
             if(valArr[1] === '0') {
                 beRecommendList.push({
-                    presentType: valArr[3],
-                    presentValue: basicValues[v].number
-                })
-            } else {
-                gifts.push({
-                    recommendRule: valArr[5],
-                    presentType: valArr[3],
+                    presentType: Number(valArr[3]),
                     presentValue: basicValues[v].number,
-                    giftItemID: valArr[3] === '3' ? cashGiftVal : ''
+                    eventType: 2
                 })
             }
 
@@ -336,9 +332,89 @@ const _getPresentValue = function (basicValues) {
     })
 
     return {
-        gifts, // 直接推荐人和间接推荐人的积分和红包
         beRecommendList // 被推荐人的积分
     }
+}
+
+const validatedRuleDataFn = function (data) {
+    const {checkBoxStatus} = this.state
+    if(checkBoxStatus) {
+       const couponStatus = []
+        Object.values(checkBoxStatus).forEach(v => {
+            Object.keys(v).forEach(val => {
+                if(val.includes('giveCoupon')) {
+                    couponStatus.push({
+                        recommendType: val.split('giveCoupon')[1],
+                        status: v[val]
+                    })
+                }
+            })
+        })
+        console.log('couponStatus',couponStatus)
+        data= data.filter(v => {
+            const recommendType = v.recommendType.split('#')[0]
+            const currentData = couponStatus.find(val => val.recommendType === recommendType)
+            return currentData && currentData.status
+        })
+    }
+    console.log('data---',data)
+    return data.map((ruleInfo, index) => {
+        const giftValidDaysOrEffect =
+            ruleInfo.effectType != "2"
+                ? "giftValidDays"
+                : "giftEffectiveTime";
+        // check gift count
+        return Object.assign(ruleInfo, {
+            giftCount: this.checkgiftCount(
+                ruleInfo.giftCount,
+                index,
+                data
+            ),
+            giftInfo: this.checkGiftInfo(
+                ruleInfo.giftInfo,
+                index,
+                data
+            ),
+            giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
+            needCount: this.checkNeedCount(ruleInfo.needCount, index),
+            [giftValidDaysOrEffect]:
+                ruleInfo.effectType != "2"
+                    ? this.checkGiftValidDays(
+                          ruleInfo.giftValidDays,
+                          index
+                      )
+                    : this.checkGiftValidDays(
+                          ruleInfo.giftEffectiveTime,
+                          index
+                      ),
+        });
+
+    });
+}
+
+const validateFlagFn = function (validatedRuleData) {
+   return validatedRuleData.reduce((p, ruleInfo) => {
+        const _validStatusOfCurrentIndex = Object.keys(ruleInfo).reduce(
+            (flag, key) => {
+                if (
+                    ruleInfo[key] instanceof Object &&
+                    ruleInfo[key].hasOwnProperty("validateStatus")
+                ) {
+                    const _valid =
+                        ruleInfo[key].validateStatus === "success";
+                    return flag && _valid;
+                }
+                return flag;
+            },
+            true
+        );
+        return p && _validStatusOfCurrentIndex;
+    }, true);
+}
+
+const initRecommendGift = function () {
+    // initState函数初始化了券的数据，过滤出其他数据recommendOtherGifts
+
 }
 
 /**
@@ -353,7 +429,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
     let flag = true;
     const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
     // 积分和红包的list数据
-    let presentValueList = []
+    let presentValueList = {}
     this.props.form.validateFieldsAndScroll(
         { force: true },
         (error, basicValues) => {
@@ -377,17 +453,11 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
     let {
         data,
-        shareImagePath,
-        shareTitle,
         cleanCount,
-        discountMinRate,
-        discountMaxRate,
-        discountRate,
-        discountMaxLimitRate,
-        disabledGifts,
         saveMoneySetIds,
         giftGetRule,
-        // ...instantDiscountState
+        checkBoxStatus,
+        cashGiftVal
     } = this.state;
     console.log('data---',data)
 
@@ -403,107 +473,64 @@ const handleSubmitRecommendGifts = function (isPrev) {
     console.log('recommendRange',recommendRange)
     console.log('recommendRule',recommendRule)
 
-    // if (recommendRule != 1) {
-    //     data = data.filter((item) => item.recommendType == 0);
-    // }
-    // if (recommendRule == 1 && recommendRange == 0) {
-    //     data = data.filter(
-    //         (item) => item.recommendType == 0 || item.recommendType == 1
-    //     );
-    // }
+    const validatedRuleData = validatedRuleDataFn.call(this,data)
 
-    // const validatedRuleData = data.map((ruleInfo, index) => {
-    //     const giftValidDaysOrEffect =
-    //         ruleInfo.effectType != "2"
-    //             ? "giftValidDays"
-    //             : "giftEffectiveTime";
-    //     // check gift count
-    //     return Object.assign(ruleInfo, {
-    //         giftCount: this.checkgiftCount(
-    //             ruleInfo.giftCount,
-    //             index,
-    //             data
-    //         ),
-    //         giftInfo: this.checkGiftInfo(
-    //             ruleInfo.giftInfo,
-    //             index,
-    //             data
-    //         ),
-    //         giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
-    //         needCount: this.checkNeedCount(ruleInfo.needCount, index),
-    //         [giftValidDaysOrEffect]:
-    //             ruleInfo.effectType != "2"
-    //                 ? this.checkGiftValidDays(
-    //                       ruleInfo.giftValidDays,
-    //                       index
-    //                   )
-    //                 : this.checkGiftValidDays(
-    //                       ruleInfo.giftEffectiveTime,
-    //                       index
-    //                   ),
-    //     });
-
-    // });
+    const validateFlag = validateFlagFn.call(this,validatedRuleData)
 
 
-    // const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
-    //     const _validStatusOfCurrentIndex = Object.keys(ruleInfo).reduce(
-    //         (flag, key) => {
-    //             if (
-    //                 ruleInfo[key] instanceof Object &&
-    //                 ruleInfo[key].hasOwnProperty("validateStatus")
-    //             ) {
-    //                 const _valid =
-    //                     ruleInfo[key].validateStatus === "success";
-    //                 return flag && _valid;
-    //             }
-    //             return flag;
-    //         },
-    //         true
-    //     );
-    //     return p && _validStatusOfCurrentIndex;
-    // }, true);
     // 把中奖率累加,判断总和是否满足小于等于100
-    // const validOdds = data.reduce((res, cur) => {
-    //     return res + parseFloat(cur.giftOdds.value);
-    // }, 0);
-    // data = validatedRuleData;
-    this.setState({ data });
+    const validOdds = data.reduce((res, cur) => {
+        return res + parseFloat(cur.giftOdds.value);
+    }, 0);
+    data = validatedRuleData;
+    // this.setState({ data });
 
-
-
-
-    // console.log('validateFlag',validateFlag)
-    if (true) {
-        // if (validOdds > 100) {
-        //     message.warning(
-        //         `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`
-        //     );
-        //     return false;
-        // }
+    console.log('validateFlag',validateFlag,checkBoxStatus)
+     // 判断是否选中了红包模版
+    if(checkBoxStatus) {
+        let isReturn = false
+        Object.values(checkBoxStatus).forEach(v => {
+            Object.keys(v).forEach(val => {
+                if(val.includes('giveCash')) {
+                    if(v[val] && !cashGiftVal) {
+                        isReturn = true
+                    }
+                }
+            })
+        })
+        if(isReturn) {
+            message.warn('请选择一个已创建的红包礼品')
+            return false
+        }
+     }
+    if (validateFlag) {
+        if (validOdds > 100) {
+            message.warning(
+                `${this.props.intl.formatMessage(STRING_SPE.dojwosi415179)}`
+            );
+            return false;
+        }
         let giftInfo = this.getGiftInfo(data);
-        // 整理推荐人，间接推荐人和被推荐人的优惠券数据
-        const beRecommendCou = []
-        const recommendCou = []
+        // 整理被推荐人
+        let beRecommendCou = []
 
-        // 被推荐人
+
+        // 被推荐人的优惠券数据
         giftInfo.forEach(v => {
             const recommendType = v.recommendType
             if(recommendType.includes && recommendType.includes('999')) {
                 v.presentType = 1
-                delete  v.recommendType
+                delete v.recommendType
                 beRecommendCou.push(v)
-            } else {
-                const typeArr = recommendType.split('#')
-                v.recommendRule = typeArr[1]
-                v.presentType = 1
-                delete  v.recommendType
-                recommendCou.push(v)
             }
         })
 
+        // 被推荐人积分数据
+        if(Array.isArray(presentValueList.beRecommendList)) {
+            beRecommendCou = [...beRecommendCou,...presentValueList.beRecommendList]
+        }
 
-        console.log('beRecommendCou',beRecommendCou,recommendCou)
+        console.log('beRecommendCou',beRecommendCou)
         console.log('giftInfo--',giftInfo,shareInfo)
 
         const {
@@ -511,6 +538,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
             shareSubtitle,
             restaurantShareImagePath,
             shareImagePath,
+            cashGiftVal,
         } = this.state;
         const shareInfo = {
             shareTitle,
@@ -529,59 +557,90 @@ const handleSubmitRecommendGifts = function (isPrev) {
                 cleanCount,
             }
         );
-
+        // 保存被推荐人gifts
         this.props.setSpecialGiftInfo([
             ...beRecommendCou
         ]);
 
 
           /** 整理直接推荐人和间接推荐人数据 */
-        //   let { eventRecommendSettings } = this.state;
-        //   const recommendRange = this.props.specialPromotion.getIn([
-        //       "$eventInfo",
-        //       "recommendRange",
-        //   ]);
-        //   const recommendRule = this.props.specialPromotion.getIn([
-        //       "$eventInfo",
-        //       "recommendRule",
-        //   ]);
-        //   if (recommendRule == 1) {
-        //       eventRecommendSettings = [];
-        //   }
-        //   if (recommendRule == 2) {
-        //       eventRecommendSettings = eventRecommendSettings.map(
-        //           (setting) => ({
-        //               ...setting,
-        //               rechargeRate: setting.rechargeRate / 100,
-        //               pointRate: setting.pointRate / 100,
-        //               consumeRate: 0,
-        //               rewardRange: 0,
-        //           })
-        //       );
-        //   }
-        //   if (recommendRule == 3) {
-        //       eventRecommendSettings = eventRecommendSettings.map(
-        //           (setting) => ({
-        //               ...setting,
-        //               pointRate: setting.pointRate / 100,
-        //               consumeRate: setting.consumeRate / 100,
-        //               rechargeRate: 0,
-        //           })
-        //       );
-        //   }
-        //   if (recommendRange == 0) {
-        //       eventRecommendSettings = eventRecommendSettings.filter(
-        //           (setting) => setting.recommendType == 1
-        //       );
-        //   }
-        //   console.log('eventRecommendSettings',eventRecommendSettings)
-          this.props.setSpecialRecommendSettings([
-             {
-                rule: 1,
-                gifts: recommendCou,
-                eventRecommendSettings: []
-             }
+          let { eventRecommendSettings } = this.state;
+
+          const recommendRange = this.props.specialPromotion.getIn([
+              "$eventInfo",
+              "recommendRange",
           ]);
+          const recommendRule = this.props.specialPromotion.getIn([
+              "$eventInfo",
+              "recommendRule",
+          ]);
+          eventRecommendSettings =  eventRecommendSettings.filter(v => {
+
+            return v.rule !== '999'
+          }).map(v => {
+              v.rule = Number(v.rule)
+               if(v.rule == 1) {
+                v.gifts =  []
+                v.eventRecommendSettings.forEach((presentValue,i) => {
+                     Object.keys(presentValue).forEach(presentValueKey => {
+                         if(presentValueKey.includes('presentValue')) {
+                              const  [str,type] = presentValueKey.split('presentValue')
+                              if(type === 'Cash') {
+                                v.gifts.push({
+                                    recommendRule: 1,
+                                    presentType: 3,
+                                    presentValue: presentValue[presentValueKey],
+                                    giftItemID:  cashGiftVal  ,
+                                    recommendType:  i
+                                })
+                              } else if(type === 'Point') {
+                                v.gifts.push({
+                                    recommendRule: 1,
+                                    presentType: 2,
+                                    presentValue: presentValue[presentValueKey],
+                                    recommendType:  i
+                                })
+                              }
+                         }
+                     })
+                })
+                const rule1Gifts = giftInfo.filter(v => v.recommendType).map(v => {
+                    const [recommendType,recommendRule] = v.recommendType.split('#')
+                    v.recommendType = recommendType
+                    v.recommendRule = recommendRule
+                    return v
+                })
+
+                 console.log('rule1Gifts',rule1Gifts)
+                v.gifts = v.gifts.concat(rule1Gifts).filter(v => v.presentValue || v.giftName)
+                // v.eventRecommendSettings = []
+               } else  {
+                v.eventRecommendSettings.forEach(val => {
+
+                    if(val.redPackageLimitValue) {
+                        val.giftItemID = cashGiftVal
+                    }
+                    if(val.pointRate) {
+                        val.pointRate = val.pointRate / 100
+                    }
+                    if(val.rechargeRate) {
+                        val.rechargeRate = val.rechargeRate / 100
+                    }
+                    if(val.consumeRate) {
+                        val.consumeRate = val.consumeRate / 100
+                    }
+                    if(val.redPackageRate) {
+                        val.redPackageRate = val.redPackageRate / 100
+                    }
+                    val.recommendRule = v.rule
+                })
+               }
+              return v
+          })
+
+          console.log('eventRecommendSettings',eventRecommendSettings)
+         return
+          this.props.setSpecialRecommendSettings(eventRecommendSettings);
           /** 整理直接推荐人和间接推荐人数据 */
         return true;
     }
@@ -597,6 +656,8 @@ export {
     renderCashFn,
     renderRecommendGiftsFn,
     renderGivePointFn,
+    validatedRuleDataFn,
+    validateFlagFn
 }
 
 export default {
@@ -606,5 +667,7 @@ export default {
     handleSubmitRecommendGifts,
     renderCashFn,
     renderRecommendGiftsFn,
-    renderGivePointFn
+    renderGivePointFn,
+    validatedRuleDataFn,
+    validateFlagFn
 }
