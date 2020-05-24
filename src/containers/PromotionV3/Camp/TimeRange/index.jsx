@@ -1,5 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { TimePicker, Icon } from 'antd';
+import moment from 'moment';
 import css from './style.less';
 
 function range(start, end) {
@@ -8,23 +9,25 @@ function range(start, end) {
     });
 }
 const href = 'javascript:;';
+const TF = 'HH:mm';
 class TimeRange extends Component {
     state= {
     }
     componentDidMount() {
         this.onPlus();
     }
-    onStartChange = (val, idx) => {
-        console.log(val, idx);
+    onStartChange = (startTime, idx) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        list[idx] = { ...value[idx], start: val };
+        // const startTime = moment(val).format(TF);
+        list[idx] = { ...value[idx], startTime };
         onChange(list);
     }
-    onEndChange = (val, idx) => {
+    onEndChange = (endTime, idx) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        list[idx] = { ...value[idx], end: val };
+        // const endTime = moment(val).format(TF);
+        list[idx] = { ...value[idx], endTime };
         onChange(list);
     }
     onPlus = () => {
@@ -52,19 +55,19 @@ class TimeRange extends Component {
                     return (
                         <li key={x.id}>
                             <TimePicker
-                                value={x.start}
+                                value={x.startTime}
                                 onChange={(v)=>this.onStartChange(v, i)}
                                 disabledMinutes={h => range(1, 30).concat(range(31, 60))}
                                 hideDisabledOptions={true}
-                                format="HH:mm"
+                                format={TF}
                             />
                             <span className={css.sep}>--</span>
                             <TimePicker
-                                value={x.end}
+                                value={x.endTime}
                                 onChange={(v)=>this.onEndChange(v, i)}
                                 disabledMinutes={h => range(0, 29).concat(range(30, 59))}
                                 hideDisabledOptions={true}
-                                format="HH:mm"
+                                format={TF}
                             />
                             <p className={css.op} data-idx={i}>
                                 {isPlus &&

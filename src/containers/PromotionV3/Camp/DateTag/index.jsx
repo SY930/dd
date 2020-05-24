@@ -1,8 +1,10 @@
 import React, { PureComponent as Component } from 'react';
 import { DatePicker, Tag } from 'antd';
+import moment from 'moment';
 import css from './style.less';
 
 const DF = 'YYYY-MM-DD';
+const DF2 = 'YYYYMMDD';
 class DateTag extends Component {
     state= {
         open: false,
@@ -10,10 +12,10 @@ class DateTag extends Component {
 
     onCheck = (val) => {
         const { value, onChange } = this.props;
-        const date = val.format(DF);
-        const isExist = value.some(x=>x===date);
+        // const date = val.format(DF2);
+        const isExist = value.some(x=>x===val);
         if(isExist){ return }
-        const list = [...value, date];
+        const list = [...value, val];
         onChange(list);
     }
     onClose = (tag) => {
@@ -29,20 +31,20 @@ class DateTag extends Component {
         const { value } = this.props;
 
         return (
-                <div className={css.mainBox} onClick={this.onToggle}>
-                    <DatePicker
-                        value={null}
-                        open={open}
-                        onChange={this.onCheck}
-                        onOpenChange={this.onToggle}
-                    />
-                    <p className={css.tagBox}>
-                        {value.map(x=>{
-                            return (<Tag key={x} onClose={this.onClose} closable={1}>{x}</Tag>)
-                        })}
-                    </p>
-                </div>
-
+            <div className={css.mainBox} onClick={this.onToggle}>
+                <DatePicker
+                    value={null}
+                    open={open}
+                    onChange={this.onCheck}
+                    onOpenChange={this.onToggle}
+                />
+                <p className={css.tagBox}>
+                    {value.map(x=>{
+                        const label = moment(x).format(DF);
+                        return (<Tag key={x} onClose={this.onClose} closable={1}>{label}</Tag>)
+                    })}
+                </p>
+            </div>
         )
     }
 }

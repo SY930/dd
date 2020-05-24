@@ -1,3 +1,6 @@
+import React from 'react';
+import Point from './Point';
+import Ticket from './Ticket';
 
 const giftTypeName= [
     { label: '全部', value: '' },
@@ -15,6 +18,30 @@ const giftTypeName= [
     { label: '现金红包', value: '113' },
     { label: '配送券', value: '22' },
 ];
+const formItemLayout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 24 },
+};
+const formItems = {
+    giftOdds: {
+        type: 'text',
+        label: '中奖概率',
+        surfix: '%',
+        wrapperCol: { span: 6 },
+        rules: ['required', 'numbers'],
+    },
+    point: {
+        type: 'custom',
+        defaultValue: {},
+        render: d => d()(<Point />),
+    },
+    ticket: {
+        type: 'custom',
+        defaultValue: {},
+        render: d => d()(<Ticket />),
+    },
+};
+const formKeys = ['giftOdds', 'point', 'ticket'];
 export {
-    giftTypeName
+    giftTypeName, formItemLayout, formKeys, formItems,
 }

@@ -59,14 +59,14 @@ const formItems1 = {
         type: 'combo',
         label: '是否发送消息',
         options: sendOpts,
-        defaultValue: '1',
+        defaultValue: '0',
     },
     eventRemark: {
         type: 'textarea',
         label: '活动规则',
         rules: ['required', 'description'],
     },
-    g: {
+    cycleType: {
         type: 'combo',
         label: '选择周期',
         options: cycleOpts,
@@ -97,7 +97,7 @@ const formItems1 = {
 // excludedDate "20200522"
 const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
 const KEY2 = ['smsGate', 'eventRemark'];
-const KEY3 = ['timeList', 'g'];
+const KEY3 = ['timeList', 'cycleType'];
 const KEY4 = ['validCycle'];
 const KEY5 = ['excludedDate'];
 const formKeys1 = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
@@ -110,20 +110,26 @@ const formItems2 = {
     brandList: {
         type: 'combo',
         label: '品牌',
-        options: sendOpts,
+        multiple: true,
+        options: [],
+        defaultValue: [],
     },
     orderTypeList: {
         type: 'checkbox',
         label: '适用业务',
         options: bizOpts,
+        defaultValue: [],
     },
-    shops: {
+    shopIDList: {
         type: 'custom',
         label: '适用店铺',
         render: () => (<p/>),
+        defaultValue: [],
     },
 };
-const formKeys2 = ['brandList', 'orderTypeList', 'shops'];
+// "orderTypeList":"31,30,10,20"// 基础营销，适用业务
+// "brandList":"123，123，123"// 品牌ID，如果有多个以逗号分割
+const formKeys2 = ['brandList', 'orderTypeList', 'shopIDList'];
 
 const formItems3 = {
     consumeTotalAmount: {
@@ -131,6 +137,10 @@ const formItems3 = {
         label: '活动参与限制',
         surfix: '元，可以参与',
         prefix: '消费满',
+        rules: [{
+            pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
+            message: '请输入0~100000数字，支持两位小数',
+        }],
         wrapperCol: { span: 10 },
     },
     consumeType: {
@@ -148,6 +158,6 @@ const formItems3 = {
 const formKeys3 = ['consumeTotalAmount', 'consumeType', 'lottery'];
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
-    KEY1, KEY2, KEY3, KEY4, KEY5,
+    KEY1, KEY2, KEY3, KEY4, KEY5, TF, DF,
     formKeys2, formItems2, formKeys3, formItems3,
 }

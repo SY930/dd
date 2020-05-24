@@ -17,27 +17,36 @@ class MutliGift extends Component {
         });
         this.onAdd();
     }
-    onChange = ({ target }) => {
-        const { checked } = target;
+    onChange = (idx, params) => {
+        const { value, onChange } = this.props;
+        if(value[9]) { return; }
+        const list = [...value];
+        const giftObj = value[idx];
+        list[idx] = {...giftObj, ...params};
+        onChange(list);
     }
     onAdd = () => {
-        const { giftList } = this.state;
-        const list = [...giftList];
+        const { value, onChange } = this.props;
+        const list = [...value];
         const id = Date.now().toString(36); // 随机不重复ID号
         list.push({ id });
-        this.setState({ giftList: list });
+        onChange(list);
     }
     render() {
-        const { treeData, giftList } = this.state;
-        const { type, value, disabled } = this.props;
+        const { treeData } = this.state;
+        const { value } = this.props;
         return (
             <div className={css.multiGiftBox}>
                 {
-                    giftList.map(x=>{
+                    value.map((x, i)=>{
                         return (
-                            <div className={css.giftBox}><Gift
-                                treeData={treeData}
-                            /></div>)
+                            <div key={x.id} className={css.giftBox}>
+                                <Gift
+                                    idx={i}
+                                    treeData={treeData}
+                                    onChange={this.onChange}
+                                />
+                            </div>)
                     })
                 }
                 <Button onClick={this.onAdd}>

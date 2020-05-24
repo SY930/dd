@@ -6,7 +6,7 @@
  * 此axios为封装后的，所以无法使用try，或catch捕获。
  */
 import { message } from 'antd';
-import { axios } from '@hualala/platform-base';
+import { axios, getStore } from '@hualala/platform-base';
 import { giftTypeName } from './Common';
 import _ from 'lodash';
 /**
@@ -16,7 +16,10 @@ import _ from 'lodash';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
 
-
+function getAccountInfo() {
+    const { user } = getStore().getState();
+    return user.get('accountInfo').toJS();
+}
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
     const params = { service, type, data, method };
@@ -59,6 +62,23 @@ function proGiftTreeData(giftTypes) {
     });
     return treeData = _.sortBy(treeData, 'key');
 }
+
+/**
+ * 获取会员卡
+ */
+async function getCardTypeList() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
+    if (code === '000') {
+        return cardTypeBaseInfoList;
+    }
+    message.error(msg);
+    return [];
+}
 export {
-    getCardList,
+    getCardList, getCardTypeList,
 }

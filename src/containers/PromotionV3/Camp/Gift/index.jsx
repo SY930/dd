@@ -11,17 +11,9 @@ export default class Gift extends Component {
         options: [],    //生效时间下拉框
         formKeys: formKeys1,
     };
-    /* 表单提交 */
-    onOk = () => {
-        this.form.validateFields((e, v) => {
-            if (!e) {
-                const { onPost } = this.props;
-                onPost(v);
-            }
-        });
-    }
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
+        const { idx, onChange } = this.props;
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
@@ -34,6 +26,7 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
+        onChange(idx, { [key]: value });
     }
     /** 得到form */
     getForm = (node) => {
@@ -42,7 +35,7 @@ export default class Gift extends Component {
     resetFormItems() {
         const { options } = this.state;
         const { treeData } = this.props;
-        const { giftItemID, giftEffectTimeHours } = formItems;
+        const { giftID, giftEffectTimeHours } = formItems;
         const render = d => d()(
             <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -54,7 +47,7 @@ export default class Gift extends Component {
             />);
         return {
             ...formItems,
-            giftItemID: { ...giftItemID, render },
+            giftID: { ...giftID, render },
             giftEffectTimeHours: { ...giftEffectTimeHours, options },
         }
     }

@@ -15,7 +15,7 @@ class Step3 extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const render = d => d()(<Lottery decorator={d} />);
+        const render = d => d()(<Lottery />);
         const { lottery, ...other } = formItems3;
         return {
             ...other,

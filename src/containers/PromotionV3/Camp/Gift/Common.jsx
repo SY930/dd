@@ -22,16 +22,16 @@ const dayOpts = (() => {
     return list;
 })();
 
-const formKeys1 = ['giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
-const formKeys2 = ['giftItemID', 'giftCount', 'effectType', 'rangeDate'];
+const formKeys1 = ['giftID', 'giftTotalCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
+const formKeys2 = ['giftID', 'giftTotalCount', 'effectType', 'rangeDate'];
 const formItems = {
-    giftItemID: {
+    giftID: {
         type: 'custom',
         label: '礼品名称',
         rules: ['required'],
         render: null,
     },
-    giftCount: {
+    giftTotalCount: {
         type: 'text',
         label: '礼品数量',
         surfix: '个',

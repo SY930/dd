@@ -12,30 +12,28 @@ import { axios, getStore } from '@hualala/platform-base';
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
  */
-const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
+const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'specialPromotion/', '/api/v1/universal?'];
 
 function getAccountInfo() {
     const { user } = getStore().getState();
     return user.get('accountInfo').toJS();
 }
 /**
- * 获取列表
+ * 获取品牌列表
  */
-async function getTicketList(data) {
+async function getBrandList() {
+    const [service, api] = ['HTTP_SERVICE_URL_SHOPAPI', 'shopapi/'];
     const { groupID } = getAccountInfo();
-    const newData = { groupID, ...data };
-    const method = `${api}getCouponPackages.ajax`;
-    const params = { service, type, data: newData, method };
+    const data = { groupID, isActive: 1 };
+    const method = `${api}shopBrandInfoAuthQuery.svc`;
+    const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { code, message: msg, couponPackageInfos = [],
-        totalSize, pageNo, pageSize,
-    } = response;
+    const { code, message: msg, data: { records = [] } } = response;
     if (code === '000') {
-        const pageObj = { pageNo: +pageNo, total: +totalSize, pageSize };
-        return { pageObj, list: couponPackageInfos };
+        return records;
     }
     message.error(msg);
-    return { list: [] };
+    return [];
 }
 
 /**
@@ -56,12 +54,12 @@ async function deleteTicketBag(data) {
 }
 
 /**
- *  增加
+ *  增加抽抽乐
  */
-async function putTicketBag(data) {
+async function putEvent(data) {
     const { groupID } = getAccountInfo();
     const newData = { groupID, ...data };
-    const method = `${api}addCouponPackage.ajax`;
+    const method = `${api}addEvent.ajax`;
     const params = { service, type, data: newData, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
@@ -91,6 +89,5 @@ async function postTicketBag(data) {
 
 
 export {
-    putTicketBag, getTicketList, deleteTicketBag,
-    postTicketBag,
+    getBrandList, putEvent,
 }

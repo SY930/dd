@@ -2,19 +2,24 @@ import React, { PureComponent as Component } from 'react';
 import BaseForm from 'components/common/BaseForm';
 import css from './style.less';
 
-const formKeys = ['isPoint', 'point', 'vipCard'];
+const formKeys = ['isPoint', 'presentValue', 'cardTypeID'];
 const formItems = {
     isPoint: {
         type: 'checkbox',
         label: '',
         options: [{ label:'赠送积分', value: 1 }],
+        defaultValue: [],
     },
-    point: {
+    presentValue: {
         type: 'text',
         label: '',
         surfix: '积分',
+        rules: [{
+            pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
+            message: '请输入0~100000数字，支持两位小数',
+        }],
     },
-    vipCard: {
+    cardTypeID: {
         type: 'combo',
         label: '充值到会员卡',
         options: [],
@@ -24,7 +29,6 @@ const formItems = {
 class Point extends Component {
     state = {
         newFormKeys: formKeys,
-        options: [],
     }
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -41,12 +45,19 @@ class Point extends Component {
     getForm = (node) => {
         this.form = node;
     }
+    getCardOpts(){
+        const { cardList } = this.props;
+        return cardList.map(x => {
+            const { cardTypeName, cardTypeID } = x;
+            return { label: cardTypeName, value: cardTypeID };
+        });
+    }
     resetFormItems() {
-        const { options } = this.state;
-        const { vipCard, ...others } = formItems;
+        const { cardTypeID, ...others } = formItems;
+        const options = this.getCardOpts();
         return {
             ...others,
-            vipCard: { ...vipCard, options },
+            cardTypeID: { ...cardTypeID, options },
         }
     }
     render() {

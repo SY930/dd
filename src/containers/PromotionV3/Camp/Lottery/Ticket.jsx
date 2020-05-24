@@ -22,6 +22,7 @@ const formItems = {
         type: 'checkbox',
         label: '',
         options: [{ label:'赠送优惠券', value: 1 }],
+        defaultValue: [1],
     },
     type: {
         type: 'radioButton',
@@ -33,11 +34,13 @@ const formItems = {
         type: 'custom',
         label: '',
         render: () => (<p/>),
+        defaultValue: [],
     },
     bag: {
         type: 'custom',
         label: '',
         render: () => (<p/>),
+        defaultValue: [],
     },
 };
 class Ticket extends Component {
@@ -46,20 +49,12 @@ class Ticket extends Component {
         newFormKeys: formKeys,
     }
 
-    // componentDidMount() {
-    // }
-    // onChange = ({ target }) => {
-    //     const { checked } = target;
-    // }
-    // onRadioChange = ({ target }) => {
-    //     const { value } = target;
-    // }
     /** 表单内容变化时的监听 */
-    onFormChange = (key, value) => {
-        console.log(key, value);
+    onFormChange = (key, val) => {
         let newFormKeys = ['isTicket'];
+        const { value, onChange } = this.props;
         if(key==='isTicket') {
-            if(value[0]){
+            if(val[0]){
                 newFormKeys = ['isTicket', 'type', 'gift'];
                 if(this.form) {
                     this.form.setFieldsValue({type: '1'});
@@ -69,19 +64,18 @@ class Ticket extends Component {
         }
         if(key==='type') {
             newFormKeys = ['isTicket', 'type', 'gift'];
-            if(value === '2'){
+            if(val === '2'){
                 newFormKeys = ['isTicket', 'type', 'bag'];
             }
             this.setState({ newFormKeys });
         }
-        this.props.onChange({ [key]: value });
+        onChange({ [key]: val });
     }
     /** 得到form */
     getForm = (form) => {
         this.form = form;
     }
     resetFormItems() {
-        const { options } = this.state;
         const { gift, bag, ...others } = formItems;
         const render = d => d()(<MutliGift />);
         const render2 = d => d()(<TicketBag />);
@@ -97,18 +91,6 @@ class Ticket extends Component {
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.ticketBox}>
-                {/* <Checkbox onChange={this.onChange}>赠送优惠券</Checkbox>
-                <p>
-                    <RadioGroup defaultValue={1} onChange={this.onRadioChange}>
-                        <RadioButton value={1}>独立优惠券</RadioButton>
-                        <RadioButton value={2}>券包</RadioButton>
-                    </RadioGroup>
-                </p>
-                {
-
-                } */}
-                {/* <TicketBag />
-                <MutliGift /> */}
                 <BaseForm
                     getForm={this.getForm}
                     formItems={newFormItems}
