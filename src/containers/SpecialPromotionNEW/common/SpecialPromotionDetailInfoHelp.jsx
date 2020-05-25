@@ -639,7 +639,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
           })
 
           console.log('eventRecommendSettings',eventRecommendSettings)
-         return
+        //  return
           this.props.setSpecialRecommendSettings(eventRecommendSettings);
           /** 整理直接推荐人和间接推荐人数据 */
         return true;
