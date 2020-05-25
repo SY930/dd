@@ -8,14 +8,12 @@ import { getCardList } from './AxiosFactory';
 class MutliGift extends Component {
 
     state = {
-        giftList: [],
         treeData: [],
     }
     componentDidMount() {
         getCardList({}).then(x => {
             this.setState({ treeData: x });
         });
-        this.onAdd();
     }
     onChange = (idx, params) => {
         const { value, onChange } = this.props;
@@ -44,6 +42,7 @@ class MutliGift extends Component {
                                 <Gift
                                     idx={i}
                                     treeData={treeData}
+                                    formData={x}
                                     onChange={this.onChange}
                                 />
                             </div>)

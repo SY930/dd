@@ -6,14 +6,13 @@ import AddModal from './AddModal';
 
 export default class TicketBag extends Component {
     state = {
-        value: '0',
         visible: false,
         list: [],
     };
     componentWillReceiveProps(np) {
-        const { bag } = np;
-        if(bag) {
-            this.setState({ list: bag });
+        const { value } = np;
+        if(value) {
+            this.setState({ list: value });
         }
     }
     /*  */
@@ -31,7 +30,7 @@ export default class TicketBag extends Component {
         this.onToggleModal();
     }
     triggerChange(item) {
-        this.props.onChange(item);
+        this.props.onChange([item]);
     }
     /* 生成表格头数据 */
     generateColumns() {
@@ -75,8 +74,7 @@ export default class TicketBag extends Component {
         }));
     }
     render() {
-        const { groupID } = this.props;
-        const { value, visible } = this.state;
+        const { visible } = this.state;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         return (
@@ -91,7 +89,6 @@ export default class TicketBag extends Component {
                 />
                 {visible &&
                     <AddModal
-                        groupID={groupID}
                         onAdd={this.onSelectBag}
                         onClose={this.onToggleModal}
                     />

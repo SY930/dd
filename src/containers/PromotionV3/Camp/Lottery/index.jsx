@@ -1,15 +1,19 @@
 import React, { PureComponent as Component } from 'react';
-import { Tabs, Button, Icon } from 'antd';
+import { Tabs, Button, Icon, Input, Checkbox, Radio, Select } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import css from './style.less';
 import { formItemLayout, formKeys, formItems, } from './Common';
 import { getCardTypeList } from './AxiosFactory';
-import Point from './Point';
+import MutliGift from './MutliGift';
+import TicketBag from '../TicketBag';
 
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 class Lottery extends Component {
     state = {
-        tabKey: '',
+        tabKey: '0',
         cardList: [],
     }
     componentDidMount() {
@@ -26,8 +30,10 @@ class Lottery extends Component {
         const { value, onChange } = this.props;
         if(value[6]) { return; }
         const list = [...value];
-        const id = Date.now().toString(36); // 随机不重复ID号
-        list.push({ id, giftOdds: '', point: {isPoint: []}, ticket:{isTicket: [1], type: '1'}, });
+        const len = value.length;
+        const id = `${len}`; //
+        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
+            isPoint: false, isTicket: true, type: '', giftList: [{ id: '001' }],  bagList: [] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -35,69 +41,60 @@ class Lottery extends Component {
     remove = (tabKey) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        const idx = value.findIndex(x=>(x.id === tabKey));
-        list.splice(+idx, 1);
+        console.log('tabKey', tabKey);
+        const idx = tabKey - 1;
+        list.splice(idx, 1);
         onChange(list);
     }
-    /** 得到form */
-    getForm = (node) => {
-        this.form = node;
-    }
+
     getCardType() {
-        getCardTypeList().then(list => {
-            this.setState({ cardList: list });
+        getCardTypeList().then(cardList => {
+            this.setState({ cardList });
         });
     }
-    /** 表单内容变化时的监听 */
-    onFormChange = (key, val) => {
+    onAllChange(data){
         const { tabKey } = this.state;
         const { value, onChange } = this.props;
         const list = [...value];
-        const idx = value.findIndex(x=>(x.id === tabKey));
-        if(key === 'giftOdds') {
-            let count = 0;
-            value.forEach(x=>{
-                count += +x.giftOdds;
-            });
-            if(this.form) {
-                if(count>100){
-                    this.form.setFields({
-                        giftOdds: {
-                            value: val,
-                            errors: ['奖品中奖概率之和应为0.01~100%'],
-                        }
-                    });
-                }
-            }
-        }
-        // 表单重新合并更新
-        // point 和ticket 组件数据单独处理
-        let newVal = val;
-        if(['point','ticket'].includes(key)) {
-            const subForm = value[idx][key];
-            newVal = { ...subForm, ...val };
-        }
-        list[idx] = { ...value[idx], [key]: newVal };
+        const item = list[tabKey];
+        list[tabKey] = { ...item, ...data };
         onChange(list);
     }
-    resetFormItems() {
-        const { cardList } = this.state;
-        const { point, ...others } = formItems;
-        const render = d => d()(<Point cardList={cardList} />);
-        return {
-            ...others,
-            point: { ...point, render },
-        }
+    onGiftOddsChange = ({ target }) => {
+        const { value } = target;
+        this.onAllChange({ giftOdds: value });
+    }
+    onPointChange = ({ target }) => {
+        const { checked } = target;
+        this.onAllChange({ isPoint: checked });
+    }
+    onTicketChange = ({ target }) => {
+        const { checked } = target;
+        this.onAllChange({ isTicket: checked });
+    }
+    onTypeChange = ({ target }) => {
+        const { value } = target;
+        this.onAllChange({ type: value });
+    }
+    onPresentValueChange = ({ target }) => {
+        const { value } = target;
+        this.onAllChange({ presentValue: value });
+    }
+    onCardTypeIDChange = (cardTypeID) => {
+        this.onAllChange({ cardTypeID });
+    }
+    onGiftChange = (giftList) => {
+        this.onAllChange({ giftList });
+    }
+    onBagChange = (bagList) => {
+        this.onAllChange({ bagList });
     }
     render() {
-        const { tabKey } = this.state;
+        const { tabKey, cardList } = this.state;
         const { value } = this.props;
-        if(!tabKey){ return null}
-        const newFormItems = this.resetFormItems();
-        const len = value.length;
-        const idx = value.findIndex(x=>(x.id === tabKey));
-        console.log('value', value, tabKey, idx);
-        const formData = value[idx];
+        if(!value[0]){ return null}
+        const { length } = value;
+        console.log('value', value);
         return (
                 <div className={css.mainBox}>
                     <div className={css.addBox}>
@@ -115,23 +112,58 @@ class Lottery extends Component {
                             onEdit={this.onEdit}
                         >
                             {value.map((x, i)=>{
-                                const close = (len === i + 1) && (i > 0);
+                                const close = (length === i + 1) && (i > 0);
                                 const name = `奖项${i + 1}`;
                                 return (<TabPane tab={name} key={x.id} closable={close}>
-                                    <BaseForm
-                                        getForm={this.getForm}
-                                        formItems={newFormItems}
-                                        formKeys={formKeys}
-                                        onChange={this.onFormChange}
-                                        formData={formData || {}}
-                                        formItemLayout={formItemLayout}
-                                    />
+                                    <ul>
+                                        <li style={{ display: 'flex' }}>
+                                            <label>中奖概率</label>
+                                            <p><Input value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange} style={{ width: 100 }} /></p>
+                                        </li>
+                                        <li style={{ display: 'flex' }}>
+                                            <Checkbox checked={x.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
+                                            {x.isPoint &&
+                                                <div style={{ display: 'flex' }}>
+                                                    <p><Input value={x.presentValue} style={{ width: 60 }} addonAfter="积分" onChange={this.onPresentValueChange} /></p>
+                                                    <label style={{ width: 100 }}>充值到会员卡</label>
+                                                    <p style={{ width: 160 }}>
+                                                        <Select value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
+                                                        {
+                                                            cardList.map(c => {
+                                                                return (<Option
+                                                                        key={c.cardTypeID}
+                                                                        value={c.cardTypeID}
+                                                                        >
+                                                                        {c.cardTypeName}
+                                                                    </Option>)
+                                                            })
+                                                        }
+                                                        </Select>
+                                                    </p>
+                                                </div>
+                                            }
+                                        </li>
+                                        <li>
+                                            <Checkbox checked={x.isTicket} onChange={this.onTicketChange}>赠送优惠券</Checkbox>
+                                        </li>
+                                        {x.isTicket &&
+                                            <li>
+                                                <p className={css.ticketBox}>
+                                                <RadioGroup value={x.type} onChange={this.onTypeChange}>
+                                                    <RadioButton value="">独立优惠券</RadioButton>
+                                                    <RadioButton value="1">券包</RadioButton>
+                                                </RadioGroup>
+                                                </p>
+                                                {!x.type ?
+                                                    <MutliGift value={x.giftList} onChange={this.onGiftChange} /> :
+                                                    <TicketBag value={x.bagList} onChange={this.onBagChange} />
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
                                 </TabPane>)
                             })}
                         </Tabs>
-                        <div>
-
-                        </div>
                     </div>
                 </div>
 

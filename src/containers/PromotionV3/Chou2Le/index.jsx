@@ -32,9 +32,10 @@ class Chou2Le extends Component {
             getEvent({ itemID: id }).then(obj => {
                 const { data, gifts, timeList } = obj;
                 const newEvent = this.setData4Step1(data, timeList);
+                const newStep2 = this.setData4Step2(data);
                 const newLottery = this.setData4Step3(gifts);
                 const formData3 = { ...data, lottery: newLottery };
-                this.setState({ formData1: newEvent, formData2: data, formData3 });
+                this.setState({ formData1: newEvent, formData2: newStep2, formData3 });
             });
         }
 
@@ -59,6 +60,13 @@ class Chou2Le extends Component {
         }
         return { ...data, eventRange, ...timsObj, cycleType };
     }
+    setData4Step2(data) {
+        const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;
+        const brandList = blist.split(',');
+        const orderTypeList = olist.split(',');
+        const shopIDList = slist.map(x=>`${x}`);
+        return { brandList, orderTypeList , shopIDList };
+    }
     setData4Step3(gifts) {
         const lottery = [];
         let [pointObj, ticketObj, giftOdds, id] = [{},{}, '', ''];
@@ -81,7 +89,7 @@ class Chou2Le extends Component {
             }
         });
         console.log('lottery', lottery);
-        return lottery;
+        return [];
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -256,10 +264,10 @@ class Chou2Le extends Component {
                             </Steps>
                         </div>
                         {current === 1 &&
-                            <Step1
+                            <Step3
                                 form={form}
                                 getForm={this.onSetForm}
-                                formData={formData1}
+                                formData={{}}
                             />
                         }
                         {current === 2 &&
@@ -274,7 +282,7 @@ class Chou2Le extends Component {
                             <Step3
                                 form={form}
                                 getForm={this.onSetForm}
-                                formData={formData3}
+                                formData={{}}
                             />
                         }
                     </li>

@@ -53,7 +53,7 @@ export default class Gift extends Component {
     }
     render() {
         const { formKeys } = this.state;
-        const {  } = this.props;
+        const { formData } = this.props;
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.mainBox}>
@@ -62,6 +62,7 @@ export default class Gift extends Component {
                     formItems={newFormItems}
                     formKeys={formKeys}
                     onChange={this.onFormChange}
+                    formData={formData || {}}
                     formItemLayout={formItemLayout}
                 />
             </div>

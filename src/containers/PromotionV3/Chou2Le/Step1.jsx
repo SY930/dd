@@ -11,48 +11,44 @@ class Step1 extends Component {
     state = {
         newFormKeys: formKeys1,
     };
-    keys = formKeys1;
+
     onChange = (key, value) => {
-        // const { newFormKeys } = this.state;
         const { form } = this.props;
-        let keys = this.keys;
+        let newFormKeys = [...KEY1, ...KEY2];
         // 日期高级
         if(key === 'advMore') {
-            keys = [...KEY1, ...KEY2];
             if(value){
-                keys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             }
-            this.keys = keys;
-            this.setState({ newFormKeys: keys });
+            this.setState({ newFormKeys });
         }
         // 周期
-        let advMore = false;
-        if(form) {
-            const { getFieldValue } = form;
-            advMore = getFieldValue('advMore');
-        }
-
-        if(advMore && key === 'cycleType') {
-            console.log('cycleType', value);
-            keys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
-            if(value){
-                keys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
+        if(key === 'cycleType') {
+            let advMore = '';
+            if(form) {
+                advMore = form.getFieldValue('advMore');   // 高级时间
             }
-            this.keys = keys;
-            this.setState({ newFormKeys: keys });
+            if(advMore){
+                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+            }
+            if(value){
+                newFormKeys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
+            }
+            console.log('newFormKeys', newFormKeys);
+            this.setState({ newFormKeys });
         }
     }
 
     /** formItems 重新设置 */
     resetFormItems() {
-        const { form } = this.props;
+        const { form, formData } = this.props;
         let cycleType = '';
         if(form) {
             const { getFieldValue } = form;
-            cycleType = getFieldValue('cycleType');
-            console.log('form', cycleType);
+            const { cycleType: t } = formData;
+            cycleType = getFieldValue('cycleType') || t;
         }
-
+        console.log('cycleType', cycleType);
         const render3 = d => d()(<EveryDay type={cycleType} />);
         const { validCycle, ...other } = formItems1;
         return {
