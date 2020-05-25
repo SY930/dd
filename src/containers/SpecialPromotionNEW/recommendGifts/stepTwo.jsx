@@ -160,6 +160,7 @@ class StepTwo extends React.Component {
         const smsGate = this.props.specialPromotionInfo.getIn(['$eventInfo', 'smsGate']);
         const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);// 当有人参与后，规则不可切换
+
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -244,7 +245,7 @@ class StepTwo extends React.Component {
                         })(
                             <Checkbox.Group
                                 options={activeRulesList}
-                                disabled={userCount > 0}
+                                disabled={userCount > 0 || !this.props.isNew}
                             />
                         )
                     }
@@ -270,6 +271,7 @@ class StepTwo extends React.Component {
                                 optionFilterProp="children"
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                                 getPopupContainer={(node) => node.parentNode}
+
                             >
                                 {
                                     cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
@@ -301,6 +303,7 @@ class StepTwo extends React.Component {
                     <RadioGroup
                         onChange={this.handleRecommendRangeChange}
                         value={`${recommendRange}`}
+                        disabled={!this.props.isNew}
                     >
                         <Radio value="0">{this.props.intl.formatMessage(STRING_SPE.d31f129919j11250)}</Radio>
                         <Radio value="1">{this.props.intl.formatMessage(STRING_SPE.d1e09ku34n12207)}</Radio>

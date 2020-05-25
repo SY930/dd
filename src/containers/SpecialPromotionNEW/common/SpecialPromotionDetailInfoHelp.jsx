@@ -294,7 +294,7 @@ const renderRecommendGiftsFn = function (roleType,ruleType) {
     // console.log('filteredGifts',filteredGifts)
     return (
         <Row>
-            <Col span={17} offset={4}>
+            <Col span={17} offset={1}>
                 <AddGifts
                     maxCount={10}
                     typeValue={recommendType}
@@ -334,6 +334,49 @@ const _getPresentValue = function (basicValues) {
     }
 }
 
+const clearCheckBoxData = function(key,ruleType,roleType) {
+    const {data} = this.state
+    console.log('---',key,ruleType,roleType,data)
+  let keyWord = ''
+  if(key === 'giveIntegral' && ruleType == 1 && roleType == 1) {
+    keyWord = 'pointLimitValue'
+  } else if(key === 'giveCoupon' && ruleType == 1 && roleType == 1) {
+      // 清除优惠券的数据
+     const cancelData =  data.filter(v => v.recommendType !== `${roleType}#${ruleType}`)
+    if(!cancelData.find(v => v.recommendType === `${roleType}#${ruleType}`)) {
+        cancelData.push(this.getDefaultGiftData(`${roleType}#${ruleType}`, "recommendType"))
+    }
+    this.setState({
+        data: cancelData
+    })
+    return
+  } else if(key === 'giveCash' && ruleType == 1 && roleType == 1) {
+    keyWord = 'redPackageLimitValue'
+
+  } else if(key === 'giveIntegral' && (ruleType == 2 || ruleType == 3) && (roleType == 1 || roleType == 2)) {
+    this.handleRecommendSettingsChange(roleType,'pointRate',ruleType)(undefined)
+    this.handleRecommendSettingsChange(roleType,'pointLimitValue',ruleType)(undefined)
+    return
+  } else if(key === 'giveCard' && (ruleType == 2 || ruleType == 3) && (roleType == 1 || roleType == 2)) {
+
+    this.handleRecommendSettingsChange(roleType, ruleType == 2 ? 'rechargeRate' : 'consumeRate',ruleType)(undefined)
+    this.handleRecommendSettingsChange(roleType,'moneyLimitValue',ruleType)(undefined)
+    return
+  } else if(key === 'giveCash' && (ruleType == 2 || ruleType == 3) && (roleType == 1 || roleType == 2)) {
+    this.handleRecommendSettingsChange(roleType,'redPackageRate',ruleType)(undefined)
+    this.handleRecommendSettingsChange(roleType,'redPackageLimitValue',ruleType)(undefined)
+
+    return
+  }
+
+  this.handleRecommendSettingsChange(roleType, keyWord,ruleType)(undefined)
+
+}
+
+/**
+ * 显示初始化的checkbox
+ *
+ */
 const initShowCheckBox = function() {
 
     let  checkBoxStatusData = {
@@ -379,14 +422,14 @@ const initShowCheckBox = function() {
     const dataList = data.filter(v => {
         return v.giftInfo.giftName
     })
-
     dataList.forEach(v => {
         const [ recommendType, recommendRule ] = v.recommendType.split('#')
-        checkBoxStatus[`ruleType${recommendRule}`][`giveCoupon${recommendType}`] = true
+        checkBoxStatusData[`ruleType${recommendRule}`][`giveCoupon${recommendType}`] = true
     })
+    console.log('dataList',dataList,checkBoxStatusData)
 
     this.setState({
-        checkBoxStatus
+        checkBoxStatus: checkBoxStatusData
     })
 }
 /**
@@ -489,7 +532,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
     console.log('----',isPrev,this)
     if (isPrev) return true;
     let flag = true;
-    const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
     // 积分和红包的list数据
     let presentValueList = {}
     this.props.form.validateFieldsAndScroll(
@@ -523,29 +565,23 @@ const handleSubmitRecommendGifts = function (isPrev) {
     } = this.state;
     console.log('data---',data)
 
-    const recommendRange = this.props.specialPromotion.getIn([
-        "$eventInfo",
-        "recommendRange",
-    ]);
-    const recommendRule = this.props.specialPromotion.getIn([
-        "$eventInfo",
-        "recommendRule",
-    ]);
+    let validateFlag = true
 
-    console.log('recommendRange',recommendRange)
-    console.log('recommendRule',recommendRule)
+    if(
+        checkBoxStatus.ruleType999.giveCoupon0 ||
+        this.currentRecommendRule.includes('1')
+    ) {
+        // 校验券必填项
+        const validatedRuleData = validatedRuleDataFn.call(this,data)
 
-    const validatedRuleData = validatedRuleDataFn.call(this,data)
-
-    const validateFlag = validateFlagFn.call(this,validatedRuleData)
-
+        validateFlag = validateFlagFn.call(this,validatedRuleData)
+    }
 
     // 把中奖率累加,判断总和是否满足小于等于100
     const validOdds = data.reduce((res, cur) => {
         return res + parseFloat(cur.giftOdds.value);
     }, 0);
-    data = validatedRuleData;
-    // this.setState({ data });
+
 
     console.log('validateFlag',validateFlag,checkBoxStatus)
      // 判断是否选中了红包模版
@@ -573,6 +609,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
             return false;
         }
         let giftInfo = this.getGiftInfo(data);
+        giftInfo = giftInfo.filter(v => v.giftName)
         // 整理被推荐人
         let beRecommendCou = []
 
@@ -629,14 +666,10 @@ const handleSubmitRecommendGifts = function (isPrev) {
           let { eventRecommendSettings } = this.state;
           eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
 
-          const recommendRule = this.props.specialPromotion.getIn([
-              "$eventInfo",
-              "recommendRule",
-          ]);
 
           eventRecommendSettings =  eventRecommendSettings.filter(v => {
 
-            return   recommendRule.toJS().includes(String(v.rule))
+            return  this.currentRecommendRule.includes(String(v.rule))
           }).map(v => {
               v.rule = Number(v.rule)
                if(v.rule == 1) {
@@ -694,12 +727,14 @@ const handleSubmitRecommendGifts = function (isPrev) {
               return v
           })
 
-          console.log('eventRecommendSettings',eventRecommendSettings,recommendRule.toJS())
+          console.log('eventRecommendSettings',eventRecommendSettings)
           eventRecommendSettings
         //  return
           this.props.setSpecialRecommendSettings(eventRecommendSettings);
           /** 整理直接推荐人和间接推荐人数据 */
         return true;
+    } else {
+        message.warn('你有未填项，请填写')
     }
     return false;
 }
@@ -715,7 +750,8 @@ export {
     renderGivePointFn,
     validatedRuleDataFn,
     validateFlagFn,
-    initShowCheckBox
+    initShowCheckBox,
+    clearCheckBoxData
 }
 
 export default {
@@ -728,5 +764,6 @@ export default {
     renderGivePointFn,
     validatedRuleDataFn,
     validateFlagFn,
-    initShowCheckBox
+    initShowCheckBox,
+    clearCheckBoxData
 }

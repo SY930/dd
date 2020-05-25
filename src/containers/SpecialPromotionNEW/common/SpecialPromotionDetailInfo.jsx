@@ -54,7 +54,8 @@ import {
     renderGivePointFn,
     validatedRuleDataFn,
     validateFlagFn,
-    initShowCheckBox
+    initShowCheckBox,
+    clearCheckBoxData
 } from './SpecialPromotionDetailInfoHelp'
 
 const moment = require("moment");
@@ -912,72 +913,7 @@ class SpecialDetailInfo extends Component {
                 if (error) {
                     flag = false;
                 }
-                // 推荐有礼特有校验逻辑：两个输入框至少要有1个
-                if (this.props.type == "68") {
-                    const { helpMessageArray } = this.state;
-                    if (basicValues["recharge1"]) {
-                        if (
-                            (basicValues["recharge1"].number === "" ||
-                                basicValues["recharge1"].number == undefined) &&
-                            (basicValues["point1"].number === "" ||
-                                basicValues["point1"].number == undefined)
-                        ) {
-                            helpMessageArray[0] = `${this.props.intl.formatMessage(
-                                STRING_SPE.d1430qdd6r0109
-                            )}`;
-                            flag = false;
-                        } else {
-                            helpMessageArray[0] = "";
-                        }
-                    }
-                    if (basicValues["consumption1"]) {
-                        if (
-                            (basicValues["consumption1"].number === "" ||
-                                basicValues["consumption1"].number ==
-                                    undefined) &&
-                            (basicValues["point1"].number === "" ||
-                                basicValues["point1"].number == undefined)
-                        ) {
-                            helpMessageArray[0] = `${this.props.intl.formatMessage(
-                                STRING_SPE.d34igk92gh1246
-                            )}`;
-                            flag = false;
-                        } else {
-                            helpMessageArray[0] = "";
-                        }
-                    }
-                    if (basicValues["recharge2"]) {
-                        if (
-                            (basicValues["recharge2"].number === "" ||
-                                basicValues["recharge2"].number == undefined) &&
-                            (basicValues["point2"].number === "" ||
-                                basicValues["point2"].number == undefined)
-                        ) {
-                            helpMessageArray[1] = `${this.props.intl.formatMessage(
-                                STRING_SPE.d1430qdd6r0109
-                            )}`;
-                            flag = false;
-                        } else {
-                            helpMessageArray[1] = "";
-                        }
-                    }
-                    if (basicValues["consumption2"]) {
-                        if (
-                            (basicValues["consumption2"].number === "" ||
-                                basicValues["consumption2"].number ==
-                                    undefined) &&
-                            (basicValues["point2"].number === "" ||
-                                basicValues["point2"].number == undefined)
-                        ) {
-                            helpMessageArray[1] = `${this.props.intl.formatMessage(
-                                STRING_SPE.d34igk92gh1246
-                            )}`;
-                            flag = false;
-                        } else {
-                            helpMessageArray[1] = "";
-                        }
-                    }
-                }
+
             }
         );
         if (!flag) {
@@ -1047,25 +983,7 @@ class SpecialDetailInfo extends Component {
                 return true;
             }
         }
-        if (this.props.type == "68") {
-            // const recommendRange = this.props.specialPromotion.getIn([
-            //     "$eventInfo",
-            //     "recommendRange",
-            // ]);
-            // let recommendRule = this.props.specialPromotion.getIn([
-            //     "$eventInfo",
-            //     "recommendRule",
-            // ]);
 
-            // if (recommendRule != 1) {
-            //     data = data.filter((item) => item.recommendType == 0);
-            // }
-            // if (recommendRule == 1 && recommendRange == 0) {
-            //     data = data.filter(
-            //         (item) => item.recommendType == 0 || item.recommendType == 1
-            //     );
-            // }
-        }
         if (this.getMultipleLevelConfig()) {
             data = this.state.wakeupSendGiftsDataArray.reduce((acc, curr) => {
                 curr.gifts.forEach((gift) => {
@@ -1536,7 +1454,7 @@ class SpecialDetailInfo extends Component {
         const {eventRecommendSettings} = this.state
         const eventRecommendSettingsCurrent =  eventRecommendSettings.find(item => item.rule == ruleType);
         // console.log('this.state.eventRecommendSettings',this.state.eventRecommendSettings)
-        // console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
+        console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
         if(eventRecommendSettingsCurrent) {
             const { helpMessageArray } = this.state;
             let value;
@@ -2930,6 +2848,11 @@ class SpecialDetailInfo extends Component {
             message.warn('至少选择一个礼品')
             return
         }
+        console.log('checked',e.target.checked,key )
+        if(e.target.checked === false) {
+            clearCheckBoxData.call(this,key,ruleType,roleType)
+
+        }
         this.setState({
             checkBoxStatus: {
                 ...checkBoxStatus,
@@ -3142,6 +3065,9 @@ class SpecialDetailInfo extends Component {
                 recommendRule.includes(v.value)
             );
         }
+
+        this.currentRecommendRule = recommendRule
+
         directActiveRuleTabValue =
         directActiveRuleTabValue ||
             (activeRulesListArr && activeRulesListArr[0].value);

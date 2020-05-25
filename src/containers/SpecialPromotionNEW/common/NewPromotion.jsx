@@ -82,7 +82,7 @@ export default class NewPromotion extends React.Component {
         if(this.props.promotionType === '68') {
             // 新增活动规则字段
             const recommendRule = opts.event.recommendRule
-            opts.event.recommendRulelst = recommendRule.join(',')
+            opts.event.recommendRulelst = typeof recommendRule === 'number' ? recommendRule  : recommendRule.join(',')
             opts.event.recommendRule  =  ''
         }
         if (this.props.isNew === false) {
