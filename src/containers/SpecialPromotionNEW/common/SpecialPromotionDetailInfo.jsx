@@ -53,7 +53,8 @@ import {
     renderRecommendGiftsFn,
     renderGivePointFn,
     validatedRuleDataFn,
-    validateFlagFn
+    validateFlagFn,
+    initShowCheckBox
 } from './SpecialPromotionDetailInfoHelp'
 
 const moment = require("moment");
@@ -354,6 +355,22 @@ class SpecialDetailInfo extends Component {
             this.setState({ shareTitlePL, shareSubtitlePL });
             // 获取红包列表
             queryRedPackets.call(this)
+            // 初始化选中的红包模版
+            const {eventRecommendSettings} = this.state
+            eventRecommendSettings.forEach(v => {
+                v.eventRecommendSettings.forEach(item => {
+                    if(item.giftItemID && !this.state.cashGiftVal) {
+                        this.setState({
+                            cashGiftVal: item.giftItemID
+                        })
+                    }
+                })
+            })
+            setTimeout(() => {
+                // 初始化显示的选项,循环较多，延时执行
+                initShowCheckBox.call(this)
+            },600)
+
         }
         if (type == 66) {
             const shareTitle = "亲爱的朋友，帮我助力赢大礼。";
@@ -642,20 +659,30 @@ class SpecialDetailInfo extends Component {
             "recommendRule",
         ]);
         // 后端是按比率存的（0.11），前端是按百分比显示（11%）的
-        // eventRecommendSettings = eventRecommendSettings.map((setting) => ({
-        //     ...setting,
-        //     pointRate: setting.pointRate
-        //         ? roundToDecimal(setting.pointRate * 100)
-        //         : undefined,
-        //     consumeRate: setting.consumeRate
-        //         ? roundToDecimal(setting.consumeRate * 100)
-        //         : undefined,
-        //     rechargeRate: setting.rechargeRate
-        //         ? roundToDecimal(setting.rechargeRate * 100)
-        //         : undefined,
-        //     pointLimitValue: setting.pointLimitValue || undefined, // 0 表示不限制
-        //     moneyLimitValue: setting.moneyLimitValue || undefined, // 0 表示不限制,
-        // }));
+       eventRecommendSettings.forEach((setting) => {
+
+            setting.eventRecommendSettings.forEach((v,i,arr) => {
+
+                arr[i] = {
+                    ...v,
+                    pointRate: v.pointRate
+                        ? roundToDecimal(v.pointRate * 100)
+                        : undefined,
+                    consumeRate: v.consumeRate
+                        ? roundToDecimal(v.consumeRate * 100)
+                        : undefined,
+                    rechargeRate: v.rechargeRate
+                        ? roundToDecimal(v.rechargeRate * 100)
+                        : undefined,
+                    redPackageRate: v.redPackageRate
+                    ? roundToDecimal(v.redPackageRate * 100)
+                    : undefined,
+                    pointLimitValue: v.pointLimitValue || undefined, // 0 表示不限制
+                    moneyLimitValue: v.moneyLimitValue || undefined, // 0 表示不限制,
+                }
+            })
+
+        });
 
         const initEventRecommendSettings = eventRecommendSettings
 
@@ -722,18 +749,60 @@ class SpecialDetailInfo extends Component {
                     initEventRecommendSettings[3].eventRecommendSettings[0] = v
                 }
 
-              const currentData =  initEventRecommendSettings.find(val => val.rule == v.recommendRule)
+            //   const currentData =  initEventRecommendSettings.find(val => val.rule == v.recommendRule)
 
-              if(currentData) {
-                const itemData = currentData.eventRecommendSettings
-                itemData[v.recommendType] = {
-                    ...itemData[v.recommendType],
-                    ...v
-                }
-              }
+            //   if(currentData) {
+            //     const itemData = currentData.eventRecommendSettings
+            //     itemData[v.recommendType] = {
+            //         ...itemData[v.recommendType],
+            //         ...v
+            //     }
+            //   }
             })
         }
 
+        // 回显直接推荐人和间接推荐人数据
+        initEventRecommendSettings.forEach(v => {
+            if(v.rule == 1) {
+                const data =  [
+                    {},{},{}
+                ]
+
+                v.eventRecommendSettings.forEach(setting => {
+                    const { pointLimitValue, redPackageLimitValue,giftItemID } = setting
+
+                    if(setting.recommendType == 1) {
+                        data[1] = {
+                            pointLimitValue: data[1].pointLimitValue ? data[1].pointLimitValue : pointLimitValue,
+                            redPackageLimitValue: data[1].redPackageLimitValue ? data[1].redPackageLimitValue : redPackageLimitValue,
+                            recommendType: 1,
+                            recommendRule: 1,
+                            giftItemID
+                        }
+                    }
+                    if(setting.recommendType == 2) {
+                        data[2] = {
+                            pointLimitValue: data[2].pointLimitValue ? data[2].pointLimitValue : pointLimitValue,
+                            redPackageLimitValue: data[2].redPackageLimitValue ? data[2].redPackageLimitValue : redPackageLimitValue,
+                            recommendType: 2,
+                            recommendRule: 1,
+                            giftItemID
+                        }
+                    }
+                })
+                v.eventRecommendSettings = data
+            }
+            if(v.rule == '999') {
+                // 被推荐人积分回显
+                const beRecommend = v.eventRecommendSettings[0]
+                if(beRecommend) {
+                    v.eventRecommendSettings[0].pointLimitValue = v.eventRecommendSettings[0].presentValue
+                }
+            }
+            if(Array.isArray(v.eventRecommendSettings)) {
+
+            }
+        })
 
         console.log('eventRecommendSettings',eventRecommendSettings,initEventRecommendSettings,this.recommendOtherGifts)
 
