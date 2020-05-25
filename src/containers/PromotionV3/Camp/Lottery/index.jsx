@@ -33,7 +33,6 @@ class Lottery extends Component {
     }
 
     remove = (tabKey) => {
-        console.log('idx', idx);
         const { value, onChange } = this.props;
         const list = [...value];
         const idx = value.findIndex(x=>(x.id === tabKey));
@@ -97,8 +96,8 @@ class Lottery extends Component {
         const newFormItems = this.resetFormItems();
         const len = value.length;
         const idx = value.findIndex(x=>(x.id === tabKey));
+        console.log('value', value, tabKey, idx);
         const formData = value[idx];
-        console.log('formData', formData);
         return (
                 <div className={css.mainBox}>
                     <div className={css.addBox}>

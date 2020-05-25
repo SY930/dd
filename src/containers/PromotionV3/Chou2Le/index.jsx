@@ -1,18 +1,18 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Steps, Button } from 'antd';
 import moment from 'moment';
-import { getBrandList, putEvent } from './AxiosFactory';
+import { getBrandList, putEvent, getEvent } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
+import { TF, DF } from './Common';
 
 const Step = Steps.Step;
 class Chou2Le extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        visible: true,
         current: 1,
         formData1: {},      // 第1步的表单原始数据
         formData2: {},      // 第2步的表单原始数据
@@ -23,7 +23,60 @@ class Chou2Le extends Component {
     componentDidMount() {
         getBrandList().then(list => {
             this.setState({ brandList: list });
-        })
+        });
+        this.getEventDetail();
+    }
+    getEventDetail() {
+        const { id } = this.props;
+        if(id) {
+            getEvent({ itemID: id }).then(obj => {
+                const { data, gifts, timeList } = obj;
+                const newEvent = this.setData4Step1(data, timeList);
+                const newLottery = this.setData4Step3(gifts);
+                const formData3 = { ...data, lottery: newLottery };
+                this.setState({ formData1: newEvent, formData2: data, formData3 });
+            });
+        }
+
+    }
+    setData4Step1(data, times) {
+        const { eventStartDate: sd, eventEndDate: ed } = data;
+        const eventRange = [moment(sd), moment(ed)];
+        let timsObj = {};
+        if(times) {
+            const timeList = times.map(x => {
+                const { startTime, endTime } = x;
+                const st = moment(startTime);
+                const et = moment(endTime);
+                return { startTime: st, endTime: et };
+            });
+            timsObj = { timeList, advMore: true };
+        }
+        return { ...data, eventRange, ...timsObj };
+    }
+    setData4Step3(gifts) {
+        const lottery = [];
+        let [pointObj, ticketObj, giftOdds, id] = [{},{}, '', ''];
+        gifts.forEach((x, i)=>{
+            const idx = i + 1;
+            if(idx === x.sortIndex) {
+                giftOdds = x.giftOdds;
+                id = x.giftID;
+                if(x.presentType === 1) {   // 礼品
+                    ticketObj = { ticket: { gift: x, isTicket: [1], type: '1' } };
+                }
+                if(x.presentType === 2) {   // 积分
+                    pointObj = { point: { ...x, isPoint: [1] } };
+                }
+                if(x.presentType === 4) {   // 券包
+                    ticketObj = { ticket: { bag: x, isTicket: [1], type: '2' } };
+                }
+                const allGift = { id, giftOdds, ...pointObj, ...ticketObj, };
+                lottery.push(allGift);
+            }
+        });
+        console.log('lottery', lottery);
+        return lottery;
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -34,7 +87,6 @@ class Chou2Le extends Component {
         const { form } = this.state;
         form.validateFields((e, v) => {
             if (!e) {
-                console.log('v', v);
                 const {  validCycle, cycleType } = v;
                 // 根据周期类型删除曾选择的缓存垃圾数据
                 let cycleObj = {};
@@ -53,7 +105,6 @@ class Chou2Le extends Component {
         const { form } = this.state;
         form.validateFields((e, v) => {
             if (!e) {
-                console.log('v', v);
                 this.setState({ formData2: v });
                 this.onGoNext();
             }
@@ -64,7 +115,6 @@ class Chou2Le extends Component {
         const { form } = this.state;
         form.validateFields((e, v) => {
             if (!e) {
-                console.log('v', v);
                 const formData3 = this.setStep3Data(v);
                 this.onSubmit(formData3);
             }
@@ -72,26 +122,28 @@ class Chou2Le extends Component {
     }
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
-        const { timeList, eventRange, ...others1 } = formData1;
+        const { timeList, eventRange, excludedDate, ...others1 } = formData1;
         const newTimeList = this.formatTimeList(timeList);
         const newEventRange = this.formatEventRange(eventRange);
+        const newExcludedDate = this.formatExcludedDate(excludedDate);
         const step2Data = this.setStep2Data();
         const { gifts, ...others3 } = formData3;
-        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventType: '78' };
+        const event = { ...others1, ...others3, ...newEventRange,
+            excludedDate: newExcludedDate, ...step2Data, eventWay: '78' };
         const allData = { timeList: newTimeList, event, gifts };
         console.log('allData', allData);
-        putEvent({...allData}).then(x=>{
-            x && message.success('添加成功');
+        putEvent({...allData}).then(x => {
+            if(x) {
+                this.onToggle();
+            }
         })
     }
-
     setStep2Data() {
         const { formData2 } = this.state;
         const { brandList, orderTypeList, shopIDList } = formData2;
         const bList = brandList.join();
-        const sList = shopIDList.join();
         const oList = orderTypeList.join();
-        return { brandList: bList, orderTypeList: oList, shopIDList: sList };
+        return { brandList: bList, orderTypeList: oList, shopIDList };
     }
     setStep3Data(formData) {
         const { lottery, consumeTotalAmount, consumeType } = formData;
@@ -122,7 +174,6 @@ class Chou2Le extends Component {
     }
     formatTimeList(list) {
         if(!list){ return []}
-        const TF = 'HHmm';
         return list.map(x => {
             const { startTime, endTime } = x;
             const st = moment(startTime).format(TF);
@@ -131,14 +182,19 @@ class Chou2Le extends Component {
         });
     }
     formatEventRange(eventRange) {
-        const DF = 'YYYYMMDD';
         const [sd, ed] = eventRange;
         const eventStartDate = moment(sd).format(DF);
         const eventEndDate = moment(ed).format(DF);
         return { eventStartDate, eventEndDate };
     }
+    formatExcludedDate(excludedDate) {
+        if(!excludedDate){ return []}
+        return excludedDate.map(x => {
+            return moment(x).format(DF);
+        });
+    }
     onToggle = () => {
-        this.setState(ps => ({ visible: !ps.visible }));
+        this.props.onToggle();
     }
     onGoNext = () => {
         this.setState(ps => ({ current: ps.current + 1 }));
@@ -160,14 +216,13 @@ class Chou2Le extends Component {
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
-        const { current, visible, formData1, formData2, formData3, form } = this.state;
+        const { current, formData1, formData2, formData3, form } = this.state;
         const { brandList } = this.state;
-        console.log('formData2', formData2);
         const footer = this.renderFooter(current);
         return (
             <Modal
                 title="新建下单抽抽乐"
-                visible={visible}
+                visible={true}
                 maskClosable={false}
                 onOk={this.onOk}
                 onCancel={this.onToggle}

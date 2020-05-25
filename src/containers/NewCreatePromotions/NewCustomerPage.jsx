@@ -401,7 +401,7 @@ class NewCustomerPage extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
-                {v3visible && (<Chou2Le />)}
+                { v3visible && <Chou2Le onToggle={this.onV3Click} />}
             </div>
         )
     }

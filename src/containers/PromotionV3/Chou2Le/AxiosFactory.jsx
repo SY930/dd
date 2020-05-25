@@ -36,34 +36,21 @@ async function getBrandList() {
     return [];
 }
 
-/**
- * 列表中删除
- */
-async function deleteTicketBag(data) {
-    const { groupID } = getAccountInfo();
-    const newData = { groupID, ...data };
-    const method = `${api}delCouponPackage.ajax`;
-    const params = { service, type, data: newData, method };
-    const response = await axios.post(url + method, params);
-    const { code, message: msg } = response;
-    if (code === '000') {
-        return true;
-    }
-    message.error(msg);
-    return false;
-}
 
 /**
  *  增加抽抽乐
  */
 async function putEvent(data) {
-    const { groupID } = getAccountInfo();
-    const newData = { groupID, ...data };
+    const { groupID, accountID, userName } = getAccountInfo();
+    const { event, ...others } = data;
+    const newEvent = { ...event, groupID, userName, userID: accountID };
+    const newData = { groupID, ...{ event: newEvent, ...others } };
     const method = `${api}addEvent.ajax`;
     const params = { service, type, data: newData, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
     if (code === '000') {
+        message.success('添加成功');
         return true;
     }
     message.error(msg);
@@ -71,12 +58,30 @@ async function putEvent(data) {
 }
 
 /**
- * 更新
+ * 获取活动详情
  */
-async function postTicketBag(data) {
+async function getEvent(data) {
     const { groupID } = getAccountInfo();
     const newData = { groupID, ...data };
-    const method = `${api}updateCouponPackage.ajax`;
+    const method = `${api}queryEventDetail.ajax`;
+    const params = { service, type, data: newData, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return response;
+    }
+    message.error(msg);
+    return {};
+}
+/**
+ * 更新
+ */
+async function postEvent(data) {
+    const { groupID, accountID, userName } = getAccountInfo();
+    const { event, ...others } = data;
+    const newEvent = { ...event, groupID, userName, userID: accountID };
+    const newData = { groupID, ...{ event: newEvent, ...others } };
+    const method = `${api}updateEvent.ajax`;
     const params = { service, type, data: newData, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
@@ -89,5 +94,5 @@ async function postTicketBag(data) {
 
 
 export {
-    getBrandList, putEvent,
+    getBrandList, putEvent, getEvent, postEvent,
 }

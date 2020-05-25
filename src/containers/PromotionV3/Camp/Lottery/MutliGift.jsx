@@ -19,7 +19,6 @@ class MutliGift extends Component {
     }
     onChange = (idx, params) => {
         const { value, onChange } = this.props;
-        if(value[9]) { return; }
         const list = [...value];
         const giftObj = value[idx];
         list[idx] = {...giftObj, ...params};
@@ -27,6 +26,7 @@ class MutliGift extends Component {
     }
     onAdd = () => {
         const { value, onChange } = this.props;
+        if(value[9]) { return; }
         const list = [...value];
         const id = Date.now().toString(36); // 随机不重复ID号
         list.push({ id });

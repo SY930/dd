@@ -12,7 +12,6 @@ class Step2 extends Component {
     };
 
     onChange = (key, value) => {
-        console.log(key, value);
         if(key === 'brandList') {
             this.setState({ brands: value });
         }
@@ -39,7 +38,6 @@ class Step2 extends Component {
     render() {
         const { } = this.state;
         const { formData, getForm, form } = this.props;
-        console.log('form2', form);
         const newFormItems = this.resetFormItems();
         return (
             <div>
