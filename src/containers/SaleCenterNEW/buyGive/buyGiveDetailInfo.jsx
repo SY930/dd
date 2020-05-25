@@ -172,11 +172,12 @@ class BuyGiveDetailInfo extends React.Component {
             if(stageType == 1 || stageType == 2){
                 //满的逻辑
                 const { foodRuleList } = this.state;
-                const list = foodRuleList.map((item) => {
+                const list = foodRuleList.map((item, i) => {
                     item.rule = JSON.stringify(item.rule);
                     item.priceList.map((every) => {
                         every.targetUnitName = every.unit;
                         every.foodUnitName = every.unit;
+                        every.stageNo= i;
                         return every;
                     })
                     return item;
@@ -186,7 +187,7 @@ class BuyGiveDetailInfo extends React.Component {
                 });
             }else {
                 let tempArr1 = [];
-                let priceLst = dishes.map((price) => {
+                let priceLst = dishes.map((price, i) => {
                     if(tempArr1.indexOf(price.itemID) == -1){
                         tempArr1.push(price.itemID);
                         return {
@@ -197,6 +198,7 @@ class BuyGiveDetailInfo extends React.Component {
                             brandID: price.brandID || '0',
                             price: price.price,
                             imagePath: price.imgePath,
+                            stageNo: 0,
                         }
                     }
                 });
