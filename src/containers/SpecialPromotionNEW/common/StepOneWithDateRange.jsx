@@ -449,9 +449,9 @@ class StepOneWithDateRange extends React.Component {
                 // 线上餐厅送礼还需要再查一个接口: http://wiki.hualala.com/pages/viewpage.action?pageId=30511315
                 this.props.type === '23' && this.props.getEventExcludeCardTypes(opts)
             }
-            if (this.props.type === '63') {
-                this.props.saleCenterGetExcludeEventList(opts);
-            }
+            // if (this.props.type === '63') {
+            //     this.props.saleCenterGetExcludeEventList(opts);
+            // }
             if (this.props.type === '64') {
                 // EditBoxForShops组件-编辑时-componentDidMount再发一次;
                 this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined }).then(allShopCheck => {
@@ -1077,7 +1077,7 @@ class StepOneWithDateRange extends React.Component {
                             )}
                         </FormItem> : null
                     }
-                    
+
                 </div>
 
 
