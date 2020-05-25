@@ -282,7 +282,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         tags: ['微信'],
         text: SALE_LABEL.k67b4sxe,
         example: SALE_LABEL.k67cpoj7,
-        key: '666',
+        key: '78',
         right: 12,
         bottom: 4,
     },

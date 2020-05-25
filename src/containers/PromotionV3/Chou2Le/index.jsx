@@ -40,7 +40,7 @@ class Chou2Le extends Component {
 
     }
     setData4Step1(data, times) {
-        const { eventStartDate: sd, eventEndDate: ed } = data;
+        const { eventStartDate: sd, eventEndDate: ed, validCycle } = data;
         const eventRange = [moment(sd), moment(ed)];
         let timsObj = {};
         if(times) {
@@ -52,7 +52,12 @@ class Chou2Le extends Component {
             });
             timsObj = { timeList, advMore: true };
         }
-        return { ...data, eventRange, ...timsObj };
+        let cycleType = '';
+        if(validCycle) {
+            // 根据["w1", "w3", "w5"]获取第一个字符
+            [cycleType] = validCycle[0];
+        }
+        return { ...data, eventRange, ...timsObj, cycleType };
     }
     setData4Step3(gifts) {
         const lottery = [];
@@ -143,7 +148,9 @@ class Chou2Le extends Component {
         const { brandList, orderTypeList, shopIDList } = formData2;
         const bList = brandList.join();
         const oList = orderTypeList.join();
-        return { brandList: bList, orderTypeList: oList, shopIDList };
+        // "shopRange": 店铺范围 1：部分店铺 ,  2：全部店铺
+        const shopRange = shopIDList[0] ? '1' : '2';
+        return { brandList: bList, orderTypeList: oList, shopIDList, shopRange };
     }
     setStep3Data(formData) {
         const { lottery, consumeTotalAmount, consumeType } = formData;

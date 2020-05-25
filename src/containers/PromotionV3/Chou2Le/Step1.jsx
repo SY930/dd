@@ -11,30 +11,35 @@ class Step1 extends Component {
     state = {
         newFormKeys: formKeys1,
     };
-
+    keys = formKeys1;
     onChange = (key, value) => {
+        // const { newFormKeys } = this.state;
         const { form } = this.props;
-        let newFormKeys = [...KEY1, ...KEY2];
+        let keys = this.keys;
         // 日期高级
         if(key === 'advMore') {
+            keys = [...KEY1, ...KEY2];
             if(value){
-                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+                keys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             }
-            this.setState({ newFormKeys });
+            this.keys = keys;
+            this.setState({ newFormKeys: keys });
         }
         // 周期
-        if(key === 'cycleType') {
-            let advMore = '';
-            if(form) {
-                advMore = form.getFieldValue('advMore');   // 高级时间
-            }
-            if(advMore){
-                newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
-            }
+        let advMore = false;
+        if(form) {
+            const { getFieldValue } = form;
+            advMore = getFieldValue('advMore');
+        }
+
+        if(advMore && key === 'cycleType') {
+            console.log('cycleType', value);
+            keys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             if(value){
-                newFormKeys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
+                keys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
             }
-            this.setState({ newFormKeys });
+            this.keys = keys;
+            this.setState({ newFormKeys: keys });
         }
     }
 
@@ -45,6 +50,7 @@ class Step1 extends Component {
         if(form) {
             const { getFieldValue } = form;
             cycleType = getFieldValue('cycleType');
+            console.log('form', cycleType);
         }
 
         const render3 = d => d()(<EveryDay type={cycleType} />);
@@ -58,6 +64,7 @@ class Step1 extends Component {
         const { newFormKeys } = this.state;
         const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
+        console.log('formData', formData);
         return (
             <div className={css.step1}>
                 <BaseForm

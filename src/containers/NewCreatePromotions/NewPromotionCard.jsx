@@ -15,10 +15,10 @@ import moment from 'moment';
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
 const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
 const imgURI = 'http://res.hualala.com/';
-const V3KEYS = ['666'];     // 最新版抽抽乐666
+const V3KEYS = ['78'];     // 最新版抽抽乐78
 // 最新版 logo图片
 const V3LOGO = {
-    666: imgURI + 'basicdoc/0668cbea-c28f-4358-bc55-7a19c4382977.png',
+    78: imgURI + 'basicdoc/e464e187-f0eb-4b03-b438-9329cd26c3ff.png',
 };
 class NewPromotionCard extends Component {
     onClick= () => {
