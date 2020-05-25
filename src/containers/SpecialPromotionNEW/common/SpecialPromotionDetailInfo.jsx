@@ -2705,7 +2705,7 @@ class SpecialDetailInfo extends Component {
                     wrapperCol={{ span: 12}}
                 >
                     <Select
-                        value={rewardRange}
+                        value={String(rewardRange)}
                         getPopupContainer={(node) => node.parentNode}
                         onChange={this.handleRecommendSettingsChange(
                             roleType,
@@ -2822,29 +2822,32 @@ class SpecialDetailInfo extends Component {
     };
     handleActiveRuleTabChange = (type) => (e) => {
         // tab 切换的时候校验
-        // this.props.form.validateFieldsAndScroll(
-        //     { force: true },
-        //     (error, basicValues) => {
-        //         console.log('err',error)
-        //         if (!error) {
-        //             const {data} = this.state
-        //             const validatedRuleData = validatedRuleDataFn.call(this,data)
-        //             const validateFlag = validateFlagFn.call(this,validatedRuleData)
-        //             if(validateFlag) {
+        this.props.form.validateFieldsAndScroll(
+            { force: true },
+            (error, basicValues) => {
+                console.log('err',error)
+                if (!error) {
+                    const {data} = this.state
+                    const validatedRuleData = validatedRuleDataFn.call(this,data)
+                    const validateFlag = validateFlagFn.call(this,validatedRuleData)
+                    if(validateFlag) {
+                        this.setState({
+                            // [`${type}ActiveRuleTabValue`]: e,   两个tab分别切换
+                            directActiveRuleTabValue: e,
+                            indirectActiveRuleTabValue: e,
 
-        //             } else {
-        //                 message.warn('你有未填项，请填写')
-        //             }
+                        });
+                    } else {
+                        message.warn('你有未填项，请填写')
+                    }
 
-        //         } else {
-        //             message.warn('你有未填项，请填写')
-        //         }
-        //     }
-        // );
+                } else {
+                    message.warn('你有未填项，请填写')
+                }
+            }
+        );
 
-        this.setState({
-            [`${type}ActiveRuleTabValue`]: e,
-        });
+
 
 
     };

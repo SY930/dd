@@ -320,11 +320,12 @@ const _getPresentValue = function (basicValues) {
     Object.keys(basicValues).forEach(v => {
         if(v.includes('presentValue')) {
             const valArr = v.split('#')
-            if(valArr[1] === '0') {
+            if(valArr[1] == '0') {
                 beRecommendList.push({
                     presentType: Number(valArr[3]),
                     presentValue: basicValues[v].number,
-                    eventType: 2
+                    eventType: 2,
+                    recommendType: 0
                 })
             }
 
@@ -565,7 +566,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
           /** 整理直接推荐人和间接推荐人数据 */
           let { eventRecommendSettings } = this.state;
-
+          eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
           const recommendRange = this.props.specialPromotion.getIn([
               "$eventInfo",
               "recommendRange",
@@ -581,23 +582,22 @@ const handleSubmitRecommendGifts = function (isPrev) {
               v.rule = Number(v.rule)
                if(v.rule == 1) {
                 v.gifts =  []
+                const eventRecommendSettings1Data = []
                 v.eventRecommendSettings.forEach((presentValue,i) => {
                      Object.keys(presentValue).forEach(presentValueKey => {
                          if(presentValueKey.includes('presentValue')) {
                               const  [str,type] = presentValueKey.split('presentValue')
                               if(type === 'Cash') {
-                                v.gifts.push({
+                                eventRecommendSettings1Data.push({
                                     recommendRule: 1,
-                                    presentType: 3,
-                                    presentValue: presentValue[presentValueKey],
+                                    redPackageLimitValue: presentValue[presentValueKey],
                                     giftItemID:  cashGiftVal  ,
                                     recommendType:  i
                                 })
                               } else if(type === 'Point') {
-                                v.gifts.push({
+                                eventRecommendSettings1Data.push({
                                     recommendRule: 1,
-                                    presentType: 2,
-                                    presentValue: presentValue[presentValueKey],
+                                    pointLimitValue: presentValue[presentValueKey],
                                     recommendType:  i
                                 })
                               }
@@ -612,8 +612,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
                 })
 
                  console.log('rule1Gifts',rule1Gifts)
-                v.gifts = v.gifts.concat(rule1Gifts).filter(v => v.presentValue || v.giftName)
-                // v.eventRecommendSettings = []
+                v.gifts = v.gifts.concat(rule1Gifts)
+                v.eventRecommendSettings = eventRecommendSettings1Data
                } else  {
                 v.eventRecommendSettings.forEach(val => {
 
