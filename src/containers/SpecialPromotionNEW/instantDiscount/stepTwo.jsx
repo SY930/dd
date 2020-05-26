@@ -22,7 +22,7 @@ import ShopSelector from '../../../components/ShopSelector';
 import Immutable from 'immutable';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { axios } from '@hualala/platform-base';
 
 
 
@@ -36,7 +36,8 @@ class StepTwo extends React.Component {
         const supportOrderTypes = props.specialPromotionInfo.getIn(['$eventInfo', 'supportOrderTypes']);
         this.state = {
             shopIDList: Immutable.List.isList($shopIDList) ? $shopIDList.toJS().map(idNumber => `${idNumber}`) : [],
-            supportOrderTypes: supportOrderTypes ? supportOrderTypes.split(',') : ['0']
+            supportOrderTypes: supportOrderTypes ? supportOrderTypes.split(',') : ['0'],
+            shopStatus: true,
         }
         this.supportOrderTypesOptions = [
             {
@@ -75,6 +76,7 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        this.loadShopSchema();
     }
 
     handleSubmit = () => {
@@ -101,6 +103,7 @@ class StepTwo extends React.Component {
     handleShopChange = (v) => {
         this.setState({
             shopIDList: v,
+            shopStatus: v.length > 0,
         })
     }
     handleSupportOrderTypesChange = (v) => {
@@ -108,8 +111,35 @@ class StepTwo extends React.Component {
             supportOrderTypes: v,
         })
     }
-
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { shops } = data;
+        this.countIsRequire(shops);
+    }
+    countIsRequire(shopList){
+        const { shopSchema, specialPromotionInfo } = this.props;
+        const { size } = shopSchema.getIn(['shops']);       // 总店铺数
+        const eventInfo = specialPromotionInfo.getIn(['$eventInfo']).toJS();
+        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
+        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(!isOld){
+            if(length<size){
+                this.setState({ isRequire: true });
+            }
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+            }
+        }
+    }
     render() {
+        const { isRequire, shopStatus } = this.state;
         return (
             <div>
                 <Form.Item
@@ -137,6 +167,9 @@ class StepTwo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
+                    required={isRequire}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : '店铺不能为空'}
                 >
                     <ShopSelector
                         value={this.state.shopIDList}
