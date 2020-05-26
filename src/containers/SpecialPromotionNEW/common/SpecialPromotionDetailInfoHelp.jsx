@@ -245,7 +245,7 @@ const renderCashFn = function (ruleType,roleType) {
                                         return cb(
                                              '红包金额应不小于0.01'
                                         );
-                                    } else if (v.number > 1000000) {
+                                    } else if (v.number > 1000) {
                                         return cb(
                                              '红包金额应不大于1000'
                                         );
@@ -260,7 +260,6 @@ const renderCashFn = function (ruleType,roleType) {
                     <PriceInput
                         addonAfter={"元"}
                         modal="float"
-                        maxNum={6}
                         placeholder="请输入数值"
                         style={{ marginLeft: "11px" }}
                     />
@@ -407,7 +406,7 @@ const initShowCheckBox = function() {
                     if(data.pointLimitValue || data.pointRate) {
                         checkBoxStatusData[statusKey][`giveIntegral${data.recommendType}`] = true
                     }
-                    if(data.redPackageRate ) {
+                    if(data.redPackageRate || data.redPackageLimitValue ) {
                         checkBoxStatusData[statusKey][`giveCash${data.recommendType}`] = true
                     }
                     if(data.rechargeRate || data.consumeRate) {
