@@ -750,7 +750,8 @@ class SpecialDetailInfo extends Component {
             }
 
         })
-        // console.log('initEventRecommendSettings',initEventRecommendSettings)
+        console.log('initEventRecommendSettings',initEventRecommendSettings)
+
 
         return initEventRecommendSettings
 
@@ -1410,7 +1411,12 @@ class SpecialDetailInfo extends Component {
                 value = val;
             }
             const currentData = eventRecommendSettingsCurrent.eventRecommendSettings
-
+            if(!currentData[index]) {
+                currentData[index] = {
+                    recommendRule: ruleType,
+                    recommendType: index
+                }
+            }
             currentData[index][propertyName] = value;
 
             this.setState({
