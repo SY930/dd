@@ -1411,13 +1411,18 @@ class SpecialDetailInfo extends Component {
                 value = val;
             }
             const currentData = eventRecommendSettingsCurrent.eventRecommendSettings
-            if(!currentData[index]) {
-                currentData[index] = {
+            const i  = currentData.findIndex(data =>  data.recommendType == index)
+
+            if(i < 0) {
+                currentData.push({
                     recommendRule: ruleType,
-                    recommendType: index
-                }
+                    recommendType: index,
+                    [propertyName]: value
+                })
+            } else {
+                currentData[i][propertyName] = value;
+
             }
-            currentData[index][propertyName] = value;
 
             this.setState({
                 eventRecommendSettings,
