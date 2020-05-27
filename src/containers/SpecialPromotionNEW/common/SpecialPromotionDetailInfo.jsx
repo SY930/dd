@@ -360,7 +360,7 @@ class SpecialDetailInfo extends Component {
             const {eventRecommendSettings} = this.state
             eventRecommendSettings.forEach(v => {
                 v.eventRecommendSettings.forEach(item => {
-                    if(item.giftItemID && item.giftItemID !== '0' && !this.state.cashGiftVal) {
+                    if(item.giftItemID && item.giftItemID != '0' && !this.state.cashGiftVal) {
                         this.setState({
                             cashGiftVal: item.giftItemID
                         })
@@ -750,7 +750,7 @@ class SpecialDetailInfo extends Component {
             }
 
         })
-        console.log('initEventRecommendSettings',initEventRecommendSettings)
+        // console.log('initEventRecommendSettings',initEventRecommendSettings)
 
 
         return initEventRecommendSettings

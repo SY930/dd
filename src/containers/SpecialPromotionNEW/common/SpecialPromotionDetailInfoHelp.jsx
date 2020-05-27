@@ -105,7 +105,7 @@ const renderGivePointFn = function(roleType,ruleType) {
 
     const pointLimitValue = this._getVal({ruleType,roleType,key: 'pointLimitValue'})
 
-    console.log('----000',checkBoxStatus[`ruleType${ruleType}`][`giveIntegral${roleType}`])
+    // console.log('----000',checkBoxStatus[`ruleType${ruleType}`][`giveIntegral${roleType}`])
     return (
         <FormItem
             wrapperCol={{ span: 24 }}
@@ -572,7 +572,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
             if (error) {
                 flag = false;
             }
-            console.log('err',error)
+            // console.log('err',error)
             // 编辑的时候有概率被推荐人会出现积分被校验
 
             const {ruleType999} = checkBoxStatus
@@ -586,7 +586,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
         }
     );
-    console.log('aaa',flag)
+
     if (!flag) {
         return false;
     }
