@@ -37,7 +37,7 @@ class StepTwo extends React.Component {
         this.state = {
             shopIDList: Immutable.List.isList($shopIDList) ? $shopIDList.toJS().map(idNumber => `${idNumber}`) : [],
             supportOrderTypes: supportOrderTypes ? supportOrderTypes.split(',') : ['0'],
-            shopStatus: true,
+            isRequire: true,
         }
         this.supportOrderTypesOptions = [
             {

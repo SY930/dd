@@ -66,7 +66,7 @@ class StepTwo extends React.Component {
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
-            shopStatus: true,
+            isRequire: true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);

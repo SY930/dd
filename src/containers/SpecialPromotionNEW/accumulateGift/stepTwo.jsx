@@ -79,7 +79,7 @@ class StepTwo extends React.Component {
             consumeTotalTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes']) || undefined,
             consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
-            shopStatus: true,
+            isRequire: true,
         }
     }
 

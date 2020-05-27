@@ -63,7 +63,7 @@ class StepTwo extends React.Component {
             accountNo: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
-            shopStatus: true,
+            isRequire: true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);

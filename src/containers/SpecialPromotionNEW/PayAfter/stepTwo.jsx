@@ -67,7 +67,7 @@ class StepTwo extends React.Component {
             $brands: [],
             filterShop: [],
             tipVisible: false,
-            shopStatus: true,
+            isRequire: true,
         }
         this.handleBrandChange = this.handleBrandChange.bind(this);
     }
