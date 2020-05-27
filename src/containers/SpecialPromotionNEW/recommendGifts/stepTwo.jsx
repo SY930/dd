@@ -85,8 +85,23 @@ class StepTwo extends React.Component {
                 accountNo,
                 ...restState,
             } = this.state;
+            const { allWeChatAccountList, user } = this.props;
+            const allmpList = allWeChatAccountList.toJS();
+            const { mpIDList } = restState;
+            const launchSceneList = [];
+            const { accountInfo: {groupID}} = user;
+            allmpList.forEach(x=>{
+                const { mpID, appID } = x;
+                if(mpIDList.includes(mpID)) {
+                    launchSceneList.push({
+                        mpID, appID, groupID,
+                    })
+                }
+            });
+
             const opts = {
                 smsTemplate: sendFlag ? message : '',
+                launchSceneList,
                 ...restState,
             };
             if (sendFlag) {
