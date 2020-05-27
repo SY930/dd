@@ -335,7 +335,6 @@ const _getPresentValue = function (basicValues) {
 
 const clearCheckBoxData = function(key,ruleType,roleType) {
     const {data} = this.state
-    console.log('---',key,ruleType,roleType,data)
   let keyWord = ''
   if(key === 'giveIntegral' && ruleType == 1 && roleType == 1) {
     keyWord = 'pointLimitValue'
@@ -425,7 +424,6 @@ const initShowCheckBox = function() {
         const [ recommendType, recommendRule ] = v.recommendType.split('#')
         checkBoxStatusData[`ruleType${recommendRule}`][`giveCoupon${recommendType}`] = true
     })
-    console.log('dataList',dataList,checkBoxStatusData)
 
     this.setState({
         checkBoxStatus: checkBoxStatusData
@@ -528,7 +526,6 @@ const validateFlagFn = function (validatedRuleData) {
  * @returns
  */
 const handleSubmitRecommendGifts = function (isPrev) {
-    console.log('----',isPrev,this)
     if (isPrev) return true;
     let flag = true;
     // 积分和红包的list数据
@@ -536,13 +533,12 @@ const handleSubmitRecommendGifts = function (isPrev) {
     this.props.form.validateFieldsAndScroll(
         { force: true },
         (error, basicValues) => {
-            console.log('err',error)
             if (error) {
                 flag = false;
             }
             // 推荐有礼特有校验逻辑：两个输入框至少要有1个
            presentValueList = _getPresentValue.call(this,basicValues)
-           console.log('basicValues---',presentValueList,basicValues)
+        //    console.log('basicValues---',presentValueList,basicValues)
 
         }
     );
@@ -562,7 +558,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
         checkBoxStatus,
         cashGiftVal
     } = this.state;
-    console.log('data---',data)
 
     let validateFlag = true
 
@@ -628,8 +623,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
             beRecommendCou = [...beRecommendCou,...presentValueList.beRecommendList]
         }
 
-        console.log('beRecommendCou',beRecommendCou)
-        console.log('giftInfo--',giftInfo,shareInfo)
+        // console.log('beRecommendCou',beRecommendCou)
+        // console.log('giftInfo--',giftInfo,shareInfo)
 
         const {
             shareTitle,
@@ -673,25 +668,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
               v.rule = Number(v.rule)
                if(v.rule == 1) {
                 v.gifts =  []
-                const eventRecommendSettings1Data = []
-                v.eventRecommendSettings.forEach((presentValue,i) => {
-                    const {pointLimitValue,redPackageLimitValue,recommendType} = presentValue
-                    if(pointLimitValue) {
-                        eventRecommendSettings1Data.push({
-                            recommendRule: 1,
-                            pointLimitValue,
-                            recommendType
-                        })
-                    }
-                     if(redPackageLimitValue) {
-                        eventRecommendSettings1Data.push({
-                            recommendRule: 1,
-                            redPackageLimitValue ,
-                            giftItemID:  cashGiftVal  ,
-                            recommendType
-                        })
-                    }
-                })
+
                 const rule1Gifts = giftInfo.filter(v => v.recommendType).map(v => {
                     const [recommendType,recommendRule] = v.recommendType.split('#')
                     v.recommendType = recommendType
@@ -699,9 +676,9 @@ const handleSubmitRecommendGifts = function (isPrev) {
                     return v
                 })
 
-                 console.log('rule1Gifts',rule1Gifts)
+
                 v.gifts = v.gifts.concat(rule1Gifts)
-                v.eventRecommendSettings = eventRecommendSettings1Data
+                // v.eventRecommendSettings = eventRecommendSettings1Data
                } else  {
                 v.eventRecommendSettings.forEach(val => {
 
@@ -726,8 +703,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
               return v
           })
 
-          console.log('eventRecommendSettings',eventRecommendSettings)
-          eventRecommendSettings
+        //   console.log('eventRecommendSettings',eventRecommendSettings)
+
         //  return
           this.props.setSpecialRecommendSettings(eventRecommendSettings);
           /** 整理直接推荐人和间接推荐人数据 */

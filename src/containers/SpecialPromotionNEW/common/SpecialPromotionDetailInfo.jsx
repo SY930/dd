@@ -424,27 +424,7 @@ class SpecialDetailInfo extends Component {
                     "recommendRange",
                 ]);
                 const {checkBoxStatus} = this.state
-                // const initEventRecommendSettings = []
-                // if(Array.isArray(recommendRule)) {
 
-                //     recommendRule.forEach(v => {
-                //         initEventRecommendSettings.push(
-                //             {
-                //                 rule: v ,
-                //                 gifts: [],
-                //                 eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
-                //             }
-                //         )
-                //     })
-                //     initEventRecommendSettings.push(
-                //         {
-                //             rule: '999' ,
-                //             gifts: [],
-                //             eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2)]
-                //         }
-                //     )
-
-                // }
                 if(recommendRange > 0) {
                     checkBoxStatus.ruleType1.giveCoupon2 = true
                 } else {
@@ -597,7 +577,7 @@ class SpecialDetailInfo extends Component {
                     }
                 }
             })
-            console.log('data---',data)
+            // console.log('data---',data)
         }
         let wakeupSendGiftsDataArray = [];
         const multiConfig = this.getMultipleLevelConfig();
@@ -711,35 +691,7 @@ class SpecialDetailInfo extends Component {
                 eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2) ]
             }
         )
-        if(recommendRule) {
-            // 选了过了tab的时候，后端存的是个数字123
-            // if(typeof recommendRule === 'number') {
-            //     recommendRule =  String(recommendRule).split('')
-            // } else {
-            //     recommendRule = recommendRule.toJS()
-            // }
-            // if(Array.isArray(recommendRule)) {
-            //     recommendRule.forEach(v => {
-            //         initEventRecommendSettings.push(
-            //             {
-            //                 rule: v ,
-            //                 gifts: [],
-            //                 eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2) ]
-            //             }
-            //         )
-            //     })
 
-            //     initEventRecommendSettings.push(
-            //         {
-            //             rule: '999',
-            //             gifts: [],
-            //             eventRecommendSettings: [getDefaultRecommendSetting(0),getDefaultRecommendSetting(1), getDefaultRecommendSetting(2) ]
-            //         }
-            //     )
-
-            // }
-
-        }
 
         if(Array.isArray(this.recommendOtherGifts)) {
             // 回显被推荐人积分数据
@@ -754,15 +706,7 @@ class SpecialDetailInfo extends Component {
                     initEventRecommendSettings[3].eventRecommendSettings[0] = v
                 }
 
-            //   const currentData =  initEventRecommendSettings.find(val => val.rule == v.recommendRule)
 
-            //   if(currentData) {
-            //     const itemData = currentData.eventRecommendSettings
-            //     itemData[v.recommendType] = {
-            //         ...itemData[v.recommendType],
-            //         ...v
-            //     }
-            //   }
             })
         }
 
@@ -809,7 +753,6 @@ class SpecialDetailInfo extends Component {
             }
         })
 
-        console.log('eventRecommendSettings',eventRecommendSettings,initEventRecommendSettings,this.recommendOtherGifts)
 
         return initEventRecommendSettings
 
@@ -1458,7 +1401,7 @@ class SpecialDetailInfo extends Component {
         const {eventRecommendSettings} = this.state
         const eventRecommendSettingsCurrent =  eventRecommendSettings.find(item => item.rule == ruleType);
         // console.log('this.state.eventRecommendSettings',this.state.eventRecommendSettings)
-        console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
+        // console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
         if(eventRecommendSettingsCurrent) {
             const { helpMessageArray } = this.state;
             let value;
@@ -2549,7 +2492,7 @@ class SpecialDetailInfo extends Component {
         let label = '储值比例'
         let key = 'rechargeRate'
         if(type === 'consumeRate') {
-            label= '消费比率'
+            label= '消费比例'
             key = 'consumeRate'
         }
         const rechargeRate = this._getVal({ruleType,roleType,key })
@@ -2816,7 +2759,7 @@ class SpecialDetailInfo extends Component {
         this.props.form.validateFieldsAndScroll(
             { force: true },
             (error, basicValues) => {
-                console.log('err',error)
+                // console.log('err',error)
                 if (!error) {
                     const {data} = this.state
                     const validatedRuleData = validatedRuleDataFn.call(this,data)
@@ -2852,7 +2795,7 @@ class SpecialDetailInfo extends Component {
             message.warn('至少选择一个礼品')
             return
         }
-        console.log('checked',e.target.checked,key )
+        // console.log('checked',e.target.checked,key )
         if(e.target.checked === false) {
             clearCheckBoxData.call(this,key,ruleType,roleType)
 
