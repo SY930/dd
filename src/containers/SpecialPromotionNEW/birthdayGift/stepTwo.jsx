@@ -170,6 +170,8 @@ class StepTwo extends React.Component {
     }
     onCardLevelChange(obj) {
         this.setState(obj)
+        // const { cardLevelIDList } = obj;
+        // this.querycanUseShopIDs(cardLevelIDList)
     }
     onHandleSelect(obj) {
         if (obj && obj.cardLevelIDList) {
@@ -410,10 +412,12 @@ class StepTwo extends React.Component {
         })
     }
     // 查询已选卡类型的可用店铺
-    querycanUseShopIDs = () => {
+    querycanUseShopIDs = (tids = []) => {
+        console.log('tids', tids);
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             queryCardType: 1, // questArr.length === 0 ? 0 : 1,
+            cardTypeIds: tids.join(','),
         }, null, { path: 'data.cardTypeShopList' })
             .then((cardTypeShopList) => {
                 const obj = {}
@@ -510,7 +514,7 @@ class StepTwo extends React.Component {
         }
     }
     renderShopsOptions() {
-        const { shopIDList, isRequire, shopStatus } = this.state
+        const { shopIDList, isRequire, shopStatus, canUseShopIDs } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
         return (
             <Form.Item
@@ -527,7 +531,7 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
-
+                    canUseShops={canUseShopIDs}
                 />
             </Form.Item>
         );

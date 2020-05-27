@@ -211,7 +211,7 @@ class CardLevelForWX extends React.Component {
                 canUseShops = Array.from(new Set(canUseShops));
                 this.props.saveCurrentCanUseShops(canUseShops)
                 this.props.saleCenterQueryOnlineRestaurantStatus('success');
-                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } });
             }).catch(err => {
                 this.props.saleCenterQueryOnlineRestaurantStatus('error');
             })
@@ -303,7 +303,7 @@ class CardLevelForWX extends React.Component {
         })
     }
     renderShopsOptions() {
-        const { isRequire, shopStatus } = this.state;
+        const { isRequire, shopStatus, canUseShops } = this.state;
         const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
@@ -321,6 +321,7 @@ class CardLevelForWX extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
+                        canUseShops={canUseShops}
                         // schemaData={this.getDynamicShopSchema()}
                     />
                     {
