@@ -438,6 +438,16 @@ const initShowCheckBox = function() {
  * @returns
  */
 const validatedRuleDataFn = function (data) {
+
+    let recommendRule = this.props.specialPromotion.getIn([
+        "$eventInfo",
+        "recommendRule",
+    ]);
+    if(typeof recommendRule === 'number') {
+        recommendRule = String(recommendRule).split('')
+    } else {
+        recommendRule = recommendRule.toJS()
+    }
     const {checkBoxStatus} = this.state
     if(checkBoxStatus) {
        const couponStatus = []
@@ -490,7 +500,13 @@ const validatedRuleDataFn = function (data) {
                       ),
         });
 
-    });
+    }).filter(v => {
+        const [roleType,ruleType] = v.recommendType.split('#')
+        if(!recommendRule.includes('1') && roleType != '0') {
+            return false
+        }
+        return checkBoxStatus[`ruleType${ruleType}`][`giveCoupon${roleType}`]
+    })
 }
 
 /**
@@ -537,6 +553,15 @@ const handleSubmitRecommendGifts = function (isPrev) {
         checkBoxStatus,
         cashGiftVal
     } = this.state;
+    let recommendRule = this.props.specialPromotion.getIn([
+        "$eventInfo",
+        "recommendRule",
+    ]);
+    if(typeof recommendRule === 'number') {
+        recommendRule = String(recommendRule).split('')
+    } else {
+        recommendRule = recommendRule.toJS()
+    }
     let flag = true;
 
     // 积分和红包的list数据
@@ -547,7 +572,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
             if (error) {
                 flag = false;
             }
-            // console.log('err',error)
+            console.log('err',error)
             // 编辑的时候有概率被推荐人会出现积分被校验
 
             const {ruleType999} = checkBoxStatus
@@ -561,7 +586,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
         }
     );
-
+    console.log('aaa',flag)
     if (!flag) {
         return false;
     }
@@ -574,15 +599,13 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
     let validateFlag = true
 
-    if(
-        checkBoxStatus.ruleType999.giveCoupon0 ||
-        this.currentRecommendRule.includes('1')
-    ) {
-        // 校验券必填项
-        const validatedRuleData = validatedRuleDataFn.call(this,data)
 
-        validateFlag = validateFlagFn.call(this,validatedRuleData)
-    }
+    console.log('recommendRule',recommendRule)
+    // 校验券必填项
+    let validatedRuleData = validatedRuleDataFn.call(this,data)
+
+    console.log('validatedRuleData',validatedRuleData)
+    validateFlag = validateFlagFn.call(this,validatedRuleData)
 
     // 把中奖率累加,判断总和是否满足小于等于100
     const validOdds = data.reduce((res, cur) => {
@@ -676,7 +699,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
           eventRecommendSettings =  eventRecommendSettings.filter(v => {
 
-            return  this.currentRecommendRule.includes(String(v.rule))
+            return   recommendRule.includes(String(v.rule))
           }).map(v => {
               v.rule = Number(v.rule)
                if(v.rule == 1) {

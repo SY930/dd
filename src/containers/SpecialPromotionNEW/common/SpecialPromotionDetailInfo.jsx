@@ -2727,7 +2727,7 @@ class SpecialDetailInfo extends Component {
                             rules: [
                                 {
                                     required: true,
-                                    message: `{this.props.intl.formatMessage(STRING_SPE.d5g37mj8ln75102)}`,
+                                    message: '请选择活动适用的储值套餐',
                                 },
                             ],
                             initialValue: this.state.saveMoneySetIds,
