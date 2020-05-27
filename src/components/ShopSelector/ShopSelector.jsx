@@ -17,7 +17,7 @@ class ShopSelector extends Component {
         options: null,
         filters: null,
         alloptions: [],
-        allfilters: null,
+        allfilters: [],
     }
 
     componentDidMount() {
@@ -61,6 +61,7 @@ class ShopSelector extends Component {
     }
     loadShops2(brandList =[]) {
         const { alloptions, allfilters } = this.state;
+        if(!allfilters[0]){return}
         const newFilter = JSON.parse(JSON.stringify(allfilters));
         if(brandList[0]){
             const brands = allfilters[0];
