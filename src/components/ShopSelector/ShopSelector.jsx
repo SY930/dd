@@ -27,6 +27,7 @@ class ShopSelector extends Component {
                 _shops.map(shop => shop.value)
             );
             this.loadShops2(this.props.brandList);
+            this.loadShops3(this.props.canUseShops);
         });
     }
 
@@ -36,6 +37,9 @@ class ShopSelector extends Component {
         }
         if (!isEqual(this.props.brandList, nextProps.brandList)) {
             this.loadShops2(nextProps.brandList);
+        }
+        if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
+            this.loadShops3(nextProps.canUseShops);
         }
     }
 
@@ -72,6 +76,20 @@ class ShopSelector extends Component {
             return;
         }
         this.setState({ options: alloptions, filters: allfilters });
+    }
+    loadShops3(canUseShops =[]) {
+        const { alloptions } = this.state;
+        if(canUseShops[0]){
+            const leftShops = alloptions.map(x=>{
+                if(!canUseShops.includes(x.shopID)){
+                    return {...x, disabled: true }
+                }
+                return x;
+            });
+            this.setState({ options: leftShops });
+            return;
+        }
+        this.setState({ options: alloptions });
     }
     handleAdd = () => {
         this.setState({ showModal: true });
