@@ -106,7 +106,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 })
             } else {
                 acc[dupIndex].typeSet.add(`${curr.type || 0}`)
-            }  
+            }
         } else if (`${curr.brandID}` === '0') { // 把这种通用的分类扩展给每个品牌
             acc.push(...brands.map(brand => ({
                 ...curr,
@@ -228,3 +228,14 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
 
 export const memoizedExpandCategoriesAndDishes = memoizeOne(expandCategoriesAndDishes)
 export const memoizedShopCategoriesAndDishes = memoizeOne(expandCategoriesAndDishesForShop)
+
+/**
+ * 根据主题参数，给body添加class，适配不同的主题
+ *
+ * @param {*} className
+ */
+export const setThemeClass = (className) => {
+    const body = document.querySelector('body')
+    const oldClass = body.getAttribute('class')
+    body.setAttribute('class',oldClass || '' + ' ' + className)
+}

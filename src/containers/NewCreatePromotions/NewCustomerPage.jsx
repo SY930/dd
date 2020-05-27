@@ -60,7 +60,7 @@ import {
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
-
+import {setThemeClass} from '../../utils/index'
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
