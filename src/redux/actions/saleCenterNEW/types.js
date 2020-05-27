@@ -434,8 +434,12 @@ export const ACTIVITY_CATEGORIES = (function () {
         idx: 4,
         title: SALE_LABEL.k67b3vhc,
         color: '#c49b79',
-        text: SALE_LABEL.k67cp37a,
-        example: SALE_LABEL.k67cprjj,
+        text: '活动说明：',
+        example: <p>1. 同一活动时间，同一门店有多个买赠活动，活动会执行那个？<br />
+            优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动配置【活动日期】的活动。
+            <br />2. 买赠活动使用注意事项<br />
+            买赠活动与满赠/每满赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按共享执行。
+            </p>,
         key: '1020',
     },
     {
