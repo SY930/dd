@@ -108,19 +108,19 @@ class ActivityMain extends React.Component {
             );
         }
         switch (this.state.current) {
-            case 1:
-                return (
-                    <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
-                    </div>
-                );
-            case 2:
-                return (
-                    <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
-                        <ActivitySidebar listsTitle={'2 | '+k5gfsuwz} key="2" />
-                    </div>
-                );
+            // case 1:
+            //     return (
+            //         <div style={{ margin: '110px 4px 10px 10px' }}>
+            //             <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
+            //         </div>
+            //     );
+            // case 2:
+            //     return (
+            //         <div style={{ margin: '110px 4px 10px 10px' }}>
+            //             <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
+            //             <ActivitySidebar listsTitle={'2 | '+k5gfsuwz} key="2" />
+            //         </div>
+            //     );
             default:
                 return (
                     <div className={styles.promotionTip}>
