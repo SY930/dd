@@ -16,7 +16,7 @@ import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from "../../SaleCenterNEW/ActivityPage.less";
 import { axiosData } from '../../../helpers/util';
 import AddGifts from "../common/AddGifts";
-
+import _ from 'lodash'
 const FormItem = Form.Item;
 /**
  *  校验至少选择一个礼品
@@ -660,7 +660,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
           let { eventRecommendSettings } = this.state;
           eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
 
-
+            console.log('eventRecommendSettings22',eventRecommendSettings)
           eventRecommendSettings =  eventRecommendSettings.filter(v => {
 
             return  this.currentRecommendRule.includes(String(v.rule))
@@ -668,7 +668,14 @@ const handleSubmitRecommendGifts = function (isPrev) {
               v.rule = Number(v.rule)
                if(v.rule == 1) {
                 v.gifts =  []
+                v.eventRecommendSettings.forEach((presentValue,i) => {
+                    const { redPackageLimitValue } = presentValue
 
+                     if(redPackageLimitValue) {
+                        presentValue.giftItemID = cashGiftVal
+
+                    }
+                })
                 const rule1Gifts = giftInfo.filter(v => v.recommendType).map(v => {
                     const [recommendType,recommendRule] = v.recommendType.split('#')
                     v.recommendType = recommendType

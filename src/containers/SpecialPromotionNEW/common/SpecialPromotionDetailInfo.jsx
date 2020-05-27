@@ -748,11 +748,9 @@ class SpecialDetailInfo extends Component {
                     v.eventRecommendSettings[0].pointLimitValue = v.eventRecommendSettings[0].presentValue
                 }
             }
-            if(Array.isArray(v.eventRecommendSettings)) {
 
-            }
         })
-
+        console.log('initEventRecommendSettings',initEventRecommendSettings)
 
         return initEventRecommendSettings
 
@@ -2381,7 +2379,14 @@ class SpecialDetailInfo extends Component {
         const { eventRecommendSettings } = this.state;
         const currentData = eventRecommendSettings.filter(v => v.rule == ruleType)
         if(currentData && currentData[0] && currentData[0].eventRecommendSettings) {
-            return   currentData[0].eventRecommendSettings[roleType][key]
+            const itemData = currentData[0].eventRecommendSettings.find(v => v.recommendType == roleType)
+            console.log('-----',itemData,key,ruleType,roleType)
+            if(itemData) {
+                return    itemData[key]
+            } else {
+                return ''
+            }
+
         }
         return ''
     }
