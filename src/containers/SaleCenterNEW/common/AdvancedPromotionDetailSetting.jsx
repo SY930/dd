@@ -56,6 +56,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardScopeIDs: [],
             userSettingOPtios: [],
             isTotalLimited: '0',
+            crmCardTypeIDs: '',
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -69,9 +70,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         const data = { groupID: this.props.user.accountInfo.groupID }
-        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        const { crmCardTypeIDs } = this.props.user.accountInfo;
+        let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
-        data.shopIDs = shopsIDs.join(',')
+        data.shopIDs = shopsIDs.join(',');
+        if(crmCardTypeIDs){
+            data.shopIDs = '';
+            this.setState({crmCardTypeIDs});
+        }
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
             groupID: this.props.user.accountInfo.groupID,
@@ -79,9 +85,15 @@ class AdvancedPromotionDetailSetting extends React.Component {
             pageSize: 10000,
         })
         // 获取会员等级信息
-        const { groupCardTypeList = fromJS([]) } = this.props
+        const { groupCardTypeList = fromJS([]) } = this.props;
+        let ciflist = groupCardTypeList.toJS();
+        if(crmCardTypeIDs){
+            ciflist = groupCardTypeList.toJS().filter(x=>{
+                return crmCardTypeIDs.split(',').includes(x.cardTypeID);
+            })
+        }
         this.setState({
-            cardInfo: groupCardTypeList.toJS(),
+            cardInfo: ciflist,
         })
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
@@ -133,7 +145,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        let { userSetting, subjectType } = this.state;
+        let { userSetting, subjectType, crmCardTypeIDs } = this.state;
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
@@ -149,8 +161,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { groupCardTypeList = fromJS([]) } = this.props
         const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
         if (!is(groupCardTypeList, _groupCardTypeList)) {
+            let ciflist = _groupCardTypeList.toJS();
+            if(crmCardTypeIDs){
+                ciflist = _groupCardTypeList.toJS().filter(x=>{
+                    return crmCardTypeIDs.split(',').includes(x.cardTypeID);
+                })
+            }
             this.setState({
-                cardInfo: _groupCardTypeList.toJS(),
+                cardInfo: ciflist,
             })
         }
         if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {

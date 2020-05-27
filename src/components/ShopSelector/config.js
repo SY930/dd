@@ -1,12 +1,5 @@
-export const FILTERS = [{
-    name: 'citys',
-    key: 'cityID',
-    label: '城市',
-    valueKey: 'cityID',
-    labelKey: 'cityName',
-    callserver: 'getShopCities',
-    callparams: {},
-}, {
+export const FILTERS = [
+{
     name: 'brands',
     key: 'brandID',
     label: '品牌',
@@ -17,18 +10,32 @@ export const FILTERS = [{
 }, {
     name: 'shopCategories',
     key: 'shopCategoryID',
-    label: '门店组',
+    label: '店铺分组',
     valueKey: 'shopCategoryID',
     labelKey: 'shopCategoryName',
     callserver: 'getShopBrand',
     callparams: {},
+},  {
+    name: 'businessModels',
+    key: 'businessModel',
+    label: '经营模式',
+    valueKey: 'businessModel',
+    labelKey: 'businessModel',
+    callserver: 'getShopBrand',
+    callparams: {},
 }, {
-    name: 'orgs',
-    key: 'parentOrgID',
-    label: '组织',
+    name: 'citys',
+    key: 'cityID',
+    label: '城市',
+    valueKey: 'cityID',
+    labelKey: 'cityName',
+    callserver: 'getShopCities',
+    callparams: {},
+}, {
+    name: 'orgTags',
+    key: 'orgTagIDs',
+    label: '管理组织',
     display: 'tree',
-    valueKey: 'orgID',
-    labelKey: 'orgName',
 }, {
     name: 'shopTags',
     key: 'tagIDs',
@@ -36,9 +43,4 @@ export const FILTERS = [{
     display: 'treeLeaf',
     valueKey: 'tagID',
     labelKey: 'tagName',
-}, {
-    name: 'orgTags',
-    key: 'orgTagIDs',
-    label: '管理组织',
-    display: 'tree',
 }];

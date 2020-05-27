@@ -35,7 +35,7 @@ import {
 import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from "components/ShopSelector";
 import IsSync from "./common/IsSync";
 import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
@@ -957,6 +957,9 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderShopNames(decorator) {
         const { shopNames = [] } = this.state.values;
+        const { gift: { data } } = this.props;
+        const { selectBrands = [] } = data;
+        const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col>
@@ -965,6 +968,7 @@ class GiftAddModalStep extends React.PureComponent {
                                 onChange={
                                     this.handleShopSelectorChange
                                 }
+                                brandList={brandList}
                                 schemaData={this.state.shopSchema}
                             />
                         )}
