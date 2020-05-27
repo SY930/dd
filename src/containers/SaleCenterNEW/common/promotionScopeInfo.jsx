@@ -76,7 +76,7 @@ class PromotionScopeInfo extends React.Component {
             filterShops: [],
             allShopsSet: false,
             brandList: [],
-            isRequire: false,
+            isRequire: true,
         };
 
         // bind this.
