@@ -750,7 +750,7 @@ class SpecialDetailInfo extends Component {
             }
 
         })
-        console.log('initEventRecommendSettings',initEventRecommendSettings)
+        // console.log('initEventRecommendSettings',initEventRecommendSettings)
 
         return initEventRecommendSettings
 
@@ -2380,7 +2380,7 @@ class SpecialDetailInfo extends Component {
         const currentData = eventRecommendSettings.filter(v => v.rule == ruleType)
         if(currentData && currentData[0] && currentData[0].eventRecommendSettings) {
             const itemData = currentData[0].eventRecommendSettings.find(v => v.recommendType == roleType)
-            console.log('-----',itemData,key,ruleType,roleType)
+            // console.log('-----',itemData,key,ruleType,roleType)
             if(itemData) {
                 return    itemData[key]
             } else {

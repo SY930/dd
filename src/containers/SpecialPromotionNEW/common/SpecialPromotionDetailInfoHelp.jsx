@@ -104,6 +104,8 @@ const renderGivePointFn = function(roleType,ruleType) {
     } = this.props;
 
     const pointLimitValue = this._getVal({ruleType,roleType,key: 'pointLimitValue'})
+
+    console.log('----000',checkBoxStatus[`ruleType${ruleType}`][`giveIntegral${roleType}`])
     return (
         <FormItem
             wrapperCol={{ span: 24 }}
@@ -527,29 +529,6 @@ const validateFlagFn = function (validatedRuleData) {
  */
 const handleSubmitRecommendGifts = function (isPrev) {
     if (isPrev) return true;
-    let flag = true;
-    // 积分和红包的list数据
-    let presentValueList = {}
-    this.props.form.validateFieldsAndScroll(
-        { force: true },
-        (error, basicValues) => {
-            if (error) {
-                flag = false;
-            }
-            // 推荐有礼特有校验逻辑：两个输入框至少要有1个
-           presentValueList = _getPresentValue.call(this,basicValues)
-        //    console.log('basicValues---',presentValueList,basicValues)
-
-        }
-    );
-    if (!flag) {
-        return false;
-    }
-    /**
-     *    saveMoneySetType, // 储值后获得=》储值场景限制 ，这个不用传给后端
-     *    saveMoneySetIds为储值套餐，从form中取，放到events
-     */
-
     let {
         data,
         cleanCount,
@@ -558,6 +537,40 @@ const handleSubmitRecommendGifts = function (isPrev) {
         checkBoxStatus,
         cashGiftVal
     } = this.state;
+    let flag = true;
+
+    // 积分和红包的list数据
+    let presentValueList = {}
+    this.props.form.validateFieldsAndScroll(
+        { force: true },
+        (error, basicValues) => {
+            if (error) {
+                flag = false;
+            }
+            // console.log('err',error)
+            // 编辑的时候有概率被推荐人会出现积分被校验
+
+            const {ruleType999} = checkBoxStatus
+            if(!ruleType999.giveIntegral0 && error && error['pointLimitValue#0#presentType#2#recommendRule#999']) {
+                flag = true;
+            }
+
+            // 推荐有礼特有校验逻辑：两个输入框至少要有1个
+           presentValueList = _getPresentValue.call(this,basicValues)
+        //    console.log('basicValues---',presentValueList,basicValues)
+
+        }
+    );
+
+    if (!flag) {
+        return false;
+    }
+    /**
+     *    saveMoneySetType, // 储值后获得=》储值场景限制 ，这个不用传给后端
+     *    saveMoneySetIds为储值套餐，从form中取，放到events
+     */
+
+
 
     let validateFlag = true
 
@@ -577,7 +590,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
     }, 0);
 
 
-    console.log('validateFlag',validateFlag,checkBoxStatus)
+    // console.log('validateFlag',validateFlag,checkBoxStatus)
      // 判断是否选中了红包模版
     if(checkBoxStatus) {
         let isReturn = false
@@ -660,7 +673,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
           let { eventRecommendSettings } = this.state;
           eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
 
-            console.log('eventRecommendSettings22',eventRecommendSettings)
+
           eventRecommendSettings =  eventRecommendSettings.filter(v => {
 
             return  this.currentRecommendRule.includes(String(v.rule))
@@ -673,7 +686,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
                      if(redPackageLimitValue) {
                         presentValue.giftItemID = cashGiftVal
-
+                    } else {
+                        delete presentValue.giftItemID
                     }
                 })
                 const rule1Gifts = giftInfo.filter(v => v.recommendType).map(v => {
