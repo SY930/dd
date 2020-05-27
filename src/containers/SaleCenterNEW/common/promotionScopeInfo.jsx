@@ -111,10 +111,13 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
-        const {isRequire} = this.state;
-        if (isRequire && !selections[0]) {
-            flag = false;
+        if(!this.props.user.toJS().shopID) {
+            const {isRequire} = this.state;
+            if (isRequire && !selections[0]) {
+                flag = false;
+            }
         }
+
         if (flag) {
             const states = {
                 channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' ? 'WECHAT' : this.state.channel,
