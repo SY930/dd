@@ -360,7 +360,7 @@ class SpecialDetailInfo extends Component {
             const {eventRecommendSettings} = this.state
             eventRecommendSettings.forEach(v => {
                 v.eventRecommendSettings.forEach(item => {
-                    if(item.giftItemID && !this.state.cashGiftVal) {
+                    if(item.giftItemID && item.giftItemID !== '0' && !this.state.cashGiftVal) {
                         this.setState({
                             cashGiftVal: item.giftItemID
                         })
@@ -661,27 +661,31 @@ class SpecialDetailInfo extends Component {
         ]);
         // 后端是按比率存的（0.11），前端是按百分比显示（11%）的
        eventRecommendSettings.forEach((setting) => {
+            if(Array.isArray(setting.eventRecommendSettings)) {
+                setting.eventRecommendSettings.forEach((v,i,arr) => {
 
-            setting.eventRecommendSettings.forEach((v,i,arr) => {
+                    arr[i] = {
+                        ...v,
+                        pointRate: v.pointRate
+                            ? roundToDecimal(v.pointRate * 100)
+                            : undefined,
+                        consumeRate: v.consumeRate
+                            ? roundToDecimal(v.consumeRate * 100)
+                            : undefined,
+                        rechargeRate: v.rechargeRate
+                            ? roundToDecimal(v.rechargeRate * 100)
+                            : undefined,
+                        redPackageRate: v.redPackageRate
+                        ? roundToDecimal(v.redPackageRate * 100)
+                        : undefined,
+                        pointLimitValue: v.pointLimitValue || undefined, // 0 表示不限制
+                        moneyLimitValue: v.moneyLimitValue || undefined, // 0 表示不限制,
+                    }
+                })
+            } else {
+                setting.eventRecommendSettings = []
+            }
 
-                arr[i] = {
-                    ...v,
-                    pointRate: v.pointRate
-                        ? roundToDecimal(v.pointRate * 100)
-                        : undefined,
-                    consumeRate: v.consumeRate
-                        ? roundToDecimal(v.consumeRate * 100)
-                        : undefined,
-                    rechargeRate: v.rechargeRate
-                        ? roundToDecimal(v.rechargeRate * 100)
-                        : undefined,
-                    redPackageRate: v.redPackageRate
-                    ? roundToDecimal(v.redPackageRate * 100)
-                    : undefined,
-                    pointLimitValue: v.pointLimitValue || undefined, // 0 表示不限制
-                    moneyLimitValue: v.moneyLimitValue || undefined, // 0 表示不限制,
-                }
-            })
 
         });
 
