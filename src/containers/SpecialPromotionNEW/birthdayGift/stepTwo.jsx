@@ -66,7 +66,6 @@ class StepTwo extends React.Component {
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
-            isRequire: true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -112,7 +111,6 @@ class StepTwo extends React.Component {
         if (!this.props.specialPromotion.get('customerCount')) {
             this.props.getGroupCRMCustomAmount()
         }
-        this.loadShopSchema();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -486,33 +484,6 @@ class StepTwo extends React.Component {
         dynamicShopSchema.brands = dynamicShopSchema.brands && dynamicShopSchema.brands instanceof Array ? dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID)) : [];
         return dynamicShopSchema;
     }
-    async loadShopSchema() {
-        const { data } = await axios.post('/api/shopapi/schema',{});
-        const { shops } = data;
-        this.countIsRequire(shops);
-    }
-    countIsRequire(shopList){
-        const { shopSchemaInfo, specialPromotion } = this.props;
-        const { size } = shopSchemaInfo.getIn(['shopSchema', 'shops']);       // 总店铺数
-        const eventInfo = specialPromotion.getIn(['$eventInfo']).toJS();
-        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
-        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
-        const { length } = shopList;
-        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
-        // 如果用户权限为某几个店铺的权限，组件为必选项。
-        // b 编辑活动，全部店铺权限用户非必选
-        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
-        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
-        if(!isOld){
-            if(length<size){
-                this.setState({ isRequire: true });
-            }
-        } else {
-            if(oldShops[0] && length<size){
-                this.setState({ isRequire: true });
-            }
-        }
-    }
     renderShopsOptions() {
         const { shopIDList, isRequire, shopStatus, canUseShopIDs } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
@@ -522,9 +493,6 @@ class StepTwo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={isRequire}
-                validateStatus={shopStatus ? 'success' : 'error'}
-                help={shopStatus ? null : '店铺不能为空'}
             >
                 <ShopSelector
                     value={selectedShopIdStrings}

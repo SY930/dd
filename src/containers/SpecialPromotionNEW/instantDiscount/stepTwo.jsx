@@ -131,11 +131,15 @@ class StepTwo extends React.Component {
         if(!isOld){
             if(length<size){
                 this.setState({ isRequire: true });
+                return;
             }
+            this.setState({ isRequire: false });
         } else {
             if(oldShops[0] && length<size){
                 this.setState({ isRequire: true });
+                return;
             }
+            this.setState({ isRequire: false });
         }
     }
     render() {
