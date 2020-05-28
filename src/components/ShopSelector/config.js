@@ -1,5 +1,4 @@
-export const FILTERS = [
-{
+export const FILTERS = [{
     name: 'brands',
     key: 'brandID',
     label: '品牌',
@@ -8,7 +7,7 @@ export const FILTERS = [
     callserver: 'getShopBrand',
     callparams: {},
 }, {
-    name: 'shopCategories',
+    name: 'shopCategorys',
     key: 'shopCategoryID',
     label: '店铺分组',
     valueKey: 'shopCategoryID',
@@ -24,7 +23,7 @@ export const FILTERS = [
     callserver: 'getShopBrand',
     callparams: {},
 }, {
-    name: 'citys',
+    name: 'cities',
     key: 'cityID',
     label: '城市',
     valueKey: 'cityID',
