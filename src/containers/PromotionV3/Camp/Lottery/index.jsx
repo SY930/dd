@@ -1,6 +1,5 @@
 import React, { PureComponent as Component } from 'react';
 import { Tabs, Button, Icon, Input, Checkbox, Radio, Select } from 'antd';
-import BaseForm from 'components/common/BaseForm';
 import css from './style.less';
 import { formItemLayout, formKeys, formItems, } from './Common';
 import { getCardTypeList } from './AxiosFactory';
@@ -26,14 +25,15 @@ class Lottery extends Component {
     onEdit = (targetKey, action) => {
         this[action](targetKey);
     }
+    // presentType 礼品1， 积分为2，券包4
     add = () => {
         const { value, onChange } = this.props;
         if(value[6]) { return; }
         const list = [...value];
         const len = value.length;
-        const id = `${len}`; //
+        const id = `${len}`; // 根据索引生成id，方便回显时遍历
         list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
-            isPoint: false, isTicket: true, type: '', giftList: [{ id: '001' }],  bagList: [] });
+            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001' }],  bagList: [] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -74,7 +74,7 @@ class Lottery extends Component {
     }
     onTypeChange = ({ target }) => {
         const { value } = target;
-        this.onAllChange({ type: value });
+        this.onAllChange({ presentType: value });
     }
     onPresentValueChange = ({ target }) => {
         const { value } = target;
@@ -149,12 +149,12 @@ class Lottery extends Component {
                                         {x.isTicket &&
                                             <li>
                                                 <p className={css.ticketBox}>
-                                                <RadioGroup value={x.type} onChange={this.onTypeChange}>
-                                                    <RadioButton value="">独立优惠券</RadioButton>
-                                                    <RadioButton value="1">券包</RadioButton>
+                                                <RadioGroup value={x.presentType} onChange={this.onTypeChange}>
+                                                    <RadioButton value="1">独立优惠券</RadioButton>
+                                                    <RadioButton value="4">券包</RadioButton>
                                                 </RadioGroup>
                                                 </p>
-                                                {!x.type ?
+                                                {x.presentType === '1' ?
                                                     <MutliGift value={x.giftList} onChange={this.onGiftChange} /> :
                                                     <TicketBag value={x.bagList} onChange={this.onBagChange} />
                                                 }

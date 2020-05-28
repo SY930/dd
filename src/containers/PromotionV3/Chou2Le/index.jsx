@@ -14,7 +14,7 @@ class Chou2Le extends Component {
     /* 页面需要的各类状态属性 */
     state = {
         current: 1,
-        formData1: {},      // 第1步的表单原始数据
+        formData1: {},      // 第1步的表单原始数据，也是用来回显baseform的数据
         formData2: {},      // 第2步的表单原始数据
         formData3: {},      // 第3步的表单原始数据
         form: null,
@@ -31,15 +31,16 @@ class Chou2Le extends Component {
         if(id) {
             getEvent({ itemID: id }).then(obj => {
                 const { data, gifts, timeList } = obj;
-                const newEvent = this.setData4Step1(data, timeList);
+                const newStep1 = this.setData4Step1(data, timeList);
                 const newStep2 = this.setData4Step2(data);
                 const newLottery = this.setData4Step3(gifts);
                 const formData3 = { ...data, lottery: newLottery };
-                this.setState({ formData1: newEvent, formData2: newStep2, formData3 });
+                this.setState({ formData1: newStep1, formData2: newStep2, formData3 });
             });
         }
 
     }
+    // 回显需要重写整理的数据
     setData4Step1(data, times) {
         const { eventStartDate: sd, eventEndDate: ed, validCycle } = data;
         const eventRange = [moment(sd), moment(ed)];
@@ -62,34 +63,34 @@ class Chou2Le extends Component {
     }
     setData4Step2(data) {
         const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;
-        const brandList = blist.split(',');
-        const orderTypeList = olist.split(',');
-        const shopIDList = slist.map(x=>`${x}`);
+        const brandList = blist ? blist.split(',') : [];
+        const orderTypeList = olist ? olist.split(',') : [];
+        const shopIDList = slist ? slist.map(x=>`${x}`) : [];
         return { brandList, orderTypeList , shopIDList };
     }
     setData4Step3(gifts) {
         const lottery = [];
-        let [pointObj, ticketObj, giftOdds, id] = [{},{}, '', ''];
-        gifts.forEach((x, i)=>{
+        gifts.forEach((x, i) => {
             const idx = i + 1;
             if(idx === x.sortIndex) {
-                giftOdds = x.giftOdds;
-                id = x.giftID;
-                if(x.presentType === 1) {   // 礼品
-                    ticketObj = { ticket: { gift: x, isTicket: [1], type: '1' } };
+                let [pointObj, ticketObj] = [{},{}];
+                const { presentType, giftOdds } = x;
+                const id = x.itemID;
+                if(presentType === 2) {   // 积分
+                    const { presentValue, cardTypeID } = x;
+                    pointObj = { presentValue, cardTypeID, isPoint: true };
                 }
-                if(x.presentType === 2) {   // 积分
-                    pointObj = { point: { ...x, isPoint: [1] } };
+                // 券包 和 礼品
+                if([1, 4].includes(presentType)) {
+                    const type = `${presentType}`;  // 组件要string类型的
+                    ticketObj = { ...x, isTicket: true, presentType: type };
                 }
-                if(x.presentType === 4) {   // 券包
-                    ticketObj = { ticket: { bag: x, isTicket: [1], type: '2' } };
-                }
-                const allGift = { id, giftOdds, ...pointObj, ...ticketObj, };
+                const allGift = { id, giftOdds, ...pointObj, ...ticketObj };
                 lottery.push(allGift);
             }
         });
         console.log('lottery', lottery);
-        return [];
+        return lottery;
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -151,37 +152,41 @@ class Chou2Le extends Component {
             }
         })
     }
+    // 提交前需要整理的数据
     setStep2Data() {
         const { formData2 } = this.state;
         const { brandList, orderTypeList, shopIDList } = formData2;
         const bList = brandList.join();
         const oList = orderTypeList.join();
-        // "shopRange": 店铺范围 1：部分店铺 ,  2：全部店铺
+        // "shopRange": 店铺范围 1：部分店铺 ,  2：全部店铺，后端需要的数据
         const shopRange = shopIDList[0] ? '1' : '2';
         return { brandList: bList, orderTypeList: oList, shopIDList, shopRange };
     }
     setStep3Data(formData) {
         const { lottery, consumeTotalAmount, consumeType } = formData;
-        const gifts = [];
+        const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
-            const { giftOdds, point, ticket } = x;
-            const sortIndex = i + 1;
-            const { isPoint, ...otherP } = point;
-            const { isTicket, type, gift, bag } = ticket;
-            if(isPoint[0]){
-                const obj = { sortIndex, giftOdds, presentType: 2, ...otherP };
+            const { giftOdds, isPoint, isTicket, presentType } = x;
+            const sortIndex = i + 1;       // 后端要的排序
+            const rawObj =  { sortIndex, giftOdds, presentType };    // 基础数据
+            if(isPoint){
+                const { presentValue, cardTypeID } = x;
+                const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID };
                 gifts.push(obj);
             }
-            if(isTicket[0]){
-                // 1 独立优惠券，2 券包
-                if(type === '1') {
-                    gift.forEach(x => {
-                        const obj = { sortIndex, giftOdds, presentType: 1, ...x };
+            if(isTicket){
+                const { bagList, giftList } = x;
+                // 1 独立优惠券，4 券包
+                if(presentType === '1') {
+                    giftList.forEach(x => {
+                        const obj = { ...rawObj, ...x };
                         gifts.push(obj);
                     });
                 } else {
-                    const obj = { sortIndex, giftOdds, presentType: 4, ...bag };
-                    gifts.push(obj);
+                    bagList.forEach(x => {
+                        const obj = { ...rawObj, ...x };
+                        gifts.push(obj);
+                    });
                 }
             }
         });
@@ -264,10 +269,10 @@ class Chou2Le extends Component {
                             </Steps>
                         </div>
                         {current === 1 &&
-                            <Step3
+                            <Step1
                                 form={form}
                                 getForm={this.onSetForm}
-                                formData={{}}
+                                formData={formData1}
                             />
                         }
                         {current === 2 &&
