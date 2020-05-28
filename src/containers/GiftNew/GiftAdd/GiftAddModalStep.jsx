@@ -194,6 +194,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
+            console.log('shopSchema', nextProps.shopSchema.getIn(['shopSchema']).toJS());
         }
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
@@ -969,7 +970,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     this.handleShopSelectorChange
                                 }
                                 brandList={brandList}
-                                schemaData={this.state.shopSchema}
+                                // schemaData={this.state.shopSchema}
                             />
                         )}
                 </Col>

@@ -30,13 +30,19 @@ export async function loadShopSchema(params = {}, cache) {
         if (res.code !== '000') throw new Error(res.message);
         data = res.data;
     }
-    const filterOptions = FILTERS.reduce((ret, filter) => {
+    let filterOptions = FILTERS.reduce((ret, filter) => {
         const records = data[filter.name];
         return {
             ...ret,
             [filter.name]: records ? presetFilterOptions(records, filter) : undefined,
         };
     }, {});
+    filterOptions.businessModels = [
+        {businessModel: "1", businessType: "直营", value: "1", label: "直营"},
+        {businessModel: "2", businessType: "加盟", value: "2", label: "加盟"},
+        {businessModel: "3", businessType: "托管", value: "3", label: "托管"},
+        {businessModel: "4", businessType: "合作", value: "4", label: "合作"},
+    ];
     const { shopList = [] } = dataPermissions;
     const userShops = shopList.map(x=>x.shopID);
     return {
