@@ -34,7 +34,6 @@ class Step1 extends Component {
             if(value){
                 newFormKeys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
             }
-            console.log('newFormKeys', newFormKeys);
             this.setState({ newFormKeys });
         }
     }
@@ -48,7 +47,6 @@ class Step1 extends Component {
             const { cycleType: t } = formData;
             cycleType = getFieldValue('cycleType') || t;
         }
-        console.log('cycleType', cycleType);
         const render3 = d => d()(<EveryDay type={cycleType} />);
         const { validCycle, ...other } = formItems1;
         return {
@@ -60,7 +58,6 @@ class Step1 extends Component {
         const { newFormKeys } = this.state;
         const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
-        console.log('formData', formData);
         return (
             <div className={css.step1}>
                 <BaseForm

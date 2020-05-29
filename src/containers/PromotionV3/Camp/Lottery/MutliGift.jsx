@@ -27,7 +27,7 @@ class MutliGift extends Component {
         if(value[9]) { return; }
         const list = [...value];
         const id = Date.now().toString(36); // 随机不重复ID号
-        list.push({ id });
+        list.push({ id, effectType: '1' });
         onChange(list);
     }
     render() {

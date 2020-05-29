@@ -12,11 +12,11 @@ const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 class Lottery extends Component {
     state = {
-        tabKey: '0',
+        tabKey: '1',
         cardList: [],
     }
     componentDidMount() {
-        this.add();
+        // this.add();
         this.getCardType();
     }
     onChange = (tabKey) => {
@@ -31,9 +31,9 @@ class Lottery extends Component {
         if(value[6]) { return; }
         const list = [...value];
         const len = value.length;
-        const id = `${len}`; // 根据索引生成id，方便回显时遍历
+        const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
         list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
-            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001' }],  bagList: [] });
+            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -41,7 +41,6 @@ class Lottery extends Component {
     remove = (tabKey) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        console.log('tabKey', tabKey);
         const idx = tabKey - 1;
         list.splice(idx, 1);
         onChange(list);
@@ -56,8 +55,8 @@ class Lottery extends Component {
         const { tabKey } = this.state;
         const { value, onChange } = this.props;
         const list = [...value];
-        const item = list[tabKey];
-        list[tabKey] = { ...item, ...data };
+        const item = list[tabKey - 1];
+        list[tabKey - 1] = { ...item, ...data };
         onChange(list);
     }
     onGiftOddsChange = ({ target }) => {
@@ -94,7 +93,6 @@ class Lottery extends Component {
         const { value } = this.props;
         if(!value[0]){ return null}
         const { length } = value;
-        console.log('value', value);
         return (
                 <div className={css.mainBox}>
                     <div className={css.addBox}>

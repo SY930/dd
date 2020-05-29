@@ -1,13 +1,14 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Steps, Button } from 'antd';
 import moment from 'moment';
-import { getBrandList, putEvent, getEvent } from './AxiosFactory';
+import { getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 import { TF, DF } from './Common';
+import { getTicketList } from '../Camp/TicketBag/AxiosFactory';
 
 const Step = Steps.Step;
 class Chou2Le extends Component {
@@ -19,24 +20,31 @@ class Chou2Le extends Component {
         formData3: {},      // 第3步的表单原始数据
         form: null,
         brandList: [],
+        bagList: [],
     };
     componentDidMount() {
         getBrandList().then(list => {
             this.setState({ brandList: list });
         });
         this.getEventDetail();
+
     }
     getEventDetail() {
         const { id } = this.props;
         if(id) {
             getEvent({ itemID: id }).then(obj => {
-                const { data, gifts, timeList } = obj;
-                const newStep1 = this.setData4Step1(data, timeList);
-                const newStep2 = this.setData4Step2(data);
-                const newLottery = this.setData4Step3(gifts);
-                const formData3 = { ...data, lottery: newLottery };
-                this.setState({ formData1: newStep1, formData2: newStep2, formData3 });
+                const { data, gifts = [], timeList } = obj;
+                const formData1 = this.setData4Step1(data, timeList);
+                const formData2 = this.setData4Step2(data);
+                // const formData3 = this.setData4Step3(data, gifts);
+                this.setState({ formData1, formData2 });
+                getTicketList({ couponPackageType: '2' }).then((obj) => {
+                    const { list } = obj;
+                    const formData3 = this.setData4Step3(data, gifts, list);
+                    this.setState({ formData3 });
+                });
             });
+
         }
 
     }
@@ -68,29 +76,40 @@ class Chou2Le extends Component {
         const shopIDList = slist ? slist.map(x=>`${x}`) : [];
         return { brandList, orderTypeList , shopIDList };
     }
-    setData4Step3(gifts) {
+    setData4Step3(data, gifts, list) {
+        const { consumeType: stype, consumeTotalAmount } = data;
         const lottery = [];
         gifts.forEach((x, i) => {
-            const idx = i + 1;
-            if(idx === x.sortIndex) {
-                let [pointObj, ticketObj] = [{},{}];
-                const { presentType, giftOdds } = x;
-                const id = x.itemID;
-                if(presentType === 2) {   // 积分
-                    const { presentValue, cardTypeID } = x;
-                    pointObj = { presentValue, cardTypeID, isPoint: true };
-                }
-                // 券包 和 礼品
-                if([1, 4].includes(presentType)) {
-                    const type = `${presentType}`;  // 组件要string类型的
-                    ticketObj = { ...x, isTicket: true, presentType: type };
-                }
-                const allGift = { id, giftOdds, ...pointObj, ...ticketObj };
-                lottery.push(allGift);
+            const { presentType, giftOdds, sortIndex } = x;
+            const index = sortIndex - 1;
+            const type = `${presentType}`;  // 组件要string类型的
+            let newItem = { ...lottery[index] };
+            if(presentType === 2) {   // 积分
+                const { presentValue, cardTypeID } = x;
+                newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
             }
+            // 券包
+            if(presentType === 4) {
+                const { giftID } = x;
+                const bag = list.find(b=>b.couponPackageID === giftID);
+                newItem = { ...newItem, bagList: [bag], isTicket: true, presentType: type };
+            }
+            // 礼品
+            if(presentType === 1) {
+                const newGiftList = newItem.giftList || [];
+                const { effectType: etype, effectTime, validUntilDate, giftID, ...others } = x;
+                let rangeDate = [];
+                if(effectTime) {
+                    const st = moment(effectTime, DF);
+                    const et = moment(validUntilDate, DF);
+                    rangeDate = [ st, et ];
+                }
+                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, rangeDate, ...others }];
+                newItem = { ...newItem, giftList, isTicket: true, presentType: type };
+            }
+            lottery[index] = { id: `${sortIndex}`, giftOdds, ...newItem };
         });
-        console.log('lottery', lottery);
-        return lottery;
+        return { consumeType: `${stype}`, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -136,6 +155,7 @@ class Chou2Le extends Component {
     }
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
+        const { id } = this.props;
         const { timeList, eventRange, excludedDate, ...others1 } = formData1;
         const newTimeList = this.formatTimeList(timeList);
         const newEventRange = this.formatEventRange(eventRange);
@@ -144,8 +164,17 @@ class Chou2Le extends Component {
         const { gifts, ...others3 } = formData3;
         const event = { ...others1, ...others3, ...newEventRange,
             excludedDate: newExcludedDate, ...step2Data, eventWay: '78' };
+        if(id) {
+            const itemID = id;
+            const allData = { timeList: newTimeList, event: {...event, itemID}, gifts };
+            postEvent(allData).then(x => {
+                if(x) {
+                    this.onToggle();
+                }
+            });
+            return;
+        }
         const allData = { timeList: newTimeList, event, gifts };
-        console.log('allData', allData);
         putEvent({...allData}).then(x => {
             if(x) {
                 this.onToggle();
@@ -179,12 +208,15 @@ class Chou2Le extends Component {
                 // 1 独立优惠券，4 券包
                 if(presentType === '1') {
                     giftList.forEach(x => {
-                        const obj = { ...rawObj, ...x };
+                        const { rangeDate, ...others } = x;
+                        const rangeObj = this.formatRangeDate(rangeDate);
+                        const obj = { ...rawObj, ...rangeObj, ...others };
                         gifts.push(obj);
                     });
                 } else {
                     bagList.forEach(x => {
-                        const obj = { ...rawObj, ...x };
+                        const { couponPackageID } = x;
+                        const obj = { ...rawObj, giftID: couponPackageID };
                         gifts.push(obj);
                     });
                 }
@@ -200,6 +232,15 @@ class Chou2Le extends Component {
             const et = moment(endTime).format(TF);
             return { startTime: st, endTime: et };
         });
+    }
+    formatRangeDate(rangeDate) {
+        if(!rangeDate){
+            return {}
+        }
+        const [start, end] = rangeDate;
+        const effectTime = start.format(DF);
+        const validUntilDate = end.format(DF);
+        return { effectTime, validUntilDate };
     }
     formatEventRange(eventRange) {
         const [sd, ed] = eventRange;
@@ -287,7 +328,7 @@ class Chou2Le extends Component {
                             <Step3
                                 form={form}
                                 getForm={this.onSetForm}
-                                formData={{}}
+                                formData={formData3}
                             />
                         }
                     </li>

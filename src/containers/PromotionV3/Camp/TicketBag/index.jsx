@@ -18,7 +18,7 @@ export default class TicketBag extends Component {
     /*  */
     onDelete = () => {
         this.setState({ list: [] });
-        this.triggerChange(null);
+        this.props.onChange([]);
     }
     /*  */
     onToggleModal = () => {
@@ -26,11 +26,8 @@ export default class TicketBag extends Component {
     }
     onSelectBag = (item) => {
         this.setState({ list: [item] });
-        this.triggerChange(item);
-        this.onToggleModal();
-    }
-    triggerChange(item) {
         this.props.onChange([item]);
+        this.onToggleModal();
     }
     /* 生成表格头数据 */
     generateColumns() {

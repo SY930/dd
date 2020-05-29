@@ -86,6 +86,7 @@ async function postEvent(data) {
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
     if (code === '000') {
+        message.success('更新成功');
         return true;
     }
     message.error(msg);

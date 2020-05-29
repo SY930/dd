@@ -105,6 +105,8 @@ const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 17 },
 };
+const lottDefVal = { id: '1', giftOdds: '', presentValue: '', cardTypeID: '',
+isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
 
 const formItems2 = {
     brandList: {
@@ -152,7 +154,7 @@ const formItems3 = {
     lottery: {
         type: 'custom',
         render: () => (<p/>),
-        defaultValue: [],
+        defaultValue: [lottDefVal],
     },
 };
 const formKeys3 = ['consumeTotalAmount', 'consumeType', 'lottery'];
