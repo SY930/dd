@@ -57,6 +57,9 @@ import {
     initShowCheckBox,
     clearCheckBoxData
 } from './SpecialPromotionDetailInfoHelp'
+import TicketBag from '../shackGift/TicketBag';
+import { axios } from '@hualala/platform-base';
+import { getStore } from '@hualala/platform-base/lib';
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -287,6 +290,8 @@ class SpecialDetailInfo extends Component {
             giveCoupon,
             shareTitlePL: "",
             shareSubtitlePL: "",
+            sendTypeValue: '0',
+            bag: '',
             activeRuleTabValue: "",
             checkBoxStatus: {
                  /**
@@ -3823,24 +3828,26 @@ class SpecialDetailInfo extends Component {
                         </Col>
                     </Row>
                 )}
-                {type !== "52" && (
-                    <Row>
-                        <Col span={17} offset={4}>
-                            <AddGifts
-                                maxCount={type == "21" || type == "30" ? 1 : 10}
-                                disabledGifts={
-                                    type == "67" && this.state.disabledGifts
-                                }
-                                type={this.props.type}
-                                isNew={this.props.isNew}
-                                value={this.state.data
-                                    .filter((gift) => gift.sendType === 0)
-                                    .sort((a, b) => a.needCount - b.needCount)}
-                                onChange={(gifts) => this.gradeChange(gifts, 0)}
-                            />
-                        </Col>
-                    </Row>
-                )}
+                {type==='30' &&
+                    this.renderPointDuihuan()
+                }
+                { !['52', '30'].includes(type) &&
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
                 {type == "65" && (
                     <p className={styles.coloredBorderedLabel}>
                         {this.props.intl.formatMessage(
