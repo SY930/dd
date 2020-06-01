@@ -8,6 +8,10 @@ import {
     Icon,
     Tooltip,
     message,
+    Select,
+    Input,
+    Radio,
+    Form,
 } from 'antd';
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
@@ -28,6 +32,9 @@ import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfo from './GiftInfo';
 
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const FormItem = Form.Item;
 class GiftAddModal extends React.Component {
     constructor(props) {
         super(props);
@@ -42,6 +49,7 @@ class GiftAddModal extends React.Component {
             isUpdate: true,
             disCashKeys: false,     // 定额卡模式下，是否要隐藏现金卡值和赠送卡值
             unit: '¥',
+            valueType: '0',
         };
         this.baseForm = null;
         this.refMap = null;
@@ -114,6 +122,10 @@ class GiftAddModal extends React.Component {
         if(key==='giftValueCurrencyType') {
             this.setState({ unit: value });
         }
+        if(key==='valueType') {
+            this.setState({ valueType: value });
+        }
+        console.log(key, value);
     }
     handleSubmit() {
         const { groupTypes } = this.state;
@@ -217,16 +229,18 @@ class GiftAddModal extends React.Component {
             </Row>
         )
     }
+    handleCurrencyChange = (currency) => {
+        this.setState({ currency });
+    }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
-        console.log('value', value);
         let valueLabel = value == '42' ? '积分数额' : value == '30' ? '礼品价值' : '礼品卡面值';
         if(value==40){
             valueLabel = '礼品价值';
         }
         const { unit } = this.state;
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
-        const formItems = {
+        let formItems = {
             giftType: {
                 label: '礼品类型',
                 type: 'custom',
@@ -563,6 +577,105 @@ class GiftAddModal extends React.Component {
                 }],
             },
         };
+        const { valueType } = this.state;
+        const giftValue = {
+            label: '礼品价值',
+            type: 'custom',
+            render: d => (<div>
+                <div style={{ display: 'flex'}}>
+                <p style={{ width: 100 }}>
+                    {d({
+                        key: 'valueType',
+                        initialValue: '0',
+                    })(<Select>
+                            <Option value="0">固定金额</Option>
+                            <Option value="1">随机金额</Option>
+                        </Select>
+                    )}
+                </p>
+                {valueType==='0' ?
+                    <FormItem
+                        wrapperCol={{span: 24}}
+                        labelCol={{span: 0}}
+                        style={{ width: 100, margin:'-4px 0 0 10px' }}
+                    >
+                        {d({
+                            key: 'giftValue',
+                            rules: [{
+                                validator:(r,v,cb)=>{
+                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                    if(!reg.test(v)) {
+                                        return cb('最大支持5位整数，2位小数');
+                                    }
+                                    return cb();
+                                }
+                            }],
+                            })(<Input addonBefore={unit} />
+                        )}
+                        </FormItem>
+                    :
+                    <p style={{ display: 'flex', margin:'0 0 0 10px' }}>
+                        <FormItem
+                            wrapperCol={{span: 24}}
+                            labelCol={{span: 0}}
+                            style={{ width: 100, margin:'-4px 0 0 0' }}
+                        >
+                        {d({
+                            key: 'valueStart',
+                            rules: [{
+                                validator:(r,v,cb)=>{
+                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                    if(!reg.test(v)) {
+                                        return cb('最大支持5位整数，2位小数');
+                                    }
+                                    return cb();
+                                }
+                            }],
+                            })(<Input addonBefore={unit} />
+                        )}
+                        </FormItem>
+                        <span style={{ padding: '0 5px'}}> ~ </span>
+                        <FormItem
+                            wrapperCol={{span: 24}}
+                            labelCol={{span: 0}}
+                            style={{ width: 100, margin:'-4px 0 0 0' }}
+                        >
+                        {d({
+                            key: 'valueEnd',
+                            rules: [{
+                                validator:(r,v,cb)=>{
+                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                    if(!reg.test(v)) {
+                                        return cb('最大支持5位整数，2位小数');
+                                    }
+                                    return cb();
+                                }
+                            }],
+                            })(<Input addonBefore={unit} />
+                        )}
+                        </FormItem>
+                    </p>
+                }
+                </div>
+                {valueType==='1' &&
+                    <div>
+                        <span style={{ padding: '0 8px 0 0'}}>最小单位</span>
+                        {d({
+                            key: 'monetaryUnit',
+                            initialValue: '0',
+                            })(<RadioGroup>
+                                <Radio value="0">元</Radio>
+                                <Radio value="1">角</Radio>
+                                <Radio value="2">分</Radio>
+                            </RadioGroup>
+                        )}
+                    </div>
+                }
+            </div>),
+        };
+        if(value==='40') {
+            formItems = { ...formItems, giftValue };
+        }
         const formKeys = {
             '实物礼品券': [
                 {
