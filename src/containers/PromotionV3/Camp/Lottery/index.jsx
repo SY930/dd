@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Tabs, Button, Icon, Input, Checkbox, Radio, Select } from 'antd';
+import { Tabs, Button, Icon, Input, Checkbox, Radio, Select, Form } from 'antd';
 import css from './style.less';
 import { formItemLayout, formKeys, formItems, } from './Common';
 import { getCardTypeList } from './AxiosFactory';
@@ -10,6 +10,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
+const FormItem = Form.Item;
 class Lottery extends Component {
     state = {
         tabKey: '1',
@@ -90,7 +91,7 @@ class Lottery extends Component {
     }
     render() {
         const { tabKey, cardList } = this.state;
-        const { value } = this.props;
+        const { value, decorator } = this.props;
         if(!value[0]){ return null}
         const { length } = value;
         return (
@@ -112,18 +113,64 @@ class Lottery extends Component {
                             {value.map((x, i)=>{
                                 const close = (length === i + 1) && (i > 0);
                                 const name = `奖项${i + 1}`;
+                                const disable = x.userCount > 0;    // 如果被用了，不能编辑
                                 return (<TabPane tab={name} key={x.id} closable={close}>
                                     <ul>
-                                        <li style={{ display: 'flex' }}>
-                                            <label>中奖概率</label>
-                                            <p><Input value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange} style={{ width: 100 }} /></p>
+                                        <li className={css.oddsBox}>
+                                            <FormItem label="中奖概率">
+                                            {
+                                                decorator({
+                                                    key: 'giftOdds' + i,
+                                                    value: x.giftOdds,
+                                                    defaultValue: x.giftOdds,
+                                                    rules: [{
+                                                        required: true,
+                                                        validator: (rule, v, cb) => {
+                                                            let count = 0;
+                                                            const idx = tabKey - 1;
+                                                            value.forEach((o, j)=>{
+                                                                if(idx === j) {
+                                                                    count += +v;
+                                                                } else {
+                                                                   count += +o.giftOdds;
+                                                                }
+                                                            });
+                                                            const reg = /^\d+$/;
+                                                            if(!reg.test(v)) {
+                                                                return cb('请输入数字');
+                                                            }
+                                                            if (count > 100) {
+                                                                return cb('奖品中奖概率之和应为0.01~100%');
+                                                            }
+                                                            cb();
+                                                        },
+                                                    }],
+                                                })(
+                                                    <p><Input value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange}/></p>
+                                                )
+                                            }
+                                            </FormItem>
                                         </li>
-                                        <li style={{ display: 'flex' }}>
+                                        <li className={css.pointBox}>
                                             <Checkbox checked={x.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
                                             {x.isPoint &&
                                                 <div style={{ display: 'flex' }}>
-                                                    <p><Input value={x.presentValue} style={{ width: 60 }} addonAfter="积分" onChange={this.onPresentValueChange} /></p>
-                                                    <label style={{ width: 100 }}>充值到会员卡</label>
+                                                    <FormItem label="">
+                                                        {
+                                                            decorator({
+                                                                key: 'presentValue' + i,
+                                                                value: x.presentValue,
+                                                                defaultValue: x.presentValue,
+                                                                rules: [{
+                                                                    pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
+                                                                    message: '请输入0~100000数字，支持两位小数',
+                                                                }],
+                                                            })(
+                                                                <p><Input value={x.presentValue} addonAfter="积分" onChange={this.onPresentValueChange}/></p>
+                                                            )
+                                                        }
+                                                    </FormItem>
+                                                    <label className={css.cardLabel}>充值到会员卡</label>
                                                     <p style={{ width: 160 }}>
                                                         <Select value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
                                                         {
@@ -142,20 +189,23 @@ class Lottery extends Component {
                                             }
                                         </li>
                                         <li>
-                                            <Checkbox checked={x.isTicket} onChange={this.onTicketChange}>赠送优惠券</Checkbox>
+                                            <Checkbox disabled={disable} checked={x.isTicket} onChange={this.onTicketChange}>赠送优惠券</Checkbox>
                                         </li>
                                         {x.isTicket &&
                                             <li>
                                                 <p className={css.ticketBox}>
-                                                <RadioGroup value={x.presentType} onChange={this.onTypeChange}>
+                                                <RadioGroup disabled={disable} value={x.presentType} onChange={this.onTypeChange}>
                                                     <RadioButton value="1">独立优惠券</RadioButton>
                                                     <RadioButton value="4">券包</RadioButton>
                                                 </RadioGroup>
                                                 </p>
+                                                <div style={{ position: "relative" }}>
                                                 {x.presentType === '1' ?
                                                     <MutliGift value={x.giftList} onChange={this.onGiftChange} /> :
                                                     <TicketBag value={x.bagList} onChange={this.onBagChange} />
                                                 }
+                                                <p className={disable ? css.disBox: ''}></p>
+                                                </div>
                                             </li>
                                         }
                                     </ul>

@@ -726,6 +726,12 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: '签到获取礼品，提升用户日活量',
             example: '',
             key: '76',
+        },{
+            idx: 22,
+            title: '下单抽抽乐',
+            text: '',
+            example: '',
+            key: '78',
         },
     ];
     return basic;

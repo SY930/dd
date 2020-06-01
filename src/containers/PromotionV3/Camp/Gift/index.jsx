@@ -17,7 +17,7 @@ export default class Gift extends Component {
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
-            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+            // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if(key==='effectType'){
             if(value === '1') {

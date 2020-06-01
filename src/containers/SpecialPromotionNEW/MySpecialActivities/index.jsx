@@ -194,6 +194,7 @@ class MySpecialActivities extends React.Component {
             currentItemID: '',
             v3visible: false,       // 第三版活动组件是否显示
             itemID: '',
+            view: false,
         };
         this.cfg = {
             eventWay: [
@@ -382,14 +383,14 @@ class MySpecialActivities extends React.Component {
         }
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = (itemID) => {
+    onV3Click = (itemID, view) => {
         this.setState(ps => ({ v3visible: !ps.v3visible }));
         if(itemID){
-            this.setState({ itemID });
+            this.setState({ itemID, view });
         }
     }
     render() {
-        const { v3visible, itemID } = this.state;
+        const { v3visible, itemID, view } = this.state;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
@@ -410,7 +411,7 @@ class MySpecialActivities extends React.Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
-                { v3visible && <Chou2Le onToggle={this.onV3Click} id={itemID} />}
+                { v3visible && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
             </div>
         );
     }
@@ -692,7 +693,7 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (record.eventWay === 78) {
-                                            this.onV3Click(record.itemID);
+                                            this.onV3Click(record.itemID, false);
                                             return;
                                         }
                                         this.props.toggleIsUpdate(true)
@@ -708,6 +709,10 @@ class MySpecialActivities extends React.Component {
                             onClick={() => {
                                 if (Number(record.eventWay) === 70) {
                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                if (record.eventWay === 78) {
+                                    this.onV3Click(record.itemID, true);
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)

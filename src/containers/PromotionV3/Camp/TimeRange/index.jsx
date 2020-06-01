@@ -14,19 +14,16 @@ class TimeRange extends Component {
     state= {
     }
     componentDidMount() {
-        this.onPlus();
     }
     onStartChange = (startTime, idx) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        // const startTime = moment(val).format(TF);
         list[idx] = { ...value[idx], startTime };
         onChange(list);
     }
     onEndChange = (endTime, idx) => {
         const { value, onChange } = this.props;
         const list = [...value];
-        // const endTime = moment(val).format(TF);
         list[idx] = { ...value[idx], endTime };
         onChange(list);
     }

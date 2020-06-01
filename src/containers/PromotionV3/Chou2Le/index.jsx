@@ -1,5 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Steps, Button } from 'antd';
+import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
 import { getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
 import Step1 from './Step1';
@@ -27,7 +28,6 @@ class Chou2Le extends Component {
             this.setState({ brandList: list });
         });
         this.getEventDetail();
-
     }
     getEventDetail() {
         const { id } = this.props;
@@ -36,7 +36,6 @@ class Chou2Le extends Component {
                 const { data, gifts = [], timeList } = obj;
                 const formData1 = this.setData4Step1(data, timeList);
                 const formData2 = this.setData4Step2(data);
-                // const formData3 = this.setData4Step3(data, gifts);
                 this.setState({ formData1, formData2 });
                 getTicketList({ couponPackageType: '2' }).then((obj) => {
                     const { list } = obj;
@@ -77,7 +76,7 @@ class Chou2Le extends Component {
         return { brandList, orderTypeList , shopIDList };
     }
     setData4Step3(data, gifts, list) {
-        const { consumeType: stype, consumeTotalAmount } = data;
+        const { consumeType: stype, userCount, consumeTotalAmount } = data;
         const lottery = [];
         gifts.forEach((x, i) => {
             const { presentType, giftOdds, sortIndex } = x;
@@ -97,17 +96,23 @@ class Chou2Le extends Component {
             // 礼品
             if(presentType === 1) {
                 const newGiftList = newItem.giftList || [];
-                const { effectType: etype, effectTime, validUntilDate, giftID, ...others } = x;
+                const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
                     const st = moment(effectTime, DF);
                     const et = moment(validUntilDate, DF);
                     rangeDate = [ st, et ];
                 }
-                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, rangeDate, ...others }];
+                let countType = '0';
+                let etype = effectType;
+                if(effectType === 3) {
+                    countType = '1';
+                    etype = '1';
+                }
+                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, giftOdds, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
         });
         return { consumeType: `${stype}`, consumeTotalAmount, lottery };
     }
@@ -170,6 +175,8 @@ class Chou2Le extends Component {
             postEvent(allData).then(x => {
                 if(x) {
                     this.onToggle();
+                    closePage();
+                    jumpPage({ pageID: '1000076003'});
                 }
             });
             return;
@@ -178,6 +185,8 @@ class Chou2Le extends Component {
         putEvent({...allData}).then(x => {
             if(x) {
                 this.onToggle();
+                closePage();
+                jumpPage({ pageID: '1000076003'});
             }
         })
     }
@@ -208,9 +217,13 @@ class Chou2Le extends Component {
                 // 1 独立优惠券，4 券包
                 if(presentType === '1') {
                     giftList.forEach(x => {
-                        const { rangeDate, ...others } = x;
+                        const { rangeDate, countType, effectType: etype, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
-                        const obj = { ...rawObj, ...rangeObj, ...others };
+                        let effectType = etype;
+                        if(etype === '1' && countType === '1') {
+                            effectType = '3';
+                        }
+                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
                         gifts.push(obj);
                     });
                 } else {
@@ -266,6 +279,7 @@ class Chou2Le extends Component {
         this.onSetForm(null);
     }
     renderFooter(current) {
+        const { view } = this.props;
         const btn0 = (<Button key="0" onClick={this.onToggle}>取消</Button>);
         const btn1 = (<Button key="1" type="primary" onClick={this.onGoPrev}>上一步</Button>);
         const btn2 = (<Button key="2" type="primary" onClick={this.onGoStep2}>下一步</Button>);
@@ -273,7 +287,10 @@ class Chou2Le extends Component {
         const btn4 = (<Button key="4" type="primary" onClick={this.onGoDone}>完成</Button>);
         const step1 = ([ btn0, btn2 ]);
         const step2 = ([ btn0, btn1, btn3 ]);
-        const step3 = ([ btn0, btn1, btn4 ]);
+        let step3 = ([ btn0, btn1, btn4 ]);
+        if(view) {
+            step3 = ([ btn0, btn1 ]);   // 查看模式无完成功能
+        }
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
@@ -282,7 +299,7 @@ class Chou2Le extends Component {
         const footer = this.renderFooter(current);
         return (
             <Modal
-                title="新建下单抽抽乐"
+                title="下单抽抽乐"
                 visible={true}
                 maskClosable={false}
                 onOk={this.onOk}

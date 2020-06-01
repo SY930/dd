@@ -9,6 +9,10 @@ export default class TicketBag extends Component {
         visible: false,
         list: [],
     };
+    componentDidMount() {
+        const { value } = this.props;
+        this.setState({ list: value });
+    }
     componentWillReceiveProps(np) {
         const { value } = np;
         if(value) {

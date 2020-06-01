@@ -19,19 +19,29 @@
         color: @gray;
     }
 }
+.oddsBox{
+    :global{
+        .ant-row{
+            display: flex;
+            margin-bottom: 0!important;
+        }
+    }
+}
 .pointBox{
     display: flex;
-    &>em{
-        font-style: normal;
-        padding: 0 8px;
-    }
     :global{
-        .ant-input-wrapper{
+        .ant-row{
+            padding-top: 2px!important;
+        }
+        .ant-checkbox-wrapper{
             width: 100px;
+            margin-right: 0;
         }
-        .ant-select{
-            width: 160px;
-        }
+    }
+    .cardLabel{
+        width: 100px;
+        text-align: right;
+        padding: 0 4px;
     }
 }
 .ticketBox {
@@ -62,4 +72,13 @@
 }
 .giftBox{
     margin: 10px 0;
+}
+.disBox{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #d4cfcf59;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
 }

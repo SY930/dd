@@ -19,8 +19,8 @@ const giftTypeName= [
     { label: '配送券', value: '22' },
 ];
 const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 24 },
+    labelCol: { span: 7 },
+    wrapperCol: { span: 14 },
 };
 const formItems = {
     giftOdds: {

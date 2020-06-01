@@ -76,7 +76,7 @@ const formItems1 = {
         type: 'custom',
         label: '活动时段',
         render: d => d()(<TimeRange />),
-        defaultValue: [],
+        defaultValue: [{id: '0'}],
     },
     validCycle: {
         type: 'custom',
