@@ -465,7 +465,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: SALE_LABEL.k67cp1ta,
         example: SALE_LABEL.k67cpq5j,
-        tags: ['pos', SALE_LABEL.k639vgjy],
+        tags: ['pos', SALE_LABEL.k639vgjy, '小程序'],
         key: '1050',
         right: 15,
         bottom: 5,
