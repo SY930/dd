@@ -43,6 +43,15 @@ const exportablePromotionTypes = [
     // '22', // 报名活动
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+import {
+    dataOverviewColumns,
+    beRecommendTitleList,
+    tempColumns
+} from './constant'
+import {
+    renderOverViewData
+} from './specialPromotionDetailHelp'
+import _ from 'lodash'
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -62,6 +71,9 @@ class SpecialPromotionDetail extends React.Component {
             inviteeModalVisble: false,
             selectedInviter: null,
             recommendStatitics: [],
+            dataOverviewDataSource: [],
+            recommendRewardSummaryData: [],
+            recommendedRewardSummaryData: []
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
@@ -83,6 +95,31 @@ class SpecialPromotionDetail extends React.Component {
                 this.setState({
                     recommendStatitics: [res],
                 })
+            })
+            // 获取数据总揽和奖励统计
+            axiosData(
+                '/specialPromotion/queryRecommendEventSummary.ajax',
+                {eventID: eventEntity.itemID},
+                {needThrow: true},
+                {path: ''},
+                'HTTP_SERVICE_URL_PROMOTION_NEW',
+            ).then(res => {
+                if(res.code === '000') {
+                    const dataOverviewDataSource = [{}]
+                    dataOverviewColumns.forEach(v => {
+                        dataOverviewDataSource[0][v.key] = res[v.key]
+                    })
+
+                    this.setState({
+                        dataOverviewDataSource,
+                        recommendRewardSummaryData: res.recommendRewardSummaryData, // 推荐人统计
+                        recommendedRewardSummaryData: res.recommendedRewardSummaryData // 被推荐人统计
+
+                    })
+                } else {
+                    message.error(res.message)
+                }
+
             })
         }
 
@@ -207,17 +244,23 @@ class SpecialPromotionDetail extends React.Component {
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <div>数据总览</div>
+                    <Col span={24}>
+                        {renderOverViewData.call(this)}
+                    </Col>
+                    <div>&nbsp;</div>
                     <div>{this.props.intl.formatMessage(STRING_SPE.d31f11d5hd51190)}</div>
                     <Col span={24}>
                         {this.renderGiftInfoTable(records.filter(record => record.recommendType !== 0))}
                     </Col>
                     <div>&nbsp;</div>
+                    {/* <div>&nbsp;</div>
                     <Col span={24}>
                         {this.renderRecommendStatisticsTable()}
-                    </Col>
+                    </Col> */}
                     <div>{this.props.intl.formatMessage(STRING_SPE.da9060bn7f2110)}</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0)),{type: 'beRecommend'}}
                     </Col>
 
                     {this.renderSearch()}
@@ -384,7 +427,7 @@ class SpecialPromotionDetail extends React.Component {
         );
     }
     // 礼品信息表格
-    renderGiftInfoTable(records) {
+    renderGiftInfoTable(records,opt) {
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props
         const columns = [
@@ -467,6 +510,76 @@ class SpecialPromotionDetail extends React.Component {
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
             }
         });
+        if(this.props.record.eventInfo.data.eventWay == 68) {
+            // rewardType 1 为卡值 2 为积分 3 红包
+            let filterKeys = [
+                {name: '赠送积分',id: '2'},
+                {name: '赠送卡值',id: '1'},
+                {name: '现金红包',id: '4'},
+            ]
+
+            let {recommendRewardSummaryData,recommendedRewardSummaryData} = this.state
+            const recommendRewardSummaryDataList = []
+            if(opt.type === 'beRecommend') {
+                filterKeys = [ {name: '赠送积分',id: '2'}]
+                filterKeys.forEach(v => {
+                    recommendedRewardSummaryData.forEach(item => {
+                        if(item.rewardType == v.id) {
+                            item.rewardTypeName = v.name
+                            recommendRewardSummaryDataList.push(item)
+                        }
+                    })
+                })
+            } else {
+                filterKeys.forEach(v => {
+                    recommendRewardSummaryData.forEach(item => {
+                        if(item.rewardType == v.id) {
+                            item.rewardTypeName = v.name
+                            recommendRewardSummaryDataList.push(item)
+                        }
+                    })
+                })
+            }
+
+
+            const  columnsNew = _.cloneDeep(columns)
+            columnsNew.splice(1,0,{
+                title: '赠送类型',
+                dataIndex: 'mySendType',
+                key: 'mySendType',
+                className: "TableTxtCenter",
+            })
+            columnsNew.pop()
+            return (
+                <div>
+                    {recommendRewardSummaryDataList.map((val,index) => {
+
+                        return <div>
+                             <div>&nbsp;</div>
+                            <Table
+                                style={{width: '80%'}}
+                                dataSource={[
+                                    val
+                                ]}
+                                columns={beRecommendTitleList[index].map((v,i) => {
+                                    const column =  _.cloneDeep(tempColumns)[i]
+                                    column.title = v
+                                    return column
+                                })}
+                                bordered={true}
+                                pagination={false}
+                            />
+
+                        </div>
+                    })}
+                    <div>&nbsp;</div>
+                    <Table dataSource={dataSource.map(v => {
+                        v.mySendType = '优惠券'
+                        return v
+                    })} columns={columnsNew} bordered={true} pagination={false} />
+                </div>
+            );
+        }
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
