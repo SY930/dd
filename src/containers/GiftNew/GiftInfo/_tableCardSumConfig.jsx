@@ -108,6 +108,13 @@ const CARD_SUM_COLUMNS = [
         key: 'rechargeTime',
         render: (v) => { return v ? Moment(v, 'YYYYMMDDHHmmss').format(format) : '--' },
     },
+    {
+        title: '有效期',
+        dataIndex: 'termStr',
+        key: 'termStr',
+        className: 'TableTxtCenter',
+        width: 200
+    }
 ];
 const CARD_SUM_FORMITEMS = {
     giftStatus: {

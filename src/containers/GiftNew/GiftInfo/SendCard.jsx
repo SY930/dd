@@ -155,6 +155,20 @@ class SendCard extends React.Component {
         const { _key } = this.props;
         switch (_key) {
             case 'send':
+                const _SENDCARD_COLUMNS = _.cloneDeep(SENDCARD_COLUMNS)
+                _SENDCARD_COLUMNS.splice(7,0,{
+                    title: '已过期',
+                    dataIndex: 'expiredNum',
+                    key: 'expiredNum',
+                    fixed: 'left',
+                })
+                _SENDCARD_COLUMNS.push({
+                    title: '有效期',
+                    dataIndex: 'termStr',
+                    key: 'termStr',
+                    className: 'TableTxtCenter',
+                    width: 200
+                })
                 this.setState({
                     columns: [
                         ...[{
@@ -172,7 +186,7 @@ class SendCard extends React.Component {
                             className: 'TableTxtCenter',
                             render: (v, rec) => (<span className="operate"><a href="javaScript:;" onClick={() => this.handleMore(rec)}>{COMMON_LABEL.detail}</a></span>),
                         }],
-                        ...SENDCARD_COLUMNS,
+                        ..._SENDCARD_COLUMNS,
                     ],
                     formItems: SENDCARD_QUERY_FORMITEMS,
                     formKeys: SENDCARD_FORMKEYS,
@@ -196,7 +210,15 @@ class SendCard extends React.Component {
                             render: (text, record, index) => {
                                 return <span>{mapValueToLabel(GiftCfg.giftCardStatus, String(text))}</span>
                             },
-                        }],
+                        },
+                        {
+                            title: '有效期',
+                            dataIndex: 'termStr',
+                            key: 'termStr',
+                            className: 'TableTxtCenter',
+                            width: 200
+                        }
+                    ],
                     ],
                     formItems: MADECARD_QUERY_FORMITEMS,
                     formKeys: MADECARD_FORMKEYS,
@@ -590,7 +612,7 @@ class SendCard extends React.Component {
                             render: c.render.bind(this),
                         }) : c))}
                         dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : { x: 930 })}
+                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : _key === 'sum'  ? { x: 1200 } : { x: 930 })}
                         rowSelection={this.props._key === 'made' ? {
                             onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
                             selectedRowKeys: this.state.selectedRowKeys,
