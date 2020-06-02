@@ -12,7 +12,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { isEqual, uniq } from 'lodash';
 import { axiosData } from '../../../helpers/util';
-
+import { axios } from '@hualala/platform-base';
 import {
     Form,
     Radio,
@@ -30,7 +30,7 @@ import { fetchPromotionScopeInfo, getPromotionShopSchema } from '../../../redux/
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import ExcludeCardTable from './ExcludeCardTable';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
@@ -53,6 +53,7 @@ class CardLevelForWX extends React.Component {
             canUseShops: [], // 所选卡类适用店铺id
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             selections_shopsInfo: { shopsInfo: [] }, // 已选店铺,
+            shopStatus: true,
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRadioChange = this.handleRadioChange.bind(this);
@@ -75,6 +76,7 @@ class CardLevelForWX extends React.Component {
                 cardLevelIDList: this.state.cardLevelIDList,
             });
         })
+        this.loadShopSchema();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -209,7 +211,7 @@ class CardLevelForWX extends React.Component {
                 canUseShops = Array.from(new Set(canUseShops));
                 this.props.saveCurrentCanUseShops(canUseShops)
                 this.props.saleCenterQueryOnlineRestaurantStatus('success');
-                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } })
+                this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } });
             }).catch(err => {
                 this.props.saleCenterQueryOnlineRestaurantStatus('error');
             })
@@ -238,7 +240,33 @@ class CardLevelForWX extends React.Component {
         dynamicShopSchema.brands = dynamicShopSchema.brands && dynamicShopSchema.brands instanceof Array ? dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID)) : [];
         return dynamicShopSchema;
     }
-
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { shops } = data;
+        this.countIsRequire(shops);
+    }
+    countIsRequire(shopList){
+        const { shopSchemaInfo, specialPromotion } = this.props;
+        const { size } = shopSchemaInfo.getIn(['shopSchema', 'shops']);       // 总店铺数
+        const eventInfo = specialPromotion.getIn(['$eventInfo']).toJS();
+        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
+        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(!isOld){
+            if(length<size){
+                this.setState({ isRequire: true });
+            }
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+            }
+        }
+    }
     handleSelectChange(value) {
         this.queryCanuseShops(value)
         this.setState({
@@ -267,6 +295,7 @@ class CardLevelForWX extends React.Component {
     editBoxForShopsChange = (val) => {
         this.setState({
             selections_shopsInfo: { shopsInfo: val }, // shopIDList
+            shopStatus: val.length > 0,
         }, () => {
             this.props.onChange && this.props.onChange({
                 shopIDList: this.state.selections_shopsInfo.shopsInfo,
@@ -274,6 +303,7 @@ class CardLevelForWX extends React.Component {
         })
     }
     renderShopsOptions() {
+        const { isRequire, shopStatus, canUseShops } = this.state;
         const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
@@ -282,13 +312,17 @@ class CardLevelForWX extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
+                    required={isRequire}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : '店铺不能为空'}
                 >
                     <ShopSelector
                         value={(this.state.selections_shopsInfo.shopsInfo || []).map(shopID => String(shopID))}
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.getDynamicShopSchema()}
+                        canUseShops={canUseShops}
+                        // schemaData={this.getDynamicShopSchema()}
                     />
                     {
                         queryCanUseShopStatus === 'error' && (

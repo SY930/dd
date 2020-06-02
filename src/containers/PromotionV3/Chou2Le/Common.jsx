@@ -120,7 +120,7 @@ const formItems2 = {
         type: 'checkbox',
         label: '适用业务',
         options: bizOpts,
-        defaultValue: [],
+        defaultValue: ['31'],
     },
     shopIDList: {
         type: 'custom',

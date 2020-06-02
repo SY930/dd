@@ -1,4 +1,4 @@
-import { axios } from '@hualala/platform-base';
+import { axios, getStore } from '@hualala/platform-base';
 import { FILTERS } from './config';
 
 function presetFilterOptions(records, filter) {
@@ -9,42 +9,47 @@ function presetFilterOptions(records, filter) {
         label: record[labelKey],
     }));
 }
+function getAccountInfo() {
+    const { user } = getStore().getState();
+    return user.get('accountInfo').toJS();
+}
 
 /**
  * 调用接口请求 shopSchema 数据，如果提供 cache 则直接使用 cache
  * @param {any} params 请求参数
  * @param {any} cache 缓存数据
  */
-export async function loadShopSchema(params = {}, cache, brandList = []) {
+export async function loadShopSchema(params = {}, cache) {
+    const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'crm/', '/api/v1/universal?'];
+    const method = `${api}groupShopService_findSchemaShopcenterNew.ajax`;
     let data = cache;
+    const { groupID, dataPermissions } = getAccountInfo();
     if (!data) {
-        const res = await axios.post('/api/shopapi/schema', params);
+        const params = { service, type, data:{ groupID }, method };
+        const res = await axios.post(url + method, params);
         if (res.code !== '000') throw new Error(res.message);
         data = res.data;
     }
-    if(brandList[0]){
-        // 品牌过滤
-        const { brands = [], shops = [] } = data;
-        const leftBrands = brands.filter(x=>brandList.includes(x.brandID));
-        let shopsList = [];
-        leftBrands.forEach(x=>{
-            const { shopIDs } = x;
-            shopsList = [...shopsList, ...new Set(shopIDs)];
-        });
-        const leftShops = shops.filter(x=>shopsList.includes(x.shopID));
-        data = { ...data, brands: leftBrands, shops: leftShops };
-    }
-    const filterOptions = FILTERS.reduce((ret, filter) => {
+    let filterOptions = FILTERS.reduce((ret, filter) => {
         const records = data[filter.name];
         return {
             ...ret,
             [filter.name]: records ? presetFilterOptions(records, filter) : undefined,
         };
     }, {});
+    filterOptions.businessModels = [
+        {businessModel: "1", businessType: "直营", value: "1", label: "直营"},
+        {businessModel: "2", businessType: "加盟", value: "2", label: "加盟"},
+        {businessModel: "3", businessType: "托管", value: "3", label: "托管"},
+        {businessModel: "4", businessType: "合作", value: "4", label: "合作"},
+    ];
+    const { shopList = [] } = dataPermissions;
+    const userShops = shopList.map(x=>x.shopID);
     return {
         shops: data.shops ? data.shops.map(shop => ({
             ...shop,
             value: shop.shopID,
+            disabled: !userShops.includes(shop.shopID),
             label: shop.shopName,
             orgTagIDs: `${shop.orgTagMarket},${shop.orgTagBusiness},${shop.orgTagSteer}`,
         })) : undefined,

@@ -30,10 +30,10 @@ import {
     fetchPromotionScopeInfo,
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { axios } from '@hualala/platform-base';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -63,6 +63,7 @@ class StepTwo extends React.Component {
             accountNo: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
+            isRequire: true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -149,6 +150,7 @@ class StepTwo extends React.Component {
         if (!this.props.specialPromotion.get('customerCount')) {
             this.props.getGroupCRMCustomAmount()
         }
+        this.loadShopSchema();
     }
 
     filterAvailableShops() {
@@ -327,7 +329,39 @@ class StepTwo extends React.Component {
     editBoxForShopsChange(val) {
         this.setState({
             selections: val,
+            shopStatus: val.length > 0,
         })
+    }
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { shops } = data;
+        this.countIsRequire(shops);
+    }
+    countIsRequire(shopList){
+        const { shopSchemaInfo, specialPromotion } = this.props;
+        const { size } = shopSchemaInfo.getIn(['shopSchema', 'shops']);       // 总店铺数
+        const eventInfo = specialPromotion.getIn(['$eventInfo']).toJS();
+        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
+        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(!isOld){
+            if(length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        }
     }
     renderShopsOptions() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
@@ -338,6 +372,7 @@ class StepTwo extends React.Component {
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0;
         const selectedShopIdStrings = this.state.selections.map(shopIdNum => String(shopIdNum));
+        const { isRequire, shopStatus  } = this.state;
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
@@ -345,15 +380,18 @@ class StepTwo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={noSelected64 ? 'error' : 'success'}
-                    help={noSelected64 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe85eqm5087)}` : null}
+                    required={isRequire}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : '店铺不能为空'}
+                    // validateStatus={noSelected64 ? 'error' : 'success'}
+                    // help={noSelected64 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe85eqm5087)}` : null}
                 >
                     <ShopSelector
                         value={selectedShopIdStrings}
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        schemaData={this.filterAvailableShops()}
+                        // schemaData={this.filterAvailableShops()}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>

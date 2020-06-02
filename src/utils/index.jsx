@@ -106,7 +106,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 })
             } else {
                 acc[dupIndex].typeSet.add(`${curr.type || 0}`)
-            }  
+            }
         } else if (`${curr.brandID}` === '0') { // 把这种通用的分类扩展给每个品牌
             acc.push(...brands.map(brand => ({
                 ...curr,
@@ -133,7 +133,8 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${curr.brandID}__${curr.foodCategoryName}`,
                 onlineFoodCategoryID: `${curr.brandID}__${curr.foodOnlineCategoryName}`,
-                value: `${curr.brandID}__${curr.foodName}${curr.unit}`
+                value: `${curr.brandID}__${curr.foodName}${curr.unit}`,
+                targetUnitName: `${curr.unit}`,
             })
         } else if (`${curr.brandID}` === '0') { // 把这种通用的菜品扩展给每个品牌
             acc.push(...brands.map(brand => ({
@@ -146,7 +147,8 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 py: curr.foodMnemonicCode,
                 localFoodCategoryID: `${brand.brandID}__${curr.foodCategoryName}`,
                 onlineFoodCategoryID: `${brand.brandID}__${curr.foodOnlineCategoryName}`,
-                value: `${brand.brandID}__${curr.foodName}${curr.unit}`
+                value: `${brand.brandID}__${curr.foodName}${curr.unit}`,
+                targetUnitName: `${curr.unit}`,
             })))
         }
         return acc;
@@ -226,3 +228,14 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
 
 export const memoizedExpandCategoriesAndDishes = memoizeOne(expandCategoriesAndDishes)
 export const memoizedShopCategoriesAndDishes = memoizeOne(expandCategoriesAndDishesForShop)
+
+/**
+ * 根据主题参数，给body添加class，适配不同的主题
+ *
+ * @param {*} className
+ */
+export const setThemeClass = (className) => {
+    const body = document.querySelector('body')
+    const oldClass = body.getAttribute('class')
+    body.setAttribute('class',oldClass || '' + ' ' + className)
+}

@@ -20,9 +20,10 @@ import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/pro
 
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import styles1 from './payAfter.less';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
 import Immutable from 'immutable';
 import { axiosData } from '../../../helpers/util';
+import { axios } from '@hualala/platform-base';
 
 const supportOrderTypesOptions = [
     {
@@ -34,7 +35,7 @@ const supportOrderTypesOptions = [
         value: '1',
         disabled: true,
     },
-    
+
     {
         label: '自提',
         value: '2',
@@ -49,7 +50,7 @@ const supportOrderTypesOptions = [
         label: '预定',
         value: '4',
         disabled: true,
-    }, 
+    },
 ];
 
 const CheckboxGroup = Checkbox.Group;
@@ -66,6 +67,7 @@ class StepTwo extends React.Component {
             $brands: [],
             filterShop: [],
             tipVisible: false,
+            isRequire: true,
         }
         this.handleBrandChange = this.handleBrandChange.bind(this);
     }
@@ -82,6 +84,7 @@ class StepTwo extends React.Component {
         this.setState({
             $brands: this.props.specialPromotionInfo.toJS().$eventInfo.brands,
         })
+        this.loadShopSchema();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
@@ -142,6 +145,7 @@ class StepTwo extends React.Component {
         this.setState({
             shopIDList: v,
             tipVisible: v.length ? false : true,
+            shopStatus: v.length > 0,
         })
     }
     handleSupportOrderTypesChange = (v) => {
@@ -198,15 +202,45 @@ class StepTwo extends React.Component {
             </Form.Item>
         );
     }
-    
 
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { shops } = data;
+        this.countIsRequire(shops);
+    }
+    countIsRequire(shopList){
+        const { shopSchema, specialPromotionInfo } = this.props;
+        const { size } = shopSchema.getIn(['shops']);       // 总店铺数
+        const eventInfo = specialPromotionInfo.getIn(['$eventInfo']).toJS();
+        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
+        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(!isOld){
+            if(length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        }
+    }
     render() {
         const originTreeData = this.props.shopSchema.toJS();
         const shopData = this.props.shopSchema.toJS().shops;
         const filterShopData = shopData.filter( item => this.state.filterShop.indexOf(item.shopID) < 0);
         const addDataShop = filterShopData.concat(shopData.filter( item => this.state.shopIDList.indexOf(item.shopID) >= 0));
         originTreeData.shops = addDataShop;
-        const { tipVisible } = this.state;
+        const { tipVisible, isRequire, shopStatus  } = this.state;
         return (
             <div>
                 {this.props.user.shopID > 0 ? null : null}
@@ -215,16 +249,18 @@ class StepTwo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
+                    required={isRequire}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : '店铺不能为空'}
                 >
                     <ShopSelector
                         value={this.state.shopIDList}
                         onChange={this.handleShopChange}
-                        schemaData={originTreeData}
+                        // schemaData={originTreeData}
                     />
                 </Form.Item>
-                {tipVisible ? <span className={styles1.orangeFont}>不填代表全部店铺适用</span> : null}
             </div>
-            
+
         );
     }
 }

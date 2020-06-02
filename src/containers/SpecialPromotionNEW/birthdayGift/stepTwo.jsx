@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { Form, Icon, Select, Radio, message } from 'antd';
 import { isEqual, uniq } from 'lodash';
 import Immutable from 'immutable'
+import { axios } from '@hualala/platform-base';
 import { axiosData } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
@@ -26,7 +27,7 @@ import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySp
 import {
     getPromotionShopSchema,
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import ShopSelector from '../../../components/common/ShopSelector';
+import ShopSelector from '../../../components/ShopSelector';
 import BirthdayCardLevelSelector from './BirthdayCardLevelSelector';
 import ExcludeCardTable from '../common/ExcludeCardTable';
 import { injectIntl } from 'i18n/common/injectDecorator'
@@ -167,6 +168,8 @@ class StepTwo extends React.Component {
     }
     onCardLevelChange(obj) {
         this.setState(obj)
+        // const { cardLevelIDList } = obj;
+        // this.querycanUseShopIDs(cardLevelIDList)
     }
     onHandleSelect(obj) {
         if (obj && obj.cardLevelIDList) {
@@ -382,6 +385,7 @@ class StepTwo extends React.Component {
         // 保存适用店铺
         this.setState({
             shopIDList: shops,
+            shopStatus: shops.length > 0,
         })
         // console.log(shops);
     }
@@ -406,10 +410,12 @@ class StepTwo extends React.Component {
         })
     }
     // 查询已选卡类型的可用店铺
-    querycanUseShopIDs = () => {
+    querycanUseShopIDs = (tids = []) => {
+        console.log('tids', tids);
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             queryCardType: 1, // questArr.length === 0 ? 0 : 1,
+            cardTypeIds: tids.join(','),
         }, null, { path: 'data.cardTypeShopList' })
             .then((cardTypeShopList) => {
                 const obj = {}
@@ -479,7 +485,7 @@ class StepTwo extends React.Component {
         return dynamicShopSchema;
     }
     renderShopsOptions() {
-        const { shopIDList } = this.state
+        const { shopIDList, isRequire, shopStatus, canUseShopIDs } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
         return (
             <Form.Item
@@ -487,15 +493,13 @@ class StepTwo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                // validateStatus={noSelected64 ? 'error' : 'success'}
-                // help={noSelected64 ? '同时段内，已有评价送礼活动选择了个别店铺，因此不能略过而全选' : null}
             >
                 <ShopSelector
                     value={selectedShopIdStrings}
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    schemaData={this.filterAvailableShops()}
+                    canUseShops={canUseShopIDs}
                 />
             </Form.Item>
         );

@@ -18,6 +18,7 @@ import {
     Tooltip,
     Icon,
     message as messageAlert,
+    Checkbox
 } from 'antd';
 import { saleCenterSetSpecialBasicInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -25,7 +26,7 @@ import SendMsgInfo from '../common/SendMsgInfo';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { activeRulesList } from './constant'
 
 
 const FormItem = Form.Item;
@@ -39,7 +40,7 @@ class StepTwo extends React.Component {
         const autoRegister = props.specialPromotionInfo.getIn(['$eventInfo', 'autoRegister']);
         this.state = {
             autoRegister: autoRegister === undefined ? 1 : autoRegister,
-            recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) || undefined,
+            recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) ||  ['1'],
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
             mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
@@ -85,8 +86,23 @@ class StepTwo extends React.Component {
                 accountNo,
                 ...restState,
             } = this.state;
+            const { allWeChatAccountList, user } = this.props;
+            const allmpList = allWeChatAccountList.toJS();
+            const { mpIDList } = restState;
+            const launchSceneList = [];
+            const { accountInfo: {groupID}} = user;
+            allmpList.forEach(x=>{
+                const { mpID, appID } = x;
+                if(mpIDList.includes(mpID)) {
+                    launchSceneList.push({
+                        mpID, appID, groupID,
+                    })
+                }
+            });
+
             const opts = {
                 smsTemplate: sendFlag ? message : '',
+                launchSceneList,
                 ...restState,
             };
             if (sendFlag) {
@@ -159,6 +175,7 @@ class StepTwo extends React.Component {
         const smsGate = this.props.specialPromotionInfo.getIn(['$eventInfo', 'smsGate']);
         const sendFlag = smsGate == '1' || smsGate == '3' || smsGate == '4';
         const userCount = this.props.specialPromotionInfo.getIn(['$eventInfo', 'userCount']);// 当有人参与后，规则不可切换
+
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -199,7 +216,7 @@ class StepTwo extends React.Component {
                         />
                     </Tooltip>
                 </FormItem>
-                <FormItem
+                {/* <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -225,6 +242,28 @@ class StepTwo extends React.Component {
                             </Select>
                         )
                     }
+                </FormItem> */}
+                <FormItem
+                    label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    required
+                    wrapperCol={{ span: 17 }}
+                >
+                    {
+                        this.props.form.getFieldDecorator('recommendRule', {
+                            rules: [
+                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.du3brskjh5191)}` }
+                            ],
+                            initialValue: typeof recommendRule === 'number'   ? String(recommendRule).split('')   :  ["1"],
+                            onChange: this.handleRecommendRuleChange,
+                        })(
+                            <Checkbox.Group
+                                options={activeRulesList}
+                                disabled={userCount > 0 || !this.props.isNew}
+                            />
+                        )
+                    }
                 </FormItem>
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
@@ -247,6 +286,7 @@ class StepTwo extends React.Component {
                                 optionFilterProp="children"
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                                 getPopupContainer={(node) => node.parentNode}
+
                             >
                                 {
                                     cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)
@@ -278,6 +318,7 @@ class StepTwo extends React.Component {
                     <RadioGroup
                         onChange={this.handleRecommendRangeChange}
                         value={`${recommendRange}`}
+                        disabled={!this.props.isNew}
                     >
                         <Radio value="0">{this.props.intl.formatMessage(STRING_SPE.d31f129919j11250)}</Radio>
                         <Radio value="1">{this.props.intl.formatMessage(STRING_SPE.d1e09ku34n12207)}</Radio>

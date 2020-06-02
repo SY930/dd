@@ -86,7 +86,6 @@ export const getPromotionShopSchema = (params) => {
             .catch(err => console.log('err: ', err))
     };
 };
-
 export const saleCenterResetShopSchemaAC = (opts) => {
     return {
         type: SALE_CENTER_RESET_SHOP_SCHEMA,
