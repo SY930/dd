@@ -52,21 +52,22 @@ class Chou2Le extends Component {
         const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms } = data;
         const eventRange = [moment(sd), moment(ed)];
         let timsObj = {};
+        const TF = 'HH:mm';
         if(times) {
             const timeList = times.map(x => {
                 const { startTime, endTime } = x;
-                const st = moment(startTime);
-                const et = moment(endTime);
+                const st = moment(startTime, TF);
+                const et = moment(endTime, TF);
                 return { startTime: st, endTime: et };
             });
-            timsObj = { timeList, advMore: true };
+            timsObj = { timeList };
         }
         let cycleType = '';
         if(validCycle) {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = validCycle[0];
         }
-        return { ...data, eventRange, ...timsObj, cycleType, smsGate: `${sms}` };
+        return { ...data, eventRange, ...timsObj, advMore: true, cycleType, smsGate: `${sms}` };
     }
     setData4Step2(data) {
         const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;
@@ -84,7 +85,7 @@ class Chou2Le extends Component {
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
-                const { presentValue, cardTypeID } = x;
+                const { presentValue, cardTypeID = '' } = x;
                 newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
             }
             // 券包
@@ -114,6 +115,7 @@ class Chou2Le extends Component {
             }
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
         });
+        console.log('lottery', lottery);
         return { consumeType: `${stype}`, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */

@@ -3,6 +3,7 @@
 @green2: #18a786;
 @gray: #999;
 .mainBox{
+    position: relative;
     :global{
         .ant-tabs-tab-active{
             color: @green2!important;
@@ -29,19 +30,16 @@
 }
 .pointBox{
     display: flex;
+    padding-top: 5px;
     :global{
         .ant-row{
+            display: flex;
             padding-top: 2px!important;
         }
         .ant-checkbox-wrapper{
-            width: 100px;
+            width: 85px;
             margin-right: 0;
         }
-    }
-    .cardLabel{
-        width: 100px;
-        text-align: right;
-        padding: 0 4px;
     }
 }
 .ticketBox {
@@ -77,7 +75,7 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 56px;
+        width: 60px;
         height: 24px;
         padding: 6px 10px;
         color: #fff;
@@ -85,6 +83,15 @@
         background: url('http://res.hualala.com/basicdoc/660ffcf1-348c-409b-846d-3cdf1db4652f.png') no-repeat;
         background-size: contain;
         line-height: 1;
+    }
+    &>a{
+        position: absolute;
+        right: 0;
+        top: 0px;
+        font-size: 24px;
+        color: #b3aeae;
+        line-height: 1;
+        z-index: 9;
     }
 }
 .disBox{

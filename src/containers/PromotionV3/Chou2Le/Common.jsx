@@ -140,6 +140,7 @@ const formItems3 = {
         surfix: '元，可参与活动',
         prefix: '消费满',
         rules: [{
+            required: true,
             pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
             message: '请输入0~100000数字，支持两位小数',
         }],
@@ -155,6 +156,7 @@ const formItems3 = {
         type: 'custom',
         render: () => (<p/>),
         defaultValue: [lottDefVal],
+        wrapperCol: { span: 18 },
     },
 };
 const formKeys3 = ['consumeTotalAmount', 'consumeType', 'lottery'];

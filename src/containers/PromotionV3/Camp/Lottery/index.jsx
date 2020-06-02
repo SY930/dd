@@ -100,6 +100,7 @@ class Lottery extends Component {
         const { value, decorator } = this.props;
         if(!value[0]){ return null}
         const { length } = value;
+        const disable = value[0].userCount > 0;    // 如果被用了，不能编辑
         return (
                 <div className={css.mainBox}>
                     <div className={css.addBox}>
@@ -119,7 +120,6 @@ class Lottery extends Component {
                             {value.map((x, i)=>{
                                 const close = (length === i + 1) && (i > 0);
                                 const name = `奖项${i + 1}`;
-                                const disable = x.userCount > 0;    // 如果被用了，不能编辑
                                 let gifts = x.giftList;
                                 // 防止回显没数据不显示礼品组件
                                 if(!gifts[0]){
@@ -148,7 +148,7 @@ class Lottery extends Component {
                                                         },
                                                     }],
                                                 })(
-                                                    <p><Input value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange}/></p>
+                                                    <p><Input disabled={disable} value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange}/></p>
                                                 )
                                             }
                                             </FormItem>
@@ -156,7 +156,7 @@ class Lottery extends Component {
                                         <li className={css.pointBox}>
                                             <Checkbox checked={x.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
                                             {x.isPoint &&
-                                                <div style={{ display: 'flex' }}>
+                                                <div style={{ display: 'flex', width: 400 }}>
                                                     <FormItem label="">
                                                         {
                                                             decorator({
@@ -164,29 +164,40 @@ class Lottery extends Component {
                                                                 value: x.presentValue,
                                                                 defaultValue: x.presentValue,
                                                                 rules: [{
-                                                                    pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
-                                                                    message: '请输入0~100000数字，支持两位小数',
+                                                                    required: true,
+                                                                    pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+                                                                    message: '请输入0.01~100000数字，支持两位小数',
                                                                 }],
                                                             })(
-                                                                <p><Input value={x.presentValue} addonAfter="积分" onChange={this.onPresentValueChange}/></p>
+                                                                <p style={{ width: 120 }}><Input value={x.presentValue} addonAfter="积分" onChange={this.onPresentValueChange}/></p>
                                                             )
                                                         }
                                                     </FormItem>
-                                                    <label className={css.cardLabel}>充值到会员卡</label>
-                                                    <p style={{ width: 160 }}>
-                                                        <Select value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
+                                                    <FormItem label="充值到会员卡">
                                                         {
-                                                            cardList.map(c => {
-                                                                return (<Option
-                                                                        key={c.cardTypeID}
-                                                                        value={c.cardTypeID}
-                                                                        >
-                                                                        {c.cardTypeName}
-                                                                    </Option>)
-                                                            })
-                                                        }
-                                                        </Select>
-                                                    </p>
+                                                            decorator({
+                                                                key: 'cardTypeID' + i,
+                                                                value: x.cardTypeID,
+                                                                defaultValue: x.cardTypeID,
+                                                                rules: [{
+                                                                    required: true,
+                                                                    message: '不能为空',
+                                                                }],
+                                                            })(
+                                                                <Select style={{ width: 160 }} value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
+                                                                {
+                                                                    cardList.map(c => {
+                                                                        return (<Option
+                                                                                key={c.cardTypeID}
+                                                                                value={c.cardTypeID}
+                                                                                >
+                                                                                {c.cardTypeName}
+                                                                            </Option>)
+                                                                    })
+                                                                }
+                                                                </Select>
+                                                        )}
+                                                    </FormItem>
                                                 </div>
                                             }
                                         </li>
@@ -206,7 +217,6 @@ class Lottery extends Component {
                                                     <MutliGift value={gifts} onChange={this.onGiftChange} /> :
                                                     <TicketBag value={x.bagList} onChange={this.onBagChange} />
                                                 }
-                                                <p className={disable ? css.disBox: ''}></p>
                                                 </div>
                                             </li>
                                         }
@@ -215,6 +225,7 @@ class Lottery extends Component {
                             })}
                         </Tabs>
                     </div>
+                    <p className={disable ? css.disBox: ''}></p>
                 </div>
 
         )
