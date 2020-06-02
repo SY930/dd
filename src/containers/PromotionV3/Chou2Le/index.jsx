@@ -82,7 +82,7 @@ class Chou2Le extends Component {
             const { presentType, giftOdds, sortIndex } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { ...lottery[index], isPoint: false, isTicket: false, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
+            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
                 const { presentValue, cardTypeID } = x;
                 newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
@@ -95,7 +95,7 @@ class Chou2Le extends Component {
             }
             // 礼品
             if(presentType === 1) {
-                const newGiftList = newItem.giftList || [];
+                const newGiftList = newItem.giftList;
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
@@ -164,7 +164,7 @@ class Chou2Le extends Component {
                 const isGift = lottery.every(x=>{
                     if(x.isTicket && x.presentType === '1') {
                         return x.giftList.every(g=>{
-                            return g.giftID && g.giftTotalCount && g.giftValidUntilDayCount;
+                            return g.giftID && g.giftCount && g.giftValidUntilDayCount;
                         })
                     }
                     return true;
@@ -183,8 +183,6 @@ class Chou2Le extends Component {
                     message.error('券包项必选');
                     return;
                 }
-                console.log('lottery', lottery);
-                return;
                 const formData3 = this.setStep3Data(v);
                 this.onSubmit(formData3);
             }
@@ -249,7 +247,7 @@ class Chou2Le extends Component {
                 // 1 独立优惠券，4 券包
                 if(presentType === '1') {
                     giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, ...others } = x;
+                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {

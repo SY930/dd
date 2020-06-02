@@ -16,6 +16,7 @@ class Lottery extends Component {
         tabKey: '1',
         cardList: [],
     }
+    count = 0;
     componentDidMount() {
         // this.add();
         this.getCardType();
@@ -58,6 +59,11 @@ class Lottery extends Component {
         const list = [...value];
         const item = list[tabKey - 1];
         list[tabKey - 1] = { ...item, ...data };
+        let count = 0;
+        list.forEach(x=>{
+            count += +x.giftOdds;
+        });
+        this.count = count;
         onChange(list);
     }
     onGiftOddsChange = ({ target }) => {
@@ -114,6 +120,11 @@ class Lottery extends Component {
                                 const close = (length === i + 1) && (i > 0);
                                 const name = `奖项${i + 1}`;
                                 const disable = x.userCount > 0;    // 如果被用了，不能编辑
+                                let gifts = x.giftList;
+                                // 防止回显没数据不显示礼品组件
+                                if(!gifts[0]){
+                                    gifts.push({ id: '001', effectType: '1' });
+                                }
                                 return (<TabPane tab={name} key={x.id} closable={close}>
                                     <ul>
                                         <li className={css.oddsBox}>
@@ -126,20 +137,11 @@ class Lottery extends Component {
                                                     rules: [{
                                                         required: true,
                                                         validator: (rule, v, cb) => {
-                                                            let count = 0;
-                                                            const idx = tabKey - 1;
-                                                            value.forEach((o, j)=>{
-                                                                if(idx === j) {
-                                                                    count += +v;
-                                                                } else {
-                                                                   count += +o.giftOdds;
-                                                                }
-                                                            });
                                                             const reg = /^\d+$/;
                                                             if(!reg.test(v)) {
                                                                 return cb('请输入数字');
                                                             }
-                                                            if (count > 100) {
+                                                            if (this.count > 100) {
                                                                 return cb('奖品中奖概率之和应为0.01~100%');
                                                             }
                                                             cb();
@@ -201,7 +203,7 @@ class Lottery extends Component {
                                                 </p>
                                                 <div style={{ position: "relative" }}>
                                                 {x.presentType === '1' ?
-                                                    <MutliGift value={x.giftList} onChange={this.onGiftChange} /> :
+                                                    <MutliGift value={gifts} onChange={this.onGiftChange} /> :
                                                     <TicketBag value={x.bagList} onChange={this.onBagChange} />
                                                 }
                                                 <p className={disable ? css.disBox: ''}></p>
