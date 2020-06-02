@@ -128,6 +128,7 @@ class Chou2Le extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 const {  validCycle, cycleType } = v;
+                console.log('vvv', v);
                 // 根据周期类型删除曾选择的缓存垃圾数据
                 let cycleObj = {};
                 if(cycleType) {
@@ -193,14 +194,12 @@ class Chou2Le extends Component {
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { timeList, eventRange, excludedDate, ...others1 } = formData1;
+        const { timeList, eventRange, ...others1 } = formData1;
         const newTimeList = this.formatTimeList(timeList);
         const newEventRange = this.formatEventRange(eventRange);
-        const newExcludedDate = this.formatExcludedDate(excludedDate);
         const step2Data = this.setStep2Data();
         const { gifts, ...others3 } = formData3;
-        const event = { ...others1, ...others3, ...newEventRange,
-            excludedDate: newExcludedDate, ...step2Data, eventWay: '78' };
+        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78' };
         if(id) {
             const itemID = id;
             const allData = { timeList: newTimeList, event: {...event, itemID}, gifts };
@@ -293,12 +292,12 @@ class Chou2Le extends Component {
         const eventEndDate = moment(ed).format(DF);
         return { eventStartDate, eventEndDate };
     }
-    formatExcludedDate(excludedDate) {
-        if(!excludedDate){ return []}
-        return excludedDate.map(x => {
-            return moment(x).format(DF);
-        });
-    }
+    // formatExcludedDate(excludedDate) {
+    //     if(!excludedDate){ return []}
+    //     return excludedDate.map(x => {
+    //         return moment(x).format(DF);
+    //     });
+    // }
     onToggle = () => {
         this.props.onToggle();
     }

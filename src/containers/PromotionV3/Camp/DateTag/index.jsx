@@ -12,10 +12,10 @@ class DateTag extends Component {
 
     onCheck = (val) => {
         const { value, onChange } = this.props;
-        // const date = val.format(DF2);
-        const isExist = value.some(x=>x===val);
+        const date = val.format(DF2);
+        const isExist = value.some(x=>x===date);
         if(isExist){ return }
-        const list = [...value, val];
+        const list = [...value, date];
         onChange(list);
     }
     onClose = (tag) => {
@@ -41,7 +41,7 @@ class DateTag extends Component {
                 <p className={css.tagBox}>
                     {value.map(x=>{
                         const label = moment(x).format(DF);
-                        return (<Tag key={x} onClose={this.onClose} closable={1}>{label}</Tag>)
+                        return (<Tag key={x} afterClose={() => this.onClose(x)} closable={1}>{label}</Tag>)
                     })}
                 </p>
             </div>
