@@ -49,7 +49,7 @@ class Chou2Le extends Component {
     }
     // 回显需要重写整理的数据
     setData4Step1(data, times) {
-        const { eventStartDate: sd, eventEndDate: ed, validCycle } = data;
+        const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms } = data;
         const eventRange = [moment(sd), moment(ed)];
         let timsObj = {};
         if(times) {
@@ -66,7 +66,7 @@ class Chou2Le extends Component {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = validCycle[0];
         }
-        return { ...data, eventRange, ...timsObj, cycleType };
+        return { ...data, eventRange, ...timsObj, cycleType, smsGate: `${sms}` };
     }
     setData4Step2(data) {
         const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;

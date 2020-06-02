@@ -98,9 +98,9 @@ class Lottery extends Component {
                 <div className={css.mainBox}>
                     <div className={css.addBox}>
                         <Button type="primary" onClick={this.add}>
-                            <Icon type="plus" />添加奖项
+                            <Icon type="plus" />添加奖品
                         </Button>
-                        <p>最多可添加7项</p>
+                        <p>最多可添加7个奖品</p>
                     </div>
                     <div>
                         <Tabs

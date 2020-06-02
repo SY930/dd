@@ -39,6 +39,7 @@ class MutliGift extends Component {
                     value.map((x, i)=>{
                         return (
                             <div key={x.id} className={css.giftBox}>
+                                <em>礼品{i+1}</em>
                                 <Gift
                                     idx={i}
                                     treeData={treeData}

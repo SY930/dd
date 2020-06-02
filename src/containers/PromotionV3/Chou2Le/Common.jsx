@@ -95,8 +95,8 @@ const formItems1 = {
 // "eventEndDate": "20220610",
 // "eventStartDate": "20200522",
 // excludedDate "20200522"
-const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
-const KEY2 = ['smsGate', 'eventRemark'];
+const KEY1 = ['eventType', 'eventName', 'smsGate', 'eventRange', 'advMore'];
+const KEY2 = ['eventRemark'];
 const KEY3 = ['timeList', 'cycleType'];
 const KEY4 = ['validCycle'];
 const KEY5 = ['excludedDate'];
@@ -137,7 +137,7 @@ const formItems3 = {
     consumeTotalAmount: {
         type: 'text',
         label: '活动参与限制',
-        surfix: '元，可以参与',
+        surfix: '元，可参与活动',
         prefix: '消费满',
         rules: [{
             pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
