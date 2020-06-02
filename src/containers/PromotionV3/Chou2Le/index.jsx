@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Steps, Button } from 'antd';
+import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
 import { getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
@@ -82,7 +82,7 @@ class Chou2Le extends Component {
             const { presentType, giftOdds, sortIndex } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { ...lottery[index] };
+            let newItem = { ...lottery[index], isPoint: false, isTicket: false, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
             if(presentType === 2) {   // 积分
                 const { presentValue, cardTypeID } = x;
                 newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
@@ -153,6 +153,38 @@ class Chou2Le extends Component {
         const { form } = this.state;
         form.validateFields((e, v) => {
             if (!e) {
+                const { lottery } = v;
+                const isChecked = lottery.every(x=>{
+                    return x.isPoint || x.isTicket;
+                });
+                if(!isChecked) {
+                    message.error('赠送积分或优惠券，必选一项');
+                    return;
+                }
+                const isGift = lottery.every(x=>{
+                    if(x.isTicket && x.presentType === '1') {
+                        return x.giftList.every(g=>{
+                            return g.giftID && g.giftTotalCount && g.giftValidUntilDayCount;
+                        })
+                    }
+                    return true;
+                });
+                if(!isGift) {
+                    message.error('礼品项必填');
+                    return;
+                }
+                const isBag = lottery.every(x=>{
+                    if(x.isTicket && x.presentType === '4') {
+                        return x.bagList[0];
+                    }
+                    return true;
+                });
+                if(!isBag) {
+                    message.error('券包项必选');
+                    return;
+                }
+                console.log('lottery', lottery);
+                return;
                 const formData3 = this.setStep3Data(v);
                 this.onSubmit(formData3);
             }
@@ -275,6 +307,18 @@ class Chou2Le extends Component {
         this.onSetForm(null);
     }
     onGoPrev = () => {
+        const { current, form } = this.state;
+        // 没保存就点上一步
+        if(current === 2) {
+            this.setState({
+                formData2: form.getFieldsValue(),
+            })
+        }
+        if(current === 3) {
+            this.setState({
+                formData3: form.getFieldsValue(),
+            })
+        }
         this.setState(ps => ({ current: ps.current - 1 }));
         this.onSetForm(null);
     }
