@@ -167,7 +167,11 @@ class Chou2Le extends Component {
                 const isGift = lottery.every(x=>{
                     if(x.isTicket && x.presentType === '1') {
                         return x.giftList.every(g=>{
-                            return g.giftID && g.giftCount && g.giftValidUntilDayCount;
+                            if(g.effectType === '1'){
+                                return g.giftID && g.giftCount && g.giftValidUntilDayCount;
+                            } else {
+                                return g.giftID && g.giftCount && g.rangeDate;
+                            }
                         })
                     }
                     return true;
