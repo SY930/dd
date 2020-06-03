@@ -20,6 +20,7 @@ class Step1 extends Component {
             if(value){
                 newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
             }
+
             this.setState({ newFormKeys });
         }
         // 周期
@@ -56,6 +57,7 @@ class Step1 extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
+        console.log('newFormKeys', newFormKeys);
         const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
         return (

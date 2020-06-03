@@ -104,7 +104,7 @@ class Lottery extends Component {
         return (
                 <div className={css.mainBox}>
                     <div className={css.addBox}>
-                        <Button type="primary" onClick={this.add}>
+                        <Button type="primary" disabled={disable} onClick={this.add}>
                             <Icon type="plus" />添加奖品
                         </Button>
                         <p>最多可添加7个奖品</p>
@@ -126,7 +126,7 @@ class Lottery extends Component {
                                     gifts.push({ id: '001', effectType: '1' });
                                 }
                                 return (<TabPane tab={name} key={x.id} closable={close}>
-                                    <ul>
+                                    <ul style={{ position: 'relative' }}>
                                         <li className={css.oddsBox}>
                                             <FormItem label="中奖概率">
                                             {
@@ -183,6 +183,7 @@ class Lottery extends Component {
                                                                     required: true,
                                                                     message: '不能为空',
                                                                 }],
+                                                                onChange:this.onCardTypeIDChange,
                                                             })(
                                                                 <Select style={{ width: 160 }} value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
                                                                 {
@@ -220,12 +221,12 @@ class Lottery extends Component {
                                                 </div>
                                             </li>
                                         }
+                                        <p className={disable ? css.disBox: ''}></p>
                                     </ul>
                                 </TabPane>)
                             })}
                         </Tabs>
                     </div>
-                    <p className={disable ? css.disBox: ''}></p>
                 </div>
 
         )

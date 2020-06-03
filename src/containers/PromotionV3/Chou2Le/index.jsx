@@ -8,7 +8,7 @@ import Step2 from './Step2';
 import Step3 from './Step3';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
-import { TF, DF } from './Common';
+import { TF, DF, imgURI } from './Common';
 import { getTicketList } from '../Camp/TicketBag/AxiosFactory';
 
 const Step = Steps.Step;
@@ -354,12 +354,15 @@ class Chou2Le extends Component {
                     <li className={css.left}>
                         <h3 className={css.logo}>下单抽抽乐</h3>
                         <p className={css.gray}>下单后抽取礼品，促进下次消费</p>
-                        <dl className={css.desc}>
-                            <dt>活动说明：</dt>
-                            <dd>1. 同一活动时间，同一门店有多个下单抽抽乐活动，活动会执行哪个？</dd>
-                            <dd className={css.gray}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</dd>
-                            <dd>2. 活动使用注意事项：如果奖品不希望被抽中，则可以设置中奖概率为0.如果用户一定要抽中任一产品，则可以设置奖品总计中奖概率为100%。</dd>
-                        </dl>
+                        {current === 3 ?
+                            <dl className={css.desc}>
+                                <dt>活动说明：</dt>
+                                <dd>1. 同一活动时间，同一门店有多个下单抽抽乐活动，活动会执行哪个？</dd>
+                                <dd className={css.gray}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</dd>
+                                <dd>2. 活动使用注意事项：如果奖品不希望被抽中，则可以设置中奖概率为0.如果用户一定要抽中任一产品，则可以设置奖品总计中奖概率为100%。</dd>
+                            </dl> :
+                            <img src={imgURI + "basicdoc/30c95df1-04bf-4b67-b1f1-0a650d8a311b.png"} width="80%" />
+                        }
                     </li>
                     <li className={css.right}>
                         <div className={css.stepBox}>
