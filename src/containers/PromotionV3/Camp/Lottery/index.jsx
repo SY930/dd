@@ -177,15 +177,15 @@ class Lottery extends Component {
                                                         {
                                                             decorator({
                                                                 key: 'cardTypeID' + i,
-                                                                value: x.cardTypeID,
-                                                                defaultValue: x.cardTypeID,
+                                                                value: x.cardTypeID || '',
+                                                                defaultValue: x.cardTypeID || '',
                                                                 rules: [{
                                                                     required: true,
                                                                     message: '不能为空',
                                                                 }],
                                                                 onChange:this.onCardTypeIDChange,
                                                             })(
-                                                                <Select style={{ width: 160 }} value={x.cardTypeID} onChange={this.onCardTypeIDChange}>
+                                                                <Select style={{ width: 160 }} value={x.cardTypeID || ''} onChange={this.onCardTypeIDChange}>
                                                                 {
                                                                     cardList.map(c => {
                                                                         return (<Option
