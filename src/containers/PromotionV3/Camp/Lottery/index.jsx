@@ -125,7 +125,7 @@ class Lottery extends Component {
                                 if(!gifts[0]){
                                     gifts.push({ id: '001', effectType: '1' });
                                 }
-                                return (<TabPane tab={name} key={x.id} closable={close}>
+                                return (<TabPane tab={name} key={x.id} closable={ disable ? false : close}>
                                     <ul style={{ position: 'relative' }}>
                                         <li className={css.oddsBox}>
                                             <FormItem label="中奖概率">

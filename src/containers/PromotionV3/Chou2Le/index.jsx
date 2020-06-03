@@ -270,12 +270,16 @@ class Chou2Le extends Component {
     }
     formatTimeList(list) {
         if(!list){ return []}
-        return list.map(x => {
+        const times = [];
+        list.forEach(x => {
             const { startTime, endTime } = x;
-            const st = moment(startTime).format(TF);
-            const et = moment(endTime).format(TF);
-            return { startTime: st, endTime: et };
+            if(startTime && endTime){
+                const st = moment(startTime).format(TF);
+                const et = moment(endTime).format(TF);
+                times.push({ startTime: st, endTime: et })
+            }
         });
+        return times;
     }
     formatRangeDate(rangeDate) {
         if(!rangeDate){
