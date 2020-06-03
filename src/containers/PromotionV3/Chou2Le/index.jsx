@@ -67,7 +67,7 @@ class Chou2Le extends Component {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = validCycle[0];
         }
-        return { ...data, eventRange, ...timsObj, advMore: true, cycleType, smsGate: `${sms}` };
+        return { ...data, eventRange, ...timsObj, smsGate: `${sms}`, advMore: true, cycleType };
     }
     setData4Step2(data) {
         const { brandList: blist, orderTypeList: olist, shopIDList: slist } = data;

@@ -13,7 +13,7 @@ class Step1 extends Component {
     };
 
     onChange = (key, value) => {
-        const { form } = this.props;
+        const { form, formData } = this.props;
         let newFormKeys = [...KEY1, ...KEY2];
         // 日期高级
         if(key === 'advMore') {
@@ -34,6 +34,10 @@ class Step1 extends Component {
             }
             if(value){
                 newFormKeys = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
+            } else {
+                if(formData.advMore) {
+                    newFormKeys = [...KEY1, ...KEY3, ...KEY5, ...KEY2];
+                }
             }
             this.setState({ newFormKeys });
         }
@@ -57,7 +61,6 @@ class Step1 extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
-        console.log('newFormKeys', newFormKeys);
         const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
         return (

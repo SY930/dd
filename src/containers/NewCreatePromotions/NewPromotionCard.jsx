@@ -13,7 +13,7 @@ import { Modal, Tooltip } from 'antd';
 import moment from 'moment';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
-const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77'];
+const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77', '78'];
 const imgURI = 'http://res.hualala.com/';
 const V3KEYS = ['78'];     // 最新版抽抽乐78
 // 最新版 logo图片
