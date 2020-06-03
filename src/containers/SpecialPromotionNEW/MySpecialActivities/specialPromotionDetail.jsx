@@ -282,11 +282,12 @@ class SpecialPromotionDetail extends React.Component {
             )
         }
         if (way == 78) {
+            const rec = records.filter(record => record.presentType === 1);
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records, way)}
+                        {this.renderGiftInfoTable(rec, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
@@ -719,7 +720,7 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
-            eventWay == 20 && ({
+            eventWay == 20 || eventWay == 78 &&({
                 title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
@@ -831,7 +832,7 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
             }
         });
-
+        console.log('dataSource', dataSource);
         return (
             <Table
                 dataSource={dataSource}
