@@ -666,9 +666,10 @@ class GiftAddModal extends React.Component {
                 }
             </div>),
         };
-        if(value==='40') {
-            formItems = { ...formItems, giftValue };
-        }
+        // 随机金额暂时不上，需要上的时候，解此封印，即可释放终极技能！
+        // if(value==='40') {
+        //     formItems = { ...formItems, giftValue };
+        // }
         const formKeys = {
             '实物礼品券': [
                 {
