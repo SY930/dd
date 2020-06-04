@@ -547,16 +547,6 @@ class GiftAddModal extends React.Component {
                 label: '礼品详情',
                 defaultValue: [],
                 render: d => d()(<GiftInfo />),
-                rules: [{
-                    validator: (rule, value, callback) => {
-                        const { getFieldValue } = this.baseForm;
-                        const giftDenomination = getFieldValue('giftDenomination');
-                        if (+giftDenomination === 0 && !value[0]) {
-                            return callback('礼品卡面值为0，礼品不能为空');
-                        }
-                        return callback();
-                    },
-                }],
             },
         };
         const formKeys = {
