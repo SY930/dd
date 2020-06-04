@@ -7,6 +7,7 @@ import Authority from '../../../components/common/Authority';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT, COMMON_GIFT } from 'i18n/common/gift';
 import { COMMON_LABEL } from 'i18n/common';
+import styles from './addGifts.less'
 
 function mapValueToLabel(cfg, val) {
     return _.result(_.find(cfg, { value: val }), 'label') || '--';
@@ -88,17 +89,22 @@ export default class SpecialPromotionExportModal extends Component {
     }
 
     componentDidMount() {
-        const { eventID, eventName } = this.props;
-        axiosData(
-            '/crmimport/crmExportService_doExportEventCustomerInfo.ajax',
-            { eventID, eventName },
-            null,
-            { path: 'data' },
-        ).then(_records => {
-            setTimeout(() => {
-                this.getExportRecords();
-            }, 500)
-        })
+        const { eventID, eventName, keyword, sameItemID } = this.props;
+
+        if(!sameItemID){
+            axiosData(
+                '/crm/export/exportEventCustomer.ajax',
+                { eventID, eventName, keyword },
+                null,
+                { path: 'data' },
+            ).then(_records => {
+                setTimeout(() => {
+                    this.getExportRecords();
+                }, 500)
+            })
+            return;
+        }
+        this.getExportRecords();
     }
 
     getExportRecords = (key) => {
@@ -141,6 +147,8 @@ export default class SpecialPromotionExportModal extends Component {
             });
     }
     render() {
+        const { sameItemID } = this.props;
+
         return (
             <div>
                 <Modal
@@ -171,6 +179,14 @@ export default class SpecialPromotionExportModal extends Component {
                                     pageSize: this.state.pageSizes,
                                     total: this.state.dataSource ? this.state.dataSource.length : 0,
                                     showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u2)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_GIFT.d1qcckj09u1)} ${total} ${this.props.intl.formatMessage(STRING_GIFT.d2c68skgm94)}`,
+                                }}
+                                rowClassName={(record, index)=>{
+                                    const { itemID } = record;
+                                    let clz = '';
+                                    if(`${sameItemID}` === itemID){
+                                        clz = styles.trclz;
+                                    }
+                                    return clz;
                                 }}
                             />
                             { (!!this.state.dataSource && !!this.state.dataSource.length) && (
