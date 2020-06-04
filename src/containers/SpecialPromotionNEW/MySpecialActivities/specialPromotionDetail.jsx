@@ -583,6 +583,7 @@ class SpecialPromotionDetail extends React.Component {
 
     renderSearch() {
         const way = this.state.eventInfo.data.eventWay;
+        const records = this.state.userInfo || [];
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
@@ -600,7 +601,7 @@ class SpecialPromotionDetail extends React.Component {
                                     visible={this.state.popoverVisible}
                                     onVisibleChange={this.handleVisibleChange}
                                 >
-                                    <Button type="ghost" onClick={this.handleExport}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button>
+                                    <Button disabled={!records[0]} type="ghost" onClick={this.handleExport}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button>
                                 </Popover>
                                 </Col>
                         )
