@@ -315,6 +315,8 @@ class GiftDetailTable extends Component {
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
         gift.data.customerUseCountLimit = gift.data.customerUseCountLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
+        gift.data.valueType = `${gift.data.valueType}`;
+        gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: rec.giftItemID });
         if (gift.value == 100) { //

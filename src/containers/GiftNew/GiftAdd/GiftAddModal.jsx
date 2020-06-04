@@ -50,6 +50,7 @@ class GiftAddModal extends React.Component {
             disCashKeys: false,     // 定额卡模式下，是否要隐藏现金卡值和赠送卡值
             unit: '¥',
             valueType: '0',
+            monetaryUnit: '0',
         };
         this.baseForm = null;
         this.refMap = null;
@@ -59,9 +60,12 @@ class GiftAddModal extends React.Component {
     }
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
+        const { valueType = '0', monetaryUnit= '0' } = data;
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
+            valueType,
+            monetaryUnit,
         })
         // 礼品名称 auto focus
         try {
@@ -80,15 +84,15 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-        switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
-            case 'giftName':    this.handleNameChangeDebounced({key, value});
-                break;
-            case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
-                break;
-            case 'giftValue':    this.handleValueChangeDebounced({key, value});
-                break;
-            default: this.props.changeGiftFormKeyValue({key, value});
-        }
+        // switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+        //     case 'giftName':    this.handleNameChangeDebounced({key, value});
+        //         break;
+        //     case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
+        //         break;
+        //     case 'giftValue':    this.handleValueChangeDebounced({key, value});
+        //         break;
+        //     default: this.props.changeGiftFormKeyValue({key, value});
+        // }
         // 赠送卡值freePrice =  礼品卡面值 （giftDenomination） - 工本费 （giftCost） - 现金卡值 cardPrice
         if(key === 'giftDenomination'){
             const disCashKeys = (+value === 0);
@@ -125,7 +129,6 @@ class GiftAddModal extends React.Component {
         if(key==='valueType') {
             this.setState({ valueType: value });
         }
-        console.log(key, value);
     }
     handleSubmit() {
         const { groupTypes } = this.state;
@@ -577,7 +580,7 @@ class GiftAddModal extends React.Component {
                 }],
             },
         };
-        const { valueType } = this.state;
+        const { valueType, monetaryUnit } = this.state;
         const giftValue = {
             label: '礼品价值',
             type: 'custom',
@@ -586,7 +589,7 @@ class GiftAddModal extends React.Component {
                 <p style={{ width: 100 }}>
                     {d({
                         key: 'valueType',
-                        initialValue: '0',
+                        initialValue: valueType,
                     })(<Select>
                             <Option value="0">固定金额</Option>
                             <Option value="1">随机金额</Option>
@@ -648,6 +651,10 @@ class GiftAddModal extends React.Component {
                                     if(!reg.test(v)) {
                                         return cb('最大支持5位整数，2位小数');
                                     }
+                                    const valueStart = this.baseForm.getFieldValue('valueStart');
+                                    if(+v <= +valueStart){
+                                        return cb('后一个金额需大于前一个金额');
+                                    }
                                     return cb();
                                 }
                             }],
@@ -662,7 +669,7 @@ class GiftAddModal extends React.Component {
                         <span style={{ padding: '0 8px 0 0'}}>最小单位</span>
                         {d({
                             key: 'monetaryUnit',
-                            initialValue: '0',
+                            initialValue: monetaryUnit,
                             })(<RadioGroup>
                                 <Radio value="0">元</Radio>
                                 <Radio value="1">角</Radio>
