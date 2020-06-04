@@ -141,13 +141,9 @@ class GiftAddModal extends React.Component {
             if (value == '90') {
                 // http://wiki.hualala.com/pages/viewpage.action?pageId=46105225
                 // 变量都被换了
-                const { cardPrice, quotaCardGiftConfList } = params;
+                const { cardPrice } = params;
                 params.giftCost = `${Number(params.giftCost || 0)}`;
                 params.giftValue = cardPrice || '0';
-                if(cardPrice === '0' && !quotaCardGiftConfList[0]){
-                    message.warning('礼品卡面值为0，且礼品详情中没有礼品时，不能保存');
-                    return;
-                }
             }else{
                 params.giftValue = params.giftValue || '0';
             }
