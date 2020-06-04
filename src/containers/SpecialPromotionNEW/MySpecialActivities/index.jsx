@@ -69,7 +69,7 @@ import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter'
-
+import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -193,6 +193,9 @@ class MySpecialActivities extends React.Component {
             },
             queryDisabled: false,
             currentItemID: '',
+            v3visible: false,       // 第三版活动组件是否显示
+            itemID: '',
+            view: false,
         };
         this.cfg = {
             eventWay: [
@@ -220,6 +223,7 @@ class MySpecialActivities extends React.Component {
                 { value: '75', label: '集点卡' },
                 { value: '77', label: '支付后广告' },
                 { value: '76', label: '签到' },
+                { value: '78', label: '下单抽抽乐' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -379,8 +383,15 @@ class MySpecialActivities extends React.Component {
             })
         }
     }
-
+    //** 第三版 重构 抽抽乐活动 点击事件 */
+    onV3Click = (itemID, view) => {
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+        if(itemID){
+            this.setState({ itemID, view });
+        }
+    }
     render() {
+        const { v3visible, itemID, view } = this.state;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
@@ -401,6 +412,7 @@ class MySpecialActivities extends React.Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
+                { v3visible && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
             </div>
         );
     }
@@ -681,6 +693,10 @@ class MySpecialActivities extends React.Component {
                                             message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                             return;
                                         }
+                                        if (record.eventWay === 78) {
+                                            this.onV3Click(record.itemID, false);
+                                            return;
+                                        }
                                         this.props.toggleIsUpdate(true)
                                         this.handleUpdateOpe(text, record, index);
                                     }
@@ -694,6 +710,10 @@ class MySpecialActivities extends React.Component {
                             onClick={() => {
                                 if (Number(record.eventWay) === 70) {
                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                if (record.eventWay === 78) {
+                                    this.onV3Click(record.itemID, true);
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)

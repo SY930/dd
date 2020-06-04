@@ -281,6 +281,24 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if (way == 78) {
+            const rec = records.filter(record => [1,4].includes(record.presentType));
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(rec, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderPointsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -702,7 +720,7 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
-            eventWay == 20 && ({
+            eventWay == 20 &&({
                 title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
@@ -712,6 +730,18 @@ class SpecialPromotionDetail extends React.Component {
                     if (!level) return '--'
                     if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
                     return `${levelArray[level - 1]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`
+                }
+            }),
+            eventWay == 78 &&({
+                title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
+                dataIndex: 'winFlag',
+                key: 'winFlag',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(level)=> {
+                    if (!level) return '--'
+                    if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
+                    return `奖项${levelArray[level - 1]}`
                 }
             }),
             {
@@ -814,7 +844,7 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
             }
         });
-
+        console.log('dataSource', dataSource);
         return (
             <Table
                 dataSource={dataSource}

@@ -47,6 +47,7 @@ import {injectIntl} from './IntlDecor';
 import { axiosData } from '../../helpers/util';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
+import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -62,6 +63,7 @@ class PromotionCreateModal extends Component {
             specialIndex: 0,
             currentCategoryIndex: 0,
             whiteList: [],
+            v3visible: false,       // 第三版活动组件是否显示
         };
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
@@ -263,9 +265,12 @@ class PromotionCreateModal extends Component {
             </Modal>
         );
     }
-
+    //** 第三版 重构 抽抽乐活动 点击事件 */
+    onV3Click = () => {
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    }
     renderModalContent() {
-        const {whiteList} = this.state;
+        const {whiteList, v3visible} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -337,6 +342,7 @@ class PromotionCreateModal extends Component {
                                                 index={index}
                                                 whiteList={whiteList}
                                                 onClickOpen={this.onClickOpen}
+                                                onV3Click={this.onV3Click}
                                             />
                                         ))
                                     }
@@ -347,6 +353,7 @@ class PromotionCreateModal extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
+                {v3visible && (<Chou2Le />)}
             </div>
         )
     }

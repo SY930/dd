@@ -276,6 +276,17 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
     },
+    {
+        title: '下单抽抽乐',
+        isSpecial: false,
+        tags: ['微信'],
+        text: '下单后抽取礼品，促进下次消费',
+        example: SALE_LABEL.k67cpoj7,
+        key: '78',
+        right: 12,
+        bottom: 4,
+        isNew: true,
+    },
 ];
 
 /**
