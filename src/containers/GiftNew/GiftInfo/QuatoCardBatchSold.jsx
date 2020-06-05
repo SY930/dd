@@ -162,9 +162,7 @@ class QuotaCardBatchSold extends React.Component {
                         {
                             decorator({
                                 key: 'startNO',
-                                rules: [{
-                                    required: true, message: '请输入起始卡号',
-                                },
+                                rules: [
                                 {
                                     validator: (rule, v, cb) => {
                                         this.checkStart(rule, v, cb)
@@ -181,9 +179,7 @@ class QuotaCardBatchSold extends React.Component {
                         {
                             decorator({
                                 key: 'endNO',
-                                rules: [{
-                                    required: true, message: '请输入终止卡号',
-                                },
+                                rules: [
                                 {
                                     validator: (rule, v, cb) => {
                                         this.checkEnd(rule, v, cb)
