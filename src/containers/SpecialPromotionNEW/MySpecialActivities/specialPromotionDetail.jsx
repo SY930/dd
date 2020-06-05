@@ -241,6 +241,11 @@ class SpecialPromotionDetail extends React.Component {
         }
         const way = this.state.eventInfo.data.eventWay;
         if (way == 68) { // 推荐有礼
+            let couponList = []
+            const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
+            if(couponCurrent.length) {
+                couponList = couponCurrent[0].gifts
+            }
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -251,7 +256,7 @@ class SpecialPromotionDetail extends React.Component {
                     <div>&nbsp;</div>
                     <div>{this.props.intl.formatMessage(STRING_SPE.d31f11d5hd51190)}</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType !== 0))}
+                        {this.renderGiftInfoTable(couponList)}
                     </Col>
                     <div>&nbsp;</div>
                     {/* <div>&nbsp;</div>
@@ -260,7 +265,7 @@ class SpecialPromotionDetail extends React.Component {
                     </Col> */}
                     <div>{this.props.intl.formatMessage(STRING_SPE.da9060bn7f2110)}</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0),'beRecommend')}
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0 && record.presentType === 1),'beRecommend')}
                     </Col>
 
                     {this.renderSearch()}
