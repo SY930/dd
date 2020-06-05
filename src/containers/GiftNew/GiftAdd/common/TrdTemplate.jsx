@@ -36,6 +36,9 @@ import PriceInput from '../../../SaleCenterNEW/common/PriceInput'
 import styles from '../Crm.less';
 import selfStyle from './selfStyle.less';
 import GiftImagePath from './GiftImagePath';
+import { axios } from '@hualala/platform-base';
+import {  axiosData } from '../../../../helpers/util';
+
 const RangePicker = DatePicker.RangePicker;
 
 const FormItem = Form.Item
@@ -169,7 +172,10 @@ class TrdTemplate extends React.Component {
             appID: undefined,
             brandName: undefined,
             trdChannelID: '10',
-            validateWay: 'OFF_LINE'
+            validateWay: 'OFF_LINE',
+            merchantID: '',
+            appsList: [],
+            linksList: []
         };
         this.wrapperDOM = null;
     }
@@ -206,6 +212,8 @@ class TrdTemplate extends React.Component {
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
         this.setState({ mpList: mpList || [] })
+        this.getMiniProgramsAppIdList()
+        this.getlinks()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -268,7 +276,10 @@ class TrdTemplate extends React.Component {
                 quantity,
                 maxCanRecvCount,
                 validateWay,
-                joinWay
+                joinWay,
+                merchantID,
+                miniProgramsAppId,
+                miniProgramsPath
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
@@ -282,31 +293,38 @@ class TrdTemplate extends React.Component {
                 // 通过隐藏的校验
                 if(trdChannelID === '50') {
                     TrdTemplateStatus = true;
-                    const checkList = [mpID,quantity,maxCanRecvCount,fixedTerm]
+                    let checkList = [mpID,quantity,maxCanRecvCount,fixedTerm,merchantID]
+                    const jsonData = {
+                        appID,
+                        trdChannelID,
+                        mpID,
+                        type,
+                        validateWay,
+                        joinWay,
+                        fixedBeginTerm: type === FIX_TERM ? fixedBeginTerm : undefined,
+                        fixedTerm: type === FIX_TERM ? fixedTerm : undefined,
+                        beginTimestamp: type === FIX_TIME_RANGE ? beginTimestamp : undefined,
+                        endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
+                        quantity,
+                        maxCanRecvCount,
+                        merchantID
+                    }
                     if(giftItemId === '10') {
                         checkList.push(maxAmount)
+                        jsonData.maxAmount = maxAmount
+                    }
+                    if(validateWay === 'MINI_PROGRAMS') {
+                        checkList = checkList.concat(miniProgramsAppId,miniProgramsPath)
+                        jsonData.miniProgramsAppId = miniProgramsAppId
+                        jsonData.miniProgramsPath = miniProgramsPath
                     }
                     if(checkList.filter(v => !v).length) {
                         TrdTemplateStatus = false
                     }
-                    // TODO:添加帐务主体字段
+
                     this.props.onChange(defaultChecked ? {
                         TrdTemplateStatus,
-                        trdTemplateInfo: JSON.stringify({
-                            appID,
-                            trdChannelID,
-                            mpID,
-                            type,
-                            validateWay,
-                            joinWay,
-                            fixedBeginTerm: type === FIX_TERM ? fixedBeginTerm : undefined,
-                            fixedTerm: type === FIX_TERM ? fixedTerm : undefined,
-                            beginTimestamp: type === FIX_TIME_RANGE ? beginTimestamp : undefined,
-                            endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
-                            maxAmount: giftItemId === '10' ? maxAmount : undefined,
-                            quantity,
-                            maxCanRecvCount
-                        })
+                        trdTemplateInfo: JSON.stringify(jsonData)
                     } : undefined)
                     console.log('TrdTemplateStatus',TrdTemplateStatus)
                     return
@@ -521,6 +539,10 @@ class TrdTemplate extends React.Component {
         })
     }
     handleTrdChannelIDChange = (value) => {
+        if(value === '50') {
+            this.getMiniProgramsAppIdList()
+            this.getlinks()
+        }
         this.setState({ trdChannelID: value }, () => {
             this.propsChange()
         })
@@ -531,9 +553,51 @@ class TrdTemplate extends React.Component {
         })
     }
     handleSelectChange = (key) => (value) => {
+        if(key === 'validateWay' && value !== 'MINI_PROGRAMS') {
+            this.setState({
+                miniProgramsAppId: '',
+                miniProgramsPath: ''
+            })
+        }
         this.setState({  [key]: value }, () => {
             this.propsChange()
         })
+    }
+    getMiniProgramsAppIdList = () => {
+        axiosData('/miniProgramCodeManage/getApps', {
+            groupID: this.props.accountInfo.toJS().groupID,
+            page: {
+                "current": 1,
+                "pageSize": 10000000,
+                }
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                 const {result,apps} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        appsList: apps || []
+                     })
+                 }
+            })
+    }
+    getlinks = () => {
+        axiosData('/link/getlinks', {
+            type: 'mini_menu_type',
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                 const {result,linkList} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        linksList: linkList || []
+                     })
+                 }
+            })
     }
     checkMaxAmount = () => {
         const {maxAmount} = this.state
@@ -612,28 +676,39 @@ class TrdTemplate extends React.Component {
             quantity, //发放总数量
             maxCanRecvCount, // 用户最大可用数
             validateWay , // 核销方式
-            joinWay
+            joinWay,
+            merchantID, // 账务主体
+            miniProgramsAppId, // 小程序appId
+            miniProgramsPath, // 小程序页面路径
+            appsList,
+            linksList
         } = this.state;
         const edit = this.props.type === 'edit';
         const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
         const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
+        const  merchantIDList = [
+            {
+                value: '1356079902',
+                label: '商户号'
+            }
+        ]
         return (
             <div>
                 <FormItem
                     label='账务主体'
                     {...itemStyle}
-                    validateStatus={mpID ? 'success' : 'error'}
-                    help={mpID ? null : '不得为空'}
+                    validateStatus={merchantID ? 'success' : 'error'}
+                    help={merchantID ? null : '请选择商家券发放账务主体'}
                 >
-                    <Select value={mpID}
-                            onChange={this.handleMpIDChange}
+                    <Select value={merchantID}
+                            onChange={this.handleSelectChange('merchantID')}
                             disabled={edit}
                             getPopupContainer={(node) => node.parentNode}
                             placeholder="请选择商家券发放账务主体"
                     >
                         {
-                            mpList.map(mp => {
-                                return <Option key={mp.mpID} value={mp.mpID}>{mp.mpName}</Option>
+                             merchantIDList.map(mp => {
+                                return <Option key={mp.value} value={mp.value}>{mp.label}</Option>
                             })
                         }
                     </Select>
@@ -642,7 +717,7 @@ class TrdTemplate extends React.Component {
                     label='绑定公众号'
                     {...itemStyle}
                     validateStatus={mpID ? 'success' : 'error'}
-                    help={mpID ? null : '不得为空'}
+                    help={mpID ? null : '请选择公众号'}
                 >
                     <Select value={mpID}
                             onChange={this.handleMpIDChange}
@@ -791,6 +866,50 @@ class TrdTemplate extends React.Component {
                         }
                     </Select>
                 </FormItem>
+                {validateWay === 'MINI_PROGRAMS' && (
+                    <div>
+                        <FormItem
+                            label='小程序名称'
+                            validateStatus={ miniProgramsAppId ? 'success' : 'error'}
+                            help={ miniProgramsAppId ? null : '请选择小程序名称'}
+                            {...itemStyle}
+                        >
+                            <Select value={miniProgramsAppId}
+                                    onChange={this.handleSelectChange('miniProgramsAppId')}
+                                    disabled={edit}
+                                    getPopupContainer={(node) => node.parentNode}
+                                    placeholder="请选择小程序名称"
+                            >
+                                {
+                                    appsList.map(mp => {
+                                        return <Option key={mp.appID} value={mp.appID}>{mp.nickName}</Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                        <FormItem
+                            label='页面路径'
+                            {...itemStyle}
+                            validateStatus={ miniProgramsPath ? 'success' : 'error'}
+                            help={ miniProgramsPath ? null : '请选择页面路径'}
+                        >
+                            <Select value={miniProgramsPath}
+                                    onChange={this.handleSelectChange('miniProgramsPath')}
+                                    disabled={edit}
+                                    getPopupContainer={(node) => node.parentNode}
+                                    placeholder="请选择页面路径"
+                            >
+                                {
+                                    linksList.map(mp => {
+                                        const data = mp.value || {}
+                                        return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                    </div>
+                )}
+
                 <FormItem
                     label='自定义入口'
                     {...itemStyle}
