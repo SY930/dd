@@ -160,14 +160,14 @@ class SendCard extends React.Component {
                     title: '已过期',
                     dataIndex: 'expiredNum',
                     key: 'expiredNum',
-                    fixed: 'left',
+                    className: 'x-tr',
                 })
                 _SENDCARD_COLUMNS.push({
                     title: '有效期',
                     dataIndex: 'termStr',
                     key: 'termStr',
                     className: 'TableTxtCenter',
-                    width: 200
+                    width: 180
                 })
                 this.setState({
                     columns: [
@@ -504,6 +504,7 @@ class SendCard extends React.Component {
         const spanLeft = _key === 'sum' ? 21 : (_key === 'made' ? 16 : 17);
         const spanRight = _key === 'sum' ? 3 : (_key === 'made' ? 8 : 7);
         const isDeleted = data.action == 2;
+        console.log('_key',_key)
         return (
             <div className={styles.cardSummarize}>
                 <Row>
@@ -612,7 +613,7 @@ class SendCard extends React.Component {
                             render: c.render.bind(this),
                         }) : c))}
                         dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1500 } : _key === 'sum'  ? { x: 1200 } : { x: 930 })}
+                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1700 } : _key === 'send'  ? { x: 1200 } : { x: 930 })}
                         rowSelection={this.props._key === 'made' ? {
                             onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
                             selectedRowKeys: this.state.selectedRowKeys,

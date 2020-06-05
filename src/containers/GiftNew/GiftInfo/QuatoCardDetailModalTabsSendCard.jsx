@@ -175,7 +175,7 @@ class CardOperate extends React.Component {
                 startNO: (_params.startNO || '').trim(),
                 effectType: Number(params.effectType) || '',
                 giftEffectTimeHours: Number(giftEffectTimeHours) || '',
-                giftValidUntilDayCount: Number(giftValidUntilDayCount) || '',
+                giftValidUntilDayCount: Number(giftValidUntilDayCount) || '0',
                 effectTime: effectTime99validUntilDate[0],
                 validUntilDate: effectTime99validUntilDate[1]
             }
