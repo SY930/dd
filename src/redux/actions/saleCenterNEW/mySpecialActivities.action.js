@@ -168,7 +168,7 @@ export const fetchSpecialPromotionDetailData = (opts) => {
 
         //     })
          let url = '/specialPromotion/queryEventDetail.ajax';
-         if(opts.eventWay == 30){
+         if(opts.eventWay == 30 || opts.eventWay == 78){
             url = '/specialPromotion/queryEventTrackInfo.ajax'
          }
         axiosData(url, opts.data, {needThrow: true}, { path: '' },
@@ -332,7 +332,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
             //         }
             //     })
             let url = '/specialPromotion/queryEventDetail.ajax';
-            if(opts.eventWay == 30){
+            if(opts.eventWay == 30 || opts.eventWay == 78){
                 url = '/specialPromotion/queryEventTrackInfo.ajax'
             }
             return axiosData(url, param.data, {needThrow: true}, { path: '' },

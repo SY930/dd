@@ -20,7 +20,8 @@ import {
     Input,
     Select,
     Button,
-    Tooltip
+    Tooltip,
+    Popover,
 } from 'antd';
 
 const Option = Select.Option;
@@ -41,6 +42,28 @@ import { STRING_SPE } from 'i18n/common/special';
 import { STRING_GIFT } from 'i18n/common/gift';
 const exportablePromotionTypes = [
     // '22', // 报名活动
+    '51',
+    '52',
+    '21',
+    '20',
+    '30',
+    '22',
+    '53',
+    '50',
+    '60',
+    '61',
+    '62',
+    '23',
+    '63',
+    '64',
+    '65',
+    '66',
+    '67',
+    '68',
+    '31',
+    '75',
+    '77',
+    '76',
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -62,6 +85,10 @@ class SpecialPromotionDetail extends React.Component {
             inviteeModalVisble: false,
             selectedInviter: null,
             recommendStatitics: [],
+
+            popoverVisible: false,
+            tooltipVisble: false,
+            sameItemID: '',
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
@@ -113,6 +140,7 @@ class SpecialPromotionDetail extends React.Component {
 
     render() {
         const eventEntity = this.props.record.eventInfo.data;
+        const { sameItemID, keyword } = this.state;
         return (
             <div className={styles.showInfo}>
                 {
@@ -120,7 +148,9 @@ class SpecialPromotionDetail extends React.Component {
                         <SpecialPromotionExportModal
                             eventID={eventEntity.itemID}
                             eventName={eventEntity.eventName}
-                            handleClose={() => this.setState({ exportVisible: false })}
+                            handleClose={() => this.setState({ exportVisible: false, sameItemID: '' })}
+                            sameItemID={sameItemID}
+                            keyword={keyword}
                         />
                     )
                 }
@@ -273,6 +303,24 @@ class SpecialPromotionDetail extends React.Component {
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderCollectPointsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if (way == 78) {
+            const rec = records.filter(record => [1,4].includes(record.presentType));
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(rec, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderPointsTable()}
                     </Col>
                     {this.renderSearch()}
                     <Col span={24}>
@@ -553,6 +601,7 @@ class SpecialPromotionDetail extends React.Component {
 
     renderSearch() {
         const way = this.state.eventInfo.data.eventWay;
+        const records = this.state.userInfo || [];
         return (
             <div className={styles.searchBar}>
                 <Col span={24}>
@@ -561,13 +610,82 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={4}><Button type="primary" onClick={this.resetQuery}>{this.props.intl.formatMessage(STRING_SPE.da9060bn7g2223)}</Button></Col>
                     {
                         exportablePromotionTypes.includes(`${way}`) && (
-                            <Col span={4}><Button type="ghost" onClick={() => this.setState({ exportVisible: true })}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button></Col>
+                            <Col span={4}>
+                                <Popover
+                                    content={this.renderPopOver()}
+                                    placement="topRight"
+                                    title={false}
+                                    trigger="click"
+                                    visible={this.state.popoverVisible}
+                                    onVisibleChange={this.handleVisibleChange}
+                                >
+                                    <Button disabled={!records[0]} type="ghost" onClick={this.handleExport}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button>
+                                </Popover>
+                                </Col>
                         )
                     }
                 </Col>
             </div>
         )
     }
+    handleExport = () => {
+        const { keyword } = this.state;
+        const eventEntity = this.props.record.eventInfo.data;
+        const { itemID: eventID, eventName } = eventEntity;
+        axiosData(
+            '/crm/export/exportEventCustomer.ajax',
+            { eventID, eventName, keyword },
+            null,
+            { path: 'data' },
+        ).then(records => {
+            if(records.sameRequest){
+                this.setState({
+                    popContent: '已有导出任务 请勿重复操作，',
+                    popA: '查看导出结果',
+                    sameItemID: records.sameItemID,
+                })
+            }else{
+                this.setState({
+                    popContent: '数据导出中 请',
+                    popA: '查看导出进度',
+                })
+            }
+            if(records.highMoment == 1){
+                this.setState({
+                    popContent: <div><p style={{whiteSpace: 'nowrap'}}>营业高峰期(11:00-14:00,17:00</p><p style={{whiteSpace: 'nowrap'}}>-20:30)暂停使用数据导出功能</p></div>,
+                    popA: '',
+                    tooltipVisble: true,
+                })
+            }else{
+                this.setState({
+                    tooltipVisble: false,
+                })
+            }
+            this.setState({
+                popoverVisible: true,
+            });
+        })
+    }
+    renderPopOver = () => {
+        const { popContent = '', popA ='' } = this.state;
+        return(
+            <div className={styles.popDiv} style={{width: this.state.tooltipVisble ? 160 : 'auto'}}>
+                <span>{popContent}</span>
+                <a className={styles.greenLink} onClick={this.openOther}>{popA}</a>
+            </div>
+        );
+    }
+    openOther = () => {
+        this.setState({
+        popoverVisible: false,
+        });
+        this.setState({
+            exportVisible: true,
+        });
+    };
+    handleVisibleChange = visible => {
+        this.setState({ popoverVisible: visible});
+    };
     renderCollectPointsTable() {
         const columns = [
             {
@@ -702,7 +820,7 @@ class SpecialPromotionDetail extends React.Component {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
-            eventWay == 20 && ({
+            eventWay == 20 &&({
                 title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
@@ -712,6 +830,18 @@ class SpecialPromotionDetail extends React.Component {
                     if (!level) return '--'
                     if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
                     return `${levelArray[level - 1]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`
+                }
+            }),
+            eventWay == 78 &&({
+                title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
+                dataIndex: 'winFlag',
+                key: 'winFlag',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(level)=> {
+                    if (!level) return '--'
+                    if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
+                    return `奖项${levelArray[level - 1]}`
                 }
             }),
             {
@@ -814,7 +944,7 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
             }
         });
-
+        console.log('dataSource', dataSource);
         return (
             <Table
                 dataSource={dataSource}

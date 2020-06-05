@@ -276,6 +276,17 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
     },
+    {
+        title: '下单抽抽乐',
+        isSpecial: false,
+        tags: ['微信'],
+        text: '下单后抽取礼品，促进下次消费',
+        example: SALE_LABEL.k67cpoj7,
+        key: '78',
+        right: 12,
+        bottom: 4,
+        isNew: true,
+    },
 ];
 
 /**
@@ -465,7 +476,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: SALE_LABEL.k67cp1ta,
         example: SALE_LABEL.k67cpq5j,
-        tags: ['pos', SALE_LABEL.k639vgjy],
+        tags: ['pos', SALE_LABEL.k639vgjy, '小程序'],
         key: '1050',
         right: 15,
         bottom: 5,

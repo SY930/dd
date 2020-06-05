@@ -1,0 +1,105 @@
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@gray: #999;
+.mainBox{
+    position: relative;
+    :global{
+        .ant-tabs-tab-active{
+            color: @green2!important;
+        }
+        .ant-tabs-tab:hover{
+            color: @green!important;
+        }
+    }
+}
+.addBox{
+    display: flex;
+    &>p{
+        margin: 0 10px;
+        color: @gray;
+    }
+}
+.oddsBox{
+    :global{
+        .ant-row{
+            display: flex;
+            margin-bottom: 0!important;
+        }
+    }
+}
+.pointBox{
+    display: flex;
+    padding-top: 5px;
+    :global{
+        .ant-row{
+            display: flex;
+            padding-top: 2px!important;
+        }
+        .ant-checkbox-wrapper{
+            width: 85px;
+            margin-right: 0;
+        }
+    }
+}
+.ticketBox {
+    :global{
+        .ant-radio-button-wrapper:hover,
+        .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+        .ant-radio-button-wrapper-checked {
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+        .ant-radio-button-wrapper-checked:active {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+    }
+}
+.giftBox{
+    margin: 10px 0;
+    position: relative;
+    &>em{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 60px;
+        height: 24px;
+        padding: 6px 10px;
+        color: #fff;
+        font-style: normal;
+        background: url('http://res.hualala.com/basicdoc/660ffcf1-348c-409b-846d-3cdf1db4652f.png') no-repeat;
+        background-size: contain;
+        line-height: 1;
+    }
+    &>a{
+        position: absolute;
+        right: 0;
+        top: 0px;
+        font-size: 24px;
+        color: #b3aeae;
+        line-height: 1;
+        z-index: 9;
+    }
+}
+.disBox{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #d4cfcf59;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+}
