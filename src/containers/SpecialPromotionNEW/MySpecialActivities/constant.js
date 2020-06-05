@@ -23,7 +23,7 @@ export const dataOverviewColumns = [
 export const beRecommendTitleList = [
     ["赠送类型", "累积赠送积分数", "累计充值到账积分"],
     ["赠送类型", "累计赠送卡值", "累计充值到账卡值"],
-    ["赠送类型", "累计赠送金额", "累计体现金额"],
+    ["赠送类型", "累计赠送金额", "累计提现金额"],
 ];
 
 export const tempColumns = [
