@@ -310,7 +310,9 @@ class TrdTemplate extends React.Component {
                         endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
                         quantity,
                         maxCanRecvCount,
-                        merchantID
+                        merchantInfo: {
+                            merchantID
+                        }
                     }
                     if(giftItemId === '10') {
                         checkList.push(maxAmount)
