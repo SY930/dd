@@ -175,7 +175,8 @@ class TrdTemplate extends React.Component {
             validateWay: 'OFF_LINE',
             merchantID: '',
             appsList: [],
-            linksList: []
+            linksList: [],
+            payChannelList: []
         };
         this.wrapperDOM = null;
     }
@@ -212,8 +213,7 @@ class TrdTemplate extends React.Component {
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
         this.setState({ mpList: mpList || [] })
-        this.getMiniProgramsAppIdList()
-        this.getlinks()
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -278,8 +278,11 @@ class TrdTemplate extends React.Component {
                 validateWay,
                 joinWay,
                 merchantID,
-                miniProgramsAppId,
-                miniProgramsPath
+                miniProgramsAppId1,
+                miniProgramsPath1,
+                miniProgramsAppId2,
+                miniProgramsPath2,
+                entranceWords
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
@@ -314,9 +317,19 @@ class TrdTemplate extends React.Component {
                         jsonData.maxAmount = maxAmount
                     }
                     if(validateWay === 'MINI_PROGRAMS') {
-                        checkList = checkList.concat(miniProgramsAppId,miniProgramsPath)
-                        jsonData.miniProgramsAppId = miniProgramsAppId
-                        jsonData.miniProgramsPath = miniProgramsPath
+                        checkList = checkList.concat(miniProgramsAppId1,miniProgramsPath1)
+                        jsonData.validMiniProgramsInfo = {
+                            miniProgramsAppId: miniProgramsAppId1,
+                            miniProgramsPath: miniProgramsPath1
+                        }
+                    }
+                    if(joinWay == '2') {
+                        checkList = checkList.concat(miniProgramsAppId2,miniProgramsPath2,entranceWords)
+                        jsonData.miniProgramsInfo = {
+                            miniProgramsAppId: miniProgramsAppId2,
+                            miniProgramsPath: miniProgramsPath2,
+                            entranceWords
+                        }
                     }
                     if(checkList.filter(v => !v).length) {
                         TrdTemplateStatus = false
@@ -542,6 +555,7 @@ class TrdTemplate extends React.Component {
         if(value === '50') {
             this.getMiniProgramsAppIdList()
             this.getlinks()
+            this.getPayChannel()
         }
         this.setState({ trdChannelID: value }, () => {
             this.propsChange()
@@ -555,8 +569,15 @@ class TrdTemplate extends React.Component {
     handleSelectChange = (key) => (value) => {
         if(key === 'validateWay' && value !== 'MINI_PROGRAMS') {
             this.setState({
-                miniProgramsAppId: '',
-                miniProgramsPath: ''
+                miniProgramsAppId1: '',
+                miniProgramsPath1: ''
+            })
+        }
+        if(key === 'joinWay' && value !== '2') {
+            this.setState({
+                miniProgramsAppId2: '',
+                miniProgramsPath2: '',
+                entranceWords: ''
             })
         }
         this.setState({  [key]: value }, () => {
@@ -595,6 +616,24 @@ class TrdTemplate extends React.Component {
                  if(code === '000') {
                      this.setState({
                         linksList: linkList || []
+                     })
+                 }
+            })
+    }
+    getPayChannel = () => {
+
+        axiosData(`/wxpay/getPayChannel?groupID=${this.props.accountInfo.toJS().groupID}`, {
+
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_ISV_API')
+            .then((res) => {
+                console.log('res',res)
+                 const {result,payChannelList} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        payChannelList: payChannelList || []
                      })
                  }
             })
@@ -658,6 +697,60 @@ class TrdTemplate extends React.Component {
             msg: ''
         }
     }
+    handleEntranceWordsChange = (e) => {
+        this.setState({ entranceWords: e.target.value }, () => {
+            this.propsChange()
+        })
+    }
+    renderMiniPrograms = (type) => {
+        const {  appsList, linksList } = this.state
+        const edit = this.props.type === 'edit';
+        const miniProgramsAppId = this.state[`miniProgramsAppId${type}`]
+        const miniProgramsPath = this.state[`miniProgramsPath${type}`]
+        return (
+            <div>
+            <FormItem
+                label='小程序名称'
+                validateStatus={ miniProgramsAppId ? 'success' : 'error'}
+                help={ miniProgramsAppId ? null : '请选择小程序名称'}
+                {...itemStyle}
+            >
+                <Select value={miniProgramsAppId}
+                        onChange={this.handleSelectChange(`miniProgramsAppId${type}`)}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择小程序名称"
+                >
+                    {
+                        appsList.map(mp => {
+                            return <Option key={mp.appID} value={mp.appID}>{mp.nickName}</Option>
+                        })
+                    }
+                </Select>
+            </FormItem>
+            <FormItem
+                label='页面路径'
+                {...itemStyle}
+                validateStatus={ miniProgramsPath ? 'success' : 'error'}
+                help={ miniProgramsPath ? null : '请选择页面路径'}
+            >
+                <Select value={miniProgramsPath}
+                        onChange={this.handleSelectChange(`miniProgramsPath${type}`)}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择页面路径"
+                >
+                    {
+                        linksList.map(mp => {
+                            const data = mp.value || {}
+                            return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                        })
+                    }
+                </Select>
+            </FormItem>
+        </div>
+        )
+    }
     wxPayShopCoupon = () => {
         const {giftItemId} = this.props
         const {
@@ -678,20 +771,13 @@ class TrdTemplate extends React.Component {
             validateWay , // 核销方式
             joinWay,
             merchantID, // 账务主体
-            miniProgramsAppId, // 小程序appId
-            miniProgramsPath, // 小程序页面路径
-            appsList,
-            linksList
+            entranceWords,
+            payChannelList
         } = this.state;
         const edit = this.props.type === 'edit';
         const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
         const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
-        const  merchantIDList = [
-            {
-                value: '1356079902',
-                label: '商户号'
-            }
-        ]
+
         return (
             <div>
                 <FormItem
@@ -707,8 +793,8 @@ class TrdTemplate extends React.Component {
                             placeholder="请选择商家券发放账务主体"
                     >
                         {
-                             merchantIDList.map(mp => {
-                                return <Option key={mp.value} value={mp.value}>{mp.label}</Option>
+                             payChannelList.map(mp => {
+                                return <Option key={mp.merchantID} value={mp.merchantID}>{mp.settleName}</Option>
                             })
                         }
                     </Select>
@@ -867,47 +953,7 @@ class TrdTemplate extends React.Component {
                     </Select>
                 </FormItem>
                 {validateWay === 'MINI_PROGRAMS' && (
-                    <div>
-                        <FormItem
-                            label='小程序名称'
-                            validateStatus={ miniProgramsAppId ? 'success' : 'error'}
-                            help={ miniProgramsAppId ? null : '请选择小程序名称'}
-                            {...itemStyle}
-                        >
-                            <Select value={miniProgramsAppId}
-                                    onChange={this.handleSelectChange('miniProgramsAppId')}
-                                    disabled={edit}
-                                    getPopupContainer={(node) => node.parentNode}
-                                    placeholder="请选择小程序名称"
-                            >
-                                {
-                                    appsList.map(mp => {
-                                        return <Option key={mp.appID} value={mp.appID}>{mp.nickName}</Option>
-                                    })
-                                }
-                            </Select>
-                        </FormItem>
-                        <FormItem
-                            label='页面路径'
-                            {...itemStyle}
-                            validateStatus={ miniProgramsPath ? 'success' : 'error'}
-                            help={ miniProgramsPath ? null : '请选择页面路径'}
-                        >
-                            <Select value={miniProgramsPath}
-                                    onChange={this.handleSelectChange('miniProgramsPath')}
-                                    disabled={edit}
-                                    getPopupContainer={(node) => node.parentNode}
-                                    placeholder="请选择页面路径"
-                            >
-                                {
-                                    linksList.map(mp => {
-                                        const data = mp.value || {}
-                                        return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
-                                    })
-                                }
-                            </Select>
-                        </FormItem>
-                    </div>
+                   this.renderMiniPrograms(1)
                 )}
 
                 <FormItem
@@ -928,6 +974,22 @@ class TrdTemplate extends React.Component {
                         }
                     </Select>
                 </FormItem>
+                {
+                    joinWay == '2' && (
+                        <div>
+                            <FormItem
+                                label='标题'
+                                validateStatus={ entranceWords ? 'success' : 'error'}
+                                help={ entranceWords ? null : '请输入标题'}
+                                {...itemStyle}
+                            >
+                                <Input value={entranceWords} onChange={this.handleEntranceWordsChange} />
+                            </FormItem>
+                            {this.renderMiniPrograms(2)}
+                        </div>
+                    )
+                }
+
             </div>
         )
     }
