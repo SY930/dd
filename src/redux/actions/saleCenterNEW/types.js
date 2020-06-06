@@ -421,7 +421,7 @@ export const ACTIVITY_CATEGORIES = (function () {
                         }}
                     >
                         <Icon
-                            style={{ color: "#FAAD14" }}
+                            style={{ color: "#FAAD14", marginRight: "6px" }}
                             type="info-circle-o"
                         />
                         活动须知
