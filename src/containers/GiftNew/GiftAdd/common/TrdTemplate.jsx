@@ -186,10 +186,29 @@ class TrdTemplate extends React.Component {
         if (this.props.data) {
             this.propsChange(this.props.data)
             if (this.props.data.trdTemplateInfo) {
+                const trdTemplateInfo = JSON.parse(this.props.data.trdTemplateInfo)
+                const {merchantInfo,validMiniProgramsInfo,miniProgramsInfo} = trdTemplateInfo
+                if(merchantInfo) {
+                    trdTemplateInfo.merchantID = merchantInfo.merchantID
+                }
+                if(validMiniProgramsInfo) {
+                    trdTemplateInfo.miniProgramsAppId1 = validMiniProgramsInfo.miniProgramsAppId
+                    trdTemplateInfo.miniProgramsPath1 = validMiniProgramsInfo.miniProgramsPath
+                }
+                if(miniProgramsInfo) {
+                    trdTemplateInfo.miniProgramsAppId2 = miniProgramsInfo.miniProgramsAppId
+                    trdTemplateInfo.miniProgramsPath2 = miniProgramsInfo.miniProgramsPath
+                    trdTemplateInfo.entranceWords = miniProgramsInfo.entranceWords
+                }
+                if(trdTemplateInfo.trdChannelID === '50') {
+                    this.getMiniProgramsAppIdList()
+                    this.getlinks()
+                    this.getPayChannel()
+                }
                 this.setState({
                     defaultChecked: true,
                     bindType: 1,
-                    ...JSON.parse(this.props.data.trdTemplateInfo)
+                    ...trdTemplateInfo
                 })
             } else {
                 const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
@@ -237,7 +256,7 @@ class TrdTemplate extends React.Component {
             this.props.onChange(data);
             return
         }
-        console.log('this.state.bindType',this.state.bindType)
+
         // 新建时
         if (this.state.bindType === 0) {
             this.validatorTemp().then((TrdTemplateStatus) => {
@@ -341,7 +360,7 @@ class TrdTemplate extends React.Component {
                         TrdTemplateStatus,
                         trdTemplateInfo: JSON.stringify(jsonData)
                     } : undefined)
-                    console.log('TrdTemplateStatus',TrdTemplateStatus)
+
                     return
                 }
             }
@@ -630,7 +649,7 @@ class TrdTemplate extends React.Component {
             path: '',
         }, 'HTTP_SERVICE_URL_ISV_API')
             .then((res) => {
-                console.log('res',res)
+
                  const {result,payChannelList} = res
                  const code = (result || {}).code
                  if(code === '000') {
@@ -1318,6 +1337,7 @@ class TrdTemplate extends React.Component {
         const { type} = this.props
 
         const edit =  type === 'edit';
+        const {giftItemId} = this.props
 
         return (
             <div ref={e => this.wrapperDOM = e}>
@@ -1358,7 +1378,7 @@ class TrdTemplate extends React.Component {
                                         disabled={edit}
                                     >
                                         <Radio value={0}>关联第三方渠道</Radio>
-                                        <Radio value={1}>创建微信优惠券</Radio>
+                                        <Radio value={1}>{itemList.includes(String(giftItemId)) ? '同步创建三方券' : '创建微信优惠券'}</Radio>
                                     </RadioGroup>
                                     {
                                         bindType === 0 ? (
