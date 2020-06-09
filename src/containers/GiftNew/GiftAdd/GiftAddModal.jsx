@@ -614,6 +614,9 @@ class GiftAddModal extends React.Component {
                             rules: [{
                                 validator:(r,v,cb)=>{
                                     const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                    if(v == 0) {
+                                        return cb('不能为0');
+                                    }
                                     if(!reg.test(v)) {
                                         return cb('最大支持5位整数，2位小数');
                                     }
@@ -666,10 +669,10 @@ class GiftAddModal extends React.Component {
                 }
             </div>),
         };
-        // 随机金额暂时不上，需要上的时候，解此封印，即可释放终极技能！
-        // if(value==='40') {
-        //     formItems = { ...formItems, giftValue };
-        // }
+        // 随机金额
+        if(value==='40') {
+            formItems = { ...formItems, giftValue };
+        }
         const formKeys = {
             '实物礼品券': [
                 {
