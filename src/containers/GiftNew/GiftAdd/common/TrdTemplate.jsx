@@ -173,7 +173,7 @@ class TrdTemplate extends React.Component {
             brandName: undefined,
             trdChannelID: '10',
             validateWay: 'OFF_LINE',
-            merchantID: '',
+            settleId: '',
             appsList: [],
             linksList: [],
             payChannelList: []
@@ -189,7 +189,7 @@ class TrdTemplate extends React.Component {
                 const trdTemplateInfo = JSON.parse(this.props.data.trdTemplateInfo)
                 const {merchantInfo,validMiniProgramsInfo,miniProgramsInfo} = trdTemplateInfo
                 if(merchantInfo) {
-                    trdTemplateInfo.merchantID = merchantInfo.merchantID
+                    trdTemplateInfo.settleId = merchantInfo.settleId
                 }
                 if(validMiniProgramsInfo) {
                     trdTemplateInfo.miniProgramsAppId1 = validMiniProgramsInfo.miniProgramsAppId
@@ -296,12 +296,13 @@ class TrdTemplate extends React.Component {
                 maxCanRecvCount,
                 validateWay,
                 joinWay,
-                merchantID,
+                settleId,
                 miniProgramsAppId1,
                 miniProgramsPath1,
                 miniProgramsAppId2,
                 miniProgramsPath2,
-                entranceWords
+                entranceWords,
+                payChannelList
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
@@ -315,7 +316,8 @@ class TrdTemplate extends React.Component {
                 // 通过隐藏的校验
                 if(trdChannelID === '50') {
                     TrdTemplateStatus = true;
-                    let checkList = [mpID,quantity,maxCanRecvCount,fixedTerm,merchantID]
+                    let checkList = [mpID,quantity,maxCanRecvCount,fixedTerm,settleId]
+                    const currentMerchant = payChannelList.find(v => v.settleId === settleId)
                     const jsonData = {
                         appID,
                         trdChannelID,
@@ -330,7 +332,8 @@ class TrdTemplate extends React.Component {
                         quantity,
                         maxCanRecvCount,
                         merchantInfo: {
-                            merchantID
+                            merchantID: currentMerchant ? currentMerchant.merchantID : '',
+                            settleId
                         }
                     }
                     if(giftItemId === '10') {
@@ -791,7 +794,7 @@ class TrdTemplate extends React.Component {
             maxCanRecvCount, // 用户最大可用数
             validateWay , // 核销方式
             joinWay,
-            merchantID, // 账务主体
+            settleId, // 账务主体
             entranceWords,
             payChannelList
         } = this.state;
@@ -804,18 +807,18 @@ class TrdTemplate extends React.Component {
                 <FormItem
                     label='账务主体'
                     {...itemStyle}
-                    validateStatus={merchantID ? 'success' : 'error'}
-                    help={merchantID ? null : '请选择商家券发放账务主体'}
+                    validateStatus={settleId ? 'success' : 'error'}
+                    help={settleId ? null : '请选择商家券发放账务主体'}
                 >
-                    <Select value={merchantID}
-                            onChange={this.handleSelectChange('merchantID')}
+                    <Select value={settleId}
+                            onChange={this.handleSelectChange('settleId')}
                             disabled={edit}
                             getPopupContainer={(node) => node.parentNode}
                             placeholder="请选择商家券发放账务主体"
                     >
                         {
-                             payChannelList.map(mp => {
-                                return <Option key={mp.merchantID} value={mp.merchantID}>{mp.settleName}</Option>
+                             payChannelList.map((mp,i) => {
+                                return <Option key={mp.settleId} value={mp.settleId}>{mp.settleName}</Option>
                             })
                         }
                     </Select>
