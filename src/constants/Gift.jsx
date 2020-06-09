@@ -250,6 +250,7 @@ const GiftCfg = {
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
         { value: '124', label: '券包', include: true },
+        { value: '125', label: 'E折发放'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
