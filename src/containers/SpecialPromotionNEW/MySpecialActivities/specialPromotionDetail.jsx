@@ -66,6 +66,15 @@ const exportablePromotionTypes = [
     '76',
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+import {
+    dataOverviewColumns,
+    beRecommendTitleList,
+    tempColumns
+} from './constant'
+import {
+    renderOverViewData
+} from './specialPromotionDetailHelp'
+import _ from 'lodash'
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -85,10 +94,12 @@ class SpecialPromotionDetail extends React.Component {
             inviteeModalVisble: false,
             selectedInviter: null,
             recommendStatitics: [],
-
             popoverVisible: false,
             tooltipVisble: false,
             sameItemID: '',
+            dataOverviewDataSource: [],
+            recommendRewardSummaryData: [],
+            recommendedRewardSummaryData: []
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
@@ -110,6 +121,31 @@ class SpecialPromotionDetail extends React.Component {
                 this.setState({
                     recommendStatitics: [res],
                 })
+            })
+            // 获取数据总揽和奖励统计
+            axiosData(
+                '/specialPromotion/queryRecommendEventSummary.ajax',
+                {eventID: eventEntity.itemID},
+                {needThrow: true},
+                {path: ''},
+                'HTTP_SERVICE_URL_PROMOTION_NEW',
+            ).then(res => {
+                if(res.code === '000') {
+                    const dataOverviewDataSource = [{}]
+                    dataOverviewColumns.forEach(v => {
+                        dataOverviewDataSource[0][v.key] = res[v.key]
+                    })
+
+                    this.setState({
+                        dataOverviewDataSource,
+                        recommendRewardSummaryData: res.recommendRewardSummaryData || [], // 推荐人统计
+                        recommendedRewardSummaryData: res.recommendedRewardSummaryData || [] // 被推荐人统计
+
+                    })
+                } else {
+                    message.error(res.message)
+                }
+
             })
         }
 
@@ -234,20 +270,31 @@ class SpecialPromotionDetail extends React.Component {
         }
         const way = this.state.eventInfo.data.eventWay;
         if (way == 68) { // 推荐有礼
+            let couponList = []
+            const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
+            if(couponCurrent.length) {
+                couponList = couponCurrent[0].gifts
+            }
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
-                    <div>{this.props.intl.formatMessage(STRING_SPE.d31f11d5hd51190)}</div>
+                    <div>数据总览</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType !== 0))}
+                        {renderOverViewData.call(this)}
                     </Col>
                     <div>&nbsp;</div>
+                    <div>{this.props.intl.formatMessage(STRING_SPE.d31f11d5hd51190)}</div>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(couponList)}
+                    </Col>
+                    <div>&nbsp;</div>
+                    {/* <div>&nbsp;</div>
                     <Col span={24}>
                         {this.renderRecommendStatisticsTable()}
-                    </Col>
+                    </Col> */}
                     <div>{this.props.intl.formatMessage(STRING_SPE.da9060bn7f2110)}</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0))}
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0 && record.presentType === 1),'beRecommend')}
                     </Col>
 
                     {this.renderSearch()}
@@ -432,7 +479,7 @@ class SpecialPromotionDetail extends React.Component {
         );
     }
     // 礼品信息表格
-    renderGiftInfoTable(records) {
+    renderGiftInfoTable(records,type) {
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props
         const columns = [
@@ -515,6 +562,78 @@ class SpecialPromotionDetail extends React.Component {
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
             }
         });
+        if(this.props.record.eventInfo.data.eventWay == 68) {
+            // rewardType 1 为卡值 2 为积分 3 红包
+            let filterKeys = [
+                {name: '赠送积分',id: '2'},
+                {name: '赠送卡值',id: '1'},
+                {name: '现金红包',id: '4'},
+            ]
+
+            let {recommendRewardSummaryData,recommendedRewardSummaryData} = this.state
+            const recommendRewardSummaryDataList = []
+            if(type === 'beRecommend') {
+                filterKeys = [ {name: '赠送积分',id: '2'}]
+                filterKeys.forEach(v => {
+                    recommendedRewardSummaryData.forEach(item => {
+                        if(item.rewardType == v.id) {
+                            item.rewardTypeName = v.name
+                            recommendRewardSummaryDataList.push(item)
+                        }
+                    })
+                    })
+            } else {
+                filterKeys.forEach(v => {
+                    recommendRewardSummaryData.forEach(item => {
+                        if(item.rewardType == v.id) {
+                            item.rewardTypeName = v.name
+                            recommendRewardSummaryDataList.push(item)
+                        }
+                    })
+                })
+            }
+
+
+
+
+            const  columnsNew = _.cloneDeep(columns)
+            columnsNew.splice(1,0,{
+                title: '赠送类型',
+                dataIndex: 'mySendType',
+                key: 'mySendType',
+                className: "TableTxtCenter",
+            })
+            columnsNew.pop()
+            return (
+                <div>
+                    {recommendRewardSummaryDataList.map((val,index) => {
+
+                        return <div>
+                             <div>&nbsp;</div>
+                            <Table
+                                style={{width: '80%'}}
+                                dataSource={[
+                                    val
+                                ]}
+                                columns={beRecommendTitleList[index].map((v,i) => {
+                                    const column =  _.cloneDeep(tempColumns)[i]
+                                    column.title = v
+                                    return column
+                                })}
+                                bordered={true}
+                                pagination={false}
+                            />
+
+                        </div>
+                    })}
+                    <div>&nbsp;</div>
+                    <Table dataSource={dataSource.map(v => {
+                        v.mySendType = '优惠券'
+                        return v
+                    })} columns={columnsNew} bordered={true} pagination={false} />
+                </div>
+            );
+        }
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
@@ -890,46 +1009,60 @@ class SpecialPromotionDetail extends React.Component {
                     }
                 },
                 {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb31180)}`,
-                    dataIndex: 'accumulativeMoney',
-                    key: 'accumulativeMoney',
-                    className: 'TableTxtRight',
-                    width: 160,
-                },
-                {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.d7elca8l7h3286)}`,
-                    dataIndex: 'unclaimedMoney',
-                    key: 'unclaimedMoney',
-                    className: 'TableTxtRight',
-                    width: 160,
-                },
-                {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82233275)}`,
-                    dataIndex: 'receivedMoney',
-                    key: 'receivedMoney',
-                    className: 'TableTxtRight',
-                    width: 160,
-                },
-                {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.db60c96957243426)}`,
+                    title: `获得积分`,
                     dataIndex: 'accumulativePoint',
                     key: 'accumulativePoint',
                     className: 'TableTxtRight',
                     width: 160,
                 },
                 {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df35188)}`,
-                    dataIndex: 'unclaimedPoint',
-                    key: 'unclaimedPoint',
-                    className: 'TableTxtRight',
-                    width: 160,
-                },
-                {
-                    title: `${this.props.intl.formatMessage(STRING_SPE.d5g3ddeg7836148)}`,
+                    title: `已充值积分`,
                     dataIndex: 'receivedPoint',
                     key: 'receivedPoint',
                     className: 'TableTxtRight',
                     width: 160,
+                },
+                {
+                    title: `获得卡值`,
+                    dataIndex: 'accumulativeMoney',
+                    key: 'accumulativeMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: `已充值卡值`,
+                    dataIndex: 'receivedMoney',
+                    key: 'receivedMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: `获得现金`,
+                    dataIndex: 'redPackageMoney',
+                    key: 'redPackageMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: `已提现金额`,
+                    dataIndex: 'rechargedRedPackageMoney',
+                    key: 'rechargedRedPackageMoney',
+                    className: 'TableTxtRight',
+                    width: 160,
+                },
+                {
+                    title: `获得礼品数量`,
+                    dataIndex: 'giftCount',
+                    key: 'giftCount',
+                    className: 'TableTxtRight',
+                    width: 200,
+                },
+                {
+                    title: `已核销礼品数量`,
+                    dataIndex: 'validGiftCount',
+                    key: 'validGiftCount',
+                    className: 'TableTxtRight',
+                    width: 200,
                 },
             ]);
         }
@@ -950,7 +1083,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={eventWay == 68 ? {x: 1550} : {}}
+                scroll={eventWay == 68 ? {x: 2000} : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
