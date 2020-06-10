@@ -1418,6 +1418,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: (decorator) => decorator({})(
                     <TrdTemplate
+                        giftItemId={value}
                         type={type}
                         describe={describe}
                         clearPromotion={() => {
