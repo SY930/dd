@@ -316,7 +316,7 @@ class TrdTemplate extends React.Component {
                 // 通过隐藏的校验
                 if(trdChannelID === '50') {
                     TrdTemplateStatus = true;
-                    let checkList = [mpID,quantity,maxCanRecvCount,fixedTerm,settleId]
+                    let checkList = [mpID,quantity,maxCanRecvCount,settleId]
                     const currentMerchant = payChannelList.find(v => v.settleId === settleId)
                     const jsonData = {
                         appID,
@@ -325,10 +325,6 @@ class TrdTemplate extends React.Component {
                         type,
                         validateWay,
                         joinWay,
-                        fixedBeginTerm: type === FIX_TERM ? fixedBeginTerm : undefined,
-                        fixedTerm: type === FIX_TERM ? fixedTerm : undefined,
-                        beginTimestamp: type === FIX_TIME_RANGE ? beginTimestamp : undefined,
-                        endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
                         quantity,
                         maxCanRecvCount,
                         merchantInfo: {
@@ -355,15 +351,26 @@ class TrdTemplate extends React.Component {
                             entranceWords
                         }
                     }
+                    if(type === FIX_TERM) {
+                        checkList = checkList.concat(fixedBeginTerm,fixedTerm)
+                        jsonData.fixedBeginTerm = fixedBeginTerm
+                        jsonData.fixedTerm = fixedTerm
+                    }
+                    if(type === FIX_TIME_RANGE) {
+                        checkList = checkList.concat(beginTimestamp,endTimestamp)
+                        jsonData.beginTimestamp = beginTimestamp
+                        jsonData.endTimestamp = endTimestamp
+                    }
                     if(checkList.filter(v => !v).length) {
                         TrdTemplateStatus = false
                     }
+                    // console.log('checkList',checkList,TrdTemplateStatus)
 
                     this.props.onChange(defaultChecked ? {
                         TrdTemplateStatus,
                         trdTemplateInfo: JSON.stringify(jsonData)
                     } : undefined)
-
+                    // console.log('jsonData',jsonData)
                     return
                 }
             }
@@ -904,6 +911,8 @@ class TrdTemplate extends React.Component {
                         <FormItem
                             label="固定有效期"
                             {...itemStyle}
+                            validateStatus={beginTimestamp ? 'success' : 'error'}
+                            help={beginTimestamp ? null : '请选择固定有效期'}
                         >
                             <RangePicker
                                 disabled={edit}
