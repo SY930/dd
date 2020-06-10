@@ -234,12 +234,17 @@ class StepTwo extends React.Component {
             opts.settleUnitID = '0';
             opts.accountNo = '0';
         }
+        console.log('cardLevelRangeType',cardLevelRangeType)
         // 开卡增礼品加适用店铺
-        if (this.props.type == '52') {
-            const { shopIDList, canUseShopIDs } = this.state
+        const { shopIDList, canUseShopIDs , cardLevelRangeType } = this.state
+        if (this.props.type == '52' && cardLevelRangeType == '2') {
             opts.shopIDList = shopIDList
-            opts.canUseShopIDs = this.state.canUseShopIDs
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
+            opts.canUseShopIDs =  canUseShopIDs
+        } else if(this.props.type == '52' && cardLevelRangeType != '2') {
+            opts.shopIDList = []
+            opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
+            opts.canUseShopIDs =  canUseShopIDs
         }
         this.props.setSpecialBasicInfo(opts);
         return flag;
