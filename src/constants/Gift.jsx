@@ -250,6 +250,8 @@ const GiftCfg = {
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
         { value: '124', label: '券包', include: true },
+        { value: '125', label: 'E折发放'},
+        { value: '3032', label: '自定义投放'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
@@ -275,6 +277,7 @@ const GiftCfg = {
         { value: '14', label: '出售中' },
         { value: '99', label: '已充值' },
         { value: '103', label: '已删除' },
+        { value: '3', label: '已过期' },
     ],
     WXgiftCardStatus: [ // 线上礼品卡
         { value: '', label: '全部' },
