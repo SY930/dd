@@ -18,7 +18,8 @@ import {
     Select,
     Tree,
     Input,
-    Radio
+    Radio,
+    Icon
 } from 'antd';
 
 const FormItem = Form.Item;
@@ -674,11 +675,84 @@ class PromotionScopeInfo extends React.Component {
                 {
                     promotionType == '1030' ?
                     <div style={{position: "absolute", left: -241, background: 'white', top: 80, width: 221,}}>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 14, fontWeight: 500, margin: '10px 0'}}>活动说明：</p>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
-                        <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
-                        <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按共享执行</p>
+                        <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 14,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                        }}
+                    >
+                        <Icon
+                            style={{ color: "#FAAD14" ,marginRight: '6px'}}
+                            type="info-circle-o"
+
+                        />
+                        活动须知
+                    </p>
+                    <p
+                        style={{
+                            color: "#666666",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                        }}
+                    >
+                        1. 同门店同时间多个满赠活动执行顺序
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        【活动时段】>【活动周期】>【活动日期】
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(153,153,153,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                        }}
+                    >
+                        举例：
+                        <br />
+                        同一个业务下，5.1～6.1
+                        设置了活动A，每个月10号设置活动B，10号中午12:00~1:00设置活动C
+                        <br />
+                        则10号当天活动执行顺序为：12:00~1:00执行活动C；当天其他时段执行活动B；
+                        当月其他日期执行活动A
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            padding: "10px 0",
+                            borderTop: "1px solid #E9E9E9",
+                            marginTop: "7px",
+                        }}
+                    >
+                        2.活动互斥原则
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(153,153,153,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                        }}
+                    >
+                        满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按同享执行。
+                    </p>
                     </div> : null
                 }
                 <Form className={styles.FormStyle}>
