@@ -1,16 +1,58 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Input, Form } from 'antd';
+import { Modal, Row, Col, Input, Form, Select,Radio,DatePicker } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
 import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
+import moment from 'moment'
 import {
     FetchGiftLevel,
 } from '../_action';
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
-
+import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+const giftEffectTimeHours = [
+    {
+        value: '0',
+        label: '立即生效'
+    },
+    {
+        value: '1',
+        label: '1天后生效'
+    },
+    {
+        value: '2',
+        label: '2天后生效',
+    },
+    {
+        value: '3',
+        label: '3天后生效',
+    },
+    {
+        value: '4',
+        label: '4天后生效',
+    },
+    {
+        value: '5',
+        label: '5天后生效',
+    },
+    {
+        value: '10',
+        label: '10天后生效',
+    },
+    {
+        value: '20',
+        label: '20天后生效',
+    },
+    {
+        value: '30',
+        label: '30天后生效',
+    },
+]
+const {  Group: RadioGroup } = Radio;
+const {  RangePicker } = DatePicker;
 const FormItem = Form.Item;
+const format = 'YYYYMMDD'
 class CardOperate extends React.Component {
     constructor(props) {
         super(props);
@@ -21,6 +63,8 @@ class CardOperate extends React.Component {
             cardTypeList: [],
             levelList: [],
             selectedRow: [],
+            validUntilDay: '0',
+            effectType: '1'
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
@@ -36,12 +80,13 @@ class CardOperate extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { visible, type } = nextProps;
         this.form && this.form.resetFields();
+        console.log('type',type)
         if (visible) {
             let formKeys = [],
                 operateRemarkLabel = '';
             switch (type) {
                 case 'sendCard':
-                    formKeys = [{ keys: ['batchNO', 'startEnd', 'useCardTypeID', 'useCardLevelID', 'remark'] }];
+                    formKeys = [{ keys: ['batchNO', 'startEnd', 'effectType', 'giftEffectTimeHours', 'giftValidUntilDayCount', 'useCardTypeID', 'useCardLevelID', 'remark'] }];
                     operateRemarkLabel = '备注';
                     break;
                 case 'batchCancel':
@@ -95,6 +140,7 @@ class CardOperate extends React.Component {
     onOk() {
         this.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
+            console.log('values',values)
             const params = values;
             // params.useCardLevelID = 828136705;
             const { giftItemID } = this.props;
@@ -116,12 +162,25 @@ class CardOperate extends React.Component {
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum']);
             _params.cardTypeID = _params.useCardTypeID;
             delete _params.useCardTypeID;
+
+            const giftEffectTimeHours = params.giftEffectTimeHours == 0 ? params.giftEffectTimeHours : params.giftEffectTimeHours * 24
+            const giftValidUntilDayCount = typeof params.giftValidUntilDayCount === 'object' ? params.giftValidUntilDayCount.number : params.giftValidUntilDayCount
+            const effectTime99validUntilDate = params.effectTime99validUntilDate && params.effectTime99validUntilDate.length ?
+             [moment(params.effectTime99validUntilDate[0]).format(format),moment(params.effectTime99validUntilDate[1]).format(format)] : []
+             delete _params.effectTime99validUntilDate
             let reqParams = {
                 ..._params,
                 batchNO: (_params.batchNO || '').trim(),
                 endNO: (_params.endNO || '').trim(),
                 startNO: (_params.startNO || '').trim(),
+                effectType: Number(params.effectType) || '',
+                giftEffectTimeHours: Number(giftEffectTimeHours) || '',
+                giftValidUntilDayCount: Number(giftValidUntilDayCount) || '0',
+                effectTime: effectTime99validUntilDate[0],
+                validUntilDate: effectTime99validUntilDate[1]
             }
+            console.log('reqParams',reqParams)
+
             axiosData(callserver, reqParams, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
@@ -233,9 +292,46 @@ class CardOperate extends React.Component {
             </Row>
         )
     }
+    handleDayChange = (e) => {
+
+        if(e === '0') {
+
+            this.form.resetFields(['giftValidUntilDayCount'])
+        }
+        this.setState({
+            validUntilDay: e
+        })
+    }
+    handleEffectTypeChange = (e) => {
+        let { formKeys } = this.state
+        const value = e.target.value
+        const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount']
+
+        if(value === '2') {
+            formKeys[0].keys = formKeys[0].keys.filter(v => {
+               return  !relativeDateKeys.includes(v)
+            })
+            formKeys[0].keys.splice(3,0, 'effectTime99validUntilDate')
+            this.form.resetFields(relativeDateKeys)
+            this.setState({
+                validUntilDay: '0'
+            })
+        } else {
+            formKeys[0].keys = formKeys[0].keys.filter(v => {
+                return   v !== 'effectTime99validUntilDate'
+             })
+            formKeys[0].keys.splice(3,0, 'giftEffectTimeHours', 'giftValidUntilDayCount')
+            this.form.resetFields(['effectTime99validUntilDate'])
+        }
+
+        this.setState({
+            formKeys,
+            effectType:  value
+        })
+    }
     render() {
         const { title = '', visible, type } = this.props;
-        const { formKeys, operateRemarkLabel, cardList, levelList } = this.state;
+        const { formKeys, operateRemarkLabel, cardList, levelList,validUntilDay,effectType } = this.state;
         const formItems = {
             batchNO: {
                 label: '批次号',
@@ -260,6 +356,122 @@ class CardOperate extends React.Component {
                 label: '起止号',
                 type: 'custom',
                 render: (decorator, form) => this.renderStartEnd(decorator, form),
+            },
+            effectType: {
+                label: '有效期',
+                type: 'custom',
+                defaultValue: '1',
+                render: decorator => (
+                    decorator(
+                        {
+                            onChange: this.handleEffectTypeChange
+                        }
+                    )(<RadioGroup>
+                        {[
+                    {
+                        value: '1',
+                        label: '相对有效期'
+                    },
+                    {
+                        value: '2',
+                        label: '固定有效期'
+                    },
+                    ].map(({ value, label }) => (
+                            <Radio key={value} value={value}  >
+                                {label}
+                            </Radio>
+                        ))}
+                     </RadioGroup>)
+
+                )
+
+            },
+            giftEffectTimeHours: {
+                label: '何时生效',
+                type: 'combo',
+                defaultValue: '0',
+                options: giftEffectTimeHours,
+            },
+            giftValidUntilDayCount: {
+                label: '有效天数',
+                type: 'custom',
+                defaultValue: '0',
+                render: decorator => (
+                    <Row>
+                        <Col span={8}  >
+                        <Select defaultValue={validUntilDay} onChange={this.handleDayChange}>
+                            <Select.Option key="0" value="0">永久有效</Select.Option>
+                            <Select.Option key="1" value="1">期间有效</Select.Option>
+                        </Select>
+                        </Col>
+                        <Col span={16}  >
+                        {
+                           validUntilDay  == '0' ?
+                           <PriceInput
+                            addonAfter={"天"}
+                            style={{ marginLeft: "11px" }}
+                            disabled={true}
+                            key="1"
+                            />
+                            : decorator({
+                                rules:  [
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            const reg = /^\+?[1-9][0-9]*$/
+                                            if (
+                                                v.number === "" ||
+                                                v.number === undefined
+                                            ) {
+                                                return cb();
+                                            }
+                                            if (!v || (v.number < 1)) {
+                                                return cb(
+                                                    '有效天数应不小于1'
+                                                );
+                                            } else if (v.number > 10000) {
+                                                return cb(
+                                                    '有效天数应不大于10000'
+                                                );
+                                            } else if(!reg.test(v.number)) {
+                                                return cb(
+                                                    '有效天数应为整数'
+                                                );
+                                            }
+                                            cb();
+                                        },
+                                    },
+                                    { required:  validUntilDay != '0', message: '批次号不能为空' },
+                                ]
+                                })(
+                                    <PriceInput
+                                        addonAfter={"天"}
+                                        style={{ marginLeft: "11px" }}
+                                        key="2"
+                                    />
+                                )
+                        }
+
+
+                        </Col>
+                    </Row>
+                )
+            },
+            effectTime99validUntilDate: {
+                label: '固定有效期',
+                type: 'custom',
+                // defaultValue: [moment(),moment()],
+                render: decorator => (
+                    decorator(
+                         {
+                            rules: [
+                                { required: true, message: '固定有效期不能为空' },
+                            ],
+                         }
+                    )(<RangePicker
+                        placeholder={['开始日期','结束日期']}
+                      />)
+
+                )
             },
             useCardTypeID: {
                 label: '会员卡类型',
@@ -326,7 +538,7 @@ class CardOperate extends React.Component {
                     </Row>
                     <Row>
                         <Col span={24} pull={3}>
-                            
+
                             <BaseForm
                                 getForm={form => this.form = form}
                                 formItems={formItems}
@@ -334,7 +546,7 @@ class CardOperate extends React.Component {
                                 onChange={(key, value) => this.handleFormChange(key, value, this.queryForm)}
                             />
                         </Col>
-                    </Row>                
+                    </Row>
                 </Row>
             </Modal>
         )
