@@ -316,7 +316,7 @@ class TrdTemplate extends React.Component {
                 // 通过隐藏的校验
                 if(trdChannelID === '50') {
                     TrdTemplateStatus = true;
-                    let checkList = [mpID,quantity,maxCanRecvCount,settleId]
+                    let checkList = [mpID,maxCanRecvCount,settleId]
                     const currentMerchant = payChannelList.find(v => v.settleId === settleId)
                     const jsonData = {
                         appID,
@@ -325,7 +325,6 @@ class TrdTemplate extends React.Component {
                         type,
                         validateWay,
                         joinWay,
-                        quantity,
                         maxCanRecvCount,
                         merchantInfo: {
                             merchantID: currentMerchant ? currentMerchant.merchantID : '',
@@ -335,7 +334,11 @@ class TrdTemplate extends React.Component {
                     if(giftItemId === '10') {
                         checkList.push(maxAmount)
                         jsonData.maxAmount = maxAmount
+                    } else {
+                        checkList.push(quantity)
+                        jsonData.quantity = quantity
                     }
+
                     if(validateWay === 'MINI_PROGRAMS') {
                         checkList = checkList.concat(miniProgramsAppId1,miniProgramsPath1)
                         jsonData.validMiniProgramsInfo = {
@@ -864,20 +867,22 @@ class TrdTemplate extends React.Component {
                     />
                     </FormItem>
                 }
+                { (giftItemId === '21' || giftItemId === '111') &&
+                    <FormItem
+                        label="发放总数量"
+                        {...itemStyle}
+                        validateStatus={this.checkQuantity().status ? 'success' : 'error'}
+                        help={this.checkQuantity().msg}
+                        >
+                        <PriceInput
+                            modal="int"
+                            disabled={edit}
+                            value={{number: quantity}}
+                            onChange={this.handlePriceInputChange('quantity')}
+                        />
+                    </FormItem>
+                }
 
-                <FormItem
-                    label="发放总数量"
-                    {...itemStyle}
-                    validateStatus={this.checkQuantity().status ? 'success' : 'error'}
-                    help={this.checkQuantity().msg}
-                >
-                    <PriceInput
-                        modal="int"
-                        disabled={edit}
-                        value={{number: quantity}}
-                        onChange={this.handlePriceInputChange('quantity')}
-                    />
-                </FormItem>
                 <FormItem
                     label="用户最大可领个数"
                     {...itemStyle}
