@@ -163,7 +163,7 @@ class CardOperate extends React.Component {
             _params.cardTypeID = _params.useCardTypeID;
             delete _params.useCardTypeID;
 
-            const giftEffectTimeHours = params.giftEffectTimeHours == 0 ? params.giftEffectTimeHours : params.giftEffectTimeHours * 24
+            const giftEffectTimeHours = params.giftEffectTimeHours
             const giftValidUntilDayCount = typeof params.giftValidUntilDayCount === 'object' ? params.giftValidUntilDayCount.number : params.giftValidUntilDayCount
             const effectTime99validUntilDate = params.effectTime99validUntilDate && params.effectTime99validUntilDate.length ?
              [moment(params.effectTime99validUntilDate[0]).format(format),moment(params.effectTime99validUntilDate[1]).format(format)] : []
@@ -307,7 +307,7 @@ class CardOperate extends React.Component {
         const value = e.target.value
         const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount']
 
-        if(value === '2') {
+        if(value === '3') {
             formKeys[0].keys = formKeys[0].keys.filter(v => {
                return  !relativeDateKeys.includes(v)
             })
@@ -373,7 +373,7 @@ class CardOperate extends React.Component {
                         label: '相对有效期'
                     },
                     {
-                        value: '2',
+                        value: '3',
                         label: '固定有效期'
                     },
                     ].map(({ value, label }) => (
