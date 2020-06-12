@@ -307,7 +307,7 @@ class CardOperate extends React.Component {
         const value = e.target.value
         const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount']
 
-        if(value === '3') {
+        if(value === '2') {
             formKeys[0].keys = formKeys[0].keys.filter(v => {
                return  !relativeDateKeys.includes(v)
             })
@@ -369,11 +369,11 @@ class CardOperate extends React.Component {
                     )(<RadioGroup>
                         {[
                     {
-                        value: '1',
+                        value: '3',
                         label: '相对有效期'
                     },
                     {
-                        value: '3',
+                        value: '2',
                         label: '固定有效期'
                     },
                     ].map(({ value, label }) => (
