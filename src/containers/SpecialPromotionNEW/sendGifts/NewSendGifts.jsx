@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
-import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
+import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
 import StepTwo from './stepTwo';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
 import { injectIntl } from 'i18n/common/injectDecorator'
@@ -59,6 +59,7 @@ class NewSendGifts extends NewPromotion {
                     <SpecialDetailInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
+                            console.log('handles in NewSendGifts', handles);
                             this.handles[2] = handles;
                         }}
                     />

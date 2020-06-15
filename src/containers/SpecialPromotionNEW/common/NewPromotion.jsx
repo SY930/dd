@@ -32,6 +32,7 @@ export default class NewPromotion extends React.Component {
 
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     onFinish(cb) {
+        console.log('onFinish', onFinish);
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
@@ -104,7 +105,6 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
-            console.log('this.props.intl', this.props.intl);
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: () => {
@@ -155,9 +155,11 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
-        // console.log('going to 1 finish');
+        console.log('handleFinish in NewPromotion');
         let flag = true;
+        console.log('index', index, this.handles);
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
+            console.log('this.handles[index]', this.handles[index]);
             flag = this.handles[index].finish();
         }
         if (flag) {
