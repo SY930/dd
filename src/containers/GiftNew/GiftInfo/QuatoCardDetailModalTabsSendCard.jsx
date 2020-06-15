@@ -64,7 +64,7 @@ class CardOperate extends React.Component {
             levelList: [],
             selectedRow: [],
             validUntilDay: '0',
-            effectType: '1'
+            effectType: '3'
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
@@ -360,7 +360,7 @@ class CardOperate extends React.Component {
             effectType: {
                 label: '有效期',
                 type: 'custom',
-                defaultValue: '1',
+                defaultValue: '3',
                 render: decorator => (
                     decorator(
                         {
