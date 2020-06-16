@@ -41,17 +41,18 @@ class GenerateBatchQRCodes extends Component {
             pageSizes: 10,
             pageNo: 1,
             total: 0,
-            queryDateRange: [], // 列表查询时的日期选择
+            queryDateRange: [],                 // 列表查询时的日期选择
             confirmLoading: false,
             modalVisible: false,
             batchItemID: undefined,
             mpID: undefined,
             startNo: undefined,
             endNo: undefined,
-            qrEffectDays: '30', // 二维码默认有效期30天
+            qrEffectDays: '30',                 // 二维码默认有效期30天, 0代表永久有效
             selectedBatchEntity: null,
             description: '',
-            exportType: '0'
+            exportType: '0',
+            qrCodeType: '0',                    // 0 公众号关注二维码， 1 普通二维码
         };
     }
 
@@ -257,6 +258,16 @@ class GenerateBatchQRCodes extends Component {
             this.props.form.resetFields();
         });
     }
+
+    /**
+     * 二维码类型处理
+    */
+    handleQrType = ({target: {value}}) => {
+        this.setState({
+            qrCodeType: value,
+        })
+    }
+    
 
     renderHeader() {
         return (
@@ -531,6 +542,18 @@ class GenerateBatchQRCodes extends Component {
                 {
                     this.renderStartAndEndNumber()
                 }
+                <FormItem
+                    label="二维码类型"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                    required
+                >
+                    <RadioGroup value={this.state.qrCodeType} onChange={this.handleQrType}>
+                        <Radio key={'0'} value={'0'}>公众号关注二维码</Radio>
+                        <Radio key={'1'} value={'1'}>普通二维码</Radio>
+                    </RadioGroup>
+                </FormItem>
                 <FormItem
                     label="公众号"
                     className={styles.FormItemStyle}
