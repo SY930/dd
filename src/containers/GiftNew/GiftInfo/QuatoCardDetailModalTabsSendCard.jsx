@@ -64,7 +64,7 @@ class CardOperate extends React.Component {
             levelList: [],
             selectedRow: [],
             validUntilDay: '0',
-            effectType: '1'
+            effectType: '3'
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
@@ -163,7 +163,7 @@ class CardOperate extends React.Component {
             _params.cardTypeID = _params.useCardTypeID;
             delete _params.useCardTypeID;
 
-            const giftEffectTimeHours = params.giftEffectTimeHours == 0 ? params.giftEffectTimeHours : params.giftEffectTimeHours * 24
+            const giftEffectTimeHours = params.giftEffectTimeHours
             const giftValidUntilDayCount = typeof params.giftValidUntilDayCount === 'object' ? params.giftValidUntilDayCount.number : params.giftValidUntilDayCount
             const effectTime99validUntilDate = params.effectTime99validUntilDate && params.effectTime99validUntilDate.length ?
              [moment(params.effectTime99validUntilDate[0]).format(format),moment(params.effectTime99validUntilDate[1]).format(format)] : []
@@ -360,7 +360,7 @@ class CardOperate extends React.Component {
             effectType: {
                 label: '有效期',
                 type: 'custom',
-                defaultValue: '1',
+                defaultValue: '3',
                 render: decorator => (
                     decorator(
                         {
@@ -369,7 +369,7 @@ class CardOperate extends React.Component {
                     )(<RadioGroup>
                         {[
                     {
-                        value: '1',
+                        value: '3',
                         label: '相对有效期'
                     },
                     {
