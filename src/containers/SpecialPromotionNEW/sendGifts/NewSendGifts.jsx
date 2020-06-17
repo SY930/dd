@@ -59,7 +59,6 @@ class NewSendGifts extends NewPromotion {
                     <SpecialDetailInfo
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
-                            console.log('handles in NewSendGifts', handles);
                             this.handles[2] = handles;
                         }}
                     />

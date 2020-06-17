@@ -17,6 +17,7 @@ import {
 } from "antd";
 import { connect } from "react-redux";
 import Immutable from "immutable";
+
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialGiftInfoAC,
@@ -25,8 +26,9 @@ import { fetchGiftListInfoAC } from "../../../redux/actions/saleCenterNEW/promot
 import AddGifts from "../common/AddGifts";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_SPE, COMMON_SPE } from "i18n/common/special";
-
+import TicketBag from '../shackGift/TicketBag';
 const moment = require("moment");
+const RadioGroup = Radio.Group;
 
 const getDefaultGiftData = (typeValue = 0, typePropertyName = "sendType") => ({
     // 膨胀所需人数
@@ -93,8 +95,8 @@ class SpecialDetailInfo extends Component {
                 1
             ),
             helpMessageArray: ["", ""],
-            sendTypeValue: '0',
-            bag: '',
+            sendTypeValue: '0',                 // 赠送的营销活动类型
+            bag: '',                            // 赠送券包
             activeRuleTabValue: "",
         };
     }
@@ -397,25 +399,82 @@ class SpecialDetailInfo extends Component {
     };
     
 
-    render() {
-        return (
-            <div>
+    // 修改State
+    modifyState = (key, val) => {
+        this.setState({
+            [key]: val
+        })
+    }
+
+    // 券包数据变更
+    onBagChange = (item) => {
+        if(item) {
+            this.setState({ bag: [item]});
+            return;
+        }
+        this.setState({ bag: null});
+    }
+
+    // 渲染对应的赠送礼品编辑界面
+    renderCorrespondingPanel = ()=>{
+        const { bag, sendTypeValue } = this.state;
+        const {accountInfo: {
+            groupID
+        }} = this.props.user;
+        switch(sendTypeValue) {
+            case '0': return (
                 <Row>
-                    <Col span={17} offset={4}>
+                    <Col span={17} offset={2}>
                         <AddGifts
                             maxCount={10}
                             type={this.props.type}
                             isNew={this.props.isNew}
                             value={
                                 this.state.data
-                                .filter(gift => gift.sendType === 0)
-                                .sort((a, b) => a.needCount - b.needCount)
+                                    .filter(gift => gift.sendType === 0)
+                                    .sort((a, b) => a.needCount - b.needCount)
                             }
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
                 </Row>
+            );
+            break;
+            case '1': return (
+                <Row>
+                    <Col span={20} offset={2}>
+                        <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} />
+                    </Col>
+                </Row>
+            )
+            break;
+
+            case '2': return (
+                <div>
+                    积分
+                </div>
+            )
+        }
+    }
+
+    render() {
+
+        const { sendTypeValue } = this.state;
+        return (   
+            <div style={{position: 'relative'}}>
+                <Row>
+                    <Col span={20} offset={2}>
+                        <RadioGroup onChange={({target: {value}}) => this.modifyState('sendTypeValue', value)} value={sendTypeValue}>
+                            <Radio value={'0'}>独立优惠券</Radio>
+                            <Radio value={'1'}>券包</Radio>
+                            <Radio value={'2'}>积分</Radio>
+                        </RadioGroup>
+                    </Col>
+                </Row>
+
+                {this.renderCorrespondingPanel()}
             </div>
+            
         );
     }
 }
