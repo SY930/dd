@@ -8,8 +8,8 @@ class DateRange extends Component {
     }
     countDays(val) {
         let days = 0;
-        if(val[0]){
-            const [ sd, ed ] = val;
+        if (val[0]) {
+            const [sd, ed] = val;
             days = ed.diff(sd, 'days');
         }
         return days;
@@ -18,13 +18,14 @@ class DateRange extends Component {
     render() {
         const { value } = this.props;
         const days = this.countDays(value);
-        return (<div className={css.mainBox}>
-                    <RangePicker
-                        value={value}
-                        onChange={this.props.onChange}
-                    />
-                    <p className={css.count}>{days} 天</p>
-                </div>
+        return (
+            <div className={css.mainBox}>
+                <RangePicker
+                    value={value}
+                    onChange={this.props.onChange}
+                />
+                <p className={css.count}>{days} 天</p>
+            </div>
         )
     }
 }

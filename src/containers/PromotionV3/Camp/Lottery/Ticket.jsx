@@ -8,10 +8,11 @@ import css from './style.less';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
-const typeOpts= [
+const typeOpts = [
     { label: '独立优惠券', value: '1' },
     { label: '券包', value: '2' },
 ];
+
 const formItemLayout = {
     labelCol: { span: 0 },
     wrapperCol: { span: 22 },
@@ -21,7 +22,7 @@ const formItems = {
     isTicket: {
         type: 'checkbox',
         label: '',
-        options: [{ label:'赠送优惠券', value: 1 }],
+        options: [{ label: '赠送优惠券', value: 1 }],
         defaultValue: [1],
     },
     type: {
@@ -33,18 +34,17 @@ const formItems = {
     gift: {
         type: 'custom',
         label: '',
-        render: () => (<p/>),
+        render: () => (<p />),
         defaultValue: [],
     },
     bag: {
         type: 'custom',
         label: '',
-        render: () => (<p/>),
+        render: () => (<p />),
         defaultValue: [],
     },
 };
 class Ticket extends Component {
-
     state = {
         newFormKeys: formKeys,
     }
@@ -53,18 +53,18 @@ class Ticket extends Component {
     onFormChange = (key, val) => {
         let newFormKeys = ['isTicket'];
         const { value, onChange } = this.props;
-        if(key==='isTicket') {
-            if(val[0]){
+        if (key === 'isTicket') {
+            if (val[0]) {
                 newFormKeys = ['isTicket', 'type', 'gift'];
-                if(this.form) {
-                    this.form.setFieldsValue({type: '1'});
+                if (this.form) {
+                    this.form.setFieldsValue({ type: '1' });
                 }
             }
             this.setState({ newFormKeys });
         }
-        if(key==='type') {
+        if (key === 'type') {
             newFormKeys = ['isTicket', 'type', 'gift'];
-            if(val === '2'){
+            if (val === '2') {
                 newFormKeys = ['isTicket', 'type', 'bag'];
             }
             this.setState({ newFormKeys });
