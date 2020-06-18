@@ -13,10 +13,11 @@ import NewPromotion from '../common/NewPromotion';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
-import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
+import CustomProgressBar from './CustomProgressBar';
 import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
+import Three from './Three';
 import StepTwo from './stepTwo';
-import StepOneWithDateRange from '../common/StepOneWithDateRange';
+import StepOneWithDateRange from './StepOneWithDateRange';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -25,8 +26,14 @@ import { STRING_SPE } from 'i18n/common/special';
 class NewSendGifts extends NewPromotion {
     constructor(props) {
         super(props);
+        console.log('props in constructor', props);
     }
     render() {
+
+        console.log('NewSendGifts........................')
+
+        // console.log('this.props', this.props);
+
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
@@ -36,7 +43,7 @@ class NewSendGifts extends NewPromotion {
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<StepOneWithDateRange
-                    type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                    type={this.props.promotionType}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
@@ -46,24 +53,28 @@ class NewSendGifts extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <StepTwo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        // type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={this.props.promotionType}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
                     />
                 ),
             },
-            {
-                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
-                content: (
-                    <SpecialDetailInfo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-                        getSubmitFn={(handles) => {
-                            this.handles[2] = handles;
-                        }}
-                    />
-                ),
-            },
+            // {
+            //     title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
+            //     // content: (
+            //     //     <SpecialDetailInfo
+            //     //         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+            //     //         getSubmitFn={(handles) => {
+            //     //             this.handles[2] = handles;
+            //     //         }}
+            //     //     />
+            //     // ),
+            //     content: (
+            //         <Three />
+            //     )
+            // },
         ];
         return (
             <CustomProgressBar
@@ -83,8 +94,8 @@ class NewSendGifts extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
-        user: state.user.toJS(),
+        // specialPromotion: state.sale_specialPromotion_NEW.toJS(),
+        // user: state.user.toJS(),
     };
 };
 

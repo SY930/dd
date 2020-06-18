@@ -98,6 +98,7 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
+        // return;
         const user = this.props.user;
         const opts = {
             _groupID: user.accountInfo.groupID, // 集团id
@@ -249,6 +250,10 @@ class StepTwo extends React.Component {
         return options;
     }
     render() {
+
+        console.log("StepTwo........")
+
+        return null;
         const sendFlag = true;
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const getFieldDecorator = this.props.form.getFieldDecorator;

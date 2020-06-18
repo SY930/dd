@@ -43,7 +43,7 @@ import { axiosData } from "../../../helpers/util";
 import PhotoFrame from "./PhotoFrame";
 import { activeRulesList } from "../recommendGifts/constant";
 import recommentGiftStyle from "../recommendGifts/recommentGift.less";
-// import  StepThree  from '../recommendGifts/stepThree'
+// import  Three  from '../recommendGifts/stepThree'
 import {
     checkChoose,
     queryRedPackets,
@@ -3756,7 +3756,7 @@ class SpecialDetailInfo extends Component {
         const { type } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
-            // return <StepThree _this={this}/>;
+            // return <Three _this={this}/>;
             return this.renderRecommendGiftsDetail()
         }
         if (type == "63") {
