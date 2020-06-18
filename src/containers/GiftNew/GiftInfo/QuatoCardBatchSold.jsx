@@ -118,13 +118,13 @@ class QuotaCardBatchSold extends React.Component {
     }
 
     checkStart = (rule, value, callback) => {
-        const reg =  /^[1-9]\d{0,4}$/
+        const reg =  /^[1-9]\d{0,5}$/
         const form = this.batchSoldForm;
         const endNo = form.getFieldValue('endNO')
         if (value && parseFloat(value) > parseFloat(endNo)) {
             callback('不能大于终止号');
         } else if(!reg.test(value)) {
-            callback('请输入五位以内的整数');
+            callback('请输入六位以内的整数');
         } else {
             callback();
         }
@@ -140,12 +140,12 @@ class QuotaCardBatchSold extends React.Component {
 
     checkEnd = (rule, value, callback) => {
         const form = this.batchSoldForm;
-        const reg =  /^[1-9]\d{0,4}$/
+        const reg =  /^[1-9]\d{0,5}$/
         const startNO = form.getFieldValue('startNO')
         if (value && parseFloat(value) < parseFloat(startNO)) {
             callback('不能小于起始号');
         } else if(!reg.test(value)) {
-            callback('请输入五位以内的整数');
+            callback('请输入六位以内的整数');
         }   else {
             callback();
         }
