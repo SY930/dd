@@ -61,20 +61,20 @@ class NewSendGifts extends NewPromotion {
                     />
                 ),
             },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
-            //     // content: (
-            //     //     <SpecialDetailInfo
-            //     //         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-            //     //         getSubmitFn={(handles) => {
-            //     //             this.handles[2] = handles;
-            //     //         }}
-            //     //     />
-            //     // ),
-            //     content: (
-            //         <Three />
-            //     )
-            // },
+            {
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
+                // content: (
+                //     <SpecialDetailInfo
+                //         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                //         getSubmitFn={(handles) => {
+                //             this.handles[2] = handles;
+                //         }}
+                //     />
+                // ),
+                content: (
+                    <Three />
+                )
+            },
         ];
         return (
             <CustomProgressBar

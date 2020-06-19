@@ -55,14 +55,14 @@ class Three extends React.Component {
 
     }
 
-    // Actions
+    Actions
     modifyStateWithKeyVal = (key, val) => {
         this.setState({
             [key]: val,
         })
     }
 
-    // 赠送积分
+    赠送积分
     renderPointPanel = () => {
         return null
     }
@@ -73,6 +73,8 @@ class Three extends React.Component {
 
     renderDiscountCouponPanel = () => {
         const { disabledGifts = false } = this.state;
+        let a = b.x;
+        return <DiscountCouponPanel />
         return (
             <React.Fragment>
                 <DiscountCouponPanel />
@@ -128,7 +130,7 @@ class Three extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        specialPromotion: state.sale_specialPromotion_NEW,
+        // specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
     }
 }
