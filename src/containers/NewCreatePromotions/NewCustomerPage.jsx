@@ -89,7 +89,8 @@ class NewCustomerPage extends Component {
         this.fromCrmJump();
     }
     getQueryVariable() {
-        var query = location.search.substr(1)
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
         query = query.split('&')
         var params = {}
         for (let i = 0; i < query.length; i++) {
