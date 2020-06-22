@@ -878,7 +878,7 @@ class SpecialDetailInfo extends Component {
         return this.handleSubmit(true);
     };
 
-    handleSubmit = (isPrev) => {
+    handleSubmit = async (isPrev) => {
         const {type} = this.props
         if(type === '68') {
         return    handleSubmitRecommendGifts.call(this,isPrev)
@@ -887,7 +887,7 @@ class SpecialDetailInfo extends Component {
           const specialPromotion = this.props.specialPromotion.toJS()
           const {$eventInfo,RFMParams} = specialPromotion
           if(type === '53' && RFMParams) {
-         return   createMemberGroup.call(this,{
+         return  await createMemberGroup.call(this,{
                 eventInfo:  $eventInfo,
                 RFMParams
             })
@@ -895,6 +895,7 @@ class SpecialDetailInfo extends Component {
                 if(res) {
                     return  this.handleSubmitOld(isPrev)
                 }
+                return  false
             })
           } else {
             return  this.handleSubmitOld(isPrev)
