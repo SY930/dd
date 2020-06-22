@@ -302,7 +302,7 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('giveFoodCount', {
                                     rules: [{
                                         required: true,
-                                        message: `0~100000 ${SALE_LABEL.k5kms0xo} ${promotionType == '1080' ? SALE_LABEL.k5kms160 : ','+ SALE_LABEL.k5kms1ec}`,
+                                        message: `0~100000 ${'之间'} ${promotionType == '1080' ? '整数' : ','+ '可两位小数'}`,
                                         pattern: promotionType == '1080' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
                                     }],
                                     initialValue: this.state.rule.giveFoodCount,
