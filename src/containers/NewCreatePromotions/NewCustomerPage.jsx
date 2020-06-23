@@ -103,21 +103,38 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump(){
         const  {
-            from, type,
-            gmID,totalMembers,
+            from,
+            type,
+            gmID,
+            totalMembers,
             groupMembersName,
             groupID,
             levelKey,
             levelType,
             monetaryType,
-            reportMonth
+            reportMonth,
+            createBy,
         } = this.getQueryVariable()
+        // 测试使用
+        // const  {
+        //     from = 'rfm',
+        //     type,
+        //     gmID,
+        //     totalMembers,
+        //     groupMembersName,
+        //     groupID = '1155' ,
+        //     levelKey = 'LH',
+        //     levelType = '0',
+        //     monetaryType = '0',
+        //     reportMonth = '2020-05',
+        //     createBy = 'wenjie'
+        // } = this.getQueryVariable()
+
 
 
         if(from === 'rfm') {
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
-            // this.props.setSpecialPromotionCardGroupID('RFM会员群体2020-05(21) --【共432人】');
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             this.props.saveRFMParams({
                 groupID ,
@@ -125,6 +142,7 @@ class NewCustomerPage extends Component {
                 levelType ,
                 monetaryType ,
                 reportMonth ,
+                createBy
             })
             this.clearUrl();
 

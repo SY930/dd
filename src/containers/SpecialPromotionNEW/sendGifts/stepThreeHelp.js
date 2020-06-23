@@ -5,8 +5,7 @@
 import { axiosData } from "../../../helpers/util";
 
 const createMemberGroup = function (data) {
-    console.log("----", this, data);
-    const { eventInfo, RFMParams } = data;
+    const { RFMParams } = data;
 
     return axiosData(
         "/crm/rfmModelService_addRfmGroupMembers.ajax",
@@ -14,25 +13,7 @@ const createMemberGroup = function (data) {
         null,
         { path: "data" },
         "HTTP_SERVICE_URL_CRM"
-    )
-        .then((res) => {
-            console.log("res", res);
-            const {
-                groupMembersID,
-                groupMembersName,
-                totalMembers,
-                groupMembersRemark,
-            } = res;
-            this.props.setSpecialBasicInfo({
-                ...eventInfo,
-                cardGroupID: groupMembersID,
-                cardGroupName: groupMembersName,
-                cardCount: totalMembers,
-                cardGroupRemark: groupMembersRemark,
-            });
-            return true;
-        })
-        .catch((err) => {});
+    );
 };
 
 export { createMemberGroup };

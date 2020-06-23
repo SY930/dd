@@ -60,7 +60,6 @@ import {
 import TicketBag from '../shackGift/TicketBag';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
-import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -878,29 +877,12 @@ class SpecialDetailInfo extends Component {
         return this.handleSubmit(true);
     };
 
-    handleSubmit = async (isPrev) => {
+    handleSubmit =   (isPrev) => {
         const {type} = this.props
         if(type === '68') {
         return    handleSubmitRecommendGifts.call(this,isPrev)
         } else {
-          // 从RFM群发礼品的时候，需要先创建会员群体
-          const specialPromotion = this.props.specialPromotion.toJS()
-          const {$eventInfo,RFMParams} = specialPromotion
-          if(type === '53' && RFMParams) {
-         return  await createMemberGroup.call(this,{
-                eventInfo:  $eventInfo,
-                RFMParams
-            })
-            .then(res => {
-                if(res) {
-                    return  this.handleSubmitOld(isPrev)
-                }
-                return  false
-            })
-          } else {
-            return  this.handleSubmitOld(isPrev)
-          }
-
+          return  this.handleSubmitOld(isPrev)
         }
     }
 
