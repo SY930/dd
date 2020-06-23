@@ -174,6 +174,7 @@ class TrdTemplate extends React.Component {
             trdChannelID: '10',
             validateWay: 'OFF_LINE',
             settleId: '',
+            masterMerchantID: '',
             appsList: [],
             linksList: [],
             payChannelList: []
@@ -297,6 +298,7 @@ class TrdTemplate extends React.Component {
                 validateWay,
                 joinWay,
                 settleId,
+                masterMerchantID,
                 miniProgramsAppId1,
                 miniProgramsPath1,
                 miniProgramsAppId2,
@@ -317,7 +319,7 @@ class TrdTemplate extends React.Component {
                 if(trdChannelID === '50') {
                     TrdTemplateStatus = true;
                     let checkList = [mpID,maxCanRecvCount,settleId]
-                    const currentMerchant = payChannelList.find(v => v.settleId === settleId)
+                    const currentMerchant = payChannelList.find(v => v.settleID === settleId)
                     const jsonData = {
                         appID,
                         trdChannelID,
@@ -328,7 +330,8 @@ class TrdTemplate extends React.Component {
                         maxCanRecvCount,
                         merchantInfo: {
                             merchantID: currentMerchant ? currentMerchant.merchantID : '',
-                            settleId
+                            settleId,
+                            masterMerchantID
                         }
                     }
                     if(giftItemId === '10') {
@@ -614,6 +617,11 @@ class TrdTemplate extends React.Component {
                 entranceWords: ''
             })
         }
+        if(key === 'settleId') {
+            let {payChannelList} = this.state
+            let [{masterMerchantID = ''}] = payChannelList.filter((item) => value == item.settleID)
+            this.setState({masterMerchantID})
+        }
         this.setState({  [key]: value }, () => {
             this.propsChange()
         })
@@ -828,7 +836,7 @@ class TrdTemplate extends React.Component {
                     >
                         {
                              payChannelList.map((mp,i) => {
-                                return <Option key={mp.settleId} value={mp.settleId}>{mp.settleName}</Option>
+                                return <Option key={mp.settleID} value={mp.settleID}>{mp.settleName}</Option>
                             })
                         }
                     </Select>
