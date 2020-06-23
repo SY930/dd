@@ -142,7 +142,7 @@ class NewCustomerPage extends Component {
                 levelType ,
                 monetaryType ,
                 reportMonth ,
-                createBy
+                creator: createBy
             })
             this.clearUrl();
 
