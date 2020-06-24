@@ -34,7 +34,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-class StepTwo extends React.Component {
+class Two extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -250,10 +250,6 @@ class StepTwo extends React.Component {
         return options;
     }
     render() {
-
-        console.log("StepTwo........")
-
-        return null;
         const sendFlag = true;
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const getFieldDecorator = this.props.form.getFieldDecorator;
@@ -341,4 +337,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepTwo));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Two));

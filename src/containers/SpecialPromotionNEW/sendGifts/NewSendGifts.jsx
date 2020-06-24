@@ -45,18 +45,17 @@ class NewSendGifts extends NewPromotion {
             //         }}
             //     />),
             // },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
-            //     content: (
-            //         <StepTwo
-            //             // type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-            //             type={this.props.promotionType}
-            //             getSubmitFn={(handles) => {
-            //                 this.handles[1] = handles;
-            //             }}
-            //         />
-            //     ),
-            // },
+            {
+                title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
+                content: (
+                    <StepTwo
+                        type={this.props.promotionType}
+                        getSubmitFn={(handles) => {
+                            this.handles[1] = handles;
+                        }}
+                    />
+                ),
+            },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
                 // content: (

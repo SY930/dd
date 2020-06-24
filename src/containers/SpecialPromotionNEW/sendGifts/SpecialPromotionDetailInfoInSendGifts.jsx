@@ -26,7 +26,7 @@ import { fetchGiftListInfoAC } from "../../../redux/actions/saleCenterNEW/promot
 import AddGifts from "../common/AddGifts";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_SPE, COMMON_SPE } from "i18n/common/special";
-import TicketBag from '../shackGift/TicketBag';
+import TicketBag from '../../BasicModules/TicketBag';
 const moment = require("moment");
 const RadioGroup = Radio.Group;
 
@@ -258,7 +258,7 @@ class SpecialDetailInfo extends Component {
                 ruleInfo.effectType != "2"
                     ? "giftValidDays"
                     : "giftEffectiveTime";
-            
+
             return Object.assign(ruleInfo, {
                 giftCount: this.checkgiftCount(
                     ruleInfo.giftCount,
@@ -314,7 +314,7 @@ class SpecialDetailInfo extends Component {
                 return false;
             }
             let giftInfo = this.getGiftInfo(data);
-        
+
             this.props.setSpecialBasicInfo(giftInfo);
             this.props.setSpecialBasicInfo(
                 this.props.type == {
@@ -325,7 +325,7 @@ class SpecialDetailInfo extends Component {
                       }
             );
             this.props.setSpecialGiftInfo(giftInfo);
-            
+
             return true;
         }
         return false;
@@ -397,7 +397,7 @@ class SpecialDetailInfo extends Component {
             ],
         });
     };
-    
+
 
     // 修改State
     modifyState = (key, val) => {
@@ -460,7 +460,7 @@ class SpecialDetailInfo extends Component {
     render() {
 
         const { sendTypeValue } = this.state;
-        return (   
+        return (
             <div style={{position: 'relative'}}>
                 <Row>
                     <Col span={20} offset={2}>
@@ -474,7 +474,7 @@ class SpecialDetailInfo extends Component {
 
                 {this.renderCorrespondingPanel()}
             </div>
-            
+
         );
     }
 }

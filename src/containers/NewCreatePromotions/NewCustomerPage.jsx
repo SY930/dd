@@ -1,3 +1,8 @@
+/**
+ * 
+ * @description 营销活动（新） 入口文件
+*/
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import BasePage from "./BasePage";
@@ -22,7 +27,7 @@ import {
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
     CRM_PROMOTION_TYPES,
-} from '../../constants/promotionType';
+} from 'constants/promotionType';
 import NewPromotionCard from "./NewPromotionCard";
 const limitedTypes = [
     '67',
@@ -138,6 +143,8 @@ class NewCustomerPage extends Component {
         }
         message.error(msg);
     }
+
+    // 点击营销卡片处理函数
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
@@ -151,6 +158,8 @@ class NewCustomerPage extends Component {
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
         }
     }
+
+    // 创建基础营销
     handleBasicPromotionCreate(index, promotionEntity) {
         if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
@@ -184,6 +193,8 @@ class NewCustomerPage extends Component {
             this.props.saleCenterResetBasicDetailInfo();
         }
     }
+
+    // 创建特色营销
     handleSpecialPromotionCreate(index, activity) {
         // 唤醒送礼 品牌不可创建
         if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {

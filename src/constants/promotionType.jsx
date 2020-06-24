@@ -73,10 +73,17 @@ export const GIFT_MAP = {
     '111': '折扣券',
     '22': '配送券',
 }
+
+/**
+ * @description 营销活动分类
+ * @field title 营销活动名称
+ * @field isSpecial 营销活动类别，true 为特色营销活动，false为基础营销活动
+ * 
+*/
 export const CRM_PROMOTION_TYPES = {
     53: {
         title: SALE_LABEL.k67b2pz0,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4t5q,
         example: '',
         key: '53',
@@ -85,7 +92,7 @@ export const CRM_PROMOTION_TYPES = {
     },
     51: {
         title: SALE_LABEL.k67b2r4o,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4us2,
         example: '',
         tags: [SALE_LABEL.k639vgsa],
@@ -96,7 +103,7 @@ export const CRM_PROMOTION_TYPES = {
     },
     62: {
         title: SALE_LABEL.k67b2rlc,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4v8q,
         example: '',
         tags: [SALE_LABEL.k639vgsa],
@@ -106,7 +113,7 @@ export const CRM_PROMOTION_TYPES = {
     },
     63: {
         title: SALE_LABEL.k67b2rd0,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4v0e,
         example: '',
         tags: [SALE_LABEL.k639vgsa],
@@ -293,11 +300,12 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
 /**
  * 促进复购
  * @type {Array}
+ * @field isSpecial // 表示活动是否是特色营销活动(false 则为基础营销活动)
  */
 export const REPEAT_PROMOTION_TYPES = [
     {
         title: '集点卡',
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true, 
         text: '消费后获得集点，促进会员多次消费',
         tags: ['新微信', '小程序'],
         example: '',
@@ -309,7 +317,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2pz0,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4t5q,
         example: '',
         key: '53',
@@ -318,7 +326,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2q7c,
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: true,
         text: SALE_LABEL.k67b4te2,
         example: '',
         key: '50',

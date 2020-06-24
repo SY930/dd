@@ -17,7 +17,7 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter';
-import TicketBag from './TicketBag';
+import TicketBag from '../../BasicModules/TicketBag';
 
 @injectIntl
 export default class PrizeContent extends React.Component {

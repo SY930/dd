@@ -57,7 +57,7 @@ import {
     initShowCheckBox,
     clearCheckBoxData
 } from './SpecialPromotionDetailInfoHelp'
-import TicketBag from '../shackGift/TicketBag';
+import TicketBag from '../../BasicModules/TicketBag';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
 

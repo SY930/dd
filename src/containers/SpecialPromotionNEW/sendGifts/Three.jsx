@@ -1,7 +1,7 @@
 /*
  * @Author: wangxiaofeng@hualala.com
  * @Date: 2020-06-15 14:49:36
- * @LastEditTime: 2020-06-24 11:41:25
+ * @LastEditTime: 2020-06-24 18:01:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /platform-sale/src/containers/SpecialPromotionNEW/sendGifts/Three.jsx
@@ -20,6 +20,7 @@ import {
 import { fetchGiftListInfoAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import AddGifts from '../common/AddGifts';
 import Point from '../../BasicModules/Point';
+import TicketBag from '../../BasicModules/TicketBag';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -53,12 +54,13 @@ class Three extends React.Component {
             point: 0,                       // 默认赠送积分
             cardList: [],                   // 可选会员卡
             cardTypeID: '',                 // 当前选中的会员卡
+            bag: [],                      // 权益包
         }
     }
 
 
     componentDidMount() {
-
+    
     }
 
     // Actions
@@ -95,11 +97,24 @@ class Three extends React.Component {
 
     }
 
+    // 选择权益包
+    onBagChange = (item) => {
+        // const { onBagChange, index} =this.props;
+        // onBagChange(item, index);
+        if(item) {
+            this.setState({ bag: [item]});
+            return;
+        }
+        this.setState({ bag: null});
+    }
+
 
     // 独立优惠券或者券包
     renderCouponOrCouponPack = () => {
-        const { couponType, disabledGifts = false } = this.state;
-
+        const { couponType, disabledGifts = false, bag } = this.state;
+        const { accountInfo : {
+            groupID
+        }} = this.props.user;
         // 独立优惠券
         if(couponType == '1') {
             return (
@@ -119,7 +134,11 @@ class Three extends React.Component {
         } 
         // 券包
         else if( couponType == '4') {
-
+            return (
+                <div>
+                    <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange}/>
+                </div> 
+            )
         }
 
         return null;

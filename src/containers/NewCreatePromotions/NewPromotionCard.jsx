@@ -28,7 +28,6 @@ class NewPromotionCard extends Component {
             onClickOpen,
             onV3Click,
         } = this.props;
-        console.log('ttt', this.props);
         const { key, title } = promotionEntity;
         const isUse = this.filterItem(key);
         if(pulgins.includes(key) && !isUse) {
