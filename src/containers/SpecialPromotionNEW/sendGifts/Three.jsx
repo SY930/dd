@@ -1,7 +1,7 @@
 /*
  * @Author: wangxiaofeng@hualala.com
  * @Date: 2020-06-15 14:49:36
- * @LastEditTime: 2020-06-19 18:15:18
+ * @LastEditTime: 2020-06-24 11:41:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /platform-sale/src/containers/SpecialPromotionNEW/sendGifts/Three.jsx
@@ -95,6 +95,36 @@ class Three extends React.Component {
 
     }
 
+
+    // 独立优惠券或者券包
+    renderCouponOrCouponPack = () => {
+        const { couponType, disabledGifts = false } = this.state;
+
+        // 独立优惠券
+        if(couponType == '1') {
+            return (
+                <div style={{padding: '5px 0'}}>
+                    <AddGifts
+                        maxCount={10}
+                        disabledGifts={disabledGifts}
+                        type={'53'}
+                        isNew={this.props.isNew}
+                        value={
+                            this.state.data
+                        }
+                        onChange={gifts => this.gradeChange(gifts, 0)}
+                    />
+                </div>
+            )
+        } 
+        // 券包
+        else if( couponType == '4') {
+
+        }
+
+        return null;
+    }
+
     renderDiscountCouponPanel = () => {
         const { sendCoupon, disabledGifts = false } = this.state;
         if(sendCoupon == false) {
@@ -102,59 +132,23 @@ class Three extends React.Component {
         }
         return (
             <div>
-                { this.discountCouponPanel() }
-                <AddGifts
-                    maxCount={10}
-                    disabledGifts={disabledGifts}
-                    type={'53'}
-                    isNew={this.props.isNew}
-                    value={
-                        this.state.data
-                    }
-                    onChange={gifts => this.gradeChange(gifts, 0)}
-                />
+                <div style={{padding: '5px 0'}}>
+                    { this.discountCouponPanel() }
+                </div>
+                {
+                    this.renderCouponOrCouponPack()
+                }
             </div>
         )
     }
 
+    // 是否渲染返积分
     renderPoint = ()=>{
-
-        return <Point />
-
-        const {
-            point,
-            cardList,
-            cardTypeID
-        } = this.state;
-        return (
-            <div>
-                <Form.Item
-                    label={'赠送积分'}
-                    labelCol={{span: 4, offset: 0}}
-                    wrapperCol = {{ span: 14 }}
-                >
-                    <Input value={point} addonAfter="积分" onChange={({target:{value:val}})=>this.modifyStateWithKeyVal('point', val)}/>
-                </Form.Item>
-                <Form.Item
-                    label={'充值到会员卡'}
-                    labelCol={{span: 4, offset: 0}}
-                    wrapperCol = {{ span: 14 }}
-                >
-                    <Select style={{ width: 160 }} value={cardTypeID || ''} onChange={this.onCardTypeIDChange}>
-                        {
-                            cardList.map(c => {
-                                return (<Option
-                                    key={c.cardTypeID}
-                                    value={c.cardTypeID}
-                                >
-                                    {c.cardTypeName}
-                                </Option>)
-                            })
-                        }
-                    </Select>
-                </Form.Item>   
-            </div>
-        )
+        const { sendPoint } = this.state;
+        if(sendPoint) {
+            return <Point />
+        }
+        return null;
     }
 
 
@@ -171,7 +165,6 @@ class Three extends React.Component {
                                 this.modifyStateWithKeyVal('sendPoint', val)
                             }}
                         >赠送积分</Checkbox>
-
                         {
                             this.renderPoint()
                         }

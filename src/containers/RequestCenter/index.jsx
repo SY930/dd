@@ -1,10 +1,4 @@
-/**
- * 只是想把axios请求和dom分离
- * 这是继hoc的第三版试验品
- * 把axios请求作为单独的 函数导出。
- * 并改用 async 写法
- * 此axios为封装后的，所以无法使用try，或catch捕获。
- */
+
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
 // import { giftTypeName } from './Common';

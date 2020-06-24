@@ -1,25 +1,30 @@
 import React from 'react';
-import { Form, Select, Option, Input } from 'antd';
+import { Form, Select, Input } from 'antd';
 import { getCardList, getCardTypeList } from '../RequestCenter';
+
+const Option = Select.Option;
 
 export default class Point extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            point: 0,                  // 积分
+            point: 0,                   // 积分
             cardList: [],               // 卡列表
             cardTypeID: '',             // 当前选中卡
         }
     }
 
-
     componentDidMount() {
         // 获取卡列表
         getCardTypeList().then(cardList => {
-            // this.setState({ cardList });
-            console.log('cardlist', cardList);
+            this.setState({ cardList });
         });
+    }
+
+    // 会员卡变更
+    onCardTypeIDChange = ()=>{
+
     }
 
     render() {

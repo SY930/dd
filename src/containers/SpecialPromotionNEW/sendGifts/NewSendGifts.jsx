@@ -30,10 +30,6 @@ class NewSendGifts extends NewPromotion {
     }
     render() {
 
-        console.log('NewSendGifts........................')
-
-        // console.log('this.props', this.props);
-
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
