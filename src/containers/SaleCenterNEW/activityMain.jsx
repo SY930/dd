@@ -76,6 +76,7 @@ import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+import returnGift from './returnGift/returnGift';
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 @injectIntl()

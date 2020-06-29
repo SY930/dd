@@ -129,6 +129,7 @@ export default class NewPromotion extends React.Component {
 
     handleNext(cb, index) {
         let flag = true;
+
         if (undefined !== this.handles[index].next && typeof this.handles[index].next === 'function') {
             flag = this.handles[index].next();
         }
