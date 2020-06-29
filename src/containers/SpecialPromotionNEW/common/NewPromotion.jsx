@@ -78,6 +78,11 @@ export default class NewPromotion extends React.Component {
             gifts: specialPromotion.$giftInfo,
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
+        
+        // 生日赠送 且 非会员群体时
+        if(this.props.promotionType === '51' && specialPromotion.$eventInfo.cardLevelRangeType != 5){
+            delete opts.event.cardGroupID
+        }
 
         if(this.props.promotionType === '68') {
             // 新增活动规则字段
