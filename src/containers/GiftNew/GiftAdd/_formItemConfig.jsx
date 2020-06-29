@@ -6,6 +6,8 @@ import {
 import GiftCfg from '../../../constants/Gift';
 
 const FORMITEMS = {
+
+
     giftRemark: {
         label: '活动详情',
         type: 'textarea',
@@ -201,6 +203,7 @@ const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
+                'applyScene',
                 'giftName',
                 'selectBrands',
                 'pushMessageMpID',

@@ -1,3 +1,7 @@
+
+/**
+ * @description 礼品创建及编辑页面
+*/
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';

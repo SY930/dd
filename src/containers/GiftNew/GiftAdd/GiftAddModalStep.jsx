@@ -228,6 +228,9 @@ class GiftAddModalStep extends React.PureComponent {
         return [];
     }
     handleFormChange(key, value) {
+
+        console.log('handleFormChange in GiftAddModalStep, key value is ', key, value);
+
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -1225,6 +1228,8 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
+        
+        // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1232,6 +1237,20 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: () => describe,
             },
+            // 新增礼品商城属性
+            // 券应用场景（店铺，商城）
+            applyScene: {
+                label: '礼品属性',
+                type: 'custom',
+                defaultValue: 0,
+                render: decorator => decorator({})(
+                    <Radio.Group>
+                        <Radio.Button value={0}>店铺券</Radio.Button>
+                        <Radio.Button value={1}>商城券</Radio.Button>
+                    </Radio.Group>
+                )
+            },
+
             pushMessageMpID: {
                 label: '消息推送公众号',
                 rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
@@ -1762,6 +1781,8 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList
+
+        console.log('代金券', displayFirstKeys);
         return (
             <div>
                 <div

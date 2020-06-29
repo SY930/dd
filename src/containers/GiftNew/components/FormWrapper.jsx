@@ -4,6 +4,7 @@ import styles from '../GiftAdd/Crm.less';
 import GiftAddModalStep from "../GiftAdd/GiftAddModalStep";
 import GiftAddModal from "../GiftAdd/GiftAddModal";
 
+// TODO: 提到公共的配置文件
 const complexGifts = [ '10', '20', '21', '80', '91', '100', '110', '111', '22' ];
 const simpleGifts = [ '30', '40', '42', '90', '113' ];
 
