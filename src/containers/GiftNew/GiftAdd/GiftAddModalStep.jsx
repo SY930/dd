@@ -344,6 +344,14 @@ class GiftAddModalStep extends React.PureComponent {
                     sharedGifts: value,
                 })
                 break;
+
+            // 根据券应用场景，动态调整两个表单的formKeys值
+            case 'applyScene': 
+                // firstKeys 
+
+                // secondKeys
+
+                break;
             default:
                 break;
         }
