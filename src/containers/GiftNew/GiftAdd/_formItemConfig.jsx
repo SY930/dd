@@ -684,4 +684,13 @@ const SECOND_KEYS = (() => ({
         },
     ],
 }))();
+
+// 代金券
+const FORM_ITEMS_TO_INCLUDES
+
+// 代金券商城场景下，使用规则表单需要删除的项目
+const FORM_ITEMS_TO_EXCLUDE = [
+    'supportOrderTypeLst',
+]
+
 export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
