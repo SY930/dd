@@ -253,6 +253,10 @@ class StepTwo extends React.Component {
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const getFieldDecorator = this.props.form.getFieldDecorator;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
+        const groupMembersID = this.state.groupMembersID
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
+          groupMembersID.includes('RFM会员群体') &&
+          groupMembersID.includes('--')
         return (
             <Form>
                 <FormItem
@@ -269,6 +273,7 @@ class StepTwo extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
+                            disabled={isDisableGroupSelect}
                             showSearch
                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

@@ -877,7 +877,7 @@ class SpecialDetailInfo extends Component {
         return this.handleSubmit(true);
     };
 
-    handleSubmit = (isPrev) => {
+    handleSubmit =   (isPrev) => {
         const {type} = this.props
         if(type === '68') {
         return    handleSubmitRecommendGifts.call(this,isPrev)

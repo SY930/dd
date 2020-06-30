@@ -13,6 +13,7 @@ import { message } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { COMMON_SPE } from 'i18n/common/special';
+import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 
 export default class NewPromotion extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ export default class NewPromotion extends React.Component {
     }
 
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
-    onFinish(cb) {
+   async onFinish(cb) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
@@ -85,6 +86,30 @@ export default class NewPromotion extends React.Component {
             opts.event.recommendRulelst = typeof recommendRule === 'number' ? recommendRule  : recommendRule.join(',')
             opts.event.recommendRule  =  ''
         }
+          // 从RFM群发礼品的时候，需要先创建会员群体
+          const {$eventInfo,RFMParams} = specialPromotion
+          if(this.props.promotionType === '53' && RFMParams) {
+          await  createMemberGroup.call(this,{
+                RFMParams
+            }).then(res => {
+                const {
+                    groupMembersID,
+                    groupMembersName,
+                    totalMembers,
+                    groupMembersRemark,
+                } = res;
+                opts.event = {
+                   ...opts.event,
+                   cardGroupID: groupMembersID,
+                   cardGroupName: groupMembersName,
+                   cardCount: totalMembers,
+                   cardGroupRemark: groupMembersRemark,
+                }
+
+
+            })
+
+          }
         if (this.props.isNew === false) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
