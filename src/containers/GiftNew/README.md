@@ -1,7 +1,7 @@
 <!--
  * @Author: wangxiaofeng@hualala.com
  * @Date: 2020-06-29 11:26:45
- * @LastEditTime: 2020-06-29 14:30:57
+ * @LastEditTime: 2020-06-30 18:03:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /platform-sale/src/containers/GiftNew/README.md
@@ -26,7 +26,7 @@ src/containers/GiftNew                          // 礼品管理
 │   ├── GiftTimeIntervals.jsx
 │   ├── GiftType.jsx
 │   ├── InputTreeForGift.jsx
-│   ├── _formItemConfig.jsx
+│   ├── _formItemConfig.jsx                     // 新建礼品页面，表单配置项
 │   └── common
 ├── GiftInfo
 │   ├── CrmCardInfoAddCardDetail.less
@@ -76,8 +76,8 @@ src/containers/GiftNew                          // 礼品管理
     ├── PhonePreview.jsx                            // 创建及编辑礼品页面最左侧手机预览组件
     ├── PhonePreviewForWeChat.jsx
     ├── PushMessageMpID.jsx
-    ├── SelectBrands.jsx
-    ├── SelectCardTypes.jsx
+    ├── SelectBrands.jsx                            // 适用品牌下拉选择框
+    ├── SelectCardTypes.jsx                         // 适用卡类下拉选择框
     ├── SellerCode.jsx
     ├── SendGiftPanel.jsx
     ├── WeChatMessageFormWrapper.jsx

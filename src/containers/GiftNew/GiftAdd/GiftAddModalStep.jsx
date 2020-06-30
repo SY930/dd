@@ -16,7 +16,15 @@ import {
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
 import BaseForm from '../../../components/common/BaseForm';
-import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
+import { 
+    FORMITEMS, 
+    FIRST_KEYS, 
+    SECOND_KEYS,
+    FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE,
+    MALL_COUPON_BASIC_SETTING_FORM_ITEMS,   // 基础设置项
+    MALL_COUPON_APPLY_SETTING_FORM_ITEMS,   // 高级设置项
+ } from './_formItemConfig';
+
 import InputTreeForGift from './InputTreeForGift';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
@@ -47,6 +55,8 @@ import MoneyLimitTypeAndValue from '../components/MoneyLimitTypeAndValue';
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 import SelectCardTypes from "../components/SelectCardTypes";
+import SelectMall from '../components/SelectMall';      // 选择适用店铺组件
+
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
@@ -127,7 +137,7 @@ class GiftAddModalStep extends React.PureComponent {
             moneyTopLimitValueDisabled: true,
             shopSchema, // 后台请求来的值
             // modalKey:1,
-            firstKeys: { ...FIRST_KEYS },
+            firstKeys: { ...JSON.parse(JSON.stringify(FIRST_KEYS)) },
             secondKeys: { ...JSON.parse(JSON.stringify(SECOND_KEYS)) },
             groupTypes: [],
             giftData: [],
@@ -194,7 +204,6 @@ class GiftAddModalStep extends React.PureComponent {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
-            console.log('shopSchema', nextProps.shopSchema.getIn(['shopSchema']).toJS());
         }
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
@@ -227,9 +236,9 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return [];
     }
-    handleFormChange(key, value) {
 
-        console.log('handleFormChange in GiftAddModalStep, key value is ', key, value);
+    // 处理表单数据变化
+    handleFormChange(key, value) {
 
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
@@ -347,9 +356,18 @@ class GiftAddModalStep extends React.PureComponent {
 
             // 根据券应用场景，动态调整两个表单的formKeys值
             case 'applyScene': 
-                // firstKeys 
+                if(value == '1'){
+                    secondKeys[describe][0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                    firstKeys[describe][0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                } else if(value == '0') {
+                    secondKeys[describe][0].keys = [...SECOND_KEYS[describe][0].keys];
+                    firstKeys[describe][0].keys = [...FIRST_KEYS[describe][0].keys];
+                }
 
-                // secondKeys
+                this.setState({
+                    firstKeys,
+                    secondKeys,
+                });
 
                 break;
             default:
@@ -968,6 +986,11 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderShopNames(decorator) {
+
+
+        console.log("this.state.shopSchema", this.state.shopSchema);
+
+
         const { shopNames = [] } = this.state.values;
         const { gift: { data } } = this.props;
         const { selectBrands = [] } = data;
@@ -1137,6 +1160,13 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
+    // 适用商城
+    renderMallListSelector = (decorator)=>{
+        return (
+            <SelectMall />
+        )
+    }
+
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         let { couponFoodScopeList = []} = data;
@@ -1280,6 +1310,13 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectCardTypes/>),
             },
+
+            selectMall: {
+                label: '适用商城',
+                type: 'custom',
+                render: decorator => this.renderMallListSelector(decorator)
+            },
+
             giftValueCurrencyType: {
                 label: '货币单位',
                 type: 'combo',
@@ -1713,6 +1750,7 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
+            
             buyGiveSecondaryFoods: {
                 type: 'custom',
                 label: '赠送菜品',
@@ -1789,8 +1827,6 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList
-
-        console.log('代金券', displayFirstKeys);
         return (
             <div>
                 <div

@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import GiftCfg from '../../../constants/Gift';
 
-const FORMITEMS = {
+export const FORMITEMS = {
 
 
     giftRemark: {
@@ -194,7 +194,7 @@ const FORMITEMS = {
     },
 };
 
-const FIRST_KEYS = {
+export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
     '代金券': [
         {
             col: {
@@ -205,11 +205,135 @@ const FIRST_KEYS = {
                 'giftType',
                 'applyScene',
                 'giftName',
-                'selectBrands',
+                'selectMall',
                 'pushMessageMpID',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'foodsboxs',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: [
+                'isNeedCustomerInfo',
+            ]
+        },
+    ],
+}
+
+
+export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
+    '代金券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'isOnlineExchangeable',
+                'giftShareType',
+                'moneyLimitTypeAndValue',
+                'customerUseCountLimit',
+                'amountType',
+                'showGiftRule',
+                'giftImagePath',
+                'isSynch',
+            ],
+        },
+    ],
+    '菜品优惠券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLst',
+                'isOfflineCanUsing',
+                'isOnlineExchangeable',
+                'giftShareType',
+                'moneyLimitTypeAndValue',
+                'shopNames',
+                'showGiftRule',
+                'giftImagePath',
+                'aggregationChannels',
+                'TrdTemplate',
+                'isSynch',
+            ],
+        },
+    ],
+    '菜品兑换券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLst',
+                'isOfflineCanUsing',
+                'isOnlineExchangeable',
+                'giftShareType',
+                'moneyLimitTypeAndValue',
+                'shopNames',
+                'showGiftRule',
+                'giftImagePath',
+                'aggregationChannels',
+                'TrdTemplate',
+                'isSynch',
+            ],
+        },
+    ],
+}
+
+export const FIRST_KEYS = {
+    '代金券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'applyScene',
+                'giftName',
+                // 'selectBrands',
+                // 'pushMessageMpID',
+                // 'giftValueCurrencyType',
+                // 'giftValue',
+                // 'price',
             ],
         },
         {
@@ -491,7 +615,7 @@ const FIRST_KEYS = {
         },
     ],
 };
-const SECOND_KEYS = (() => ({
+export const SECOND_KEYS = (() => ({
     '代金券': [
         {
             col: {
@@ -686,11 +810,15 @@ const SECOND_KEYS = (() => ({
 }))();
 
 // 代金券
-const FORM_ITEMS_TO_INCLUDES
+// const FORM_ITEMS_TO_INCLUDES
 
 // 代金券商城场景下，使用规则表单需要删除的项目
-const FORM_ITEMS_TO_EXCLUDE = [
-    'supportOrderTypeLst',
+export const FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE = [
+    'supportOrderTypeLst',              // 适用业务
+    'isOfflineCanUsing',                // 使用场景
+    'shopNames',                        // 可使用店铺
+    'aggregationChannels',              // 投放场景
+    'TrdTemplate',                      // 是否关联第三方券
 ]
 
-export { FORMITEMS, FIRST_KEYS, SECOND_KEYS }
+// export { FORMITEMS, FIRST_KEYS, SECOND_KEYS, FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE }
