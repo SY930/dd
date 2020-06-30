@@ -60,6 +60,7 @@ import {
 import TicketBag from '../shackGift/TicketBag';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
+import { renderThree,addPointData,initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -318,6 +319,10 @@ class SpecialDetailInfo extends Component {
                 }
             },
             redPackets: [] , // 现金红包下拉列表
+            perfectReturnGiftCheckBoxStatus: {
+                perfectReturnGiftPoint: true,
+                perfectReturnGiftCoupon: true
+            }, // 完善资料送礼checkbox状态
         };
     }
     componentDidMount() {
@@ -399,6 +404,9 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 30) {
             this.getBag();
+        }
+        if(type == 60) {
+            initPerfectCheckBox.call(this)
         }
     }
     getMultipleLevelConfig = () => {
@@ -521,12 +529,13 @@ class SpecialDetailInfo extends Component {
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
         const data = this.initiateDefaultGifts();
+        const type = this.props.type
         let pointObj = {
             presentValue: "",
             givePoints: false,
             giveCoupon: false,
         };
-        if(this.props.type == 68) {
+        if(type == 68) {
             // 将券和其他礼品分开
             const otherGifts = []
             giftInfo = giftInfo.filter(v => {
@@ -537,6 +546,9 @@ class SpecialDetailInfo extends Component {
             })
             this.recommendOtherGifts = otherGifts
 
+        }
+        if(type == 60) {
+            giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
             if (this.props.type == "52" && gift.presentType === 2) {
@@ -977,16 +989,7 @@ class SpecialDetailInfo extends Component {
             }
             message.error('请选择一项券包');
         }
-        if (this.props.type == '68') {
-            const recommendRange = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRange']);
-            const recommendRule = this.props.specialPromotion.getIn(['$eventInfo', 'recommendRule']);
-            if (recommendRule != 1) {
-                data = data.filter(item => item.recommendType == 0)
-            }
-            if (recommendRule == 1 && recommendRange == 0) {
-                data = data.filter(item => item.recommendType == 0 || item.recommendType == 1)
-            }
-        }
+
         if (this.getMultipleLevelConfig()) {
             data = this.state.wakeupSendGiftsDataArray.reduce((acc, curr) => {
                 curr.gifts.forEach((gift) => {
@@ -1051,7 +1054,7 @@ class SpecialDetailInfo extends Component {
                           ),
             });
         });
-        const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
+        let validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo).reduce(
                 (flag, key) => {
                     if (
@@ -1074,6 +1077,13 @@ class SpecialDetailInfo extends Component {
         }, 0);
         data = validatedRuleData;
         this.setState({ data });
+
+        if(type === '60'
+             && !this.state.perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
+        ) {
+             //  券隐藏的时候不校验
+            validateFlag = true
+        }
         if (validateFlag) {
             if (validOdds > 100) {
                 message.warning(
@@ -1082,6 +1092,10 @@ class SpecialDetailInfo extends Component {
                 return false;
             }
             let giftInfo = this.getGiftInfo(data);
+            // 完善资料送礼添加积分数据
+            if(type === '60') {
+                giftInfo =  addPointData.call(this,giftInfo)
+            }
             if (type === "52") {
                 const { presentValue, givePoints } = this.state;
                 if (givePoints) {
@@ -1095,7 +1109,7 @@ class SpecialDetailInfo extends Component {
                     giftInfo = [...giftInfo, params];
                 }
             }
-            if (["21", "68", "66", "65"].includes(type)) {
+            if (["21" , "66", "65"].includes(type)) {
                 const {
                     shareTitle,
                     shareSubtitle,
@@ -1139,48 +1153,7 @@ class SpecialDetailInfo extends Component {
                       }
             );
             this.props.setSpecialGiftInfo(giftInfo);
-            if (this.props.type == "68") {
-                // 推荐有礼表项
-                let { eventRecommendSettings } = this.state;
-                const recommendRange = this.props.specialPromotion.getIn([
-                    "$eventInfo",
-                    "recommendRange",
-                ]);
-                const recommendRule = this.props.specialPromotion.getIn([
-                    "$eventInfo",
-                    "recommendRule",
-                ]);
-                if (recommendRule == 1) {
-                    eventRecommendSettings = [];
-                }
-                if (recommendRule == 2) {
-                    eventRecommendSettings = eventRecommendSettings.map(
-                        (setting) => ({
-                            ...setting,
-                            rechargeRate: setting.rechargeRate / 100,
-                            pointRate: setting.pointRate / 100,
-                            consumeRate: 0,
-                            rewardRange: 0,
-                        })
-                    );
-                }
-                if (recommendRule == 3) {
-                    eventRecommendSettings = eventRecommendSettings.map(
-                        (setting) => ({
-                            ...setting,
-                            pointRate: setting.pointRate / 100,
-                            consumeRate: setting.consumeRate / 100,
-                            rechargeRate: 0,
-                        })
-                    );
-                }
-                if (recommendRange == 0) {
-                    eventRecommendSettings = eventRecommendSettings.filter(
-                        (setting) => setting.recommendType == 1
-                    );
-                }
-                this.props.setSpecialRecommendSettings(eventRecommendSettings);
-            }
+
             return true;
         }
         return false;
@@ -3771,6 +3744,7 @@ class SpecialDetailInfo extends Component {
             "$eventInfo",
             "userCount",
         ]);
+
         return (
             <div>
                 {type == "67" && this.renderInstantDiscountForm()}
@@ -3831,7 +3805,10 @@ class SpecialDetailInfo extends Component {
                 {type==='30' &&
                     this.renderPointDuihuan()
                 }
-                { !['52', '30'].includes(type) &&
+                {
+                    type === '60' && renderThree.call(this)
+                }
+                { !['52', '30', '60'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
