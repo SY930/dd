@@ -27,6 +27,7 @@ import {
     SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
     SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
     SALE_CENTER_CARDGROUPID,
+    SALE_CENTER_QUERY_GROUP_CRM_RFM,
 } from "../../actions/saleCenterNEW/specialPromotion.action";
 
 const $initialState = Immutable.fromJS({
@@ -66,6 +67,7 @@ const $initialState = Immutable.fromJS({
         availableShopQueryStatus: "success", // 线上餐厅送礼专用, 表示限制店铺的查询情况
     },
     SMSSignList: [], // 短信签名列表
+    RFMParams: null, // 创建RFM需要的
 });
 
 export const specialPromotion_NEW = ($$state = $initialState, action) => {
@@ -228,6 +230,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 ["$eventInfo", "groupMemberID"],
                 Immutable.fromJS(action.payload)
             );
+        case SALE_CENTER_QUERY_GROUP_CRM_RFM:
+            return $$state.setIn(["RFMParams"], action.payload);
         default:
             return $$state;
     }

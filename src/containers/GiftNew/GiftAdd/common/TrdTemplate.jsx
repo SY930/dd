@@ -130,10 +130,10 @@ const validateWayList = [
         value: 'MINI_PROGRAMS',
         label: '跳转小程序使用'
     },
-    {
-        value: 'PAYMENT_CODE',
-        label: '跳转微信付款码核销'
-    },
+    // {
+    //     value: 'PAYMENT_CODE',
+    //     label: '跳转微信付款码核销'
+    // },
 ]
 
 const joinWayList = [
