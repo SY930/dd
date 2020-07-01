@@ -61,7 +61,7 @@ import TicketBag from '../shackGift/TicketBag';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
 import { renderThree,addPointData,initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
-
+import { renderUpGradeThree,upGradeAddPointData,upGradeInitPerfectCheckBox } from '../upGradeReturnGift/StepThreeHelp'
 const moment = require("moment");
 const FormItem = Form.Item;
 
@@ -320,9 +320,14 @@ class SpecialDetailInfo extends Component {
             },
             redPackets: [] , // 现金红包下拉列表
             perfectReturnGiftCheckBoxStatus: {
-                perfectReturnGiftPoint: true,
+                perfectReturnGiftPoint: false,
                 perfectReturnGiftCoupon: true
             }, // 完善资料送礼checkbox状态
+            upGradeReturnGiftCheckBoxStatus: {
+                upGradeReturnGiftPoint: false,
+                upGradeReturnGiftCoupon: true,
+            },
+            cardTypeArr: [], // 充值到会员卡列表
         };
     }
     componentDidMount() {
@@ -407,6 +412,9 @@ class SpecialDetailInfo extends Component {
         }
         if(type == 60) {
             initPerfectCheckBox.call(this)
+        }
+        if(type == 61) {
+            upGradeInitPerfectCheckBox.call(this)
         }
     }
     getMultipleLevelConfig = () => {
@@ -547,7 +555,7 @@ class SpecialDetailInfo extends Component {
             this.recommendOtherGifts = otherGifts
 
         }
-        if(type == 60) {
+        if(type == 60 || type == 61) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
@@ -1078,8 +1086,10 @@ class SpecialDetailInfo extends Component {
         data = validatedRuleData;
         this.setState({ data });
 
-        if(type === '60'
-             && !this.state.perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
+        if((type === '60'
+             && !this.state.perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon) ||
+             (type === '61'
+             && !this.state.upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon)
         ) {
              //  券隐藏的时候不校验
             validateFlag = true
@@ -1095,6 +1105,10 @@ class SpecialDetailInfo extends Component {
             // 完善资料送礼添加积分数据
             if(type === '60') {
                 giftInfo =  addPointData.call(this,giftInfo)
+            }
+            // 升级有礼添加积分数据
+            if(type === '61') {
+                giftInfo =  upGradeAddPointData.call(this,giftInfo)
             }
             if (type === "52") {
                 const { presentValue, givePoints } = this.state;
@@ -3808,7 +3822,10 @@ class SpecialDetailInfo extends Component {
                 {
                     type === '60' && renderThree.call(this)
                 }
-                { !['52', '30', '60'].includes(type) &&
+                {
+                    type === '61' && renderUpGradeThree.call(this)
+                }
+                { !['52', '30', '60','61'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts

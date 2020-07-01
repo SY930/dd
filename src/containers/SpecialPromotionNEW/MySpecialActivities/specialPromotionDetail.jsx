@@ -393,6 +393,23 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if(way == 61) {
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(records, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
