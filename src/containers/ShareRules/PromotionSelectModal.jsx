@@ -5,7 +5,9 @@ import {
     Modal,
     Tree,
     Button,
-    Tooltip
+    Tooltip,
+    Input,
+    message
 } from 'antd';
 import {debounce} from 'lodash';
 import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
@@ -26,8 +28,11 @@ class PromotionSelectModal extends Component {
     state = {
         searchInput: '',
         currentCategory: null,
-        selected: this.props.selectedPromotions || []
+        selected: this.props.selectedPromotions || [],
+        shareGroupName: this.props.shareGroupName
     }
+
+
 
     handleSearchInputChange = (searchInput) => {
         this.setState({
@@ -116,21 +121,32 @@ class PromotionSelectModal extends Component {
     }
 
     handleOk = () => {
-        const { selected } = this.state;
+        const { selected,shareGroupName } = this.state;
+        if(!shareGroupName) {
+            message.warn('共享组名称不能为空')
+            return false
+        }
         const allOptions = this.getAllOptions();
         return this.props.handleOk({
-            shareGroupDetailList: allOptions.filter(item => selected.includes(item.value))
+            shareGroupDetailList: allOptions.filter(item => selected.includes(item.value)),
+            shareGroupName
         })
     }
 
     debouncedHandleOk = debounce(this.handleOk, 400)
 
+    handleShareGroupName = (e) => {
+        this.setState({
+            shareGroupName: e.target.value
+        })
+    }
+
     render() {
         const allOptions = this.getAllOptions()
-        const { searchInput, currentCategory, selected } = this.state;
+        const { searchInput, currentCategory, selected, shareGroupName } = this.state;
         const filteredOptions = searchInput ? allOptions.filter(item => item.label.includes(searchInput)) : allOptions.filter(item => item.type === currentCategory);
         const selectedOptions = allOptions.filter(item => selected.includes(item.value));
-
+        console.log('shareGroupName',shareGroupName)
         const { intl } = this.props;
         const k5m4q17q = intl.formatMessage(SALE_STRING.k5m4q17q);
         const k5m5av7b = intl.formatMessage(SALE_STRING.k5m5av7b);
@@ -165,6 +181,10 @@ class PromotionSelectModal extends Component {
                     height: '100%',
                 }}
                 >
+                    <div style={{marginBottom: '20px'}}>
+                        <span>共享组名称</span>
+                         <Input value={shareGroupName} onChange={this.handleShareGroupName} style={{width: '300px',marginLeft: '16px'}} maxLength={20} />
+                    </div>
                     <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
                         {/* //搜索框 */}
                         <HualalaSearchInput onChange={this.debouncedHandleSearchInputChange} />
