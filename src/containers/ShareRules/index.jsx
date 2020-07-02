@@ -373,7 +373,7 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
-                                                {shareGroup.shareGroupName || SALE_LABEL.k636qw6a + `${index + 1}`}
+                                                {shareGroup.shareGroupName ||   '营销活动共享组' + `${index + 1}`}
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
