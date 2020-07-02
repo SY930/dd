@@ -59,11 +59,23 @@ export const FORMITEMS = {
         type: 'checkbox',
         defaultValue: [],
     },
+    // 商城券适用范围
+    mallScope: {
+        label: '适用范围',
+        type: 'radio',
+        default: '0',
+        options: [
+            { label: '按分类', value: '0' },
+            { label: '按商品', value: '1' },
+        ]
+    },
+
     isOfflineCanUsing: {
         label: '使用场景',
         type: 'radio',
         defaultValue: '1',
         options: GiftCfg.isOfflineCanUsing,
+        
     },
     showGiftRule: {
         label: '显示系统生成规则',
@@ -210,15 +222,20 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
+                'mallScope',                // 适用范围选择框
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
             ],
         },
         {
             col: {
                 span: 24,
-                push: 2,
+                pull: 2,
             },
             keys: [
-                'foodsboxs',
+                // 'foodsboxs',  商城不需要
+                //'mallScope',  // 商城券适用范围， 0， 按分类， 1， 按商品?
             ]
         },
         {
@@ -329,11 +346,11 @@ export const FIRST_KEYS = {
                 'giftType',
                 'applyScene',
                 'giftName',
-                // 'selectBrands',
-                // 'pushMessageMpID',
-                // 'giftValueCurrencyType',
-                // 'giftValue',
-                // 'price',
+                'selectBrands',
+                'pushMessageMpID',
+                'giftValueCurrencyType',
+                'giftValue',
+                'price',
             ],
         },
         {

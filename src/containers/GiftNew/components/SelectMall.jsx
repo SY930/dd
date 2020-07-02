@@ -10,21 +10,38 @@ class SelectMall extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            malls: []
+            malls: props.dataSource instanceof Array ? props.dataSource : [],
+            value: undefined,
         };
         this.handleSelectChange = this.handleSelectChange.bind(this);
     }
 
     componentDidMount() {
-    
+        // const { dataSource } = this.props;
     }
 
     componentWillReceiveProps(newProps) {
-
+        const { dataSource } = newProps;
+        if(this.props.dataSource == dataSource) {
+            this.setState({
+                malls: dataSource
+            });
+        }
     }
 
 
     handleSelectChange(value) {
+        
+        this.setState({
+            value
+        }, ()=>{
+            if(typeof this.props.onChange == 'function') {
+                this.props.onChange(value);
+            }
+        });
+
+        
+
         // const brandsToBeSentToParent = [];
         // const mergetBrands = this.getMergedBrands();
         // (value || []).forEach(id => {
@@ -37,7 +54,11 @@ class SelectMall extends Component {
     }
 
     render() {
-        const realValue = (this.props.value || []).map(target => String(target.targetID))
+        // const realValue = (this.props.value || []).map(target => String(target.targetID));
+        let { malls = [], value } = this.state;
+        if (malls == null)  {
+            malls = [];
+        }
         return (
             <Select
                 placeholder="请选择使用店铺"
@@ -46,12 +67,12 @@ class SelectMall extends Component {
                 allowClear={true}
                 showSearch={false}
                 optionFilterProp="children"
-                value={realValue}
+                value={value}
                 onChange={this.handleSelectChange}
             >
-                {/* {
-                    this.getMergedBrands().map(brand => <Option key={brand.value} value={brand.value}>{brand.label}</Option>)
-                } */}
+                {
+                    malls.map(shop => <Option key={shop.shopID} value={shop.shopID}>{shop.shopName}</Option>)
+                }
             </Select>
         )
     }
