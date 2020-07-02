@@ -231,7 +231,8 @@ export const addPointData = function (giftInfo) {
         { force: true },
         (error, basicValues) => {
             const { perfectReturnGiftPoint } = basicValues;
-            presentValue = perfectReturnGiftPoint.number;
+            presentValue =
+                perfectReturnGiftPoint && perfectReturnGiftPoint.number;
         }
     );
     if (perfectReturnGiftPoint) {
@@ -273,7 +274,7 @@ export const initPerfectCheckBox = function () {
     if (!pointItem && !couponItem) {
         perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = true;
     }
-    this.perfectPointItem = pointItem;
+    this.perfectPointItem = pointItem || {};
     this.setState({
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftPoint: pointItem && pointItem.presentValue,

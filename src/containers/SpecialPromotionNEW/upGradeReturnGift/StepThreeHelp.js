@@ -1,5 +1,5 @@
 /**
- * 完善资料送礼第三步操作
+ * 升级送礼第三步操作
  */
 
 import React from "react";
@@ -167,7 +167,8 @@ export const upGradeAddPointData = function (giftInfo) {
         { force: true },
         (error, basicValues) => {
             const { upGradeReturnGiftPoint } = basicValues;
-            presentValue = upGradeReturnGiftPoint.number;
+            presentValue =
+                upGradeReturnGiftPoint && upGradeReturnGiftPoint.number;
         }
     );
 
@@ -209,7 +210,7 @@ export const upGradeInitPerfectCheckBox = function () {
     if (!pointItem && !couponItem) {
         upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon = true;
     }
-    this.upGradePointItem = pointItem;
+    this.upGradePointItem = pointItem || {};
     this.setState({
         upGradeReturnGiftCheckBoxStatus,
         upGradeReturnGiftPoint: pointItem && pointItem.presentValue,
