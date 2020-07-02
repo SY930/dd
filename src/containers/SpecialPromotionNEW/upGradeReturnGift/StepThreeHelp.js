@@ -3,13 +3,11 @@
  */
 
 import React from "react";
-import { Row, Col, Form, Checkbox, Select } from "antd";
+import { Row, Col, Form, Checkbox } from "antd";
 import AddGifts from "../common/AddGifts";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from "../../SaleCenterNEW/ActivityPage.less";
-import { axiosData } from "../../../helpers/util";
 
-const Option = Select.Option;
 const FormItem = Form.Item;
 
 const handleChangeBox = function ({ key }) {
@@ -49,12 +47,6 @@ const renderCheckbox = function ({ key, children, label }) {
     );
 };
 
-const handleCardChange = function (e) {
-    this.setState({
-        upGradeCardTypeValue: e,
-    });
-};
-
 /**
  * 赠送积分
  *
@@ -64,106 +56,53 @@ const renderGivePointFn = function () {
     const {
         upGradeReturnGiftCheckBoxStatus,
         upGradeReturnGiftPoint,
-        cardTypeArr,
-        upGradeCardTypeValue,
     } = this.state;
     const {
         form: { getFieldDecorator },
     } = this.props;
-    const giftSendCount =
-        this.perfectPointItem && this.perfectPointItem.giftSendCount;
+
     return (
-        <div>
-            <FormItem
-                wrapperCol={{ span: 16 }}
-                labelCol={{ span: 8 }}
-                className={styles.FormItemSecondStyle}
-                style={{ width: "330px" }}
-                label="赠送积分"
-                required
-            >
-                {getFieldDecorator(`upGradeReturnGiftPoint`, {
-                    initialValue: {
-                        number: upGradeReturnGiftPoint,
-                    },
-                    rules: [
-                        {
-                            validator: (rule, v, cb) => {
-                                if (v.number === "" || v.number === undefined) {
-                                    return cb(
-                                        upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint
-                                            ? "请输入数值"
-                                            : undefined
-                                    );
-                                }
-                                if (!v || v.number < 1) {
-                                    return cb("积分应不小于1");
-                                } else if (v.number > 100000) {
-                                    return cb("积分应不大于100000");
-                                }
-                                cb();
-                            },
+        <FormItem
+            wrapperCol={{ span: 16 }}
+            labelCol={{ span: 8 }}
+            className={styles.FormItemSecondStyle}
+            style={{ width: "330px" }}
+            label="赠送积分"
+            required
+        >
+            {getFieldDecorator(`upGradeReturnGiftPoint`, {
+                initialValue: {
+                    number: upGradeReturnGiftPoint,
+                },
+                rules: [
+                    {
+                        validator: (rule, v, cb) => {
+                            if (v.number === "" || v.number === undefined) {
+                                return cb(
+                                    upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint
+                                        ? "请输入数值"
+                                        : undefined
+                                );
+                            }
+                            if (!v || v.number < 1) {
+                                return cb("积分应不小于1");
+                            } else if (v.number > 100000) {
+                                return cb("积分应不大于100000");
+                            }
+                            cb();
                         },
-                    ],
-                })(
-                    <PriceInput
-                        addonAfter={"积分"}
-                        modal="float"
-                        maxNum={7}
-                        placeholder="请输入数值"
-                    />
-                )}
-            </FormItem>
-            <FormItem
-                wrapperCol={{ span: 16 }}
-                labelCol={{ span: 8 }}
-                className={styles.FormItemSecondStyle}
-                style={{ width: "330px" }}
-                label="充值到会员卡"
-            >
-                <Select
-                    showSearch={true}
-                    value={upGradeCardTypeValue}
-                    onChange={handleCardChange.bind(this)}
-                    disabled={giftSendCount > 0}
-                >
-                    {cardTypeArr.map((item) => {
-                        return (
-                            <Option
-                                key={item.cardTypeID}
-                                value={item.cardTypeID}
-                            >
-                                {item.cardTypeName}
-                            </Option>
-                        );
-                    })}
-                </Select>
-            </FormItem>
-        </div>
+                    },
+                ],
+            })(
+                <PriceInput
+                    addonAfter={"积分"}
+                    modal="float"
+                    maxNum={7}
+                    placeholder="请输入数值"
+                />
+            )}
+        </FormItem>
     );
-};
-/**
- * 获取充值会员卡列表
- *
- * @param {*} opts
- */
-const fetchCardType = function (opts) {
-    axiosData(
-        "/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax",
-        { ...opts, isNeedWechatCardTypeInfo: true },
-        null,
-        { path: "data.cardTypeBaseInfoList" }
-    ).then((records) => {
-        const { upGradeCardTypeValue } = this.state;
-        if (Array.isArray(records) && records[0] && !upGradeCardTypeValue) {
-            this.setState({
-                upGradeCardTypeValue: records[0].cardTypeID,
-            });
-        }
-        this.setState({
-            cardTypeArr: records || [],
-        });
-    });
 };
 
 /**
@@ -231,14 +170,13 @@ export const upGradeAddPointData = function (giftInfo) {
             presentValue = upGradeReturnGiftPoint.number;
         }
     );
-    console.log("this.props.isNew", this.props.isNew);
+
     if (upGradeReturnGiftPoint) {
         giftInfo.push({
             presentValue,
             presentType: 2,
             giftCount: 1,
             giftName: `${presentValue}积分`,
-            cardTypeID: upGradeCardTypeValue,
             itemID: !this.props.isNew ? this.upGradePointItem.itemID : "",
         });
     } else {
@@ -275,9 +213,7 @@ export const upGradeInitPerfectCheckBox = function () {
     this.setState({
         upGradeReturnGiftCheckBoxStatus,
         upGradeReturnGiftPoint: pointItem && pointItem.presentValue,
-        upGradeCardTypeValue: pointItem && pointItem.cardTypeID,
     });
-    fetchCardType.call(this, {});
 };
 
 export default {
