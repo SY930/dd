@@ -391,6 +391,39 @@ class GiftAddModalStep extends React.PureComponent {
             }
         })
     }
+
+
+    /**
+     * @description 处理买赠券参数
+    */
+    justifyParamsForCouponOfBuyGiven(params) {
+        params.stageAmount = params.stageAmount.number;
+        params.foodSelectType = 0;
+        params.giveFoodCount = params.giveFoodCount.number;
+        params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
+            return {
+                targetID: food.itemID,
+                targetCode: food.foodCode,
+                targetName: food.foodName,
+                targetUnitName: food.unit || '',
+                brandID: food.brandID || '0',
+            }
+        });
+        params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
+            return {
+                foodUnitID: food.foodUnitID,
+                foodUnitCode: food.foodUnitCode,
+                foodPrice: food.price,
+                foodName: food.foodName,
+                foodUnitName: food.unit || '',
+                brandID: food.brandID || '0',
+            }
+        });
+        delete params.buyGiveFoods;
+        delete params.buyGiveSecondaryFoods;
+        return params;
+    }
+
     handleFinish = () => {
         const { values, groupTypes, delivery } = this.state;
         const { type, gift: { value, data } } = this.props;
@@ -522,30 +555,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
             if (value == '110') {// 买赠券
-                params.stageAmount = params.stageAmount.number;
-                params.foodSelectType = 0;
-                params.giveFoodCount = params.giveFoodCount.number;
-                params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
-                    return {
-                        targetID: food.itemID,
-                        targetCode: food.foodCode,
-                        targetName: food.foodName,
-                        targetUnitName: food.unit || '',
-                        brandID: food.brandID || '0',
-                    }
-                });
-                params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
-                    return {
-                        foodUnitID: food.foodUnitID,
-                        foodUnitCode: food.foodUnitCode,
-                        foodPrice: food.price,
-                        foodName: food.foodName,
-                        foodUnitName: food.unit || '',
-                        brandID: food.brandID || '0',
-                    }
-                });
-                delete params.buyGiveFoods;
-                delete params.buyGiveSecondaryFoods;
+                params = this.justifyParamsForCouponOfBuyGiven(params);
             }
             if (params.couponPeriodSettings && Array.isArray(params.couponPeriodSettings)) {
                 const { hasError, errorMessage } = getItervalsErrorStatus(params.couponPeriodSettings)
