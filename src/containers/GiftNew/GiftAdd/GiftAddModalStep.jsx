@@ -1582,6 +1582,9 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
+
+            
+
             transferLimitType: {
                 label: '转赠设置',
                 type: 'custom',
@@ -1661,7 +1664,7 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => this.renderStageAmount(decorator),
             },
             giveFoodCount: {
-                label: '菜品赠送数量',
+                label: '享受优惠菜品',
                 type: 'custom',
                 render: decorator => this.renderGiveFoodCount(decorator),
             },
@@ -1688,7 +1691,7 @@ class GiftAddModalStep extends React.PureComponent {
             },
             buyGiveSecondaryFoods: {
                 type: 'custom',
-                label: '赠送菜品',
+                label: '优惠菜品',
                 required: true,
                 render: decorator => this.renderBuyGiveSecondaryFoodsboxs(decorator),
             },
