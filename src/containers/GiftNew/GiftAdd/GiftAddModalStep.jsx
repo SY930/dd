@@ -233,7 +233,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys } = this.state;
         let keys = [...firstKeys[describe][0].keys];
-        console.log("keys before", keys);
         // 1 特价， 2 折扣， 3 立减
         // Caution: 如果修改配置文件 ——formItemConfig.jsx中买赠券的表单排序，则必须调整 splice 参数
         if (val == '1') {
@@ -244,8 +243,6 @@ class GiftAddModalStep extends React.PureComponent {
             keys.splice(9, 1, 'discountDecreaseVolSetting');
         }
         firstKeys[describe][0].keys = [...keys];
-
-        console.log("keys", keys);
         this.setState({ firstKeys });
     }
 
@@ -427,8 +424,6 @@ class GiftAddModalStep extends React.PureComponent {
      *  'discountDecreaseVolSetting'
     */
     justifyParamsForCouponOfBuyGiven(params) {
-
-        console.log("params in maizeng", params);
         // 后端字段名称为reduceType, 对应前端字段 discountType
         switch(params.discountRule) {
             case '1':  // 特价
@@ -447,7 +442,6 @@ class GiftAddModalStep extends React.PureComponent {
 
         params.reduceType = params.discountRule;
         delete params.discountRule;
-        console.log('After Justify params', params);
         debugger;
 
 
@@ -852,6 +846,9 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 折扣设置
     renderDiscountRateSetting(decorator) {
+        // 数据回显
+        const { gift : { data }} = this.props;
+        let val = data.reduceValue == undefined ? 0 : data.reduceValue;
         return (
             <FormItem>
                 {decorator({
@@ -861,11 +858,11 @@ class GiftAddModalStep extends React.PureComponent {
                             Number(num) > 0 &&  Number(num) <= 10 ? cb() : cb(rule.message);
                         },
                         message: '折扣要大于0, 小于等于10',
-                    }]
+                    }],
+                    initialValue: val
                 })(<Input 
                 type="number" 
                 placeholder="例如8.8折, 9.5折"
-                defaultValue= {0}
                 size="large" 
                 addonAfter="折" />)}
             </FormItem>
@@ -874,6 +871,11 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 买赠立减
     renderDiscountDecreaseVolSetting(decorator) {
+
+        // 数据回显
+        const { gift : { data }} = this.props;
+        let val = data.reduceValue == undefined ? 0 : data.reduceValue;
+
         return (
             <FormItem>
                 {decorator({
@@ -883,11 +885,11 @@ class GiftAddModalStep extends React.PureComponent {
                             Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
                         message: '金额要大于等于0,小于10000',
-                    }]
+                    }],
+                    initialValue: val
                 })(<Input 
                 type="number" 
                 placeholder="输入立减金额"
-                defaultValue= {0}
                 size="large" 
                 addonAfter="元" />)}
             </FormItem>
@@ -896,6 +898,9 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 买赠券特价
     renderSpecialPriceVolSetting(decorator) {
+        // 数据回显
+        const { gift : { data }} = this.props;
+        let val = data.reduceValue == undefined ? 0 : data.reduceValue;
         return (
             <FormItem>
                 {decorator({
@@ -905,7 +910,8 @@ class GiftAddModalStep extends React.PureComponent {
                             Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
                         message: '价格要大于0,小于10000',
-                    }]
+                    }],
+                    initialValue: val
                 })(<Input 
                 type="number" 
                 placeholder="输入特价价格"
@@ -1344,9 +1350,19 @@ class GiftAddModalStep extends React.PureComponent {
      * @example 满减券后端优惠规则 key 为 reduceType, 对应前端key为discountRule
     */
     justifyServerEndKeyToFormKeys(data) {
+        data.discountRule = `${data.reduceType}`;
+        // switch(data.discountRule) {
+        //     case '1': 
+        //     data.
+        //     break;
 
-        console.log('data.discountRule = data.reduceType;', data.discountRule);
-        data.discountRule = data.reduceType;
+        //     case '2': 
+        //     break;
+        //     case '3':
+        //     break;
+        //     default: 
+        //     break;
+        // }
         delete data.reduceType;
     }
 
@@ -1355,13 +1371,13 @@ class GiftAddModalStep extends React.PureComponent {
      * @params this.props.gift 传入的参数
      * @params this.props.gift.data 如果不为undefined，在编辑和展示模式下，为后端返回的数据，前后端数据如果有key值不同，则需要进行变更处理
     */
+
+
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
 
         this.justifyServerEndKeyToFormKeys(data);
-
-        console.log('this.props.gift', this.props.gift);
         const dates = Object.assign({}, data);
         
         const displayFirstKeys = firstKeys[describe];
@@ -1957,9 +1973,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
-        formData.couponPeriodSettings = formData.couponPeriodSettingList
-
-        console.log('in Editing mode', formData);
+        formData.couponPeriodSettings = formData.couponPeriodSettingList;
         return (
             <div>
                 <div
