@@ -68,7 +68,7 @@ const FORMITEMS = {
     discountRule: {
         label: '优惠规则',
         type: 'radio',
-        defaultValue: '0',
+        defaultValue: '1',
         options: GiftCfg.discountRules,
     },
 
@@ -404,11 +404,13 @@ const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessageMpID',
                 'buyGiveFoods',
-                
                 'buyGiveSecondaryFoods',
-                'discountRule',
+                'discountRule',                     // 优惠规则
                 'stageAmount',
                 'giveFoodCount',
+                'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
+                // 'specialPriceVolSetting',           // 特价设置
+                // 'discountDecreaseVolSetting',       // 立减
                 'discountSortRule',                 // 买赠券优惠规则
                 // 'priceSortRule',
                 'price',

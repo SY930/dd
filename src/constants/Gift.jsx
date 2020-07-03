@@ -184,9 +184,9 @@ const GiftCfg = {
     ],
 
     discountRules: [
-        { label: '特价', value: '0'},
-        { label: '折扣', value: '1'},
-        { label: '立减', value: '2'},
+        { label: '特价', value: '1'},
+        { label: '折扣', value: '2'},
+        { label: '立减', value: '3'},
     ],
 
     discountSortRules: [
