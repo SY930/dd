@@ -21,11 +21,12 @@ class SelectMallCategory extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        const { dataSource } = newProps;
+        const { dataSource, value = [] } = newProps;
 
         if(this.props.dataSource !== dataSource) {
             this.setState({
                 mallCategoryArr: dataSource instanceof Array ? dataSource : [],
+                value,
             })
         }
 

@@ -274,6 +274,106 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
             ]
         },
     ],
+
+    '菜品优惠券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'applyScene',
+                'giftName',
+                'selectMall',
+                'pushMessageMpID',
+                'giftValueCurrencyType',
+                'giftValue',
+                'price',
+                'mallScope',                // 适用范围选择框
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                // 'foodScopes',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: [
+                // 'isNeedCustomerInfo',
+            ],
+        },
+    ],
+    '菜品兑换券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'applyScene',
+                'giftName',
+                'selectMall',
+                'pushMessageMpID',
+                'giftValueCurrencyType',
+                'giftValue',
+                'price',
+                'mallScope',                // 适用范围选择框
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                // 'foodScopes',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'priceSortRule',
+                'giftRemark',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: [
+                // 'isNeedCustomerInfo',
+            ],
+        },
+    ],
 }
 
 
@@ -406,6 +506,7 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
+                'applyScene',
                 'giftName',
                 'selectBrands',
                 'pushMessageMpID',
@@ -450,6 +551,7 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
+                'applyScene',
                 'giftName',
                 'selectBrands',
                 'pushMessageMpID',
