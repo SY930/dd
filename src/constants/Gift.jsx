@@ -182,6 +182,17 @@ const GiftCfg = {
         { label: '仅线上使用', value: '0' },
         { label: '仅线下使用', value: '2' },
     ],
+
+    discountRules: [
+        { label: '特价', value: '1'},
+        { label: '折扣', value: '2'},
+        { label: '立减', value: '3'},
+    ],
+
+    discountSortRules: [
+        { label: '高价格菜品优先', value: '0'},
+        { label: '低价格菜品优先', value: '1'}
+    ],
     shareType: [
         { label: '与所有券共用', value: '1' },
         { label: '与部分券共用', value: '2'},
