@@ -34,6 +34,7 @@ import {
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialBasicInfoCardGroupID,
+    saleCenterSaveCreateMemberGroupParams
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     fetchFoodCategoryInfoAC,
@@ -83,27 +84,78 @@ class NewCustomerPage extends Component {
         this.fromCrmJump();
     }
     componentWillReceiveProps(){
+        // todo:上线放开
         this.fromCrmJump();
     }
-    getQueryVariable(variable) {
-        const query = window.location.search.substring(1);
-        const vars = query.split('&');
-        for (let i = 0; i < vars.length; i++) {
-            const pair = vars[i].split('=');
-            if (pair[0] === variable) { return pair[1]; }
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
         }
-        return false;
+        return params
     }
     fromCrmJump(){
-        const saleID = this.getQueryVariable('type');
-        if(!saleID){
-            return;
+        const  {
+            from,
+            type,
+            gmID,
+            totalMembers,
+            groupMembersName,
+            groupID,
+            levelKey,
+            levelType,
+            monetaryType,
+            reportMonth,
+            createBy,
+        } = this.getQueryVariable()
+        // 测试使用
+        // const  {
+        //     from = 'rfm',
+        //     type,
+        //     gmID,
+        //     totalMembers,
+        //     groupMembersName,
+        //     groupID = '1155' ,
+        //     levelKey = 'LH',
+        //     levelType = '0',
+        //     monetaryType = '0',
+        //     reportMonth = '2020-05',
+        //     createBy = 'wenjie'
+        // } = this.getQueryVariable()
+
+
+
+        if(from === 'rfm') {
+            const item = CRM_PROMOTION_TYPES[53];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            this.props.saveRFMParams({
+                groupID ,
+                levelKey ,
+                levelType ,
+                monetaryType ,
+                reportMonth ,
+                creator: createBy
+            })
+            this.clearUrl();
+
+        } else {
+            const saleID =  type;
+            if(!saleID){
+                return;
+            }
+            const item = CRM_PROMOTION_TYPES[saleID];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(gmID);
+            this.clearUrl();
         }
-        const gmID = this.getQueryVariable('gmID');
-        const item = CRM_PROMOTION_TYPES[saleID];
-        this.handleNewPromotionCardClick(item);
-        this.props.setSpecialPromotionCardGroupID(gmID);
-        this.clearUrl();
+
     }
     clearUrl(){
         var { href } = window.location;
@@ -450,6 +502,9 @@ function mapDispatchToProps(dispatch) {
         setSpecialPromotionCardGroupID: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoCardGroupID(opts));
         },
+        saveRFMParams: (opts) => {
+            dispatch(saleCenterSaveCreateMemberGroupParams(opts))
+        }
     }
 }
 

@@ -15,6 +15,7 @@ class FormWrapper extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // TODO: 同样的问题
     handleSubmit() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();

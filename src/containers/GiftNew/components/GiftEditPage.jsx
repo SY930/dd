@@ -51,6 +51,7 @@ class GiftEditPage extends Component {
         this.container = null;
     }
 
+    // TODO: 这块为什么执行了两次保存？
     saving() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();

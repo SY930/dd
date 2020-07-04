@@ -77,6 +77,23 @@ export const FORMITEMS = {
         options: GiftCfg.isOfflineCanUsing,
         
     },
+
+    // // 优惠顺序（买赠券）
+    discountRule: {
+        label: '优惠规则',
+        type: 'radio',
+        defaultValue: '1',
+        options: GiftCfg.discountRules,
+    },
+
+    // 优惠顺序（买赠券）
+    discountSortRule: {
+        label: '优惠顺序',
+        type: 'radio',
+        defaultValue: '0',
+        options: GiftCfg.discountSortRules,
+    },
+
     showGiftRule: {
         label: '显示系统生成规则',
         type: 'radio',
@@ -531,10 +548,15 @@ export const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessageMpID',
                 'buyGiveFoods',
-                'stageAmount',
                 'buyGiveSecondaryFoods',
+                'discountRule',                     // 优惠规则
+                'stageAmount',
                 'giveFoodCount',
-                'priceSortRule',
+                'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
+                // 'specialPriceVolSetting',           // 特价设置
+                // 'discountDecreaseVolSetting',       // 立减
+                'discountSortRule',                 // 买赠券优惠规则
+                // 'priceSortRule',
                 'price',
                 'giftRemark',
             ],
@@ -770,6 +792,7 @@ export const SECOND_KEYS = (() => ({
                 'isOfflineCanUsing',
                 'isOnlineExchangeable',
                 'giftShareType',
+                'moneyLimitTypeAndValue',
                 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
