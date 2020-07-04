@@ -451,12 +451,12 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.discountSortRule;
 
         // 消费金额限制类型
-        params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
-        params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
-        if(params.moneyLimitType == '0') {
-            params.moenyLimitValue = 0
-        }
-        delete params.moneyLimitTypeAndValue;
+        // params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
+        // params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
+        // if(params.moneyLimitType == '0') {
+        //     params.moenyLimitValue = 0
+        // }
+        // delete params.moneyLimitTypeAndValue;
 
 
         params.stageAmount = params.stageAmount.number;
@@ -882,7 +882,7 @@ class GiftAddModalStep extends React.PureComponent {
                     key: 'discountDecreaseVolSetting',
                     rules: [{required: true, message: '不能为空'}, {
                         validator: (rule, num, cb) => {
-                            Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
+                            Number(num) >= 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
                         message: '金额要大于等于0,小于10000',
                     }],
@@ -907,15 +907,14 @@ class GiftAddModalStep extends React.PureComponent {
                     key: 'specialPriceVolSetting',
                     rules: [{required: true, message: '不能为空'}, {
                         validator: (rule, num, cb) => {
-                            Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
+                            Number(num) >= 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
-                        message: '价格要大于0,小于10000',
+                        message: '价格要大于等于0,小于10000',
                     }],
                     initialValue: val
                 })(<Input 
                 type="number" 
                 placeholder="输入特价价格"
-                defaultValue= {0}
                 size="large" 
                 addonAfter="元" />)}
             </FormItem>
@@ -1351,18 +1350,6 @@ class GiftAddModalStep extends React.PureComponent {
     */
     justifyServerEndKeyToFormKeys(data) {
         data.discountRule = `${data.reduceType}`;
-        // switch(data.discountRule) {
-        //     case '1': 
-        //     data.
-        //     break;
-
-        //     case '2': 
-        //     break;
-        //     case '3':
-        //     break;
-        //     default: 
-        //     break;
-        // }
         delete data.reduceType;
     }
 
@@ -1371,8 +1358,6 @@ class GiftAddModalStep extends React.PureComponent {
      * @params this.props.gift 传入的参数
      * @params this.props.gift.data 如果不为undefined，在编辑和展示模式下，为后端返回的数据，前后端数据如果有key值不同，则需要进行变更处理
     */
-
-
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
